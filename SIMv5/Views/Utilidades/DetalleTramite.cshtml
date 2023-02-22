@@ -1,0 +1,161 @@
+﻿@model SIM.Models.TramiteTarea
+@using SIM.Properties
+@{
+    if (ViewBag.Popup ?? false)
+    {
+        Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutV5.cshtml";
+    }
+}
+<script>
+    var CodTramite = @Model.CodTramite;
+    var Orden = @Model.Orden;
+    var CodFuncionario = @Model.CodFuncionario;
+    var Propietario = @Json.Encode(Model.Propietario);
+</script>
+<style>
+    .dx-tabs {
+        table-layout: fixed;
+    }
+</style>
+<script type="text/javascript" src="~/Scripts/Utilidades/Detalle.js?V=0.1"></script>
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+        <div id="loadPanel"></div>
+        <div class="panelSIM panelSIM-default">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Detalle de la tarea seleccionada</label>
+                </h3>
+            </div>
+            <div class="row">
+                <label class="col-sm-3">Trámite  :</label>
+                <label class="col-sm-4">@Model.Proceso</label>
+                <label class="col-sm-2">Código Trámite</label>
+                <label class="col-sm-3">@Model.CodTramite</label>
+            </div>
+            <div class="row">
+                <label class="col-sm-3">Fecha Inicio Trámite</label>
+                <label class="col-sm-4">@Model.FechaIncioTramite.Value.ToString("MMM dd yyyy HH:mm:ss")</label>
+                <label class="col-sm-2">Tarea</label>
+                <label class="col-sm-3">@Model.Tarea</label>
+            </div>
+            <div class="row">
+                <label class="col-sm-3">Fecha Inicio Tarea</label>
+                <label class="col-sm-4">@Model.FechaIniciaTarea.ToString("MMM dd yyyy HH:mm:ss")</label>
+                <label class="col-sm-2">Tipo</label>
+                <label class="col-sm-3">@Model.TipoTarea</label>
+            </div>
+            @if (Model.Vital != "-1")
+            {
+                <div class="row">
+                    <label class="col-sm-3">Número VITAL</label>
+                    <label class="col-sm-4" id="NumVital">@Model.Vital</label>
+                </div>
+            }
+            <div id="sebDetalleTramite" class="col-12"></div>
+            <br />
+            <div id="PanelMensajes">
+                <div id="grdMensajes"></div>
+                @if (Model.Propietario == true)
+                {
+                    <br />
+                    <div id="btnNuevoMsg"></div>
+                }
+            </div>
+            <div id="PanelDatos">
+                <div class="row">
+                    <label class="col-sm-3">Descripción de la Actividad:</label>
+                    <label class="col-sm-9">@Model.Tarea</label>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3">Que debo hacer? :</div>
+                    <div class="col-sm-9">@Model.QueDeboHacer</div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-12">INDICES DEL TRÁMITE</div>
+                </div>
+                <div id="PanelIndicesTra">
+                    <div id="grdIndicesTra"></div>
+                    <div id="btnEditIndicesTra"></div>
+                </div>
+                <div id="PanelEditIndicesTra" style="display: none;">
+                    <div id="grdEditIndicesTra"></div>
+                    <div id="btnGuardaIndicesTra"></div>
+                    <div id="btnCancelIndices"></div>
+                </div>
+            </div>
+            <div id="PanelDocs">
+                <div id="grdDocumentos"></div>
+                <br />
+                <div class="row">
+                    <div class="control-label col-sm-12">INDICES DEL DOCUMENTO</div>
+                </div>
+                <div id="grdIndicesDoc"></div>
+            </div>
+            <div id="PanelTemp">
+                <div id="grdDocsTemp"></div>
+                @if (Model.Propietario == true)
+                {
+                    <br />
+                    <div id="btnNuevoTemporal"></div>
+                }
+                @if (Model.Vital != "-1")
+                {
+                    <br />
+                    <div class="row">
+                        <label class="col-sm-12" style="text-align: center;">Documentos VITAL</label>
+                    </div>
+                    <div id="grdDocsVital"></div>
+                }
+            </div>
+            <div id="PanelRuta">
+                <div id="grdRutaTra"></div>
+            </div>
+            <div id="PanelVital">
+                <div id="grdRutaVital"></div>
+            </div>
+            <div id="PopupTemporal">
+                <div class="row">
+                    <label class="col-sm-3">Documento</label>
+                    <div class="col-sm-9" id="cmbDocumentoTemp"></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">Descripción</label>
+                    <div id="txtDescripTemp" class="col-sm-9"></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">Versión</label>
+                    <id id="txtVersionTemp" class="col-sm-9"></id>
+                </div>
+                <div class="row">
+                    <div id="fuArchivoTemporal"></div>
+                </div>
+                <br />
+                <div id="btnGuardaTemp" class="col-sm-12" style="align-content: flex-end"></div>
+                <br />
+            </div>
+            <div id="PopupMensaje">
+                <div class="row">
+                    <label class="col-sm-3">Mensaje</label>
+                    <div class="col-sm-9" id="txtMensaje"></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">Importancia</label>
+                    <div id="opcImportMsg" class="col-sm-9"></div>
+                </div>
+                <br />
+                <div id="btnGuardaMsg" class="col-sm-12" style="align-content: flex-end"></div>
+                <br />
+            </div>
+            <div id="popAdjuntosDocumento" style="padding: 0px !important">
+                <iframe src="" id="frmAdjuntoDocumento" style="width:100%; height:100%" frameborder="0" scrolling="yes"></iframe>
+            </div>
+            <div id="PopupAnula"></div>
+        </div>
+    </div>
+</div>
+

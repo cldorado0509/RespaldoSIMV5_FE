@@ -1,0 +1,7 @@
+18:21:20 - ProyeccionDocumento [PostAlmacenarDatosProyeccionDocumento - 0 ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-01400: no se puede realizar una inserción NULL en ("TRAMITES"."PROYECCION_DOC_FIRMAS"."S_TIPO")
+ORA-06512: en línea 4

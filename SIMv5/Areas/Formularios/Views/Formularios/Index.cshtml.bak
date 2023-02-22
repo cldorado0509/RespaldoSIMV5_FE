@@ -1,0 +1,1011 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Mvc
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@{
+    ViewBag.Title = "Formulario";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+    <script src="@Url.Content("~/Scripts/mapgis_integracion.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1-packed.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.jquery.mousewheel.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.touchSwipe.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.transit.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js")"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.5/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.5/css/dx.light.css" />
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.5/js/dx.webappjs.js"></script>
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.5/js/dx.all.js"></script>
+
+    <script>
+        var tipoV = "N";
+        var Totalimg = new Array();
+        var jsonQuejas;
+        var urlDoc = "";
+        var IdEliminar = "";
+        var jsonInfoGeneral;
+        $(document).ready(function () {
+            CargarGrid();
+
+            $("#txtidItem").val("@ViewBag.txtidItem")
+            $("#txtidEstadoBase").val("@ViewBag.txtidEstadoBase")
+            $("#txturlMapa").val("@ViewBag.txturlMapa")
+            $("#txttblFotos").val("@ViewBag.txttblFotos")
+            $("#txtForm").val("@ViewBag.txtForm")
+            $("#txtidVisita").val("@ViewBag.txtidVisita")
+            $("#txtinstalacion").val("@ViewBag.txtinstalacion")
+            $("#txttercero").val("@ViewBag.txttercero")
+            $("#txttblEstados").val("@ViewBag.txttblEstados")
+            tipoV = "@ViewBag.txttipoV";
+            consultarFotos();
+            var textoi = $("#texttoempresa").text() + "@ViewBag.textoEmpresa";
+            $("#texttoempresa").text(textoi.replace("&#243;", "ó"));
+            if ($("#txtForm").val() == "11") {
+                $("#Tab3 a")[0].innerText = "Recurso Afectado";
+            }
+            if (tipoV == "CAR1") {
+                $("#Tab1").css('display', 'none');
+                $("#tabMapa").removeClass("active");
+                $("#tabMapa").removeClass("in");
+                $("#Tab3 a").click();
+                $("#Tab3 a").click();
+                validarEstado();
+                consultarJsonDetalle()
+                consultarJsonEncuesta()
+                $("#div_nom_1").css("display", "none")
+                $("#texttoempresa").css("top", "13px !important");
+
+            } else
+                if (tipoV == "N") {
+
+                    $("#Tab3").css('display', 'none');
+                    $("#Tab4").css('display', 'none');
+                    $("#Tab5").css('display', 'none');
+                    $("#Tab6").css('display', 'none');
+                    var textoi = "@ViewBag.txtNombref";
+                    $("#txtNombreOficial").text(textoi + "(Nuevo)")//ENVIAR COMO PARAMETRO
+                    consultarJsonInfoGeneral();
+
+                } else if (tipoV == "M") {
+
+                    consultarJsonInfoGeneral();
+                    consultarJsonDetalle()
+                    consultarJsonEncuesta()
+                }
+                else if (tipoV == "D") {
+                    consultarJsonInfoGeneral();
+                    consultarJsonDetalle()
+                    consultarJsonEncuesta()
+                }
+        });
+
+        function validarEstado() {
+            var sqlestado = "select * from " + $("#txttblEstados").val() + " where id_visita=" + $("#txtidVisita").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarEstado", "Formularios")',
+                data: { Estado: sqlestado },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response == "[]") {
+                        CrearEstadoItemNuevo();
+                    }
+
+                }
+            });
+        }
+
+        function CrearEstadoItemNuevo() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CrearEstadoItemNuevo", "Formularios")',
+                data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val(), idVisita: $("#txtidVisita").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                beforeSend: function () { },
+                success: function (response) {
+
+                }
+            });
+        }
+        function consultarJsonInfoGeneral() {
+            onLoad("tabMapa");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonInfoGeneral", "Formularios")',
+                data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    try {
+                        jsonInfoGeneral = eval('(' + response + ')');
+                        $("#txtidItem").val(jsonInfoGeneral.ID);
+                        $("#txtNombreOficial").text(jsonInfoGeneral.NOMBRE);
+                        $("#txtX").val(jsonInfoGeneral.X);
+                        $("#txtY").val(jsonInfoGeneral.Y);
+                        if (jsonInfoGeneral.X != 0 && jsonInfoGeneral.Y != 0) {
+                            ZoomXYmapa(jsonInfoGeneral.X, jsonInfoGeneral.Y, "tabMapa")
+                        } else {
+                            offLoad("tabMapa");
+                        }
+                        if (jsonInfoGeneral.NOMBRE == "" && tipoV == "N") {
+                            var textoi = "@ViewBag.txtNombref";
+                            $("#txtNombreOficial").text(textoi + "(Nuevo)")
+                            offLoad("tabMapa");
+                        }
+                        offLoad("tabMapa");
+                    } catch (e) {
+
+                    }
+
+
+
+                }
+            });
+        }
+
+        function CrearEstadoItem() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CrearEstadoItem", "Formularios")',
+                data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val(), idVisita: $("#txtidVisita").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    var dato = eval('(' + response + ')');
+                    $("#txtidEstadoBase").val(dato)
+                }
+            });
+        }
+        function CrearEstadoItemUni() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CrearEstadoItem", "Formularios")',
+                data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val(), idVisita: $("#txtidVisita").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    var dato = eval('(' + response + ')');
+                    $("#txtidEstadoBase").val(dato)
+                    consultarJsonDetalle()
+                    consultarJsonEncuesta()
+                }
+            });
+        }
+        function GuardarInformacionItem() {
+            if (tipoV != "CAR1") {
+                jsonInfoGeneral.NOMBRE = $("#txtNombreOficial").text();
+                var x = $("#txtX").val();
+                var y = $("#txtY").val();
+                jsonInfoGeneral.X = x * 1;
+                jsonInfoGeneral.Y = y * 1;
+            }
+
+            var jsonOficial = JSON.stringify(jsonInfoGeneral)
+            onLoad("tabMapa");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarInformacionItem", "Formularios")',
+                data: { jsonInfo: jsonOficial, idFormulario: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response == "Ok") {
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
+                        offLoad("tabMapa");
+                        if (tipoV == "N" && $("#txtidEstadoBase").val() == "-1") {
+                            CrearEstadoItemUni()
+                            $("#Tab3").css('display', 'block');
+                            $("#Tab4").css('display', 'block');
+                            $("#Tab5").css('display', 'block');
+                            $("#Tab6").css('display', 'block');
+                        }
+
+                    } else {
+                        mensajeAlmacenamiento("Error al almacenar la informacion")
+                    }
+
+
+
+                }
+            });
+
+
+
+        }
+        function GuardarInformacionCaracteristica() {
+            onLoad("tabDetalle");
+            var jsonOficial = guardarDetalle("acordionDetallePrincipal", 0);
+
+            var jsonOficial2 = JSON.stringify(jsonOficial)
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarInformacionCaracteristicas", "Formularios")',
+                data: { jsonInfo: jsonOficial2, idEstado: $("#txtidEstadoBase").val(), tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response == "Ok") {
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
+
+
+
+                    } else {
+                        mensajeAlmacenamiento("Error al almacenar la informacion")
+                    }
+                    offLoad("tabDetalle");
+
+
+
+                }
+            });
+
+
+
+        }
+        function GuardarUbicacion(num) {
+            if (num == 1) {
+                GuardarInformacionItem()
+            } else if (num == 2) {
+            } else if (num == 3) {
+                GuardarInformacionCaracteristica();
+            } else if (num == 5) {
+                guardarEncuesta()
+            } else if (num == 4) {
+                guardarFotosQuejas(Totalimg)
+            }
+        }
+        function rtaUbiPoint(rta) {
+            objetoMapgis.noDraw();
+            $("#txtX").val(rta.x);
+            $("#txtY").val(rta.y);
+            $("#ubicarpuntobtn")[0].title = "Reubicar punto";
+        }
+        function consultarJsonDetalle() {
+            onLoad("tabDetalle");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalle", "Formularios")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response != "[]") {
+                        jsonDetalle = eval('(' + response + ')');
+                        var html = consultarDetalle(jsonDetalle, 0, 0, "acordionDetallePrincipal");
+                        $("#acordionDetallePrincipal").remove();
+                        $("#acordionDetalleGeneral").append(html);
+                        offLoad("tabDetalle");
+                    } else {
+                        $("#Tab3").css('display', 'none');
+                        offLoad("tabDetalle");
+                    }
+
+                }
+            });
+        }
+        function consultarJsonEncuesta() {
+            onLoad("tabAdicional");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonEncuestas", "Formularios")',
+                data: { idEstado: $("#txtidEstadoBase").val(), form: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response != "[]") {
+                        jsonEncuestas = eval('(' + response + ')');
+                        var html = consultarEncuestas(jsonEncuestas);
+                        $("#acordionEncuestaPrincipal").remove();
+                        $("#acordionEncuestaGeneral").append(html);
+                        offLoad("tabAdicional");
+                    } else {
+                        $("#Tab5").css('display', 'none');
+                        offLoad("tabAdicional");
+                    }
+
+                }
+            });
+        }
+        function abrirFotos() {
+            $("#pantallaCargarImg").dialog(
+            {
+
+                width: 500,
+                height: 200,
+                modal: true
+            });
+            $("#pantallaCargarImg #fotos").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/cargarImagen")");
+
+        }
+        function llenarCarrusel(datos) {
+
+            guardarFotosQuejas(datos);
+        }
+        function llenarCarrusel2(datos) {
+            onLoad("tabFotos");
+            setTimeout(function () {
+                if (Totalimg.length == 0) {
+                    Totalimg = datos;
+                } else {
+                    for (var i = 0; i < datos.length; i++) {
+                        Totalimg.push(datos[i]);
+                    }
+                }
+
+                var html = "";
+                var cantidaDatos = 0;
+                $("#carousel .caroufredsel_wrapper").remove();
+                html += ' <ul id="Carusel1">';
+
+                for (var j = 0; j < Totalimg.length; j++) {
+
+                    html += ' <li ><button class="btnimgedit"  onclick="eliminar(\'' + Totalimg[j].id + '\')"></button><img src="' + Totalimg[j].url + '" alt="' + Totalimg[j].nombre + '" title="' + Totalimg[j].etiqueta + '" id="' + Totalimg[j].id + '" ><label class="texto">' + Totalimg[j].etiqueta + '</label></li>';
+
+                }
+                html += "</ul>";
+                offLoad("tabFotos");
+                $("#carousel").append(html);
+                $('#carousel ul').carouFredSel({
+                    auto: false,
+                    prev: '#prev',
+                    next: '#next',
+                    pagination: "#pager2",
+                    mousewheel: true,
+
+                    swipe: {
+                        onMouse: true,
+                        onTouch: true
+                    }
+                });
+            }, 3000);
+        }
+        function guardarFotos(d) {
+
+        }
+
+        function guardarFotosQuejas(arrfotos) {
+
+
+            var datos = "";
+            for (var i = 0; i < arrfotos.length; i++) {
+                if (arrfotos.length - 1 == i) {
+                    datos += arrfotos[i].id;
+                } else {
+                    datos += arrfotos[i].id + ',';
+                }
+
+            }
+            onLoad("tabFotos");
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetGuardarFotografiasForm")",
+                data: {
+                    captacionestado: $("#txtidEstadoBase").val(), idFotos: datos, tabla: $("#txttblFotos").val(), idForm: $("#txtForm").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    consultarFotos();
+                    offLoad("tabFotos");
+
+                },
+            });
+        }
+        function eliminar(nombre) {
+            datos = $("#" + nombre)[0];
+            nombreFoto = "";
+            idFotografia = "";
+            etiqueta = "";
+            idFotografia = datos.id;
+            nombreFoto = datos.alt;
+            etiqueta = datos.title;
+            abrirEliminarFotos();
+        }
+        function abrirEliminarFotos() {
+            $("#pantallaEliminarFoto").dialog(
+            {
+
+                width: 288,
+                height: 360,
+                modal: true
+            });
+            $("#frEliminarFoto").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/EliminarFoto")");
+        }
+
+        function AgregarEtiqueta(etiq, palabra) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/AgregarEtiqueta")",
+                data: {
+                    p_idFotografia: idFotografia, etiqueta: etiq, palabra: palabra
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    consultarFotos();
+                },
+            });
+
+        }
+        function CargarGrid() {
+
+            var CargarDatosDocumentoAdjunto = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var d = $.Deferred();
+                    $.getJSON("@Url.Content("~/Documento/api/DocumentoWebAPI/GetConsultarDocumentoAdjunto")" + "?filtro=" + filterOptions + "&idFormulario=" + $("#txtForm").val() + "&idEstado=" + $("#txtidEstadoBase").val()).done(function (data) {
+                        d.resolve(data, { totalCount: data.length }, Global = data);
+                    });
+                    return d.promise();
+                }
+            });
+
+
+            var GrdDocumentoAdjuntoConfiguracion = {
+                store: CargarDatosDocumentoAdjunto
+            };
+
+            $(function () {
+                $("#GrdDocumentoAdjunto").dxDataGrid({
+                    dataSource: GrdDocumentoAdjuntoConfiguracion,
+                    searchPanelPlaceholder: "Buscar",
+                    selection: {
+                        mode: 'single'
+                    },
+                    columns: [
+                              { dataField: 'S_ARCHIVO', caption: 'Archivo', allowGrouping: true, width: '60%', dataType: 'string' },
+                        {
+                            dataField: 'EDITARVISITA', allowGrouping: true, caption: 'Ver Documento', width: '20%', cellTemplate: function (container, options) {
+                                container.height(5);
+                                $('<img src="@Url.Content("../../Content/Images/EditarVisita.png")" style="width:25px;height:25px" />')
+
+                                            .attr('src', options.value)
+                                            .appendTo(container);
+                            }
+                        },
+
+                    {
+                        dataField: 'EliminarDocumento', allowGrouping: true, caption: 'Eliminar Documento', width: '20%', cellTemplate: function (container, options) {
+                            container.height(5);
+                            $('<img src="@Url.Content("../../Content/Images/eliminarGris.png")" style="width:25px;height:25px" />')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                        }
+                    }
+                    ], cellClick: function (e) {
+                        var id = e.data.ID_DOCUMENTO;
+                        IdEliminar = e.data.ID_DOCUMENTO;
+                        urlDoc = e.data.URL;
+                        var tipoBoton = e.columnIndex;
+
+                        switch (tipoBoton) {
+                            case 1: //ver
+                                VerDocumento();
+                                break;
+                            case 2: //eliminar
+                                EliminarDocumentoBD();
+                                break;
+
+
+                        }
+
+                    },
+
+
+
+                    selectionChanged: function (selecteditems) {
+                        IdEliminar = selecteditems.selectedRowsData[0].ID_DOCUMENTO;
+                        urlDoc = selecteditems.selectedRowsData[0].URL;
+                    },
+                    allowColumnReordering: true,
+              
+                    loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    },
+                    sorting: { mode: 'multiple' },
+                    groupPanel: { visible: true, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+                    pager: { visible: true },
+                    paging: { pageSize: 7 },
+                    filterRow: {
+                        visible: true,
+                        applyFilter: "auto"
+                    },
+                    searchPanel: { visible: true, placeholder: 'Buscar...' },
+                }).dxDataGrid('instance');
+            });
+
+
+        }
+        function abrirDocumento() {
+            $("#pantallaCargarDocumentoAdjunto").dialog(
+            {
+
+                width: 288,
+                height: 240,
+                modal: true
+            });
+            $("#DocumentoAdjunto").attr("src", "@Url.Content("~/Documento/Documento/CargarDocumentoAdjunto")");
+
+        }
+
+        function EliminarDocumentoBD() {
+            if (confirm("¿Esta seguro en Eliminar el documento?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Content("~/Documento/api/DocumentoWebAPI/EliminarDocumentoAdjunto")",
+                    data: {
+                        id_Doc: IdEliminar, idForm: $("#txtForm").val()
+                    },
+                    beforeSend: function () {
+
+                    },
+                    success: function (response) {
+                        var dato = response;
+                        CargarGrid();
+                    },
+                });
+            } else {
+                return false;
+            }
+
+        }
+        function guardarDocumentoAdjunto(arrDocumentoAdjunto) {
+            var datos = "";
+            for (var i = 0; i < arrDocumentoAdjunto.length; i++) {
+                if (arrDocumentoAdjunto.length - 1 == i) {
+                    datos += arrDocumentoAdjunto[i].id;
+                } else {
+                    datos += arrDocumentoAdjunto[i].id + ',';
+                }
+
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/Documento/api/DocumentoWebAPI/GetGuardarDocumentoAdjunto")",
+                data: {
+                    idDocumentoAdjunto: datos, idFormulario: $("#txtForm").val(), idEstado: $("#txtidEstadoBase").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    CargarGrid();
+
+                  
+
+                },
+
+            });
+
+        }
+
+        function VerDocumento() {
+
+            window.open(urlDoc);
+        }
+        function consultarFotos() {
+            onLoad("tabFotos");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarFotografiasForm", "Formularios")',
+
+                data: {
+                    idForm: $("#txtForm").val(), tabla: $("#txttblFotos").val(), idEstado: $("#txtidEstadoBase").val()
+                },
+                beforeSend: function () {
+                    offLoad("tabFotos");
+                },
+                success: function (response) {
+                    var dato = eval('(' + response + ')');
+
+                    Totalimg = [];
+                    if (dato.length > 0) {
+                        var objDatos = new Object();
+                        for (var i = 0; i < dato.length; i++) {
+                            objDatos = new Object();
+                            objDatos['url'] = dato[i].URL;
+                            objDatos['etiqueta'] = dato[i].S_ETIQUETA;
+                            objDatos['id'] = dato[i].ID_FOTOGRAFIA;
+                            objDatos['nombre'] = dato[i].S_ARCHIVO;
+
+                            Totalimg.push(objDatos);
+                        }
+
+
+                        offLoad("tabFotos");
+
+                    }
+                    offLoad("tabFotos");
+                    llenarCarrusel2('')
+                },
+            });
+
+        }
+        function EliminarFotoVisitaBD() {
+            if (confirm("¿Esta seguro en Eliminar la foto?")) {
+                onLoad("tabFotos");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("eliminarFotoForm", "Formularios")',
+                    data: {
+                        idfoto: idFotografia, tabla: $("#txttblFotos").val()
+                    },
+                    beforeSend: function () {
+
+                    },
+                    success: function (response) {
+                        var dato = response;
+                        var arrFotos = [];
+                        var objDato = new Object();
+                        for (var i = 0; i < Totalimg.length; i++) {
+                            objDato = new Object();
+                            if (Totalimg[i].id != idFotografia) {
+                                objDato['url'] = Totalimg[i].url;
+                                objDato['etiqueta'] = Totalimg[i].etiqueta;
+                                objDato['id'] = Totalimg[i].id;
+                                arrFotos.push(objDato);
+                                offLoad("tabFotos");
+                            }
+                        }
+                        Totalimg = arrFotos;
+                      
+                        consultarFotos();
+
+
+                    },
+                });
+            } else {
+                return;
+            }
+
+        }
+
+        function guardarEncuesta() {
+            var cont = 0;
+            var texto = "";
+            var tezttemp = ""
+            for (var z = 0; z < jsonEncuestas.length; z++) {
+                if (jsonEncuestas[z].ESTADO == 1) {
+                    for (var i = 0; i < jsonEncuestas[z].PREGUNTAS.length; i++) {
+
+                        jsonEncuestas[z].PREGUNTAS[i].S_OBSERVACION = $('#Encuesta_' + jsonEncuestas[z].ID_ENCUESTA + '_Pregunta_' + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '_observacion').val();
+
+                        if (jsonEncuestas[z].PREGUNTAS[i].ID_TIPOPREGUNTA != 3 && jsonEncuestas[z].PREGUNTAS[i].ID_TIPOPREGUNTA != 1) {
+                            var campo = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA)[0].name;
+                            if (jsonEncuestas[z].PREGUNTAS[i].S_REQUERIDA == "1") {
+                                var Pvalor = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val()
+                                if (Pvalor == "" || Pvalor == "-1") {
+                                    cont++;
+                                    $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "0px 1px 7px 2px #FA0D0D")
+                                    var tttemp = jsonEncuestas[z].S_NOMBRE;
+                                    if (tttemp != tezttemp) {
+                                        tezttemp = jsonEncuestas[z].S_NOMBRE;
+                                        texto += "-" + jsonEncuestas[z].S_NOMBRE + "\n";
+                                    }
+
+
+                                } else {
+                                    $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "");
+                                }
+                            }
+                            if (campo == "ID_VALOR") {
+                                jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val() * 1;
+
+                            } else if (campo == "N_VALOR") {
+                                jsonEncuestas[z].PREGUNTAS[i].N_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val() * 1;
+                            } else if (campo == "S_VALOR") {
+                                jsonEncuestas[z].PREGUNTAS[i].S_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val();
+                            } else if (campo == "D_VALOR") {
+                                jsonEncuestas[z].PREGUNTAS[i].D_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val();
+                            }
+                        } else if (jsonEncuestas[z].PREGUNTAS[i].ID_TIPOPREGUNTA == 3) {
+                            for (var o = 0; o < jsonEncuestas[z].PREGUNTAS[i].OPCIONES.length; o++) {
+                                var valor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + o
+                                if ($(valor).is(':checked')) {
+                                    jsonEncuestas[z].PREGUNTAS[i].OPCIONES[o].SELECTED = 1
+                                } else {
+                                    jsonEncuestas[z].PREGUNTAS[i].OPCIONES[o].SELECTED = 0
+                                }
+
+                            }
+                        } else {
+                            var valor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
+                            if ($(valor).is(':checked')) {
+                                jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 1
+                            } else {
+                                jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 0
+                            }
+                            if (jsonEncuestas[z].PREGUNTAS[i].S_REQUERIDA == "1") {
+                                var Pvalor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
+
+                                if (!$(Pvalor).is(':checked')) {
+                                    cont++;
+                                    $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "0px 1px 7px 2px #FA0D0D")
+                                    var tttemp = jsonEncuestas[z].S_NOMBRE;
+                                    if (tttemp != tezttemp) {
+                                        tezttemp = jsonEncuestas[z].S_NOMBRE;
+                                        texto += "-" + jsonEncuestas[z].S_NOMBRE + "\n";
+                                    }
+                                } else {
+                                    $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "");
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (cont > 0) {
+                totaltext = "Debe diligenciar todas las preguntas obligatorias de las encuestas:\n" + texto
+                mensajeAlmacenamiento(totaltext)
+                return;
+            }
+            guardarEncuestaOficial();
+        }
+        function guardarEncuestaOficial() {
+
+            onLoad("tabAdicional")
+            var jsonOficial = JSON.stringify(jsonEncuestas)
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarInformacionEncuesta", "Formularios")',
+                data: { jsonInfo: jsonOficial, idCapEstado: $("#txtidEstadoBase").val(), idform: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response == "Ok") {
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
+
+
+                    } else {
+                        mensajeAlmacenamiento("Error al almacenar la informacion Encuesta")
+                    }
+                    offLoad("tabAdicional")
+
+
+                }
+            });
+
+        }
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default "
+          },
+                ]
+            });
+
+
+        }
+    </script>
+    <style>
+        .labelUnico {
+            margin-bottom: 17px;
+            width: 0px;
+            text-align: center;
+            font-size: 13px;
+            position: relative;
+            left: 14px;
+        }
+
+        .informacionUbicacion button {
+            top: 0px;
+            left: 0px;
+            margin-top: 0px;
+            float: left;
+        }
+
+        #carousel .prev, #carousel .next {
+            background: transparent url(../../Content/Images/carousel_control.png) no-repeat 0 0;
+            text-indent: -999px;
+            display: block;
+            overflow: hidden;
+            width: 15px;
+            height: 21px;
+            margin-left: 10px;
+            position: absolute;
+            top: 100px;
+        }
+
+        #carousel .prev {
+            background-position: 0 0;
+            left: -30px;
+        }
+
+            #carousel .prev:hover {
+                left: -31px;
+            }
+
+        #carousel .next {
+            background-position: -18px 0;
+            right: -20px;
+        }
+
+            #carousel .next:hover {
+                right: -21px;
+            }
+    </style>
+
+    <div id="divNombreCaptacion">
+        <div id="div_tipofor">@ViewBag.txtNombref</div>
+        <div id="div_nom_1" class="nombretitle">
+            <label id="txtNombreOficial"></label><button type="button" class="btn btn-default" aria-label="Left Align" onclick="nombreOpcion(1)">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div id="div_nom_2" class="nombretitle" style="display:none">
+            <input type="text" id="txtNombreTemp" /><button type="button" class="btn btn-default " onclick="nombreOpcion(2)">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            </button>
+        </div>
+        <label id="texttoempresa"> Instalación: <br /></label>
+    </div>
+    <div class="container contenedorcentro ">
+        <div style="position:absolute;top:0px;z-index:9999;display:none">
+            <input type="text" id="txtidItem" value="">
+            <input type="text" id="txtidEstadoBase" value="">
+            <input type="text" id="txturlMapa" value="">
+            <input type="text" id="txttblFotos" value="">
+            <input type="text" id="txtForm" value="">
+            <input type="text" id="txtidVisita" value="">
+            <input type="text" id="txtinstalacion" value="">
+            <input type="text" id="txttercero" value="">
+            <input type="text" id="txttblEstados" value="">
+        </div>
+        <!--dialog -->
+        <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+            <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+        </div>
+        <!--Dialog informacion ubicacion-->
+        <div id="dialogAyuda" title="Ayuda" style="display:none">
+            <div class="col-md-12 " id="ContenidoAyuda">
+            </div>
+        </div>
+        <!--dialog de observacion-->
+        <div id="dialogObservacion" title="Observacion" style="display:none">
+            <div class="col-md-12 " id="ContenidoObservacion">
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-top: 39px; margin-bottom: -6px;">
+            <div class="panel panel-default" style="padding-bottom: 0px">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                    <div class="subContenedor">
+                        <!--contenedor tab-->
+                        <div style="padding: 15px">
+                            <ul class="nav nav-tabs">
+                                <li id="Tab1" class="active"><a href="#tabMapa" onclick="CambiarGuardarbtn(1)" data-toggle="tab">Mapa</a></li>
+                                <li id="Tab3"><a href="#tabDetalle" onclick="CambiarGuardarbtn(3)" data-toggle="tab">Detalle</a></li>
+                                <li id="Tab4"><a href="#tabFotos" onclick="CambiarGuardarbtn(4)" data-toggle="tab">Fotos</a></li>
+                                <li id="Tab5"><a href="#tabAdicional" onclick="CambiarGuardarbtn(5)" data-toggle="tab">Adicional</a></li>
+                                <li id="Tab6"><a href="#tabArchivo" onclick="CambiarGuardarbtn(6)" data-toggle="tab">Archivo</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="myTabContent">
+                            <!--TabMapa-->
+                            <div class="tab-pane fade  active in" id="tabMapa">
+                                <div class="col-md-12 mapacont1">
+                                    <table class="informacionUbicacion">
+                                        <tr>
+                                            <td>
+                                                <label class="labelUnico">x:</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="txtX" />
+                                            </td>
+                                            <td>
+                                                <label class="labelUnico">y:</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="txtY" />
+                                            </td>
+                                            <td>
+                                                <button title="Ubicar punto mapa" class="form-control glyphicon-mapaP" id="ubicarpuntobtn" onclick="UbicarPunto()"></button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <iframe id="mapa" style="width: 100%; height: 350px; overflow: hidden; border: none; " src="@ViewBag.txturlMapa"></iframe>
+                                </div>
+                            </div>
+
+                            <!--fin tab Ubicacion-->
+                            <!--inicio tabDetalle-->
+                            <div id="tabDetalle" class="tab-pane fade ">
+                                <!--Inicio Acordion -->
+                                <div class="col-md-12" id="acordionDetalleGeneral">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--fin tab usos-->
+                            <!--inicio tabFotografia-->
+                            <div id="tabFotos" class="tab-pane fade ">
+                                <!--carusel-->
+                                <div class="col-sm-12">
+                                    <label class="TextoDescriptivoF">
+                                        Para agregar imagenes  en esta pestaña, selecciona el botón cargar fotos.
+                                    </label>
+                                    <div id="carousel">
+                                        <div class="clearfix"></div>
+                                        <a id="prev" class="prev" href="#">&lt;</a>
+                                        <a id="next" class="next" href="#">&gt;</a>
+                                        <div id="pager" class="pager"></div>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                            <!--inicio tabAdicional-->
+                            <div id="tabAdicional" class="tab-pane fade ">
+                                <div class="col-md-12" id="acordionEncuestaGeneral">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionEncuestaPrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <!---------------------------->
+                            <div id="tabArchivo" class="tab-pane fade ">
+                                <label class="TextoDescriptivoF">
+                                    Para agregar Archivos  en esta pestaña, selecciona el botón cargar documento
+                                </label>
+                                <div id="GrdDocumentoAdjunto" class="archivosDiv"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="pantallaEliminarFoto" title="Detalle fotografía" style="display: none; overflow: hidden;">
+                    <iframe src="" id="frEliminarFoto" width="100%" height="100%"></iframe>
+
+
+                </div>
+                <div class="actionBar">
+                    <button type="button" id="btnCerra" class="btn btn-default btn-sm" onclick="cerrarPestala()">Cerrar</button>
+                    <button type="button" id="btnGuardar1" class="btn btn-default btn-sm" onclick="GuardarUbicacion(1)">Guardar Mapa</button>
+                    <button type="button" style="display:none" id="btnGuardar2" class="btn btn-default btn-sm" onclick="GuardarUbicacion(2)">Guardar </button>
+                    <button type="button" style="display:none" id="btnGuardar3" class="btn btn-default btn-sm" onclick="GuardarUbicacion(3)">Guardar Detalle</button>
+                    <button class="btn btn-default btn-sm" style="display:none" onclick="abrirFotos()" id="btnCargarFoto">Cargar Fotos</button>
+                    <button class="btn btn-default" style="display:none" onclick="abrirDocumento()" id="btnCargarDocumento">Cargar Documento</button>
+                 
+                    <button type="button" style="display:none" id="btnGuardar5" class="btn btn-default btn-sm" onclick="GuardarUbicacion(5)">Guardar Adicional</button>
+                </div>
+            </div>
+        </div>
+        <!--Fin TabUbicacion-->
+    </div>
+ 
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="pantallaCargarDocumentoAdjunto" title="Cargar Documento" style="display: none;">
+        <iframe src="" id="DocumentoAdjunto" width="100%" height="100%"></iframe>
+    </div>
+
+    <div id="pantallaEliminarDocumento" title="Eliminar Documento" style="display: none; overflow: hidden;">
+        <iframe src="" id="frEliminarDocumento" width="100%" height="100%"></iframe>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>

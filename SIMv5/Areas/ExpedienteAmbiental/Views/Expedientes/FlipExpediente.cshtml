@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutExpedienteFlip.cshtml";
+}
+
+@model List<string>
+
+<div class="flipbook-viewport">
+    <div class="container">
+        <div class="flipbook">
+            @foreach (var item in Model)
+            {
+                <div style="background-image:url(@Url.Content("~")@item )"></div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(window).on('load', function () {
+            loadApp();
+        })
+
+        function loadApp() {
+
+            $('#all').fadeIn(1000);
+            // Create the flipbook
+            $('.flipbook').turn({
+                width: 1100,
+                height: 650,
+                // Elevation will move the peeling corner this number of pixels by default
+                elevation: 50,
+                // Hardware acceleration
+                acceleration: !isChrome(),
+                // Enables gradients
+                gradients: true,
+                autoCenter: true,
+            });
+        }
+
+        yepnope({
+            test: Modernizr.csstransforms
+        });
+
+    </script>
+}

@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - SIM</title>    
+    <link rel="stylesheet" type="text/css" href="~/Content/Movil/bootstrap.css" />
+    <script type="text/javascript" src="~/Scripts/jquery-1.11.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.globalize/globalize.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.js"></script>
+    <script type="text/javascript" src="~/Scripts/dx.webappjs.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Content/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/dx.light.css" />    
+</head>
+
+<body style="background-color:whitesmoke">
+    <div class="body-content" style="background-color:whitesmoke;">
+        @RenderBody()
+    </div>
+</body>
+</html>

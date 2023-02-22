@@ -1,0 +1,43 @@
+﻿@using SIM.Properties
+@using SIM.Areas.Seguridad.Models
+@model IEnumerable <ROLESUSUARIO>
+
+<div class="panel panel-default">
+    <div dx-popup="popTerceroUsuariosSettings" id="popTerceroUsuarios">
+        <div dx-data-grid="grdUsuariosSettings" id="grdUsuarios"></div>
+    </div>
+    <div dx-popup="popRolesUsuarioSettings" id="popRolesUsuario">
+        <div style="padding:20px">
+            <div class="row">
+                <h4 class="col-md-7">USUARIO EXTERNO</h4>
+                <div class="col-md-5" style="text-align: center; background-color:yellow">Roles Solicitados por el Usuario</div>
+            </div>
+            <hr />
+            <div class="row">
+                @Html.Label("Roles", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @{
+                        foreach (ROLESUSUARIO rolUsuario in Model)
+                        {
+                            <div class="row" id="divRol_@rolUsuario.ID_ROL.ToString()" style="padding: 3px;">
+                                <span style="display:none" id="ruId_@rolUsuario.ID_ROL.ToString()">chkru_@rolUsuario.ID_ROL.ToString()</span>
+                                <div dx-check-box="{ value: @(rolUsuario.SEL ? "true" : "false"), text: '@rolUsuario.S_NOMBRE' }" id="chkru_@rolUsuario.ID_ROL.ToString()"></div><br />
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row" style="text-align: center">
+                <div>
+                    <div dx-button="btnAlmacenarRolesSettings" id="btnAlmacenarRoles" class="btn-lg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-heading">
+        <div dx-data-grid="grdTerceroUsuariosSettings" id="grdTerceroUsuarios"></div>
+    </div>
+</div>

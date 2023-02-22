@@ -1,0 +1,2106 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Mvc
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "Realizar Actuación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/RealizarVisita.css")" />
+
+<div class="container">
+     <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div id="popupFusionarItems"></div>
+                <img src="../../Content/Images/Ayuda.png" id="btnAyudas" onclick="Ayudas()" style="margin-right: 19px;" />
+                <span class="dx-icon dx-icon-rowfield" onclick="FusionarItems()" style="font-size: 27px; width: 40px; float: right; position: relative; right: 9px; top: 35px; cursor: pointer; margin-right: 19px;"></span>
+                <h3 class="panel-title"></h3>
+
+                <div style="padding: 15px; margin-top: 0px;">
+
+
+
+                    <div style="padding: 15px">
+                        <ul class="nav nav-tabs">
+                            <li id="Tab1" class="active"><a href="#informacion" data-toggle="tab">Información</a></li>
+                            <li id="Tab4" style="display:none;"><a href="#tabatiende" data-toggle="tab">Atiende</a></li>
+                            <li id="Tab2" style="display:none;"><a href="#acordeon" data-toggle="tab">Formularios</a></li>
+                            <li id="Tab5" style="display:none;"><a href="#industria" data-toggle="tab">Información Industria</a></li>
+                            <li id="Tab3" style="display:none;"><a href="#fotografia" data-toggle="tab" onclick="  llenarCarrusel('')">Fotografías</a></li>
+
+                        </ul>
+                    </div>
+
+
+                    <div class="tab-content" id="myTabContent">
+
+                        <div class="tab-pane fade active in" id="informacion" style=" margin-top: 18px;">
+
+                            <div class="subContenedor">
+                                <div class="col-sm-12" style="margin-top: -30px;">
+                                    <div class="alert alert-success" role="alert" id="mensaje" style="display:none"></div>
+
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Fecha Actuaci&oacute;n:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtFechaInicio" class="form-control" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Fecha Asignación:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtFechaAsignacion" class="form-control" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Radicado:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtRadicado" class="form-control" disabled />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12" style=" text-align: left;">
+
+                                    <label>Asunto:</label>
+
+                                </div>
+
+                                <div class="col-sm-12" style="padding-right: 16px;">
+                                    <textarea class="form-control" style="height: 50px;" id="txtAsunto" maxlength="400"></textarea>
+                                </div>
+
+                                <div class="col-sm-12">
+
+
+                                    <textarea class="form-control" rows="3" id="txtObservacion" style="height: 50px; display: none; " maxlength="120"></textarea>
+
+                                </div>
+
+
+                                <br />
+
+                                <div class="col-sm-12" style=" margin-left: -4px; padding: 0px; margin-top: -28px; text-align: left;">
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-12">
+                                            <label>Empresa:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+
+                                            <div class="col-sm-12" style="    padding: 0px; ">
+                                                <input id="txtEmpresa" class="form-control" style="    width: 74%;    display: inline-block;" disabled />
+
+                                                <button id="btnEmpresa" onclick="abrirEmpresa()" class="btn btn-default" style="margin: 0px; float: initial; width: 20%; padding-left: 0px">
+                                                    Empresa
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-12">
+                                            <label>Instalación:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+
+                                            <div class="col-sm-12" style="    padding: 0px; ">
+                                                <select id="txtInstalacion" style="    width: 74%;    display: inline-block;" class="form-control" onchange="abrirNuevaInstalacion()">
+
+                                                    <option value='-1'>--seleccionar--</option>
+                                                </select>
+
+                                                <button id="btnEditarInsta" class="btn btn-default" onclick="abrirModificarInstalacion()" style="margin: 0px; float: initial; width: 20%; padding-left: 0px">
+                                                    Editar
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="col-sm-12">
+
+
+                                    <input id="txtId" style="display:none;" />
+                                    <input id="txtResponsable" style="display:none;" />
+                                    <input id="txtcopias" style="display:none;" />
+                                    <input id="txtEstadoVisita" style="display:none;" />
+                                    <input id="txtTipoUbicacion" style="display:none;" />
+                                    <input id="IdVisita" style="display:none;" />
+
+                                </div>
+                                <div class="col-sm-12" style=" text-align :left; height: 40px; margin-top: 71px;" id="divRepresent">
+                                    <label>Representante legal:</label>
+                                </div>
+                                <div class="col-sm-12">
+                                    <table class="table">
+                                        <thead style="    background-color: #A5CD39;">
+                                            <tr>
+                                                <th><label style="    color: #fff;" for="txtNit">Nit</label></th>
+                                                <th><label style="    color: #fff;" for="txtNombre">Nombre</label></th>
+                                                <th><label style="    color: #fff;" for="txtFechaActual">Fecha actualización</label></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="    text-align: left;    font-weight: normal;    text-transform: capitalize;">
+                                            <tr>
+                                                <td><label id="txtNit" style="    text-align: left;    font-weight: normal;    text-transform: capitalize;"></label></td>
+                                                <td><label id="txtNombre" style="    text-align: left;    font-weight: normal;    text-transform: capitalize;"></label></td>
+                                                <td><label id="txtFechaActual" style="    text-align: left;    font-weight: normal;    text-transform: capitalize;"></label></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+
+                            </div>
+                            <div class="row menuInferior" style="margin-bottom: -16px; margin-top: 19px; margin-left: -15px;padding-right: 23px;width: 102.3%;">
+                                <div class="col-sm-12" style="margin-bottom: -7px; margin-top: 10px; margin-left: 10px;">
+                                    <button class="btn btn-default " id="btnObservacion" onclick="abrirObservacion()">Observación</button>
+                                    <button class="btn btn-default btnGuardar " onclick="guardar()" id="btnGuardar">Guardar</button>
+
+                                    <button class="btn btn-default" id="btnIniciarVisita" style="display:none;" onclick="iniciarVisita()">Iniciar Actuaci&oacute;n</button>
+                                    <button class="btn btn-default" id="btnEnviarCertificado" style="display:none;" onclick="abrirEnviarCertificado()">Enviar Certificado </button>
+                                    <button class="btn btn-default" id="btnPreview" onclick="abrirPreviePDF()">Ver PDF</button>
+
+                                    <button class="btn btn-default" id="btnTerminarVisita" style="display:none;" onclick="  FinalizarVisita()">Terminar Actuaci&oacute;n</button>
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="tab-pane fade in" id="acordeon">
+
+                            <div>
+                                <div class="col-md-12" id="acordionGeneal">
+
+                                    <div class="panel-group acordeonVerde " id="acordioPrincipal">
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row menuInferior" style="margin-bottom: -16px; margin-top: 19px; margin-left: -15px;padding-right: 23px;width: 102.3%;">
+                                <div class="col-sm-12" style="margin-top: 10px;">
+                                    <button class="btn btn-default " id="btnObservacion" onclick="abrirObservacion()">Observación</button>
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade in" id="tabatiende" style="    margin-top: 33px;">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-success" role="alert" id="msAtiende" style="display:none"></div>
+
+                                    <div class="col-sm-12 ">
+                                        <button onclick="abrirAtiende()" id="btnAddAtiende" style="display: none;position: relative;float: right !important;margin-top: -31px;right:-18px;" class="btn btn-default pull-left"> Atiende</button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12" id="ibtabAtiende" style="display: none; height: 160px; overflow: hidden;">
+                                <div class="TablaAmva">
+                                    <table id="atiende">
+                                        <tr style="height:30px">
+                                            <td>Id</td>
+                                            <td>Nombre</td>
+                                            <td>Usuario</td>
+                                            <td>Editar</td>
+                                            <td>Eliminar</td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="row menuInferior" style="margin-bottom: -16px; margin-top: 19px; margin-left: -15px;padding-right: 23px;width: 102.3%;">
+                                    <div class="col-sm-12" style="margin-top: 10px;">
+                                        <button class="btn btn-default " id="btnObservacion" onclick="abrirObservacion()">Observación</button>
+                                        <button class="btn btn-default btnGuardar" onclick="guardar()" id="btnGuardar">Guardar</button>
+
+                                        <button class="btn btn-default" id="btnIniciarVisita" style="display:none;" onclick="iniciarVisita()">Iniciar Actuaci&oacute;n</button>
+                                        <button class="btn btn-default" id="btnEnviarCertificado" style="display:none;" onclick="abrirEnviarCertificado()">Enviar Certificado </button>
+                                        <button class="btn btn-default" id="btnPreview" onclick="abrirPreviePDF()">Preview PDF</button>
+
+                                        <button class="btn btn-default" id="btnTerminarVisita" style="display:none;" onclick="FinalizarVisita()">Terminar Actuaci&oacute;n</button>
+
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="tab-pane fade in" id="fotografia">
+
+                            <div class="row">
+
+                                <div id="pantallaEmpresa" title="Empresa" style="display: none; overflow: hidden;">
+                                    <iframe src="" id="frm_dialog" width="100%" height="100%"></iframe>
+
+                                </div>
+                                <div id="atiendePantalla" title="Atiende" style="display: none; overflow: hidden;">
+                                    <iframe src="" id="frm_atiende" width="100%" height="100%"></iframe>
+
+                                </div>
+                                <div id="pantallaEnviarCertificado" title="Enviar certificado" style="display: none;">
+                                    <iframe src="" id="pdfEnviarCertificado" width="100%" height="100%"></iframe>
+
+                                </div>
+                                <div id="pantallaReportes" title="Reportes" style="display: none; overflow: hidden;">
+                                    <iframe src="" id="pdfReportes" width="100%" height="100%"></iframe>
+
+                                </div>
+                                <div id="pantallaPreview" title="Preview PDF" style="display: none;">
+                                    <iframe src="" id="pdfPreview" width="100%" height="100%"></iframe>
+
+                                </div>
+                                <div id="pantallaAsignacionTramites" title="Asignacion de tramites" style="display: none;">
+                                    <iframe src="" id="AsignacionTramites" width="100%" height="100%"></iframe>
+
+                                </div>
+
+
+                                <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+                                    <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+
+
+                                </div>
+                                <div id="pantallaObservacion" title="Observación" style="display: none; overflow: hidden;">
+                                    <iframe src="" id="frObservacion" width="100%" height="100%"></iframe>
+
+
+                                </div>
+                                <div id="pantallaEliminarFoto" title="Detalle fotografía" style="display: none; overflow: hidden;">
+                                    <iframe src="" id="frEliminarFoto" width="100%" height="100%"></iframe>
+
+
+                                </div>
+                                <div id="msAlmacenamiento" title="Información" style="display:none">
+                                    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+                                </div>
+                                <div id="FormAguas" title="Estado base" style="display: none;">
+                                    <div style="width:100%;height:100%;padding:10px;">
+                                        <label style="color: #9B9B9B;">Estado Base:</label>
+                                        <select id="cmd_form_baseAguas" class='form-control' style="font-size: 12px;"></select>
+                                        <br />
+                                        <button class="btn btn-default " onclick="abrirFormularioNuevaPagina($('#cmd_form_baseAguas').val(), 'D'); $('#FormAguas').dialog('close');">Aceptar</button>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-4">
+
+
+
+                                        </div>
+                                        <div class="col-sm-8">
+
+
+                                        </div>
+
+                                    </div>
+
+
+
+
+                                </div>
+
+
+                                <div id="" class="col-sm-12">
+
+                                    <div id="carousel" style="height:190px;">
+
+                                        <div class="clearfix"></div>
+                                        <a id="prev" class="prev" href="#">&lt;</a>
+                                        <a id="next" class="next" href="#">&gt;</a>
+                                        <div id="pager" class="pager"></div>
+                                    </div>
+
+                                </div>
+                                <div class="row menuInferior" style="margin-bottom: -16px; margin-top: 19px; margin-left: -15px;padding-right: 23px;width: 102.3%;">
+                                    <div class="col-sm-12" style="margin-top: 10px;">
+                                        <button class="btn btn-default " id="btnObservacion" onclick="abrirObservacion()">Observaci&oacute;n</button>
+                                        <button class="btn btn-default" onclick="abrirFotos()" id="btnCargarFoto">Cargar Fotos</button>
+
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade in" id="industria">
+                            <div class="contenedorVisita">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <label style=" color: #319F47;">Actividad Econ&oacute;mica</label>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-10">
+                                        <label id="lblIDActividadEconomica" style="display:none"></label>
+                                        <label id="lblActividadEconomica"></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                </div>
+                                <hr />
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <label style=" color: #319F47;">Tiempo de operación</label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                </div>
+                                <div class="col-sm-12 ">
+                                    <div class="col-sm-3 ">
+                                        <div class="col-sm-12">
+                                            <label>(Horas/día):</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtHoraDia" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>(día/semana):</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtDiaSemana" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>(semana/mes):</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtSemanaMes" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>(mes/año):</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtMesAno" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                </div>
+                                <hr />
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <label style=" color: #319F47;">Datos de producción asociada</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Capacidad instalada Toneladas/Día:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtCapacidadT" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Máxima producción diaria Toneladas/Día:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtProducionD" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Producción horaria producto terminado:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtProducionH" class="form-control" />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Número de empleados:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtNumeroEmpleados" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>No de turnos:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtNoTurnos" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-12">
+                                            <label>Turnos/día:</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtTurnoDia" class="form-control" />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                </div>
+                                <div class="col-sm-12">
+
+
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-12">
+                                            <label>Observaciones:</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-12">
+                                            <textarea id="txtObservacionIndustria" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="row menuInferior" style="margin-bottom: -16px; margin-top: 19px; margin-left: -15px;padding-right: 23px;width: 102.3%;">
+                                <div class="col-sm-12" style="margin-top: 10px;">
+                                    <button class="btn btn-default " id="btnObservacion" onclick="abrirObservacion()">Observación</button>
+                                    <button class="btn btn-default btnGuardar " onclick="guardar()" id="btnGuardar">Guardar</button>
+
+                                    <button class="btn btn-default" id="btnIniciarVisita" style="display:none;" onclick="iniciarVisita()">Iniciar Actuaci&oacute;n</button>
+                                    <button class="btn btn-default" id="btnEnviarCertificado" style="display:none;" onclick="abrirEnviarCertificado()">Enviar Certificado </button>
+                                    <button class="btn btn-default" id="btnPreview" onclick="abrirPreviePDF()">Preview PDF</button>
+
+                                    <button class="btn btn-default" id="btnTerminarVisita" style="display:none;" onclick="FinalizarVisita()">Terminar Actuaci&oacute;n</button>
+
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    @Scripts.Render("~/bundles/carouFredSel")
+
+
+
+
+
+    <script type="text/javascript">
+
+        //variables gobales
+        var rol;
+        var coorX = "";
+        var coorY = "";
+        var TipoUbicacion = "";
+        var idVisita = "";
+        var estados = "";
+        var tipoUbicacion = "";
+        var Totalimg = new Array();
+        var nombreFoto = "";
+        var idFotografia = "";
+        var etiqueta = "";
+        var jsonInfIndustria = null;
+        var tipoInfoINdustria = 0;
+        //variable global para las ayudas
+        var dirglobal = "";
+        //var idRad = "";
+
+
+
+
+        //la funcion permite cargar la informacion cuando inicia el modulo
+        $(document).ready(function () {
+           
+            //consultarRadicador();
+            $("#txtFechaInicial").datepicker();
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+
+            $("#txtFechaInicio").val(dd + '/' + mm + '/' + yyyy);
+            $("#txtEstadoVisita").val("@ViewBag.txtEstadoVisita");
+            $("#IdVisita").val("@ViewBag.IdVisita");
+            estados = $("#txtEstadoVisita").val();
+            ConsultarDatosVisita($("#IdVisita").val());
+            switch (Number(estados)) {
+                case 1: //asignado
+                    $("#ibtabAtiende").css({ "display": "none" });
+                    $("#idImdEncuesta").css({ "display": "none" });
+                    $("#btnAddAtiende").css({ "display": "none" });
+                    $("#btnIniciarVisita").css({ "display": "none" });
+                    $("#btnCargarFoto").css({ "display": "none" });
+                    $("#btnEnviarCertificado").css({ "display": "none" });
+                    $("#btnTerminarVisita").css({ "display": "none" });
+                    $("#btnPreview").css({ "display": "none" });
+
+                    $("#btnGuardar").text("Aceptar Actuación");
+
+                    break;
+                case 2://aceptado
+                    $("#Tab4").css({ "display": "block" });
+                    $("#Tab3").css({ "display": "block" });
+                    $("#Tab2").css({ "display": "block" });
+                    $("#Tab5").css({ "display": "block" });
+                    $("#ibtabAtiende").css({ "display": "block" });
+                    $("#idImdEncuesta").css({ "display": "block" });
+                    $("#btnAddAtiende").css({ "display": "block" });
+                    $("#btnIniciarVisita").css({ "display": "block" });
+                    $("#btnCargarFoto").css({ "display": "block" });
+
+                    $("#btnGuardar").text("Guardar");
+
+                    $("#btnEnviarCertificado").css({ "display": "none" });
+                    $("#btnTerminarVisita").css({ "display": "none" });
+                    //$("#btnPreview").css({ "display": "none" });
+                    consultarDatosRealizarVisitas();
+                    consultarFotos();
+                    break;
+                case 3://en proceso
+                    $("#Tab4").css({ "display": "block" });
+                    $("#Tab3").css({ "display": "block" });
+                    $("#Tab2").css({ "display": "block" });
+                    $("#Tab5").css({ "display": "block" });
+                    $("#ibtabAtiende").css({ "display": "block" });
+                    $("#idImdEncuesta").css({ "display": "block" });
+                    $("#btnAddAtiende").css({ "display": "block" });
+                    $("#btnEnviarCertificado").css({ "display": "block" });
+                    $("#btnCargarFoto").css({ "display": "block" });
+                    $("#btnGuardar").text("Guardar");
+                    $("#btnIniciarVisita").css({ "display": "none" });
+                    $("#btnTerminarVisita").css({ "display": "none" });
+                    consultarDatosRealizarVisitas();
+                    consultarFotos();
+                    break;
+                case 4://en revision
+                    $("#Tab4").css({ "display": "block" });
+                    $("#Tab3").css({ "display": "block" });
+                    $("#Tab2").css({ "display": "block" });
+                    $("#Tab5").css({ "display": "block" });
+                    $("#ibtabAtiende").css({ "display": "block" });
+                    $("#idImdEncuesta").css({ "display": "block" });
+                    $("#btnAddAtiende").css({ "display": "block" });
+                    $("#btnPreview").css({ "display": "block" });
+                    $("#btnTerminarVisita").css({ "display": "block" });
+                    $("#btnEnviarCertificado").css({ "display": "none" });
+                    $("#btnIniciarVisita").css({ "display": "none" });
+                    $("#btnGuardar").text("Guardar");
+                    $("#btnCargarFoto").css({ "display": "block" });
+                    consultarDatosRealizarVisitas();
+                    consultarFotos();
+                    break;
+                case 5:// Terminada
+                    $("#Tab4").css({ "display": "block" });
+                    $("#Tab3").css({ "display": "block" });
+                    $("#Tab2").css({ "display": "block" });
+                    $("#Tab5").css({ "display": "block" });
+                    $("#ibtabAtiende").css({ "display": "block" });
+                    $("#idImdEncuesta").css({ "display": "block" });
+                    $("#btnAddAtiende").css({ "display": "block" });
+                    $("#btnPreview").css({ "display": "block" });
+                    $("#btnTerminarVisita").css({ "display": "none" });
+                    $("#btnEnviarCertificado").css({ "display": "none" });
+                    $("#btnIniciarVisita").css({ "display": "none" });
+                    $("#btnGuardar").text("Guardar");
+                    $("#btnCargarFoto").css({ "display": "block" });
+                    consultarDatosRealizarVisitas();
+                    consultarFotos();
+                    break;
+            }
+        });
+
+        /*function consultarRadicador() {
+
+            var unidadDocumental = 22;
+   
+
+            $.ajax({
+                    type: "GET",
+                    url: "@Url.Content("~/GestionDocumental/api/RadicadorApi/Radicar")",
+                data: { idUnidadDocumental: unidadDocumental, tipoRetorno: 'key' },
+   
+                success: function (response) {
+
+                    var dato = response;
+                    idRad = dato.id;
+           
+                },
+            });
+        }*/
+
+        function abrirEmpresa() {
+            $("#pantallaEmpresa").dialog(
+            {
+
+                width: 500,
+                height: 380,
+                modal:true
+            });
+            $("#frm_dialog").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/RealizarVisitaAtiende")");
+
+        }
+        function abrirObservacion() {
+            $("#pantallaObservacion").dialog(
+            {
+
+                width: 320,
+                height: 200,
+                modal:true
+            });
+            $("#frObservacion").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/Observacion")");
+
+        }
+        function abrirAtiende() {
+            $("#atiendePantalla").dialog(
+            {
+
+                width: 500,
+                height: 400,
+                modal:true
+            });
+            $("#frm_atiende").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/GridAtiendeTabla")");
+
+        }
+        function abrirAsignacionTramites() {
+            $("#pantallaAsignacionTramites").dialog(
+            {
+
+                width: 900,
+                height: 400,
+                modal:true
+            });
+            $("#AsignacionTramites").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/RegistrarVisitasAsignacionTramites")");
+
+        }
+
+
+        function cargarEmpresa(nombre, id) {
+            $("#txtEmpresa").val(nombre);
+            $("#txtId").val(id);
+            ConsultarIntalacion(id);
+        }
+        function myFunction(nombre, id) {
+            var p = 0;
+            for (var i = 1; i < document.getElementById('atiende').rows.length ; i++) {
+                if (document.getElementById('atiende').rows[i].cells[0].innerHTML == id) {
+                    p++;
+                }
+            }
+            if (p > 0) {
+                alert("El funcionario ya existe asignado");
+                return;
+            }
+            var table = document.getElementById("atiende");
+            var row = table.insertRow(1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            cell1.innerHTML = id;
+            cell2.innerHTML = nombre;
+            //cell3.innerHTML = "<select class='form-control' id=" + table.rows.length + "></select>";
+            cell3.innerHTML = "<select class='form-control' id=u_" + id + "></select>";
+            cell4.innerHTML = '<img src="../../Content/Images/EditarVisita.png" style="width:25px;height:25px" onclick="editarAtinde(this)">';
+            cell5.innerHTML = '<img src="../../Content/Images/delete.png" style="width:25px;height:25px" onclick="eliminarAtinde(this)">';
+            //ConsultarRolVista(table.rows.length, '-1');
+            ConsultarRolVista('u_' + id, '-1');
+        }
+        function eliminarAtinde(o) {
+            if (confirm("Esta seguro de eliminar el registro?")) {
+                var p = o.parentNode.parentNode;
+                p.parentNode.removeChild(p);
+            } else {
+                return;
+            }
+        }
+        function editarAtinde(a) {
+
+            var p = a.parentNode.parentNode;
+            window.open("@Url.Content("~/General/Tercero/Tercero/")" + p.cells[0].innerText + "?vistaRetorno=true");
+        }
+
+        function ConsultarIntalacion(id) {
+
+
+            $.ajax({
+
+
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetConsultarInstalacion?id=")" + id,
+                success: function (result) {
+                    var datos = result;
+                    var comb = document.getElementById("txtInstalacion");
+                    $("#txtInstalacion").children().remove();
+                    if (datos.length > 0) {
+
+                        for (var i = 0; i < datos.length; i++) {
+                            comb.innerHTML += "<option value=" + datos[i].ID_INSTALACION + ">" + datos[i].S_NOMBRE + "</option>";
+
+                        }
+                    }
+                    comb.innerHTML += "<option value='-1'>--Nuevo--</option>";
+                    consultarInfIndustria(id, $("#txtInstalacion").val(), $("#IdVisita").val());
+                }
+
+            });
+
+
+        }
+        function ConsultarRolVista(combo, id) {
+
+
+            $.ajax({
+
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetConsultarConsultarRolVisita")",
+
+                success: function (result) {
+                    var datos = result;
+                    $("#" + combo).find("option").remove();
+                    $("#" + combo).append(
+                        $("<option></option>").attr("value", "-1").text(
+                            "--Seleccionar--"));
+                    $.each(datos, function (i, Dominio) {
+                        $("#" + combo).append(
+                            $("<option></option>").attr("value",
+                                Dominio.ID_ROL).text(
+                                Dominio.S_NOMBRE));
+                    });
+                    if (id != "-1")
+                        $("#" + combo).val(id);
+                }
+            });
+
+
+        }
+        function guardar() {
+            $("#mensaje").show(0800);
+            if ($("#txtId").val() == "") {
+                $("#mensaje").text("Seleccione una empresa")
+                $("#mensaje").show(0800);
+                return;
+            } else {
+                $("#mensaje").hide();
+            }
+            if ($("#txtInstalacion").val() == "") {
+                $("#mensaje").text("Seleccione una instalación")
+                $("#mensaje").show(0800);
+                return;
+            } else {
+                if ($("#txtInstalacion").val() == "-1") {
+                    $("#mensaje").text("Seleccione una instalación")
+                    $("#mensaje").show(0800);
+                    return;
+                } else {
+                    $("#mensaje").hide();
+                }
+            }
+            var radicado = $("#txtRadicado").val();
+            var asunto = $("#txtAsunto").val();
+
+            var idEmpresa = $("#txtId").val();
+            var idIntalacion = $("#txtInstalacion").val();
+            var tabla = document.getElementById("atiende");
+            var id = "";
+            var k = 2;
+            var j = 0;
+
+            for (var i = 1; i < document.getElementById('atiende').rows.length ; i++) {
+                //if ($("#" + k).val() == "-1") {
+                if ($("#u_" + document.getElementById('atiende').rows[i].cells[0].innerHTML).val() == "-1") {
+                    j++;
+                }
+                if (document.getElementById('atiende').rows.length - 1 == i) {
+                    //id += document.getElementById('atiende').rows[i].cells[0].innerHTML + "_" + $("#" + k).val();
+                    id += document.getElementById('atiende').rows[i].cells[0].innerHTML + "_" + $("#u_" + document.getElementById('atiende').rows[i].cells[0].innerHTML).val();
+                } else {
+                    //id += document.getElementById('atiende').rows[i].cells[0].innerHTML + "_" + $("#" + k).val() + ",";
+                    id += document.getElementById('atiende').rows[i].cells[0].innerHTML + "_" + $("#u_" + document.getElementById('atiende').rows[i].cells[0].innerHTML).val() + ",";
+                }
+                k++;
+            }
+            if (j > 0) {
+
+                $("#msAtiende").text("selecione el usuario")
+                $("#msAtiende").show(0800);
+                return;
+            } else {
+                $("#msAtiende").hide();
+            }
+
+            var atendio = "";
+            if (id == "") {
+                atendio = "0";
+            } else {
+                atendio = id;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/guardarRealizarVisita")",
+                data: {
+                    p_Asunto: asunto, p_cx: 0,
+                    p_cy: 0, p_IdVisita: $("#IdVisita").val(), idTercero: idEmpresa, idInstalacion: idIntalacion, atiende: atendio
+                },
+                beforeSend: function () {
+                    guardarSetInfIndustria(idEmpresa, idIntalacion, $("#IdVisita").val());
+                },
+                success: function (response) {
+
+                    var dato = response;
+                    if (dato == "1") {
+                        mensajeAlmacenamiento("Almacenamiento exitoso");
+                        recargarGridVisita();
+                        if (estados == 1)
+                            validarForm(2);
+                    } else {
+                        alert("Error");
+                    }
+                },
+            });
+        }
+
+
+        function consultarDatosRealizarVisitas() {
+
+            $.ajax({
+
+
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GETConsultarDatosRealizarVisita?id=")" + $("#IdVisita").val(),
+                success: function (result) {
+                    var datos = result;
+
+                    if (datos.length > 0) {
+                        ConsultarRepresentanteLegal(datos[0].IDTERCERO);
+                        $("#txtEmpresa").val(datos[0].NOMBRETERCERO);
+                        $("#txtId").val(datos[0].IDTERCERO);
+                        $("#txtAsunto").val(datos[0].ASUNTO);
+                        $("#txtObservacion").val(datos[0].OBSEVACION);
+
+                        var comb = document.getElementById("txtInstalacion");
+                        $("#txtInstalacion").children().remove();
+
+                        comb.innerHTML += "<option value=" + datos[0].IDINSTALACION + ">" + datos[0].INSTALACION + "</option>";
+                        comb.innerHTML += "<option value='-1'>--Nuevo--</option>";
+                       
+                        consultarSector(datos[0].IDTERCERO, datos[0].IDINSTALACION, $("#IdVisita").val());
+                    }
+                    AtiendeRealizarVisitas();
+                    CargarJsonAcordeon();
+                }
+            });
+
+        }
+
+
+        function AtiendeRealizarVisitas() {
+
+
+            $.ajax({
+
+
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GETConsultarAtiendeRealizarVisita?id=")" + $("#IdVisita").val(),
+                success: function (result) {
+                    var datos = result;
+
+                    if (datos.length > 0) {
+                        for (var i = 0; i < datos.length; i++) {
+                            var table = document.getElementById("atiende");
+                            var row = table.insertRow(1);
+                            var cell1 = row.insertCell(0);
+                            var cell2 = row.insertCell(1);
+                            var cell3 = row.insertCell(2);
+                            var cell4 = row.insertCell(3);
+                            var cell5 = row.insertCell(4);
+
+                            cell1.innerHTML = datos[i].ID_TERCERO;
+                            cell2.innerHTML = datos[i].S_RSOCIAL;
+                            //cell3.innerHTML = "<select class='form-control' id=" + table.rows.length + "></select>";
+                            cell3.innerHTML = "<select class='form-control' id=u_" + datos[i].ID_TERCERO + "></select>";
+                            cell4.innerHTML = '<img src="../../Content/Images/EditarVisita.png" style="width:25px;height:25px" onclick="editarAtinde(this)">';
+                            cell5.innerHTML = '<img src="../../Content/Images/delete.png" style="width:25px;height:25px" onclick="eliminarAtinde(this)">';
+
+                            //ConsultarRolVista(table.rows.length, datos[i].ID_ROL);
+                            ConsultarRolVista('u_' + datos[i].ID_TERCERO, datos[i].ID_ROL);
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function validarForm(idEstado) {
+            estados = idEstado;
+
+            switch (idEstado) {
+                case 1: //asignado
+                    $("#ibtabAtiende").css({ "display": "none" });
+                    $("#idImdEncuesta").css({ "display": "none" });
+                    $("#btnAddAtiende").css({ "display": "none" });
+                    $("#btnIniciarVisita").css({ "display": "none" });
+
+                    $("#btnEnviarCertificado").css({ "display": "none" });
+                    $("#btnTerminarVisita").css({ "display": "none" });
+                    $("#btnPreview").css({ "display": "none" });
+                    $("#btnCargarFoto").css({ "display": "none" });
+                    $("#btnGuardar").text("Aceptar Actuación");
+
+                    break;
+                case 2://aceptado
+                    $("#btnCargarFoto").css({ "display": "block" });
+                    $("#ibtabAtiende").css({ "display": "block" });
+                    $("#idImdEncuesta").css({ "display": "block" });
+                    $("#btnAddAtiende").css({ "display": "block" });
+                    $("#btnIniciarVisita").css({ "display": "block" });
+
+                    $("#btnGuardar").text("Guardar");
+
+                    $("#btnEnviarCertificado").css({ "display": "none" });
+                    $("#btnTerminarVisita").css({ "display": "none" });
+                    $("#btnPreview").css({ "display": "none" });
+                    $("#Tab4").css({ "display": "block" });
+                    $("#Tab3").css({ "display": "block" });
+                    $("#Tab2").css({ "display": "block" });
+                    consultarDatosRealizarVisitas();
+                    consultarFotos();
+                    break;
+                case 3://en proceso
+                    $("#btnCargarFoto").css({ "display": "block" });
+                    $("#ibtabAtiende").css({ "display": "block" });
+                    $("#idImdEncuesta").css({ "display": "block" });
+                    $("#btnAddAtiende").css({ "display": "block" });
+                    $("#btnEnviarCertificado").css({ "display": "block" });
+
+                    $("#btnGuardar").text("Guardar");
+                    $("#btnIniciarVisita").css({ "display": "none" });
+                    $("#btnTerminarVisita").css({ "display": "none" });
+                    $("#Tab4").css({ "display": "block" });
+                    $("#Tab3").css({ "display": "block" });
+                    $("#Tab2").css({ "display": "block" });
+                    consultarDatosRealizarVisitas();
+                    consultarFotos();
+                    break;
+                case 4://en revision
+                    $("#btnCargarFoto").css({ "display": "block" });
+                    $("#ibtabAtiende").css({ "display": "block" });
+                    $("#idImdEncuesta").css({ "display": "block" });
+                    $("#btnAddAtiende").css({ "display": "block" });
+                    $("#btnPreview").css({ "display": "block" });
+                    $("#btnTerminarVisita").css({ "display": "block" });
+                    $("#btnEnviarCertificado").css({ "display": "none" });
+                    $("#btnIniciarVisita").css({ "display": "none" });
+                    $("#btnGuardar").text("Guardar");
+                    $("#Tab4").css({ "display": "block" });
+                    $("#Tab3").css({ "display": "block" });
+                    $("#Tab2").css({ "display": "block" });
+                    consultarDatosRealizarVisitas();
+                    consultarFotos();
+
+
+                    break;
+
+            }
+        }
+
+        function iniciarVisita() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/guardarIniciarVisita")",
+                data: {
+                    p_IdVisita: $("#IdVisita").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    if (dato == "1") {
+                        mensajeAlmacenamiento("Almacenamiento exitoso");
+                        recargarGridVisita();
+                        validarForm(3);
+                    } else {
+                        alert("Error");
+                    }
+                },
+            });
+
+        }
+
+        function CerrarVisita() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/CerrarVisita")",
+                data: {
+                    p_IdVisita: $("#IdVisita").val(), radicado: 1
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    if (dato == "1") {
+                        mensajeAlmacenamiento("Almacenamiento exitoso");
+                        recargarGridVisita();
+                        validarForm(4);
+                    } else {
+                        alert("Error");
+                    }
+                },
+            });
+
+        }
+
+        function FinalizarVisita() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/FinalizarVisita")",
+                data: {
+                    p_IdVisita: $("#IdVisita").val(), radicado: 1, pdf: "//", comentario: "", responsable: 1, copias: "0"
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    if (dato == "1") {
+                        mensajeAlmacenamiento("Almacenamiento exitoso");
+                        recargarGridVisita();
+                        validarForm(4);
+                        window.close();
+                    } else {
+                        alert("Error");
+                    }
+                },
+            });
+
+        }
+
+        function abrirEnviarCertificado() {
+            consultarMail();
+            @*mail = "ralejo8@hotmail.com";
+            window.open("@Url.Content("~/ControlVigilancia/Visitas/rvisita?id=")+" + $("#IdVisita").val() + "&contenido=" + $("#txtAsunto").val() + "&mail=" + mail + "&idRadicado=" + idRad);*@
+
+        }
+        function consultarMail() {
+            mail = "";
+             CerrarVisita();
+             $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GETConsultarAtiendeRealizarVisita?id=")" + $("#IdVisita").val(),
+                        success: function (result) {
+                            var datos = result;
+                            if (datos.length > 0) {
+                   
+                                for(var i=0;i<datos.length;i++)
+                                {
+                                    mail += datos[i].S_CORREO + ";";
+                                }
+                                mail = mail.substring(0, mail.length - 1);
+                                mail = mail.replace(",", ";");
+                                //alert(mail);
+                                if(mail!="null")
+                                    window.open("@Url.Content("~/ControlVigilancia/Visitas/rvisita?id=")+" + $("#IdVisita").val() + "&contenido=" + $("#txtAsunto").val() + "&mail=" + mail + "&idRadicado=0");
+
+                            }
+                    
+                        }
+                });
+        }
+
+        function abrirPreviePDF() {
+           // consultarRadicado();
+            $("#pantallaReportes").dialog(
+          {
+
+              width: 550,
+              height: 600,
+              modal:true
+          });
+            $("#pdfReportes").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/reporteVisitas")");
+        }
+
+        function abrirFotos() {
+            $("#pantallaCargarImg").dialog(
+            {
+
+                width: 500,
+                height: 200,
+                modal: true
+            });
+            $("#fotos").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/cargarImagen")");
+
+        }
+        function abrirEliminarFotos() {
+            $("#pantallaEliminarFoto").dialog(
+            {
+
+                width: 288,
+                height: 360,
+                modal:true
+            });
+            $("#frEliminarFoto").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/EliminarFoto")");
+        }
+
+
+
+        function llenarCarrusel(datos) {
+            setTimeout(function () {
+                if (Totalimg.length == 0) {
+                    Totalimg = datos;
+                } else {
+                    for (var i = 0; i < datos.length; i++) {
+                        Totalimg.push(datos[i]);
+                    }
+                }
+
+                var html = "";
+                var cantidaDatos = 0;
+                $("#carousel .caroufredsel_wrapper").remove();
+                html += ' <ul id="Carusel1">';
+
+                for (var j = 0; j < Totalimg.length; j++) {
+
+                    html += ' <li ><button class="btnimgedit"  onclick="eliminar(\'' + Totalimg[j].id + '\')"></button><img src="' + Totalimg[j].url + '" alt="' + Totalimg[j].nombre + '" title="' + Totalimg[j].etiqueta + '" id="' + Totalimg[j].id + '" ><label class="texto">' + Totalimg[j].etiqueta + '</label></li>';
+
+                }
+                html += "</ul>";
+                $("#carousel").append(html);
+                $('#carousel ul').carouFredSel({
+                    auto: false,
+                    prev: '#prev',
+                    next: '#next',
+                    pagination: "#pager2",
+                    mousewheel: true,
+                
+                 
+                    swipe: {
+                        onMouse: true,
+                        onTouch: true
+                    }
+                });
+            }, 3000);
+        }
+
+        function eliminar(nombre) {
+            datos = $("#" + nombre)[0];
+            nombreFoto = "";
+            idFotografia = "";
+            etiqueta = "";
+            idFotografia = datos.id;
+            nombreFoto = datos.alt;
+            etiqueta = datos.title;
+            abrirEliminarFotos();
+        }
+        function llenarCarruselEliminar(arrDatos) {
+
+            var html = "";
+            var cantidaDatos = 0;
+            $("#carousel .caroufredsel_wrapper").remove();
+            html += ' <ul id="Carusel1">';
+
+            for (var j = 0; j < arrDatos.length; j++) {
+
+                html += ' <li ><button class="btnimgedit"  onclick="eliminar(\'' + arrDatos[j].id + '\')"></button><img src="' + arrDatos[j].url + '" alt="' + arrDatos[j].nombre + '" title="' + arrDatos[j].etiqueta + '" id="' + arrDatos[j].id + '" ><label class="texto">' + arrDatos[j].etiqueta + '</label></li>';
+
+            }
+            html += "</ul>";
+            $("#carousel").append(html);
+            $('#carousel ul').carouFredSel({
+                auto: false,
+                prev: '#prev',
+                next: '#next',
+                pagination: "#pager2",
+                mousewheel: true,
+                swipe: {
+                    onMouse: true,
+                    onTouch: true
+                }
+            });
+
+        } function consultarFotos() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetConsultarFotografias")",
+                data: {
+                    id: $("#IdVisita").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    Totalimg = [];
+                    if (dato.length > 0) {
+                        var objDatos = new Object();
+                        for (var i = 0; i < dato.length; i++) {
+                            objDatos = new Object();
+                            //objDatos['url'] = dato[i].URL;
+                            objDatos['url'] = '@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/ObtenerFotografia")/' + dato[i].ID_FOTOGRAFIA;
+                            objDatos['etiqueta'] = dato[i].S_ETIQUETA;
+                            objDatos['id'] = dato[i].ID_FOTOGRAFIA;
+                            objDatos['nombre'] = dato[i].S_ARCHIVO;
+
+                            Totalimg.push(objDatos);
+                        }
+
+
+
+                        llenarCarrusel('')
+                    }
+
+                },
+            });
+
+        }
+
+        function guardarFotos(arrfotos) {
+            var datos = "";
+            for (var i = 0; i < arrfotos.length; i++) {
+                if (arrfotos.length - 1 == i) {
+                    datos += arrfotos[i].id;
+                } else {
+                    datos += arrfotos[i].id + ',';
+                }
+
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetGuardarFotografias")",
+                data: {
+                    idVisita: $("#IdVisita").val(), idFotos: datos
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    if (dato.length > 0) {
+                        var objDatos = new Object();
+                        for (var i = 0; i < dato.length; i++) {
+                            objDatos['url'] = dato[i].URL;
+                            objDatos['etiqueta'] = dato[i].S_ETIQUETA;
+                            Totalimg.push(objDatos);
+                        }
+                        llenarCarrusel('');
+                        //consultarFotos();
+                    }
+                },
+            });
+
+        }
+
+        function CambiarEstadoAcordeon(idEncabezado) {
+            var nombre = $(idEncabezado)[0].className;
+            var n = nombre.search("glyphicon-triangle-top");
+            if (n > 0) {
+                $(idEncabezado).removeClass("glyphicon-triangle-top");
+            } else {
+                $(idEncabezado).addClass("glyphicon-triangle-top");
+            }
+
+        }
+
+        function EliminarFotoVisitaBD() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/EliminarFotografia")",
+                data: {
+                    p_idFotografia: idFotografia
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    var arrFotos = [];
+                    var objDato = new Object();
+                    for (var i = 0; i < Totalimg.length; i++) {
+                        objDato = new Object();
+                        if (Totalimg[i].id != idFotografia) {
+                            objDato['url'] = Totalimg[i].url;
+                            objDato['etiqueta'] = Totalimg[i].etiqueta;
+                            objDato['id'] = Totalimg[i].id;
+                            arrFotos.push(objDato);
+                        }
+                    }
+                    Totalimg = arrFotos;
+                    llenarCarruselEliminar(arrFotos);
+                },
+            });
+
+        }
+        function AgregarEtiqueta(etiq, palabra) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/AgregarEtiqueta")",
+                data: {
+                    p_idFotografia: idFotografia, etiqueta: etiq, palabra: palabra
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    consultarFotos();
+                },
+            });
+
+        }
+        function ConsultarDatosVisita(codigo) {
+
+
+            $.ajax({
+
+
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetConsultarDatosRealizarVisitaIni?id=")" + codigo,
+
+
+                success: function (result) {
+                    var datos = result;
+
+                    radicado = datos[0].RADICADO_VISITA;
+                    observacion = datos[0].S_OBSERVACION;
+                    asunto = datos[0].S_ASUNTO;
+                    $("#txtFechaAsignacion").val(datos[0].D_ASIGNACIONVISITA);
+                    $("#txtRadicado").val(datos[0].RADICADO_VISITA);
+                    $("#txtAsunto").val(datos[0].S_ASUNTO);
+                    $("#txtObservacion").val(datos[0].S_OBSERVACION);
+                    $("#txtResponsable").val(datos[0].RESPONSABLE);
+                    $("#txtcopias").val(datos[0].COPIAS);
+
+
+                }
+
+            });
+
+
+        }
+        function ConsultarRepresentanteLegal(codigo) {
+
+            $("#txtNit").text("");
+            $("#txtNombre").text("");
+            $("#txtFechaActual").text("");
+            $.ajax({
+
+
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetConsultarRepresentanteLegal?id=")" + codigo,
+
+
+                success: function (result) {
+                    var datos = result;
+                    $("#txtNit").text(datos[0].DOCUMENTO);
+                    $("#txtNombre").text(datos[0].NOMBRE);
+                    $("#txtFechaActual").text(datos[0].FECHA_ACTUALIZACION);
+
+                }
+
+            });
+
+
+        }
+        function guardarObservacion(observ) {
+
+
+            $.ajax({
+                type: "GET",
+
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetGuardarObservacion")",
+                data: {
+                    idVisita: $("#IdVisita").val(), observacion: observ
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+
+                },
+            });
+
+        }
+        function timer() {
+            for (var i = 0; i < 24; i++) {
+                for (var j = 0; j < 60; j++) {
+                    for (var l = 0; l < 60; l++) {
+
+
+                    }
+                }
+
+            }
+        }
+
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default glyphicon  glyphicon-ok-circle"
+          },
+                ]
+            });
+
+
+        }
+
+        function consultarInfIndustria(idTercero, idInstalacion, idVisita) {
+            tipoInfoINdustria = 0;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarInformacionIndustria", "RealizarVisita")',
+                data: { ins: idInstalacion, tercero: idTercero, visita: idVisita },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonInfIndustria = eval('(' + response + ')');
+
+                    if (jsonInfIndustria.ID_SECTOR == 0 && jsonInfIndustria.N_CAP_INSTALADA_TON_DIA == 0 && jsonInfIndustria.N_NRO_EMPLEADOS == 0) {
+                        tipoInfoINdustria = 0;
+                        //$("#cmbSector").val(1);
+                        $("#lblIDActividadEconomica").text(jsonInfIndustria.ID_ACTIVIDADECONOMICA);
+                        $("#lblActividadEconomica").text(jsonInfIndustria.ACTIVIDADECONOMICA);
+                        $("#lblSector").text("");
+                        $("#txtHoraDia").val("");
+                        $("#txtDiaSemana").val("");
+                        $("#txtSemanaMes").val("");
+                        $("#txtMesAno").val("");
+
+                        $("#txtCapacidadT").val("");
+                        $("#txtProducionD").val("");
+                        $("#txtProducionH").val("");
+
+                        $("#txtNumeroEmpleados").val("");
+                        $("#txtNoTurnos").val("");
+                        $("#txtTurnoDia").val("");
+                        $("#txtObservacionIndustria").val("");
+                    } else {
+                        if (jsonInfIndustria.ID_SECTOR == 0)
+                        {
+                            tipoInfoINdustria = 0;
+                        }
+                        else
+                        {
+                            tipoInfoINdustria = 1;
+                        }
+
+                        //$("#cmbSector").val(jsonInfIndustria.ID_SECTOR);
+                        $("#lblIDActividadEconomica").text(jsonInfIndustria.ID_ACTIVIDADECONOMICA);
+                        $("#lblActividadEconomica").text(jsonInfIndustria.ACTIVIDADECONOMICA);
+                        $("#txtHoraDia").val(jsonInfIndustria.N_TIEMPO_OPERACION_HD);
+                        $("#txtDiaSemana").val(jsonInfIndustria.N_TIEMPO_OPERACION_DS);
+                        $("#txtSemanaMes").val(jsonInfIndustria.N_TIEMPO_OPERACION_SM);
+                        $("#txtMesAno").val(jsonInfIndustria.N_TIEMPO_OPERACION_MA);
+
+                        $("#txtCapacidadT").val(jsonInfIndustria.N_CAP_INSTALADA_TON_DIA);
+                        $("#txtProducionD").val(jsonInfIndustria.N_MAX_PROD_DIARIA_TON_DIA);
+                        $("#txtProducionH").val(jsonInfIndustria.N_PRODUCCION_HORARIA);
+
+                        $("#txtNumeroEmpleados").val(jsonInfIndustria.N_NRO_EMPLEADOS);
+                        $("#txtNoTurnos").val(jsonInfIndustria.N_NRO_TURNOS);
+                        $("#txtTurnoDia").val(jsonInfIndustria.N_TURNOS_DIA);
+                        $("#txtObservacionIndustria").val(jsonInfIndustria.OBSERVACIONES);
+                    }
+
+
+
+                }
+            });
+        }
+        function guardarSetInfIndustria(idTercero, idInstalacion, idVisita) {
+
+            //jsonInfIndustria.ID_SECTOR = $("#cmbSector").val();
+            jsonInfIndustria.ID_SECTOR = $("#lblIDActividadEconomica").text();
+            jsonInfIndustria.N_TIEMPO_OPERACION_HD = $("#txtHoraDia").val();
+            jsonInfIndustria.N_TIEMPO_OPERACION_DS = $("#txtDiaSemana").val();
+            jsonInfIndustria.N_TIEMPO_OPERACION_SM = $("#txtSemanaMes").val();
+            jsonInfIndustria.N_TIEMPO_OPERACION_MA = $("#txtMesAno").val();
+
+            jsonInfIndustria.N_CAP_INSTALADA_TON_DIA = $("#txtCapacidadT").val();
+            jsonInfIndustria.N_MAX_PROD_DIARIA_TON_DIA = $("#txtProducionD").val();
+            jsonInfIndustria.N_PRODUCCION_HORARIA = $("#txtProducionH").val();
+
+            jsonInfIndustria.N_NRO_EMPLEADOS = $("#txtNumeroEmpleados").val();
+            jsonInfIndustria.N_NRO_TURNOS = $("#txtNoTurnos").val();
+            jsonInfIndustria.N_TURNOS_DIA = $("#txtTurnoDia").val();
+            jsonInfIndustria.OBSERVACIONES = $("#txtObservacionIndustria").val();
+            var jsonInd = JSON.stringify(jsonInfIndustria);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("setInformacionIndustria", "RealizarVisita")',
+                data: { jsonInf: jsonInd, ins: idInstalacion, tercero: idTercero, tipo: tipoInfoINdustria, visita: idVisita },
+                beforeSend: function () { },
+                success: function (response) {
+                    consultarInfIndustria(idTercero, idInstalacion, idVisita);
+                    var resp = eval('(' + response + ')');
+
+
+
+
+                }
+            });
+        }
+        var forCaptacion = "";
+        var fortipoEstado = ""
+        var foridVisita = "";
+        var foridform = "";
+        var foridtipoform = "";
+        var formestadoBase = "";
+        var formUrl = "";
+        var formnombref = "";
+        var textotblFotos = "";
+        var textotblEstados = "";
+        var textoUrlMapa = "";
+        var jsonFormularios = null;
+
+        function CargarJsonAcordeon() {
+            var idEmpresa = $("#txtId").val();
+            var idIntalacion = $("#txtInstalacion").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarInformacionFormularios", "Visitas")',
+                data: {
+                    ins: idIntalacion,
+                    tercero: idEmpresa,
+                    visita: $("#IdVisita").val()
+                },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonFormularios = eval('(' + response + ')');
+                    llenarAcordeon()
+
+
+                }
+            });
+        }
+
+        function llenarAcordeon() {
+            var idIntalacion = $("#txtInstalacion").val();
+            var json = jsonFormularios;
+            var htmlGeneral = ' <div class="panel-group acordeonVerde " id="acordioPrincipal">';
+            for (var r = 0; r < json.length; r++) {
+                htmlGeneral += '<div class="panel panel-default">'
+                htmlGeneral += '<div class="panel-heading glyphicon-triangle-bottom" id="cabezoteAcordeon' + r + '" >';
+                htmlGeneral += ' <a data-toggle="collapse" data-parent="#accordion" href="#collapse' + r + '" onclick="CambiarEstadoAcordeon(\'#cabezoteAcordeon' + r + '\')" class="titleAcordeon">' + json[r].NOMBRE + '</a></div>';
+                htmlGeneral += '<div id="collapse' + r + '" class="panel-collapse collapse">';
+                htmlGeneral += '<div style="  padding: 1px;">';
+                /*nivel 2**/
+                htmlGeneral += ' <div class="panel-group acordeonVerde acordeonSecundario" id="acordionSecundario">'
+                for (var f = 0; f < json[r].FORMULARIOS.length; f++) {
+                    htmlGeneral += ' <div class="panel panel-default">'
+                    if (json[r].FORMULARIOS[f].S_CARDINALIDAD != "1") {
+                        htmlGeneral += '<div class="panel-heading glyphicon-triangle-bottom" id="subcabezoteAcordeon_' + r + '_' + f + '">'
+                    } else {
+                        htmlGeneral += '<div class="panel-heading " id="subcabezoteAcordeon_' + r + '_' + f + '">'
+
+                    }
+                    htmlGeneral += ' <a data-toggle="collapse" data-parent="#accordion" id="subcollapse_' + r + '_' + f + '_title" href="#subcollapse_' + r + '_' + f + '" onclick="CambiarEstadoAcordeon(\'#subcabezoteAcordeon_' + r + '_' + f + '\')" class="titleAcordeon">' + json[r].FORMULARIOS[f].NOMBRE + '</a>'
+                    if (json[r].FORMULARIOS[f].S_CARDINALIDAD != "1") {
+                        htmlGeneral += '<label class="Cantidad">' + json[r].FORMULARIOS[f].ITEMS.length + '</label>'
+                        htmlGeneral += ' <button class="agregar" title="Nuevo recurso" onclick="agregarAcordeonitem(\'' + json[r].FORMULARIOS[f].NOMBRE + '\',\'' + json[r].FORMULARIOS[f].S_CARDINALIDAD + '\',\'#subcollapse_' + r + '_' + f + '\', \'#subcabezoteAcordeon_' + r + '_' + f + '\',\'' + json[r].FORMULARIOS[f].URL + '\',\'' + json[r].FORMULARIOS[f].ID + '\',' + r + ',\'' + json[r].FORMULARIOS[f].S_URL_MAPA + '\',\'' + json[r].FORMULARIOS[f].TBL_FOTOS + '\',\'' + json[r].FORMULARIOS[f].TBL_ESTADOS + '\')"></button>'
+                    } else {
+                        htmlGeneral += '<button class="btn btn-default diligenciar2" title="Diligenciar formulario"';
+                        htmlGeneral += ' onClick="abrirFormularioGeneral(\'' + json[r].FORMULARIOS[f].NOMBRE + '\',\'' + json[r].FORMULARIOS[f].S_CARDINALIDAD + '\',\'' + json[r].FORMULARIOS[f].URL + '\',' + idIntalacion + ',1,2,' + idIntalacion + ',' + json[r].FORMULARIOS[f].ID + ',' + r + ',\'' + json[r].FORMULARIOS[f].S_URL_MAPA + '\',\'' + json[r].FORMULARIOS[f].TBL_FOTOS + '\',\'' + json[r].FORMULARIOS[f].TBL_ESTADOS + '\')"'
+                        htmlGeneral += ' ><span class=" glyphicon glyphicon-file" aria-hidden="true"></span>Diligenciar</button></button>'
+                    }
+                    htmlGeneral += '</div>'
+                    htmlGeneral += '<div id="subcollapse_' + r + '_' + f + '" class="panel-collapse collapse">'
+                    htmlGeneral += '<div > <ul class="datosRecursos">'
+                    if (json[r].FORMULARIOS[f].S_CARDINALIDAD != "1") {
+                        /*nivel 3***/
+                        for (var d = 0; d < json[r].FORMULARIOS[f].ITEMS.length; d++) {
+                            htmlGeneral += '<li ><div class="col-md-12"><div class="col-md-8"><input type="checkbox" id="item_' + json[r].FORMULARIOS[f].ID + '_' + json[r].FORMULARIOS[f].ITEMS[d].ID_ITEM + '_' + json[r].FORMULARIOS[f].ITEMS[d].ESTADO + '"></input>&nbsp;<label id="desc_' + json[r].FORMULARIOS[f].ID + '_' + json[r].FORMULARIOS[f].ITEMS[d].ID_ITEM + '_' + json[r].FORMULARIOS[f].ITEMS[d].ESTADO + '">' + json[r].FORMULARIOS[f].ITEMS[d].NOMBRE + '</label></div>';
+                            htmlGeneral += '<div class="col-md-4"><button class="btn btn-default diligenciar" title="Diligenciar formulario" ';
+                            htmlGeneral += ' onClick="abrirFormularioGeneral(\'' + json[r].FORMULARIOS[f].NOMBRE + '\',\'' + json[r].FORMULARIOS[f].S_CARDINALIDAD + '\',\'' + json[r].FORMULARIOS[f].URL + '\',' + json[r].FORMULARIOS[f].ITEMS[d].ID_ITEM + ',1,2,' + json[r].FORMULARIOS[f].ITEMS[d].ESTADO + ',' + json[r].FORMULARIOS[f].ID + ',' + r + ',\'' + json[r].FORMULARIOS[f].S_URL_MAPA + '\',\'' + json[r].FORMULARIOS[f].TBL_FOTOS + '\',\'' + json[r].FORMULARIOS[f].TBL_ESTADOS + '\')">'
+
+
+                            //****condicional chulo
+                            if (json[r].FORMULARIOS[f].ITEMS[d].ESTADO == 0) {
+                                htmlGeneral += '<span class=" glyphicon glyphicon-file" aria-hidden="true"></span>Diligenciar</button>';
+                                htmlGeneral += '<div class="estado"></div>';
+                            } else {
+                                htmlGeneral += '<span class=" glyphicon glyphicon-file" aria-hidden="true"></span>Modificar</button>';
+                                htmlGeneral += '<div class="estado estadoOn"></div>';
+                            }
+
+
+                            htmlGeneral += '</div>';
+                            htmlGeneral += ' </div>';
+                            htmlGeneral += '</li>';
+
+                        }
+                        /**fin nivel3**/
+                    }
+                    htmlGeneral += '</ul></div>'
+                    htmlGeneral += ' </div>'
+                    htmlGeneral += '</div>'
+                }
+
+                htmlGeneral += '</div>'
+                /**final nivel2*/
+                htmlGeneral += '</div>';
+                htmlGeneral += '</div>';
+
+
+                htmlGeneral += ' </div>';
+            }
+            htmlGeneral += ' </div>';
+            $("#acordioPrincipal").remove();
+            $("#acordionGeneal").append(htmlGeneral);
+
+        }
+
+
+        function agregarAcordeonitem(nombreF, cardi, idEncabezado, idDiv, url, idformulario, r, urlMapa, tblfotos, tblEstado) {
+            var nombrenuevo = "";
+            for (var i = 0; i < jsonFormularios.length; i++) {
+                for (var k = 0; k < jsonFormularios[i].FORMULARIOS.length; k++) {
+                    if (jsonFormularios[i].FORMULARIOS[k].ID == idformulario * 1) {
+                        nombrenuevo = jsonFormularios[i].FORMULARIOS[k].NOMBRE;
+                    }
+                }
+            }
+            var nombre = $(idDiv)[0].className;
+            var n = nombre.search("glyphicon-triangle-top");
+            if (n < 0) {
+                $(idEncabezado + "_title").click();
+            }
+            var html = '<li><div class="col-sm-12"><div class="col-sm-8"><label>' + nombrenuevo + '(Nuevo)</label></div><div class="col-sm-4"><button  class="btn btn-default diligenciar" title="Diligenciar formulario"';
+            html += ' onClick="abrirFormularioGeneral(\'' + nombreF + '\',\'' + cardi + '\',\'' + url + '\',-1,1,2,-1,' + idformulario + ',' + r + ',\'' + urlMapa + '\',\'' + tblfotos + '\',\'' + tblEstado + '\')">'
+            html += ' <span class=" glyphicon glyphicon-file" aria-hidden="true"></span>Diligenciar</button> <div class="estadoOn"></div></div></div><input type="hidden" value="-1" style="display:none"></li>';
+            $(idEncabezado + " ul").append(html)
+
+        }
+        function abrirFormularioGeneral(nombreF, cardinalidad, url, idCaptacion, idTipoEstado, idVisita, idEstadobase, idFormulario, r, urlmapa, tablafotos, tablaEstados) {
+            formnombref = nombreF;
+            forCaptacion = idCaptacion;
+            fortipoEstado = idTipoEstado;
+            foridVisita = idVisita;
+            foridform = idFormulario;
+            foridtipoform = "1";
+            textotblFotos = tablafotos;
+            textoUrlMapa = urlmapa;
+            textotblEstados = tablaEstados;
+            formestadoBase = "";
+            formUrl = url;
+
+            if (cardinalidad == 1) {
+                abrirFormularioNuevaPagina(idCaptacion, 'CAR1');
+                return;
+            }
+            if (idCaptacion + "" == "-1") {
+                abrirFormularioNuevaPagina(-1, 'N');
+                
+                return;
+            }
+            if (idEstadobase > 0) {
+                abrirFormularioNuevaPagina(idEstadobase, 'M');
+                return;
+            }
+            $("#cmd_form_baseAguas").find("option").remove();
+
+            $("#FormAguas").dialog({
+
+                width: 400,
+                height: 200,
+                modal:true
+            });
+
+            $("<option value='-1' selected>Sin Estado Base</option>").appendTo("#cmd_form_baseAguas");
+
+            for (var z = 0; z < jsonFormularios[r].FORMULARIOS.length; z++) {
+                if (jsonFormularios[r].FORMULARIOS[z].ID == idFormulario) {
+                    for (var c = 0; jsonFormularios[r].FORMULARIOS[z].ITEMS.length > c; c++) {
+                        if (jsonFormularios[r].FORMULARIOS[z].ITEMS[c].ID_ITEM == idCaptacion) {
+                            for (var x = 0; x < jsonFormularios[r].FORMULARIOS[z].ITEMS[c].ESTADOS.length; x++) {
+                                $("<option value='" + jsonFormularios[r].FORMULARIOS[z].ITEMS[c].ESTADOS[x].ID_ESTADO + "'>" + jsonFormularios[r].FORMULARIOS[z].ITEMS[c].ESTADOS[x].S_DESCRIPCION + " - " + jsonFormularios[r].FORMULARIOS[z].ITEMS[c].ESTADOS[x].D_INICIO + "</option>").appendTo("#cmd_form_baseAguas");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function abrirFormularioNuevaPagina(idEstadoBase, Variable) {
+            var textoempresa = $("#txtInstalacion option:selected").html();
+
+            var idEmpresa = $("#txtId").val();
+            var idIntalacion = $("#txtInstalacion").val();
+            var ruta = "";
+            if (foridform == "4" || foridform == "5" || foridform == "13") {
+
+                ruta = formUrl + "idCaptacion=" + forCaptacion + "&idTipoEstado=" + fortipoEstado + "&idVisita=" + $("#IdVisita").val() + "&idEstadoBase=" + idEstadoBase + "&id_formulario=" + foridform + "&TipoV=" + (idEstadoBase == -1 ? "N" : Variable) + "&infoEmpresa=" + textoempresa.replace('#', ' ') + "&instalacion=" + idIntalacion + "&tercero=" + idEmpresa + "&nombref=" + formnombref + "&urlMapa=" + textoUrlMapa + "&tblFotos=" + textotblFotos + "&tblEstados=" + textotblEstados
+            } else {
+                ruta = formUrl + "idItem=" + forCaptacion + "&idTipoEstado=" + fortipoEstado + "&idVisita=" + $("#IdVisita").val() + "&idEstadoBase=" + idEstadoBase + "&id_formulario=" + foridform + "&TipoV=" + (idEstadoBase == -1 ? "N" : Variable) + "&infoEmpresa=" + textoempresa.replace('#', ' ') + "&urlMapa=" + textoUrlMapa + "&tblFotos=" + textotblFotos + "&instalacion=" + idIntalacion + "&tercero=" + idEmpresa + "&tblEstados=" + textotblEstados + "&nombref=" + formnombref;
+            }
+            window.open(ruta);
+        }
+
+
+
+
+        //funciones para las ayudas
+        function ayudascerrarmapa() {
+
+            var mydiv = document.getElementById('ayudas');
+            mydiv.style.display = 'none';
+        }
+
+
+        function Ayudas() {
+
+            var tab1activo = document.getElementById('Tab1');
+            var tab2activo = document.getElementById('Tab2');
+            var tab3activo = document.getElementById('Tab3');
+            var tab4activo = document.getElementById('Tab4');
+            var tab5activo = document.getElementById('Tab5');
+
+            //tab informacion
+            if (tab1activo.className == 'active') {
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 10);
+            }
+            //tab atiende
+            if (tab4activo.className == 'active') {
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 11);
+            }
+            //tab Formularios
+            if (tab2activo.className == 'active') {
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 12);
+            }
+            //tab informacion industria
+            if (tab5activo.className == 'active') {
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 13);
+            }
+            //tab Fotografias
+            if (tab3activo.className == 'active') {
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 14);
+            }
+        }
+
+
+
+        function abrirModificarInstalacion() {
+            if ($("#txtInstalacion").val() != "-1") {
+                window.open("@Url.Content("~/General/Instalacion/Instalacion/")" + $("#txtInstalacion").val() + "?vistaRetorno=true");
+            } else {
+                //mensajeAlmacenamiento("Seleccione una instalación");
+                window.open("@Url.Content("~/General/Instalacion/Instalacion/?idTercero=")" + $("#txtId").val() + "&vistaRetorno=true");
+            }
+
+        }
+        function abrirNuevaInstalacion() {
+            if ($("#txtInstalacion").val() == "-1") {
+                window.open("@Url.Content("~/General/Instalacion/Instalacion/?idTercero=")" + $("#txtId").val() + "&vistaRetorno=true");
+
+            } else {
+                idIntalacion = $("#txtInstalacion").val();
+            }
+        }
+
+        function llenarTerceroVisitas(id, nombre) {
+
+            for (var i = 0; i < $("#atiende tr").length; i++) {
+                $("#atiende tr:last").remove();
+            }
+            atiendeLLenartercero();
+        }
+        function atiendeLLenartercero() {
+
+
+            $.ajax({
+
+
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GETConsultarAtiendeRealizarVisita?id=")" + $("#IdVisita").val(),
+                success: function (result) {
+                    var datos = result;
+
+                    if (datos.length > 0) {
+                        for (var i = 0; i < datos.length; i++) {
+                            var table = document.getElementById("atiende");
+                            var row = table.insertRow(1);
+                            var cell1 = row.insertCell(0);
+                            var cell2 = row.insertCell(1);
+                            var cell3 = row.insertCell(2);
+                            var cell4 = row.insertCell(3);
+                            var cell5 = row.insertCell(4);
+
+                            cell1.innerHTML = datos[i].ID_TERCERO;
+                            cell2.innerHTML = datos[i].S_RSOCIAL;
+                            //cell3.innerHTML = "<select class='form-control' id=" + table.rows.length + "></select>";
+                            cell3.innerHTML = "<select class='form-control' id=u_" + datos[i].ID_TERCERO + "></select>";
+                            cell4.innerHTML = "<button class='btn btn-default' onclick='llenarterceroVisitas()'>Editar</button>";
+                            cell5.innerHTML = "<button  class='btn btn-default' onclick='eliminarAtinde(this)'>Eliminar</button>";
+
+                            //ConsultarRolVista(table.rows.length, datos[i].ID_ROL);
+                            ConsultarRolVista('u_' + datos[i].ID_TERCERO, datos[i].ID_ROL);
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function InstalacionVisitas(id, nombre) {
+            if ($("#txtInstalacion").val() != "-1") {
+                ConsultarIntalacion($("#txtId").val());
+            }
+            $("#txtInstalacion").val(id);
+        }
+        function recargarGridVisita()
+        {
+         
+            window.opener.cargarVisita(); 
+        }
+        function consultarRadicado() {
+           
+            var datosrad = new Object();
+            var dato = new Array()
+            
+            datosrad["documentoAsociado"] = null;
+            datosrad["documentoAsociadoTextos"] = [];
+            datosrad["serie"]=1;
+            datosrad["subSerie"]=1;
+            datosrad["unidadDocumental"] = 22;
+            dato["datosRadicado"] = datosrad;
+            var obj ={ serie: 1, subSerie: 1, unidadDocumental: 22, documentoAsociado: null, documentoAsociadoTextos: [] }
+
+//var datosinf = JSON.stringify({ "documentoAsociadoTextos": [], "serie": 1, "subSerie": 1, "unidadDocumental": 22, "documentoAsociado": null })
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+           
+                url: "@Url.Content("~/GestionDocumental/api/RadicadorApi/Radicar")",
+                data: {
+                    tipoRetorno: 'key', formatoRetorno: "",
+                    datosRadicado: JSON.stringify(obj)
+                },
+      
+            success: function (response) {
+                var datos = response;
+
+            },
+            });
+
+            
+
+
+        }
+        function enviarCorreo()
+        {
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+           
+                url: "@Url.Content("~/ControlVigilancia/Visitas/enviarMail")",
+       
+      
+            success: function (response) {
+                var datos = response;
+
+            },
+            });
+        }
+
+        function consultarSector(id_tercero, id_instalacion, id_visita)
+        {
+            /*
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/RealizarVisita/consultarSector")",
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+                    var comb = document.getElementById("cmbSector");
+                    if (datos.length > 0) {
+
+                        for (var i = 0; i < datos.length; i++) {
+                            comb.innerHTML += "<option value=" + datos[i].ID_SECTOR + ">" + datos[i].SECTOR + "</option>";
+
+                        }
+                    }
+                    consultarInfIndustria(id_tercero, id_instalacion);
+                }
+            });*/
+            consultarInfIndustria(id_tercero, id_instalacion, id_visita);
+        }
+
+        function FusionarItems()
+        {
+            var valido = true;
+            var numItems = 0;
+            var numItemsActivos = 0;
+            var itemsSeleccionados = '';
+            var idFormulario = '';
+            var popupContentTemplate = $('<div>');
+
+            popupContentTemplate.append('<label>Seleccionar el Item Principal de la Fusi&oacute;n:</label>');
+
+            $("input:checkbox[id^='item_']:checked").each(function () {
+                var formularioItem = '';
+                var datosItem = this.id.split('_');
+
+                if (datosItem.length > 2)
+                    formularioItem = datosItem[1];
+
+                if (formularioItem == '' || (idFormulario != formularioItem && idFormulario != '')) {
+                    alert('Los items seleccionados deben pertenecer al mismo tipo de formulario.');
+
+                    valido = false;
+                } else {
+                    idFormulario = formularioItem;
+                    descripcion = $('#' + this.id.replace('item_', 'desc_')).html();
+                    popupContentTemplate.append('<p><input type="radio" id="fitem_' + this.id + '" name="fusion" value="' + datosItem[2] + '">&nbsp;<label>' + descripcion + '</label></p>');
+
+                    valido &= true;
+                }
+
+                if (itemsSeleccionados == '')
+                    itemsSeleccionados = datosItem[2];
+                else
+                    itemsSeleccionados += ',' + datosItem[2];
+
+                if (datosItem[3] != '0') {
+                    numItemsActivos++;
+                }
+
+                numItems++;
+            });
+
+            if (numItemsActivos > 1) {
+                alert('Solamente puede estar un item en estado de modificación para realizar la fusión.');
+            } else if (valido && numItems > 1) {
+                popupContentTemplate.append('</div>');
+
+                var popup = $('#popupFusionarItems').dxPopup({
+                    contentTemplate: popupContentTemplate,
+                    width: 600,
+                    height: 600,
+                    showTitle: true,
+                    title: 'Fusión de Items',
+                    visible: false,
+                    dragEnabled: false,
+                    closeOnOutsideClick: false,
+                    showCloseButton: true,
+                    toolbarItems: [{
+                        widget: 'dxButton',
+                        toolbar: 'bottom',
+                        location: 'before',
+                        options: {
+                            icon: 'check',
+                            text: 'Aceptar',
+                            type: 'success',
+                            onClick() {
+                                itemSelecionado = $("input:radio[id^='fitem_']:checked").val();
+
+                                if (typeof itemSelecionado != 'undefined') {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/FusionarItems")?idF=' + idFormulario + '&idItemP=' + itemSelecionado + '&i=' + itemsSeleccionados,
+                                        success: function (result) {
+                                            if (result == "OK") {
+                                                CargarJsonAcordeon();
+                                                popup.hide();
+                                            } else {
+                                                alert('Items Inconsistentes: ' + result);
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                        },
+                    }, {
+                        widget: 'dxButton',
+                        toolbar: 'bottom',
+                        location: 'after',
+                        options: {
+                            text: 'Cancelar',
+                            type: 'danger',
+                            onClick() {
+                                popup.hide();
+                            },
+                        },
+                    }],
+                }).dxPopup('instance');
+
+                popup.show();
+            } else {
+                alert('Debe seleccionar por lo menos 2 items del mismo formulario para realizar la fusión.');
+            }
+        }
+    </script>

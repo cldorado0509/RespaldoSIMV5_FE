@@ -1,0 +1,303 @@
+﻿@{
+    ViewBag.Title = "Administrador Encuesta";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+<!--<script src="~/Scripts/jquery-1.11.0.js"></script>-->
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .ui-datepicker-calendar {
+            display: none;
+        }
+        
+
+.ui-dialog .ui-dialog-buttonpane button {
+    margin: .5em .4em .5em 0;
+    cursor: pointer;
+    background-color: rgb(165, 200, 62);
+    height: 32px;
+    width: 71px;
+    border-radius: 4px;
+
+}
+#loadingImg{
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.17) !important;
+    position: fixed;
+    z-index: 100000;
+    cursor: not-allowed;
+}
+
+.loadingImg{
+	position: fixed;
+    z-index: 100000;
+    background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat;
+    left: 50%;
+    background-size: contain;
+    top: 50%;
+    cursor: not-allowed;
+}
+    </style>
+</head>
+<body>
+
+
+    <div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+        <div class="row">
+            <div class="col-sm-12" style=" padding-left: 20px;padding-right:20px;">
+
+                <div id="GrdUserEx" style="height:200px; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);">
+                </div>
+
+            </div>
+        </div>
+        <div id="pantallaEncuesta" title="Encuesta" style="display: none; overflow: hidden;">
+            <iframe src="" id="frEncuestaEditar" width="100%" height="100%"></iframe>
+
+
+        </div>
+        <div id="pantallaReporte" title="PDF" style="display: none; overflow: hidden;">
+            <iframe src="" id="frEncuestaPDF" width="100%" height="100%"></iframe>
+
+
+        </div>
+        <div id="msAlmacenamiento" title="Información" style="display:none">
+            <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+        </div>
+        <div id="msConfirmacion" title="Terminos Condiciones" style="display:none">
+            <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextConf"></p>
+        </div>
+
+        <script>
+            var idestado = 0;
+            $(document).ready(function () {
+
+                //gridUsuarioExterno({});
+                idestado=@ViewBag.idestado;
+                //if(idestado!=0)
+                    //generarPdf(idestado,0);
+                consultarEncuestaUsuario();
+            });
+
+            function gridUsuarioExterno(arrDato) {
+
+                $("#GrdUserEx").dxDataGrid({
+
+                    dataSource: arrDato,
+                    selection: {
+                        mode: 'single'
+                    },
+                    columns: [
+
+                      
+                        { dataField: 'ENCUESTA', caption: 'Encuesta', allowGrouping: true, width: '30%' },
+                        { dataField: 'TIPOVIGENCIA', caption: 'Tipo Vigencia', allowGrouping: true, width: '25%' },
+                        { dataField: 'VIGENCIA', caption: 'Vigencia', allowGrouping: true, width: '25%' },
+                        { dataField: 'ESTADOENCUESTA', caption: 'Estado Encuesta', allowGrouping: true, width: '25%' },
+                         { dataField: 'EMPRESA', caption: 'Tercero', allowGrouping: true, width: '25%' },
+                          { dataField: 'INSTALACION', caption: 'Instalacion', allowGrouping: true, width: '25%' },
+                        { dataField: 'ID_ESTADO', visible: false },
+                         { dataField: 'ID_VIGENCIA', visible: false },
+                          { dataField: 'ID_TERCERO', visible: false },
+                        { dataField: 'TIPO_GUARDADO', visible: false },
+                        { dataField: 'ID_INSTALACION', visible: false },
+                        {
+                            dataField: 'ver', allowGrouping: true, caption: 'Ver', width: '13%', cellTemplate: function (container, options) {
+                                container.height(5);
+                                $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px" class="btnEditar"/>').attr('src', options.value).appendTo(container);
+                            }
+                        },
+                          {
+                              dataField: 'REPLICA', allowGrouping: true, caption: 'Replica', width: '20%', cellTemplate: function (container, options) {
+                                  container.height(5);
+                                  $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"  class="btnEditar"/>')
+
+                                          .attr('src', options.value)
+                                          .appendTo(container);
+                              }
+                          }
+                    ], 
+
+                    scrolling: { mode: 'infinite' },
+                    onSelectionChanged: function (selecteditems) {
+                    },
+                    onCellClick: function (e) {
+
+                        var tipoBoton = e.columnIndex;
+
+                        switch (tipoBoton) {
+
+                            case 6:
+                                if (e.data.TIPO_GUARDADO == 0)
+                                {
+                                    abrirEncuesta(e.data.ID_ESTADO,e.data.ID_ENCUESTA,e.data.ID_VIGENCIA);
+                                } else {
+                                    GenerarDocumentoRadicado(e.data.ID_ESTADO)
+                                    
+                                }
+
+
+                                break;
+                          
+                            case 7:
+                                if (e.data.TIPO_GUARDADO == 0)
+                                {
+                                    mensajeAlmacenamiento("La encuesta se puede modificar");
+                                }else{
+                                    clonarEncuestaUserExterno(e.data.ID_VIGENCIA,e.data.VIGENCIA,e.data.ID_ESTADO,e.data.ID_TERCERO,e.data.ID_INSTALACION)
+                                }
+                              
+                                break;
+
+                        }
+                    },
+                    columnChooser: { enabled: false },
+                    allowColumnReordering: true,
+                    sorting: { mode: 'single' },
+                    pager: { visible: true },
+                    paging: { pageSize: 5 }
+
+                });
+                offload();
+            }
+            function consultarEncuestaUsuario() {
+                onload();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("consultarConsultarEncuestaAdmin", "EncuestaExterna")',
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var datos = eval('(' + response + ')');
+                        if(datos=="[]")
+                            datos="{}";
+                        gridUsuarioExterno(datos);
+                    }
+                });
+            }
+            function clonarEncuestaUserExterno(idvigencia,valor,idestado,idtercero,instalacion) {
+                onload();
+                $.ajax({
+                    type: "POST",
+                    data: { idvigencia: idvigencia,valor:valor,idestado:idestado,idtercero:idtercero,instalacion:instalacion },
+                    url: '@Url.Action("clonarEncuesta", "EncuestaExterna")',
+                  
+                    success: function (response) {
+                        mensajeAlmacenamiento("Encuesta clonada exitosamente");
+                        consultarEncuestaUsuario();
+                    }
+                });
+            }
+            
+            function eliminarEcuestaUseExterno(idestado)
+            {
+
+                $.ajax({
+                    type: "POST",
+                    data: { idestado: idestado },
+                    url: '@Url.Action("EliminarEncuesta", "EncuestaExterna")',
+                    success: function (resultado) {
+                        consultarEncuestaUsuario();
+                        mensajeAlmacenamiento("Eliminación exitosa")
+                        offload();
+                    }
+
+
+                });
+            }
+            function abrirEncuesta(idestado,idencuesta,idvigencia) {
+                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaUsuarioExterno?idVigencia=")' +idvigencia+"&tipo=1"+"&estado="+idestado+"&card=1", '_self');
+
+
+            }
+
+            function generarPdf(idEstado,idRadicado) {
+
+                $("#pantallaReporte").dialog(
+                {
+
+                    width: 800,
+                    height: 500,
+
+
+
+                });
+
+
+                $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/reportEncuesta?idestado=")" + idEstado+"&idRadicado="+idRadicado);
+
+            }
+            function mensajeConfirmar(mensaje,idestado) {
+                $("#msTextConf").text(mensaje);
+                $("#msConfirmacion").dialog({
+                    width: 350,
+                    height: 150,
+                    buttons: {
+                        "NO": function () {
+                            $(this).dialog("close");
+                        },
+                        "SI": function () {
+                            onload();
+                            eliminarEcuestaUseExterno(idestado);
+                            $(this).dialog("close");
+                        }
+                    }, class: "btn btn-default"
+                });
+            }
+            function mensajeAlmacenamiento(mensaje) {
+                $("#msTextAlm").text(mensaje);
+                $("#msAlmacenamiento").dialog({
+                    buttons: [
+              {
+                  text: "Aceptar",
+                  click: function () { $(this).dialog("close"); },
+                  class: "btn btn-default "
+              },
+                    ]
+                });
+            }
+
+            function onload()
+            {
+                $("#loadingImg").css({ "display": "block" });
+            }
+            function offload()
+            {
+                $("#loadingImg").css({ "display": "none" });
+            }
+            function GenerarDocumentoRadicado(idestado) {
+                var idRadicado=0;
+                //var unidadDocumental = 10;
+                // $.ajax({
+                //  type: "GET",
+                //  url: "@Url.Content("~/Tramites/api/RadicadorUDApi/Radicar")",
+                // data: { idUnidadDocumental: unidadDocumental, tipoRetorno: 'key' },
+                // success: function (response) {
+                //  var dato = response;
+                //  idRadicado = dato.IdRadicado;
+                //abrirReporte();
+
+
+                // },
+                // });
+                idRadicado = 1058;
+                generarPdf(idestado,idRadicado);
+                
+            }
+        </script>
+</body>
+
+
+
+

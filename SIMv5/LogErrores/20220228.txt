@@ -1,0 +1,3 @@
+09:06:51 - ProyeccionDocumento [PostAvanzarDocumento - 74116 ] : '<>f__AnonymousType426<byte[],int>' no contiene una definición para 'exito'.
+09:09:41 - ProyeccionDocumento [PostAvanzarDocumento - 74116 ] : '<>f__AnonymousType426<byte[],int>' no contiene una definición para 'exito'.
+09:13:59 - ProyeccionDocumento [PostAvanzarDocumento - 74116 ] : '<>f__AnonymousType426<byte[],int>' no contiene una definición para 'exito'.

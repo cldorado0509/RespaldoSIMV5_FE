@@ -1,0 +1,89 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Data.General
+@model DGA
+
+<div class="row" style="padding:5px">
+    <div class="col-md-12">
+        <h4>Forma de conformación del DGA</h4>
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-2">
+        DGA se comparte:
+        @Html.DevExpress().RadioButtonListFor(model => Model.S_COMPARTEDGA, settings =>
+        {
+            settings.Properties.Items.Add("Sí", "S");
+            settings.Properties.Items.Add("No", "N");
+            settings.Properties.RepeatColumns = 2;
+            settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+            settings.ControlStyle.VerticalAlign = VerticalAlign.Top;
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { chkS_COMPARTEDGA = s; }";
+            settings.Properties.ClientSideEvents.ValueChanged = "function (s,e) { OnValueChangedSelection(chkS_COMPARTEDGA, lblS_COMPARTEDGA, txtS_COMPARTEDGA) }";
+        }).GetHtml()
+    </div>
+    <div class="col-md-10">
+        @Html.DevExpress().Label(settings =>
+        {
+            settings.Name = "lblS_COMPARTEDGA";
+            settings.Text = "Cu&aacute;les Empresas ?";
+            settings.EncodeHtml = false;
+            settings.ClientVisible = (Model.S_COMPARTEDGA == "S" ? true : false);
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { lblS_COMPARTEDGA = s; }";
+        }).GetHtml()
+        @Html.DevExpress().MemoFor(model => Model.S_COMPARTEEMPRESA, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(50);
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { txtS_COMPARTEDGA = s; }";
+            settings.ClientVisible = (Model.S_COMPARTEDGA == "S" ? true : false);
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-2">
+        Asesoría de Agremiaciones:
+        @Html.DevExpress().RadioButtonListFor(model => Model.S_AGREMIACION, settings =>
+        {
+            settings.Properties.Items.Add("Sí", "S");
+            settings.Properties.Items.Add("No", "N");
+            settings.Properties.RepeatColumns = 2;
+            settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { chkS_AGREMIACION = s; }";
+            settings.Properties.ClientSideEvents.ValueChanged = "function (s,e) { OnValueChangedSelection(chkS_AGREMIACION, lblS_AGREMIACION, txtS_AGREMIACION) }";
+        }).GetHtml()
+    </div>
+    <div class="col-md-10">
+        @Html.DevExpress().Label(settings =>
+        {
+            settings.Name = "lblS_AGREMIACION";
+            settings.Text = "Cu&aacute;les ?";
+            settings.EncodeHtml = false;
+            settings.ClientVisible = (Model.S_AGREMIACION == "S" ? true : false);
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { lblS_AGREMIACION = s; }";
+        }).GetHtml()
+        @Html.DevExpress().MemoFor(model => Model.S_AGREMIACIONASESORIA, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(70);
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { txtS_AGREMIACION = s; }";
+            settings.ClientVisible = (Model.S_AGREMIACION == "S" ? true : false);
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-2">
+        Funciones del DGA:
+    </div>
+    <div class="col-md-10">
+        @Html.DevExpress().MemoFor(model => Model.S_FUNCION, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(100);
+            settings.ReadOnly = ViewBag.ReadOnly;
+        }).GetHtml()
+    </div>
+</div>

@@ -1,0 +1,86 @@
+﻿@using System.Web.UI.WebControls
+<br />
+<br />
+<br />
+<br />
+<br />
+
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popTipoTercero";
+    settings.ShowHeader = true;
+    settings.AllowDragging = false;
+    settings.AllowResize = false;
+    settings.Width = 300;
+    settings.CloseAction = CloseAction.CloseButton;
+    settings.PopupAnimationType = AnimationType.None;
+    settings.HeaderText = "Seleccionar Tipo Tercero";
+    settings.Modal = true;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.ShowOnPageLoad = true;
+
+    settings.SetContent(() =>
+    {
+        using (Html.BeginForm("LoadTercero", "Tercero", FormMethod.Post, new { id = "frmSeleccionarTipoTercero", @class = "edit_form", @style = "width: 260px" }))
+        {
+            ViewContext.Writer.Write("<div style=\"padding: 15px\">");
+            ViewContext.Writer.Write("<div class=\"row\">");
+            ViewContext.Writer.Write("<div class=\"col-md-5\">");
+            Html.DevExpress().Label(
+                labelSettings =>
+                {
+                    labelSettings.Text = "Tipo Tercero:";
+                    labelSettings.AssociatedControlName = "tipoTercero";
+                }
+            )
+            .Render();
+            ViewContext.Writer.Write("</div><div class=\"col-md-7\">");
+            Html.DevExpress().ComboBox(
+                comboBoxSettings =>
+                {
+                    comboBoxSettings.EncodeHtml = false;
+                    comboBoxSettings.Name = "tipoTercero";
+                    comboBoxSettings.Width = Unit.Percentage(100);
+                    //comboBoxSettings.ControlStyle.CssClass = "editor";
+                    comboBoxSettings.Properties.Items.Add("Natural", "N");
+                    comboBoxSettings.Properties.Items.Add("Jur&iacute;dico", "J");
+                    comboBoxSettings.Properties.NullText = "[Tipo Tercero]";
+                }
+            )
+            .Render();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div class=\"row\">&nbsp;</div>");
+            ViewContext.Writer.Write("<div class=\"row\" style=\"text-align: center\">");
+            Html.DevExpress().Button(
+                buttonSettings =>
+                {
+                    buttonSettings.Name = "btnAceptar";
+                    buttonSettings.ControlStyle.CssClass = "button";
+                    buttonSettings.Style.Add("margin-right", "5px");
+                    buttonSettings.Width = 80;
+                    buttonSettings.Text = "Aceptar";
+                    buttonSettings.UseSubmitBehavior = true;
+                }
+            )
+            .Render();
+            Html.DevExpress().Button(
+                buttonSettings =>
+                {
+                    buttonSettings.Name = "btnCancel";
+                    buttonSettings.ControlStyle.CssClass = "button";
+                    buttonSettings.Style.Add("margin-left", "5px");
+                    buttonSettings.Width = 80;
+                    buttonSettings.Text = "Cancelar";
+                    buttonSettings.ClientSideEvents.Click = "function(s, e){ popTipoTercero.Hide(); }";
+                }
+            )
+            .Render();
+            ViewContext.Writer.Write("</div><b class=\"Clear\"></b>");
+            ViewContext.Writer.Write("</div>");
+        }
+    });
+
+    settings.ClientSideEvents.CloseUp = "function(s, e){ ASPxClientEdit.ClearEditorsInContainer(null, '', true); }";
+}).GetHtml()

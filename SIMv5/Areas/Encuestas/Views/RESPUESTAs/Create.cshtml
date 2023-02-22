@@ -1,0 +1,93 @@
+﻿<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Scripts/General.js"></script>
+@model SIM.Areas.Encuestas.Models.RESPUESTA
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutSimple.cshtml";
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    
+    <input type="hidden" id="CodigoPregunta" value="@ViewBag.CodigoPregunta" />
+    
+    <table style="width:100%">
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @*@Html.LabelFor(model => model.S_VALOR, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.Label("Descripcion", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Html.EditorFor(model => model.S_VALOR, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.S_VALOR, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @*@Html.LabelFor(model => model.S_CODIGO, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.Label("Valor", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Html.EditorFor(model => model.S_CODIGO, new { htmlAttributes = new { @class = "form-control"} })
+                @Html.ValidationMessageFor(model => model.S_CODIGO, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @*@Html.LabelFor(model => model.N_ORDEN, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.Label("Orden", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Html.EditorFor(model => model.N_ORDEN, new { htmlAttributes = new { @class = "form-control", type="number", @Value="0", min="0", max="1000" } })
+                @Html.ValidationMessageFor(model => model.N_ORDEN, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+    </table>
+
+        <div class="form-horizontal">            
+            <div class="form-group" style="display:none">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" id="btnCrear" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+        }
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var Error = '@ViewBag.Error';       
+
+        if (Error == 'False') {
+            window.parent.$('#popup').modal('hide');
+            window.parent.Inicializar();
+        }
+    });
+
+    $("#S_VALOR").keypress(function (e) {
+        return ValidarTexto(e);
+    });
+
+    $("#S_CODIGO").keypress(function (e) {
+        return ValidarTexto(e);
+    });
+</script>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/general")
+    @Scripts.Render("~/bundles/jqwidgets")
+    @Scripts.Render("~/bundles/jqueryui")
+</head>
+<body style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;padding: 0;">
+    @RenderBody()
+
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

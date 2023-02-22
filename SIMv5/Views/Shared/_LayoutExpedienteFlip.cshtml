@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width = 1050, user-scalable = no" charset="utf-8" />
+    <script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/jquery.min.1.7.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/modernizr.2.5.3.min.js")"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/basic.css")" />
+   
+    <script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/turn.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/basic.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/jquery-ui-1.8.20.custom.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/jquery.mousewheel.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/turnjs4/hash.js")"></script>
+
+    <title></title>
+</head>
+    <body>
+        @RenderBody()
+
+        @RenderSection("Scripts", required: false)
+
+    </body>
+
+</html>

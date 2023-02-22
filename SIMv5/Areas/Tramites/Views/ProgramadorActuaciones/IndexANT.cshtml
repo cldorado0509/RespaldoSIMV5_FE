@@ -1,0 +1,232 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/programadoractuaciones.js")"></script>
+
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="ProgramadorActuacionesController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Almacenando...', showIndicator: true, shading: true, bindingOptions: { visible: 'almacenandoVisible' } }"></div>
+            <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+            <div dx-popup="popQuejaSettings" id="popQueja">
+                <div dx-data-grid="quejaGridSettings" id="grdQueja"></div>
+            </div>
+            <div dx-popup="popCMSettings" id="popCM">
+                <div dx-data-grid="cmGridSettings" id="grdCM"></div>
+            </div>
+            <div dx-popup="popAsuntoSettings" id="popAsunto">
+                <div dx-data-grid="asuntoGridSettings" id="grdAsunto"></div>
+            </div>
+            <div dx-popup="popTramiteSettings" id="popTramite">
+                <div dx-data-grid="tramiteGridSettings" id="grdTramite"></div>
+            </div>
+            <div dx-popup="popDocumentoSettings" id="popDocumento">
+                <div dx-data-grid="documentoGridSettings" id="grdDocumento"></div>
+                <br />
+                <div dx-data-grid="indicesDocumentoGridSettings" id="grdIndicesDocumento"></div>
+                <div class="panelSIM-body clearfix">
+                    <div dx-button="seleccionarDocumentoSettings" id="btnSeleccionarDocumento"></div>
+                </div>
+            </div>
+
+            <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+            <div ng-show="isActive(0)" class="panelSIM-heading" style="min-height: 600px">
+                <div dx-data-grid="ejecucionGridSettings" id="grdEjecucion"></div>
+            </div>
+            <div ng-show="isActive(1)" class="panelSIM-heading" style="min-height: 600px">
+                <div class="dx-fieldset">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label" style="width: 250px">
+                                    <label style="font-weight:bold">Programación se basa en</label>
+                                </div>
+                                <div class="dx-field-value" style="width: 40%; float: left">
+                                    <div dx-radio-group="optTipoProgramacionSettings"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="programacion.basadaEn == 1">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow" style="padding-left: 10px;">CM</div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="cmSelectBoxSettings" id="cboCM"></div>
+                                </div>
+                            </div>
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow" style="padding-left: 10px;">Asunto</div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="asuntoSelectBoxSettings" id="cboAsunto"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="programacion.basadaEn == 2">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow" style="padding-left: 10px;">Queja</div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="quejaSelectBoxSettings" id="cboQueja"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset" ng-show="programacion.queja != null || programacion.asunto != null || programacion.basadaEn == 3">
+                    <div class=" row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Tarea</label></div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="tramiteSelectBoxSettings" id="cboTramite"></div>
+                                </div>
+                            </div>
+                            <div class="dx-field" ng-show="programacion.tramite != null">
+                                <div class=" dx-field-label labelfullrow"><label style="font-weight:bold">Documento</label></div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="documentoSelectBoxSettings" id="cboDocumento"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label" style="width: 250px">
+                                    <label style="font-weight:bold">Tipo de Actuaci&oacute;n</label>
+                                </div>
+                                <div class="dx-field-value" style="width: 50%; float: left">
+                                    <div dx-radio-group="optTipoActuacionSettings"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label" style="width: 250px">
+                                    <label style="font-weight:bold">Periodicidad</label>
+                                </div>
+                                <div class="dx-field-value" style="width: 50%; float: left">
+                                    <div dx-radio-group="optTipoPeriodicidadSettings"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset" ng-show="programacion.tipoPeriodicidad == 1 || programacion.tipoPeriodicidad == 2" style="margin-top:0px; margin-bottom:0px">
+                    <div class="row">
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="width: 250px">
+                            </div>
+                            <div class="dx-field-value" style="float: left">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label" style="width: 250px">
+                                            <label style="font-weight:bold">Tiempo Programaci&oacute;n</label>
+                                        </div>
+                                        <div class="dx-field-value" style="float: left">
+                                            <div class="col-md-2 col-sm-3 col-xs-5" style="padding:0px">
+                                                <div dx-text-box="tiempoSettings"></div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-5 col-xs-7" style="padding:0px">
+                                                <div dx-select-box="TipoTiempoSettings"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset" ng-show="programacion.tipoPeriodicidad == 2" style="margin-top:0px; margin-bottom:0px">
+                    <div class="row">
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="width: 250px">
+                            </div>
+                            <div class="dx-field-value" style="float: left">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label" style="width: 250px">
+                                            <label style="font-weight:bold">Frecuencia</label>
+                                        </div>
+                                        <div class="dx-field-value" style="float: left">
+                                            <div class="col-md-2 col-sm-3 col-xs-5" style="padding:0px">
+                                                <div dx-text-box="frecuenciaSettings"></div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-5 col-xs-7" style="padding:0px">
+                                                <div dx-select-box="cboTipoFrecuenciaSettings"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset" ng-show="programacion.tipoPeriodicidad == 2" style="margin-top:0px; margin-bottom:0px">
+                    <div class="row">
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="width: 250px">
+                            </div>
+                            <div class="dx-field-value" style="float: left">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label" style="width: 250px">
+                                            <label style="font-weight:bold">Repeticiones Finalizaci&oacute;n</label>
+                                        </div>
+                                        <div class="dx-field-value" style="float: left">
+                                            <div class="col-md-6 col-sm-8 col-xs-12" style="padding:0px">
+                                                <div dx-text-box="repeticionesSettings"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label" style="width: 250px">
+                                    <label style="font-weight:bold">Fecha de Notificaci&oacute;n</label>
+                                </div>
+                                <div class="dx-field-value" style="float: left">
+                                    <div class="col-md-3 col-sm-4 col-xs-6" style="padding:0px">
+                                        <div dx-date-box="fechaNotificacionSettings" style="width:100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dx-fieldset">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class=" dx-field-label" style="width: 250px"><label style="font-weight:bold">Observaciones</label></div>
+                                <div class="dx-field-value" style="float: left">
+                                    <div dx-text-area="observacionesSettings" style="width:100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panelSIM-body clearfix" style="text-align: center">
+                    <div dx-button="btnAlmacenarSettings" id="btnAlmacenar"></div>
+                    <div dx-button="btnCancelarSettings" id="btnCancelar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

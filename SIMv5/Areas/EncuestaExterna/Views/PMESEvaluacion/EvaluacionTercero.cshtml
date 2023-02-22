@@ -1,0 +1,70 @@
+﻿@using SIM.Properties
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        AjustarTamano();
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano()
+    {
+        $("#pnlContenedor").height((window.innerHeight || document.body.clientHeight) - 190);
+        $("#pnlGridPlanes").height($("#pnlContenedor").outerHeight() - $("#pnlContenedorTitulo").outerHeight() - 4);
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/EncuestaExterna/Scripts/PMESEvaluacion/evaluaciontercero.js?v=1.04")"></script>
+
+<iframe id="fraDocumento" style="display: none"></iframe>
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" data-ve="@(ViewBag.Version)" data-id="@(ViewBag.IdEvaluacionEncuestaTercero)" data-idt="@(ViewBag.IdTercero)" data-vv="@(ViewBag.ValorVigencia)" data-ro="@(ViewBag.SoloLectura)" data-t="@(ViewBag.Tipo)" resizable>
+        <div class="panelSIM-default">
+            <div id="loadPanel"></div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div class="panelSIM-heading" id="pnlContenedorTitulo">
+                    <h3 class="panelSIM-title">
+                        <label class="header">@(ViewBag.Tercero) - @(ViewBag.ValorVigencia) - EVALUACI&Oacute;N SEDES - @(ViewBag.Titulo)</label>
+                    </h3>
+                    <div style="text-align: right; color: darkgrey; float: right; font-size: small; margin-top: -10px;">La columna "P" determina cual es la sede principal de la empresa y de &eacute;sta se toma la direcci&oacute;n para el oficio.</div>
+                </div>
+                <div id="pnlGridPlanes">
+                    <div style="height: 100%">
+                        <div id="grdPMESTercero"></div>
+                    </div>
+                </div>
+            </div>
+            @if (ViewBag.SoloLectura == "N")
+            {
+                <div style="height: 40px; text-align: center; padding: 7px; ">
+                    @if ((ViewBag.Version ?? 1) == 2 || ViewBag.Tipo == 2)
+                    {
+                        <div id="pnlBotones" style="display:inline-block">
+                            <div id="btnEvaluacion"></div>
+                        </div>
+                    }
+                    <div id="pnlBotones" style="display:inline-block">
+                        <div id="btnRefrescarDatos"></div>
+                    </div>
+                    <div id="pnlBotones" style="display:inline-block">
+                        <div id="btnGenerarDocumento"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

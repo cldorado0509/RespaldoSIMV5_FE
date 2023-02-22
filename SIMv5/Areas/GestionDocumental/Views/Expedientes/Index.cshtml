@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Expedientes";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/Expedientes.js?V=0.1")"></script>
+<style>
+    #BotonExp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Administrar Expedientes</label>
+            </h3>
+        </div>
+        <div id="grdListaExp"></div>
+        <br />
+        <div id="BotonExp">
+            <div id="btnNuevo"></div>
+        </div>
+        <br />
+        <div id="PopupNuevoExp">
+            <div style="height: 100%; overflow-y: scroll;overflow-x: hidden;">
+                <div class="form-horizontal" style="width: 95%;">
+                    <div class="form-group">
+                        <div class="control-label col-sm-3">Serie Documental :</div>
+                        <div class="col-sm-9" id="cboSerie"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-md-3">Subserie Documental :</div>
+                        <div class="col-md-9" id="cboSubSerie"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-md-3">Unidad Documental :</div>
+                        <div class="col-md-9" id="cboUnidadDoc"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-sm-3">Nombre del expediente :</div>
+                        <div class="col-sm-4" id="txtNombre"></div>
+                        <div class="control-label col-sm-2">Código expediente :</div>
+                        <div class="col-sm-3" id="txtCodigo"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-md-3">Descripción :</div>
+                        <div class="col-md-9" id="txtDescripcion"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-sm-3">Estado :</div>
+                        <div class="col-sm-2" id="chkActivo"></div>
+                        <div class="col-sm-2" id="chkAnulado"></div>
+                        <div class="control-label col-sm-2">Último estado :</div>
+                        <div class="col-sm-3" id="txtUltEstado"></div>
+                    </div>
+                    <div class="tituloTexto">
+                        <div class="control-label col-md-12" style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: bold;text-align:center;color:darkblue;">Índices del expediente</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1"></div>
+                        <div class="col-md-11" id="GridIndices"></div>
+                    </div>
+                    <br />
+                    <div id="BotonExp">
+                        <div id="btnGuarda"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="PopupDetalleExp"></div>
+        <div id="PopupEstados">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Administrar Estados Expediente</label>
+                </h3>
+            </div>
+            <div id="grdEstado"></div>
+        </div>
+        <div id="PopupReporte"></div>
+        <div id="LoadingPanel"></div>
+        <div id="popTomos" style="padding: 0px">
+            <iframe src="" id="frmTomos" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+        </div>
+    </div>
+</div>

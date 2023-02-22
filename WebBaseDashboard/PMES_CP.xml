@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-CO">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <DataSource ComponentName="dataSource1" Name="PMES1_SexoEdadPorc" />
+    <DataSource ComponentName="dataSource2" Name="PMES1_EstratoPorc" />
+    <DataSource ComponentName="dataSource4" Name="PMES1_HorarioEntSal" />
+    <DataSource ComponentName="dataSource5" Name="PMES1_TipoTrabajador" />
+    <DataSource ComponentName="dataSource6" Name="PMES1_Area" />
+    <DataSource ComponentName="dataSource7" Name="PMES1_Parqueo" />
+  </DataSources>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="SEXO Y EDAD" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="S_SEXO" UniqueName="DataItem0" />
+        <Dimension DataMember="S_EDAD" UniqueName="DataItem1" />
+        <Measure DataMember="N_PORCENTAJE" UniqueName="DataItem2">
+          <NumericFormat FormatType="Percent" />
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension UniqueName="DataItem1" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem2" Name="ESTRATO" Group="dashboardItemGroup1" DataSource="dataSource2" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="S_VALOR" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_PORCENTAJE" Name="% de Personas" UniqueName="DataItem1">
+          <NumericFormat FormatType="Percent" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="% de Personas">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem3" Name="HORARIO DE INGRESO Y SALIDA" Group="dashboardItemGroup1" DataSource="dataSource4">
+      <DataItems>
+        <Dimension DataMember="S_PREGUNTA" UniqueName="DataItem1" />
+        <Dimension DataMember="N_HORA" Name="N_HORA" UniqueName="DataItem0" />
+        <Measure DataMember="ID_ESTADO" SummaryType="Count" UniqueName="DataItem2" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension UniqueName="DataItem1" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" Title="ID_ESTADO (Recuento)" />
+          <Series>
+            <Simple SeriesType="Line">
+              <Value UniqueName="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <AxisX TitleVisible="true" Title="N_HORA" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem4" Name="TIPO DE TRABAJADORES" Group="dashboardItemGroup1" DataSource="dataSource5" Rotated="true">
+      <DataItems>
+        <Measure DataMember="ID_ESTADO" SummaryType="Count" UniqueName="DataItem1" />
+        <Dimension DataMember="S_VALOR" ColoringMode="Hue" UniqueName="DataItem0" />
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY Title="Cantidad" />
+          <Series>
+            <Simple Name="Cantidad">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem5" Name="AREAS" Group="dashboardItemGroup1" DataSource="dataSource6" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="S_VALOR" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="ID_ESTADO" UniqueName="DataItem1" />
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY Title="Cantidad" />
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem6" Name="CELDAS DE PARQUEO" Group="dashboardItemGroup1" DataSource="dataSource7">
+      <DataItems>
+        <Dimension DataMember="S_TIPO" ColoringMode="Hue" UniqueName="DataItem1" />
+        <Measure DataMember="N_VALOR" SummaryType="Max" UniqueName="DataItem0">
+          <NumericFormat FormatType="General" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem1" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem0" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem7" Name="TELETRABAJO" Group="dashboardItemGroup1">
+      <Panes>
+        <Pane Name="Panel 1" />
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem8" Name="CONTADOR DE DUCHAS" Group="dashboardItemGroup1">
+      <Panes>
+        <Pane Name="Panel 1" />
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem9" Name="DIAS DE LA SEMANA" Group="dashboardItemGroup1">
+      <Panes>
+        <Pane Name="Panel 1" />
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem10" Name="EMISIONES AHORRADAS POR TELETRABAJO" Group="dashboardItemGroup1">
+      <Panes>
+        <Pane Name="Panel 1" />
+      </Panes>
+    </Chart>
+    <TextBox ComponentName="textBoxDashboardItem1" Name="CP_TOTAL" ShowCaption="false" Group="dashboardItemGroup1">{\rtf1\deff0{\fonttbl{\f0 Calibri;}{\f1 Times New Roman;}}{\colortbl ;\red0\green0\blue255 ;}{\*\defchp \f1}{\*\listoverridetable}{\stylesheet {\ql\f1 Normal;}{\*\cs1\f1 Default Paragraph Font;}{\*\cs2\sbasedon1\f1 Line Number;}{\*\cs3\ul\f1\cf1 Hyperlink;}{\*\ts4\tsrowd\f1\ql\trautofit1\tscellpaddfl3\tscellpaddl108\tscellpaddfr3\tscellpaddr108\tsvertalt\cltxlrtb Normal Table;}{\*\ts5\tsrowd\sbasedon4\f1\ql\trbrdrt\brdrs\brdrw10\trbrdrl\brdrs\brdrw10\trbrdrb\brdrs\brdrw10\trbrdrr\brdrs\brdrw10\trbrdrh\brdrs\brdrw10\trbrdrv\brdrs\brdrw10\trautofit1\tscellpaddfl3\tscellpaddl108\tscellpaddfr3\tscellpaddr108\tsvertalt\cltxlrtb Table Simple 1;}}\nouicompat\splytwnine\htmautsp\sectd\pard\plain\ql{\lang9226\langfe9226\fs22\cf0 POBLACI}{\lang9226\langfe9226\fs22\cf0 \u211\'d3N:}\f1\par}</TextBox>
+  </Items>
+  <Groups>
+    <Group ComponentName="dashboardItemGroup1" Name="CONTADOR: POBLACIÓN" ShowCaption="false" />
+  </Groups>
+  <ColorSheme>
+    <Entry DataSource="dataSource7" Color="-10641791">
+      <DimensionKeys>
+        <DimensionKey>
+          <Definition DataMember="S_TIPO" />
+          <Value Type="System.String" Value="BICICLETA" />
+        </DimensionKey>
+      </DimensionKeys>
+    </Entry>
+    <Entry DataSource="dataSource7" Color="-1857965">
+      <DimensionKeys>
+        <DimensionKey>
+          <Definition DataMember="S_TIPO" />
+          <Value Type="System.String" Value="CARRO" />
+        </DimensionKey>
+      </DimensionKeys>
+    </Entry>
+  </ColorSheme>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical">
+      <LayoutGroup DashboardItem="dashboardItemGroup1" Weight="100" Orientation="Vertical">
+        <LayoutItem DashboardItem="textBoxDashboardItem1" Weight="5.2229299363057322" />
+        <LayoutGroup Weight="32.866242038216562">
+          <LayoutItem DashboardItem="chartDashboardItem1" Weight="49.941107184923439" />
+          <LayoutItem DashboardItem="chartDashboardItem2" Weight="50.058892815076561" />
+        </LayoutGroup>
+        <LayoutGroup Weight="61.910828025477706">
+          <LayoutGroup Weight="49.941107184923439" Orientation="Vertical">
+            <LayoutItem DashboardItem="chartDashboardItem3" Weight="43.415637860082306" />
+            <LayoutGroup Weight="56.584362139917694">
+              <LayoutItem DashboardItem="chartDashboardItem6" Weight="49.764150943396224" />
+              <LayoutItem DashboardItem="chartDashboardItem8" Weight="50.235849056603776" />
+            </LayoutGroup>
+          </LayoutGroup>
+          <LayoutGroup Weight="50.058892815076561" Orientation="Vertical">
+            <LayoutItem DashboardItem="chartDashboardItem4" Weight="35.596707818930042" />
+            <LayoutItem DashboardItem="chartDashboardItem5" Weight="27.572016460905349" />
+            <LayoutGroup Weight="36.831275720164612">
+              <LayoutGroup Weight="49.882352941176471" Orientation="Vertical">
+                <LayoutItem DashboardItem="chartDashboardItem7" Weight="51.955307262569832" />
+                <LayoutItem DashboardItem="chartDashboardItem9" Weight="48.044692737430168" />
+              </LayoutGroup>
+              <LayoutItem DashboardItem="chartDashboardItem10" Weight="50.117647058823529" />
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

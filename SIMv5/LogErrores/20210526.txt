@@ -1,0 +1,105 @@
+09:55:11 - ProyeccionDocumento [PostAlmacenarDatosProyeccionDocumento - 521 ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.
+An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."TmpPass": identificador no válido
+10:02:27 - ProyeccionDocumento [PostAlmacenarDatosProyeccionDocumento - 521 ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.
+An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."TmpPass": identificador no válido
+10:45:38 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : The entity type DbQuery`1 is not part of the model for the current context.
+11:35:11 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : The entity type DbQuery`1 is not part of the model for the current context.
+11:44:37 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : The entity type DbQuery`1 is not part of the model for the current context.
+11:49:31 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : The entity type DbQuery`1 is not part of the model for the current context.
+14:09:54 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : No se puede obtener acceso al búfer interno de MemoryStream.
+15:41:34 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : No se puede obtener acceso al búfer interno de MemoryStream.
+15:46:31 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : No se puede obtener acceso al búfer interno de MemoryStream.
+15:52:23 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : No se puede obtener acceso al búfer interno de MemoryStream.
+16:00:02 - ProyeccionDocumento [PostAvanzarDocumento - 521 ] : No se puede obtener acceso al búfer interno de MemoryStream.
+16:02:15 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026656, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:15 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026657, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:16 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026658, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:16 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026659, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:16 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026660, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:17 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026661, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:17 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026662, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:17 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026663, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:18 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026664, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:02:18 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026665, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:12:49 - ProyeccionDocumento [PostAvanzarDocumento - 541 ] : co.com.certicamara.encryption3DES.code.Encrypt3DES ::decrypt::. Description: El valor no puede ser nulo.
+Nombre del parámetro: s
+16:15:42 - ProyeccionDocumento [PostAvanzarDocumento - 541 ] : co.com.certicamara.encryption3DES.code.Encrypt3DES ::decrypt::. Description: El valor no puede ser nulo.
+Nombre del parámetro: s
+16:18:04 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026666, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:18:04 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026667, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:18:05 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026668, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+16:18:05 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026669, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored

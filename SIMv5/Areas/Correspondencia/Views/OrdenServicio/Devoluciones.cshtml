@@ -1,0 +1,426 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    $(function () {
+        pageonload();
+    });
+
+    $('#DWTcontainer').hover(function () {
+        $(document).bind('mousewheel DOMMouseScroll', function (event) {
+            stopWheel(event);
+        });
+    }, function () {
+        $(document).unbind('mousewheel DOMMouseScroll');
+    });
+
+    var IdCod;
+    var myApp = angular.module('SIM', ['dx']);
+    myApp.controller("DevolucionOrdenController", function ($scope, $location, $http) {
+        $scope.isPopupVisibleDevol = false;
+        $scope.isPopupVisibleDigitaliza = false;
+        $scope.MotivoDevSel = "";
+        $scope.txtFecDevolucion = "";
+        $scope.IdCodDet = "";
+        $scope.CODTRAMITE = "";
+        $scope.CODDOCUMENTO = "";
+
+        $scope.MostrarDocumento = function (CodTramite, CodDocumento) {
+            var _popup = $("#popDocumento").dxPopup("instance");
+            _popup.show();
+            $("#DocumentoAdjunto").attr("src", '@Url.Content("~")Correspondencia/Correspondencia/LeeDoc?CodTramite=' + CodTramite + '&CodDocumento=' + CodDocumento);
+        };
+
+        $scope.popupDevolucion = {
+            width: 600,
+            height: 300,
+            showTitle: true,
+            title: 'Ingreso devolucón COD',
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            bindingOptions: {
+                visible: 'isPopupVisibleDevol'
+            }
+        };
+
+        MostrarDetalleTra = function (CodTramite) {
+            var _popup = $("#popDetalle").dxPopup("instance");
+            _popup.option('title', 'Detalle Trámite - ' + CodTramite);
+            _popup.show();
+            $('#frmDetalleTramite').attr('src', null);
+            $("#frmDetalleTramite").attr("src", 'https://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=' + CodTramite);
+        };
+
+        $scope.grdDevolucionCODSettings = {
+            dataSource: grdDevolucionesSource,
+            allowColumnResizing: true,
+            loadPanel: { text: 'Cargando Datos...' },
+            noDataText: "Sin datos para mostrar",
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true
+            },
+            groupPanel: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            export: {
+                enabled: true,
+                fileName: 'Devoluciones_correspondencia'
+            },
+            remoteOperations: true,
+            editing: { useIcons: true },
+            onEditorPreparing: true,
+            columns: [
+                {
+                    dataField: "ID_COD",
+                    width: '1%',
+                    caption: 'Codigo de la Orden',
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: 'ID_CODDET',
+                    caption: 'Codigo del Detalle',
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: "CODTRAMITE",
+                    width: '10%',
+                    caption: 'Codigo del Trámite',
+                    dataType: 'number',
+                    cellTemplate: function (cellElement, cellInfo) {
+                        if (cellInfo.data.CODTRAMITE != null && cellInfo.data.CODTRAMITE != '') {
+                            var enlaces = '<a href="#" onclick="MostrarDetalleTra(' + cellInfo.data.CODTRAMITE + ');">' + cellInfo.data.CODTRAMITE + '</a>'
+                        }
+                        cellElement.html(enlaces);
+                    }
+                }, {
+                    dataField: 'CODDOCUMENTO',
+                    width: '5%',
+                    caption: 'Documento',
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: 'S_REFERENCIA',
+                    width: '15%',
+                    caption: 'Radicado - Año',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_DESTINATARIO',
+                    width: '20%',
+                    caption: 'Destinatario',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_ORDEN',
+                    width: '15%',
+                    caption: 'Orden de Servicio',
+                    alignment: 'right',
+                    dataType: 'string',
+                }, {
+                    dataField: 'D_FECHA',
+                    width: '15%',
+                    caption: 'Fecha Orden de Servicio',
+                    dataType: 'date',
+                }, {
+                    dataField: 'DEVOLUCION',
+                    width: '5%',
+                    caption: 'Devolución',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_NOVEDAD',
+                    width: '15%',
+                    caption: 'Motivo Devolución',
+                    dataType: 'string',
+                }, {
+                    dataField: 'D_FECHADEV',
+                    width: '10%',
+                    caption: 'Fecha Devolución',
+                    dataType: 'date',
+                }, {
+                    width: '3%',
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/Ver_Doc.png',
+                            hint: 'Ver documento',
+                            onClick: function (e) {
+                                $scope.MostrarDocumento(options.row.data.CODTRAMITE, options.row.data.CODDOCUMENTO);
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    width: '3%',
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/Devolver.png',
+                            hint: 'Registrar devolución documento',
+                            onClick: function (e) {
+                                $scope.txtFecDevolucion = options.row.data.D_FECHA;
+                                $scope.MotivoDevSel = options.row.data.S_NOVEDAD != "" ? options.row.data.S_NOVEDAD : null;
+                                $scope.IdCodDet = options.row.data.ID_CODDET;
+                                $scope.isPopupVisibleDevol = true;
+                                $scope.CODTRAMITE = options.row.data.CODTRAMITE;
+                                $scope.CODDOCUMENTO = options.row.data.CODDOCUMENTO;
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    width: '3%',
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        if (options.row.data.DEVOLUCION == "Si") {
+                            $('<div/>').dxButton({
+                                icon: '@Url.Content("~")/Content/Images/Scan.png',
+                                hint: 'Si es devolución Escanear documento',
+                                onClick: function (e) {
+                                    $scope.isPopupVisibleDigitaliza = true;
+                                    $scope.CODTRAMITE = options.row.data.CODTRAMITE;
+                                    $scope.CODDOCUMENTO = options.row.data.CODDOCUMENTO;
+                                    $scope.UploadUrl = @Url.Content("~") + "Correspondencia/api/CodApi/SubirDevolucion?Codtramite=" + $scope.CODTRAMITE + "&Coddocumento=" + $scope.CODDOCUMENTO;
+                                    //if (DWObject) {
+                                    //    DWObject.RemoveAllImages();
+                                    //}
+                                }
+                            }).appendTo(container);
+                        }
+                    }
+                }
+            ]
+        };
+
+        $scope.cboMotivoDev = {
+            dataSource: ListaMotDevolucion,
+            onValueChanged: function (data) {
+                $scope.MotivoDevSel = data.value;
+            },
+            bindingOptions: {
+                value: 'MotivoDevSel'
+            }
+        }
+
+        $scope.txtFechaDevolucion = {
+            width: '100%',
+            bindingOptions: {
+                value: 'txtFecDevolucion'
+            },
+            onValueChanged: function (e) {
+                $scope.txtFecDevolucion = e.value;
+            }
+        };
+
+        $scope.btnSalvaDevolucion = {
+            text: 'Guarda Devolución Documento',
+            icon: '@Url.Content("~")/Content/Images/Save.png',
+            onClick: function (e) {
+                if ($scope.MotivoDevSel == "") {
+                    DevExpress.ui.dialog.alert("Se deb ingresar una fecha para la devolución!!");
+                    return;
+                }
+                if ($scope.IdCodDet == "") {
+                    DevExpress.ui.dialog.alert("Aún no se ha seleccionado un documento para la devolución!!");
+                    return;
+                }
+                var itemDev = { IDCODDET: $scope.IdCodDet, FECHADEV: $scope.txtFecDevolucion, MOTIVODEV: $scope.MotivoDevSel };
+                $http.post(@Url.Content("~") + 'Correspondencia/api/CodApi/GuardaDevolucion', JSON.stringify(itemDev)).success(function (data, status, headers, config) {
+                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
+                    else {
+                        $('#grid').dxDataGrid({ dataSource: grdDevolucionesSource });
+                        DevExpress.ui.dialog.alert('Datos Guardados correctamente', 'Guardar Datos');
+                    }
+                }).error(function (data, status, headers, config) {
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data.mensaje, 'Guardar Datos');
+                }
+                );
+                $scope.isPopupVisibleDevol = false;
+            }
+        };
+
+        $scope.popupDigitaliza = {
+            width: 1100,
+            height: 700,
+            showTitle: true,
+            title: 'Digitaliza Documento',
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            deferRendering: false,
+            contentTemplate: 'TemDigitaliza',
+            bindingOptions: {
+                visible: 'isPopupVisibleDigitaliza'
+            }
+        };
+
+        $scope.btnSubirSettings = {
+            text: 'Subir Documento',
+            type: 'success',
+            width: '100%',
+            onClick: function (params) {
+                if (DWObject) {
+                    var strHTTPServer = location.hostname;
+                    DWObject.IfSSL = false; // Set whether SSL is used
+                    DWObject.HTTPPort = location.port == "" ? 80 : location.port;
+                    var strActionPage = @Url.Content("~") + "Correspondencia/api/CodApi/SubirDevolucion?Codtramite=" + $scope.CODTRAMITE + "&Coddocumento=" + $scope.CODDOCUMENTO + "&Pag=" + DWObject.HowManyImagesInBuffer ;
+                    DWObject.HTTPUploadAllThroughPostAsPDF(
+                        strHTTPServer,
+                        strActionPage,
+                        "imageData.pdf",
+                        OnHttpUploadSuccess,
+                        OnHttpUploadFailure
+                    );
+                    var _popup = $("#Digitaliza").dxPopup("instance");
+                    _popup.hide();
+                    DWObject.RemoveAllImages();
+                }
+            }
+        };
+
+        function OnHttpUploadSuccess() {
+            DevExpress.ui.dialog.alert('Documento subido exitosamente', 'Digitalizar Documento');
+        }
+
+        function OnHttpUploadFailure(errorCode, errorString, sHttpResponse) {
+            DevExpress.ui.dialog.alert(errorString + sHttpResponse, 'Digitalizar Documento');
+        }
+
+
+        $scope.fileUploadDevolucion = {
+            multiple: false,
+            selectButtonText: "Seleccione documento o arrastre hasta este control",
+            readyToUploadMessage: "Listo para subir al servidor",
+            uploadButtonText: "Subir al servidor",
+            uploadMode: "useButtons",
+            allowedFileExtensions: [".tif", ".pdf"],
+            bindingOptions: {
+                value: "value",
+                uploadUrl: 'UploadUrl'
+            },
+            onInitialized: function (e) {
+                $scope.fileUploader = e.component;
+            },
+            onUploaded: function (e) {
+                $scope.fileUploader.reset();
+                $scope.isPopupVisibleDigitaliza = false;
+            }
+        };
+
+    });
+
+    var ListaMotDevolucion = new DevExpress.data.ArrayStore({
+        data: [
+            "Rehusado",
+            "No existe",
+            "No reside",
+            "No reclamado",
+            "Desconocido",
+            "Dirección Errada",
+            "Cerrado",
+            "No contactado",
+            "Fallecido",
+            "Apartado clausurado",
+            "Fuerza Mayor"
+        ]
+    });
+
+    var grdDevolucionesSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"S_ORDEN","desc":true}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Correspondencia/api/CodApi/DevolucionCOD', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: true
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+</script>
+<style>
+    button, html input[type="button"], input[type="reset"], input[type="submit"] {      
+        float: none !important;
+    }
+</style>
+<div ng-app="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="DevolucionOrdenController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Consultando...', showIndicator: true, shadingColor: 'transparent gray', shading: true, bindingOptions: { visible: 'consultandoVisible' } }"></div>
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Registro de devoluciones Correspondencia</label>
+                </h3>
+            </div>
+            <div dx-data-grid="grdDevolucionCODSettings" id="grid"></div>
+            <div class="popup" dx-popup="popupCargaDocumento" id="popDocumento">
+                <iframe src="" id="DocumentoAdjunto" width="100%" height="100%"></iframe>
+            </div>
+            <div class="popup" dx-popup="popupDevolucion">
+                <div id="form">
+                    <div class="dx-fieldset">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Fecha de devolución </div>
+                            <div class="dx-field-value">
+                                <div id="selected-date" dx-date-box="txtFechaDevolucion"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Tipo de Servicio </div>
+                            <div class="dx-field-value">
+                                <div dx-select-box="cboMotivoDev" id="cboDevolucion"></div>
+                            </div>
+                        </div>
+                        <br />
+                        <div style="text-align: center;">
+                            <div dx-button="btnSalvaDevolucion" id="btnGuardaDev" class="btn_lg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="popup" dx-popup="popupDigitaliza" id="Digitaliza">
+                <div data-options="dxTemplate: { name:'TemDigitaliza' }">
+                    <div id="fileuploader-container">
+                        <div dx-file-uploader="fileUploadDevolucion"></div>
+                        <div class="content">
+                            <div ng-if="value.length > 0">
+                                <h4>Archivo Seleccionado</h4>
+                            </div>
+                            <div ng-repeat="val in value">
+                                <div class="selected-item">
+                                    Nombre archivo: <span>{{val.name}}</span><br />
+                                    Tamaño: <span>{{val.size}}</span> bytes<br />
+                                    Tipo: <span>{{val.type}}</span><br />
+                                    Última fecha modificación: <span>{{val.lastModifiedDate}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="note">Maximum file size: <span>4 MB</span>.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="popup" dx-popup="popDetalleTramite" id="popDetalle">
+                <iframe src="" id="frmDetalleTramite" width="100%" height="100%" frameborder="0" scrolling="yes"></iframe>
+            </div>
+        </div>
+    </div>
+</div>

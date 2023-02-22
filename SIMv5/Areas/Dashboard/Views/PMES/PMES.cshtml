@@ -1,0 +1,100 @@
+﻿@using SIM.Areas.Dashboard.Controllers
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        AjustarTamano();
+        //setTimeout(CargarMapa, 500);
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function CargarMapa() {
+        //$('#frmMapaPMES').attr('src', '@Url.Content("~/Dashboard/PMES/PMESMapa")');
+    }
+
+    function AjustarTamano()
+    {
+        var heightD1 = document.getElementById('pnlDashboard_1').offsetHeight;
+        $("#frmDashboard_1").height(heightD1);
+
+        var heightD2 = document.getElementById('pnlDashboard_2').offsetHeight;
+        $("#frmDashboard_2").height(heightD2);
+
+        var heightD3 = document.getElementById('pnlDashboard_3').offsetHeight;
+        $("#frmDashboard_3").height(heightD3);
+
+        var heightD100 = document.getElementById('pnlDashboard_100').offsetHeight;
+        $("#frmDashboard_100").height(heightD100);
+
+        var heightM = document.getElementById('pnlMapaPMES').offsetHeight - 50;
+        $("#frmMapa").height(heightM);
+    }
+</script>
+
+<style>
+    .dx-checkbox-has-text .dx-checkbox-text {
+        vertical-align: middle;
+        font-size: 10px;
+    }
+</style>
+
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Dashboard/Scripts/pmes.js?v=1.07")"></script>
+<div ng-app="SIM" data-url="@Url.Content("~")" data-tercero="@ViewBag.idTercero" data-nombretercero="@ViewBag.NombreTercero" id="app" class="my-cloak" resizable>
+    <div ng-controller="PMESDashboardController">
+        <div dx-popup="popTerceroSettings" id="popTercero">
+            <div dx-data-grid="terceroGridSettings" id="grdTercero"></div>
+        </div>
+        <div class="col-md-12" style="height: 45px;">
+            <div class="col-md-8">
+                @if (ViewBag.seleccionTercero)
+                {
+                <div class="dx-field">
+                    <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Tercero</label></div>
+                    <div class="dx-field-value valuefullrow">
+                        <div dx-select-box="terceroSelectBoxSettings" id="cboTercero"></div>
+                    </div>
+                </div>
+                }
+            </div>
+            <div class="col-md-4">
+                <div class="dx-field">
+                    <div class="dx-field-label" style="font-weight: bold;">VIGENCIA</div>
+                    <div class="dx-field-value">
+                        <div dx-select-box="VigenciasSettings"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panelSIM">
+            <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+            <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+            <div ng-show="isActive(0)" class="panelSIM-heading" style="min-height: 600px; padding: 0px;">
+                <div ng-show="isActiveEncuesta(1)" style="width: 100%; height: 0; padding-bottom: 280%;" id="pnlDashboard_1">
+                    <iframe src="" style="position: relative; width: 100%; height: 100%; border: none" id="frmDashboard_1" scrolling="no"></iframe>
+                </div>
+                <div ng-show="isActiveEncuesta(2)" style="width: 100%; height: 0; padding-bottom: 500%;" id="pnlDashboard_2">
+                    <iframe src="" style="position: relative; width: 100%; height: 100%; border: none" id="frmDashboard_2" scrolling="no"></iframe>
+                </div>
+                <div ng-show="isActiveEncuesta(3)" style="width: 100%; height: 0; padding-bottom: 450%;" id="pnlDashboard_3">
+                    <iframe src="" style="position: relative; width: 100%; height: 100%; border: none" id="frmDashboard_3" scrolling="no"></iframe>
+                </div>
+            </div>
+            <div ng-show="isActive(1)" class="panelSIM-heading" style=" min-height: 700px" id="pnlMapaPMES">
+                <div style="width: 100%; height: 0; padding-bottom: 45%">
+                    <iframe src="" style="position: relative; width: 100%; height: 0; ; padding-bottom: 1%; border: none" id="frmMapa" scrolling="no"></iframe>
+                </div>
+            </div>
+            <div ng-show="isActive(2)" class="panelSIM-heading" style=" min-height: 600px; padding: 0px;">
+                <div style="width: 100%; height: 0; padding-bottom: 300%;" id="pnlDashboard_100">
+                    <iframe src="" style="position: relative; width: 100%; height: 100%; border: none" id="frmDashboard_100" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

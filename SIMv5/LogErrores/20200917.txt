@@ -1,0 +1,4 @@
+06:09:13 - Usuario Rol [GetActivarUsuario - 6814 ] : Se presentó un error Activando el Usuario.
+Referencia a objeto no establecida como instancia de un objeto.
+06:13:35 - Usuario Rol [GetActivarUsuario - 6814 ] : Se presentó un error Activando el Usuario.
+El buzón de correo no está disponible. La respuesta del servidor fue: 5.7.1 Unable to relay

@@ -1,0 +1,187 @@
+﻿@using SIM.Properties
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+    }
+
+    .dx-popup-content {
+        padding: 0px;
+    }
+
+    .dx-command-select {
+        width: 30px !important;
+        min-width: 30px !important;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row .dx-command-select {
+        text-align: center !important;
+    }
+
+    .dx-select-checkbox.dx-datagrid-checkbox-size.dx-widget.dx-checkbox {
+        position: relative;
+        left: 0px;
+        top: 5px;
+    }
+</style>
+
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Areas/Tramites/Css/programadoractuaciones.css")" />
+
+<script>
+    $(document).ready(function () {
+        $(window).trigger('resize');
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano()
+    {
+        $("#pnlContenedor").height((window.innerHeight || document.body.clientHeight) - 140);
+        $("#grdTramitesReparto").height($("#pnlContenedor").outerHeight() - $("#tabOpciones").outerHeight() - 300);
+        $("#grdTareasSeleccionadas").height($("#pnlContenedor").outerHeight() - $("#tabOpciones").outerHeight() - 300);
+        $("#grdNuevasTareas").height($("#pnlContenedor").outerHeight() - $("#tabOpciones").outerHeight() - 300);
+        $("#grdProgramaciones").height($("#pnlContenedor").outerHeight() - $("#tabOpciones").outerHeight() - 100);
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/programadoractuaciones.js?v=1.01")"></script>
+<div id="pantallaDetalleTramites" title="Detalle Tramite" style="display: none; overflow: hidden;">
+    <iframe src="" id="DetalleTramites" width="100%" height="100%"></iframe>
+</div>
+
+<div id="popAvanzaTareaTramite" style="padding: 0px">
+    <iframe src="" id="frmAvanzaTareaTramite" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popDetalleTramite" style="padding: 0px !important">
+    <iframe src="" id="frmDetalleTramite" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div style="padding: 0px;">
+    <div id="popCM">
+        <div id="grdCM"></div>
+    </div>
+    <div id="popTramo">
+        <div id="grdTramo"></div>
+    </div>
+    <div data-url="@Url.Content("~")" id="app" resizable>
+        <div class="panelSIM-default">
+            <div id="loadPanel"></div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div class="row" style="text-align: center; margin: 10px;">
+                    <h3 style="color: #94C840; ">
+                        Programador de Actuaciones
+                    </h3>
+                </div>
+                <div id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+                <div id="tab01" style="display: block" class="contenido">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow" style="padding-left: 10px;">Tipo</div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div id="radTipoProgramacion"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="divCM" style="display: block">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label labelfullrow" style="padding-left: 10px;">CM</div>
+                                        <div class="dx-field-value valuefullrow">
+                                            <div id="cboCM"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label labelfullrow" style="padding-left: 10px;">Tramo</div>
+                                        <div class="dx-field-value valuefullrow">
+                                            <div id="cboTramo"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divZona" style="display: none">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label labelfullrow" style="padding-left: 10px;">Zona</div>
+                                        <div class="dx-field-value valuefullrow">
+                                            <div id="cboZona"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div id="radTipoSeleccion"></div>
+                                <!--div class="col-md-5">
+                                    <div id="tituloSeleccionados" style="font-weight:bold">Seleccionados</div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div id="tituloNuevos">Nuevas Tareas</div>
+                                </div-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="grdTramitesReparto"></div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                </div>
+                                <div class="col-md-8">
+                                    <div id="btnSeleccionar"></div>
+                                </div>
+                                <div class="col-md-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="grdTareasSeleccionadas"></div>
+                            <div id="grdNuevasTareas"></div>
+
+                            <div class="row">
+                                    <div class="col-md-3">
+                                        <div id="cboAno"></div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div id="cboMes"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div id="btnProgramarTareas"></div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab02" style="display: none" class="contenido">
+                    <div id="grdProgramaciones"></div>
+                </div>
+                <div id="tab03" style="display: none" class="contenido">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

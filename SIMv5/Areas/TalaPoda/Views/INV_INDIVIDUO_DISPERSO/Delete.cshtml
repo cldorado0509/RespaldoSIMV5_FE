@@ -1,0 +1,170 @@
+﻿@model SIM.Areas.TalaPoda.Models.INV_INDIVIDUO_DISPERSO
+
+@{
+    ViewBag.Title = "Tala y Poda";
+    Layout = "~/Areas/TalaPoda/Views/Shared/Movil.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <div align="center"><h4>ELIMINAR INDIVIDUO DISPERSO</h4></div>
+    
+    <div>
+        <h3>Confirma que desea eliminar el registro?</h3>    
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.OBJECTID)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.OBJECTID)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ID_PU_INVEN)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ID_PU_INVEN)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ID_LOCALIZACION_ARBOL)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ID_LOCALIZACION_ARBOL)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ID_EDAD_SIEMBRA)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ID_EDAD_SIEMBRA)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ID_PROCEDENCIA)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ID_PROCEDENCIA)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ID_UBICACION)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ID_UBICACION)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.COD_INDIVIDUO_DISPERSO)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.COD_INDIVIDUO_DISPERSO)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.L_SETO)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.L_SETO)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.N_INDIVIDUOS_SETO)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.N_INDIVIDUOS_SETO)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.N_LADO_MANZANA)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.N_LADO_MANZANA)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.N_ORDEN)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.N_ORDEN)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.D_INGRESO)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.D_INGRESO)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.D_ACTUALIZACION)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.D_ACTUALIZACION)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ID_TIPO_ARBOL)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ID_TIPO_ARBOL)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.FLR_ESPECIE.S_GENERO)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.FLR_ESPECIE.S_GENERO)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.INV_ESTADO_INDIVIDUO.S_ESTADO)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.INV_ESTADO_INDIVIDUO.S_ESTADO)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+    
+            <div class="form-actions no-color">
+                <input type="submit" value="Eliminar" class="btn btn-default" /> |
+                @Html.ActionLink("Regresar", "../utilidades/MostrarIndividuosDispersos")
+            </div>
+        }
+    </div>
+</body>
+</html>

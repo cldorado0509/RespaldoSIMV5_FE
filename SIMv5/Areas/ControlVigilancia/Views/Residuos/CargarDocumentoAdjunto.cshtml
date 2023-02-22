@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    @*<link href="https://rawgithub.com/hayageek/jquery-upload-file/master/css/uploadfile.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+        <script src="https://rawgithub.com/hayageek/jquery-upload-file/master/js/jquery.uploadfile.min.js"></script>*@
+
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery_form.js")></script>
+
+    <script src=@Url.Content("~/Scripts/jquery.uploadfile.js")></script>
+    <link href="@Url.Content("~/Scripts/uploadfile.css")" rel="stylesheet" type="text/css" />
+
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="mulitplefileuploader">Upload</div>
+    <div id="status"></div>
+    <button onclick="llenarCarrusel()" style="display:none">cargar</button>
+    @Scripts.Render("~/bundles/uploadfile")
+    <script>
+        var arrayFotos = new Array();
+        $(document).ready(function () {
+            arrayFotos = new Array();
+            var settings = {
+                url: "@Url.Content("~/UploadFileDocumento/")",
+                method: "POST",
+                allowedTypes: "doc,pdf,zip",
+                fileName: "myfile",
+                multiple: false,
+                onSuccess: function (files, data, xhr) {
+                    var objImg = Object();
+                    objImg = data;
+                    arrayFotos.push(objImg);
+                    llenarCarrusel();
+
+                },
+                onError: function (files, status, errMsg) {
+                    $("#status").html("<font color='red'>Upload is Failed</font>");
+                }
+            }
+            $("#mulitplefileuploader").uploadFile(settings);
+
+        });
+
+        function llenarCarrusel() {
+            if (arrayFotos.length == 0) {
+                alert("No se han cargado fotos.")
+                return;
+            }
+        //    parent.llenarCarrusel(arrayFotos);
+            parent.guardarDocumentoAdjunto(arrayFotos);
+            parent.$("#pantallaCargarDocumentoAdjunto").dialog('close');
+        }
+    </script>
+</body>

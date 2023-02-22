@@ -1,0 +1,447 @@
+﻿@{
+    ViewBag.Title = "Termino condiciones";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+                .ui-dialog .ui-dialog-buttonpane button {
+    margin: .5em .4em .5em 0;
+    cursor: pointer;
+    color: #fff;
+    background-color: #b4cd5f;
+    border-color: #b4cd5f;
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    margin-left: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    height: 30px;
+    border-radius: 4px;
+}
+    </style>
+</head>
+<body>
+
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-xs-12">
+            <div class="col-xs-6">
+                <div class="col-xs-12">
+                    <label>Nombre Comun</label>
+                </div>
+                <div class="col-xs-12">
+
+                    <select id="cmbNombreComun" class="form-control"></select>
+
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="col-xs-12">
+                    <label>Estado árbol</label>
+                </div>
+                <div class="col-xs-12">
+                    <select id="cmbEstadoArbol" class="form-control"></select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-xs-6">
+                <div class="col-xs-12">
+                    <label>Intervención Solicitada</label>
+                </div>
+                <div class="col-xs-12">
+                    <select id="cmbIntervencion" class="form-control">
+                        <option value="-1">--Selecione--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="col-xs-12">
+                    <label>Municipio</label>
+                </div>
+                <div class="col-xs-12">
+                    <select id="cmbMunicipioArea" class="form-control"></select>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+          
+            <div class="col-xs-6">
+                <div class="col-xs-12">
+                    <label>Dirección árbol</label>
+                </div>
+                <div class="col-xs-8">
+                    <input id="txtDireccion" class="form-control" maxlength="200" disabled />
+                </div>
+
+                <div class="col-xs-4">
+                    <button onclick="agregarDirecion()" class="btn btn-default">agregar</button>
+
+                </div>
+
+            </div>
+            <div class="col-xs-6" style="display:none">
+                <div class="col-xs-12">
+                    <label>Cargar imagen</label>
+                </div>
+                <div class="col-xs-6">
+                    <input id="txtImagen" disabled class="form-control" />
+                </div>
+
+                <div class="col-xs-6">
+                    <label class="custom-file-upload">
+                        <input type="file" id="fileImg" name="fileImg" class="btn btn-default" accept="image/x-png, image/gif, image/jpeg" />
+                        <i class="fa fa-cloud-upload"></i> Examinar
+                    </label>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-xs-12">
+                <label>Justificación Intervención:</label>
+            </div>
+            <div class="col-xs-12">
+                <textarea id="txtJustificacion" style="width:100%" maxlength="500"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+        <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+    <div id="pantallaDirecion" title="Agregar Dirección" style="display: none; overflow: hidden;">
+        <iframe src="" id="frDirecion" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <script>
+    var idArbol = 0;
+    var file;
+    var tamanoFoto = 0;
+
+    $(document).ready(function () {
+        ConsultarIdArbol();
+        consultarEstadoArbol();
+        ConsultarIntervencion();
+        consultarMunicipioArea();
+        ConsultarTamanoFoto();
+        ConsultarNombreComun();
+        $("#fileImg").on('change', function (event) {
+
+            $("#txtImagen").val("");
+            var totalFiles = document.getElementById("fileImg").files.length;
+            file = document.getElementById("fileImg").files[0];
+            if (file.type == "image/png" || file.type == "image/gif" || file.type == "image/jpeg") {
+                if (file.size <= 2097152) {
+                    $("#txtImagen").val(file.name);
+                } else {
+                    $("#fileImg").val('');
+                    alert("La imagen no puede pesar mas de 2 mg");
+                }
+
+            } else {
+                $("#fileImg").val('');
+                alert("Tipo de archivo no valido");
+            }
+
+
+
+
+        });
+
+    });
+    function ConsultarIntervencion() {
+        var html = "<option value=-1>-- Seleccionar --</option>";
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/consultarIntervencion")',
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+
+
+
+                for (var i = 0; i < datos.length; i++)
+                    html += "<option value=" + datos[i].ID_INTERVENCION + ">" + datos[i].S_INTERVENCION + "</option>";
+
+                $("#cmbIntervencion").html(html);
+
+
+
+
+            }
+        });
+    }
+    function ConsultarIdArbol() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/consultarId")',
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                idArbol = datos[0].ID;
+            }
+        });
+    }
+    function ConsultarTamanoFoto() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/consultarTamanoFoto")',
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                tamanoFoto = datos[0].VALOR;
+            }
+        });
+    }
+    function consultarMunicipioArea() {
+        var html = "<option value=-1>-- Seleccionar --</option>";
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/consultarMunicipioArea")',
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+
+
+
+                for (var i = 0; i < datos.length; i++)
+                    html += "<option value=" + datos[i].CODIGO + ">" + datos[i].NOMBRE + "</option>";
+
+                $("#cmbMunicipioArea").html(html);
+
+
+
+
+            }
+        });
+    }
+    function consultarEstadoArbol() {
+        var html = "<option value=-1>-- Seleccionar --</option>";
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/consultarEstadoArbol")',
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+
+
+
+                for (var i = 0; i < datos.length; i++)
+                    html += "<option value=" + datos[i].ID_ESTADO_ARBOL + ">" + datos[i].S_ESTADO_ARBOL + "</option>";
+
+                $("#cmbEstadoArbol").html(html);
+
+
+
+
+            }
+        });
+    }
+    function abrircaracteristica() {
+        parent.abrircaracteristica();
+
+
+    }
+
+
+
+
+    function cancelar() {
+        parent.$("#pantallaArbol").dialog('close');
+    }
+    function aceptar() {
+
+        if ($("#cmbEstadoArbol").val() == "-1") {
+            mensajeAlmacenamiento("Seleccione estado del árbol");
+            return;
+        }
+        if ($("#cmbIntervencion").val() == "-1") {
+            mensajeAlmacenamiento("Seleccione la intervencion");
+            return;
+        }
+        if ($("#cmbMunicipioArea").val() == "-1") {
+            mensajeAlmacenamiento("Seleccione el municipio");
+            return;
+        }
+        if ($("#txtDireccion").val() == "") {
+            mensajeAlmacenamiento("Ingrese la dirección");
+            return;
+        }
+        var arrArbol = [];
+        var item = {
+            "ID_ESPECIE": Number($("#cmbNombreComun").val()),
+            "S_ESPECIE": $("#cmbNombreComun option:selected").text(),
+            "DAP": 0,
+            "ALTURA": 0,
+            "TIPO_INTERVENCION": Number($("#cmbIntervencion").val()),
+            "S_INTERVENCION": $("#cmbIntervencion option:selected").text(),
+            "OBS": $("#txtJustificacion").val(),
+            "ID_ESTADO": Number($("#cmbEstadoArbol").val()),
+            "S_ESTADO_ARBOL": $("#cmbEstadoArbol option:selected").text(),
+            "X": Number(parent.$("#txtX").val()),
+            "Y": Number(parent.$("#txtY").val()),
+            "ID_TRAMITE": parent.codigoTramite+"",
+            "ID_IND_TEMP": -1,
+            "ID_INDIVIDUO": -1,
+            "ID_INTPROP": -1,
+            "ID_ESTADO_CARGA": 0
+
+        };
+        arrArbol.push(item);
+        var jsonIn = JSON.stringify(arrArbol);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("guardarArbol", "Sau")',
+            data: {
+                jsonInf: jsonIn, fin: 0
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "Ok")
+                    alert("almacenamiento exitoso");
+
+                parent.getArbolExcel();
+                parent.$("#pantallaArbol").dialog("close");
+
+            }
+        });
+    }
+   
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msTextAlm").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default "
+          },
+                ]
+            });
+
+
+        }
+
+
+        function ConsultarNombreComun() {
+            var html = "<option value=-1>Desconocido</option>";
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("../../Tala/Tala/consultarNombreComun")',
+
+
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+
+
+
+                for (var i = 0; i < datos.length; i++)
+                    html += "<option value=" + datos[i].ID + ">" + datos[i].NOMBRE + "</option>";
+
+                $("#cmbNombreComun").html(html);
+
+
+
+
+            }
+        });
+    }
+    function agregarDirecion() {
+
+        $("#pantallaDirecion").dialog(
+        {
+
+            width: 600,
+            height: 250,
+            modal: true, buttons: {
+                "Cancelar": function () {
+                    $(this).dialog("close");
+                },
+                "Agregar": function () {
+                    $("#frDirecion").get(0).contentWindow.agregar();
+
+                }
+            }, class: "btn btn-default"
+
+
+        });
+        $("#frDirecion").attr("src", "@Url.Content("~/Tala/Tala/agregarDireccion")");
+
+    }
+    function retornaDirecion(direccion) {
+        $("#txtDireccion").val(direccion);
+    }
+    </script>
+</body>
+
+
+
+</html>
+
+

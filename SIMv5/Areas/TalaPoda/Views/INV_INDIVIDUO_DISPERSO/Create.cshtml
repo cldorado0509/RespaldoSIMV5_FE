@@ -1,0 +1,180 @@
+﻿@model SIM.Areas.TalaPoda.Models.INV_INDIVIDUO_DISPERSO
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    @using (Html.BeginForm()) 
+    {
+        @Html.AntiForgeryToken()
+        
+        <div class="form-horizontal">
+            <h4>INV_INDIVIDUO_DISPERSO</h4>
+            <hr />
+            @Html.ValidationSummary(true)
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.OBJECTID, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.OBJECTID)
+                    @Html.ValidationMessageFor(model => model.OBJECTID)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_INDIVIDUO_DISPERSO, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_INDIVIDUO_DISPERSO)
+                    @Html.ValidationMessageFor(model => model.ID_INDIVIDUO_DISPERSO)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_PU_INVEN, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_PU_INVEN)
+                    @Html.ValidationMessageFor(model => model.ID_PU_INVEN)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_ESPECIE, "ID_ESPECIE", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("ID_ESPECIE", String.Empty)
+                    @Html.ValidationMessageFor(model => model.ID_ESPECIE)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_LOCALIZACION_ARBOL, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_LOCALIZACION_ARBOL)
+                    @Html.ValidationMessageFor(model => model.ID_LOCALIZACION_ARBOL)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_EDAD_SIEMBRA, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_EDAD_SIEMBRA)
+                    @Html.ValidationMessageFor(model => model.ID_EDAD_SIEMBRA)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_ESTADO, "ID_ESTADO", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("ID_ESTADO", String.Empty)
+                    @Html.ValidationMessageFor(model => model.ID_ESTADO)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_PROCEDENCIA, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_PROCEDENCIA)
+                    @Html.ValidationMessageFor(model => model.ID_PROCEDENCIA)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_UBICACION, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_UBICACION)
+                    @Html.ValidationMessageFor(model => model.ID_UBICACION)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.COD_INDIVIDUO_DISPERSO, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.COD_INDIVIDUO_DISPERSO)
+                    @Html.ValidationMessageFor(model => model.COD_INDIVIDUO_DISPERSO)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.L_SETO, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.L_SETO)
+                    @Html.ValidationMessageFor(model => model.L_SETO)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.N_INDIVIDUOS_SETO, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.N_INDIVIDUOS_SETO)
+                    @Html.ValidationMessageFor(model => model.N_INDIVIDUOS_SETO)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.N_LADO_MANZANA, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.N_LADO_MANZANA)
+                    @Html.ValidationMessageFor(model => model.N_LADO_MANZANA)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.N_ORDEN, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.N_ORDEN)
+                    @Html.ValidationMessageFor(model => model.N_ORDEN)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN)
+                    @Html.ValidationMessageFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.D_INGRESO, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.D_INGRESO)
+                    @Html.ValidationMessageFor(model => model.D_INGRESO)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.D_ACTUALIZACION, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.D_ACTUALIZACION)
+                    @Html.ValidationMessageFor(model => model.D_ACTUALIZACION)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ID_TIPO_ARBOL, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ID_TIPO_ARBOL)
+                    @Html.ValidationMessageFor(model => model.ID_TIPO_ARBOL)
+                </div>
+            </div>
+    
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+    
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</body>
+</html>

@@ -1,0 +1,149 @@
+﻿<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Scripts/General.js"></script>
+@using System.Web.UI.WebControls
+
+
+
+<!doctype html>
+
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>jQuery Tree Filter Plugin Demo</title>
+
+    <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="//cdn3.devexpress.com/jslib/14.2.6/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn3.devexpress.com/jslib/14.2.6/css/dx.light.css" />
+    <!-- The line below was commented by the Project Converter, see this link for more info: -->
+    <!--<script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.2.6/js/dx.webappjs.js"></script>-->
+    <script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.2.6/js/dx.all.js"></script>
+    
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.0")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        html, body {
+            height: 980px;
+            overflow: hidden;
+        }
+
+        .modal-body {
+            position: relative;
+            padding: 0px;
+        }
+
+        .ui-dialog .ui-dialog-content {
+            padding: 0px !important;
+            overflow: hidden !important;
+        }
+
+        .dx-datagrid-checkbox-size .dx-checkbox-icon {
+            margin-right: 22px;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="col-sm-12">
+        <div class="alert alert-success" role="alert" id="mensaje" style="display:none"></div>
+    </div>
+    <div id="dialogo"></div>
+
+
+    <div class="col-sm-12">
+
+
+        <div id="div_Tablas" class="container tablesContainer divPrincipal" align="center">
+            <div id="tramitsTable" align="center" class="customerTable divCentradoVertical">
+                <table style="width:100%">
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label >Descripción</label>
+                           
+                        </td>
+                        <td>
+
+
+                            <input type="text" id="txtDescripcion" name="txtDescripcion" class="form-control" maxlength="250" />
+
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top"></td>
+                        <td valign="top">
+                            <label Valor</label>
+                         
+
+                        </td>
+                        <td>
+                            <input type="text" id="txtValor" name="txtValor" class="form-control" maxlength="250" />
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label style="control-label col-md-2">Orden</label>
+                            
+                        </td>
+                        <td>
+                            <input type="text" id="txtOrden" name="txtOrden" class="form-control" maxlength="250" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" align="right">
+                            <div class="divTitleAndButtons">
+                                <button id="Crear" class="btn btn-default btn-sm" style="height:25px;">Crear Respuesta</button>
+
+                              
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group" style="display:none">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" id="btnCrear" class="btn btn-default" />
+            </div>
+        </div>
+
+        <input type="text" id="txtIdEncuesta" name="Encuesta" style="display:none;" />
+        <div id="Preguntas"></div>
+
+
+
+
+    </div>
+</body>
+
+
+
+</html>
+
+<script type="text/javascript">
+
+
+</script>
+
+
+
+

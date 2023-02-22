@@ -1,0 +1,216 @@
+﻿@using SIM.Areas.EnCicla.Models
+@model IEnumerable<SIM.Data.EnCicla.ESTACION>
+
+    @{
+        Layout = null;
+    }
+    <!DOCTYPE html>
+
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")
+
+        <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/Content/encicla.css")" rel="stylesheet" type="text/css" />
+        <!--script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")" type="text/javascript"></!--script>-->
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <title>Al Trabajo En Cicla</title>
+        @Html.DevExpress().GetStyleSheets(
+        new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Editors },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.HtmlEditor },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.GridView },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.PivotGrid },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Chart },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Report },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Scheduler },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.TreeList }
+    )
+        @Html.DevExpress().GetScripts(
+        new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+        new Script { ExtensionSuite = ExtensionSuite.HtmlEditor },
+        new Script { ExtensionSuite = ExtensionSuite.GridView },
+        new Script { ExtensionSuite = ExtensionSuite.PivotGrid },
+        new Script { ExtensionSuite = ExtensionSuite.Editors },
+        new Script { ExtensionSuite = ExtensionSuite.Chart },
+        new Script { ExtensionSuite = ExtensionSuite.Report },
+        new Script { ExtensionSuite = ExtensionSuite.Scheduler },
+        new Script { ExtensionSuite = ExtensionSuite.TreeList }
+    )
+    </head>
+    <body>
+        @{
+            <script type="text/javascript">
+                $(window).load(function () {
+                    $('div.btncheck').click(function () {
+                        $(this).toggleClass("active");
+                    });
+                });
+
+                function CambiarEstado(estacion)
+                {
+                    $(estacion).toggleClass("active");
+                }
+
+                function SeleccionarTodosOnClick()
+                {
+                    $('.btncheck').toggleClass("active", false);
+                    $('.btncheck').toggleClass("active", true);
+                }
+
+                function TrasladarOnClick() {
+                    var ids = '';
+
+                    estacionOrigen = $('#estacionOrigen').find(":selected").val();
+                    estacionDestino = $('#estacionDestino').find(":selected").val();
+
+                    if (estacionOrigen == '' || estacionDestino == '') {
+                        alert("Debe seleccionar la Estación Origen y Destino.");
+                        return;
+                    }
+
+                    if (estacionOrigen == estacionDestino) {
+                        alert("La Estación Origen y Destino deben ser diferentes.");
+                        return;
+                    }
+
+                    $(".active").each(function (index) {
+                        if (ids == '')
+                            ids = $(this).text();
+                        else
+                            ids += ',' + $(this).text();
+                    });
+
+                    if (ids == '') {
+                        alert("Debe seleccionar por lo menos una bicicleta para Trasladar.");
+                        return;
+                    }
+
+                    lpnProcessPanel.Show();
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("TrasladarBicicletas", "Traslado")',
+                        data: { idEstacionOrigen : estacionOrigen, idEstacionDestino : estacionDestino, ids : ids },
+                        success: function (response) {
+                            ActualizarListado();
+                            alert(response);
+                            lpnProcessPanel.Hide();
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            lpnProcessPanel.Hide();
+                            alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                            ActualizarListado();
+                        }
+                    });
+                }
+
+                function LimpiarCampos() {
+                    /*$('#codigoBicicleta').value = '';
+                    $('#reporteNovedad').value = '';
+                    $('#observacionesNovedad').value = '';*/
+                    window.location.href = '@Url.Action("Index", "Prestamo")';
+                }
+
+                function ActualizarListado() {
+                    estacionOrigen = $('#estacionOrigen').find(":selected").val();
+
+                    if (estacionOrigen != '') {
+                        lpnProcessPanel.Show();
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("ConsultarBicicletasEstacion", "Traslado")',
+                            data: { idEstacion: estacionOrigen },
+                            success: function (response) {
+                                $("#ListaContainer").html(response);
+                                lpnProcessPanel.Hide();
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                lpnProcessPanel.Hide();
+                                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                            }
+                        });
+                    } else {
+                        $("#ListaContainer").html('');
+                    }
+                }
+</script>
+        }
+        <section class="encicla fondo gr-fondo" style="max-width:none;">
+            <div class="logo">@ViewBag.TituloEstrategia</div>
+            @using (Html.BeginForm("DevolverBicicleta", "Prestamo", FormMethod.Post, new { area = "EnCicla", name = "frmDevolucion", id = "frmDevolucion", autocomplete = "off" }))
+            {
+                <input type="hidden" name="idTercero" value="@{ViewContext.Writer.Write((ViewBag.IdTercero == null ? "0" : ViewBag.IdTercero.ToString()));}" />
+
+                <h2>TRASLADO DE BICICLETAS</h2>
+
+                <ul class="inputs">
+                    <li class="novedad" style="width:100%">
+                        <div class="row" style="padding:5px">
+                            <div class="col-md-2">
+                                <label>Origen:</label>
+                            </div>
+                            <div class="col-md-3">
+                                @{
+                                    var items = Model.Select(i => new SelectListItem
+                                    {
+                                        Value = i.ID_ESTACION.ToString(),
+                                        Text = i.S_DESCRIPCION,
+                                        Selected = false
+                                    });
+                                }
+                                @Html.DropDownList("estacionOrigen", items, "[Seleccionar Estación]", new { @class = "gr-input", @onchange = "ActualizarListado();" })
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-2">
+                                <label>Destino:</label>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownList("estacionDestino", items, "[Seleccionar Estación]", new { @class = "gr-input" })
+                            </div>
+
+                            </div>
+
+                    </li>
+                    <div class="clearfix"></div>
+                </ul>
+                <div id="ListaContainer">
+                </div>
+    <div class="button-wrapper">
+        <div class="a-btn-4" onclick="TrasladarOnClick();">
+            <span class="a-btn-4-text">Trasladar Bicicletas</span>
+        </div>
+    </div>
+            }
+</section>
+        @Html.DevExpress().LoadingPanel(settings =>
+    {
+        settings.Name = "lpnProcessPanel";
+        settings.Modal = true;
+        settings.Text = "Procesando...";
+    }).GetHtml()
+
+        @Html.DevExpress().PopupControl(
+    settings =>
+    {
+        settings.Name = "popMensaje";
+        settings.Width = 500;
+        settings.AllowDragging = true;
+        settings.CloseAction = CloseAction.CloseButton;
+        settings.PopupAnimationType = AnimationType.None;
+        settings.HeaderText = "Mensaje";
+        settings.Modal = true;
+        settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+        settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+        /*settings.SetContent(() =>
+        {
+
+        });*/
+
+        settings.ClientSideEvents.CloseUp = "function(s, e){ ASPxClientEdit.ClearEditorsInContainer(null, '', true); }";
+    }).GetHtml()
+    </body>
+</html>

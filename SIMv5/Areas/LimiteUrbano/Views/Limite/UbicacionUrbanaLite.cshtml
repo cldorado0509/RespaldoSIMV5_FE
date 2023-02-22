@@ -1,0 +1,508 @@
+﻿
+@{
+    ViewBag.Title = "Limite Urbano";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Reparto.css")" />
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Tala</title>
+    <style>
+        .ui-dialog .ui-dialog-titlebar-close {
+            width: 20px;
+            height: 20px;
+        }
+
+        footer {
+            display: none;
+        }
+
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+       
+
+        .ui-widget button {
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .ui-dialog .ui-dialog-buttonpane button {
+            margin: .5em .4em .5em 0;
+            cursor: pointer;
+            color: #fff;
+            background-color: #b4cd5f;
+            border-color: #b4cd5f;
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.428571429;
+            text-align: center;
+            white-space: nowrap;
+            margin-left: 20px;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid transparent;
+            height: 30px;
+            border-radius: 4px;
+        }
+
+        #loadingImg {
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.17) !important;
+            position: fixed;
+            z-index: 100000;
+            cursor: not-allowed;
+        }
+
+        .loadingImg {
+            position: fixed;
+            z-index: 100000;
+            background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+            height: 50px;
+            width: 50px;
+            background-repeat: no-repeat;
+            left: 50%;
+            background-size: contain;
+            top: 50%;
+            cursor: not-allowed;
+        }
+
+    </style>
+
+
+
+
+</head>
+
+
+
+<body contenteditable="false">
+    <div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+
+       
+       
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div class="col-lg-3 col-sm-6 col-xs-6">
+                <div class="col-sm-12">
+                    <label>Dirección</label>
+                </div>
+                <div class="col-sm-12">
+                    <input id="txtDireccion" class="form-control" maxlength="200" disabled />
+                    <input id="txtTipo" class="form-control" maxlength="200" style="display:none" />
+                    <input id="txtid" class="form-control" maxlength="200" style="display:none" />
+                </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-xs-4">
+                <div class="col-sm-12">
+                    <label>Municipio</label>
+                </div>
+                <div class="col-sm-12">
+                    <select id="cmbMunicipio" class="form-control" disabled>
+                        <option value="-1">--Selecione--</option>
+                        <option value="1">BARBOSA</option>
+                        <option value="2">GIRARDOTA</option>
+                        <option value="3">COPACABANA</option>
+                        <option value="4">BELLO</option>
+                        <option value="5">MEDELLIN</option>
+                        <option value="6">ITAGUI</option>
+                        <option value="7">LA ESTRELLA</option>
+                        <option value="8">SABANETA</option>
+                        <option value="9">CALDAS</option>
+                        <option value="10">ENVIGADO</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-1 col-sm-2 col-xs-2">
+                <div class="col-sm-12">
+                    <label>&nbsp;</label>
+                </div>
+                <div class="col-sm-12">
+                    <button id="btnUbicarDireccion" class="btn btn-success" onclick="consultarCoordenadas()">Ubicar Direcci&oacute;n</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-lg-3 col-sm-6 col-xs-12">
+                <div class="col-sm-12">
+                    <label>Coordenada X</label>
+                </div>
+                <div class="col-sm-12">
+                    <input id="txtX" class="form-control" maxlength="200" disabled />
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-xs-12">
+                <div class="col-sm-12">
+                    <label>Coordenada Y</label>
+                </div>
+                <div class="col-sm-12">
+                    <input id="txtY" class="form-control" maxlength="200" disabled />
+                    <input id="txtIdCampo" class="form-control" maxlength="200" style="display:none" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-lg-3 col-sm-6 col-xs-12">
+            </div>
+            <div class="col-lg-3 col-sm-6 col-xs-12">
+                <div class="col-sm-12">
+                    <button id="btnReubicar" class="btn btn-success" onclick="ubicar()" >Reubicar </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="color: #0056b2;border-top: 1px solid #8c8b8b;" />
+    <br/>
+            <div id="div_mapa" class="col-sm-12" style="height:400px">
+                <div class="row">
+                    <div class="col-sm-12" style="height:400px">
+                        <iframe id="mapa" src="/MAPGISV5_WEB/tools/AMVA/inicio_limite_urbano.htm" style="height:100%; width:100%"></iframe>
+                    </div>
+                </div>
+            </div>
+
+   
+
+    <br />
+    <div>
+        <button id="btnGuardar"  class="btn btn-success" onclick="guardar()" disabled>Guardar </button>
+    </div>
+
+            <script>
+    var codMun = 0;
+    var idUb = 0;
+    var idPregunta = 0;
+    var idCampo = "";
+    var jsonGeo = "";
+    var capa = { servicio: { url: "/arcgis/rest/services/control_vigilancia/tramites/MapServer" }, id: "2" };
+    $(document).ready(function () {
+        codMun = Number(@ViewBag.cmbMunicipio);
+        idUb = Number(@ViewBag.srtid);
+        idPregunta = Number(@ViewBag.stridprenta);
+        $("#txtIdCampo").val("@ViewBag.srtidCampo")
+    
+        $("#txtid").val(idUb);
+
+        $("#txtX").val('@(ViewBag.srtX??"")');
+        $("#txtY").val('@(ViewBag.srtY??"")');
+        $("#txtDireccion").val("@ViewBag.txtDireccion");
+        $("#cmbMunicipio").val(codMun);
+        $("#txtTipo").val("@ViewBag.strTipo");
+        if ($("#txtTipo").val() == "0")
+            $("#btnGuardar").text("Salir");
+        if ($("#txtTipo").val() == "2")
+        {
+            $("#btnReubicar").prop('disabled', false);
+            $("#btnGuardar").prop('disabled', false);
+            $("#txtDireccion").prop('disabled', false);
+            $("#cmbMunicipio").prop('disabled', false);
+        }
+            
+        if ($("#txtX").val() != null && $("#txtX").val() != '') {
+            var Atributos = {
+                "CODTRAMITE": ""
+            }
+
+            var geo = {
+                spatialReference: { "wkid": 4326 },
+                "x": $("#txtX").val(), "y": $("#txtY").val(), "type": "point"
+            };
+
+            setTimeout(function () { ZoomXYmapa($("#txtX").val(), $("#txtY").val(), Atributos); }, 2000);
+        } else if ($("#txtDireccion").val() != null && $("#cmbMunicipio").val() != null) {
+            consultarCoordenadas();
+        }
+
+    });
+    function consultarMunicipioArea() {
+        var html = "<option value=-1>-- Seleccionar --</option>";
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/consultarMunicipioArea")',
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                for (var i = 0; i < datos.length; i++) {
+                    var nombre = datos[i].NOMBRE.split("-")
+                    html += "<option value=" + datos[i].CODIGO + ">" + nombre[1] + "</option>";
+                }
+                $("#cmbMunicipio").html(html);
+
+            }
+        });
+    }
+                function reubicar() {
+                   
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("../../LimiteUrbano/Limite/geocoRever")',
+                        beforeSend: function () { },
+                        success: function (response) {
+                      
+
+                        }
+                    });
+                }
+                
+
+    function consultarCoordenadas() {
+
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../LimiteUrbano/Limite/geoCodificar")',
+            beforeSend: function () { },
+            data: { valor: $("#txtDireccion").val() + " " + $("#cmbMunicipio option:selected").text() },
+            success: function (response) {
+                if (response.x != 0) {
+                    $("#txtX").val(response.x.replace(",", "."))
+                    $("#txtY").val(response.y.replace(",", "."))
+                    var Atributos = {
+                        "CODTRAMITE": ""
+
+                    }
+                    var geo = {
+                        spatialReference: { "wkid": 4326 },
+                        "x": $("#txtX").val(), "y": $("#txtY").val(), "type": "point"
+
+                    };
+                    ZoomXYmapa(response.x.replace(",", "."), response.y.replace(",", "."), Atributos);
+                } else {
+                    alert("La dirección no esta en la malla vial de geocodificador")
+                }
+
+            },error: function (error) {
+                alert("En este momento el geocodificador se encuentra fuera de servicio");
+                }
+        });
+
+    }
+
+    function ZoomXYmapa(x, y, Atributos) {
+        var geo = {
+            spatialReference: { "wkid": 4326 },
+            "x": $("#txtX").val(), "y": $("#txtY").val(), "type": "point"
+
+        };
+        var Atributos = {
+            "Dirección": $("#txtDireccion").val(),
+            "Municipio": $("#cmbMunicipio option:selected").text(),
+            "X": $("#txtX").val(),
+            "Y": $("#txtY").val()
+
+        };
+
+        try {
+            var rt = conectar();
+            objetoMapgis = new MapGIS("mapa");
+            objetoMapgis.initMapGIS();
+
+            objetoMapgis.verPoint(x, y, 4326, 255, 0, 0, "", Atributos, 'Ubicacion Urbano/Rural', 'Dirección:${Dirección}<br/>Municipio:${Municipio}<br/>X:${X}<br/>Y:${Y}');
+
+            objetoMapgis.zoomPto(x, y, 4326, 14);
+            var geo = $("#mapa")[0].contentWindow.createPoint(x, y, 4326);
+            if (rt != "-1")
+                consultaGeo(geo);
+
+        } catch (e) {
+            setTimeout(function () {
+                ZoomXYmapa(x, y, Atributos)
+            }, 2000);
+        }
+
+    }
+    //function expor()
+    //{
+    //    objetoMapgis = new MapGIS("mapa");
+    //    objetoMapgis.initMapGIS();
+    //    objetoMapgis.exportMap(100,200,"alejo")
+    //}
+
+
+    function pantalla() {
+        window.print();
+        window.close();
+    }
+    function guardar() {
+        if ($("#txtDireccion").val() == "") {
+            alert("Ingrese la dirección.");
+            return;
+        }
+        if ($("#cmbMunicipio").val() == "-1") {
+            alert("Seleccione un municipio.");
+            return;
+        }
+
+        if ($("#txtX").val() == "" || $("#txtY").val() == "") {
+            alert("Coordenadas Inválidas.");
+            return;
+        }
+
+        if ($("#txtTipo").val() == 0) {
+            parent.cerrar();
+        } else if ($("#txtTipo").val() == 1) {
+
+            GuardarUsosUrbanos();
+        } else if ($("#txtTipo").val() == 2) {
+            if (jsonGeo != "") {
+                var obj = JSON.parse(jsonGeo);
+            }
+
+            parent.getgeografico($("#txtX").val(), $("#txtY").val(), idPregunta, $("#txtIdCampo").val(), $("#txtDireccion").val(), $("#cmbMunicipio option:selected").text())
+        }
+    }
+    function GuardarUsosUrbanos() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/guardarUrbano")',
+            data: { cx: $("#txtX").val() + "", cy: $("#txtY").val() + "", municipio: $("#cmbMunicipio").val(), id: idUb, dir: $("#txtDireccion").val(), ubicacion: $("#txtUbicacion").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                alert("Almacenamiento exitoso")
+            }
+        });
+    }
+
+    function consultaGeo(geom) {
+        objetoMapgis = new MapGIS("mapa");
+        objetoMapgis.initMapGIS();
+
+        objetoMapgis.buffer(geom, 100, true, function (g) {
+            var capa = { servicio: { url: "/arcgis/rest/services/Limites/Limites/MapServer" }, id: "5" };
+            objetoMapgis.execQuery(capa, "1=1", true, function (respuesta) {
+                if (respuesta.features.length != 0) {
+                    var datos = respuesta.features;
+                    $("#txtUbicacion").val(datos[0].attributes.CLASE)
+
+
+                } else {
+                    $("#txtUbicacion").val("RURAL")
+                }
+
+
+                $("#btnGuardar").prop('disabled', false);
+            }, function (error) {
+
+            }, g)
+        });
+
+
+    }
+    function conectar() {
+        //cbpExample.PerformCallback();
+        m = new MapGIS("mapa");
+        var rta = m.initMapGIS(listener);
+        return rta;
+    }
+    function ubicar() {
+        alert("Seleccione en el mapa la ubicación");
+        conectar();
+        m.drawPoint(function (g, g1) {
+            m.noDraw();
+            $("#txtDireccion").val("");
+            $("#cmbMunicipio").val("-1");
+            $("#txtUbicacion").val("");
+            $("#txtY").val(g.y);
+            $("#txtX").val(g.x);
+
+
+        }, 255, 0, 0, "ubica", srid);
+    }
+
+
+    function limpiarDibujo() {
+        conectar();
+        try {
+            m.limpiarGraphics();
+        } catch (w) {
+
+        }
+    }
+    function dibujar(id)
+    {
+        switch (id) {
+         
+            case 1://poligono
+                pintarPoligono();
+                break;
+            case 2://circulo
+                pintarCirculo();
+                break;
+            case 3://retangulo
+                pintarRectangulo();
+                break;
+        }
+    }
+    //función que permite pintar un polígono en el mapa.
+    function pintarPoligono() {
+        conectar();
+     
+        m.drawPolygon(function (g, g1) {
+            var pp = 0;
+
+            jsonGeo = JSON.stringify(g);
+        }, 255, 0, 0, "ubica", srid);
+    }
+    //función que permite pintar un rectángulo en el mapa.
+    function pintarRectangulo() {
+        conectar();
+     
+        m.drawRectangulo(function (g, g1) {
+           
+            jsonGeo = JSON.stringify(g);
+        }, 255, 0, 0, "ubica", srid);
+    }
+
+    //función que permite pintar un círculo en el mapa.
+    function pintarCirculo() {
+        conectar();
+       
+        var x = '"';
+        m.drawCircle(function (g, g1) {
+            jsonGeo = JSON.stringify(g);
+        }, 255, 0, 0, "ubica", srid);
+
+    }
+</script>
+
+
+
+
+
+
+</body>
+
+
+
+
+
+

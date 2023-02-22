@@ -1,0 +1,56 @@
+﻿@using System.Web.UI.WebControls
+@Html.DevExpress().TreeList(settings =>
+{
+    settings.Name = "tvListarRolForma";
+    settings.CallbackRouteValues = new { Controller = "RolForma", Action = "tvwListarRolForma" };
+
+    settings.KeyFieldName = "ID_FORMA";
+    settings.ParentFieldName = "ID_PADRE";
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_NOMBRE";
+        column.Caption = "Nombre";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_ROL";
+        column.Caption = "Rol";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_VISIBLE_MENU";
+        column.Caption = "Visible en menú";
+        column.Width = Unit.Parse("80");
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_BUSCAR";
+        column.Caption = "Visualizar";
+        column.Width = Unit.Parse("80");
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_NUEVO";
+        column.Caption = "Crear";
+        column.Width = Unit.Parse("80");
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_EDITAR";
+        column.Caption = "Editar";
+        column.Width = Unit.Parse("80");
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_ELIMINAR";
+        column.Caption = "Eliminar";
+        column.Width = Unit.Parse("80");
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "S_ADMINISTRADOR";
+        column.Caption = "Administrador";
+        column.Width = Unit.Parse("80");
+    });
+}).Bind(Model).GetHtml()

@@ -1,0 +1,72 @@
+﻿@using SIM.Areas.Poeca.Models
+@model SIM.Data.Poeca.DPOEAIR_SECTOR
+
+@{
+    ViewBag.Title = "POECA | Confirmar Eliminación";
+
+    List<DxListItem> medidasSeleccionadas = ViewData["medidasSeleccionadas"] as List<DxListItem>;
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>¿Estás seguro/a de eliminar este Sector?</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_NOMBRE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_NOMBRE)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_DESCRIPCION):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_DESCRIPCION)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TPOEAIR_SECTOR_MEDIDA):
+                </dt>
+
+                <dd>
+                    @(
+                        Html.DevExtreme().List()
+                            .ID("dx-list-medidas")
+                            .DataSource(medidasSeleccionadas)
+                            .SelectionMode(ListSelectionMode.None)
+                            .Height(187)
+                            .ScrollingEnabled(true)
+                            .UseNativeScrolling(true)
+                            .SearchExpr("text")
+                    )
+                </dd>
+
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-primary" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Eliminar" class="btn btn-block btn-danger" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

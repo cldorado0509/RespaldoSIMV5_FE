@@ -1,0 +1,193 @@
+@using System.Security.Claims
+@using System.Web
+@using System.Web.UI.WebControls
+@using SIM.Areas.Seguridad.Models
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvAdministrarRolForma";
+        settings.Caption = "Asignación de formas a un rol";
+        settings.CallbackRouteValues = new { Controller = "RolForma", Action = "gvwAdministrarRolForma" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "RolForma", Action = "gvwAdministrarRolFormaCrear" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "RolForma", Action = "gvwAdministrarRolFormaActualizar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "RolForma", Action = "gvwAdministrarRolFormaEliminar" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.Width = Unit.Percentage(100);
+
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowNewButtonInHeader = claimppal.IsInRole("CROLFORMA");
+        settings.CommandColumn.ShowDeleteButton = claimppal.IsInRole("EROLFORMA");
+        settings.CommandColumn.ShowEditButton = claimppal.IsInRole("AROLFORMA");
+        
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsBehavior.AllowGroup = true;
+        settings.SettingsBehavior.AllowSort = true;
+        
+        settings.KeyFieldName = "ID_ROL_FORMA";
+        
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_ROL";
+            column.Caption = "Rol";
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            column.Settings.FilterMode = ColumnFilterMode.DisplayText;
+            column.Settings.SortMode = DevExpress.XtraGrid.ColumnSortMode.DisplayText;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListSeguridad.GetRol();
+            comboBoxProperties.TextField = "S_NOMBRE";
+            comboBoxProperties.ValueField = "ID_ROL";
+            comboBoxProperties.ValueType = typeof(int);
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "MENU.ID_PADRE";
+            column.Caption = "Item padre";
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            column.Settings.FilterMode = ColumnFilterMode.DisplayText;
+            column.Settings.SortMode = DevExpress.XtraGrid.ColumnSortMode.DisplayText;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            column.EditFormSettings.Visible = DefaultBoolean.False;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListSeguridad.GetForma();
+            comboBoxProperties.TextField = "S_NOMBRE";
+            comboBoxProperties.ValueField = "ID_FORMA";
+            comboBoxProperties.ValueType = typeof(int);
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_FORMA";
+            column.Caption = "Forma";
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            column.Visible = false;
+            column.EditFormSettings.Visible = DefaultBoolean.True;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListSeguridad.GetForma();
+            comboBoxProperties.ValueField = "ID_FORMA";
+            comboBoxProperties.TextField = "S_NOMBRE";
+            comboBoxProperties.ValueType = typeof(int);
+            comboBoxProperties.Columns.Add("S_NOMBRE", "Nombre");
+            comboBoxProperties.Columns.Add("S_PADRE", "Item padre");
+            comboBoxProperties.Columns.Add("S_VISIBLE_MENU", "Visible");
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "MENU.S_NOMBRE";
+            column.Caption = "Forma";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            column.EditFormSettings.Visible = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "MENU.S_VISIBLE_MENU";
+            column.Caption = "Visible en menú";
+            column.Width = Unit.Parse("80");
+            column.EditFormSettings.Visible = DefaultBoolean.False;
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbvbrf_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "MENU.S_VISIBLE_MENU") == null ? false : DataBinder.Eval(c.DataItem, "MENU.S_VISIBLE_MENU").ToString().ToUpper() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_BUSCAR";
+            column.Caption = "Visualizar";
+            column.Width = Unit.Parse("80");
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbvrf_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_BUSCAR").ToString().ToUpper() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NUEVO";
+            column.Caption = "Crear";
+            column.Width = Unit.Parse("80");
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbcrf_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_NUEVO").ToString().ToUpper() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_EDITAR";
+            column.Caption = "Editar";
+            column.Width = Unit.Parse("80");
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbarf_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_EDITAR").ToString().ToUpper() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_ELIMINAR";
+            column.Caption = "Eliminar";
+            column.Width = Unit.Parse("80");
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cberf_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_ELIMINAR").ToString().ToUpper() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_ADMINISTRADOR";
+            column.Caption = "Administrador";
+            column.Width = Unit.Parse("80");
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbxrf_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_ADMINISTRADOR").ToString().ToUpper() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

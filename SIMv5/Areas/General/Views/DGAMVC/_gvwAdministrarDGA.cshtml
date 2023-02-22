@@ -1,0 +1,239 @@
+@using System.Web.UI.WebControls
+@using System.Security.Claims
+@{
+    if (Model == null)
+    {
+        ViewContext.Writer.Write("Tercero Inv&aacute;lido.");
+    }
+    else
+    {
+        ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+
+        var grid = Html.DevExpress().GridView(settings =>
+        {
+            settings.Name = "gvwDGA";
+            settings.CallbackRouteValues = new { Controller = "DGA", Action = "gvwAdministrarDGA" };
+            settings.Width = Unit.Percentage(100);
+
+
+            settings.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+            settings.Settings.VerticalScrollBarStyle = GridViewVerticalScrollBarStyle.Standard;
+            settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "DGA", Action = "DGADelete" };
+            settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+            settings.SettingsPopup.EditForm.AllowResize = true;
+            settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+            settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+            settings.SettingsPager.FirstPageButton.Visible = true;
+            settings.SettingsPager.LastPageButton.Visible = true;
+            settings.SettingsPager.PageSizeItemSettings.Visible = true;
+            settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+            settings.SettingsPager.PageSize = 10;
+            settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+            settings.SettingsPopup.EditForm.Width = Unit.Pixel(700);
+            settings.SettingsPopup.EditForm.Height = Unit.Pixel(500);
+            settings.SettingsBehavior.ConfirmDelete = true;
+            settings.ClientSideEvents.Init = "OnInit";
+
+            settings.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
+
+            settings.CommandColumn.ButtonType = GridViewCommandButtonType.Image;
+            settings.CommandColumn.Visible = false;
+
+            settings.KeyFieldName = "ID_DGA";
+
+            settings.SettingsPager.Visible = true;
+            settings.Settings.ShowGroupPanel = false;
+            settings.Settings.ShowFilterRow = true;
+            settings.SettingsBehavior.AllowSelectByRowClick = true;
+            settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+
+            settings.Columns.Add(column =>
+            {
+                column.Caption = "&nbsp;";
+                column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+
+                if (!ViewBag.Administrador)
+                {
+                    column.SetHeaderTemplateContent(c =>
+                    {
+                        Html.DevExpress().Image(img =>
+                        {
+                            img.Name = "addNewRow";
+                            img.ImageUrl = "~/Content/Images/new.png";
+                            img.Height = 20;
+                            img.Width = 20;
+                            img.Properties.ClientSideEvents.Click = string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 2, Url.Action("LoadDGA", "DGA"));
+                        }).Render();
+                    });
+                }
+
+                column.SetDataItemTemplateContent(c =>
+                {
+                    if (c.KeyValue != null)
+                    {
+                        var fechaEnvio = DataBinder.Eval(c.DataItem, "D_FREPORTE");
+
+                        Html.DevExpress().Image(img =>
+                        {
+                            if (fechaEnvio == null && !ViewBag.Administrador)
+                            {
+                                img.Name = "editDGA_" + c.KeyValue.ToString();
+                                img.ImageUrl = "~/Content/Images/edit.png";
+                                img.Properties.AlternateText = "Editar";
+                            }
+                            else
+                            {
+                                img.Name = "viewDGA_" + c.KeyValue.ToString();
+                                img.ImageUrl = "~/Content/Images/view.png";
+                                img.Properties.AlternateText = "Ver";
+                            }
+                            img.Height = 16;
+                            img.Width = 16;
+                            img.Properties.AlternateText = "Editar";
+                            img.Style.Add("cursor", "pointer");
+                            img.Properties.ClientSideEvents.Click = string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 2, Url.Action("LoadDGA", "DGA") + "/" + c.KeyValue.ToString());
+                        }).Render();
+                    }
+                });
+            });
+
+            if (ViewBag.Administrador)
+            {
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "ID_TERCERO";
+                    column.Caption = "Id Tercero";
+                    column.Width = Unit.Percentage(10);
+                    column.Visible = true;
+                    column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                });
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "S_TERCERO";
+                    column.Caption = "Tercero";
+                    column.Width = Unit.Percentage(25);
+                    column.Visible = true;
+                    column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                    column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+                    column.SortOrder = DevExpress.Data.ColumnSortOrder.Descending;
+                    column.SortIndex = 0;
+                });
+            }
+
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "ID_DGA";
+                column.Caption = "C&oacute;digo";
+                column.Width = (ViewBag.Administrador ? Unit.Percentage(20) : Unit.Percentage(25));
+                column.Visible = true;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.SortOrder = DevExpress.Data.ColumnSortOrder.Descending;
+                column.SortIndex = 1;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "D_ANO";
+                column.Caption = "A&ntilde;o";
+                column.PropertiesEdit.DisplayFormatString = "yyyy";
+                column.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                column.Width = (ViewBag.Administrador ? Unit.Percentage(20) : Unit.Percentage(25));
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+                column.SortOrder = DevExpress.Data.ColumnSortOrder.Descending;
+                column.SortIndex = 0;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "S_ESTADO";
+                column.Caption = "Estado";
+                column.Width = (ViewBag.Administrador ? Unit.Percentage(10) : Unit.Percentage(15));
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.Caption = "&nbsp;";
+                column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+
+                column.SetDataItemTemplateContent(c =>
+                {
+                    if (c.KeyValue != null)
+                    {
+                        //var fechaEnvio = DataBinder.Eval(c.DataItem, "D_FREPORTE");
+                        int estadoDGA = (int)(DataBinder.Eval(c.DataItem, "ID_ESTADO") == null ? 4 : DataBinder.Eval(c.DataItem, "ID_ESTADO"));
+
+                        if (estadoDGA == 1 && !ViewBag.Administrador)
+                        {
+                            Html.DevExpress().Image(img =>
+                            {
+                                img.Name = "sendDGA_" + c.KeyValue.ToString();
+                                img.ImageUrl = "~/Content/Images/send.png";
+                                img.Height = 16;
+                                img.Width = 16;
+                                img.Properties.AlternateText = "Enviar";
+                                img.Style.Add("cursor", "pointer");
+                                img.Properties.ClientSideEvents.Click = "function(s, e) { SendDGA(" + c.KeyValue.ToString() + "); }";
+                            }).Render();
+                        }
+                        else
+                        {
+                            if (estadoDGA != 1)
+                            {
+                                Html.DevExpress().Image(img =>
+                                {
+                                    img.Name = "printDGA_" + c.KeyValue.ToString();
+                                    img.ImageUrl = "~/Content/Images/print.png";
+                                    img.Height = 16;
+                                    img.Width = 16;
+                                    img.Properties.AlternateText = "Imprimir";
+                                    img.Style.Add("cursor", "pointer");
+                                    img.Properties.ClientSideEvents.Click = "function(s, e) { PrintDGA(" + c.KeyValue.ToString() + "); }";
+                                }).Render();
+
+                                ViewContext.Writer.Write("&nbsp;&nbsp;");
+                            }
+
+                            if (ViewBag.Administrador)
+                            {
+                                switch (estadoDGA)
+                                {
+                                    case 4: // Emitido
+                                        Html.DevExpress().Image(img =>
+                                        {
+                                            img.Name = "anularDGA_" + c.KeyValue.ToString();
+                                            img.ImageUrl = "~/Content/Images/delete.png";
+                                            img.Height = 16;
+                                            img.Width = 16;
+                                            img.Properties.AlternateText = "Anular";
+                                            img.Style.Add("cursor", "pointer");
+                                            img.Properties.ClientSideEvents.Click = "function(s, e) { AnularDGA(" + c.KeyValue.ToString() + "); }";
+                                        }).Render();
+                                        break;
+                                    case 6: // Obsoleto
+                                        Html.DevExpress().Image(img =>
+                                        {
+                                            img.Name = "copiarDGA_" + c.KeyValue.ToString();
+                                            img.ImageUrl = "~/Content/Images/copiar.png";
+                                            img.Height = 16;
+                                            img.Width = 16;
+                                            img.Properties.AlternateText = "Copiar";
+                                            img.Style.Add("cursor", "pointer");
+                                            img.Properties.ClientSideEvents.Click = "function(s, e) { CopiarDGA(" + c.KeyValue.ToString() + "); }";
+                                        }).Render();
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        /*grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+        {
+            e.QueryableSource = Model;
+            e.KeyExpression = "ID_DGA";
+        }).GetHtml();*/
+        grid.Bind(Model).GetHtml();
+    }
+}

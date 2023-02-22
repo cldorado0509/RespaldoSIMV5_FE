@@ -1,0 +1,198 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Tala</title>
+    <style>
+        .ui-dialog .ui-dialog-titlebar-close {
+            width: 20px;
+            height: 20px;
+        }
+
+        footer {
+            display: none;
+        }
+
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        .ui-widget button {
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .ui-dialog .ui-dialog-buttonpane button {
+            margin: .5em .4em .5em 0;
+            cursor: pointer;
+            color: #fff;
+            background-color: #b4cd5f;
+            border-color: #b4cd5f;
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.428571429;
+            text-align: center;
+            white-space: nowrap;
+            margin-left: 20px;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid transparent;
+            height: 30px;
+            border-radius: 4px;
+        }
+
+        #loadingImg {
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.17) !important;
+            position: fixed;
+            z-index: 100000;
+            cursor: not-allowed;
+        }
+
+        .loadingImg {
+            position: fixed;
+            z-index: 100000;
+            background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+            height: 50px;
+            width: 50px;
+            background-repeat: no-repeat;
+            left: 50%;
+            background-size: contain;
+            top: 50%;
+            cursor: not-allowed;
+        }
+    </style>
+
+
+
+
+</head>
+
+
+
+<body contenteditable="false">
+    <div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+
+    <input id="txtx" style="display:none" />
+
+    <br />
+    <div id="div_mapa" class="col-sm-12" style="height: 400px; padding-right: 0px; padding-left: 0px;">
+        <div class="row">
+            <div class="col-sm-12" style="height:400px">
+                <iframe id="mapa" src="/MAPGISV5_WEB/tools/AMVA/inicio_limite_urbano.htm" style="height:100%; width:100%; border:none"></iframe>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+
+        var ubicaciones = [
+            @foreach (SIM.Areas.Dashboard.Controllers.UbicacionesModoTransporte ubicacion in ViewBag.ubicaciones)
+            {
+                @Html.Raw("{X:")@ubicacion.LONGITUD@Html.Raw(",Y:")@ubicacion.LATITUD@Html.Raw(",COLOR:'")@ubicacion.COLOR@Html.Raw("',DESCRIPCION:''},");
+            }
+        ];
+
+        var instalaciones = [
+            @foreach (SIM.Areas.Dashboard.Controllers.UbicacionInstalacion ubicacion in ViewBag.instalaciones)
+            {
+                @Html.Raw("{X:")@ubicacion.LONGITUD@Html.Raw(",Y:")@ubicacion.LATITUD@Html.Raw(",COLOR:'255,255,255',DESCRIPCION:'")@ubicacion.INSTALACION@Html.Raw("'},");
+            }
+        ];
+
+    $(document).ready(function () {
+        //$("#txtx").val(@ViewBag.strInstalacion);
+
+        //consultarDatos(@ViewBag.strInstalacion,@ViewBag.strModo);
+        consultarDatos();
+    });
+
+    //function consultarDatos(idinstalacion,modo) {
+    function consultarDatos() {
+
+        @*$.ajax({
+            type: "get",
+            url: '@Url.Action("../../Tala/Tala/consultarMunicipioArea")',
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+
+
+            }
+        });*@
+        var arrCoord = new Array();
+        arrCoord.push({ "X": "-75.6000093889961", "Y": "6.21085851501039", "COLOR": "255,0,0", "DESCRIPCION": "INSTALACION 1" }, { "X": "-75.63767242431496", "Y": "6.313727121943019", "COLOR": "0,255,68", "DESCRIPCION": "INSTALACION 2" }, { "X": "-75.63617038726753", "Y": "6.150720182624176", "COLOR": "26,0,255", "DESCRIPCION": "INTALACION 3" });
+        //pintarPunto(arrCoord);
+        pintarPunto(ubicaciones);
+    }
+
+    function pintarPunto(arrDatos) {
+        try {
+            var rt = conectar();
+            objetoMapgis = new MapGIS("mapa");
+            objetoMapgis.initMapGIS();
+            //var max = Math.max(...arr);
+            var arrX=new Array();
+            var arrrY=new Array();
+            for (var i = 0; i < arrDatos.length ; i++) {
+                arrX.push(arrDatos[i].X);
+                arrrY.push(arrDatos[i].Y);
+                var Atributos = {
+                    "Dirección": arrDatos[i].DESCRIPCION
+
+
+                };
+                var arrCol = arrDatos[i].COLOR.toString().split(",");
+                objetoMapgis.verPoint(arrDatos[i].X, arrDatos[i].Y, 4326, arrCol[0], arrCol[1], arrCol[2], "punto" + i, Atributos, "", '');
+
+            }
+            var xmmax=Math.max.apply(null, arrX);
+            var xmin= Math.min.apply(null, arrX);
+            var ymax=Math.max.apply(null, arrrY);
+            var ymin= Math.min.apply(null, arrrY);
+           // objetoMapgis.zoomCoor(xmmax,xmin,ymax,ymin,4326);
+            //objetoMapgis.zoomPto(arrDatos[0].X, arrDatos[0].Y, 4326, 14);
+            // var geo = $("#mapa")[0].contentWindow.createPoint(x, y, 4326);
+            //if (rt != "-1")
+            // consultaGeo(geo);
+
+        } catch (e) {
+            setTimeout(function () {
+                pintarPunto(arrDatos)
+            }, 1000);
+        }
+    }
+
+    </script>
+</body>
+
+
+
+
+
+

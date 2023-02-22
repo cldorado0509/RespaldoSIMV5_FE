@@ -1,0 +1,125 @@
+﻿@model DGA
+@using System.Web.UI.WebControls
+@using SIM.Data.General
+
+<div class="row" style="padding:5px">
+    <div class="col-md-12">
+        <h4>De acuerdo a las condiciones actuales de funcionamiento de su empresa (SI Ó NO)</h4>
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Posee o está en proceso de implementar sistemas de gestión ambiental:
+        @Html.DevExpress().RadioButtonListFor(model => Model.S_ESSGA, settings =>
+        {
+            settings.Properties.Items.Add("Sí", "S");
+            settings.Properties.Items.Add("No", "N");
+            settings.Properties.RepeatColumns = 2;
+            settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+            settings.ControlStyle.VerticalAlign = VerticalAlign.Top;
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { chkS_ESSGA = s; }";
+            settings.Properties.ClientSideEvents.ValueChanged = "function (s,e) { OnValueChangedSelection(chkS_ESSGA, lblS_ESSGA, txtS_ESSGA) }";
+        }).GetHtml()
+    </div>
+    <div class="col-md-8">
+        @Html.DevExpress().Label(settings =>
+        {
+            settings.Name = "lblS_ESSGA";
+            settings.Text = "Cu&aacute;l(es) ?";
+            settings.EncodeHtml = false;
+            settings.ClientVisible = (Model.S_ESSGA == "S" ? true : false);
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { lblS_ESSGA = s; }";
+        }).GetHtml()
+        @Html.DevExpress().MemoFor(model => Model.S_SGA, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(100);
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { txtS_ESSGA = s; }";
+            settings.ClientVisible = (Model.S_ESSGA == "S" ? true : false);
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Posee o está en proceso de implementar sistemas de gestión calidad:
+        @Html.DevExpress().RadioButtonListFor(model => Model.S_ESSGC, settings =>
+        {
+            settings.Properties.Items.Add("Sí", "S");
+            settings.Properties.Items.Add("No", "N");
+            settings.Properties.RepeatColumns = 2;
+            settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+            settings.ControlStyle.VerticalAlign = VerticalAlign.Top;
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { chkS_ESSGC = s; }";
+            settings.Properties.ClientSideEvents.ValueChanged = "function (s,e) { OnValueChangedSelection(chkS_ESSGC, lblS_ESSGC, txtS_ESSGC) }";
+        }).GetHtml()
+    </div>
+    <div class="col-md-8">
+        @Html.DevExpress().Label(settings =>
+        {
+            settings.Name = "lblS_ESSGC";
+            settings.Text = "Cu&aacute;l(es) ?";
+            settings.EncodeHtml = false;
+            settings.ClientVisible = (Model.S_ESSGC == "S" ? true : false);
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { lblS_ESSGC = s; }";
+        }).GetHtml()
+        @Html.DevExpress().MemoFor(model => Model.S_SGC, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(100);
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { txtS_ESSGC = s; }";
+            settings.ClientVisible = (Model.S_ESSGC == "S" ? true : false);
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Es signatario del convenio de Producción Más Limpia:
+        @Html.DevExpress().RadioButtonListFor(model => Model.S_PRODUCCIONMASLIMPIA, settings =>
+        {
+            settings.Properties.Items.Add("Sí", "S");
+            settings.Properties.Items.Add("No", "N");
+            settings.Properties.RepeatColumns = 2;
+            settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+            settings.ControlStyle.VerticalAlign = VerticalAlign.Top;
+            settings.ReadOnly = ViewBag.ReadOnly;
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Hace uso del Eco-Etiquetado:
+        @Html.DevExpress().RadioButtonListFor(model => Model.S_ESECOETIQUETADO, settings =>
+        {
+            settings.Properties.Items.Add("Sí", "S");
+            settings.Properties.Items.Add("No", "N");
+            settings.Properties.RepeatColumns = 2;
+            settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+            settings.ControlStyle.VerticalAlign = VerticalAlign.Top;
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { chkS_ESECOETIQUETADO = s; }";
+            settings.Properties.ClientSideEvents.ValueChanged = "function (s,e) { OnValueChangedSelection(chkS_ESECOETIQUETADO, lblS_ESECOETIQUETADO, txtS_ESECOETIQUETADO) }";
+        }).GetHtml()
+    </div>
+    <div class="col-md-8">
+        @Html.DevExpress().Label(settings =>
+        {
+            settings.Name = "lblS_ESECOETIQUETADO";
+            settings.Text = "Cu&aacute;l ?";
+            settings.EncodeHtml = false;
+            settings.ClientVisible = (Model.S_ESECOETIQUETADO == "S" ? true : false);
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { lblS_ESECOETIQUETADO = s; }";
+        }).GetHtml()
+        @Html.DevExpress().MemoFor(model => Model.S_ECOETIQUETADO, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(100);
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.ClientSideEvents.Init = "function (s,e) { txtS_ESECOETIQUETADO = s; }";
+            settings.ClientVisible = (Model.S_ESECOETIQUETADO == "S" ? true : false);
+        }).GetHtml()
+    </div>
+</div>

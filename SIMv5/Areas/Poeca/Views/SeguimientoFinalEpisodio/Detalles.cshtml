@@ -1,0 +1,77 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_SEGUIMIENTO_GLOBAL
+
+@{
+    ViewBag.Title = "POECA | Detalle de Seguimiento Final de Episodio"; ;
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>Detalle de Seguimiento Final de episodio</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DPOEAIR_EPISODIO.N_ANIO):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DPOEAIR_EPISODIO.N_ANIO)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DPOEAIR_EPISODIO.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DPOEAIR_EPISODIO.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.N_RADICADO):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.N_RADICADO)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_OBSERVACIONES):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_OBSERVACIONES)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_REMITENTE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_REMITENTE)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_CARGO_REMITENTE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_CARGO_REMITENTE)
+                </dd>
+            </dl>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-xs-6">
+                    @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-block btn-primary" })
+                </div>
+
+                <div class="col-xs-6">
+                    @Html.ActionLink("Editar", "Editar", new { id = Model.ID }, new { @class = "btn btn-block btn-default" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

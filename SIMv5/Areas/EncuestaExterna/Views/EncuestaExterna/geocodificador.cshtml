@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "geocod";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <div class="col-sm-12">
+          
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Dirección</label>
+                </div>
+                <input id="txtDirecion" class="form-control" value="cl 87 sur 55 695" />
+            </div>
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Municipio</label>
+                </div>
+                <select id="cmbMunicipio" class="form-control">
+                    <option value="-1">MEDELLIN</option>
+                    <option value="BARBOSA">BARBOSA</option>
+                    <option value="BELLO">BELLO</option>
+                    <option value="CALDAS">CALDAS</option>
+                    <option value="COPACABANA">COPACABANA</option>
+                    <option value="ENVIGADO">ENVIGADO</option>
+                    <option value="GIRARDOTA">GIRARDOTA</option>
+                    <option value="ITAGUI">ITAGUI</option>
+                    <option value="LA ESTRELLA">LA ESTRELLA</option>
+                    <option value="SABANETA">SABANETA</option>
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-default" onclick="geoCodificar()">consultar</button>
+            </div>
+            </div>
+            <div class="col-sm-12">
+              
+                <div class="col-sm-6">
+                    <div class="col-sm-12">
+                        <label>x</label>
+                    </div>
+                    <input id="txtX" class="form-control" disabled />
+                </div>
+              
+                <div class="col-sm-6">
+                    <div class="col-sm-12">
+                        <label>y</label>
+                    </div>
+                    <input id="txtY" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+    <script>
+
+
+        function geoCodificar()
+        {
+            var direcion = "";
+            if ($("#cmbMunicipio").val() != "-1")
+                direcion = $("#txtDirecion").val() + " " + $("#cmbMunicipio").val();
+            else
+                direcion = $("#txtDirecion").val();
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: '@Url.Action("geocodificadorArea", "EncuestaExterna")',
+                data: { valor: encodeURI(direcion) },
+                beforeSend: function () { },
+                success: function (response) {
+                    $("#txtX").val(response.cx);
+                    $("#txtY").val(response.cy);
+
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+13:57:02 - ProyeccionDocumento [PostAvanzarDocumento - 383 ] : Referencia a objeto no establecida como instancia de un objeto.
+13:58:35 - ProyeccionDocumento [PostAlmacenarDatosProyeccionDocumento - 383 ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-01400: no se puede realizar una inserción NULL en ("TRAMITES"."PROYECCION_DOC_FIRMAS"."S_TIPO")
+ORA-06512: en línea 4
+13:59:39 - ProyeccionDocumento [PostAlmacenarDatosProyeccionDocumento - 383 ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-01400: no se puede realizar una inserción NULL en ("TRAMITES"."PROYECCION_DOC_FIRMAS"."S_TIPO")
+ORA-06512: en línea 4

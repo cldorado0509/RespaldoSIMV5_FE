@@ -1,0 +1,232 @@
+﻿@{
+    ViewBag.Title = "Encuesta";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+
+
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+        textarea#txt_area_observacion {
+    width: 250px !important;
+
+}
+    </style>
+</head>
+<body>
+
+
+
+    <!--Dialog informacion ubicacion-->
+    <div id="dialogAyuda" title="Ayuda" style="display:none">
+        <div class="col-md-12 " id="ContenidoAyuda">
+        </div>
+    </div>
+    <!--dialog de observacion-->
+    <div id="dialogObservacion" title="Observacion" style="display:none">
+        <div class="col-md-12 " id="ContenidoObservacion">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12" id="acordionEncuestaGeneral">
+            <!--Nivel1-->
+            <div class="panel-group acordeonVerde " id="acordionEncuestaPrincipal">
+            </div>
+        </div>
+    </div>
+    <br/>
+  
+
+   
+    <input id="txtIdEnc" style="display:none"/>
+    <input id="txtIdVgen" style="display:none" />
+    <input id="txtIdEstado" style="display:none" />
+        <div id="msAlmacenamiento" title="Información" style="display:none">
+            <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+        </div>
+    <div id="pantallaVigencia" title="Vigencia" style="display: none; overflow: hidden;">
+        <iframe src="" id="frVigencia" width="100%" height="100%"></iframe>
+
+
+    </div>
+        <script>
+    var arrFechaIni = "";
+    var arrFechaFin = "";
+    var jsonEncuestas = null;
+
+    $(document).ready(function () {
+        $("#txtIdEstado").val(@ViewBag.idEstado);
+        consultarJsonEncuesta(@ViewBag.idEstado);
+
+
+    });
+
+
+
+    function consultarJsonEncuesta(idestado) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarJsonEncuestas", "EncuestaExterna")',
+            data: { idEstado: idestado, form: 14 },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response != "[]") {
+                    jsonEncuestas = eval('(' + response + ')');
+                    var html = consultarEncuestas(jsonEncuestas);
+                    $("#acordionEncuestaPrincipal").remove();
+                    $("#acordionEncuestaGeneral").append(html);
+                   
+                } else {
+                    $("#Tab5").css('display', 'none');
+                    offLoad("tabAdicional");
+                }
+
+            }
+        });
+    }
+
+
+  
+
+
+    function guardarEncuesta() {
+        var cont = 0;
+        var texto = "";
+        var tezttemp = ""
+        for (var z = 0; z < jsonEncuestas.length; z++) {
+            if (jsonEncuestas[z].ESTADO == 1) {
+                for (var i = 0; i < jsonEncuestas[z].PREGUNTAS.length; i++) {
+
+                    jsonEncuestas[z].PREGUNTAS[i].S_OBSERVACION = $('#Encuesta_' + jsonEncuestas[z].ID_ENCUESTA + '_Pregunta_' + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '_observacion').val();
+
+                    if (jsonEncuestas[z].PREGUNTAS[i].ID_TIPOPREGUNTA != 3 && jsonEncuestas[z].PREGUNTAS[i].ID_TIPOPREGUNTA != 1) {
+                        var campo = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA)[0].name;
+                        if (jsonEncuestas[z].PREGUNTAS[i].S_REQUERIDA == "1") {
+                            var Pvalor = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val()
+                            if (Pvalor == "" || Pvalor == "-1") {
+                                cont++;
+                                $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "0px 1px 7px 2px #FA0D0D")
+                                var tttemp = jsonEncuestas[z].S_NOMBRE;
+                                if (tttemp != tezttemp) {
+                                    tezttemp = jsonEncuestas[z].S_NOMBRE;
+                                    texto += "-" + jsonEncuestas[z].S_NOMBRE + "\n";
+                                }
+
+
+                            } else {
+                                $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "");
+                            }
+                        }
+                        if (campo == "ID_VALOR") {
+                            jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val() * 1;
+
+                        } else if (campo == "N_VALOR") {
+                            jsonEncuestas[z].PREGUNTAS[i].N_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val() * 1;
+                        } else if (campo == "S_VALOR") {
+                            jsonEncuestas[z].PREGUNTAS[i].S_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val();
+                        } else if (campo == "D_VALOR") {
+                            jsonEncuestas[z].PREGUNTAS[i].D_VALOR = $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val();
+                        }
+                    } else if (jsonEncuestas[z].PREGUNTAS[i].ID_TIPOPREGUNTA == 3) {
+                        for (var o = 0; o < jsonEncuestas[z].PREGUNTAS[i].OPCIONES.length; o++) {
+                            var valor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + o
+                            if ($(valor).is(':checked')) {
+                                jsonEncuestas[z].PREGUNTAS[i].OPCIONES[o].SELECTED = 1
+                            } else {
+                                jsonEncuestas[z].PREGUNTAS[i].OPCIONES[o].SELECTED = 0
+                            }
+
+                        }
+                    } else {
+                        var valor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
+                        if ($(valor).is(':checked')) {
+                            jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 1
+                        } else {
+                            jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 0
+                        }
+                        if (jsonEncuestas[z].PREGUNTAS[i].S_REQUERIDA == "1") {
+                            var Pvalor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
+
+                            if (!$(Pvalor).is(':checked')) {
+                                cont++;
+                                $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "0px 1px 7px 2px #FA0D0D")
+                                var tttemp = jsonEncuestas[z].S_NOMBRE;
+                                if (tttemp != tezttemp) {
+                                    tezttemp = jsonEncuestas[z].S_NOMBRE;
+                                    texto += "-" + jsonEncuestas[z].S_NOMBRE + "\n";
+                                }
+                            } else {
+                                $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).css("boxShadow", "");
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        if (cont > 0) {
+            totaltext = "Debe diligenciar todas las preguntas obligatorias de las encuestas:\n" + texto
+            alert(totaltext)
+            return;
+        }
+        guardarEncuestaOficial();
+    }
+    function guardarEncuestaOficial() {
+
+
+        var jsonOficial = JSON.stringify(jsonEncuestas)
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarInformacionEncuesta", "EncuestaExterna")',
+            data: { jsonInfo: jsonOficial, idCapEstado: $("#txtIdEstado").val(), idform: 14 },
+            beforeSend: function () { },
+            success: function (response) {
+                terminarEncuesta();
+
+            }
+        });
+
+    }
+            function terminarEncuesta()
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("enviarEncuesta", "EncuestaExterna")',
+                    data: { idestado: $("#txtIdEstado").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        parent.consultarEncuestaUsuario();
+                        alert("Almacenamiento Exitoso");
+
+                            parent.$("#pantallaEncuesta").dialog('close');
+                    }
+                });
+            }
+            
+        </script>
+</body>
+

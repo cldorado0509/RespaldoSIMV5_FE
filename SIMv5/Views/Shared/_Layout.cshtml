@@ -1,0 +1,311 @@
+﻿@using Microsoft.AspNet.Identity
+@using SIM.Areas.Seguridad.Models
+@using SIM.Utilidades
+
+@{    
+    if (Request.IsAuthenticated && Session["_Menu"] == null)
+    {
+        if (Session["_Pendientes"] == null || !Convert.ToBoolean(Session["_Pendientes"]))
+        {
+            Session["_Menu"] = Security.ObtenerHTMLMenu(ModelsToListSeguridad.GetOpcionesMenu()); //JsonConvert.SerializeObject(ModelsToListSeguridad.GetOpcionesMenu());
+        }
+        
+        Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/Content/Images/favico-area.ico?v=1.01")" />
+    <title>@ViewBag.Title - SIM</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @*@Scripts.Render("~/bundles/jqwidgets")
+        @Scripts.Render("~/bundles/jqueryui")*@
+
+    <script src="@Url.Content("~/Scripts/js/jszip.min.js")"></script>
+
+    <!--<link href="@Url.Content("~/Content/main.css")" rel="stylesheet" type="text/css" />-->
+    <link href="@Url.Content("~/Content/homepage.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/forms.css?v=1.02")" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <!--<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/demo.css")" />-->
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/style.css?v=1.01")" />
+    <script src="@Url.Content("~/Scripts/mapgis_integracion.js")"></script>
+    <script src="@Url.Content("~/Scripts/control-vigilancia-general.js")"></script>
+    <script src="@Url.Content("~/Scripts/modernizr.custom.29473.js")"></script>
+    <link href="@Url.Content("~/Content/Site.css?v=1.01")" rel="stylesheet" type="text/css" />
+    <!--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>-->
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-2.1.4.min.js")"></script>
+    <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular.min.js")"></script>
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/angular-route.min.js")"></script>-->
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular-sanitize.js")"></script>
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.min.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.globalize/cultures/globalize.culture.es-CO.js")"></script>-->
+    <!-- The line below was commented by the Project Converter, see this link for more info: -->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/dx.webappjs.js")"></script>-->
+    <script type="text/javascript" src="@Url.Content("~/Scripts/dx.web.js")"></script>
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/dx.all.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/devextreme-localization/dx.webappjs.es.js")"></script>-->
+
+    <script type="text/javascript" src="@Url.Content("~/Scripts/cldr.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/cldr/event.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/cldr/supplemental.js")"></script>
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize/message.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize/number.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize/currency.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize/date.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.min.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/dx.mobile.js")"></script>-->
+    <!--<script type="text/javascript" src="@Url.Content("~/Scripts/localization/dx.web.es.js")"></script>-->
+    <!--Css editados-->
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EstiloPagina.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/normalize.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Principal.css?v=1.08")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/TramitesLinea.css")" />
+    <!--Fin Menu-->
+    <!-- Include jQuery.mmenu .css files -->
+    <link type="text/css" href="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/css/jquery.mmenu.all.css")" rel="stylesheet" />
+    <link type="text/css" href="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/css/extensions/jquery.mmenu.themesim.css")" rel="stylesheet" />
+
+    <!-- Include the jQuery.mmenu .js files -->
+    <script type="text/javascript" src="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/js/jquery.mmenu.min.all.js")"></script>
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/dx.common.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/dx.light.css")" />
+
+    <style>
+        .pata {
+            position:absolute; /*El div será ubicado con relación a la pantalla*/
+            left:0px; /*A la derecha deje un espacio de 0px*/
+            bottom:0px; /*Abajo deje un espacio de 0px*/
+            height:50px; /*alto del div*/
+            z-index:0;
+        }
+    </style>
+
+    <!-- Fire the plugin onDocumentReady -->
+    <script type="text/javascript">
+        function Sesion() {
+            $(".OffLogin").toggle(0700);
+        }
+
+        function cerrarSesion() {
+            eliminarUsuario(localStorage.getItem("USER"), localStorage.getItem("ID"));
+            localStorage.removeItem("USER");
+            localStorage.removeItem("ID");
+            document.getElementById('logoutForm').submit();
+        }
+
+        function MostrarAyuda(idAyuda, titulo) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/Ayudas/api/AyudasWebAPI/GetContenido")",
+                data: {
+                    id: idAyuda
+                },
+                success: function (response) {
+                    var dato = response;
+                    //$('#datosAyuda').html(dato[0].CONTENIDO);
+                    //alert($('#datosAyuda'));
+                    //var ayudaInstance = $("#popAyuda").dxPopup("instance");
+                    //ayudaInstance.show();
+
+                    $("#popAyuda").dxPopup({
+                        title: titulo,
+                        contentTemplate: function (contentElement) {
+                            contentElement.append(dato[0].CONTENIDO);
+                        }
+                    });
+                    var ayudaInstance = $("#popAyuda").dxPopup("instance");
+                    ayudaInstance.show();
+                },
+            });
+        }
+
+        /*$(function () {
+            $("#popAyuda").dxPopup();
+        });*/
+
+        var inrt = "";
+        $(document).ready(function () {
+            if ($("#txtalejo").val() != "") {
+                crearlocalstore();
+
+            } else {
+
+            }
+            //Globalize.culture("es-CO");
+            //Globalize.locale(navigator.language || navigator.browserLanguage);
+            $('#menuSIM').removeAttr("style");
+
+            $("#menuSIM").mmenu({
+                "extensions": [
+                   "pageshadow",
+                   "theme-sim"
+                ],
+                /*"offCanvas": {
+                    "zposition": "front"
+                },*/
+                "counters": false,
+                "header": {
+                    "title": "Sistema de Informaci&oacute;n Metropolitano",
+                    "add": true,
+                    "update": true
+                },
+                "searchfield": {
+                    "placeholder": "Buscar",
+                    "noResults": "No se encontraron resultados",
+                    "add": true,
+                    "search": true
+                }
+            });
+        });
+        function crearlocalstore() {
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/Seguridad/Account/consultarUsuario")",
+
+                beforeSend: function () { },
+                success: function (response) {
+
+                    var obj = eval("(" + response + ')');
+                    if (obj[0] != null) {
+                        localStorage.setItem("USER", obj[0].USUARIO);
+                        localStorage.setItem("ID", obj[0].CLAVE);
+
+                        inrt = setInterval(validarLogueo, 30000);
+                        setTimeout(function () { clearInterval(inrt); }, 10000);
+                    }
+
+                }
+            });
+        }
+
+        function eliminarUsuario(user, clav) {
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/Seguridad/Account/eliminarUsuario")",
+                data: { usuario: user, clave: clav },
+
+                beforeSend: function () { },
+                success: function (response) {
+
+
+
+
+                }
+            });
+        }
+        function validarLogueo() {
+            user = localStorage.getItem("USER");
+            clav = localStorage.getItem("ID");
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/Visitas/validar")",
+                data: { usuario: user, clav: clav },
+
+                beforeSend: function () { },
+                success: function (response) {
+
+
+
+
+                }
+            });
+        }
+
+        $('#hamburger').click(function () {
+            /*(if ($('#menuSIM').hasClass('mm-opened')) {
+                var API = $("#menuSIM").data("mmenu");
+                API.close();
+            }*/
+        });
+
+    </script>
+</head>
+<body>
+    <input value="@Request.IsAuthenticated" id="txtalejo" style="display:none;" />
+    @if (Request.IsAuthenticated)
+    {
+        if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+        {
+            @Html.Raw(Session["_Menu"])
+        }
+        <div id="popAyuda">
+            <div data-options="dxTemplate:{ name: 'content' }">
+                <div id="datosAyuda">
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+        {
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="OffLogin" style="display:none">
+                        <div class="flecha"></div>
+                        <button type="button" class="top btn btn-default alingRight">@Html.ActionLink("Administrar Cuenta", "Manage", "Account", routeValues: new { area = "Seguridad" }, htmlAttributes: new { title = "Manage", style = "color:white" })</button>
+                        <button type="button" class="bottom btn btn-default alingRight" onclick="cerrarSesion()"> <span class="glyphicon glyphicon-off" aria-hidden="true"></span>Cerrar Sesion</button>
+                    </div>
+                    <div class="encabezado">
+                        @if (Request.IsAuthenticated)
+                        {
+                            <a id="hamburger" href="#menuSIM"><span></span></a>
+                        }
+                        <div class="Logos" id="Logos" @if (!Request.IsAuthenticated) { <text> style="margin-left:0px" </text> }>
+                        </div>
+                        <p id="tituloLargo">Sistema de Información Metropolitano</p>
+                        <p id="tituloCorto">SIM</p>
+                        @if (Request.IsAuthenticated)
+                        {
+                            using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="button" class="btn btn-default alingRight btnGreen Login" onclick="Sesion()"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>@Session["_UserName"]</button>
+                            }
+                        }
+                    </div>
+                    @if (false)
+                    { //(!Request.IsAuthenticated) {
+                        <span class="navbar-right">
+                            @Html.Partial("_LoginPartial")
+                        </span>
+                    }
+                </div>
+            </div>
+        }
+    <div class="container body-content" @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) { <text> style="margin-top: 70px" </text> }>
+        @*Html.MvcSiteMap().SiteMapPath()*@
+        @RenderBody()
+        @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+        {
+            <text>
+                <br />
+                <footer>
+                    <div>
+                        <div style="text-align: left;"><img src="https://www.metropol.gov.co/PublishingImages/imgfuturosostenible.png"></div>
+                        <div style="text-align: center;">Copyright &copy; Area Metropolitana del Valle de Aburr&aacute;. Todos los Derechos Reservados</div>
+                    </div>
+                </footer>
+            </text>
+        }
+    </div>
+    </div>
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @*@Scripts.Render("~/bundles/bootstrap")*@
+    <script src="@Url.Content("~/Scripts/bootstrap.js")"></script>
+    <script src="@Url.Content("~/Scripts/respond.js")"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

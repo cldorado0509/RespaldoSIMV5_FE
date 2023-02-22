@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://util.geo.municipio.com.co/" targetNamespace="http://util.geo.municipio.com.co/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="getBarrioVereda" type="tns:getBarrioVereda" />
+  <xs:element name="getBarrioVeredaResponse" type="tns:getBarrioVeredaResponse" />
+  <xs:element name="getComunaCorregimiento" type="tns:getComunaCorregimiento" />
+  <xs:element name="getComunaCorregimientoResponse" type="tns:getComunaCorregimientoResponse" />
+  <xs:element name="getUbicaDirUrbana" type="tns:getUbicaDirUrbana" />
+  <xs:element name="getUbicaDirUrbanaImagen" type="tns:getUbicaDirUrbanaImagen" />
+  <xs:element name="getUbicaDirUrbanaImagenResponse" type="tns:getUbicaDirUrbanaImagenResponse" />
+  <xs:element name="getUbicaDirUrbanaResponse" type="tns:getUbicaDirUrbanaResponse" />
+  <xs:complexType name="getBarrioVereda">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CodigoComuna" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getBarrioVeredaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:beanBarrioVereda" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="beanBarrioVereda">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="codCodigo" type="xs:string" />
+      <xs:element minOccurs="0" name="valueNombre" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getUbicaDirUrbanaImagen">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Direccion" type="xs:string" />
+      <xs:element name="AnchoImagen" type="xs:int" />
+      <xs:element name="AltoImagen" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getUbicaDirUrbanaImagenResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:beanDireccion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="beanDireccion">
+    <xs:sequence>
+      <xs:element name="altoImagen" type="xs:int" />
+      <xs:element name="anchoImagen" type="xs:int" />
+      <xs:element minOccurs="0" name="codBarrio" type="xs:string" />
+      <xs:element minOccurs="0" name="codCbml" type="xs:string" />
+      <xs:element minOccurs="0" name="codComuna" type="xs:string" />
+      <xs:element minOccurs="0" name="tipoGeocod" type="xs:string" />
+      <xs:element minOccurs="0" name="URLImagen" type="xs:string" />
+      <xs:element minOccurs="0" name="valueCoordX" type="xs:double" />
+      <xs:element minOccurs="0" name="valueCoordY" type="xs:double" />
+      <xs:element minOccurs="0" name="valueDireccionNormal" type="xs:string" />
+      <xs:element minOccurs="0" name="valueDireccionStand" type="xs:string" />
+      <xs:element minOccurs="0" name="valueNomBarrio" type="xs:string" />
+      <xs:element minOccurs="0" name="valueNomComuna" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getComunaCorregimiento">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:complexType name="getComunaCorregimientoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:beanComunaCorregimiento" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="beanComunaCorregimiento">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="codCodigo" type="xs:string" />
+      <xs:element minOccurs="0" name="valueNombre" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getUbicaDirUrbana">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Direccion" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getUbicaDirUrbanaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:beanDireccionSimple" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="beanDireccionSimple">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="codBarrio" type="xs:string" />
+      <xs:element minOccurs="0" name="codCbml" type="xs:string" />
+      <xs:element minOccurs="0" name="codComuna" type="xs:string" />
+      <xs:element minOccurs="0" name="valueCoordX" type="xs:double" />
+      <xs:element minOccurs="0" name="valueCoordY" type="xs:double" />
+      <xs:element minOccurs="0" name="valueDireccionNormal" type="xs:string" />
+      <xs:element minOccurs="0" name="valueDireccionStand" type="xs:string" />
+      <xs:element minOccurs="0" name="valueNomBarrio" type="xs:string" />
+      <xs:element minOccurs="0" name="valueNomComuna" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

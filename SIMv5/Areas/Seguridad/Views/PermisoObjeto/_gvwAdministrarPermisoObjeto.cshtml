@@ -1,0 +1,142 @@
+@using System.Security.Claims
+@using System.Web
+@using System.Web.UI.WebControls
+@using SIM.Areas.Seguridad.Models
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvAdministrarPermisoObjeto";
+        settings.Caption = "Permisos objeto";
+        settings.CallbackRouteValues = new { Controller = "PermisoObjeto", Action = "gvwAdministrarPermisoObjeto" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "PermisoObjeto", Action = "gvwAdministrarPermisoObjetoCrear" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "PermisoObjeto", Action = "gvwAdministrarPermisoObjetoActualizar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "PermisoObjeto", Action = "gvwAdministrarPermisoObjetoEliminar" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.Width = Unit.Percentage(100);
+
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowNewButtonInHeader = claimppal.IsInRole("CPERMISOOBJETO");
+        settings.CommandColumn.ShowDeleteButton = claimppal.IsInRole("EPERMISOOBJETO");
+        settings.CommandColumn.ShowEditButton = claimppal.IsInRole("APERMISOOBJETO");
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.KeyFieldName = "ID_PERMISOOBJETO";
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "USUARIO.S_LOGIN";
+            column.Caption = "Login usuario";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            column.EditFormSettings.Visible = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "USUARIO.S_NOMBRES";
+            column.Caption = "Nombre usuario";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            column.EditFormSettings.Visible = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "USUARIO.S_APELLIDOS";
+            column.Caption = "Apellido usuario";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            column.EditFormSettings.Visible = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_USUARIO";
+            column.Caption = "Usuario";
+            column.Visible = false;
+            column.EditFormSettings.Visible = DefaultBoolean.True;
+            column.ColumnType = MVCxGridViewColumnType.DropDownEdit;
+            column.SetEditItemTemplateContent(csd =>
+                {
+                    Html.DevExpress().DropDownEdit(c =>
+                    {
+                        c.Name = "ddeUsuario";
+                        c.ReadOnly = true;
+                        c.SetDropDownWindowTemplateContent(c2 =>
+                        {
+                            ViewContext.Writer.Write(@Html.Action("gvwSeleccionarUsuario", "Usuario"));
+                        });
+                    }).Render();
+                    Html.DevExpress().TextBox(c =>
+                        {
+                            c.Name = "ID_USUARIO";
+                            c.ClientVisible = false;
+                        }).Render();
+                }
+             );
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_TIPOOBJETO";
+            column.Caption = "Tipo objeto";
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            column.Width = Unit.Parse("100");
+            column.Settings.FilterMode = ColumnFilterMode.DisplayText;
+            column.Settings.SortMode = DevExpress.XtraGrid.ColumnSortMode.DisplayText;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListSeguridad.GetTipoObjeto();
+            comboBoxProperties.TextField = "S_TIPOOBJETO";
+            comboBoxProperties.ValueField = "ID_TIPOOBJETO";
+            comboBoxProperties.ValueType = typeof(int);
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_OBJETO";
+            column.Caption = "Id objeto";
+            column.Width = Unit.Parse("100");
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_INICIO";
+            column.Caption = "Fecha inicio";
+            column.Width = Unit.Parse("150");
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "{0:dd/MM/yyyy HH:mm}";
+            var dateEditProperties = column.PropertiesEdit as DateEditProperties;
+            dateEditProperties.EditFormatString = "dd/MM/yyyy HH:mm";
+            dateEditProperties.UseMaskBehavior = true;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_FIN";
+            column.Caption = "Fecha fin";
+            column.Width = Unit.Parse("150");
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "{0:dd/MM/yyyy HH:mm}";
+            var dateEditProperties = column.PropertiesEdit as DateEditProperties;
+            dateEditProperties.EditFormatString = "dd/MM/yyyy HH:mm";
+            dateEditProperties.UseMaskBehavior = true;
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

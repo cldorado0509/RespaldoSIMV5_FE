@@ -1,0 +1,308 @@
+﻿@using SIM.Properties
+@{
+    ViewBag.Title = "Registro de visitas";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/AtencionUsuarios/Scripts/VisitaTercero.js?v=1.04")"></script>
+<style>
+    .dx-button .dx-icon {
+        font-size: 15px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+
+<div class="row">
+    <div id="calendar-container" class="col-sm-3"></div>
+    
+
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+        <div class="panelSIM panelSIM-default" id="pnlContenedor">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Persona Natural</label>
+                </h3>
+            </div>
+
+
+            <div class="col-sm-9">
+
+                <div class="row">
+
+                    <div class="col-sm-1">Documento:</div>
+                    <div class="col-sm-6" id="txtDocumento"></div>
+
+
+                    <div id="btnBuscar" style="margin-left: 10px"></div>
+                    <div id="btnLimpiar" style="margin-left: 10px"></div>
+
+
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-1">Apellidos:</div>
+                    <div class="col-sm-3" style="margin-right: 10px" id="txtApellido1"></div>
+                    <div class="col-sm-3" id="txtApellido2"></div>
+
+                    <div class="col-sm-1">Nombres:</div>
+                    <div class="col-sm-3" style="margin-right: 10px" id="txtNombre1"></div>
+                    <div class="col-sm-3" id="txtNombre2"></div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-1">Telefono:</div>
+                    <div class="col-sm-3" id="txtTelefono"></div>
+
+
+                    <div class="col-sm-1" style="margin-left: 261px">Email:</div>
+                    <div class="col-sm-3" id="txtEmail"></div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1">Genero:</div>
+                    <div class="col-sm-1" id="radioGenero"></div>
+
+                    <div id="btnGuardarP" style="margin-left: 512px"></div>
+
+                    
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1">Dirección:</div>
+                    <div class="col-sm-3" id="txtDireccion"></div>
+
+                </div>
+                  
+                   
+                </div>
+
+            </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+
+    <div class="row">
+        <div id="btnSalida"></div>
+    </div>
+
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+        <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Listado de Visitas</label>
+                </h3>
+            </div>
+
+            <div class="row">
+                <div id="GidListado"></div>
+            </div>
+
+            <div class="row">
+                <div id="btnNuevo"></div>
+                <div id="btnReporteMes"></div>
+
+               
+                
+
+
+            </div>
+
+            
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="PopupNuevo">
+
+    <div class="row">
+
+        <div class="col-sm-3">Dependencia - Área: (*)</div>
+        <div class="col-sm-3" id="treeBoxDependencia"></div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-3">Funcionario: (*)</div>
+        <div class="col-sm-3" id="treeBoxFuncionario"></div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-3">Motivo visita: (*)</div>
+        <div class="col-sm-3" id="MotivoVisita1"></div>
+    </div>
+
+    <div class="row" style="display: none">
+
+        <div class="col-sm-3">Carné: (*)</div>
+        <div class="col-sm-3" id="txtCarne"></div>
+
+    </div>
+
+    <div class="row" style="display: none">
+
+        <div style="margin-left: 213px" id="CarneDevuelto"></div><label>Carné devuelto</label>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">Empresa:</div>
+        <div class="col-sm-3" id="txtEmpresa"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">Observación:</div>
+        <div class="col-sm-3" id="txtareaObservacion"></div>
+    </div>
+
+    <br />
+    <div id="BotonNew">
+        <div id="btnGuardarVisita"></div>
+        <div id="btnCancelar"></div>
+    </div>
+
+</div>
+
+
+<div id="PopupDireccion">
+
+    <div class="row">
+        <div class="col-sm-1">Municipio:</div>
+        <div class="col-sm-1" id="treeBoxMunicipio"></div>
+
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-1">Vía principal</div>
+        <div style="margin-left: 30px" class="col-sm-1">Número*</div>
+        <div style="margin-left: 1px" class="col-sm-1">Letra</div>
+        <div style="margin-left: 1px" class="col-sm-1">Sentido</div>
+        <div style="margin-left: 1px" class="col-sm-1">Vía secundaria</div>
+        <div style="margin-left: 20px" class="col-sm-1">Número*</div>
+        <div style="margin-left: 1px"  class="col-sm-1">Letra</div>
+        <div style="margin-left: 1px"  class="col-sm-1">Sentido</div>
+        <div style="margin-left: 1px"  class="col-sm-1">Placa*</div>
+        <div style="margin-left: 1px"  class="col-sm-1">Interior</div>
+
+
+    </div>
+
+    <div class="row">
+
+        <div style="margin-left: 10px" class="col-sm-1" id="treeBoxViaP"></div>
+        <div style="margin-left: 10px" class="col-sm-1" id="txtNumero1"></div>
+        <div style="margin-left: 50px" class="col-sm-1" id="treeBoxLetra1"></div>
+        <div style="margin-left: 30px" class="col-sm-1" id="treeBoxSentido1"></div>
+        <div style="margin-left: 20px" class="col-sm-1" id="treeBoxViaS"></div>
+        <div style="margin-left: 26px" class="col-sm-1" id="txtNumero2"></div>
+        <div style="margin-left: 46px" class="col-sm-1" id="treeBoxLetra2"></div>
+        <div style="margin-left: 40px" class="col-sm-1" id="treeBoxSentido2"></div>
+        <div style="margin-left: 30px" class="col-sm-1" id="txtPlaca"></div>
+        <div style="margin-left: 35px" class="col-sm-1" id="txtInterior"></div>
+
+
+    </div>
+    <div class="row">
+
+        <h6  class="col-sm-1"><b><u>Carrera</u></b></h6>
+        <h6 style="margin-left: 30px" class="col-sm-1"><b><u>38</u></b></h6>
+        <h6 style="margin-left: 1px" class="col-sm-1"><b><u>A</u></b></h6>
+        <h6 style="margin-left: 1px" class="col-sm-1"><b><u>Sur</u></b></h6>
+        <h6 style="margin-left: 1px" class="col-sm-1"><b><u>Calle</u></b></h6>
+        <h6 style="margin-left: 25px" class="col-sm-1"><b><u>50</u></b></h6>
+        <h6 style="margin-left: 1px" class="col-sm-1"><b><u>B</u></b></h6>
+        <h6 style="margin-left: 1px" class="col-sm-1"><b><u>Sur</u></b></h6>
+        <h6 style="margin-left: 1px" class="col-sm-1"><b><u>25</u></b></h6>
+        <h6 style="margin-left: 0px" class="col-sm-1"><b><u>1203</u></b></h6>
+
+
+    </div>
+
+
+    <br />
+    <div class="row">
+        <div class="col-sm-1">Código EPM:</div>
+        <div class="col-sm-1" id="txtCodEpm"></div>
+        <a style="margin-left: 10px">Ver ejemplo</a>
+    </div>
+    <br />
+    <div class="row">
+
+        <label style="margin-left: 12px">Dirección actual</label>
+        <div style="margin-left: 10px" id="DirecAct"></div>
+
+    </div>
+
+    <br />
+    <div id="BotonNew">
+        <div id="btnAgregarDireccion"></div>
+        <div id="btnCancelar1"></div>
+    </div>
+
+</div>
+
+<div id="PopupReporte">
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="col-sm-4">
+                <div class="col-sm-2">Mes:</div>
+                <div class="col-sm-1" id="treeBoxMesReporte"></div>
+            </div>
+            <div class="col-sm-4">
+                <div class="col-sm-2">Año:</div>
+                <div class="col-sm-1" id="txtanno"></div>
+            </div>
+            <div class="col-sm-1" id="btnBuscarReporte"></div>
+        </div>
+        
+    </div>
+
+        <div class="row">
+            <div data-url="@Url.Content("~")" ID="SIM" resizable>
+                <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+                    <div class="row">
+                        <div id="GidReporte"></div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+    </div>
+

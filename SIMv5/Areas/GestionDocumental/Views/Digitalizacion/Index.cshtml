@@ -1,0 +1,50 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/digitalizacion.js")"></script>
+
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popdigitalizar";
+    settings.ShowHeader = true;
+    settings.HeaderText = "Digitalización";
+    settings.AllowDragging = true;
+    settings.AllowResize = true;
+    settings.Width = 600;// Unit.Percentage(60);
+    settings.Height = 400;// Unit.Percentage(60);
+    settings.PopupVerticalAlign = PopupVerticalAlign.Middle;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.Center;
+}).GetHtml()
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak">
+    <div ng-controller="DigitalizarController" class="panelSIM panelSIM-default">
+        <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+        <div class="dx-fieldset">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Código Barras Documento</div>
+                        <div class="dx-field-value">
+                            <div dx-text-box="{ placeholder: '[Código de Barras]', bindingOptions: { value: 'digitalizar.CBDocumento' }, onKeyDown: SoloNumeros }" dx-validator="{ validationRules: [{ type: 'required', message: 'Código de Barras Requerido' }] }" id="codigoBarrasDocumento"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div dx-tabs="tabsOptions" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div ng-show="isActive(0)" dx-validation-group="{}" class="panelSIM-heading">
+            <br />
+            @Html.Partial("_DigitalizacionDocumento")
+        </div>
+        <div ng-show="isActive(1)" class="panelSIM-heading">
+            <br />
+            <div class="col-md-3 col-sm-3 col-xs-3">
+                <div dx-button="btnCargarIndicesSettings" id="btnCargarIndices"></div>
+                <div ng-show="indicesCargados" class="panelSIM-heading">
+                    <div dx-text-box="{ placeholder: '[Código de Barras]', bindingOptions: { value: 'digitalizar.CBDocumento' }, onKeyDown: SoloNumeros }" dx-validator="{ validationRules: [{ type: 'required', message: 'Código de Barras Requerido' }] }" id="codigoBarrasDocumento"></div>
+                </div>
+            </div>
+        </div>
+</div>

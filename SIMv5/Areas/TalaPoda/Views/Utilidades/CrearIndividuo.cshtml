@@ -1,0 +1,71 @@
+﻿@model SIM.Areas.TalaPoda.Models.INV_INDIVIDUO_DISPERSO
+
+@{
+    ViewBag.Title = "Agregar Individuo Disperso";
+    Layout = "~/Areas/TalaPoda/Views/Shared/Movil.cshtml";
+}
+
+<div class="btn-group btn-group-justified">
+    <a id="btnCaptacion" href="#" class="btn btn-default">Individuo</a>
+    <a id="btnPredio" href="#" class="btn btn-default">Caracteristicas</a>
+    <a id="btnCaracteristicas" href="#" class="btn btn-default">Estado</a>
+</div>
+
+<br />
+<div>
+    <iframe id="frmContenido" src="" width="100%" height="500px" frameborder="0" seamless="seamless" style="overflow-x:no-display;overflow-y:auto"></iframe>
+</div>
+
+<script type="text/javascript">
+    $('#btnCaptacion').click(function () {
+        $('#btnCaptacion').removeClass();
+        $('#btnPredio').removeClass();
+        $('#btnCaracteristicas').removeClass();
+
+        $('#btnCaptacion').addClass('btn btn-primary');
+        $('#btnPredio').addClass('btn btn-default');
+        $('#btnCaracteristicas').addClass('btn btn-default');
+
+        $('#frmContenido').attr('src', '/TalaPoda/Utilidades/InfoIndividuo');
+    });
+
+    $('#btnPredio').click(function () {
+        $('#btnCaptacion').removeClass();
+        $('#btnPredio').removeClass();
+        $('#btnCaracteristicas').removeClass();
+        $('#btnEncuestas').removeClass();
+
+        $('#btnCaptacion').addClass('btn btn-default');
+        $('#btnPredio').addClass('btn btn-primary');
+        $('#btnCaracteristicas').addClass('btn btn-default');
+        $('#btnEncuestas').addClass('btn btn-default');
+
+        $('#frmContenido').attr('src', '/Aguas/AguasSubterraneas/PredioCaptacion');
+    });
+
+    $('#btnCaracteristicas').click(function () {
+        $('#btnCaptacion').removeClass();
+        $('#btnPredio').removeClass();
+        $('#btnCaracteristicas').removeClass();
+        $('#btnEncuestas').removeClass();
+
+        $('#btnCaptacion').addClass('btn btn-default');
+        $('#btnPredio').addClass('btn btn-default');
+        $('#btnCaracteristicas').addClass('btn btn-primary');
+        $('#btnEncuestas').addClass('btn btn-default');
+
+        $('#frmContenido').attr('src', '/TalaPoda/Utilidades/InfoEstados');
+    });
+
+    $('#btnEncuestas').click(function () {
+        $('#btnCaptacion').removeClass();
+        $('#btnPredio').removeClass();
+        $('#btnCaracteristicas').removeClass();
+        $('#btnEncuestas').removeClass();
+
+        $('#btnCaptacion').addClass('btn btn-default');
+        $('#btnPredio').addClass('btn btn-default');
+        $('#btnCaracteristicas').addClass('btn btn-default');
+        $('#btnEncuestas').addClass('btn btn-primary');
+    });
+</script>

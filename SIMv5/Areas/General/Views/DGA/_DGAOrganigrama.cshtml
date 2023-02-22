@@ -1,0 +1,17 @@
+﻿<img src="../../Content/Images/Ayuda.png" id="btnAyudasOrganigrama" style="float:right" onclick="MostrarAyuda(94, 'DGA-Organigrama');" />
+<div class="dx-fieldset">
+    <div dx-text-box="{ bindingOptions: { value: 'datosDGA.S_ORGANIGRAMA' }, visible: false }" id="nombreOrganigrama"></div>
+    @if (!ViewBag.ReadOnly)
+    {
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div dx-file-uploader="{ buttonText: 'Seleccionar Imagen', labelText: 'Arrastrar Imagen Aquí', multiple: false, showFileList: false, accept: 'image/*', onValueChanged: subirArchivo }" id="imagenOrganigrama"></div>
+            </div>
+        </div>
+    </div>
+    }
+    <div style="width:100%; padding: 10px">
+        <img alt="Debe seleccionar una imagen y subirla al servidor" id="imgOrganigrama" style="width:100%" src="@Url.Action("LoadOrganigrama", "DGA", new { id = Model.ID_DGA })" />
+    </div>
+</div>

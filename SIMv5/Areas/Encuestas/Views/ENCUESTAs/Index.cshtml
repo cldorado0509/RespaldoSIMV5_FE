@@ -1,0 +1,703 @@
+﻿
+
+
+
+
+@model IEnumerable<SIM.Areas.Encuestas.Models.ENCUESTA>
+
+@{
+ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+ 
+   
+
+
+    <style>
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 15px;
+            padding-left: 0px;
+        }
+        button.btn.btn-default.btn-sm {
+            margin-top: 0px;
+            margin-right: 0px;
+        }
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 2px;
+            padding-left: 0px;
+        }
+        footer {
+            display: block;
+        }
+        table {
+            max-width: 100%;
+            background-color: transparent;
+        }
+        .ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable {
+            border: none;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+            box-shadow: 1px 3px 12px 1px rgba(0, 0, 0, 0.5);
+            padding: 0px;
+        }
+
+        .ui-widget-header {
+            border: none;
+            background: #00acc4;
+            color: #FFF;
+            font-weight: normal;
+        }
+
+        #dialogUbicacion label {
+            width: 107px;
+        }
+
+        .ui-dialog .ui-dialog-content {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        button#btnLimpiar {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Limpiar.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 21px;
+            background-position: 8px 5px;
+        }
+        button#CrearEncuesta {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Realizar_Visita_.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 21px;
+            background-position: 8px 5px;
+        }
+        button#Buscar {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Agregar_Tramites.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 21px;
+            background-position: 8px 5px;
+        }
+        .ui-widget button {
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+            font-size: 16px;
+            line-height: 14px;
+        }
+        .ui-dialog .ui-dialog-content {
+    padding-top: 3px;
+    
+}
+        .ui-widget button {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    font-size: 16px;
+    line-height: 13px;
+}
+    </style>
+
+
+    <div class="panel panel-default" style="padding-bottom: 10px">
+        <div class="panel-heading">
+          
+            <div style="padding: 15px; ">
+                <ul class="nav nav-tabs">
+                    <li id="Tab1" class="active"><a href="#home" data-toggle="tab">Encuestas</a></li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade active in" id="home">
+                       
+                        <div id="dialogo"></div>
+                        <div>
+                            <div>
+                                <div class="col-sm-12">
+                                    <label class="col-sm-12">@ViewBag.Title</label>
+                                </div>
+
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-12">
+                                                <label>Encuesta:</label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" id="Encuesta" name="Encuesta" />
+                                                <input type="text"  id="txtIdEncuesta" name="Encuesta"  style="display:none;"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-12">
+                                                <label>Formulario:</label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <select id="Formulario" class="form-control" name="Formulario"></select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-12">
+                                                <label>Responsable:</label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" id="Responsable" name="Responsable" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label style=" margin-left: 15px;">Fecha Creación:</label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="Fecha" class="form-control">
+                                                 
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <button onclick="$('#Fecha').val('')" class="btn btn-default btn-sm" id="btnLimpiar">limpiar </button>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <button id="Buscar" class="btn btn-default btn-sm" > Buscar </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="col-sm-12">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-8">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <div class="col-sm-12">
+
+                                             
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2" style="padding-right: 10px;">
+
+                                            <button id="CrearEncuesta" class="btn btn-default btn-sm" style="margin-top: 15px;margin-bottom:15px;">Nueva Encuesta</button>
+                                          
+
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+
+
+                                    <div class="row">
+                                        <div class="col-sm-12" style="  padding-left: 10px; padding-right: 10px;">
+                                            <table>
+                                                <tr>
+                                                    <td>
+
+                                                        <div id="GrdEncuesta" style="height: 200px;width:100%; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; "></div>
+
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                    @*<table>
+                <tr>
+                    <td>
+                        <div id="GrdEncuesta" style="height: 200px;" class="archivosDiv"></div>
+                    </td>
+                </tr>
+
+            </table>*@
+
+
+                                </div>
+                        </div>
+                    </div>
+                 
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="pantallaNuevaEncuesta" title="Crear Encuesta" style="display: none; overflow: hidden;">
+        <iframe src="" id="NuevaEncuesta" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <div id="pantallaEditarEncuesta" title="Modificar Encuesta" style="display: none; overflow: hidden;">
+        <iframe src="" id="EditarEncuesta" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <div id="pantallaReplicaEncuesta" title="Replicar Encuesta" style="display: none; overflow: hidden;">
+        <iframe src="" id="ReplicaEncuesta" width="100%" height="100%"></iframe>
+
+
+    </div>
+
+<div id="msAlmacenamiento" title="Información" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+</div>
+<div id="msConfirmacion" title="Confirmación" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold;  margin-left: 38px;" id="msText2"></p>
+</div>
+<script type="text/javascript">
+    var RutaEncuestas = '@Url.Content("~/Encuestas/")';
+    var CargarDatos = {};
+    $(document).ready(function () {
+        $(function () {
+            $("#Fecha").datepicker();
+        });
+      
+            //  Inicializar();
+            //AgregarPopUp('dialogo', '70%', 'window.parent.Inicializar()', true);
+            ConsultarFormulario();
+        // gridEncuesta(CargarDatos);
+            BuscarEncuesta()
+    
+
+    });
+    $.datepicker.regional['es'] = {
+        closeText: 'Cerrar',
+        prevText: '<Ant',
+        nextText: 'Sig>',
+        currentText: 'Hoy',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+        dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+        weekHeader: 'Sm',
+    
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    };
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+    $(function () {
+        $("#Fecha").datepicker({ dateFormat: 'dd/mm/yy' });
+    });
+    function ConsultarFormulario() {
+
+        $.ajax({
+            type: "POST",
+
+            url: RutaEncuestas+"Encuestas/ConsultarFormularioCombo",
+
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = response;
+                var comb = document.getElementById("Formulario");
+                $("#Formulario").children().remove();
+                comb.innerHTML += " <option value='0'>--seleccionar--</option>";
+                if (datos.length > 0) {
+
+                    for (var i = 0; i < datos.length; i++) {
+                        comb.innerHTML += "<option value=" + datos[i].ID_FORMULARIO + ">" + datos[i].S_NOMBRE + "</option>";
+
+                    }
+                }
+
+            }
+        });
+    }
+    //$("#Encuesta").keypress(function (e) {
+    //    return ValidarTexto(e);
+    //});
+
+    //$("#Formulario").keypress(function (e) {
+    //    return ValidarTexto(e);
+    //});
+
+    //$("#Responsable").keypress(function (e) {
+    //    return ValidarTexto(e);
+    //});
+
+    //function Inicializar() {
+    //    CargarEncuestasTodas('encuestas');
+    //}
+
+    $('#Buscar').click(function () {
+        try {
+            BuscarEncuesta();
+        }
+        catch (err) {
+            mensajeAlmacenamiento(err); 
+        }
+    });
+
+    $('#CrearEncuesta').click(function () {
+        crearEncuesta();
+    });
+
+
+    ////////////////////////
+
+
+    @*function gridEncuesta(jsonEncuesta) {
+        $("#GrdEncuesta").dxDataGrid({
+            dataSource: jsonEncuesta,
+            selection: {
+             
+            }, filterRow: { visible: false },
+            columns: [
+
+                  { dataField: 'Codigo', caption: 'Código', allowGrouping: true, width: '20%', dataType: 'string' },
+                              { dataField: 'NombreEncuesta', caption: 'Nombre', allowGrouping: true, width: '20%', dataType: 'string' },
+                               { dataField: 'Formulario', caption: 'Formulario', allowGrouping: true, width: '20%', dataType: 'string' },
+                                   { dataField: 'Responsable', caption: 'Responsable', allowGrouping: true, width: '20%', dataType: 'string' },
+                                { dataField: 'FechaGrid', caption: 'Fecha de creación', allowGrouping: true, width: '20%', dataType: 'string' },
+
+                  {
+                      dataField: 'editar', allowGrouping: true, caption: 'Editar', cellTemplate: function (container, options) {
+                          container.height(5);
+                          $('<img src="@Url.Content("../../Content/Images/edit.png")" style="width:25px;height:25px" class="btnEditar" />')
+
+                                  .attr('src', options.value)
+                                  .appendTo(container);
+                      }
+               
+                  },
+            {
+            dataField: 'eliminar', allowGrouping: true, caption: 'Eliminar', cellTemplate: function (container, options) {
+                container.height(5);
+                $('<img src="@Url.Content("../../Content/Images/delete.png")" style="width:25px;height:25px"  class="btnEditar"/>')
+
+                        .attr('src', options.value)
+                        .appendTo(container);
+            }
+            },
+               {
+                   dataField: 'Replica', allowGrouping: true, caption: 'Replica', cellTemplate: function (container, options) {
+                       container.height(5);
+                       $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"  class="btnEditar"/>')
+
+                               .attr('src', options.value)
+                               .appendTo(container);
+                   }
+               }
+
+            ],
+          
+
+            scrolling: { mode: 'infinite' },
+    
+            cellClick: function (e) {
+                var id = e.data.Codigo;
+                var tipoBoton = e.columnIndex;
+      
+                switch(tipoBoton) {
+                  
+                      case 7: //replica
+                          ReplicaEncuesta(id);
+                         break;
+                    case 6: //eliminar
+                        ValidarPreguntasAsociadas(id);
+                        break;
+                    case 5: //editar
+                        ValidarEncuestaEditar(id);
+                      
+                        break;
+                  
+                }
+                
+            },
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+            pager: { visible: true },
+            paging: { pageSize: 10},
+            allowColumnResizing: true
+                        , columnAutoWidth: true, loadPanel: {
+                            height: 100,
+                            width: 100,
+                            text: 'Cargando...'
+                        }, onCellHoverChanged: function (hoverCell) {
+                            if (hoverCell.eventType == 'mouseover')
+                                hoverCell.cellElement.addClass("hovered");
+                            else
+                                hoverCell.cellElement.removeClass("hovered");
+                        }
+      
+        });
+    }*@
+
+    function BuscarEncuesta() {
+ 
+        var CargarDatosTramitesVisitas_E = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                var take = loadOptions.take;
+                var skip = loadOptions.skip;
+                var d = $.Deferred();
+                $.getJSON(RutaEncuestas + "Encuestas/BuscarEncuestas" + "?Nombre=" + $('#Encuesta').val() + "&Formulario=" + $('#Formulario').val() + "&Responsable=" + $('#Responsable').val() + "&FechaCreacion=" + $('#Fecha').val() + "&take=" + take + "&skip=" + skip).done(function (data) {
+          
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                });
+                return d.promise();
+            }
+        });
+        var GrdAcompanantesConfiguracion = {
+            store: CargarDatosTramitesVisitas_E
+        };
+        $(function () {
+        $("#GrdEncuesta").dxDataGrid({
+            dataSource: GrdAcompanantesConfiguracion,
+    
+            columns: [
+
+                  { dataField: 'Codigo', caption: 'Código', allowGrouping: true, width: '20%', dataType: 'string' },
+                              { dataField: 'NombreEncuesta', caption: 'Nombre', allowGrouping: true, width: '20%', dataType: 'string' },
+                               { dataField: 'Formulario', caption: 'Formulario', allowGrouping: true, width: '20%', dataType: 'string' },
+                                   { dataField: 'Responsable', caption: 'Responsable', allowGrouping: true, width: '20%', dataType: 'string' },
+                                { dataField: 'FechaGrid', caption: 'Fecha de creación', allowGrouping: true, width: '20%', dataType: 'string' },
+
+                  {
+                      dataField: 'editar', allowGrouping: true, caption: 'Editar', cellTemplate: function (container, options) {
+                          container.height(5);
+                          $('<img src="@Url.Content("../../Content/Images/edit.png")" style="width:25px;height:25px" class="btnEditar" />')
+
+                                  .attr('src', options.value)
+                                  .appendTo(container);
+                      }
+
+                  },
+            {
+                dataField: 'eliminar', allowGrouping: true, caption: 'Eliminar', cellTemplate: function (container, options) {
+                    container.height(5);
+                    $('<img src="@Url.Content("../../Content/Images/delete.png")" style="width:25px;height:25px"  class="btnEditar"/>')
+
+                            .attr('src', options.value)
+                            .appendTo(container);
+                }
+            },
+               {
+                   dataField: 'Replica', allowGrouping: true, caption: 'Replica', cellTemplate: function (container, options) {
+                       container.height(5);
+                       $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"  class="btnEditar"/>')
+
+                               .attr('src', options.value)
+                               .appendTo(container);
+                   }
+               }
+
+            ],
+
+
+           
+
+            onCellClick: function (e) {
+                var id = e.data.Codigo;
+                var tipoBoton = e.columnIndex;
+
+                switch (tipoBoton) {
+
+                    case 7: //replica
+                        ReplicaEncuesta(id);
+                        break;
+                    case 6: //eliminar
+                        ValidarPreguntasAsociadas(id);
+                        break;
+                    case 5: //editar
+                        ValidarEncuestaEditar(id);
+
+                        break;
+
+                }
+
+            },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [20, 30, 50]
+            }, allowColumnResizing: true
+                        , columnAutoWidth: true, loadPanel: {
+                height: 100,
+                width: 100,
+                text: 'Cargando...'
+                        }, onCellHoverChanged: function (hoverCell) {
+                            if (hoverCell.eventType == 'mouseover')
+                                hoverCell.cellElement.addClass("hovered");
+                            else
+                                hoverCell.cellElement.removeClass("hovered");
+                        }
+          
+
+        });
+        });
+        //$.ajax({
+        //    type: "POST",
+
+        //    url: RutaEncuestas + "Encuestas/BuscarEncuestas",
+        //    data: { Nombre: $('#Encuesta').val(), Formulario: $('#Formulario').val(), Responsable: $('#Responsable').val(), FechaCreacion: $('#Fecha').val() },
+        //    beforeSend: function () { },
+        //    success: function (response) {
+        //        var datos = response;
+               
+        //        gridEncuesta(response);
+        //    }
+        //});
+    }
+
+    function ValidarPreguntasAsociadas(id) {
+
+        mensajeConfirmacion("Esta seguro que desea eliminar ",id);
+       
+    }
+    function ValidarEncuestaEditar(id) {
+
+
+        $.ajax({
+            type: "POST",
+
+            url: RutaEncuestas + "Encuestas/ValidarPreuntaAsociadaEncuesta",
+            data: { id: id },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = response;
+                if (datos.length > 0) {
+                    mensajeAlmacenamiento("La encuesta no se puede editar ya fue diligenciada");
+                } else {
+                    editarEncuesta(id);
+                }
+
+            }
+        });
+    }
+    
+    function EliminarEncuesta(id) {
+
+
+        $.ajax({
+            type: "POST",
+
+            url: RutaEncuestas + "Encuestas/EliminarEncuesta",
+            data: { id: id },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = response;
+                if (datos=="1") {
+                    mensajeAlmacenamiento("Eliminación exitosa");
+                    BuscarEncuesta();
+                } 
+
+            }
+        });
+    }
+    function crearEncuesta() {
+        $("#pantallaNuevaEncuesta").dialog(
+        {
+
+            width: 500,
+            height: 450,
+            modal: true
+        });
+        $("#NuevaEncuesta").attr("src", "@Url.Content("~/Encuestas/Encuestas/create")");
+
+    }
+    function editarEncuesta(id) {
+        $("#pantallaEditarEncuesta").dialog(
+        {
+
+            width: 520,
+            height: 450,
+            modal: true
+        });
+        $("#EditarEncuesta").attr("src", "@Url.Content("~/Encuestas/Encuestas/EditarEncuesta")" + "?id=" + id);
+
+    }
+
+    function ReplicaEncuesta(id) {
+        $("#pantallaReplicaEncuesta").dialog(
+        {
+
+            width: 500,
+            height: 450,
+            modal: true
+        });
+        $("#ReplicaEncuesta").attr("src", "@Url.Content("~/Encuestas/Encuestas/replicarEncuesta")" + "?id=" + id);
+
+    }
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msText").text(mensaje);
+
+
+        $("#msAlmacenamiento").dialog({
+
+            buttons: [
+      {
+          text: "Aceptar",
+
+          click: function () { $(this).dialog("close"); },
+
+          class: "btn btn-default "
+      },
+            ]
+        });
+
+
+    }
+
+    function mensajeConfirmacion(mensaje,id)
+    {
+        $("#msText2").text(mensaje);
+        $("#msConfirmacion").dialog({
+            resizable: false,
+            height: 140,
+            modal: true,
+            buttons: {
+                "NO": function () {
+                    $(this).dialog("close");
+                },
+                SI: function () {
+                    $.ajax({
+                        type: "POST",
+
+                        url: RutaEncuestas + "Encuestas/ValidarPreuntaAsociadaEncuesta",
+                        data: { id:id },
+                        beforeSend: function () { },
+                        success: function (response) {
+                            var datos = response;
+                            if(datos.length>0)
+                            {
+                            
+                                mensajeAlmacenamiento("La encuesta no se puede eliminar tiene preguntas vinculadas");
+                            } else {
+               
+                                EliminarEncuesta(id);
+                            }
+
+                        }
+                    });
+                    $(this).dialog("close");
+                }
+            }, class: "btn btn-default "
+        });
+    }
+</script>

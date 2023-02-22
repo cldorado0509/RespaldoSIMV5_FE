@@ -1,0 +1,158 @@
+﻿@using SIM.Properties
+@{
+    ViewBag.Title = "Solicitudes de Visitas en la Gestión del Riesgo";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionRiesgo/Scripts/solicitudesvisitas.js?v=1.00")"></script>
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+
+    #divScrolly {
+        overflow-x: scroll;
+        white-space: nowrap;
+    }
+
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Listado</label>
+            </h3>
+        </div>
+        <div>
+            <div id="divScrolly">
+                <div id="GidListado"></div>
+            </div>
+            <br />
+            <div id="btnNuevo"></div>
+            <div id="PopupNuevo">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Solicitante :</div>
+                        <div class="col-sm-9" id="txtSolicitante"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Número Contacto :</div>
+                        <div class="col-sm-3" id="txtNroContacto"></div>
+                        <div class="control-label col-sm-2" style="align-content:end">Código Trámite :</div>
+                        <div class="col-sm-2" id="txtCodTramite"></div>
+                        <div class="col-sm-2" id="cmdValTramite"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Radicado Solicitud :</div>
+                        <div class="col-sm-3" id="txtRadicadoSolicitud"></div>
+                        <div class="control-label col-sm-2" style="align-content:end">F.Radicado S :</div>
+                        <div class="col-sm-2" id="txtAnio"></div>
+                        <div class="col-sm-2" id="cmdCOR"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Municipio :</div>
+                        <div class="col-sm-3" id="cboMunicipio"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Barrio/Vereda :</div>
+                        <div class="col-sm-3" id="txtBarrioVereda"></div>
+                    </div>
+                    <div class="row col-offset-2">
+                        <div class="control-label col-sm-2" style="align-content: end;font-size:9px">Vía Ppal</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Nro</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Letra</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Sentido</div>
+                        <div class="control-label col-sm-2" style="align-content: end; font-size: 9px">Vía Sec</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Nro</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Letra</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Sentido</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Placa</div>
+                        <div class="control-label col-sm-1" style="align-content: end; font-size: 9px">Interior</div>
+                    </div>
+                    <div class="row col-offset-2">
+                        <div class="col-sm-2" id="cboViaPpal" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="txtNroPpal" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="cboLetraPpal" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="cboSentidoViaPpal" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-2" id="cboViaSec" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="txtNroSec" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="cboLetraSec" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="cboSentidoViaSec" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="txtPlaca" style="align-content: end; font-size: 9px"></div>
+                        <div class="col-sm-1" id="txtInterior" style="align-content: end; font-size: 9px"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Otra Dirección :</div>
+                        <div class="col-sm-9" id="txtDireccion"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Funcionario :</div>
+                        <div class="col-sm-9" id="cboFuncionario"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Latitud :</div>
+                        <div class="col-sm-3" id="txtLatitud"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Longitud :</div>
+                        <div class="col-sm-3" id="txtLongitud"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Tipo de Visita :</div>
+                        <div class="col-sm-3" id="cboTipoVisita"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Tipo de Orígen :</div>
+                        <div class="col-sm-3" id="cboTipoOrigen"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Tipo de Suelo :</div>
+                        <div class="col-sm-3" id="cboTipoSuelo"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Tipo de Evento :</div>
+                        <div class="col-sm-3" id="cboTipoEvento"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nivel Riesgo :</div>
+                        <div class="col-sm-3" id="cboNivelRiesgo"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Calificación Riesgo :</div>
+                        <div class="col-sm-3" id="txtCalificacionRiesgo"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Radicado Salida :</div>
+                        <div class="col-sm-3" id="txtRadicadoSalida"></div>
+                        <div class="control-label col-sm-2" style="align-content:end">F.Radicado Sal :</div>
+                        <div class="col-sm-2" id="txtAnioSalida"></div>
+                        <div class="col-sm-2" id="cmdCOD"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nro Personas Imp.:</div>
+                        <div class="col-sm-3" id="txtNroPersonas"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Mes:</div>
+                        <div class="col-sm-3" id="cboMes"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Destinatarios :</div>
+                        <div class="col-sm-9" id="txtDestinatarios"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Quebradas :</div>
+                        <div class="col-sm-9" id="txtQuebradas"></div>
+                    </div>
+                    <br />
+                    <div id="BotonNew">
+                        <div id="btnGuarda"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="popDocumento">
+        <iframe src="" id="DocumentoAdjunto" style="width:100%; height:100%"></iframe>
+    </div>
+</div>

@@ -1,0 +1,208 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Información de la Organización";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+    <script>
+    var IdTercero = @(ViewBag.IdTercero);
+   
+    </script>
+<script type="text/javascript" src="@Url.Content("~/Areas/MiBici/Scripts/InfOrganizacion.js?v=1.00")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <form id="form" method="post" action="" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="GidListado"></div>
+            </div>
+        </div>
+        <div id="PopupInformacion">
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Descripción :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtDescripcion"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Sitio Web :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtWeb"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Instagram :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtInstagram"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>FaceBook :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtFacebook"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>WhatsApp :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtWhatsApp"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Email Ventas :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtEmailVentas"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Dirección :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtDireccion"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Teléfonos :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtTelefonos"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Logo</h5>
+                </div>
+                    <div class="col-md-4" style="vertical-align:central">
+                        <img src="" id="imgLogo" alt="Girl in a jacket" width="200">
+                    </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-10">
+                    <div class="widget-container">
+                        <div id="file-uploader"></div>
+                        <div class="content" id="selected-files">
+                            <div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="row col-md-12">
+                <div id="BotonGuardar">
+                    <div id="btnGuardar"></div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <h3>Listado de Productos</h3>
+        <div id="GridListadoProductos"></div>
+        <div id="btnNuevoProducto"></div>
+        <div class="row col-md-12">
+            <div class="col-md-5">
+                <div id="galleryproduct" style="margin: auto; max-width: 450px" />
+            </div>
+        </div>
+
+        <div id="PopupNuevoProducto">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="control-label col-sm-2">Producto :</div>
+                    <div class="col-sm-9" id="txtProducto"></div>
+                    <div class="control-label col-sm-2">Descripción :</div>
+                    <div class="col-sm-9" id="txtDescripcionProducto"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Valor Unitario :</div>
+                    <div class="col-sm-3" id="txtValorUnitario"></div>
+                    <div class="control-label col-sm-2">Unidad de Medida :</div>
+                    <div class="col-sm-4" id="cboUnidadMed"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Descripción :</div>
+                    <div class="col-sm-9" id="txtDescripcionProducto"></div>
+                </div>
+                <hr />
+                <div id="BotonNewProducto">
+                    <div id="btnGuardaProducto"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="PopupFotos">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="control-label col-sm-2">Producto :</div>
+                    <div class="col-sm-9" id="txtProductoF"></div>
+                    <div class="control-label col-sm-2">Descripción :</div>
+                    <div class="col-sm-9" id="txtDescripcionProductoF"></div>
+                </div>
+                <div class="row col-md-12">
+                    <div class="col-md-2">
+                        <h5>Foto :</h5>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="widget-container">
+                            <div id="file-uploaderf"></div>
+                            <div class="content" id="selected-filesf">
+                                <div>
+                                    <h4>Seleccione la foto</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+                <div id="BotonNewFoto">
+                    <div id="btnGuardaFoto"></div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var json = '@ViewBag.json';
+        json = json.replace(/&quot;/g, '"')
+        json = JSON.parse(json);
+
+        var tercero = json[0].S_NOMBRE;
+        var IdInstalacionSel = json[0].ID_INSTALACION;
+        var IdProductoSel = 0;
+    </script>
+}
+

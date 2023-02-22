@@ -1,0 +1,244 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Confirmar Visitantes";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+
+}
+
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div class="row col-md-12">
+    <br />
+    <h3 style="align-content:center; color:darkblue">CONFIRMAR VISITANTES</h3>
+    <hr />
+    <div class="row col-md-10">
+        <div class="col-md-4">
+            <h5>Ingresar el Número de la Reserva :</h5>
+        </div>
+        <div class="col-md-2">
+            <input name="txtNumeroReserva" class="form-control" id="txtNroReserva" type="number" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-info" id="btnSearch">Consultar</button>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div id="divSpinner" class="row col-md-10">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+        <div class="row col-md-10">
+            <div class="col-md-10">
+                <label id="lblMensaje" class="form-control" style="color:darkblue"></label>
+            </div>
+        </div>
+        <div class="row col-md-10">
+            <h4>Responsable de la reserva</h4>
+        </div>
+        <div class="row col-md-10">
+            <div class="col-md-10">
+                <label id="lblResponsable" class="form-control" style="color:Highlight"></label>
+            </div>
+        </div>
+
+        <br />
+        <div class="row col-md-10">
+            <div class="col-md-4">
+                <h5>Actualizar Número de Personas :</h5>
+            </div>
+            <div class="col-md-2">
+                <input name="txtNumeroPersonas" id="txtNroPersonas" class="form-control" type="number" min="1" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-warning" id="btnConfirm">Confirmar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <br />
+    <br />
+
+
+    @section Scripts {
+
+        <script type="text/javascript">
+
+        $('#btnSearch').click(function () {
+
+            $(this).prop("disabled", true);
+            $('#divSpinner').show();
+            if ($("#txtNroReserva").val() === '') {
+                alert('Debe Ingresar el Número de la Reserva!');
+                $('#btnSearch').prop("disabled", false);
+                return;
+            }
+            $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetReserva")',
+                    dataType: 'json',
+                 data: { nroReserva: $("#txtNroReserva").val() },
+                 success: function (reserva) {
+                     $('#btnSearch').prop("disabled", false);
+                     $('#divSpinner').hide();
+                     if (reserva.NumeroComprobante === '-2') {
+                         $('#lblMensaje').html('La reserva ya fue validada anteriormente!');
+                         $('#btnConfirm').prop("disabled", true);
+                         $('#lblResponsable').html('');
+                         $("#txtNroPersonas").val(0);
+                     }
+                     else {
+                         if (reserva.NumeroComprobante === '') {
+                             $('#lblMensaje').html('Reserva no encontrada!');
+                             $('#btnConfirm').prop("disabled", true);
+                             $('#lblResponsable').html('');
+                             $("#txtNroPersonas").val(0);
+                         }
+                         else {
+                             var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                             var date = new Date(parseInt(reserva.Fecha.substr(6))).toLocaleDateString('es-ES', options);
+                             $("#txtNroPersonas").attr({
+                                 "max": reserva.NroVisitantes,
+                                 "min": 1
+                             });
+
+                             $('#lblMensaje').html('La reserva ' + reserva.NumeroComprobante + ' corresponde al día ' + date + ' para ' + reserva.NroVisitantes + ' personas');
+                             $('#lblResponsable').html(reserva.Observaciones);
+                             $("#txtNroPersonas").val(reserva.NroVisitantes);
+                             if (reserva.Pos === '1') {
+                                 alert('Esta reserva ya fue confirmada y transmitida al sistema POS!');
+                                 $('#btnConfirm').prop("disabled", true);
+                             }
+                             else {
+
+                                 $('#btnConfirm').prop("disabled", true);
+
+                                 Hoy = new Date();//Fecha actual del sistema
+
+                                 var fechaReserva = new Date(parseInt(reserva.Fecha.substr(6)));
+
+                                 var AnyoFecha = fechaReserva.getFullYear();
+                                 var MesFecha = fechaReserva.getMonth();
+                                 var DiaFecha = fechaReserva.getDate();
+
+                                 var AnyoHoy = Hoy.getFullYear();
+                                 var MesHoy = Hoy.getMonth();
+                                 var DiaHoy = Hoy.getDate();
+
+                                 if (AnyoFecha < AnyoHoy) {
+                                     alert("La fecha de la reserva es anterior al día de hoy");
+                                 }
+                                 else {
+                                     if (AnyoFecha == AnyoHoy && MesFecha < MesHoy) {
+                                         alert("La fecha de la reserva es anterior al día de hoy");
+                                     }
+                                     else {
+                                         if (AnyoFecha == AnyoHoy && MesFecha == MesHoy && DiaFecha < DiaHoy) {
+                                             alert("La fecha de la reserva es anterior al día de hoy");
+                                         }
+                                         else {
+                                             if (AnyoFecha == AnyoHoy && MesFecha == MesHoy && DiaFecha == DiaHoy) {
+                                                 $('#btnConfirm').prop("disabled", false);
+                                             }
+                                             else {
+                                                 alert("La fecha de la reserva es posterior al día de hoy");
+                                             }
+                                         }
+                                     }
+                                 }
+                             }
+                         }
+                     }
+                    },
+                    error: function (ex) {
+                        alert('Se presentó un evento no esperado!' + ' - ' + ex);
+                        $('#btnSearch').prop("disabled", false);
+                        $('#btnConfirm').prop("disabled", true);
+                        $('#divSpinner').hide();
+                    }
+                });
+                return false;
+             })
+
+            $('#btnConfirm').click(function () {
+               
+               
+                if ($("#txtNroPersonas").val() === '') {
+                    alert('Debe Ingresar el Número de la Reserva!');
+                    return;
+                }
+                if ($("#txtNroPersonas").val() <= '0') {
+                    alert('El número de visitantes debe ser mayor que 0!');
+                    return;
+                }
+
+                $('#btnConfirm').prop("disabled", true);
+
+                $('#divSpinner').show();
+
+                   $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateReserva")',
+                    dataType: 'json',
+                       data: { nroReserva: $("#txtNroReserva").val(), cantidad: $("#txtNroPersonas").val()},
+                       success: function (reserva) {
+                           $('#btnConfirm').prop("disabled", false);
+                           $('#divSpinner').hide();
+                           if (reserva.NumeroComprobante === '-2') {
+                               $('#lblMensaje').html('Reserva ya fue validad con anterioridad!');
+                               $('#lblResponsable').html('');
+                               $("#txtNroPersonas").val(0);
+                           }
+                           else {
+                               if (reserva.NumeroComprobante === '') {
+                                   $('#lblMensaje').html('Reserva no encontrada!');
+                                   $('#lblResponsable').html('');
+                                   $("#txtNroPersonas").val(0);
+                               }
+                               else {
+                                   if (reserva.NumeroComprobante === '-1') {
+                                       alert(reserva.Observaciones);
+                                       $('#btnConfirm').prop("disabled", false);
+                                   }
+                                   else {
+                                       var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                                       var date = new Date(parseInt(reserva.Fecha.substr(6))).toLocaleDateString('es-ES', options);
+                                       $("#txtNroPersonas").attr({
+                                           "max": reserva.NroVisitantes,
+                                           "min": 1
+                                       });
+                                       alert('Reserva actualizada y transmitada al sistema POS');
+                                       $('#lblMensaje').html('');
+                                       $('#lblResponsable').html('');
+                                       $("#txtNroPersonas").val(0);
+                                       $("#txtNroReserva").val('');
+                                       $('#btnConfirm').prop("disabled", true);
+                                   }
+                               }
+                           }
+
+                           alert(reservaMessage);
+                    },
+                    error: function (ex) {
+                        alert('Se presentó un evento no esperado!' + ' - ' + ex);
+                      
+                    }
+                });
+            })
+
+        </script>
+    }

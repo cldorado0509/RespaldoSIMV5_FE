@@ -1,0 +1,262 @@
+﻿@using System.Web.UI.WebControls
+
+<script type="text/javascript">
+    function ConsultarOnClick(s, e) {
+        if (ASPxClientEdit.ValidateEditorsInContainer(null))
+        {
+            if (typeof txtTerceroCargado != 'undefined')
+            {
+                if (txtTerceroCargado.GetText() != '1')
+                {
+                    alert("Debe seleccionar un Tercero válido.");
+                } else {
+                    var idTerceroSel = ASPxClientControl.GetControlCollection().GetByName("RepLegal.ID_TERCERO");
+
+                    ProcessPanelConsulta.Show();
+
+                    $.ajax({
+                        type: "POST",
+                        //cache: false,
+                        //contentType: false,
+                        //processData: false,
+                        url: '@Url.Action("ConsultaPrestamosDatos", "Prestamo", new { area = "GestionDocumental" })',
+                        data: { idTercero: parseInt(idTerceroSel.GetText()) },
+                        success: function (response) {
+                            ProcessPanelConsulta.Hide();
+                            $("#ResultadoConsultaContainer").html(response);
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            ProcessPanel.Hide();
+                            alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                        }
+                    });
+                }
+            }
+            else if (typeof datFechaInicial != 'undefined')
+            {
+                ProcessPanelConsulta.Show();
+
+                $.ajax({
+                    type: "POST",
+                    //cache: false,
+                    //contentType: false,
+                    //processData: false,
+                    url: '@Url.Action("ConsultaPrestamosDatos", "Prestamo", new { area = "GestionDocumental" })',
+                    data: { fechaInicial: datFechaInicial.GetDate().getFullYear() + '/' + (datFechaInicial.GetDate().getMonth()+1) + '/' + datFechaInicial.GetDate().getDate(), fechaFinal: datFechaFinal.GetDate().getFullYear() + '/' + (datFechaFinal.GetDate().getMonth()+1) + '/' + datFechaFinal.GetDate().getDate() },
+                    success: function (response) {
+                        $("#ResultadoConsultaContainer").html(response);
+                        ProcessPanelConsulta.Hide();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        ProcessPanel.Hide();
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                    }
+                });
+            }
+            else if (typeof cboTiempoPrestamo != 'undefined')
+            {
+                ProcessPanelConsulta.Show();
+
+                $.ajax({
+                    type: "POST",
+                    //cache: false,
+                    //contentType: false,
+                    //processData: false,
+                    url: '@Url.Action("ConsultaPrestamosDatos", "Prestamo", new { area = "GestionDocumental" })',
+                    data: { rangoTiempos: cboTiempoPrestamo.GetValue() },
+                    success: function (response) {
+                        $("#ResultadoConsultaContainer").html(response);
+                        ProcessPanelConsulta.Hide();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        ProcessPanel.Hide();
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                    }
+                });
+            }
+        }
+    }
+
+    function OnKeyDownDoc(s, e) {
+        if (e.htmlEvent.keyCode == 13) {
+            ReloadTercero();
+        }
+    }
+
+    function OnLostFocusDoc(s, e) {
+        ReloadTercero();
+    }
+
+    function ReloadTercero() {
+        var repLegalTipoDoc = ASPxClientControl.GetControlCollection().GetByName("TERCERO.ID_TIPODOCUMENTO");
+        var repLegalDoc = ASPxClientControl.GetControlCollection().GetByName("TERCERO.N_DOCUMENTON");
+
+        if (repLegalTipoDoc.GetText().trim() == '' || repLegalDoc.GetText().trim() == '')
+            return;
+
+        ProcessPanel.Show();
+
+        $.ajax({
+            type: "POST",
+            //cache: false,
+            //contentType: false,
+            //processData: false,
+            url: '@Url.Action("frmAdministrarTerceroBasico", "Tercero", new { area = "General" })',
+            data: { tipodoc: repLegalTipoDoc.GetValue(), documento: repLegalDoc.GetText(), ok: "", alerta: "El Tercero NO existe.", permiteGuardar: true },
+            success: function (response) {
+                $("#TerceroContainer").html(response);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ProcessPanel.Hide();
+                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+            }
+        });
+    }
+</script>
+
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanelConsulta";
+    settings.Modal = true;
+    settings.Text = "Consultando Datos";
+}).GetHtml();
+
+    <br />
+    <br />
+    <br />
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <label>
+                    @{
+                    switch ((int)ViewBag.TipoReporte)
+                    {
+                        case 1: // Documentos Prestados en un periodo de Tiempo
+                            ViewContext.Writer.Write("Documentos Prestados en un Rango de Tiempo");
+                            break;
+                        case 2: // Paz y Salvo
+                            ViewContext.Writer.Write("Pr&eacute;stamos Vigentes");
+                            break;
+                        case 3: // Documentos Prestados
+                            ViewContext.Writer.Write("Documentos Prestados");
+                            break;
+                    }
+                }
+                </label>
+            </h3>
+        </div>
+        <div style="padding: 15px">
+            @{
+            switch ((int)ViewBag.TipoReporte)
+            {
+                case 1: // Documentos Prestados en un periodo de Tiempo
+                    ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                        ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                            Html.DevExpress().Label(settings =>
+                            {
+                                settings.EncodeHtml = false;
+                                settings.Text = "Fecha Inicial:";
+                            }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                        ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                            Html.DevExpress().DateEdit(settings =>
+                            {
+                                settings.Name = "datFechaInicial";
+                                settings.Width = Unit.Pixel(120);
+                                settings.Properties.DisplayFormatString = "dd-MMM-yyyy";
+                                settings.Properties.AllowNull = false;
+                                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                                settings.Properties.ValidationSettings.ErrorText = "Fecha Inicial Requerida.";
+                            }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                        ViewContext.Writer.Write("</div>");
+                        ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                            Html.DevExpress().Label(settings =>
+                            {
+                                settings.EncodeHtml = false;
+                                settings.Text = "Fecha Final:";
+                            }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                        ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                            Html.DevExpress().DateEdit(settings =>
+                            {
+                                settings.Name = "datFechaFinal";
+                                settings.Width = Unit.Pixel(120);
+                                settings.Properties.DisplayFormatString = "dd-MMM-yyyy";
+                                settings.Properties.AllowNull = false;
+                                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                                settings.Properties.ValidationSettings.ErrorText = "Fecha Final Requerida.";
+                            }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    break;
+                case 2: // Paz y Salvo
+                    Html.DevExpress().RoundPanel(settings =>
+                    {
+                        settings.Name = "rpTercero";
+                        settings.EncodeHtml = false;
+                        settings.HeaderText = "Tercero";
+                        settings.EnableTheming = true;
+                        settings.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                        settings.Width = Unit.Percentage(100);
+                        settings.Style.Add("padding-left", "15px");
+                        settings.Style.Add("padding-right", "15px");
+                        settings.Style.Add("padding-top", "10px");
+                        settings.Style.Add("padding-botom", "40px");
+
+                        settings.SetContent(() =>
+                        {
+                            Html.RenderAction("frmAdministrarTerceroBasico", "Tercero", new { area = "General" });
+                        });
+                    }).GetHtml();
+                    break;
+                case 3: // Documentos Prestados
+                    ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                        ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                            Html.DevExpress().Label(settings =>
+                            {
+                                settings.EncodeHtml = false;
+                                settings.Text = "Tiempo de Pr&eacute;stamo:";
+                            }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                        ViewContext.Writer.Write("<div class=\"col-md-3\">");
+                            Html.DevExpress().ComboBox(settings =>
+                            {
+                                settings.EncodeHtml = false;
+                                settings.Name = "cboTiempoPrestamo";
+                                settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                                settings.Properties.Items.Add("Mas de 1 Mes", 30);
+                                settings.Properties.Items.Add("Mas de 3 Meses", 90);
+                                settings.Properties.Items.Add("Mas de 6 Meses", 180);
+                                settings.Properties.Items.Add("Mas de 9 Meses", 270);
+                                settings.Properties.Items.Add("Mas de 1 A&ntilde;o", 1);
+                                settings.Properties.Items.Add("Mas de 2 A&ntilde;os", 2);
+                                settings.Properties.Items.Add("Mas de 3 A&ntilde;os", 3);
+                                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                                settings.Properties.ValidationSettings.ErrorText = "Tiempo de Pr&eacute;stamo Requerido.";
+                            }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    break;
+            }
+        }
+        </div>
+        @{
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:15px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                    Html.DevExpress().Button(settingsButton =>
+                    {
+                        settingsButton.EncodeHtml = false;
+                        settingsButton.Name = "btnConsultar";
+                        settingsButton.Text = "Consultar";
+                        settingsButton.Width = Unit.Pixel(150);
+                        settingsButton.ClientSideEvents.Click = "ConsultarOnClick"; ;
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+        }
+    </div>
+    <div id="ResultadoConsultaContainer">
+</div>

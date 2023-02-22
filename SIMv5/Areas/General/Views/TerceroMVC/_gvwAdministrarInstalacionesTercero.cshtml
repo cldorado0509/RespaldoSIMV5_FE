@@ -1,0 +1,91 @@
+﻿@using System.Web.UI.WebControls
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvwTerceroInstalacion";
+        settings.CallbackRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarInstalacionesTercero" };
+
+        //settings.Caption = "Instalaciones";
+
+        settings.Width = Unit.Percentage(100);
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Tercero", Action = "InstalacionDelete" , terceroID = ViewBag.terceroID };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.ButtonType = GridViewCommandButtonType.Image;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.NewButton.Visible = false;
+        settings.CommandColumn.DeleteButton.Visible = true;
+        settings.CommandColumn.EditButton.Visible = false;
+        settings.CommandColumn.Width = 70;
+
+        settings.Styles.CommandColumn.Spacing = 10;
+
+        settings.CommandColumn.DeleteButton.Image.Url = "~/Content/Images/delete.png";
+
+        GridViewCommandColumnCustomButton btnEditButton = new GridViewCommandColumnCustomButton() { ID = "EditButton", Text = "Editar" };
+        btnEditButton.Image.Url = "~/Content/Images/edit.png";
+
+        settings.CommandColumn.CustomButtons.Add(btnEditButton);
+        settings.ClientSideEvents.CustomButtonClick =
+            string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 1, Url.Action("LoadInstalacion", "Instalacion"));
+        
+        settings.CommandColumn.SetHeaderTemplateContent(c =>
+        {
+            @Html.DevExpress().Image(img =>
+            {
+                img.Name = "addNewRow";
+                img.ImageUrl = "~/Content/Images/new.png";
+                img.Height = 20;
+                img.Width = 20;
+                //img.Properties.ClientSideEvents.Click = "function(s, e){ gvwTercerosInstalaciones.AddNewRow(); }";
+                img.Properties.ClientSideEvents.Click = string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 2, Url.Action("LoadInstalacion", "Instalacion"));
+            }).Render();
+        });
+
+        settings.KeyFieldName = "ID_INSTALACION";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = false;
+        settings.Settings.ShowFilterRow = false;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_INSTALACION";
+            column.Caption = "C&oacute;digo";
+            column.Width = 80;
+            column.Visible = false;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_INSTALACION";
+            column.Caption = "Nombre";
+            column.Width = 280;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_TIPOINSTALACION";
+            column.Caption = "Tipo";
+            column.Width = 280;
+        });
+        
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_ACTIVIDADECONOMICA";
+            column.Caption = "Actividad Econ&oacute;mica";
+        });
+        
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_ESTADO";
+            column.Caption = "Estado";
+            column.Width = 100;
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

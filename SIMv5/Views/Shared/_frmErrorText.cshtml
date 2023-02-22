@@ -1,0 +1,13 @@
+﻿
+<div>
+    @ViewData["ErrorMessage"]
+</div>
+<br />
+<div>
+@Html.DevExpress().Button(buttonsettings =>
+{
+    buttonsettings.Name = "btnErrorClose";
+    buttonsettings.Text = "Aceptar";
+    buttonsettings.Attributes.Add("onclick", "popErrorMessage.Hide();");
+}).GetHtml()
+</div>

@@ -1,0 +1,131 @@
+﻿@using SIM.Data.Poeca;
+@using Newtonsoft.Json;
+@model IEnumerable<SIM.Data.Poeca.TPOEAIR_SEGUIMIENTO_META>
+
+@{
+    ViewBag.Title = "POECA | Agregar Seguimiento";
+
+    List<TPOEAIR_ACCIONES_PLAN> acciones = ViewBag.acciones as List<TPOEAIR_ACCIONES_PLAN>;
+}
+<div class="container-fluid">
+    <div class="col-xs-12">
+
+        <h2>Agregar Seguimiento</h2>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="actionButtons">
+                    @{
+                        if (!User.IsInRole("CEPISODIOS"))
+                        {
+                            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#escogeAccion">
+                                Crear nuevo seguimiento
+                            </button>
+                        }
+                    }
+                    <button id="exportarExcel" type="button" class="btn btn-primary btn-lg">
+                        Descargar reporte Excel
+                    </button>
+                    <button id="exportarPdf" type="button" class="btn btn-primary btn-lg">
+                        Descargar reporte PDF
+                    </button>
+                    @{
+                        if (!User.IsInRole("CEPISODIOS"))
+                        {
+                            @Html.ActionLink("Terminar episodio", "Radicar", "SeguimientoFinalEpisodio", new { id = ViewBag.episodio }, new { @class = "btn btn-default btn-lg" })
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-responsive">
+                    <div id="gridSeguimientos"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="escogeAccion" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="escogeAccion">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Selecciona una acción</h4>
+            </div>
+            <div class="modal-body">
+                Para crear un seguimiento es necesario que selecciones una acción registrada con la cual comparar.
+                <select id="ddlAcciones" class="form-control">
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnContinuarCreacion">Continuar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@section Scripts {
+
+    <script>
+        let seguimientos = @Html.Raw(ViewBag.seguimientos as string);
+        let acciones = @Html.Raw(ViewBag.acciones as string);
+        let accionesDisponibles = @Html.Raw(ViewBag.accionesDisponibles as string);
+        let showActions = @(User.IsInRole("CEPISODIOS")? Html.Raw("false"): Html.Raw("true"));
+    </script>
+
+    <script src="~/Areas/Poeca/Scripts/Vendor/jspdf.min.js"></script>
+    <script src="~/Areas/Poeca/Scripts/Vendor/jspdf.plugin.autotable.js"></script>
+    <script src="~/Areas/Poeca/Scripts/Vendor/shim.min.js"></script>
+    <script src="~/Areas/Poeca/Scripts/Vendor/xlsx.mini.min.js"></script>
+
+    <script src="~/Areas/Poeca/Scripts/seguimientos.js?v=1.01"></script>
+    <script src="~/Areas/Poeca/Scripts/reporte-pdf.js"></script>
+    <script src="~/Areas/Poeca/Scripts/reporte-xlsx.js"></script>
+
+    <script>
+        $(function () {
+            let adquirirSeguimientosReporte = function (callback) {
+                const params = new URLSearchParams(window.location.search)
+                var idTercero = params.get("tercero");
+
+                if (!idTercero) {
+                    idTercero = "";
+                } else {
+                    idTercero = "?idTercero=" + idTercero;
+                }
+
+                const episodio = params.get('episodio');
+                $.ajax({
+                    url: location.protocol + '//' + location.host + location.pathname + "/Informe/" + episodio + idTercero,
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: function (response) {
+                        console.error(response);
+                    },
+                    success: function (seguimientos) {
+                        callback(seguimientos);
+                    }
+                });
+            }
+
+            $("#exportarExcel").click(function () {
+                adquirirSeguimientosReporte(function (seguimientos) {
+                    crearReporteExcel(seguimientos);
+                });
+            });
+
+            $("#exportarPdf").click(function () {
+                adquirirSeguimientosReporte(function (seguimientos) {
+                    crearReportePdf(seguimientos);
+                });
+            });
+
+        });
+    </script>
+}

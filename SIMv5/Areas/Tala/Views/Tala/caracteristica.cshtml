@@ -1,0 +1,189 @@
+﻿@{
+    ViewBag.Title = "Tala";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<link href="@Url.Content("~/Content/arbolUrbanoF.css")" rel="stylesheet" type="text/css" />
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+  
+            <div id="divEstados" class="col-xs-offset-0 col-sm-offset-0 col-md-offset-4 col-xs-12 col-sm-12 col-md-4">
+
+            </div>
+      
+
+
+    <script>
+        var sw = 0;
+        $(document).ready(function () {
+            sw=@ViewBag.id;
+            ConsultarAgente();
+
+        });
+
+
+
+        var DatosRiesgo = new Array();
+        var DatosAgente = new Array();
+
+        var DatosSintomaDM = new Array();
+        var DatosSintomaEF = new Array();
+
+        function ConsultarAgente() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("../../Flora/Flora/ConsultarAgente")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosAgente = eval('(' + response + ')');
+                    ConsultarRiesgos();
+
+                }
+            });
+        }
+        function ConsultarRiesgos() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("../../Flora/Flora/ConsultarRiesgos")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosRiesgo = eval('(' + response + ')');
+                    ConsultarSintomaDM();
+
+                }
+            });
+        }
+
+        function ConsultarSintomaDM() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("../../Flora/Flora/ConsultarSintomaDM")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosSintomaDM = eval('(' + response + ')');
+                    ConsultarSintomaEF();
+
+                }
+            });
+        }
+        function ConsultarSintomaEF() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("../../Flora/Flora/ConsultarSintomaEF")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosSintomaEF = eval('(' + response + ')');
+                    llenarEstadosck();
+                }
+            });
+        }
+
+
+        function llenarEstadosck() {
+            $("#divReturn").remove();
+          
+          
+            var html = ' <ul class="col-xs-12 col-sm-12 col-md-12" id="div1"><label class="lblTitleCarac">Motivo de solicitud</label>';
+            for (i = 0; i < DatosRiesgo.length; i++) {
+                html += '<li class="col-xs-12 col-sm-12 col-md-12"><label class="squaredFour">' + DatosRiesgo[i].S_RIESGO + '<input type="checkbox" id="ckR' + DatosRiesgo[i].ID_RIESGO + '"> <span class="checkmark"></span></label></li>'
+
+            }
+            
+            html += " <div class='col-xs-12 col-sm-12 col-md-12'> <button class='continuarG' onclick='pasar(1,2)'></button> </div> </ul>  "
+
+            html += ' <ul style="display:none;" class="col-xs-12 col-sm-12 col-md-12" id="div2"><label class="lblTitleCarac">Síntoma de Daño</label>';
+            for (i = 0; i < DatosSintomaDM.length; i++) {
+                html += '<li class="col-xs-12 col-sm-12 col-md-12"> <label class="squaredFour">' + DatosSintomaDM[i].S_SINTOMA_DM + '<input type="checkbox" id="ckDM' + DatosSintomaDM[i].ID_SINTOMA_DM + '">  <span class="checkmark"></span></label></li>'
+
+            }
+            for (i = 0; i < DatosSintomaEF.length; i++) {
+                html += '<li class="col-xs-12 col-sm-12 col-md-12"> <label class="squaredFour">' + DatosSintomaEF[i].S_SINTOMA_EF + '<input type="checkbox" id="ckEF' + DatosSintomaEF[i].ID_SINTOMA_EF + '"><span class="checkmark"></span></label></li>'
+
+            }
+           
+            html += "<div class='col-xs-12 col-sm-12 col-md-12'> <button class='continuarG' onclick='pasar(2,3)'></button> </div></ul>  "
+
+            html += ' <ul style="display:none;" class="col-xs-12 col-sm-12 col-md-12" id="div3"><label class="lblTitleCarac">Afectación que percibe</label>';
+            for (i = 0; i < DatosAgente.length; i++) {
+                html += '<li class="col-xs-12 col-sm-12 col-md-12"><label class="squaredFour">' + DatosAgente[i].S_AGENTE_DM + '<input type="checkbox" id="ckA' + DatosAgente[i].ID_AGENTE_DM + '"> <span class="checkmark"></span></label></li>'
+
+            }
+            html += "<div class='col-xs-12 col-sm-12 col-md-12'> <button class='aceptarSolicitud' onclick='GuardarEstados()'></button> </div></ul>  "
+          
+            $("#divEstados").append(html);
+        }
+
+
+        function pasar(d1,d2){
+            $("#div"+d1).hide();
+            $("#div"+d2).show();
+        }
+        function GuardarEstados() {
+            var TEMPDatosAgente = new Array();
+            for (i = 0; i < DatosAgente.length; i++) {
+                if ($("#ckA" + DatosAgente[i].ID_AGENTE_DM).prop("checked") == true) {
+                    TEMPDatosAgente.push(DatosAgente[i].ID_AGENTE_DM)
+                }
+
+            }
+            var TEMPDatosRiesgo = new Array();
+            for (i = 0; i < DatosRiesgo.length; i++) {
+                if ($("#ckR" + DatosRiesgo[i].ID_RIESGO).prop("checked") == true) {
+                    TEMPDatosRiesgo.push(DatosRiesgo[i].ID_RIESGO)
+                }
+
+            }
+
+            var TEMPDatosSintomaDM = new Array();
+            for (i = 0; i < DatosSintomaDM.length; i++) {
+                if ($("#ckDM" + DatosSintomaDM[i].ID_SINTOMA_DM).prop("checked") == true) {
+                    TEMPDatosSintomaDM.push(DatosSintomaDM[i].ID_SINTOMA_DM)
+                }
+
+            }
+            var TEMPDatosSintomaEF = new Array();
+            for (i = 0; i < DatosSintomaEF.length; i++) {
+                if ($("#ckEF" + DatosSintomaEF[i].ID_SINTOMA_EF).prop("checked") == true) {
+                    TEMPDatosSintomaEF.push(DatosSintomaEF[i].ID_SINTOMA_EF)
+                }
+
+            }
+            if(sw==1)
+                parent.agregarArbolNuevo(TEMPDatosAgente, TEMPDatosRiesgo, TEMPDatosSintomaDM, TEMPDatosSintomaEF);
+            else
+                parent.agregarArbol(TEMPDatosAgente, TEMPDatosRiesgo, TEMPDatosSintomaDM, TEMPDatosSintomaEF);
+
+            sw=0;
+           
+
+
+        }
+
+
+    </script>
+</body>
+
+

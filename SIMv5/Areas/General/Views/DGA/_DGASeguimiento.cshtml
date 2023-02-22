@@ -1,0 +1,11 @@
+﻿<img src="../../Content/Images/Ayuda.png" id="btnAyudasSeguimiento" style="float:right" onclick="MostrarAyuda(96, 'DGA-Seguimiento');" />
+<div class="dx-fieldset">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") maxLength: 4000, bindingOptions: { value: 'datosDGA.S_SEGUIMIENTO' }, height: '300px' }"></div>
+                <div style="width: 100%; text-align: right; font-style: italic; ">M&aacute;ximo N&uacute;mero de Caracteres: 4000 </div>
+            </div>
+        </div>
+    </div>
+</div>

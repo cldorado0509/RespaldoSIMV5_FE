@@ -1,0 +1,235 @@
+﻿namespace SIM.Areas.ExpedienteAmbiental.Controllers
+{
+    using System;
+    using System.Security.Claims;
+    using System.Web.Mvc;
+    using System.Collections.Generic;
+    using SIM.Data;
+    using System.IO;
+    using System.Linq;
+    using System.Web;
+    using System.Text;
+    using DevExpress.Pdf;
+    using System.Drawing;
+
+    public class ExpedientesController : Controller
+    {
+        EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+
+        // GET: ExpedienteAmbiental/Expedientes
+        public ActionResult Index()
+        {
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            decimal codFuncionario = -1;
+            int idUsuario = 0;
+            if (((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                 idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+            }
+            codFuncionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
+                                              join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                              where uf.ID_USUARIO == idUsuario
+                                              select f.CODFUNCIONARIO).FirstOrDefault());
+
+            ViewBag.CodFuncionario = codFuncionario;
+
+            return View();
+        }
+
+        // GET: ExpedienteAmbiental/Expedientes
+        public ActionResult FlipExpediente(string id)
+        {
+            List<string> listadoSal = new List<string>();
+
+            try
+            {
+                System.Web.HttpContext context = System.Web.HttpContext.Current;
+                decimal codFuncionario = -1;
+                if (((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    int idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                    EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+                    codFuncionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO 
+                                                      join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                                      where uf.ID_USUARIO == idUsuario
+                                                      select f.CODFUNCIONARIO).FirstOrDefault());
+                }
+                int _id = 0;
+
+                int.TryParse(id, out _id);
+
+                ViewBag.CodFuncionario = codFuncionario;
+
+                SIM.Areas.GestionDocumental.Controllers.ExpedientesController expedientesController = new SIM.Areas.GestionDocumental.Controllers.ExpedientesController();
+
+                List<decimal> listado = expedientesController.ObtieneDocumentosExpediente(_id);
+
+                string fecha = DateTime.Now.Date.ToFileTimeUtc().ToString();
+                string contentPath = "~/Content/ConsultaExpedientesDoc";
+                string path = System.IO.Path.Combine(contentPath, fecha);
+                if (!System.IO.File.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(Server.MapPath(path));
+                    path = System.IO.Path.Combine($"{contentPath}/{fecha}/{id}");
+                    if (!System.IO.File.Exists(path))
+                    {
+                        System.IO.Directory.CreateDirectory(Server.MapPath(path));
+
+                        System.IO.DirectoryInfo di = new DirectoryInfo(Server.MapPath(path));
+
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            file.Delete();
+                        }
+                        foreach (DirectoryInfo dir in di.GetDirectories())
+                        {
+                            dir.Delete(true);
+                        }
+
+                    }
+                }
+                else
+                {
+                    path = System.IO.Path.Combine($"{contentPath}/{fecha}/{id}");
+                    if (!System.IO.File.Exists(path))
+                    {
+                        System.IO.Directory.CreateDirectory(Server.MapPath(path));
+                        System.IO.DirectoryInfo di = new DirectoryInfo(Server.MapPath(path));
+
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            file.Delete();
+                        }
+                        foreach (DirectoryInfo dir in di.GetDirectories())
+                        {
+                            dir.Delete(true);
+                        }
+                    }
+
+                }
+
+                int doc = 1;
+                int largestEdgeLength = 1000;
+                foreach (decimal documentoId in listado)
+                {
+                    System.IO.MemoryStream oStream = SIM.Utilidades.Archivos.AbrirDocumentoFun((long)documentoId, codFuncionario).Result;
+
+                    if (oStream != null)
+                    {
+                        //byte[] bytes = oStream.ToArray();
+
+                        path = System.IO.Path.Combine($"{contentPath}/{fecha}/{id}/doc{doc}.pdf");
+                        try
+                        {
+
+                            using (PdfDocumentProcessor processor = new PdfDocumentProcessor())
+                            {
+                                // Load a document.
+                                processor.LoadDocument(oStream);
+
+                                for (int i = 1; i <= processor.Document.Pages.Count; i++)
+                                {
+                                    // Export pages to bitmaps.
+                                    Bitmap image = processor.CreateBitmap(i, largestEdgeLength);
+
+                                    System.IO.MemoryStream oStreamSal = new MemoryStream();
+
+                                    // Save the bitmaps.
+                                    image.Save(oStreamSal,System.Drawing.Imaging.ImageFormat.Jpeg);
+                                    oStream.Seek(0, SeekOrigin.Begin); 
+                                    SIM.Utilidades.Archivos.GrabaMemoryStream(oStreamSal, Server.MapPath($"~/Content/ConsultaExpedientesDoc/{fecha}/{id}/doc{doc}.jpg"));
+
+                                    listadoSal.Add($"/Content/ConsultaExpedientesDoc/{fecha}/{id}/doc{doc}.jpg");
+                                    doc++;
+                                }
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch(Exception exp)
+            {
+                throw exp;
+            }
+
+
+            return View(listadoSal);
+        }
+
+        public static string ResolveUrl(string relativeUrl)
+        {
+            if (relativeUrl == null) throw new ArgumentNullException("relativeUrl");
+
+            if (relativeUrl.Length == 0 || relativeUrl[0] == '/' || relativeUrl[0] == '\\')
+                return relativeUrl;
+
+            int idxOfScheme = relativeUrl.IndexOf(@"://", StringComparison.Ordinal);
+            if (idxOfScheme != -1)
+            {
+                int idxOfQM = relativeUrl.IndexOf('?');
+                if (idxOfQM == -1 || idxOfQM > idxOfScheme) return relativeUrl;
+            }
+
+            StringBuilder sbUrl = new StringBuilder();
+            sbUrl.Append(HttpRuntime.AppDomainAppVirtualPath);
+            if (sbUrl.Length == 0 || sbUrl[sbUrl.Length - 1] != '/') sbUrl.Append('/');
+
+            // found question mark already? query string, do not touch!
+            bool foundQM = false;
+            bool foundSlash; // the latest char was a slash?
+            if (relativeUrl.Length > 1
+                && relativeUrl[0] == '~'
+                && (relativeUrl[1] == '/' || relativeUrl[1] == '\\'))
+            {
+                relativeUrl = relativeUrl.Substring(2);
+                foundSlash = true;
+            }
+            else foundSlash = false;
+            foreach (char c in relativeUrl)
+            {
+                if (!foundQM)
+                {
+                    if (c == '?') foundQM = true;
+                    else
+                    {
+                        if (c == '/' || c == '\\')
+                        {
+                            if (foundSlash) continue;
+                            else
+                            {
+                                sbUrl.Append('/');
+                                foundSlash = true;
+                                continue;
+                            }
+                        }
+                        else if (foundSlash) foundSlash = false;
+                    }
+                }
+                sbUrl.Append(c);
+            }
+
+            return sbUrl.ToString();
+        }
+
+        private bool ByteArrayToFile(string fileName, byte[] byteArray)
+        {
+            try
+            {
+                using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(byteArray, 0, byteArray.Length);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception caught in process: {0}", ex);
+                return false;
+            }
+        }
+    }
+}

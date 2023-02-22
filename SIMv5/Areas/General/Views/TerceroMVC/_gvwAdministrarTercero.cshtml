@@ -1,0 +1,166 @@
+@using SIM.Areas.General.Models
+@using System.Web.UI.WebControls
+
+@{
+	var grid = Html.DevExpress().GridView(settings => {
+        settings.SettingsDetail.ShowDetailRow = true;
+        settings.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+        
+        settings.Name = "gvwTercero";
+        //settings.Caption = "Terceros";
+        settings.CallbackRouteValues = new { Controller = "TerceroMVC", Action = "gvwAdministrarTercero" };
+        settings.Width = Unit.Percentage(100);
+
+        settings.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+        settings.Settings.VerticalScrollBarStyle = GridViewVerticalScrollBarStyle.Standard;
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "TerceroMVC", Action = "TerceroDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsText.PopupEditFormCaption = "Tercero";
+        settings.SettingsPopup.EditForm.AllowResize = true;
+        settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+        settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+        settings.SettingsPopup.EditForm.Width = Unit.Pixel(700);
+        settings.SettingsPopup.EditForm.Height = Unit.Pixel(500);
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.ClientSideEvents.Init = "OnInit";
+
+        settings.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
+
+        settings.CommandColumn.ButtonType = GridViewCommandButtonType.Image;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.NewButton.Visible = false;
+        settings.CommandColumn.DeleteButton.Visible = true;
+        settings.CommandColumn.EditButton.Visible = false;
+        settings.CommandColumn.Width = 70;
+
+        settings.Styles.CommandColumn.Spacing = 10;
+
+        settings.CommandColumn.EditButton.Image.Url = "~/Content/Images/edit.png";
+        settings.CommandColumn.DeleteButton.Image.Url = "~/Content/Images/delete.png";
+
+        GridViewCommandColumnCustomButton btnEditButton = new GridViewCommandColumnCustomButton() { ID = "EditButton", Text = "Editar" };
+        btnEditButton.Image.Url = "~/Content/Images/edit.png";
+
+        settings.CommandColumn.CustomButtons.Add(btnEditButton);
+        settings.ClientSideEvents.CustomButtonClick =
+            string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 1, Url.Action("LoadTercero", "TerceroMVC"));
+
+        settings.CommandColumn.SetHeaderTemplateContent(c =>
+        {
+            @Html.DevExpress().Image(img =>
+            {
+                img.Name = "addNewRow";
+                img.ImageUrl = "~/Content/Images/new.png";
+                img.Height = 20;
+                img.Width = 20;
+                img.Style.Add("float", "left");
+                //img.Properties.ClientSideEvents.Click = string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}?tipoTercero=' + tipoTercero.GetText()); }}", 2, Url.Action("LoadTercero", "Tercero"));
+                img.Properties.ClientSideEvents.Click = string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 2, Url.Action("LoadTercero", "TerceroMVC"));
+            }).Render();
+
+            /*Html.DevExpress().ComboBox(edtSettings =>
+            {
+                edtSettings.Name = "tipoTercero";
+                edtSettings.Width = 35;
+                edtSettings.SelectedIndex = 0;
+                edtSettings.Style.Add("float", "left");
+            }).BindList(new List<string> { "N", "J" }).Render();*/
+        });
+        
+		settings.KeyFieldName = "ID_TERCERO";
+
+		settings.SettingsPager.Visible = true;
+		settings.Settings.ShowGroupPanel = true;
+		settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_TERCERO";
+            column.Caption = "C&oacute;digo";
+            column.Width = 80;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_TIPODOCUMENTO";
+            column.Caption = "Tipo Doc.";
+            column.Width = 60;
+
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListGeneral.GetTiposDocumento();
+            comboBoxProperties.TextField = "S_ABREVIATURA";
+            comboBoxProperties.ValueField = "ID_TIPODOCUMENTO";
+            comboBoxProperties.ValueType = typeof(int);
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "N_DOCUMENTON";
+            column.Caption = "Identificaci&oacute;n";
+            column.Width = 100;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "N_DIGITOVER";
+            column.Caption = "DV";
+            column.Width = 30;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_RSOCIAL";
+            column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            column.UnboundExpression = "Iif(ID_TIPODOCUMENTO == 2, JURIDICA.S_RSOCIAL, TERCERO.S_RSOCIAL)";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        /*settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            //column.UnboundExpression = "Iif(ID_TIPODOCUMENTO == 2, TERCERO.S_RSOCIAL, Trim(NATURAL.S_NOMBRE1) + Iif(Trim(NATURAL.S_NOMBRE2) == '' , '' , ' ' + Trim(NATURAL.S_NOMBRE2)) + ' ' + Trim(NATURAL.S_APELLIDO1) + Iif(Trim(NATURAL.S_APELLIDO2) == '', '', ' ' + Trim(NATURAL.S_APELLIDO2)))";
+            column.UnboundExpression = "Iif(ID_TIPODOCUMENTO == 2, JURIDICA.S_NCOMERCIAL, NATURAL.S_NOMBRE1)";
+            column.Caption = "Nombre";
+            column.Width = 200;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });*/
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "JURIDICA.S_SIGLA";
+            column.Caption = "Sigla";
+            column.Width = 100;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ACTIVIDAD_ECONOMICA.S_NOMBRE";
+            column.Caption = "Actividad Econ&oacute;mica";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        
+        settings.SetDetailRowTemplateContent(c =>
+        {
+            Html.RenderAction("gvwAdministrarInstalacionesTercero", new { terceroID = DataBinder.Eval(c.DataItem, "ID_TERCERO") });
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "ID_TERCERO";
+}).GetHtml()

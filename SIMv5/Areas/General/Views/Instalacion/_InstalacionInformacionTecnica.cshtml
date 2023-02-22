@@ -1,0 +1,41 @@
+﻿@using SIM.Properties
+<div class="dx-fieldset">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label labelfullrow">Propietario</div>
+                <div class="dx-field-value valuefullrow">
+                    <div dx-lookup="TerceroSettings" id="cboPropietario"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label labelfullrow">Actividad Econ&oacute;mica</div>
+                <div class="dx-field-value valuefullrow">
+                    <div dx-lookup="ActividadEconomicaSettings"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Tipo Instalaci&oacute;n</div>
+                <div class="dx-field-value">
+                    <div dx-lookup="tipoInstalacionSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Instalación Requerida' }] }"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Fecha Inicio Actividad Econ&oacute;mica</div>
+                <div class="dx-field-value">
+                    <div dx-date-box="{formatString:'yyyy/MM/dd', format: 'date', useCalendar: true, bindingOptions: { value: 'datosInstalacion.TERCERO_INSTALACION[0].D_INICIO' }}" style="width:100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

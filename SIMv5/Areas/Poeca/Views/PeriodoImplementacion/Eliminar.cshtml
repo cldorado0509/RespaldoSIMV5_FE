@@ -1,0 +1,49 @@
+﻿@model SIM.Data.Poeca.PeriodoImplementacion
+
+@{
+    ViewBag.Title = "POECA | Confirmar Eliminación";
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>¿Estás seguro/a de eliminar este Período?</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+                    @Html.DisplayNameFor(model => model.NombrePeriodo):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.NombrePeriodo)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Descripcion):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-primary" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Eliminar" class="btn btn-block btn-danger" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

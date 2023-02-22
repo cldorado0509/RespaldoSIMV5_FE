@@ -1,0 +1,827 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Mvc
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@{
+    ViewBag.Title = "Formulario";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+ }
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title></title>
+        <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+        <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+        <link href='//fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+        <script src="@Url.Content("~/Scripts/js/scripFormulario.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1-packed.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.jquery.mousewheel.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.touchSwipe.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.transit.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+        <style>
+
+            td {
+                text-align: left;
+                padding: 2px;
+                padding-left: 27px;
+                font-size: 12px;
+            }
+        </style>
+        <script>
+    var almacenandoDetalle = false;
+    var tipoV = "N";
+    $(document).ready(function () {
+
+
+        $("#txtidItem").val("@ViewBag.txtidItem")
+        $("#txtidEstadoBase").val("@ViewBag.txtidEstadoBase")
+        $("#txturlMapa").val("@ViewBag.txturlMapa")
+        $("#txttblFotos").val("@ViewBag.txttblFotos")
+        $("#txtForm").val("@ViewBag.txtForm")
+        $("#txtidVisita").val("@ViewBag.txtidVisita")
+        $("#txtVisita").val("@ViewBag.txtidVisita")
+        $("#txtinstalacion").val("@ViewBag.txtinstalacion")
+        $("#txttercero").val("@ViewBag.txttercero")
+        $("#txttblEstados").val("@ViewBag.txttblEstados")
+        tipoV = "@ViewBag.txttipoV";
+
+        var textoi = $("#texttoempresa").text() + "@ViewBag.textoEmpresa";
+        $("#texttoempresa").text(textoi.replace("&#243;", "ó"));
+        consultarJsonDetalle()
+        if (tipoV == "CAR1") {
+
+            $("#tabMapa").removeClass("active");
+            $("#tabMapa").removeClass("in");
+            $("#tabDetalle").addClass("active")
+            $("#tabDetalle").addClass("in")
+            $("#Tab3 a").click();
+        
+
+        }
+    });
+    var jsonInfoGeneral;
+  
+   
+    function GuardarUbicacion(num) {
+        if (num == 1) {
+            GuardarInformacionItem()
+        } else if (num == 2) {
+        } else if (num == 3) {
+            guardarDetalle();
+        } else if (num == 5) {
+            guardarEncuesta()
+        } else if (num == 4) {
+            guardarFotosAguas(Totalimg)
+        }
+    }
+    function rtaUbiPoint(rta) {
+        objetoMapgis.noDraw();
+        $("#txtX").val(rta.x);
+        $("#txtY").val(rta.y);
+        $("#ubicarpuntobtn")[0].title = "Reubicar punto";
+    }
+   function consultarJsonDetalle() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarJsonDetalle", "Riesgos")',
+            data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), tblEstados: $("#txttblEstados").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                almacenandoDetalle = false;
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle);
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneral").append(html);
+               
+
+            }
+        });
+    }
+   
+    function abrirFotos() {
+        $("#pantallaCargarImg").dialog(
+        {
+
+            width: 600,
+            height: 400
+        });
+        $("#pantallaCargarImg #fotos").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/cargarImagen")");
+
+    }
+       
+
+            function Ayudas() {
+
+                var tabdetalle= document.getElementById('Tab1');
+                var tabquimicos = document.getElementById('Tab2');
+                var tabfotos = document.getElementById('Tab3');
+               
+
+                if (tabdetalle.className == 'active') {
+                    // moverAyudas(1);
+                    window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 76);
+                }
+                else if (tabquimicos.className == 'active') {
+                    // moverAyudas(2);
+                    window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 77);
+                }
+                else if (tabfotos.className == 'active') {
+                    // moverAyudas(1);
+                    window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 78);
+                }
+                
+
+            }
+        </script>
+        <style>
+            .labelUnico {
+                margin-bottom: 17px;
+                width: 0px;
+                text-align: center;
+                font-size: 13px;
+                position: relative;
+                left: 14px;
+            }
+
+            .informacionUbicacion button {
+                top: 0px;
+                left: 0px;
+                margin-top: 0px;
+                float: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="divNombreCaptacion">
+            <div id="div_nom_1" class="nombretitle">
+                <label id="txtNombreOficial"></label><button type="button" class="btn btn-default" aria-label="Left Align" onclick="nombreOpcion(1)">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="div_nom_2" class="nombretitle" style="display:none">
+                <input type="text" id="txtNombreTemp" style="width: 220px !important;"/><button type="button" class="btn btn-default " onclick="nombreOpcion(2)">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </button>
+            </div>
+            <label id="texttoempresa"> Instalación: <br /></label>
+        </div>
+        <div class="container contenedorcentro ">
+            <div style="position:absolute;top:0px;z-index:9999;display:none">
+                <input type="text" id="txtidItem" value="">
+                <input type="text" id="txtidEstadoBase" value="">
+                <input type="text" id="txturlMapa" value="">
+                <input type="text" id="txttblFotos" value="">
+                <input type="text" id="txtForm" value="">
+                <input type="text" id="txtidVisita" value="">
+                <input type="text" id="txtVisita" value="">
+                <input type="text" id="txtinstalacion" value="">
+                <input type="text" id="txttercero" value="">
+                <input type="text" id="txttblEstados" value="">
+            </div>
+            <!--dialog -->
+            <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+                <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+            </div>
+           
+            <div class="col-sm-12" style="margin-top: 39px; margin-bottom: -6px;">
+                <div class="panel panel-default" style="padding-bottom: 0px">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"></h3>
+                        <div class="subContenedor">
+                            <!--contenedor tab-->
+                            <div style="padding: 15px">
+                                <img src="../../Content/Images/Ayuda.png" id="btnAyudas" onclick="Ayudas()"></>
+                                <ul class="nav nav-tabs">
+                                    <li id="Tab1" class="active"><a href="#tabDetalle" onclick="CambiarGuardarbtn(1)" data-toggle="tab">Caracteristicas</a></li>
+                                    <li id="Tab2"><a href="#tabQuimicos" onclick="CambiarGuardarbtn(2)" data-toggle="tab">Quimicos</a></li>
+                                    <li id="Tab3"><a href="#tabFotos" onclick="CambiarGuardarbtn(4)" data-toggle="tab">Fotografias</a></li>
+
+                                  </ul>
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                               
+                               
+                            <!--inicio Caracteristicas-->
+                                <div id="tabDetalle" class="tab-pane fade active in">
+                                    <div class="col-sm-12">
+                                        <div class="panel-group acordeonVerde " id="acordionUsosPrincipal">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon0"><input type="text" style="display:none" id="txtuso_0" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse0" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon0')" class="titleAcordeon">GESTIÓN ADMINISTRATIVA</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse0')"></button> </div>
+                                                <div id="Dcollapse0" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">2</td>
+                                                                    <td>1.LA EMPRESA CUMPLE CON LA LEGISLACIÓN RELACIONADA CON SQP Y RESPEL</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_2">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">3</td>
+                                                                    <td>2.LA EMPRESA POSEE UNA POLÍTICA DE CALIDAD DOCUMENTADA Y /O CERTIFICADA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_3">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">4</td>
+                                                                    <td>3.LA EMPRESA POSEE UNA POLÍTICA AMBIENTAL DOCUMENTADA Y /O CERTIFICADA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_4">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">5</td>
+                                                                    <td>4.LA EMPRESA POSEE UNA POLÍTICA DE SEGURIDAD DOCUMENTADA Y/O CERTIFICADA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_5">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">6</td>
+                                                                    <td>5.LA EMPRESA TIENE IMPLEMENTADOS OTROS SISTEMAS DE GESTIÓN (RI, APELL, ETC</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_6">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">7</td>
+                                                                    <td>6.LA EMPRESA LLEVA UN REGISTRO DE LAS SQP ALMACENADAS (UBICACIÓN, CANTIDAD E IDENTIFICACIÓN)</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_7">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">8</td>
+                                                                    <td>7.SE CAPACITAN CONTINUAMENTE A LOS TRABAJADORES SOBRE LAS BUENAS PRÁCTICAS DE ALMACENAMIENTO Y PROCEDIMIENTOS DE EMERGENCIA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_8">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">9</td>
+                                                                    <td>8.LA EMPRESA CUENTA CON UN PLAN DE EMERGENCIA VIGENTE, OPERATIVO Y CONOCIDO POR LOS EMPLEADOS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_9">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">10</td>
+                                                                    <td>9.LA EMPRESA CUENTA CON PLAN DE CONTINGENCIA VIGENTE, OPERATIVO Y CONOCIDO POR LOS EMPLEADOS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_10">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">11</td>
+                                                                    <td>11.LA EMPRESA HA REALIZADO SIMULACROS, EN DONDE TENGAN ATENCIÓN DE EMERGENCIAS POR DERRAMES/FUGAS/INCENDIOS/EXPLOSIONES</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_11">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">68</td>
+                                                                    <td>10.CUENTA CON EL PLAN DE CONTINGENCIA ANTE DERRAMES TANTO EN ALMACENAMIENTO Y TRANSPORTE, ACORDE CON LO ESTABLECIDO EN EL DECRETO 3930 DE 2010.</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_68">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon1"><input type="text" style="display:none" id="txtuso_1" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse1" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon1')" class="titleAcordeon">CONDICIONES DE ALMACENAMIENTO Y OPERACIÓN</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse1')"></button> </div>
+                                                <div id="Dcollapse1" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">13</td>
+                                                                    <td>1.EL PERSONAL QUE MANIPULA SQP Y/O RESPEL, ESTÁ CAPACITADO E INFORMADO DEL MATERIAL QUE MANEJA (ETIQUETAS,MSDS, TARJETAS DE EMERGENCIA, </td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_13">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon0"><input type="text" style="display:none" id="txtuso_0" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse0" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon0')" class="titleAcordeon">PERCEPCIÓN DE LA AMENAZA</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse0')"></button> </div>
+                                                <div id="Dcollapse0" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">15</td>
+                                                                    <td>1.LOS DIAGRAMAS DE PROCESO SE MANTIENEN AL DÍA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_15">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon2"><input type="text" style="display:none" id="txtuso_2" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse2" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon2')" class="titleAcordeon">CONDICIONES DE ALMACENAMIENTO Y OPERACIÓN</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse2')"></button> </div>
+                                                <div id="Dcollapse2" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">17</td>
+                                                                    <td>1.LOS SITIOS DE ALMACENAMIENTO POSEEN SISTEMAS DE CONTROL DE DERRAMES PARA GARANTIZAR EL CONFINAMIENTO DE PRODUCTO (PAREDES, DIQUES O BORDES PERIMETRALES¿)</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_17">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">18</td>
+                                                                    <td>3.LA EMPRESA UTILIZA ALGÚN PARÁMETRO TÉCNICO PARA LA DISTRIBUCIÓN DE LAS SUSTANCIAS DENTRO DE LA BODEGA (COMPATIBILIDADES)</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_18">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">19</td>
+                                                                    <td>4.SE TIENE EN CUENTA LAS RECOMENDACIONES DE LAS MSDS PARA LA UBICACIÓN DE LAS SQP DENTRO DE LA BODEGA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_19">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">20</td>
+                                                                    <td>5.LAS MSDS O TARJETAS DE EMERGENCIA DE CADA UNA DE LAS SUSTANCIAS EN BODEGA, SE ENCUENTRAN EN UNA PARTE VISIBLE</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_20">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">21</td>
+                                                                    <td>6.ESTÁN SEÑALIZADAS TODAS LAS ÁREAS DE ALMACENAMIENTO Y ESTANTERÍAS CON LA CLASE DE RIESGO CORRESPONDIENTE A LA SQP ALMACENADA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_21">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">22</td>
+                                                                    <td>7.LAS SQP Y/O RESPEL ALMACENADOS EN ESTANTERIAS, TANQUES,  BIDONES, JERRICANS, IBC, SACOS, ETC, TIENEN LAS DEBIDAS PROTECCIONES PARA EVITAR CAÍDAS Y DERRAMES</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_22">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">23</td>
+                                                                    <td>8.SI SE ALMACENAN LÍQUIDOS INFLAMABLES O COMBUSTIBLES Y/O SE GENERAN POLVOS FINOS DURANTE EL PROCESO, SE TIENEN SISTEMAS DE DESCARGA DE ENERGÍA ESTÁTICA INSTALADOS </td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_23">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">24</td>
+                                                                    <td>9.SI SE ALMACENAN LÍQUIDOS INFLAMABLE O COMBUSTIBLES Y/O SE GENERAN POLVOS FINOS DURANTE EL PROCESO LA ILUMINACIÓN EN EL INTERIOR DE LA BODEGA ESTÁ DADA POR LÁMPARAS A PRUEBA DE EXPLOSIÓN Y/O LUZ NATURAL</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_24">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">25</td>
+                                                                    <td>10.SI SE ALMACENAN MATERIALES INFLAMABLES SE CUENTA CON EQUIPOS DE PROTECCIÓN CONTRA RELÁMPAGOS O FUENTES DE IGNCIÓN EXTERNAS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_25">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">26</td>
+                                                                    <td>11.SI SE ALMACENAN SUSTANCIAS EN EL EXTERIOR SE TIENEN SISTEMAS PARA AISLAR DE LA INTEMPERIE (TECHOS, CARPAS)</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_26">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">27</td>
+                                                                    <td>12.LAS ZONAS DE ALMACENAMIENTO Y DE PRODUCCIÓN SE MANTIENEN LIMPIAS Y ORDENADAS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_27">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">28</td>
+                                                                    <td>13.LOS PISOS SON DUROS, LIBRES DE GRIETAS, IMPERMEABLES Y SIN DESAGUES</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_28">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">29</td>
+                                                                    <td>14.SE TIENE SISTEMAS DE VENTILACIÓN NATURAL Y/O FORZADA PARA EVITAR ACUMULACIÓN DE GASES Y VAPORES</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_29">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">30</td>
+                                                                    <td>15.SE APILA SOBRE ESTIBAS DE PLASTICO O METAL</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_30">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">69</td>
+                                                                    <td>2.LA EMPRESA CUENTA CON  KIT DE DERRAMES</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_69">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon4"><input type="text" style="display:none" id="txtuso_4" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse4" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon4')" class="titleAcordeon">SISTEMA DE PREVENCIÓN Y MITIGACIÓN DE CONTROL DE EMERGENCIAS</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse4')"></button> </div>
+                                                <div id="Dcollapse4" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">32</td>
+                                                                    <td>1.SE MANTIENE ACTUALIZADO EL MATERIAL DE EMERGENCIA (MSDS, TARJETAS, EXTINTORES,ETC)</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_32">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">33</td>
+                                                                    <td>2.SE DISPONE DE DISPOSITIVOS PARA LA DETECCIÓN DE HUMOS, LLAMAS Ó CALOR</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_33">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">34</td>
+                                                                    <td>3.SE CUENTA CON ALARMAS DE EMERGENCIA PARA ALERTAR A LOS EMPLEADOS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_34">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">35</td>
+                                                                    <td>4.EXISTEN MAPAS QUE DETALLEN LOS LUGARES DE PELIGRO Y SALIDAS DE EMERGENCIA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_35">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">36</td>
+                                                                    <td>5.SE DISPONE DE LOS EQUIPOS DE PROTECCIÓN PERSONAL ADECUADOS PARA EL TIPO DE SUSTANCIAS MANEJADAS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_36">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">37</td>
+                                                                    <td>6.SE VERIFICA PERIÓDICAMENTE EL ESTADO DE LOS EQUIPOS DE PROTECCIÓN PERSONAL Y EQUIPOS DE EMERGENCIA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_37">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">38</td>
+                                                                    <td>7.SE CONOCEN LOS CONTACTOS DE PROVEEDORES Y ORGANISMOS DE ATENCIÓN DE EMERGENCIA  Y ADEMÁS SE TIENE A LA MANO </td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_38">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">39</td>
+                                                                    <td>8.SE TIENEN EXTINTORES VIGENTES Y OPERATIVOS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_39">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">40</td>
+                                                                    <td>9.SE CUENTA CON UNA RED CONTRA INCENDIO (SECA O HÚMEDA)</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_40">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">41</td>
+                                                                    <td>10.SE CUENTA CON UNA BRIGADA DE EMERGENCIA OPERATIVA</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_41">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">42</td>
+                                                                    <td>11.SE CUENTA CON CAMILLA </td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_42">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">43</td>
+                                                                    <td>12.SE CUENTA CON BOTIQUIN Y ELEMENTOS DE PRIMEROS AUXILIOS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_43">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">44</td>
+                                                                    <td>13.SE TIENE MUROS O PUERTAS CONTRA INCENDIO</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_44">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">45</td>
+                                                                    <td>14.SE TIENEN RUTAS DE EVACUACIÓN, SALIDAS DE EMERGENCIA Y PUNTOS DE ENCUENTRO  IDENTIFICADOS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_45">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon5"><input type="text" style="display:none" id="txtuso_5" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse5" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon5')" class="titleAcordeon">PERCEPCIÓN DE LA AMENAZA</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse5')"></button> </div>
+                                                <div id="Dcollapse5" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">47</td>
+                                                                    <td>1.SE PERCIBE UNA ORGANIZACIÓN INDUSTRIAL EFICIENTE</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_47">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">48</td>
+                                                                    <td>2.LOS EQUIPOS DE PROCESO SE MANTIENEN EN BUEN ESTADO, CON INSPECCIÓN Y MANTENIMIENTO CONTINUO</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_48">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">49</td>
+                                                                    <td>3.EN EL PROCESO, SE HAN TENIDO EN CUENTA LOS FACTORES DE SEGURIDAD PARA MANEJO DE P, T  Y FLUJOS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_49">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">50</td>
+                                                                    <td>4.SE MINIMIZA LA GENERACIÓN DE EVENTOS PELIGROSOS A CAUSA DE FALLAS TÉCNICAS U OPERARIAS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_50">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">51</td>
+                                                                    <td>5.LA EMPRESA SE ENCUENTRA ALEJADA DE UNIDADES RESIDENCIALES QUE PUEDAN SER AFECTADAS ANTE UN DERRAME, INCENDIO O EXPLOSIÓN</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_51">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon6"><input type="text" style="display:none" id="txtuso_6" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse6" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon6')" class="titleAcordeon">AFECTACIÓN A CUERPOS DE AGUA POR POSIBLES DERRAMES</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse6')"></button> </div>
+                                                <div id="Dcollapse6" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">53</td>
+                                                                    <td>1.EN CASO DE PRESENTARSE DERRAMES, SE LOGRA CONTENER EN EL LUGAR DEL INCIDENTE</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_53">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">54</td>
+                                                                    <td>2.EL LUGAR ESTA ALEJADO DE  FUENTES DE CAPTACIÓN Y/O CUERPOS DE AGUA </td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_54">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">55</td>
+                                                                    <td>3.LOS DRENAJES DEL INTERIOR DE LA BODEGA DE ALMACENAMIENTO DE SQP, CUENTA CON CÁRCAMOS, POZOS O TANQUES COLECTORES PARA UNA POSTERIOR DISPOSICIÓN DEL AGUA RESIDUAL</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_55">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">56</td>
+                                                                    <td>4.NO SE AFECTA EL SISTEMA DE ALCANTARILLADO  Y A LA COMUNIDAD EN GENERAL EN CASO DE DERRAME/FUGA/INCENDIO/EXPLOSIÓN</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_56">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">57</td>
+                                                                    <td>5.SE DISPONE DE MEDIOS ESPECÍFICOS PARA LA NEUTRALIZACIÓN Y LIMPIEZA DE DERRAMES O CONTROL DE FUGAS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_57">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon7"><input type="text" style="display:none" id="txtuso_7" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse7" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon7')" class="titleAcordeon">MANEJO DE RESIDUOS PELIGROSOS (RESPEL)</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse7')"></button> </div>
+                                                <div id="Dcollapse7" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">59</td>
+                                                                    <td>1.LA EMPRESA CUENTA CON UN PLAN DE MANEJO DE RESPEL</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_59">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">60</td>
+                                                                    <td>2.LOS RESPEL GENERADOS EN LA ACTIVIDAD PRODUCTIVA, EN LAS OPERACIONES DE LIMPIEZA Y RECOLECCIÓN DE DERRAMES SE DISPONEN ADECUADAMENTE</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_60">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">61</td>
+                                                                    <td>3.REALIZAN LA DISPOSICIÓN ADECUADA DE LOS RESIDUOS PELIGROSOS, A TRAVÉS DE EMPRESAS AUTORIZADAS</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_61">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">62</td>
+                                                                    <td>4.SE TIENEN CERTIFICADOS DE DISPOSICIÓN DE RESPEL</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_62">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading glyphicon-triangle-bottom fechaleft" id="DcabezoteAcordeon8"><input type="text" style="display:none" id="txtuso_0" value="159"> <a data-toggle="collapse" data-parent="#accordion" href="#Dcollapse8" onclick="CambiarEstadoAcordeon('#DcabezoteAcordeon8')" class="titleAcordeon">OTRAS CARACTERÍSTICAS</a><button class="agregar" title="Agregar Detalle" onclick="agregarAcordeonitem(this,159,'Dcollapse8')"></button> </div>
+                                                <div id="Dcollapse8" class="panel-collapse collapse">
+                                                    <div style:"padding: 1px;">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td style="display: none">Id</td>
+                                                                    <td id="tdtitle">Descripción</td>
+                                                                    <td id="tdtitle">Cumplimiento</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">64</td>
+                                                                    <td>1.TIENE PTAR</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_64">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">65</td>
+                                                                    <td>2.CONEXIÓN ALCANTARILLADO</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_65">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">66</td>
+                                                                    <td>3.HACE DESCARGAS SIN TRATAMIENTO</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" style="margin-left: 45%" id="cump_66">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="display: none">67</td>
+                                                                    <td>4.HACE DESCARGAS CON TRATAMIENTO</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="cumplimiento" checked="checked" style="margin-left: 45%" id="cump_67">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            <!--inicio tabAdicional-->
+                                <div id="tabQuimicos" class="tab-pane fade ">
+                                    <!--Inicio Acordion -->
+                                    <div class="col-md-12" id="acordionDetalleGeneral">
+                                        <!--Nivel1-->
+                                        <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="tabFotos" class="tab-pane fade ">
+                                    <!--carusel-->
+                                    <div class="col-sm-12">
+                                        <div id="carousel">
+                                            <a id="prev" class="prev" href="#" style="display: none;">&lt;</a>
+                                            <a id="next" class="next" href="#" style="display: none;">&gt;</a>
+                                        </div>
+                                        <!-- /#myCarousel -->
+                                    </div>
+                                </div>
+                            <!---------------------------->
+                        </div>
+                    </div>
+                </div>
+                <div class="actionBar">
+                    <button type="button" id="btnCerra" class="btn btn-default btn-sm" onclick="cerrarPestala()">Cerrar</button>
+                    <button type="button" id="btnGuardar1" class="btn btn-default btn-sm" onclick="GuardarUbicacion(1)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar2" class="btn btn-default btn-sm" onclick="GuardarUbicacion(2)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar3" class="btn btn-default btn-sm" onclick="GuardarUbicacion(3)">Guardar</button>
+                    <button class="btn btn-default btn-sm" style="display:none" onclick="abrirFotos()" id="btnCargarFoto">Cargar Fotos</button>
+                    <button type="button" style="display:none" id="btnGuardar4" class="btn btn-default btn-sm" onclick="GuardarUbicacion(4)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar5" class="btn btn-default btn-sm" onclick="GuardarUbicacion(5)">Guardar</button>
+                </div>
+            </div>
+        </div>
+        <!--Fin TabUbicacion-->
+        </div>
+      <!--fin contenedor tab-->
+      <!----------------------------->
+        <!------------------------->
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </body>
+</html>

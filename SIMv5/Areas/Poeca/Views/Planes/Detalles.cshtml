@@ -1,0 +1,82 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_PLAN
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TPOEAIR_PLAN</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.N_ANIO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_ANIO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.N_RADICADO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_RADICADO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.N_RADICADO_ANIO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_RADICADO_ANIO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_OBSERVACIONES)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_OBSERVACIONES)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_REMITENTE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_REMITENTE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_CARGO_REMITENTE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_CARGO_REMITENTE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_URL_ANEXO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_URL_ANEXO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ID_RESPONSABLE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ID_RESPONSABLE)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

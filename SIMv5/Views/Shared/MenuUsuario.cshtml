@@ -1,0 +1,10 @@
+﻿@{    
+    MenuViewModel mn = new MenuViewModel();    
+}
+@Html.DevExpress().Menu(settings =>
+{
+    settings.Name = "MenuPpal";
+    settings.AllowSelectItem = true;
+    settings.Orientation = System.Web.UI.WebControls.Orientation.Horizontal;
+}).Bind(mn.ObtieneMenu()).GetHtml()
+               

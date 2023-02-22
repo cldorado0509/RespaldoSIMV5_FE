@@ -1,0 +1,64 @@
+﻿@model SIM.Areas.Encuestas.Models.ENCUESTA_PREGUNTA
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ENCUESTA_PREGUNTA</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.N_ORDEN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_ORDEN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.N_FACTOR)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_FACTOR)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_REQUERIDA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_REQUERIDA)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ENCUESTA.S_NOMBRE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ENCUESTA.S_NOMBRE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PREGUNTA.S_NOMBRE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PREGUNTA.S_NOMBRE)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

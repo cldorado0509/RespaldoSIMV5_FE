@@ -1,0 +1,181 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_ACCIONES_PLAN
+
+@{
+    ViewBag.Title = "POECA | Crear Acción de plan";
+}
+
+<div class="container-fluid">
+    <div class="col-xs-12">
+
+        <h2>Crear acción del plan de @ViewBag.ANIO</h2>
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    @Html.Hidden("ID_PLAN")
+
+                    <div class="row">
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.ID_SECTOR, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownList("ID_SECTOR", null, "-Seleccionar-", htmlAttributes: new { @class = "form-control", @id = "ddlSectores" })
+                                @Html.ValidationMessageFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.ID_SECTOR, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.ID_MEDIDA, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.ID_MEDIDA, new List<SelectListItem>(), "-Sin resultados-", htmlAttributes: new { @class = "form-control", @id = "ddlMedidas" })
+                                @Html.ValidationMessageFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.ID_MEDIDA, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ID_MEDIDA_ACCION, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.ID_MEDIDA_ACCION, new List<SelectListItem>(), "-Sin resultados-", htmlAttributes: new { @class = "form-control", @id = "ddlAcciones" })
+                                @Html.ValidationMessageFor(model => model.ID_MEDIDA_ACCION, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ID_PRODUCTO, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownList("ID_PRODUCTO", null, "-Seleccionar-", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ID_PRODUCTO, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ID_NIVEL, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownList("ID_NIVEL", null, "-Seleccionar-", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ID_NIVEL, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ID_PERIODICIDAD, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownList("ID_PERIODICIDAD", null, "-Seleccionar-", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ID_PERIODICIDAD, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row contenedor-oscuro">
+                        <div class="col-sm-5 col-sm-offset-1">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.N_META_PROPUESTA, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.N_META_PROPUESTA, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.N_META_PROPUESTA, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.N_VALORACION_ECONOMICA, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.N_VALORACION_ECONOMICA, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.N_VALORACION_ECONOMICA, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.S_RECURSOS, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.S_RECURSOS, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.S_RECURSOS, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-5">
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.S_RESPONSABLE, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.S_RESPONSABLE, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.S_RESPONSABLE, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.S_OBSERVACIONES, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.S_OBSERVACIONES, new { htmlAttributes = new { @class = "form-control height-147", @rows = 5 } })
+                                @Html.ValidationMessageFor(model => model.S_OBSERVACIONES, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                @Html.ActionLink("Cancelar", "Index", new { plan = ViewBag.ID_PLAN }, new { @class = "btn btn-block btn-danger" })
+                            </div>
+
+                            <div class="col-xs-6">
+                                <input type="submit" value="Guardar" class="btn btn-block btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#ddlSectores').change(function () {
+                $.ajax({
+                    type: "get",
+                    url: "MedidasPorSector/" + $('#ddlSectores').val(),
+                    datatype: "json",
+                    traditional: true,
+                    success: function (data) {
+                        let opciones;
+                        if (data && data.length != 0) {
+                            opciones = '<option value="">-Seleccionar-</option>';
+                        } else {
+                            opciones = '<option value="">-Sin resultados-</option>';
+                        }
+
+                        for (var i = 0; i < data.length; i++) {
+                            opciones += '<option value=' + data[i].Value + '>' + data[i].Text + '</option>';
+                        }
+
+                        $('#ddlMedidas').html(opciones);
+                        $('#ddlAcciones').html('<option value="">-Sin resultados-</option>');
+                    }
+                });
+            });
+
+            $('#ddlMedidas').change(function () {
+                $.ajax({
+                    type: "get",
+                    url: "AccionesPorSectorMedida/" + $('#ddlMedidas').val(),
+                    datatype: "json",
+                    traditional: true,
+                    success: function (data) {
+                        let opciones;
+                        if (data && data.length != 0) {
+                            opciones = '<option value="">-Seleccionar-</option>';
+                        } else {
+                            opciones = '<option value="">-Sin resultados-</option>';
+                        }
+
+                        for (var i = 0; i < data.length; i++) {
+                            opciones += '<option value=' + data[i].Value + '>' + data[i].Text + '</option>';
+                        }
+
+                        $('#ddlAcciones').html(opciones);
+                    }
+                });
+            });
+        });
+    </script>
+
+    @Scripts.Render("~/bundlesv5/jqueryval")
+}

@@ -1,0 +1,39 @@
+﻿@using SIM.Areas.Seguridad.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Cambiar contraseña";
+}
+
+
+<br />
+<br />
+<br />
+<br />
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div class="row">
+    <div class="col-md-12">
+        @if (ViewBag.HasLocalPassword)
+        {
+            @Html.Partial("_ChangePasswordPartial")
+        }
+        else
+        {
+            @*@Html.Partial("_SetPasswordPartial") *@
+            <p class="text-info">
+                Usted no posee una cuenta local (usuario/contraseña) propia de la aplicación.
+                <br/>
+                Para cambiar su contraseña lo debe hacer desde la aplicación donde tiene registrada su cuenta,
+                ya sea el directorio activo de la entidad o una cuenta externa como Google o Facebook.
+            </p>
+        }
+@*
+    <section id="externalLogins">
+        @Html.Action("RemoveAccountList")
+        @Html.Partial("_ExternalLoginsListPartial", new { Action = "LinkLogin", ReturnUrl = ViewBag.ReturnUrl })
+         </section>
+*@
+        </div>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

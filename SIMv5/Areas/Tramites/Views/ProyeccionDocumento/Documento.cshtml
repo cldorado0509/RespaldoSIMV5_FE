@@ -1,0 +1,237 @@
+﻿@using SIM.Properties
+@{
+    if (ViewBag.Popup??false)
+    {
+        Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutV5.cshtml";
+    }
+}
+
+<style>
+    .dx-accordion-item-title {
+        background-color: #94C840;
+        color: white;
+    }
+
+    .dx-accordion-item-opened > .dx-accordion-item-title {
+        background-color: #94C840;
+        color: white;
+    }
+
+    .dx-accordion-item.dx-state-hover > .dx-accordion-item-title {
+        background-color: #76B705;
+        color: white;
+    }
+
+    .dx-accordion-item-opened.dx-state-hover > .dx-accordion-item-title {
+        background-color: #76B705;
+        color: white;
+    }
+
+    .ui-accordion .ui-accordion-content {
+        overflow: hidden;
+    }
+
+    #txtFuncionario .dx-texteditor-container .dx-texteditor-input {
+        float: left;
+        width: 100%;
+    }
+
+    .dx-fileuploader-input-wrapper {
+        padding: 0px;
+        border: 3px dashed transparent;
+    }
+
+    .dx-fileuploader-input-wrapper {
+        padding: 0px;
+        border: 0px;
+    }
+
+    .dx-fileuploader-wrapper {
+        padding: 0px;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td {
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano() {
+        $("#panelTarea").height(document.body.clientHeight - ($('#app').data('type') == 'f' ? 480 : 320));
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/documento.js?v=1.82")"></script>
+
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" data-id="@ViewBag.id" data-time="@ViewBag.time" data-type="@(ViewBag.Popup??false ? "p" : "f")" data-ro="@ViewBag.SoloLectura" resizable>
+        <div id="loadPanel"></div>
+        <div id="grid-container"></div>
+        <div class="panelSIM-default">
+            <div class="panelSIM panelSIM-default" id="pnlContenedor" style="display:@(ViewBag.Popup??false ? "none" : "block")">
+                <div class="row" style="text-align: center; margin: 10px;">
+                    <h3 style="color: #94C840; font-weight:bold">
+                        Proyectacci&oacute;n Documento
+                    </h3>
+                </div>
+            </div>
+            <div id="asistente">
+                <h3>1. Tarea</h3>
+                <div>
+                    <div id="panelTarea" style="overflow: unset">
+                        <div class="row" style="height: 50px;">
+                            <div class="col-md-6">
+                                <div class="dx-field">
+                                    <div id="tipoTramites"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="dx-field">
+                                    <div id="noAvanzaTramites" style="float: left"></div>
+                                    <div style="float: left; font-weight: bold; margin-left: 10px">Se requiere adicionar otro documento. No avanzar tr&aacute;mite.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="panelSeleccionTareas" style="height: 80%;">
+                            <div id="titulos" style="height: 20px;">
+                                @if (ViewBag.SoloLectura == "S")
+                                {
+                                    <div class="col-md-12">
+                                        <div>Tareas Seleccionadas</div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6">
+                                        <div>Tareas Disponibles</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>Tareas Seleccionadas</div>
+                                    </div>
+                                }
+                            </div>
+                            <div id="tareas" style="height: 90%;">
+                                @if (ViewBag.SoloLectura == "S")
+                                {
+                                    <div class="col-md-12" style="height: 100%">
+                                        <div id="grdTramitesSeleccionados"></div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6" style="height: 100%">
+                                        <div id="grdTramites"></div>
+                                    </div>
+                                    <div class="col-md-6" style="height: 100%">
+                                        <div id="grdTramitesSeleccionados"></div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="row" style="height: 50px;">
+                            <div class="col-md-6" style="display: none">
+                                <div class="dx-field">
+                                    <div class="dx-field-label" style="padding-left: 10px; font-weight: bold">Centro de Costos</div>
+                                    <div class="dx-field-value">
+                                        <div id="centroCostos"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Serie Documental</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="serieDocumental"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 50px;">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Descripci&oacute;n</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="descripcion"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="pnlGrupo" style="height: 50px;">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Grupo:</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="grupo"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>2. Cargar documentos</h3>
+                <div>
+                    @if (ViewBag.SoloLectura == "N")
+                    {
+                        <div class="row" style="height: 35px">
+                            <div class="col-md-4">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrowm" style="font-weight: bold">Tipo</div>
+                                    <div class="dx-field-value valuefullrowm">
+                                        <div id="tipoArchivo"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrowm" style="font-weight: bold">Descripci&oacute;n</div>
+                                    <div class="dx-field-value valuefullrowm">
+                                        <div id="descripcionArchivo"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div id="fileDocumento"></div>
+                                <div id="agregarArchivo"></div>
+                            </div>
+                        </div>
+                        <br />
+                    }
+
+                    <div class="row" style="height: calc(100% - 80px);">
+                        <div id="grdArchivos"></div>
+                    </div>
+                </div>
+                <h3>3. Información e &iacute;ndices</h3>
+                <div>
+                    <div id="grdIndices"></div>
+                </div>
+                <h3>4. Firmas</h3>
+                <div>
+                    @if (ViewBag.SoloLectura == "N")
+                    {
+                        <div class="row" style="width: 100%;">
+                            <div class="col-md-7"><div id="cboFuncionario"></div></div>
+                            <div class="col-md-5"><div id="agregarFuncionario"></div></div>
+                        </div>
+                    }
+                    <div id="grdFirmas"></div>
+                    <div style="height:5%"></div>
+                    @if (ViewBag.SoloLectura == "N")
+                    {
+                        <div stye="height: 10%; buttom: 0">
+                            <div id="almacenar"></div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

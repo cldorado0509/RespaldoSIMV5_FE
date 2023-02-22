@@ -1,0 +1,14 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Data.General
+@model DGA
+
+<div class="row" style="padding:10px">
+    <div class="col-md-12">
+        @Html.DevExpress().MemoFor(model => Model.S_SEGUIMIENTO, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(300);
+            settings.ReadOnly = ViewBag.ReadOnly;
+        }).GetHtml()
+    </div>
+</div>

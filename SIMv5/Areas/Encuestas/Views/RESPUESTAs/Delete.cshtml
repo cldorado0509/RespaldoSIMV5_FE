@@ -1,0 +1,56 @@
+﻿@model SIM.Areas.Encuestas.Models.RESPUESTA
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>RESPUESTA</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.S_VALOR)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_VALOR)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_CODIGO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_CODIGO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.N_ORDEN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_ORDEN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PREGUNTA.S_NOMBRE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PREGUNTA.S_NOMBRE)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,191 @@
+﻿@using SIM.Areas.GestionDocumental.Models
+@using System.Collections.Generic
+@using System.Web.UI.WebControls
+
+@{
+    CONFIGURACION lcobjConfiguracion;
+    int lcintPos = 0;
+    
+    if (ViewBag.Configuracion != null) {
+        lcobjConfiguracion = (CONFIGURACION)ViewBag.Configuracion;
+        
+        foreach (KeyValuePair<string,CAMPO> lcobjEntry in lcobjConfiguracion.Campos)
+        {
+            CAMPO lcobjCampo = lcobjEntry.Value;
+
+            lcintPos++;
+
+            if (lcobjCampo.Control != "CT" && lcobjCampo.Control != "TIPO")
+            {
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.Name = "lbl" + lcobjCampo.Nombre;
+                    settings.Text = lcobjCampo.Titulo + ":";
+                }).GetHtml();
+            }
+
+            Html.DevExpress().TextBox(settings =>
+            {
+                settings.Name = lcobjCampo.Nombre + "F" + lcintPos.ToString("00");
+                if (lcobjCampo.Formato.Trim() == "")
+                    settings.Text = "L" + lcobjCampo.Longitud;
+                else
+                    settings.Text = lcobjCampo.Formato;
+                settings.ClientVisible = false;
+            }).GetHtml();
+            
+            Html.DevExpress().TextBox(settings =>
+            {
+                settings.Name = lcobjCampo.Nombre + "L" + lcintPos.ToString("00");
+                settings.Text = lcobjCampo.Limpiar.ToUpper().Trim();
+                settings.ClientVisible = false;
+            }).GetHtml();
+
+            Html.DevExpress().TextBox(settings =>
+            {
+                settings.Name = lcobjCampo.Nombre + "T" + lcintPos.ToString("00");
+                settings.Text = lcobjCampo.ControlTexto.ToUpper().Trim();
+                settings.ClientVisible = false;
+            }).GetHtml();
+            
+            switch (lcobjCampo.Control)
+            {
+                case "T": // TextBox
+                    Html.DevExpress().TextBox(settings =>
+                    {
+                        settings.Name = lcobjCampo.Nombre + "C" + lcintPos.ToString("00");
+                        settings.Width = Unit.Pixel(lcobjCampo.AnchoControl);
+                        settings.Properties.MaxLength = lcobjCampo.Longitud;
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = lcobjCampo.Requerido;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "'" + lcobjCampo.Titulo + "' Requerido";
+                    }).GetHtml();
+                    break;
+                case "CT": // Constante
+                    Html.DevExpress().TextBox(settings =>
+                    {
+                        settings.Name = lcobjCampo.Nombre + "C" + lcintPos.ToString("00");
+                        settings.Text = lcobjCampo.SQL;
+                        settings.ClientVisible = false;
+                    }).GetHtml();
+                    break;
+                case "TIPO": // Constante
+                    Html.DevExpress().TextBox(settings =>
+                    {
+                        settings.Name = lcobjCampo.Nombre + "C" + lcintPos.ToString("00");
+                        settings.Text = lcobjCampo.SQL;
+                        settings.ClientVisible = false;
+                    }).GetHtml();
+                    break;
+                case "C": // ComboBox
+                    Html.DevExpress().TextBox(settings =>
+                    {
+                        settings.Name = lcobjCampo.Nombre + "C" + lcintPos.ToString("00");
+                        settings.Text = "";
+                        settings.ClientVisible = false;
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = lcobjCampo.Requerido;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "'" + lcobjCampo.Titulo + "' Requerido";
+                    }).GetHtml();
+                    
+                    if (lcobjCampo.ControlesDependencia[0].Trim() == "")
+                    {
+                        Html.DevExpress().ComboBox(settings =>
+                        {
+                            settings.Name = lcobjCampo.Nombre;
+                            settings.Width = Unit.Pixel(lcobjCampo.AnchoControl);
+                            settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.None;
+                            settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                            settings.Properties.ValueField = "ID";
+                            settings.Properties.TextField = "DESCRIPCION";
+                            settings.Properties.ValidationSettings.RequiredField.IsRequired = lcobjCampo.Requerido;
+                            settings.Properties.ValidationSettings.RequiredField.ErrorText = "'" + lcobjCampo.Titulo + "' Requerido";
+
+                            settings.Properties.ClientSideEvents.SelectedIndexChanged = "CampoSeleccionado";
+                        }).BindList(lcobjCampo.Datos).GetHtml();
+                    } else {
+                        Html.DevExpress().TextBox(settings =>
+                        {
+                            settings.Name = lcobjCampo.ControlesDependencia[0] + "__" + lcobjCampo.Nombre;
+                            settings.Text = lcobjCampo.SQL;
+                            settings.ClientVisible = false;
+                        }).GetHtml();
+                        ViewContext.Writer.Write("<div id=\"" + lcobjCampo.ControlesDependencia[0] + "__" + lcobjCampo.Nombre + "Container\">");
+                            Html.DevExpress().ComboBox(settings =>
+                            {
+                                settings.Name = lcobjCampo.Nombre;
+                                settings.Width = Unit.Pixel(lcobjCampo.AnchoControl);
+                                settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.None;
+                                settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                                settings.Properties.ValueField = "ID";
+                                settings.Properties.TextField = "DESCRIPCION";
+                                settings.Properties.ValidationSettings.RequiredField.IsRequired = lcobjCampo.Requerido;
+                                settings.Properties.ValidationSettings.RequiredField.ErrorText = "'" + lcobjCampo.Titulo + "' Requerido";
+
+                                settings.Properties.ClientSideEvents.SelectedIndexChanged = "CampoSeleccionado";
+                            }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                    }
+                    break;
+                case "CE": // ComboBox Extendido
+                    Html.DevExpress().TextBox(settings =>
+                    {
+                        settings.Name = lcobjCampo.Nombre + "C" + lcintPos.ToString("00");
+                        settings.Text = "";
+                        settings.ClientVisible = false;
+                    }).GetHtml();
+                    
+                    if (lcobjCampo.ControlesDependencia[0].Trim() == "")
+                    {
+                        Html.DevExpress().DropDownEdit(settings =>
+                        {
+                            settings.Name = lcobjCampo.Nombre;
+                            settings.Width = Unit.Pixel(lcobjCampo.AnchoControl);
+                            settings.ReadOnly = true;
+                            settings.Properties.ValidationSettings.RequiredField.IsRequired = lcobjCampo.Requerido;
+                            settings.Properties.ValidationSettings.RequiredField.ErrorText = "'" + lcobjCampo.Titulo + "' Requerido";
+
+                            settings.SetDropDownWindowTemplateContent(c =>
+                            {
+                                ViewContext.Writer.Write(Html.Action("DropDownPartial", "Generador", new { name = lcobjCampo.Nombre, columnasCombo = lcobjCampo.ColumnasCombo, columnasVisualizar = lcobjCampo.ColumnasVisualizar, columnasValor = lcobjCampo.ColumnasValor, SQL = lcobjCampo.SQL, nameValor = lcobjCampo.Nombre + "C" + lcintPos.ToString("00") }));
+                                ViewContext.Writer.Write("<table style=\"width:800px\"><tr><td align=\"right\">");
+
+                                @Html.DevExpress().Button(
+                                    buttonSettings =>
+                                    {
+                                        buttonSettings.Name = "buttonClose";
+                                        buttonSettings.Text = "Cerrar";
+                                        buttonSettings.ClientSideEvents.Click = "function(s, e){ " + lcobjCampo.Nombre + ".HideDropDown(); }";
+                                    })
+                                    .Render();
+                                ViewContext.Writer.Write("</td></tr></table>");
+                            });
+                        }).GetHtml();
+                    }
+                    else
+                    {
+                        /*
+                        Html.DevExpress().TextBox(settings =>
+                        {
+                            settings.Name = lcobjCampo.ControlesDependencia[0] + "__" + lcobjCampo.Nombre;
+                            settings.Text = lcobjCampo.SQL;
+                            settings.ClientVisible = false;
+                        }).GetHtml();
+                        ViewContext.Writer.Write("<div id=\"" + lcobjCampo.ControlesDependencia[0] + "__" + lcobjCampo.Nombre + "Container\">");
+                        Html.DevExpress().ComboBox(settings =>
+                        {
+                            settings.Name = lcobjCampo.Nombre;
+                            settings.Width = Unit.Pixel(lcobjCampo.AnchoControl);
+                            settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.None;
+                            settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                            settings.Properties.ValueField = "ID";
+                            settings.Properties.TextField = "DESCRIPCION";
+
+                            settings.Properties.ClientSideEvents.SelectedIndexChanged = "CampoSeleccionado";
+                        }).GetHtml();
+                        ViewContext.Writer.Write("</div>");
+                        */
+                    }
+                    break;
+            }
+        }
+    }
+}

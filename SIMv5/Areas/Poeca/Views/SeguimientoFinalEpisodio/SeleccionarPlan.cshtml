@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Seleccionar Plan";
+}
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+        <h2>Seleccionar Plan</h2>
+        @Html.DropDownList("PLANES", null, new { @class = "form-control" })
+        <br />
+        <button id="btnSeleccionarPlan" type="button" class="btn btn-default">Seleccionar</button>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            let urlParams = new URLSearchParams(window.location.search);
+
+            $("#btnSeleccionarPlan").click(() => {
+                let idPlan = $("#PLANES").val();
+                if (idPlan) {
+                    let newLocation = "@Url.Action("Index")?plan=" + idPlan;
+
+                    if (urlParams.has('tercero')) {
+                        newLocation += "&tercero=" + urlParams.get('tercero');
+                    }
+
+                    window.location = newLocation;
+                }
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundlesv5/jqueryval")
+}

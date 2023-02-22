@@ -1,0 +1,443 @@
+﻿@model IEnumerable<SIM.Areas.Encuestas.Models.ENCUESTA>
+@{
+    ViewBag.Title = "InformeVisitas";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/globalize.min.js"></script>
+<!-- The line below was commented by the Project Converter, see this link for more info: -->
+<!--<script src="~/Scripts/dx.webappjs.js"></script>-->
+<script src="~/Scripts/dx.all.js"></script>
+<link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.0")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+
+<style>
+    .dx-datagrid-header-panel .dx-button.dx-button-has-icon:not(.dx-button-has-text) {
+        padding: 6px;
+        display: none;
+    }
+    .navbar.navbar-inverse.navbar-fixed-top {
+        display: none;
+    }
+
+    footer {
+        display: none;
+    }
+
+    html, body {
+        height: 980px;
+        overflow: hidden;
+    }
+
+    .modal-body {
+        position: relative;
+        padding: 0px;
+    }
+
+    .ui-dialog .ui-dialog-content {
+        padding: 0px !important;
+        overflow: hidden !important;
+    }
+    .dx-datagrid-checkbox-size .dx-checkbox-icon {
+        margin-right: 22px;
+    }
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+        position: relative;
+        min-height: 1px;
+        padding-right: 0px;
+        padding-left: 0px;
+    }
+    button.btn.btn-default.btn-sm {
+        margin-top: 10px;
+        margin-right: 0px;
+    }
+    button#btnGuardar {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Guardar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 12px;
+    padding-left: 12px;
+}
+    .ui-widget button {
+
+    line-height: 13px;
+}
+    .dx-datagrid-header-panel .dx-toolbar {
+    display: none;
+  
+}
+    .dx-editor-cell .dx-checkbox.dx-checkbox-checked .dx-checkbox-icon {
+    font-size: 25px;
+}
+
+
+
+
+</style>
+
+<script type="text/javascript">
+var RutaEncuestas = '@Url.Content("~/Encuestas/")';
+var tipoPregunta = "";
+var codigoEnc = '@ViewBag.CodigoEncuesta';
+var jsonInf;
+
+//permite cargar la información al iniciar la pagina
+$(document).ready(function () {
+    tipoPregunta = '@ViewBag.TipoEncuesta';
+    try {               
+        BuscarPreguntas();
+    }
+    catch (err) {
+        mensajeAlmacenamiento(err);
+    }
+});
+
+function CallBackEnviar() {
+    validarPeso();
+
+}
+
+//permite validar que el peso de las preguntas no sea superior a 100
+function validarPeso() {
+
+    var totalPeso = 0;
+    var totalPesoVincular = 0;
+    var total = 0;
+    var grid;
+    var gridVincular;
+    try {
+        grid = window.parent.$("#Preguntas").jqxGrid('getrows');
+        gridVincular = $("#preguntas").jqxGrid('getrows');
+        if (grid.length > 0) {
+            for (var i = 0; i < grid.length; i++) {
+                totalPeso = totalPeso + grid[i].Peso;
+            }
+        }
+        if (gridVincular.length > 0) {
+            for (var i = 0; i < gridVincular.length; i++) {
+                if (gridVincular[i].Vincular == true)
+                    totalPesoVincular = totalPesoVincular + gridVincular[i].Peso;
+            }
+        }
+        total = totalPeso + totalPesoVincular;
+    }
+    catch (err) {
+        gridVincular = $("#preguntas").jqxGrid('getrows');
+        if (gridVincular.length > 0) {
+            for (var i = 0; i < gridVincular.length; i++) {
+                if (gridVincular[i].Vincular == true)
+                    totalPesoVincular = totalPesoVincular + gridVincular[i].Peso;
+            }
+        }
+        total = totalPesoVincular;
+    }
+    if (total > 100) {
+        mensajeAlmacenamiento("la suma del peso no puede superar el 100");
+    } else {
+        var Respuesta = VincularPreguntasEncuesta($('#CodigoEncuesta').val(), 'preguntas');
+        window.parent.$('#popupboton').removeAttr('disabled');
+        try {
+            window.parent.Inicializar();
+        }
+        catch (err) { }
+
+        if (Respuesta != 'Ok') {
+            mensajeAlmacenamiento('No fue posible vincular las preguntas.');
+        }
+    }
+}
+
+//permite inicializar la grid de vincular preguntas
+function gridVincularPregunta(jsonEncuesta) {
+    $("#GridVincularpreguntas").dxDataGrid({
+        dataSource: jsonEncuesta,
+        selection: {
+        }, filterRow: { visible: false },
+        editing: {
+            editMode: 'batch',
+            editEnabled: true
+        },
+        columns: [
+            {
+                dataField: 'Vincular', allowGrouping: true, caption: 'Vincular', cellTemplate: function (container, options) {
+                    container.height(5);
+
+                    $('<input id="idVincular" type="checkbox"  />')
+                        .prop("checked", options.value)
+                        .appendTo(container);
+                }
+            },
+                            { dataField: 'Codigo', caption: 'Codigo', allowGrouping: true, width: '20%', dataType: 'string' },
+                            { dataField: 'Pregunta', caption: 'Pregunta', allowGrouping: true, width: '20%', dataType: 'string' },
+                                { dataField: 'Orden', caption: 'Orden', allowGrouping: true, width: '20%', dataType: 'number' },
+                            { dataField: 'Peso', caption: 'Peso', allowGrouping: true, width: '20%', dataType: 'number',visible:false },
+
+        {
+            dataField: 'Requerida', allowGrouping: true, caption: 'Requerida', cellTemplate: function (container, options) {
+                container.height(5);
+                $('<input id="idRequiere" type="checkbox"  />')
+                    .prop("checked", options.value)
+                    .appendTo(container);
+            }
+        }
+        ],
+        scrolling: { mode: 'infinite' },
+        onCellClick: function (e) {
+            e.data.editar = true;
+            var id = e.data.Codigo;
+            var tipoBoton = e.columnIndex;
+            switch (tipoBoton) {
+                case 0: //eliminar
+                    if (jsonEncuesta[e.rowIndex].Vincular) {
+                        jsonEncuesta[e.rowIndex].Vincular = false;
+                    } else {
+                        jsonEncuesta[e.rowIndex].Vincular = true;
+                    }
+                    break;
+                case 5: //editar                         
+                    if (jsonEncuesta[e.rowIndex].Requerida) {
+                        jsonEncuesta[e.rowIndex].Requerida = false;
+                    } else {
+                        jsonEncuesta[e.rowIndex].Requerida = true;
+                    }
+                    break;
+            }
+            jsonEncuesta[e.rowIndex].Peso = e.data.Peso;
+            jsonEncuesta[e.rowIndex].Orden = e.data.Orden;
+            jsonInf = jsonEncuesta;
+            $("#GridVincularpreguntas").dxDataGrid({
+                dataSource: jsonEncuesta
+            });
+        },
+        columnChooser: { enabled: false },
+        allowColumnReordering: true,
+        sorting: { mode: 'single' },
+        pager: { visible: true },
+        paging: { pageSize: 5 },
+        allowColumnResizing: true
+                    , columnAutoWidth: true, loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    }, onCellHoverChanged: function (hoverCell) {
+                        if (hoverCell.eventType == 'mouseover')
+                            hoverCell.cellElement.addClass("hovered");
+                        else
+                            hoverCell.cellElement.removeClass("hovered");
+                    }
+    });
+}
+
+//permite inicializar la grid de vincular pregunta con el peso
+function gridVincularPreguntaPeso(jsonEncuesta) {
+    $("#GridVincularpreguntas").dxDataGrid({
+        dataSource: jsonEncuesta,
+        selection: {
+        }, filterRow: { visible: false },
+        editing: {
+            editMode: 'batch',
+            editEnabled: true
+        },
+        columns: [
+            {
+                dataField: 'Vincular', allowGrouping: true, caption: 'Vincular', cellTemplate: function (container, options) {
+                    container.height(5);
+                    $('<input id="idVincular" type="checkbox"  />')
+                        .prop("checked", options.value)
+                        .appendTo(container);
+                }
+            },
+                            { dataField: 'Codigo', caption: 'Codigo', allowGrouping: true, width: '20%', dataType: 'string' },
+                            { dataField: 'Pregunta', caption: 'Pregunta', allowGrouping: true, width: '20%', dataType: 'string' },
+                                { dataField: 'Orden', caption: 'Orden', allowGrouping: true, width: '20%', dataType: 'number' },
+                            { dataField: 'Peso', caption: 'Peso', allowGrouping: true, width: '20%', dataType: 'number' },
+        {
+            dataField: 'Requerida', allowGrouping: true, caption: 'Requerida', cellTemplate: function (container, options) {
+                container.height(5);
+                $('<input id="idRequiere" type="checkbox"  />')
+                    .prop("checked", options.value)
+                    .appendTo(container);
+            }
+        }
+        ],
+        scrolling: { mode: 'infinite' },
+        cellClick: function (e) {
+            e.data.editar = true;
+            var id = e.data.Codigo;
+            var tipoBoton = e.columnIndex;
+            switch (tipoBoton) {
+                case 0: //eliminar
+                    if (jsonEncuesta[e.rowIndex].Vincular) {
+                        jsonEncuesta[e.rowIndex].Vincular = false;
+                    } else {
+                        jsonEncuesta[e.rowIndex].Vincular = true;
+                    }
+                    break;
+                case 5: //editar                        
+                    if (jsonEncuesta[e.rowIndex].Requerida) {
+                        jsonEncuesta[e.rowIndex].Requerida = false;
+                    } else {
+                        jsonEncuesta[e.rowIndex].Requerida = true;
+                    }
+                    break;
+            }
+            jsonEncuesta[e.rowIndex].Peso = e.data.Peso;
+            jsonEncuesta[e.rowIndex].Orden = e.data.Orden;                  
+            jsonInf = jsonEncuesta;
+            $("#GridVincularpreguntas").dxDataGrid({
+                dataSource: jsonEncuesta
+            });
+        },
+        columnChooser: { enabled: false },
+        allowColumnReordering: true,
+        sorting: { mode: 'single' },
+        pager: { visible: true },
+        paging: { pageSize: 5 },
+        allowColumnResizing: true
+                    , columnAutoWidth: true, loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    }, onCellHoverChanged: function (hoverCell) {
+                        if (hoverCell.eventType == 'mouseover')
+                            hoverCell.cellElement.addClass("hovered");
+                        else
+                            hoverCell.cellElement.removeClass("hovered");
+                    }
+    });
+}
+
+//esta función permite consultar las preguntas por sus filtros de busqueda
+function BuscarPreguntas() {
+    var pregunt ="";
+    if ($("#txtPregunta").val() == "")
+    {
+        pregunt = "0";
+    } else
+    {
+        pregunt = $("#txtPregunta").val();
+    }
+    $.ajax({
+        type: "POST",
+        url: RutaEncuestas + "Preguntas/ObtenerPreguntastodas",
+        data: { Vincular: 'true', TipoEncuesta: tipoPregunta, CodigoEncuesta: codigoEnc, preguntab: pregunt },
+        beforeSend: function () { },
+        success: function (response) {
+            var datos = response;
+            if (tipoPregunta == "S") {
+                gridVincularPreguntaPeso(response);
+            } else {
+                gridVincularPregunta(response);
+            }
+        }
+    });
+}
+
+//esta función permite guardar la vinculación de las preguntas
+function  guardarVincularPregunta()
+{
+    var grid = $("#GridVincularpreguntas").dxDataGrid('instance');
+    grid.saveEditData();
+    var gridItems = $("#GridVincularpreguntas").dxDataGrid('instance')._controllers.data._dataSource._items;
+    var Peso = 0;
+    var datos = jsonInf;
+    var arrDatos = new Array();
+    for (var i = 0; i < datos.length; i++)
+    {            
+        if (datos[i].Vincular==true)
+        {
+            Peso = Peso+Number(datos[i].Peso);
+            var Resultado = {
+                "CodigoPregunta": datos[i].Codigo,
+                "Peso": datos[i].Peso,
+                "Orden": datos[i].Orden,
+                "Requerida": datos[i].Requerida
+            };
+            arrDatos.push(Resultado);
+        }
+    }
+    var gridVinculadas = parent.$("#GridPreguntasV").dxDataGrid('instance')._controllers.data._dataSource._items;
+    if (gridVinculadas.length > 0)
+    {
+        for (var k = 0; k < gridVinculadas.length; k++) {
+            Peso = Peso + Number(gridVinculadas[k].Peso);
+        }
+    }
+    if(Peso>100)
+    {
+        mensajeAlmacenamiento('La suma de todos los pesos no puede ser mayor a 100');
+    } else {
+        $.ajax({
+            dataType: 'json',
+            async: false,
+            type: "POST",
+            url: RutaEncuestas + "Preguntas/VincularPreguntasEncuesta?CodigoEncuesta=" + CodigoEncuesta,
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ CodigoEncuesta: codigoEnc, PreguntasSeleccionadas: arrDatos }),
+            success: function (result) {
+                var datos = result;
+                if (datos == "Ok") {
+                    parent.BuscarPreguntasEncuesta();
+                    mensajeAlmacenamiento('Las preguntas han sido vinculadas con exito.');
+                    parent.$("#pantallaVincularPreg").dialog('close');
+                }
+            }
+        });
+    }
+}
+
+//componente de mensajes
+function mensajeAlmacenamiento(mensaje) {
+    $("#msText").text(mensaje);
+    $("#msAlmacenamiento").dialog({
+        buttons: [
+    {
+        text: "Aceptar",
+        click: function () { $(this).dialog("close"); },
+        class: "btn btn-default "
+    },
+        ]
+    });
+}
+
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-6" style="margin-top: 10px;">
+                <input id="txtPregunta" name="txtPregunta" placeholder="Pregunta" class="form-control" />
+            </div>
+            <div class="col-sm-6">
+                <button class="btn btn-default btn-sm" id="btnBuscar" onclick="BuscarPreguntas()">Buscar</button>
+            </div>
+        </div>
+        </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <input type="hidden" id="CodigoEncuesta" name="CodigoEncuesta" value="@ViewBag.CodigoEncuesta" />
+            <div id="GridVincularpreguntas" style="height: 180px; margin-top: 15px;" class="archivosDiv"></div>
+        </div>
+    </div>
+        <div class="col-sm-12">
+            <button class="btn btn-default btn-sm" id="btnGuardar" onclick="guardarVincularPregunta()">Guardar</button>
+        </div>
+    </div>
+<div id="msAlmacenamiento" title="Información" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+</div>
+

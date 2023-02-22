@@ -1,0 +1,254 @@
+﻿@{
+    ViewBag.Title = "Ayudas";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Ayudas</title>
+
+  
+ 
+    <script src="~/Scripts/tree.jquery.js"></script>
+    <link rel="stylesheet" href="~/Content/jqtree.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+   
+    <script type="text/javascript">
+      
+      
+        $(document).ready(function () {
+            llamarGetCaptacion();         
+        })
+
+        ///llamados para los json
+        function llamarGetCaptacion() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarArbol", "Ayudas")',
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonUbicacion = eval('(' + response + ')');
+
+                    $('#tree1').tree({
+                        data: jsonUbicacion
+                    });
+
+     
+
+                  
+                    $('#tree1').bind(
+  'tree.click',
+  function (event) {
+      var node = event.node;
+      CambioTab(node);
+  }
+);
+                    CargarArbol();
+                }
+            });
+        }
+
+        function CambioTab(Nodo)
+        {
+            $("#Tab2 a").click();
+            $("#tabAyudas").html(Nodo.CONTENIDO);
+        }
+
+        function CargarArbol()
+        {
+             $.ajax({
+                 type: "GET",
+                 url: "@Url.Content("~/Ayudas/api/AyudasWebAPI/GetContenido")",
+             data: {
+                 id: "@ViewBag.id_Ayuda"
+                     
+             },
+             beforeSend: function () {
+
+             },
+             success: function (response) {
+                 var dato = response;
+                 $("#Tab2 a").click();
+                 $("#tabAyudas").html(dato[0].CONTENIDO);
+
+
+             },
+            });
+        }
+
+    </script>
+
+        <style>
+            .panel-default {
+                border-color: rgba(221, 221, 221, 0);
+                border: none;
+            }
+            .treeView {
+            margin: auto;
+            width: 200px;
+            }
+            
+        .wrapper {
+            padding: 20px;
+        }
+
+            #tabAyudas {
+                overflow: auto;
+                height: 500px;
+            }
+
+            #ContenidoArbol {
+                text-align: left;
+                font-family: 'Roboto Condensed', sans-serif;
+                font-size: 14px;
+                text-align: left;
+                overflow: auto;
+                padding: 0px;
+                height: 500px;
+                padding-right: 2px;
+                font-weight: normal;
+            }
+            div#tree1 {
+                width: 100%;
+                padding: 0px;
+                margin: 0px;
+            }
+            li.jqtree_common.jqtree-folder.jqtree-closed, jqtree-selected {
+                color: #333333;
+                background-color: rgb(165, 200, 62);
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                box-shadow: none;
+                text-shadow:none;
+            }
+            ul.jqtree-tree li.jqtree-selected > .jqtree-element, ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+                color: #333333;
+                background: #7DA508;
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                box-shadow: none;
+                text-shadow: none;
+            }
+            .jqtree-element.jqtree_common {
+                background: rgb(165, 200, 62);
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                box-shadow: none;
+                border: 1px solid #577e04;
+                padding: 4px;
+                text-shadow: none;
+            } 
+            ul.jqtree-tree li.jqtree-folder.jqtree-closed {
+                margin-bottom: -1px;
+            }
+            ul.jqtree-tree .jqtree-toggler {
+                border-bottom: none;
+                color: #52A114;
+                text-decoration: none;
+                font-size: 0px;
+                height: 30px;
+                margin-right: 0.5em;
+                background-image: url(../../Content/images/flechavTop.png);
+                background-repeat: no-repeat;
+                background-size: 13px;
+                background-position: 99% 3px !important;
+                vertical-align: middle;
+                height: 23px;
+                float: right;
+                display: inline-block;
+                position: absolute;
+                width: 100%;
+                z-index:50;
+            }
+                ul.jqtree-tree .jqtree-toggler.jqtree-closed {
+                    border-bottom: none;
+                    color: #52A114;
+                    text-decoration: none;
+                    font-size: 0px;
+                    height: 30px;
+                    margin-right: 0.5em;
+                    background-image: url(../../Content/images/flechavBotton.png);
+                    background-repeat: no-repeat;
+                    background-size: 13px;
+                    background-position: 99% 3px !important;
+                    vertical-align: middle;
+                    height: 23px;
+                    float: right;
+                    display: inline-block;
+                     position: absolute;
+                width: 100%;ul.jqtree-tree .jqtree-toggler
+                }
+           
+            .jqtree-tree .jqtree-title.jqtree-title-folder {
+                margin-left: 0;
+                position: relative;
+                display: inline-block;
+                color: #fff;
+            }
+            .jqtree_common .jqtree_common li.jqtree_common .jqtree-element.jqtree_common {
+                color: #333333;
+                background: #f7f6f6;
+                -webkit-border-radius: 0px;
+                -moz-border-radius: 0px;
+                border-radius: 0px;
+                box-shadow: none;
+                border: none;
+                margin-bottom: -4px;
+                border-bottom: 1px solid #dfdede;
+                border-top: 1px solid #dfdede;
+                margin-left: -12px;
+            }
+            .jqtree_common .jqtree_common li.jqtree-selected .jqtree-element.jqtree_common {
+                background: #7DA508 !important;
+            }
+            .panel-default > .panel-heading {
+                color: #333333;
+                background-color: #f5f5f5;
+                border-color: #dddddd;
+                background-color: rgb(234, 234, 234);
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);
+                height: 523px;
+                padding: 10px;
+            }
+            .container {
+
+    margin-top: 1px !important;
+}
+        </style>
+
+    </head>
+<body>
+    <div class="col-sm-12" style="margin-top: -53px; margin-bottom: -6px; ">
+        <div class="panel panel-default" style="padding-bottom: 0px">
+            <div class="panel-heading">
+                <div id='ContenidoArbol' class="col-xs-5 col-md-3">
+                    <div id="tree1" class="jqx-tree"></div>
+                </div>
+                <div id="tabAyudas" class="col-xs-13 col-md-9">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+  
+
+
+
+
+

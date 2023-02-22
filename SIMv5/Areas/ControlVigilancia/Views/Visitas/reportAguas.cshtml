@@ -1,0 +1,51 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "RealizarVisitaAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+ 
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label>PDF</label>
+
+    </div>
+
+    @*<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+    <!-- The line below was commented by the Project Converter, see this link for more info: -->
+    <!--<script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.1.8/js/dx.webappjs.js"></script>-->
+    <script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.1.8/js/dx.all.js"></script>*@
+
+</body>
+</html>

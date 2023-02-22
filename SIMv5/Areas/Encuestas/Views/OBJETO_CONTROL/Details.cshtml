@@ -1,0 +1,50 @@
+﻿@model SIM.Areas.Encuestas.Models.OBJETO_CONTROL
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>OBJETO_CONTROL</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.S_NOMBRETABLA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_NOMBRETABLA)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_NOMBRECAMPO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_NOMBRECAMPO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_CODIGOOBJETO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_CODIGOOBJETO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ID_VISITA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ID_VISITA)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID_OBJETOCONTROL }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

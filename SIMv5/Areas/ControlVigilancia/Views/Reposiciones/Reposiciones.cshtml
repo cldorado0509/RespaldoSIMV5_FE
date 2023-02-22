@@ -1,0 +1,251 @@
+﻿@using SIM.Properties
+@{
+    ViewBag.Title = "Seguimiento y Control Reposiciones";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+@model SIM.Areas.Seguridad.Models.PermisosRolModel
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/reposiciones.js?v=0.4")"></script>
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h2 class="panelSIM-title">
+                <label class="header">Listado de Seguimiento Reposiciones</label>
+            </h2>
+        </div>
+        <div>
+            <div id="PopupNuevaRepo">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">CM :</div>
+                        <div class="col-sm-6" id="txtCM"></div>
+                        <div class="col-sm-3" id="cmdCM"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Proyecto :</div>
+                        <div class="col-sm-9" id="txtProyecto"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nombre del Proyecto :</div>
+                        <div class="col-sm-9" id="txtNombreProyectoA"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Cód Tarea Inf Técnico :</div>
+                        <div class="col-sm-9" id="txtCodTramite"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Asunto :</div>
+                        <div class="col-sm-8" id="txtAsunto"></div>
+                        <div class="col-sm-1">
+                            <div id="btnVerActoPpal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Tala Autorizada (Individuos) :</div>
+                        <div class="col-sm-3" id="txtTalaAut"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">DAP Menor 10 Autorizado (Individuos):</div>
+                        <div class="col-md-3" id="txtdAPMen10Autorizada"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Volumen Autorizado (M3):</div>
+                        <div class="col-md-3" id="txtvolumenAutorizado"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Trasplante Autorizado (Individuos):</div>
+                        <div class="col-sm-3" id="txttransplanteAutorizado"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3" style="align-content:end">Poda Autorizada (Individuos) :</div>
+                    <div class="col-md-3" id="txtpodaAutorizada"></div>
+                    <div class="control-label col-sm-3" style="align-content:end">Conservación Autorizada (Individuos):</div>
+                    <div class="col-md-3" id="txtconservacionAutorizada"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3" style="align-content:end">Reposición Mínima Obligatoria Autorizada (Individuos):</div>
+                    <div class="col-md-3" id="txtreposicionAutorizada"></div>
+                    <div class="control-label col-sm-3" style="align-content:end">Tipo de Medida Adicional:</div>
+                    <div class="col-sm-3" id="cboTipoMedidaAdicional"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3" style="align-content:end">Medida adicional Autorizada (Unidades):</div>
+                    <div class="col-md-3" id="txtAutorizado"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3" style="align-content:end">Observaciones :</div>
+                    <div class="col-sm-9" id="txtObservaciones"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3" style="align-content:end">Coordenada X :</div>
+                    <div class="col-md-3" id="txtCoordenadaX"></div>
+                    <div class="control-label col-sm-3" style="align-content:end">Coordenada Y :</div>
+                    <div class="col-md-3" id="txtCoordenadaY"></div>
+                </div>
+                <br />
+                <div id="BotonNewSerie">
+                    <div id="btnGuarda"></div>
+                </div>
+            </div>
+
+            @{
+                if (Model.CanInsert)
+                {
+                    <div id="btnNuevo"></div>
+                }
+            }
+            <div id="GidListado"></div>
+            <br />
+
+
+            <div id="PupupCM">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">CM :</div>
+                        <div class="col-sm-10" id="txtCMv"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">Proyecto :</div>
+                        <div class="col-sm-10" id="txtNombreProyecto"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">Dirección :</div>
+                        <div class="col-sm-10" id="txtDireccionProyecto"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">Radicado :</div>
+                        <div class="col-sm-2" id="txtRadicadoDocu"></div>
+                        <div class="col-sm-2" style="align-content:end">Año :</div>
+                        <div class="col-sm-2" id="txtAnioDocu"></div>
+                        <div class="col-sm-2" id="BotonBuscarActos">
+                            <div id="btnBuscarActosCMs"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">Asunto :</div>
+                        <div class="col-sm-10" id="cboAsuntos"></div>
+                    </div>
+                    <hr />
+                    <div id="BotonAsignar">
+                        <div id="btnAsignar"></div>
+                    </div>
+                    <div id="PopupLoadNuevoControl"></div>
+                </div>
+            </div>
+            <div id="PopupDocumentos">
+                <div style="width: 100%; height: 800px; overflow-y: scroll;">
+                    <div id="GidListadoActos"></div>
+                </div>
+                <hr />
+            </div>
+        </div>
+        <div id="PupupActuaciones" style="display: none;">
+            <div style="width: 100%; height: 800px; overflow-y: scroll;">
+                <h4>Listado de seguimiento y Control</h4>
+                <div id="divLblCM">
+
+                </div>
+                <br />
+                <div id="BotonNewControl">
+                    <div id="btnnewControl"></div>
+                </div>
+                <div id="PopupNuevoControl" style="display: none">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="control-label col-sm-3">Tala Ejecutada (Individuos):</div>
+                            <div class="col-sm-3" id="txtTalaEje"></div>
+                            <div class="control-label col-sm-3">DAP Menor 10 Ejecutada (Individuos):</div>
+                            <div class="col-md-3" id="txtdAPMen10Ejecutada"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Volumen Ejecutado (M3):</div>
+                            <div class="col-md-3" id="txtvolumenEjecutado"></div>
+                            <div class="control-label col-sm-3">Trasplante Ejecutado (Individuos):</div>
+                            <div class="col-sm-3" id="txttransplanteEjecutado"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3">Poda Ejecutada (Individuos):</div>
+                        <div class="col-md-3" id="txtpodaEjecutada"></div>
+                        <div class="control-label col-sm-3">Conservación Ejecutada (Individuos):</div>
+                        <div class="col-md-3" id="txtconservacionEjecutada"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3">Reposición Ejecutada (Individuos):</div>
+                        <div class="col-md-3" id="txtreposicionEjecutada"></div>
+                        <div class="control-label col-sm-3">Medida Adicional Ejecutada (Unidades):</div>
+                        <div class="col-md-3" id="txtMedidaAdicionalEjecutado"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3">Fecha Registro:</div>
+                        <div class="col-sm-3" id="txtFechaControl"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control-label col-sm-3">Observaciones Visita :</div>
+                        <div class="col-sm-9" id="txtObservacionesVisita"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3">Fecha Visita:</div>
+                        <div class="col-sm-9" id="txtFechaVisita"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control-label col-sm-3">Técnico Visita:</div>
+                        <div class="col-sm-9" id="cboTecnico"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3">Radicado Informe :</div>
+                        <div class="col-sm-9" id="txtRadicadoVisita"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3">Fecha Radicado Informe:</div>
+                        <div class="col-sm-9" id="txtFechaRadicadoVisita"></div>
+                        <div class="col-sm-1">
+                            <div id="btnVerInformeTecnico">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div id="BotonSaveNewControl">
+                        <div id="btnGuardarNewControl"></div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div id="GridListadoControl"></div>
+                </div>
+            </div>
+        </div>
+        <div id="popDocumento">
+            <iframe src="" id="DocumentoAdjunto" style="width:100%; height:100%"></iframe>
+        </div>
+    </div>
+</div>

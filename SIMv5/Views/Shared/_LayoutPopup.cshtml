@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity
+@using SIM.Areas.Seguridad.Models
+@using SIM.Utilidades
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/Content/Images/favico-area.ico?v=1.01")" />
+    <title>@ViewBag.Title - SIM</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/style.css?v=1.01")" />
+    <link href="@Url.Content("~/Content/Site.css?v=1.01")" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-2.1.4.min.js")"></script>
+    <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular-sanitize.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/dx.web.js")"></script>
+
+    <script type="text/javascript" src="@Url.Content("~/Scripts/cldr.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/cldr/event.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/cldr/supplemental.js")"></script>
+
+    <!--Css editados-->
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EstiloPagina.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/normalize.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Principal.css?v=1.08")" />
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/dx.common.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/dx.light.css")" />
+</head>
+<body>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <script src="@Url.Content("~/Scripts/bootstrap.js")"></script>
+    <script src="@Url.Content("~/Scripts/respond.js")"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

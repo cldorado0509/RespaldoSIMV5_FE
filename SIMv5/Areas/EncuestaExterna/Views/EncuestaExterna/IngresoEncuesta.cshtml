@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+    <style>
+
+        input[type=text], input[type=password] {
+          width: 100%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          display: inline-block;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
+        }
+
+        button {
+          background-color: #4CAF50;
+          color: white;
+          padding: 14px 20px;
+          margin: 8px 0;
+          border: none;
+          cursor: pointer;
+          width: 100%;
+        }
+
+        button:hover {
+          opacity: 0.8;
+        }
+
+        .containerDatos {
+            padding: 16px;
+            width: 50%;
+            margin: auto;
+        }
+
+    </style>
+    <div class="containerDatos">
+        <label for="uname"><b>C&oacute;digo Encuesta</b></label>
+        <input type="text" placeholder="[Ingresar Código de la Encuesta]" id="idV" required>
+        <label for="uname"><b>Nombre</b></label>
+        <input type="text" placeholder="[Ingresar Nombre]" id="n" required>
+        <label for="psw"><b>Clave</b></label>
+        <input type="password" placeholder="[Ingresar Clave]" id="c" required>
+
+        <button class="btn btn-default" onclick="CargarEncuesta()">Cargar Encuesta</button>
+    </div>
+<script>
+    function CargarEncuesta() {
+        var idV = $("#idV").val();
+        var n = $("#n").val();
+        var c = $("#c").val();
+
+        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaClave")' + '?idV=' + idV + '&n=' + n + '&c=' + c, '_self');
+    }
+</script>

@@ -1,0 +1,543 @@
+﻿
+@{
+    ViewBag.Title = "Administrador Encuesta";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+ <style>
+.ui-datepicker-calendar {
+       display: none;
+    }
+         #loadingImg{
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.17) !important;
+    position: fixed;
+    z-index: 100000;
+    cursor: not-allowed;
+}
+
+.loadingImg{
+	position: fixed;
+    z-index: 100000;
+    background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat;
+    left: 50%;
+    background-size: contain;
+    top: 50%;
+    cursor: not-allowed;
+}
+ </style>
+</head>
+<body>
+
+    <div class="col-sm-12">
+        <div class="alert alert-danger fade in" role="alert" id="mensaje" style="display:none"> </div>
+    </div>
+    <div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Nombre Formulario</label>
+                </div>
+                <div class="col-sm-12">
+                    <input id="txtNombreEncuesta" class="form-control" maxlength="90" />
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Vigencia</label>
+                </div>
+                <div class="col-sm-12">
+                    <select id="cmbVigencia" class="form-control" onchange="cambioVigencia()">
+                        <option value="-1">--seleccione--</option>
+                        <option value="1">Anual</option>
+                        <option value="2">Mensual</option>
+                        <option value="3">Unica</option>
+                        <option value="4">Inicio-Fin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Rol</label>
+                </div>
+                <div class="col-sm-12">
+                    <select id="cmbRol" class="form-control"></select>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Cardinalidad</label>
+                </div>
+                <div class="col-sm-12">
+                    <select id="cmbCardinalidad" class="form-control">
+                        <option value="-1">--Seleccione--</option>
+                        <option value="1">Uno</option>
+                        <option value="2">Muchas</option>
+                    </select>
+                    
+                </div>
+            </div>
+            <div class="col-sm-4">
+
+             
+                <div class="checkbox">
+                    <label><input type="checkbox" value="" id="chkInstalacion">Instalacion</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" value="" id="chkradicar">Radicar</label>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Terminos y condiciones</label>
+                </div>
+                <div class="col-sm-12">
+                    <textarea id="txtTerminos" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-4">
+                <div class="col-sm-12">
+                    <label>Nombre Item</label>
+                </div>
+                <div class="col-sm-12">
+                    <input id="txtNitem" class="form-control" maxlength="90" />
+                </div>
+            </div>
+            <div class="col-sm-4">
+
+            </div>
+            <div class="col-sm-4">
+
+            </div>
+
+        </div>
+    </div>
+
+
+        <br />
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="GrdEncuesta" style="height:200px; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);">
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+
+            <div class="col-sm-12">
+
+
+                <div id="divAno" style="display:none">
+                    <div class="col-sm-3">
+
+                        <div class="col-sm-12">
+                            <label>Fecha Inicio</label>
+                        </div>
+                        <div class="col-sm-12">
+                            <select id="cmbAnoIni" class="form-control"></select>
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-3">
+
+                        <div class="col-sm-12">
+                            <label>Fecha Fin</label>
+                        </div>
+                        <div class="col-sm-12">
+                            <select id="cmbAnoFin" class="form-control"></select>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div id="divMes" style="display:none">
+                    <div class="col-sm-3">
+
+                        <div class="col-sm-12">
+                            <label>Fecha Inicio</label>
+                        </div>
+                        <div class="col-sm-12">
+                            <input id="dtfMesIni" class="form-control" />
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-3">
+
+                        <div class="col-sm-12">
+                            <label>Fecha Fin</label>
+                        </div>
+                        <div class="col-sm-12">
+                            <input id="dtfMesFin" class="form-control" />
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 10px;">
+                <div class="col-sm-8">
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-default" id="btnAceptar" onclick="guardarEncuestaExterna()">Guardar</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="msAlmacenamiento" title="Información" style="display:none">
+            <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+        </div>
+
+        <script>
+                var anoIni = 0;
+                var anoFin = 0;
+                consultarEncuestasAsociadas();
+                consultarRol();
+                $(document).ready(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("consultarLimiteFecha", "EncuestaExterna")',
+                        data: {},
+                        beforeSend: function () { },
+                        success: function (response) {
+                            var datos = eval('(' + response + ')');
+                            anoIni = datos[0].VALOR;
+                            anoFin = datos[1].VALOR;
+                        }
+                    });
+                    $("#dtfMesIni").datepicker({
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true,
+                        dateFormat: 'mm-yy',
+
+                        onClose: function (dateText, inst) {
+                            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+                        }
+                    });
+                    $("#dtfMesFin").datepicker({
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true,
+                        dateFormat: 'mm-yy',
+
+                        onClose: function (dateText, inst) {
+                            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+                        }
+                    });
+                    $.datepicker.regional['es'] = {
+                        closeText: 'Cerrar',
+                        prevText: '< Ant',
+                        nextText: 'Sig >',
+                        currentText: 'Hoy',
+                        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                        dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                        weekHeader: 'Sm',
+                        dateFormat: 'dd/mm/yy',
+                        firstDay: 1,
+                        isRTL: false,
+                        showMonthAfterYear: false,
+                        yearSuffix: ''
+                    };
+                    $.datepicker.setDefaults($.datepicker.regional['es']);
+                    $(function () {
+                        $("#dtfMesIni").datepicker();
+                        $("#dtfMesFin").datepicker();
+                    })
+
+
+                });
+
+
+                function cambioVigencia() {
+                    if ($("#cmbVigencia").val() == 1) {
+
+                        $("#divAno").css({ "display": "block" });
+                        $("#divMes").css({ "display": "none" });
+                        var html = "<option value=-1>-- Seleccionar --</option>";
+                        for (var i = anoIni; i <= anoFin; i++)
+                            html += "<option value=" + i + ">" + i + "</option>";
+
+                        $("#cmbAnoIni").html(html);
+                        $("#cmbAnoFin").html(html);
+                    } else {
+                        if ($("#cmbVigencia").val() == 2) {
+
+                            $("#divMes").css({ "display": "block" });
+                            $("#divAno").css({ "display": "none" });
+                        } else {
+                            $("#divMes").css({ "display": "none" });
+                            $("#divAno").css({ "display": "none" });
+                        }
+
+
+
+                    }
+                }
+                function consultarEncuestasAsociadas() {
+                    prenderload();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("consultarEncuestasAsociadas", "EncuestaExterna")',
+                        data: {},
+                        beforeSend: function () { },
+                        success: function (response) {
+                            var datos = eval('(' + response + ')');
+                            consurtarEncuestaGrid(datos);
+
+
+
+
+                        }
+                    });
+                }
+
+                function guardarEncuestaExterna() {
+
+                    var tipoInstalacion = 0;
+
+                    if ($('#chkInstalacion').is(':checked'))
+                        tipoInstalacion = 1;
+                    var tipoRadicar = 0;
+
+                    if ($('#chkradicar').is(':checked'))
+                        tipoRadicar = 1;
+
+                    var dataGrid = $('#GrdEncuesta').dxDataGrid('instance');
+                    var gridEncuesta = dataGrid.getSelectedRowsData();
+
+                    if ($("#txtNombreEncuesta").val() == "") {
+
+
+                        $("#mensaje").text("Ingrese el nombre del formulario")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+                    if (gridEncuesta.length == "0") {
+
+
+                        $("#mensaje").text("Seleccione una encuesta")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+
+                    var arrEncuesta = "";
+                    for (var i = 0; i < gridEncuesta.length; i++) {
+                        arrEncuesta += gridEncuesta[i].ID + ",";
+                    }
+                    arrEncuesta = arrEncuesta.substring(0, arrEncuesta.length - 1);
+
+                    if ($("#cmbVigencia").val() == "-1") {
+
+
+                        $("#mensaje").text("Seleccione una vigencia")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+
+                    if ($("#cmbRol").val() == "-1") {
+
+
+                        $("#mensaje").text("Seleccione un Rol")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+                    if ($("#txtTerminos").val() == "") {
+
+
+                        $("#mensaje").text("Ingrese los terminos y condiciones")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+
+                    var fechaIni = "0";
+                    var fechaFin = "0";
+                    if ($("#cmbVigencia").val() == 1) {
+                        if ($("#cmbAnoIni").val() == "-1") {
+                            mensajeAlmacenamiento("Seleccione fecha inicial");
+                            return;
+                        }
+                        if ($("#cmbAnoFin").val() == "-1") {
+                            mensajeAlmacenamiento("Seleccione fecha final");
+                            return;
+                        }
+                        if (Number($("#cmbAnoIni").val()) > Number($("#cmbAnoFin").val())) {
+                            mensajeAlmacenamiento("la fecha inicio no puede ser mayor que la  final");
+                            return;
+                        }
+                        fechaIni = $("#cmbAnoIni").val();
+                        fechaFin = $("#cmbAnoFin").val();
+                    } else {
+                        if ($("#cmbVigencia").val() == 2) {
+                            if ($("#dtfMesIni").val() == "") {
+                                mensajeAlmacenamiento("Seleccione fecha inicial");
+                                return;
+                            }
+                            if ($("#dtfMesFin").val() == "") {
+                                mensajeAlmacenamiento("Seleccione fecha final");
+                                return;
+                            }
+                            fechaIni = $("#dtfMesIni").val();
+                            fechaFin = $("#dtfMesFin").val();
+                        } else {
+                            fechaIni = "0";
+                            fechaFin = "0";
+                        }
+                    }
+                    if ($("#txtNitem").val() == "") {
+
+
+                        $("#mensaje").text("Ingrese Nombre Item")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+
+                    prenderload();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("guardarUsuarioExterno", "EncuestaExterna")',
+                        data: { vig: $("#cmbVigencia").val(), nombre: $("#txtNombreEncuesta").val(), idEncuesta: 0, fechaini: fechaIni, fechaFin: fechaFin, arrEncuesta: arrEncuesta, rol: $("#cmbRol").val(), terminos: $("#txtTerminos").val(), tipoInstalacion: tipoInstalacion, cardinalidad: $("#cmbCardinalidad").val(), radicar: tipoRadicar, nombreItem: $("#txtNitem").val()  },
+                        beforeSend: function () { },
+                        success: function (response) {
+                            apagarload();
+                            $("#txtNombreEncuesta").val("");
+                            $("#cmbVigencia").val("-1");
+                            $("#cmbRol").val("-1");
+                            $("#cmbAnoIni").val("-1");
+                            $("#cmbAnoFin").val("-1");
+                            $("#dtfMesIni").val("");
+                            $("#dtfMesFin").val("");
+                            $("#txtTerminos").val("");
+
+                            $("#divMes").css({ "display": "none" });
+                            $("#divAno").css({ "display": "none" });
+                            consultarEncuestasAsociadas();
+                            mensajeAlmacenamiento("Almacenamiento exitoso");
+
+
+
+                        }
+                    });
+                }
+
+                function mensajeAlmacenamiento(mensaje) {
+                    $("#msTextAlm").text(mensaje);
+                    $("#msAlmacenamiento").dialog({
+                        buttons: [
+                  {
+                      text: "Aceptar",
+                      click: function () { $(this).dialog("close"); },
+                      class: "btn btn-default "
+                  },
+                        ]
+                    });
+                }
+
+
+                function consurtarEncuestaGrid(arrDato) {
+
+                    $("#GrdEncuesta").dxDataGrid({
+
+                        dataSource: arrDato,
+                        selection: {
+                            mode: 'multiple'
+                        },
+
+                        columns: [
+
+                            { dataField: 'ID', allowGrouping: true, caption: 'Código', width: '25%' },
+                            { dataField: 'NOMBRE', caption: 'Encuesta', allowGrouping: true, width: '30%' }
+
+                        ],
+
+                        scrolling: { mode: 'infinite' },
+                        onSelectionChanged: function (selecteditems) {
+                        },
+
+                        columnChooser: { enabled: false },
+                        allowColumnReordering: true,
+
+                        pager: { visible: true },
+                        paging: { pageSize: 5 }
+
+                    });
+                    apagarload();
+                }
+                function consultarRol() {
+                    var html = "<option value=-1>-- Seleccionar --</option>";
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("consultarRol", "EncuestaExterna")',
+                        beforeSend: function () { },
+                        success: function (response) {
+                            var datos = eval('(' + response + ')');
+                            for (var i = 0; i < datos.length; i++)
+                                html += "<option value=" + datos[i].ID + ">" + datos[i].NOMBRE + "</option>";
+                            $("#cmbRol").html(html);
+                        }
+                    });
+                }
+
+                function prenderload() {
+                    $("#loadingImg").css({ "display": "block" });
+                }
+                function apagarload() {
+                    $("#loadingImg").css({ "display": "none" });
+                }
+        </script>
+</body>
+
+
+
+
+
+
+
+
+

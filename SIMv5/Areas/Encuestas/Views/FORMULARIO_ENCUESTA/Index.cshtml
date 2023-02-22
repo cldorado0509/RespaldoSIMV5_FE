@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SIM.Areas.Encuestas.Models.FORMULARIO_ENCUESTA>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.D_INICIO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_FIN)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ENCUESTA.S_NOMBRE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FORMULARIO.S_NOMBRE)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_INICIO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_FIN)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ENCUESTA.S_NOMBRE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FORMULARIO.S_NOMBRE)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID_FORMULARIOENCUESTA }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID_FORMULARIOENCUESTA }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID_FORMULARIOENCUESTA })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,1459 @@
+﻿@{
+    ViewBag.Title = "sau";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<style>
+    .dx-datagrid-header-panel .dx-button.dx-button-has-icon:not(.dx-button-has-text) {
+        padding: 6px;
+        display: none;
+    }
+
+
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+        float: left;
+        margin-left: -8px;
+    }
+
+    .btn-default[disabled], fieldset[disabled] .btn-default, .btn-default.disabled:hover, .btn-default[disabled]:hover, fieldset[disabled] .btn-default:hover, .btn-default.disabled:focus, .btn-default[disabled]:focus, fieldset[disabled] .btn-default:focus, .btn-default.disabled:active, .btn-default[disabled]:active, fieldset[disabled] .btn-default:active, .btn-default.disabled.active, .btn-default[disabled].active, fieldset[disabled] .btn-default.active {
+        background-color: #a5cd39;
+        border-color: #cccccc;
+    }
+
+    .ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable {
+        border: none;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        box-shadow: 1px 3px 12px 1px rgba(0, 0, 0, 0.5);
+        padding: 0px;
+    }
+
+    .ui-widget-header {
+        border: none;
+        background: #00acc4;
+        color: #FFF;
+        font-weight: normal;
+    }
+
+    #dialogUbicacion label {
+        width: 107px;
+    }
+
+    .ui-dialog .ui-dialog-content {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .btnEditar:hover {
+        opacity: 0.7;
+        cursor: pointer;
+    }
+
+    button#btnAsociar {
+        position: relative;
+        background-image: url(../../Content/images/Asignar_Tramites.png);
+        right: -28px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+
+    button#btnLimpiar {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Limpiar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+
+    button#btnGuardar {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Guardar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    button#btnContrato {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Cargar_fotos.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    button#btnCargarArbol {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Cargar_fotos.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    .grides {
+       
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+    .ui-widget button {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    font-size: 16px;
+    line-height: 14px;
+}
+             #loadingImg{
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.17) !important;
+    position: fixed;
+    z-index: 100000;
+    cursor: not-allowed;
+}
+
+.loadingImg{
+	position: fixed;
+    z-index: 100000;
+    background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat;
+    left: 50%;
+    background-size: contain;
+    top: 50%;
+    cursor: not-allowed;
+}
+
+</style>
+
+
+
+<div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+
+        <div>
+            <div style="padding: 15px">
+                <ul class="nav nav-tabs">
+                    <li id="Tab1" class="active"><a href="#Mapa" data-toggle="tab">Mapa</a></li>
+                    <li id="Tab4"><a href="#sau" data-toggle="tab">Carga Masiva</a></li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade active in" id="Mapa">
+                        <div class="row">
+                            <div class="col-sm-12" style="padding-top:2%;padding-bottom:2%;">
+                                <div class="col-sm-2" style="  width: 9%;">
+                                    <label>Árbol Nuevo:</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input id="txtNuevoArbol" disabled class="form-control" />
+
+                                </div>
+                                <div class="col-sm-2" style="  width: 10%;">
+                                    <label>Árbol Existente:</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input id="txtExistenteArbol" disabled class="form-control" />
+
+                                </div>
+                                <div class="col-sm-2" style="  width: 7%;">
+
+                                    <button class="btn btn-default" onclick="asociarArbol()" style="  margin-bottom: 10px;" id="btnAsociar">Asociar</button>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12" style="height:800px">
+                                <iframe id="mapa" src="/MAPGISV5_WEB/tools/AMVA/inicio_flora.htm" style="height:100%; width:100%"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="sau">
+                        <label class="control-label">Tramites</label>
+                        <div class="row">
+                            <div class="col-sm-12" style=" padding-left: 20px;padding-right:20px;">
+                                <div class="grides">
+                                    <div id="GrdTramites" style=" margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; ">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div id="divCarga" class="class-sm-12">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="col-sm-6">
+                                        <div class="radio">
+                                            <label class="control-label">
+                                                <input type="radio" name="opciones" id="contratoSAU" value="opcion_1" checked="" onchange="validarCarga()" disabled="">
+                                                COBAMA
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control " id="txtContrato" disabled="">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-default" id="btnContrato" onclick="CargarArbolPorContrato()" disabled="">Cargar</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="col-sm-6">
+                                        <div class="radio">
+                                            <label class="control-label">
+                                                <input type="radio" name="opciones" id="archivoArbol" value="opcion_1" onchange="validarCarga()" >
+                                                Archivo Árbol
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control " id="txtArchivo" disabled="">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-default" id="btnArbolNuevo" onclick="abrirExcel()" disabled="">Cargar</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="col-sm-6">
+                                        <div class="radio">
+                                            <label class="control-label">
+                                                <input type="radio" name="opciones" id="rdNuevoArbol" value="opcion_1" onchange="validarCarga()" disabled>
+                                                Nuevo Árbol
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input id="txtX" style="display:none" />
+                                        <input id="txtY" style="display:none" />
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-default" id="btnArbolNuevoC" onclick="abrirArbolNuevo()" disabled="">Nuevo Árbol</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12" style=" padding-left: 20px;padding-right:20px;">
+                                <div class="grides">
+                                    <div id="GrdArboles" style="height: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="menuInferior text-right" style="width: 100%;">
+                                <button class="btn btn-default" id="btnLimpiar" onclick="limpiar()">Limpiar</button>
+                                <button class="btn btn-default" id="btnGuardar" onclick="confirmarGuardar()">Terminar</button>
+                                <button class="btn btn-default" id="btnCerrar" onclick="Cerrar()">Guardar y Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="msAlmacenamiento" title="Información" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+</div>
+<div id="pantallaCargarExcel" title="Cargar Archivo" style="display: none;">
+    <iframe src="" id="excel" width="100%" height="100%"></iframe>
+
+
+</div>
+<div id="pantallaArbol" title="Nuevo árbol" style="display: none; overflow: hidden;">
+    <iframe src="" id="frArbol" width="100%" height="100%"></iframe>
+
+
+</div>
+<div id="pantallaAsociarArbol" title="Cargar arbol" style="display: none; overflow: hidden;">
+    <iframe src="" id="frmArbol" width="100%" height="100%"></iframe>
+
+
+</div>
+<div id="msConfir" title="Abvertencia" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+</div>
+<script>
+    var initialContainerHeight = "100%";
+    var CargarDatosArbol = {};
+    var DatosTramites;
+    var X = "";
+    var Y = "";
+    var VectorArbol = [];
+    var codigoTramite = "";
+    $(document).ready(function () {
+        $("a[href=#sau]").click(function () {
+            setTimeout(function () {
+
+                //CargarGrid();
+
+            }, 500);
+        });
+        $("#txtContrato").prop('disabled', true);
+        $("#btnContrato").prop('disabled', true);
+        $("#btnArbolNuevo").prop('disabled', true);
+        $("#btnArbolNuevoC").prop('disabled', true);
+        $("#btnCargarArbol").prop('disabled', true);
+        $("#contratoSAU").prop('disabled', true);
+        $("#archivoArbol").prop('disabled', true);
+        $("#rdNuevoArbol").prop('disabled', true);
+        CargarGrid();
+
+    });
+    function CargarGrid() {
+        prenderload();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarTramitecarga", "Sau")',
+
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval(response);
+               
+                gridTramites(datos);
+
+
+
+            }
+        });
+        gridArbol(CargarDatosArbol);
+    }
+
+
+    function consultarTipoGuardado(id) {
+        arrVigenValidar = [];
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("validarGuardado", "Sau")',
+            data: { idTramite: id },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response != "[]") {
+                    var datos = eval('(' + response + ')');
+                    if (datos[0].TIPO_GUARDADO == 1) {
+                        $("#btnGuardar").css("display", "none");
+                        $("#btnCerrar").css("display", "none");
+                    } else {
+                        $("#btnGuardar").css("display", "block");
+                        $("#btnCerrar").css("display", "block");
+                    }
+                } else {
+                    $("#btnGuardar").css("display", "block");
+                    $("#btnCerrar").css("display", "block");
+                }
+
+
+
+
+            }
+        });
+    }
+
+    function gridTramites(jsonDatos)
+    {
+
+        $("#GrdTramites").dxDataGrid({
+
+            dataSource: jsonDatos,
+            selection: {
+                mode: 'single'
+            }, filterRow: { visible: false },
+            columns: [
+
+                { dataField: 'CODTRAMITE', allowGrouping: true, caption: 'Código trámite', width: '16%' },
+                { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '70%' },
+                { dataField: 'FECHAINICIOTRAMITE', caption: 'Fecha inicio trámite', allowGrouping: true, width: '24%' },
+                { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '18%' },
+                { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '12%' },
+                   { dataField: 'X', caption: 'X',visible:false },
+                      { dataField: 'Y', caption: 'Y', visible: false },
+                {
+                    dataField: 'ACERCAR', allowGrouping: true, caption: 'Acercar', width: '10%', cellTemplate: function (container, options) {
+                        container.height(5);
+                        $('<img src="@Url.Content("../../Content/Images/AcercarReparto.png")" style="width:25px;height:25px" />')
+
+                                .attr('src', options.value)
+                                .appendTo(container);
+                    }
+                }
+            ],
+            height: initialContainerHeight,
+            scrolling: { mode: 'infinite' },
+            onSelectionChanged: function (selecteditems) {
+                //var data = selecteditems.selectedRowsData[0];
+                //CargarArbol(data.CODTRAMITE);
+            },
+            onCellClick: function (e) {
+
+                var tipoBoton = e.columnIndex;
+                var x = e.data.X;
+                var y = e.data.Y;
+                consultarTipoGuardado(e.data.CODTRAMITE);
+                CargarArbol(e.data.CODTRAMITE);
+                switch (tipoBoton) {
+
+                    case 5:
+                        $("#Tab1 a").click();
+                        var Atributos = {
+                            "CODTRAMITE": e.data.CODTRAMITE
+
+                        };
+
+                        Conectar();
+                        m.zoomPto(x, y, 4326, 15);
+                        m.verPoint(x, y, 4326, 255, 0, 0, " tramite_" + e.data.CODTRAMITE, Atributos, 'CODTRAMITE:${CODTRAMITE}<br>');
+
+                        break;
+
+                }
+            },
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+            pager: { visible: true },
+            paging: { pageSize: 8 },
+            filterRow: { visible: true }
+        });
+        apagarload();
+    }
+    function gridArbolContrato(jsonArbol) {
+
+        $("#GrdArboles").dxDataGrid({
+            dataSource: jsonArbol,
+            selection: {
+                mode: 'single'
+            }, filterRow: { visible: false },
+            columns: [
+                {
+                    dataField: 'Requerida', allowGrouping: true, width: '10%', caption: 'Requerida', cellTemplate: function (container, options) {
+                        container.height(5);
+                        $('<input id="idRequiere" type="checkbox"  />').prop("checked", options.value).appendTo(container);
+                    }
+
+                },
+                { dataField: 'S_ESPECIE', allowGrouping: true, width: '10%', caption: 'Especie', dataType: 'string' },
+                { dataField: 'estado', allowGrouping: true, width: '10%', caption: 'Estado', dataType: 'string' },
+                { dataField: 'X', allowGrouping: true, width: '5%', caption: 'X', dataType: 'string' },
+                { dataField: 'Y', allowGrouping: true, width: '5%', caption: 'Y', dataType: 'string' },
+                { dataField: 'DAP', allowGrouping: true, width: '10%', caption: 'DAP', dataType: 'string' },
+                { dataField: 'ALTURA', allowGrouping: true, width: '10%', caption: 'Altura', dataType: 'string' },
+                { dataField: 'S_INTERVENCION', allowGrouping: true, width: '10%', caption: 'Intervencion', dataType: 'string' },
+                { dataField: 'S_ESTADO_ARBOL', allowGrouping: true, width: '10%', caption: 'Estado Arbol', dataType: 'string' },
+                { dataField: 'OBS', allowGrouping: true, width: '10%', caption: 'Observacion', dataType: 'string' },
+                { dataField: 'ID_INDIVIDUO', allowGrouping: true, width: '10%', caption: 'id_individuo', dataType: 'string' },
+                {
+                    dataField: 'cargar', allowGrouping: true, caption: 'Acercar', width: '10%', cellTemplate: function (container, options) {
+                        container.height(5);
+                        $('<img src="@Url.Content("../../Content/Images/AcercarReparto.png")" style="width:25px;height:25px" class="btnEditar"/>').attr('src', options.value).appendTo(container);
+                    }
+                },
+
+                { dataField: 'ID_ESTADO_CARGA', allowGrouping: true, width: '20%', dataType: 'string', visible: false },
+                { dataField: 'ID_INTPROP', allowGrouping: true, width: '15%', caption: 'ID_INTPROP', dataType: 'string', visible: false },
+                { dataField: 'ID_ESTADO', allowGrouping: true, width: '20%', dataType: 'string', visible: false },
+                { dataField: 'ID_IND_TEMP', allowGrouping: true, width: '20%', dataType: 'string', visible: false },
+                { dataField: 'ID_ESPECIE', allowGrouping: true, width: '15%', caption: 'especie', dataType: 'string', visible: false },
+                { dataField: 'TIPO_INTERVENCION', allowGrouping: true, width: '15%', dataType: 'string', visible: false },
+                { dataField: 'ID_TRAMITE', allowGrouping: true, width: '15%', caption: 'id_tramite', dataType: 'string', visible: false }
+
+
+
+
+            ],
+            scrolling: { mode: 'infinite' },
+            onCellClick: function (e) {
+                var x = e.data.X;
+                var y = e.data.Y;
+                var id = e.data.ID_IND_TEMP;
+                var especie = e.data.S_ESPECIE;
+                var tipoBoton = e.columnIndex;
+                var Atributos = {
+                    "Altura": e.data.ALTURA,
+                    "DAP": e.data.DAP,
+                    "IdTemp": e.data.ID_IND_TEMP
+                };
+                switch (tipoBoton) {
+                    case 0:
+                        if (jsonArbol[e.rowIndex].Requerida) {
+                            jsonArbol[e.rowIndex].Requerida = false;
+                        } else {
+                            jsonArbol[e.rowIndex].Requerida = true;
+                        }
+                        break;
+                    case 11:
+
+                        $("#Tab1 a").click();
+                        Conectar();
+                        if (e.data.ID_INDIVIDUO == "-1") {
+                            m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" onClick="$(\'.esriPopup\').css({\'visibility\': \'hidden\'});$(\'.btn\').css({\' padding\': \'6px\'});parent.seleccionarNuevo(${IdTemp})" value="seleccionar"/>');
+                        } else {
+                            if ($("#txtContrato").val() == "") {
+                                m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP} ');
+                            } else {
+                                var Atributos2 = {
+                                    "Altura": e.data.ALTURA,
+                                    "DAP": e.data.DAP,
+                                    "IdTemp": e.data.ID_INDIVIDUO
+                                };
+                                m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos2, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" onClick="$(\'.esriPopup\').css({\'visibility\': \'hidden\'});$(\'.btn\').css({\' padding\': \'6px\'});parent.seleccionarContrato(${IdTemp})" value="seleccionar"/>');
+
+                            }
+                        }
+
+                        m.zoomPto(x, y, 4326, 15);
+                        break;
+
+                }
+                $("#GrdArboles").dxDataGrid({
+                    dataSource: jsonArbol
+                });
+            },
+            height: initialContainerHeight,
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+            pager: { visible: true },
+            paging: { pageSize: 5 },
+            allowColumnResizing: true
+            , columnAutoWidth: true, loadPanel: {
+                height: 100,
+                width: 100,
+                text: 'Cargando...'
+            }, onCellHoverChanged: function (hoverCell) {
+                if (hoverCell.eventType == 'mouseover')
+                    hoverCell.cellElement.addClass("hovered");
+                else
+                    hoverCell.cellElement.removeClass("hovered");
+            },
+            rowPrepared: function (rowElement, rowInfo) {
+                //if (rowInfo.data.ID_INDIVIDUO == "-1") {
+                //    rowElement.css('background', 'green');
+                //}
+
+            }
+        });
+
+    }
+    function gridArbol(jsonArbol) {
+
+        $("#GrdArboles").dxDataGrid({
+            dataSource: jsonArbol,
+            selection: {
+                mode: 'single'
+            }, filterRow: { visible: false },
+            columns: [
+
+                { dataField: 'S_ESPECIE', allowGrouping: true, width: '15%', caption: 'Especie', dataType: 'string' },
+                { dataField: 'estado', allowGrouping: true, width: '10%', caption: 'Estado', dataType: 'string' },
+                { dataField: 'X', allowGrouping: true, width: '20%', caption: 'X', dataType: 'string' },
+                { dataField: 'Y', allowGrouping: true, width: '20%', caption: 'Y', dataType: 'string' },
+                { dataField: 'DAP', allowGrouping: true, width: '20%', caption: 'DAP', dataType: 'string' },
+                { dataField: 'ALTURA', allowGrouping: true, width: '20%', caption: 'Altura', dataType: 'string' },
+                { dataField: 'S_INTERVENCION', allowGrouping: true, width: '20%', caption: 'Intervencion', dataType: 'string' },
+                { dataField: 'S_ESTADO_ARBOL', allowGrouping: true, width: '20%', caption: 'Estado Arbol', dataType: 'string' },
+                { dataField: 'OBS', allowGrouping: true, width: '20%', caption: 'Observacion', dataType: 'string' },
+                { dataField: 'ID_INDIVIDUO', allowGrouping: true, width: '15%', caption: 'id_individuo', dataType: 'string' },
+                { dataField: 'ID_INTPROP', allowGrouping: true, width: '15%', caption: 'ID_INTPROP', dataType: 'string' },
+                { dataField: 'ID_ESTADO_CARGA', allowGrouping: true, width: '20%', dataType: 'string', visible: false },
+                { dataField: 'ID_ESTADO', allowGrouping: true, width: '20%', dataType: 'string', visible: false },
+                { dataField: 'ID_IND_TEMP', allowGrouping: true, width: '20%', dataType: 'string', visible: false },
+                { dataField: 'ID_ESPECIE', allowGrouping: true, width: '15%', caption: 'especie', dataType: 'string', visible: false },
+                { dataField: 'TIPO_INTERVENCION', allowGrouping: true, width: '15%', dataType: 'string', visible: false },
+                { dataField: 'ID_TRAMITE', allowGrouping: true, width: '15%', caption: 'id_tramite', dataType: 'string', visible: false },
+
+                {
+                    dataField: 'cargar', allowGrouping: true, caption: 'Acercar', cellTemplate: function (container, options) {
+                        container.height(5);
+                        $('<img src="@Url.Content("../../Content/Images/AcercarReparto.png")" style="width:25px;height:25px" class="btnEditar"/>').attr('src', options.value).appendTo(container);
+                    }
+                },
+                {
+                    dataField: 'desasociar', allowGrouping: true, caption: 'Desasociar', cellTemplate: function (container, options) {
+                        container.height(5);
+                        $('<img src="@Url.Content("../../Content/imagenes/desasignar.png")" style="width:25px;height:25px" class="btnDesasociar"/>').attr('src', options.value).appendTo(container);
+                    }
+                },
+
+
+            ],
+            height: initialContainerHeight,
+            scrolling: { mode: 'infinite' },
+            noDataText: "Sin Datos",
+            onCellClick: function (e) {
+                var x = e.data.X;
+                var y = e.data.Y;
+                var id = e.data.ID_IND_TEMP;
+                var especie = e.data.S_ESPECIE;
+                var tipoBoton = e.columnIndex;
+                var Atributos = {
+                    "Altura": e.data.ALTURA,
+                    "DAP": e.data.DAP,
+                    "IdTemp": e.data.ID_IND_TEMP
+                };
+                switch (tipoBoton) {
+
+                    case 11: //Boton Acercar
+                        $("#txtNuevoArbol").val(e.data.ID_IND_TEMP);
+                        $("#txtExistenteArbol").val("");
+                        if (e.data.ID_ESTADO_CARGA == "1") {
+                            $("#btnAsociar").prop('disabled', true);
+                        } else {
+                            $("#btnAsociar").prop('disabled', false);
+                        }
+
+                        $("#Tab1 a").click();
+                        Conectar();
+                        if (e.data.ID_INDIVIDUO == "-1") {
+                            if (e.data.ID_ESTADO_CARGA == "0") {
+                                m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" onClick="$(\'.esriPopup\').css({\'visibility\': \'hidden\'});parent.seleccionarNuevo(${IdTemp})" class="btn" value="seleccionar"/>');
+                            } else {
+                                m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" ');
+                            }
+                        } else {
+                            if ($("#txtContrato").val() == "") {
+                                if (e.data.ID_ESTADO_CARGA == "1") {
+                                    m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP} ');
+                                } else {
+                                    m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" onClick="$(\'.esriPopup\').css({\'visibility\': \'hidden\'});parent.seleccionarContrato(${IdTemp})" class="btn" value="seleccionar"/>');
+
+                                }
+                            } else {
+                                if (e.data.ID_ESTADO_CARGA == "1") {
+                                    m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP} ');
+                                } else {
+                                    m.verPoint(x, y, 4326, 255, 0, 0, " Arbol_" + id, Atributos, especie, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" onClick="$(\'.esriPopup\').css({\'visibility\': \'hidden\'});parent.seleccionarContrato(${IdTemp})" class="btn" value="seleccionar"/>');
+
+                                }
+
+                            }
+                        }
+                        m.zoomPto(x, y, 4326, 15);
+                        break;
+                    case 12: //Boton Desasociar
+                        if (e.data.ID_ESTADO_CARGA == "0") {
+                            liberarArbol(id, -1);
+                        }
+                        else {
+                            alert("No es posible desasociar el arbol, la carga ya fue terminada");
+                        }
+
+                        break;
+                }
+            },
+
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+            pager: { visible: true },
+            paging: { pageSize: 5 },
+            allowColumnResizing: true
+            , columnAutoWidth: true, loadPanel: {
+                height: 100,
+                width: 100,
+                text: 'Cargando...'
+            }, onCellHoverChanged: function (hoverCell) {
+                if (hoverCell.eventType == 'mouseover')
+                    hoverCell.cellElement.addClass("hovered");
+                else
+                    hoverCell.cellElement.removeClass("hovered");
+            },
+            rowPrepared: function (rowElement, rowInfo) {
+                //if (rowInfo.data.ID_INDIVIDUO == "-1") {
+                //    rowElement.css('background', 'green');
+                //}
+
+            }
+        });
+    }
+
+    function importar(ruta) {
+        $("#txtArchivo").val(ruta);
+        var myarray = [];
+        var myJSON = "";
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetImportarArbol")",
+            data: {
+                ruta: ruta
+            },
+            beforeSend: function () {
+
+            },
+            success: function (response) {
+                if (response == null)
+                {
+                    alert("El formato del archivo no valido");
+                    return;
+                }
+                for (var i = 0; i < response.Sheet1.length; i++) {
+                    var item = {
+                        "ID_ESPECIE": response.Sheet1[i].ID_ESPECIE,
+                        "S_ESPECIE": response.Sheet1[i].S_ESPECIE,
+                        "DAP": response.Sheet1[i].DAP,
+                        "ALTURA": response.Sheet1[i].ALTURA,
+                        "TIPO_INTERVENCION": response.Sheet1[i].TIPO_INTERVENCION,
+                        "S_INTERVENCION": response.Sheet1[i].S_INTERVENCION,
+                        "OBS": response.Sheet1[i].OBS,
+                        "ID_ESTADO": response.Sheet1[i].ID_ESTADO,
+                        "S_ESTADO_ARBOL": response.Sheet1[i].S_ESTADO_ARBOL,
+                        "X": Number(response.Sheet1[i].X),
+                        "Y": Number(response.Sheet1[i].Y),
+                        "ID_TRAMITE": codigoTramite,
+                        "ID_IND_TEMP": -1,
+                        "ID_INDIVIDUO": -1,
+                        "ID_INTPROP": -1,
+                        "ID_ESTADO_CARGA": 0
+
+                    };
+                    myarray.push(item);
+                }
+                var jsonInd = JSON.stringify(myarray);
+                setArbolTramite(jsonInd);
+
+            },
+        });
+    }
+
+    function abrirExcel() {
+        $("#pantallaCargarExcel").dialog(
+        {
+
+            width: 400,
+            height: 200
+        });
+        $("#excel").attr("src", "@Url.Content("~/Sau/Sau/cargarExcel")");
+
+    }
+
+    function validarCarga() {
+        if ($("#contratoSAU").is(":checked") == true) {
+            $("#btnCargarArbol").prop('disabled', true);
+            $("#btnContrato").prop('disabled', false);
+            $("#txtContrato").prop('disabled', false);
+            $("#btnArbolNuevoC").prop('disabled', true);
+            $("#btnArbolNuevo").prop('disabled', true);
+        } else {
+            if ($("#archivoArbol").is(":checked") == true) {
+                $("#btnCargarArbol").prop('disabled', false);
+                $("#btnContrato").prop('disabled', true);
+                gridArbolContrato([]);
+                $("#txtContrato").prop('disabled', true);
+                $("#txtContrato").val("");
+                $("#btnArbolNuevo").prop('disabled', false);
+                $("#btnArbolNuevoC").prop('disabled', true);
+
+            } else {
+                if ($("#rdNuevoArbol").is(":checked") == true) {
+                    $("#btnCargarArbol").prop('disabled', true);
+                    $("#btnContrato").prop('disabled', true);
+                    gridArbolContrato([]);
+                    $("#txtContrato").prop('disabled', true);
+                    $("#txtContrato").val("");
+                    $("#btnArbolNuevo").prop('disabled', true);
+                    $("#btnArbolNuevoC").prop('disabled', false);
+
+                }
+            }
+
+        }
+    }
+    function limpiar() {
+        $("#contratoSAU").prop("checked", true);
+        $("#txtContrato").prop('disabled', true);
+        $("#btnContrato").prop('disabled', true);
+        $("#btnCargarArbol").prop('disabled', true);
+        $("#contratoSAU").prop('disabled', true);
+        $("#archivoArbol").prop('disabled', true);
+        $("#rdNuevoArbol").prop('disabled', true);
+
+        $("#txtContrato").val("");
+
+        gridArbol(CargarDatosArbol);
+
+    }
+
+
+    function abrirSeleccionar() {
+        $("#pantallaAsociarArbol").dialog(
+        {
+
+            width: 400,
+            height: 200
+        });
+        $("#frmArbol").attr("src", "@Url.Content("~/Sau/Sau/AsociarArbol")");
+
+    }
+    function ubicarMap() {
+        if (VectorArbol.length > 0) {
+            $("#Tab1 a").click();
+            Conectar();
+            m.zoomPto(X, Y, srid, 10);
+            m.verPoint(X, Y, srid, 255, 0, 0, 'alejo', '', '', '');
+        }
+        else {
+            alert("Debe seleccionar un registro para realizar el proceso de ubicación.");
+        }
+
+    }
+
+
+    var contConet = 0;
+    function Conectar() {
+        try {
+            contConet++;
+            var rta = conectar()
+            if (rta == -1) {
+                setTimeout('Conectar()', 3000);
+            }
+        } catch (e) {
+            if (contConet < 20) {
+                setTimeout('Conectar()', 3000);
+            }
+
+        }
+    }
+
+
+
+    function CargarArbol(idTramite) {
+        prenderload();
+        codigoTramite = idTramite;
+        $("#txtContrato").val("");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ConsultarArbol", "Sau")',
+            data: {
+                id_tramite: idTramite,
+                id_contrato: -1,
+
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                $("#contratoSAU").prop("checked", true);
+                jsonFormularios = eval('(' + response + ')');
+
+                if (jsonFormularios.length == 0) {
+                    $("#txtContrato").prop('disabled', false);
+                    $("#btnContrato").prop('disabled', false);
+
+                    $("#btnArbolNuevo").prop('disabled', true);
+                    $("#btnCargarArbol").prop('disabled', true);
+                    $("#contratoSAU").prop('disabled', false);
+                    $("#archivoArbol").prop('disabled', false);
+                    $("#rdNuevoArbol").prop('disabled', false);
+
+                } else {
+                    if (jsonFormularios[0].ID_ESTADO_CARGA == "1")
+                    {
+                        $("#btnGuardar").css({ "display": "none" });
+
+                    } else
+                    {
+                        $("#btnGuardar").css({ "display": "block" });
+
+
+                    }
+                    $("#txtContrato").prop('disabled', true);
+                    $("#btnContrato").prop('disabled', true);
+                    $("#btnArbolNuevo").prop('disabled', true);
+                    $("#btnCargarArbol").prop('disabled', true);
+                    $("#contratoSAU").prop('disabled', true);
+                    $("#archivoArbol").prop('disabled', true);
+                    $("#rdNuevoArbol").prop('disabled', true);
+
+                }
+
+
+                var myarray = [];
+                if (jsonFormularios.length > 0) {
+                    for (var i = 0; i < jsonFormularios.length; i++) {
+                        var item = {};
+                        if (jsonFormularios[i].ID_ESTADO_CARGA == 0) {
+                            item = {
+                                "ID_ESPECIE": jsonFormularios[i].ID_ESPECIE,
+                                "S_ESPECIE": jsonFormularios[i].S_ESPECIE,
+                                "DAP": jsonFormularios[i].DAP,
+                                "ALTURA": jsonFormularios[i].ALTURA,
+                                "TIPO_INTERVENCION": jsonFormularios[i].TIPO_INTERVENCION,
+                                "S_INTERVENCION": jsonFormularios[i].S_INTERVENCION,
+                                "OBS": jsonFormularios[i].OBS,
+                                "ID_ESTADO": jsonFormularios[i].ID_ESTADO,
+                                "S_ESTADO_ARBOL": jsonFormularios[i].S_ESTADO_ARBOL,
+                                "X": jsonFormularios[i].X,
+                                "Y": jsonFormularios[i].Y,
+                                "ID_TRAMITE": jsonFormularios[i].ID_TRAMITE,
+                                "ID_IND_TEMP": jsonFormularios[i].ID_IND_TEMP,
+                                "ID_INDIVIDUO": jsonFormularios[i].ID_INDIVIDUO,
+                                "ID_INTPROP": jsonFormularios[i].ID_INTPROP,
+                                "Requerida": false,
+                                "estado": "Activo",
+                                "ID_ESTADO_CARGA": jsonFormularios[i].ID_ESTADO_CARGA
+                            };
+                        } else {
+                            item = {
+                                "ID_ESPECIE": jsonFormularios[i].ID_ESPECIE,
+                                "S_ESPECIE": jsonFormularios[i].S_ESPECIE,
+                                "DAP": jsonFormularios[i].DAP,
+                                "ALTURA": jsonFormularios[i].ALTURA,
+                                "TIPO_INTERVENCION": jsonFormularios[i].TIPO_INTERVENCION,
+                                "S_INTERVENCION": jsonFormularios[i].S_INTERVENCION,
+                                "OBS": jsonFormularios[i].OBS,
+                                "ID_ESTADO": jsonFormularios[i].ID_ESTADO,
+                                "S_ESTADO_ARBOL": jsonFormularios[i].S_ESTADO_ARBOL,
+                                "X": jsonFormularios[i].X,
+                                "Y": jsonFormularios[i].Y,
+                                "ID_TRAMITE": jsonFormularios[i].ID_TRAMITE,
+                                "ID_IND_TEMP": jsonFormularios[i].ID_IND_TEMP,
+                                "ID_INDIVIDUO": jsonFormularios[i].ID_INDIVIDUO,
+                                "ID_INTPROP": jsonFormularios[i].ID_INTPROP,
+                                "Requerida": false,
+                                "estado": "Terminado",
+                                "ID_ESTADO_CARGA": jsonFormularios[i].ID_ESTADO_CARGA
+                            };
+                        }
+                        myarray.push(item);
+                    }
+                    gridArbol(myarray);
+                } else {
+                    gridArbol(CargarDatosArbol);
+                }
+
+                apagarload();
+            }
+        });
+    }
+    function CargarArbolPorContrato() {
+        if ($("#txtContrato").val() == "")
+        {
+            alert("Ingrese el código del árbol");
+            return;
+        }
+        prenderload();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarpoCobama", "Sau")',
+            data: {
+                id_tramite: codigoTramite,
+                cobama: $("#txtContrato").val()
+
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "[]")
+                {
+                    apagarload();
+                    alert("El árbol no existe");
+                    return;
+                }
+                jsonFormularios = eval('(' + response + ')');
+
+                var myarray = [];
+                if (jsonFormularios.length > 0)
+                {
+                    for (var i = 0; i < jsonFormularios.length; i++) {
+                        var item = {};
+                        if (jsonFormularios[i].ID_ESTADO_CARGA == 0)
+                        {
+                            item = {
+                                "ID_ESPECIE": jsonFormularios[i].ID_ESPECIE,
+                                "S_ESPECIE": jsonFormularios[i].S_ESPECIE,
+                                "DAP": jsonFormularios[i].DAP,
+                                "ALTURA": jsonFormularios[i].ALTURA,
+                                "TIPO_INTERVENCION": jsonFormularios[i].TIPO_INTERVENCION,
+                                "S_INTERVENCION": jsonFormularios[i].S_INTERVENCION,
+                                "OBS": jsonFormularios[i].OBS,
+                                "ID_ESTADO": jsonFormularios[i].ID_ESTADO,
+                                "S_ESTADO_ARBOL": jsonFormularios[i].S_ESTADO_ARBOL,
+                                "X": jsonFormularios[i].X,
+                                "Y": jsonFormularios[i].Y,
+                                "ID_TRAMITE": codigoTramite+"",
+                                "ID_IND_TEMP": jsonFormularios[i].ID_IND_TEMP,
+                                "ID_INDIVIDUO": jsonFormularios[i].ID_INDIVIDUO,
+                                "ID_INTPROP": jsonFormularios[i].ID_INTPROP,
+                                "Requerida": false,
+                                "estado": "Activo",
+                                "ID_ESTADO_CARGA": jsonFormularios[i].ID_ESTADO_CARGA
+                            };
+                        } else
+                        {
+                            item = {
+                                "ID_ESPECIE": jsonFormularios[i].ID_ESPECIE,
+                                "S_ESPECIE": jsonFormularios[i].S_ESPECIE,
+                                "DAP": jsonFormularios[i].DAP,
+                                "ALTURA": jsonFormularios[i].ALTURA,
+                                "TIPO_INTERVENCION": jsonFormularios[i].TIPO_INTERVENCION,
+                                "S_INTERVENCION": jsonFormularios[i].S_INTERVENCION,
+                                "OBS": jsonFormularios[i].OBS,
+                                "ID_ESTADO": jsonFormularios[i].ID_ESTADO,
+                                "S_ESTADO_ARBOL": jsonFormularios[i].S_ESTADO_ARBOL,
+                                "X": jsonFormularios[i].X,
+                                "Y": jsonFormularios[i].Y,
+                                "ID_TRAMITE": codigoTramite + "",
+                                "ID_IND_TEMP": jsonFormularios[i].ID_IND_TEMP,
+                                "ID_INDIVIDUO": jsonFormularios[i].ID_INDIVIDUO,
+                                "ID_INTPROP": jsonFormularios[i].ID_INTPROP,
+                                "Requerida": false,
+                                "estado": "Terminado",
+                                "ID_ESTADO_CARGA": jsonFormularios[i].ID_ESTADO_CARGA
+                            };
+                        }
+                        myarray.push(item);
+                    }
+                    gridArbolContrato(myarray);
+                } else {
+                    gridArbol(CargarDatosArbol);
+                }
+
+                apagarload();
+
+                guardarCobama(myarray)
+
+            }
+
+        });
+    }
+    function guardarCobama(arrArbolCobama)
+    {
+        var jsonIn = JSON.stringify(arrArbolCobama);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("guardarArbol", "Sau")',
+            data: {
+                jsonInf: jsonIn, fin: 0
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "Ok")
+                    alert("almacenamiento exitoso");
+
+
+
+            }
+        });
+
+    }
+    function setArbolTramite(jsonDatos) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("guardarArbol", "Sau")',
+            data: {
+                jsonInf: jsonDatos, fin: 0
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "Ok")
+                    getArbolExcel();
+
+            }
+        });
+    }
+    function getArbolExcel() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ConsultarArbol", "Sau")',
+            data: {
+                id_tramite: codigoTramite,
+                id_contrato: -1
+
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                jsonFormularios = eval('(' + response + ')');
+                var myarray = [];
+                if (jsonFormularios.length > 0) {
+                    for (var i = 0; i < jsonFormularios.length; i++) {
+                        var item = {};
+                        if (jsonFormularios[i].ID_ESTADO_CARGA == 0) {
+                            item = {
+                                "ID_ESPECIE": jsonFormularios[i].ID_ESPECIE,
+                                "S_ESPECIE": jsonFormularios[i].S_ESPECIE,
+                                "DAP": jsonFormularios[i].DAP,
+                                "ALTURA": jsonFormularios[i].ALTURA,
+                                "TIPO_INTERVENCION": jsonFormularios[i].TIPO_INTERVENCION,
+                                "S_INTERVENCION": jsonFormularios[i].S_INTERVENCION,
+                                "OBS": jsonFormularios[i].OBS,
+                                "ID_ESTADO": jsonFormularios[i].ID_ESTADO,
+                                "S_ESTADO_ARBOL": jsonFormularios[i].S_ESTADO_ARBOL,
+                                "X": jsonFormularios[i].X,
+                                "Y": jsonFormularios[i].Y,
+                                "ID_TRAMITE": jsonFormularios[i].ID_TRAMITE,
+                                "ID_IND_TEMP": jsonFormularios[i].ID_IND_TEMP,
+                                "ID_INDIVIDUO": jsonFormularios[i].ID_INDIVIDUO,
+                                "ID_INTPROP": jsonFormularios[i].ID_INTPROP,
+                                "Requerida": false,
+                                "estado": "Activo",
+                                "ID_ESTADO_CARGA": jsonFormularios[i].ID_ESTADO_CARGA
+                            };
+                        } else {
+                            item = {
+                                "ID_ESPECIE": jsonFormularios[i].ID_ESPECIE,
+                                "S_ESPECIE": jsonFormularios[i].S_ESPECIE,
+                                "DAP": jsonFormularios[i].DAP,
+                                "ALTURA": jsonFormularios[i].ALTURA,
+                                "TIPO_INTERVENCION": jsonFormularios[i].TIPO_INTERVENCION,
+                                "S_INTERVENCION": jsonFormularios[i].S_INTERVENCION,
+                                "OBS": jsonFormularios[i].OBS,
+                                "ID_ESTADO": jsonFormularios[i].ID_ESTADO,
+                                "S_ESTADO_ARBOL": jsonFormularios[i].S_ESTADO_ARBOL,
+                                "X": jsonFormularios[i].X,
+                                "Y": jsonFormularios[i].Y,
+                                "ID_TRAMITE": jsonFormularios[i].ID_TRAMITE,
+                                "ID_IND_TEMP": jsonFormularios[i].ID_IND_TEMP,
+                                "ID_INDIVIDUO": jsonFormularios[i].ID_INDIVIDUO,
+                                "ID_INTPROP": jsonFormularios[i].ID_INTPROP,
+                                "Requerida": false,
+                                "estado": "Terminado",
+                                "ID_ESTADO_CARGA": jsonFormularios[i].ID_ESTADO_CARGA
+                            };
+                        }
+                        myarray.push(item);
+                    }
+                    gridArbol(myarray);
+                }
+
+
+            }
+        });
+    }
+
+    function Acercar()
+    {
+        var gridArbolPintar = $("#GrdArboles").dxDataGrid('instance')._controllers.data._dataSource._items;
+        $("#Tab1 a").click();
+        if(gridArbolPintar.length>0)
+        {
+            var Xmin = 100;
+            var Xmax = -100;
+            var Ymin = 100;
+            var Ymax = -100;
+            var x = 0 ;
+            var y = 0 ;
+            Conectar();
+            m.deleteGraphics(" Arbol_*");
+            for(var i=0;i<gridArbolPintar.length;i++)
+            {
+                x += gridArbolPintar[i].X;
+                y += gridArbolPintar[i].Y;
+                if (gridArbolPintar[i].ID_INDIVIDUO=="-1")
+                {
+                    var Atributos = {
+                        "Altura": gridArbolPintar[i].ALTURA,
+                        "DAP": gridArbolPintar[i].DAP,
+                        "IdTemp": gridArbolPintar[i].ID_IND_TEMP
+                    };
+
+
+                    if (gridArbolPintar.length == 1)
+                    {
+                        m.zoomPto(gridArbolPintar[i].X, gridArbolPintar[i].Y, 4326, 15);
+                    } else {
+                        if (gridArbolPintar[i].X<Xmin)
+                            Xmin = gridArbolPintar[i].X;
+                        if (gridArbolPintar[i].X > Xmax)
+                            Xmax = gridArbolPintar[i].X;
+                        if (gridArbolPintar[i].Y < Ymin)
+                            Ymin = gridArbolPintar[i].Y;
+                        if (gridArbolPintar[i].Y > Ymax)
+                            Ymax = gridArbolPintar[i].Y;
+                    }
+                    if (gridArbolPintar[i].ID_ESTADO_CARGA == "0") {
+                        m.verPoint(gridArbolPintar[i].X, gridArbolPintar[i].Y, 4326, 255, 0, 0, " Arbol_" + gridArbolPintar[i].ID_IND_TEMP, Atributos, gridArbolPintar[i].S_ESPECIE, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" onClick="$(\'.esriPopup\').css({\'visibility\': \'hidden\'});parent.seleccionarNuevo(${IdTemp})" value="seleccionar"/>');
+
+                    } else {
+                        m.verPoint(gridArbolPintar[i].X, gridArbolPintar[i].Y, 4326, 255, 0, 0, " Arbol_" + gridArbolPintar[i].ID_IND_TEMP, Atributos, gridArbolPintar[i].S_ESPECIE, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/><input type="button" ');
+
+                    }
+
+
+                }
+                if (gridArbolPintar.length > 1)
+                {
+                    m.verPoint(gridArbolPintar[i].X, gridArbolPintar[i].Y, 4326, 255, 0, 0, " Arbol_" + gridArbolPintar[i].ID_IND_TEMP, Atributos, gridArbolPintar[i].S_ESPECIE, 'IdTemp:${IdTemp}<br/>Altura: ${Altura} <br/>DAP: ${DAP}  <br/>');
+
+                }
+            }
+            m.zoomPto(x/gridArbolPintar.length, y/gridArbolPintar.length, 4326, 12);
+        }
+    }
+
+
+
+    function seleccionarNuevo(idTemp) {
+        $("#txtNuevoArbol").val(idTemp);
+    }
+
+    function seleccionarExistente(idExistente) {
+        $("#txtExistenteArbol").val(idExistente);
+
+    }
+    function asociarArbol() {
+        $("#Tab4 a").click();
+        if ($("#txtNuevoArbol").val() == "") {
+            alert("Seleccione el árbol nuevo");
+            return;
+        }
+        if ($("#txtExistenteArbol").val() == "") {
+            alert("Seleccione el árbol existente");
+            return;
+        }
+        prenderload();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarAsociarArbol", "Sau")',
+            data: {
+                idTemp: $("#txtNuevoArbol").val(),
+                idArbol: $("#txtExistenteArbol").val()
+
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                apagarload();
+                Conectar();
+                m.deleteGraphics(" Arbol_" + $("#txtNuevoArbol").val());
+                CargarArbol(codigoTramite);
+                alert("Asociación exitosa");
+            }
+        });
+    }
+    function liberarArbol(idT,idA) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarAsociarArbol", "Sau")',
+            data: {
+                idTemp: idT,
+                idArbol: idA
+
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                Conectar();
+                m.deleteGraphics(" Arbol_" + $("#txtNuevoArbol").val());
+                CargarArbol(codigoTramite);
+                alert("La asociación se elimino con exito");
+            }
+        });
+    }
+
+    function GuardarCarga() {
+        var sw = 0;
+        if ($(txtContrato).val() == "")//carga excel
+        {
+            prenderload();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarTercepaso", "Sau")',
+                data: {
+                    idTramite: codigoTramite
+                },
+                beforeSend: function () { },
+                success: function (response) {
+                    apagarload();
+                    alert("Almacenamiento Exitoso");
+                    CargarArbol(codigoTramite);
+
+                }
+            });
+        } else//desde contrato
+        {
+            var arrArbol = $("#GrdArboles").dxDataGrid('instance')._controllers.data._dataSource._items;
+            var myarray = [];
+            if (arrArbol.length > 0) {
+                for (var i = 0; i < arrArbol.length; i++) {
+                    if (arrArbol[i].Requerida == true) {
+                        sw = sw + 1;
+                        var item = {
+                            "ID_ESPECIE": arrArbol[i].ID_ESPECIE,
+                            "S_ESPECIE": arrArbol[i].S_ESPECIE,
+                            "DAP": arrArbol[i].DAP,
+                            "ALTURA": arrArbol[i].ALTURA,
+                            "TIPO_INTERVENCION": arrArbol[i].TIPO_INTERVENCION,
+                            "S_INTERVENCION": arrArbol[i].S_INTERVENCION,
+                            "OBS": arrArbol[i].OBS,
+                            "ID_ESTADO": arrArbol[i].ID_ESTADO,
+                            "S_ESTADO_ARBOL": arrArbol[i].S_ESTADO_ARBOL,
+                            "X": arrArbol[i].X,
+                            "Y": arrArbol[i].Y,
+                            "ID_TRAMITE": arrArbol[i].ID_TRAMITE,
+                            "ID_IND_TEMP": arrArbol[i].ID_IND_TEMP,
+                            "ID_INDIVIDUO": arrArbol[i].ID_INDIVIDUO,
+                            "ID_INTPROP": arrArbol[i].ID_INTPROP,
+                            "ID_ESTADO_CARGA": arrArbol[i].ID_ESTADO_CARGA
+                        };
+                        myarray.push(item);
+                    }
+                }
+                var jsonInd = JSON.stringify(myarray);
+            }
+            if (sw == 0) {
+                alert("Seleccione el individuo");
+            } else {
+                prenderload();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("guardarArbolContrato", "Sau")',
+                    data: {
+                        jsonInf: jsonInd, fin: 1
+                    },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        apagarload();
+                        $("#btnGuardar").css("display", "none");
+                        $("#btnCerrar").css("display","none");
+                        alert("Almacenamiento exitoso");
+                        CargarArbol(codigoTramite);
+
+                    }
+                });
+
+            }
+        }
+    }
+    function seleccionarContrato(idTemp) {
+        var jsonArbol2 = $("#GrdArboles").dxDataGrid('instance')._controllers.data._dataSource._items;
+
+        if (jsonArbol2.length > 0) {
+            for (var i = 0; i < jsonArbol2.length; i++) {
+                if (jsonArbol2[i].ID_INDIVIDUO == idTemp) {
+                    jsonArbol2[i].Requerida = true;
+                }
+
+            }
+
+
+            $("#GrdArboles").dxDataGrid({ dataSource: jsonArbol2 });
+            var grid = $("#GrdArboles").dxDataGrid('instance');
+            grid.endUpdate();
+        }
+    }
+    function Cerrar()
+    {
+        window.open("/SIM/", "_self");
+
+    }
+
+    function confirmarGuardar() {
+        $("#msText").text("Esta acción ingresará nuevos árboles al inventario. esta seguro de ejecutar esta acción");
+        $("#msConfir").dialog({
+
+            buttons: {
+                "NO": function () {
+                    $(this).dialog("close");
+                },
+                "SI": function () {
+                    $(this).dialog("close");
+                    GuardarCarga();
+                }
+            }
+        });
+
+
+
+
+    }
+    function prenderload() {
+        $("#loadingImg").css({ "display": "block" });
+    }
+    function apagarload() {
+        $("#loadingImg").css({ "display": "none" });
+    }
+    function abrirArbolNuevo()
+    {
+        $("#Tab1 a").click();
+
+        mensajeAlmacenamiento("Seleccione en el mapa la ubicación del árbol");
+        conectar();
+        m.drawPoint(function (g, g1) {
+            m.noDraw();
+            $("#txtY").val(g.y);
+            $("#txtX").val(g.x);
+            $("#msAlmacenamiento").dialog("close");
+            abrirFormNuevoArbol();
+        }, 255, 0, 0, "ubica", srid);
+
+    }
+
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msTextAlm").text(mensaje);
+
+
+        $("#msAlmacenamiento").dialog({
+
+            buttons: [
+      {
+          text: "Aceptar",
+
+          click: function () { $(this).dialog("close"); },
+
+          class: "btn btn-default "
+      },
+            ]
+        });
+
+
+    }
+    function abrirFormNuevoArbol() {
+        arrArbolNuevo = new Array();
+        $("#pantallaArbol").dialog(
+        {
+
+            width: 800,
+            height: 400,
+            modal: true,
+            buttons: {
+                "Cancelar": function () {
+                    $(this).dialog("close");
+                },
+                "Guardar": function () {
+                    $("#frArbol").get(0).contentWindow.aceptar();
+
+                }
+            }, class: "btn btn-default"
+
+
+        });
+        $("#frArbol").attr("src", "@Url.Content("~/Sau/Sau/NuevoArbol")");
+
+    }
+    function fichaArbol(id) {
+        window.open("https://www.medellin.gov.co/sau/consultarArbolGeneralPdf.hyg?pestana=5&id=" + id);
+    }
+</script>
+

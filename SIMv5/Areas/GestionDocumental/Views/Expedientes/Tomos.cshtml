@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Tomos";
+    Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+}
+<script>
+    var IdExpediente = @(ViewBag.IdExpediente);
+    var Expediente = "@(ViewBag.Expediente)";
+</script>
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/Tomos.js?V=0.1")"></script>
+<style>
+    #BotonExp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Administrar Carpetas del expediente @(ViewBag.Expediente)</label>
+            </h3>
+        </div>
+        <div id="grdListaTomos"></div>
+        <br />
+        <div id="BotonExp">
+            <div id="btnNuevo"></div>
+        </div>
+        <br />
+        <label class="panelSIM-heading" style="text-align: center;width:100%;" id="TituloDocumentos"></label>
+        <div id="PanelDocs">
+            <div id="gridDocumentos"></div>
+        </div>
+        <div id="PopupNuevoTomo">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="control-label col-sm-2">Carpeta :</div>
+                    <div class="col-sm-2" id="txtTomo"></div>
+                    <div class="control-label col-sm-3">Ubicación carpeta :</div>
+                    <div class="col-sm-5" id="txtUbicacion"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-sm-2">Abierto :</div>
+                    <div class="col-sm-1" id="chkAbierto"></div>
+                    <div class="control-label col-sm-5">Cantidad folios por carpeta :</div>
+                    <div class="col-sm-2" id="txtFolios"></div>
+                </div>
+                <br />
+                <div id="BotonExp">
+                    <div id="btnGuarda"></div>
+                </div>
+            </div>
+        </div>
+        <div id="PopupFoliado">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Orden del documento :</div>
+                    <div class="col-sm-2" id="txtOrden"></div>
+                    <div class="control-label col-sm-4">Imágenes en documento :</div>
+                    <div class="col-sm-2" id="lblImagenes" style="font-weight: bold;"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Folio inicial :</div>
+                    <div class="col-sm-2" id="txtFolioIni"></div>
+                    <div class="control-label col-sm-4">Folio final :</div>
+                    <div class="col-sm-2" id="txtFolioFin"></div>
+                </div>
+                <br />
+                <div id="BotonExp">
+                    <div id="btnGuardaFolio"></div>
+                </div>
+            </div>
+        </div>
+        <div id="popDocumento">
+            <iframe src="" id="Documento" width="100%" height="100%"></iframe>
+        </div>
+        <div id="PopupIndicesDoc"></div>
+        <div id="PopupReordenar">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="control-label col-sm-6">Orden del documento :</div>
+                    <div class="col-sm-6" id="txtOrdenDoc"></div>
+                </div>
+                <br />
+                <div id="BotonExp">
+                    <div id="btnGuardaOrden"></div>
+                </div>
+            </div>
+        </div>
+        <div id="popupBuscaDoc">
+            <iframe src="" id="BuscarDoc" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,888 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Linq.Dynamic;
+using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
+using System.Linq.Expressions;
+using System.Text;
+using System.Drawing;
+using SIM.Data;
+using SIM.Areas.Tramites.Models;
+using System.Data.Entity;
+using System.IO;
+using System.Data.Entity.Core.Objects;
+using SIM.Utilidades;
+using PdfSharp.Pdf.IO;
+using DevExpress.Pdf;
+using O2S.Components.PDF4NET.PDFFile;
+using AreaMetro.Seguridad;
+using DevExpress.BarCodes;
+using System.Globalization;
+using System.Drawing.Text;
+using System.Drawing.Drawing2D;
+using System.Web.Hosting;
+using System.Drawing.Imaging;
+using PdfSharp.Drawing;
+using SIM.Data.Tramites;
+using SIM.Models;
+
+namespace SIM.Areas.Tramites
+{
+    public struct DatosAvanzaTareaTramite
+    {
+        public int tipo; //
+        public string codTramites;
+        public int codTarea;
+        public int codTareaSiguiente;
+        public int codFuncionario;
+        public string copias;
+        public string comentario;
+    }
+
+    public struct DatosAvanzaTareaTramiteFormulario
+    {
+        public string codTramites;
+        public int codTarea;
+        public int codTareaSiguiente;
+        public int codFuncionario;
+        public string formularioSiguiente;
+        public string copias;
+        public string comentario;
+    }
+
+    public struct Respuesta
+    {
+        public string tipoRespuesta; // OK, Error
+        public string detalleRespuesta;
+    }
+
+    public class TramitesLibrary
+    {
+        EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+        EntitiesTramitesOracle dbTramites = new EntitiesTramitesOracle();
+
+        public Respuesta AvanzaTareaTramite(DatosAvanzaTareaTramite datosAvanzaTareaTramite)
+        {
+            bool resultado = true;
+
+            try
+            {
+                foreach (string codTramite in datosAvanzaTareaTramite.codTramites.Split(','))
+                {
+                    ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
+
+                    if (codTramite.Contains("|"))
+                    {
+                        var codTramiteSel = codTramite.Split('|')[0];
+                        var codTareaSel = codTramite.Split('|')[1];
+                        dbTramites.SP_AVANZA_TAREA(datosAvanzaTareaTramite.tipo, Convert.ToInt32(codTramiteSel), 0, Convert.ToInt32(codTareaSel), datosAvanzaTareaTramite.codFuncionario, datosAvanzaTareaTramite.copias, datosAvanzaTareaTramite.comentario, rtaResultado);
+                    }
+                    else
+                    {
+                        dbTramites.SP_AVANZA_TAREA(datosAvanzaTareaTramite.tipo, Convert.ToInt32(codTramite), datosAvanzaTareaTramite.codTarea, datosAvanzaTareaTramite.codTareaSiguiente, datosAvanzaTareaTramite.codFuncionario, datosAvanzaTareaTramite.copias, datosAvanzaTareaTramite.comentario, rtaResultado);
+                    }
+
+                    if (rtaResultado.Value.ToString() != "OK")
+                    {
+                        resultado = false;
+                    }
+                }
+
+                if (resultado)
+                    return new Respuesta() { tipoRespuesta = "OK", detalleRespuesta = "Trámites Avanzados Satisfactoriamente." };
+                else
+                    return new Respuesta() { tipoRespuesta = "ERROR", detalleRespuesta = "Por lo menos un Trámite no fue avanzado Satisfactoriamente" };
+            }
+            catch (Exception error)
+            {
+                return new Respuesta() { tipoRespuesta = "ERROR", detalleRespuesta = "Por lo menos un Trámite no fue avanzado Satisfactoriamente.\r\n" + error.Message };
+            }
+        }
+
+        public Respuesta AvanzaTareaTramiteFormulario(DatosAvanzaTareaTramiteFormulario datosAvanzaTareaTramiteFormulario)
+        {
+            bool resultado = true;
+
+            try
+            {
+                foreach (string codTramite in datosAvanzaTareaTramiteFormulario.codTramites.Split(','))
+                {
+                    ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
+
+                    if (codTramite.Contains("|"))
+                    {
+                        var codTramiteSel = codTramite.Split('|')[0];
+                        var codTareaSel = codTramite.Split('|')[1];
+
+                        dbTramites.SP_AVANZA_TAREA_FORMULARIO(Convert.ToInt32(codTramiteSel), datosAvanzaTareaTramiteFormulario.codTarea, Convert.ToInt32(codTareaSel), datosAvanzaTareaTramiteFormulario.codFuncionario, datosAvanzaTareaTramiteFormulario.formularioSiguiente, datosAvanzaTareaTramiteFormulario.copias, datosAvanzaTareaTramiteFormulario.comentario, rtaResultado);
+                    }
+                    else
+                    {
+                        dbTramites.SP_AVANZA_TAREA_FORMULARIO(Convert.ToInt32(codTramite), datosAvanzaTareaTramiteFormulario.codTarea, datosAvanzaTareaTramiteFormulario.codTareaSiguiente, datosAvanzaTareaTramiteFormulario.codFuncionario, datosAvanzaTareaTramiteFormulario.formularioSiguiente, datosAvanzaTareaTramiteFormulario.copias, datosAvanzaTareaTramiteFormulario.comentario, rtaResultado);
+                    }
+
+
+                    if (rtaResultado.Value.ToString() != "OK")
+                    {
+                        resultado = false;
+                    }
+                }
+
+                if (resultado)
+                    return new Respuesta() { tipoRespuesta = "OK", detalleRespuesta = "Trámites Avanzados Satisfactoriamente." };
+                else
+                    return new Respuesta() { tipoRespuesta = "ERROR", detalleRespuesta = "Por lo menos un Trámite no fue avanzado Satisfactoriamente" };
+            }
+            catch (Exception error)
+            {
+                return new Respuesta() { tipoRespuesta = "ERROR", detalleRespuesta = "Por lo menos un Trámite no fue avanzado Satisfactoriamente.\r\n" + error.Message };
+            }
+        }
+
+        public dynamic DocumentoRadicado(int id, bool radicado, int idRadicado, bool watermark, string textoFirma)
+        {
+            EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+            int numPaginas = 0;
+            var streamDocumento = new MemoryStream();
+
+            PROYECCION_DOC proyeccionDocumento = dbSIM.PROYECCION_DOC.Where(pd => pd.ID_PROYECCION_DOC == id).FirstOrDefault();
+
+            if (proyeccionDocumento != null)
+            {
+                //PdfDocumentProcessor documento = new PdfDocumentProcessor();
+                PdfSharp.Pdf.PdfDocument documento = new PdfSharp.Pdf.PdfDocument();
+
+                // Se carga el documento principal
+
+                PROYECCION_DOC_DET_ARCH archivoPrincipal = (from da in dbSIM.PROYECCION_DOC_DET_ARCH
+                                                            where da.PROYECCION_DOC_ARCHIVOS.ID_PROYECCION_DOC == id && da.PROYECCION_DOC_ARCHIVOS.N_TIPO == 1 && da.S_ACTIVO == "S"
+                                                            select da).FirstOrDefault();
+
+                //var firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id && pf.S_ESTADO == "S");
+                var firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id);
+
+                if (archivoPrincipal != null)
+                {
+                    if (Path.GetExtension(archivoPrincipal.S_RUTA_ARCHIVO).ToUpper().Contains("DOCX"))
+                    {
+                        MemoryStream streamDocumentoWord;
+                        streamDocumentoWord = (MemoryStream)Archivos.ConvertirAPDF(archivoPrincipal.S_RUTA_ARCHIVO);
+
+                        var inputDocument = PdfReader.Open(streamDocumentoWord, PdfDocumentOpenMode.Import);
+                        var count = inputDocument.PageCount;
+                        for (int idx = 0; idx < count; idx++)
+                        {
+                            PdfSharp.Pdf.PdfPage page = inputDocument.Pages[idx];
+
+                            documento.AddPage(page);
+
+                            numPaginas++;
+                        }
+
+                        streamDocumentoWord.Close();
+                        streamDocumentoWord.Dispose();
+                    }
+                    else
+                    {
+                        PdfDocumentProcessor documentoDE = new PdfDocumentProcessor();
+                        documentoDE.LoadDocument(archivoPrincipal.S_RUTA_ARCHIVO, true);
+
+                        MemoryStream documentoDEPDF = new MemoryStream();
+                        documentoDE.SaveDocument(documentoDEPDF);
+                        documentoDE.CloseDocument();
+
+                        //var inputDocument = PdfReader.Open(archivoPrincipal.S_RUTA_ARCHIVO, PdfDocumentOpenMode.Import);
+                        var inputDocument = PdfReader.Open(documentoDEPDF, PdfDocumentOpenMode.Import);
+                        var count = inputDocument.PageCount;
+                        for (int idx = 0; idx < count; idx++)
+                        {
+                            PdfSharp.Pdf.PdfPage page = inputDocument.Pages[idx];
+
+                            documento.AddPage(page);
+
+                            numPaginas++;
+                        }
+
+                        inputDocument.Close();
+                        inputDocument.Dispose();
+                        documentoDEPDF.Close();
+                        documentoDEPDF.Dispose();
+                    }
+
+                    numPaginas = documento.Pages.Count;
+
+                    PdfDocumentProcessor documentoRadicado = new PdfDocumentProcessor();
+                    documentoRadicado.LoadDocument(archivoPrincipal.S_RUTA_ARCHIVO, true);
+
+                    foreach (PROYECCION_DOC_FIRMAS firma in firmas)
+                    {
+                        PdfTextSearchResults ubicacionFirma = documentoRadicado.FindText("[Firma" + firma.N_ORDEN.ToString() + "]");
+
+                        if (ubicacionFirma.Status == PdfTextSearchStatus.Found)
+                        {
+                            // Dibujo Firmas
+                            Image imagenFirma = Security.ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true, textoFirma);
+                            //Image imagenFirma = (new AreaMetro.Seguridad.FuncionarioC()).ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true);
+
+                            if (imagenFirma != null)
+                            {
+                                float topPagina = (float)ubicacionFirma.Page.CropBox.Top;
+
+                                /*using (PdfGraphics graphics = documento.CreateGraphics())
+                                {
+                                    graphics.FillRectangle(Brushes.White, new RectangleF((float)ubicacionFirma.Rectangles[0].Left, topPagina - (float)ubicacionFirma.Rectangles[0].Top, (float)ubicacionFirma.Rectangles[0].Width, (float)ubicacionFirma.Rectangles[0].Height));
+                                    graphics.AddToPageForeground(ubicacionFirma.Page, 72, 72);
+
+                                    graphics.DrawImage(imagenFirma, new RectangleF((float)ubicacionFirma.Rectangles[0].Left, topPagina - (float)ubicacionFirma.Rectangles[0].Top, 240, 78));
+                                    graphics.AddToPageForeground(ubicacionFirma.Page, 72, 72);
+                                }*/
+
+
+                                XGraphics graphics = XGraphics.FromPdfPage(documento.Pages[ubicacionFirma.PageNumber-1]);
+                                graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionFirma.Rectangles[0].Left), Convert.ToInt32(topPagina - (float)ubicacionFirma.Rectangles[0].Top)-2, Convert.ToInt32(ubicacionFirma.Rectangles[0].Width), Convert.ToInt32(ubicacionFirma.Rectangles[0].Height)+2));
+                                DrawImage(graphics, imagenFirma, Convert.ToInt32(ubicacionFirma.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionFirma.Rectangles[0].Top), 240, 78);
+                                graphics.Dispose();
+                            }
+                        }
+                    }
+
+                    if (radicado)
+                    {
+                        MemoryStream imagenEtiqueta = new MemoryStream();
+
+                        Radicador radicador = new Radicador();
+                        var imagenRadicado = radicador.ObtenerImagenRadicadoArea(idRadicado);
+                        imagenRadicado.Save(imagenEtiqueta, ImageFormat.Bmp);
+
+                        XGraphics graphics = XGraphics.FromPdfPage(documento.Pages[0]);
+                        DrawImage(graphics, imagenRadicado, 300, 30, 288, 72);
+                        graphics.Dispose();
+
+                        string seriesDobleEtiqueta = ConfigurationManager.AppSettings["SeriesProyeccionDobleEtiqueta"];
+
+                        if (seriesDobleEtiqueta != null && seriesDobleEtiqueta.Trim() != "" && ("," + seriesDobleEtiqueta.Replace(" ", "") + ",").Contains("," + proyeccionDocumento.CODSERIE.ToString() + ","))
+                        {
+                            if (documento.Pages.Count > 1)
+                            {
+                                graphics = XGraphics.FromPdfPage(documento.Pages[documento.Pages.Count - 1]);
+                                DrawImage(graphics, imagenRadicado, 300, 30, 288, 72);
+                                graphics.Dispose();
+                            }
+                        }
+                    }
+
+                    PdfTextSearchResults ubicacionTramites = documentoRadicado.FindText("[Tramites]");
+
+                    if (ubicacionTramites.Status == PdfTextSearchStatus.Found)
+                    {
+                        /*Image imagenFirma = ObtenerImagenTextoTramites(proyeccionDocumento.S_TRAMITES);
+
+                        float topPagina = (float)ubicacionTramites.Page.CropBox.Top;
+
+                        XGraphics graphics = XGraphics.FromPdfPage(documento.Pages[ubicacionTramites.PageNumber - 1]);
+                        graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionTramites.Rectangles[0].Left), Convert.ToInt32(topPagina - (float)ubicacionTramites.Rectangles[0].Top) - 2, Convert.ToInt32(ubicacionTramites.Rectangles[0].Width), Convert.ToInt32(ubicacionTramites.Rectangles[0].Height) + 2));
+                        DrawImage(graphics, imagenFirma, Convert.ToInt32(ubicacionTramites.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionTramites.Rectangles[0].Top), Convert.ToInt32(Convert.ToDouble(imagenFirma.Width)*0.7), Convert.ToInt32(Convert.ToDouble(imagenFirma.Height)*0.7));
+                        
+                        graphics.Dispose();*/
+
+                        float topPagina = (float)ubicacionTramites.Page.CropBox.Top;
+
+                        XGraphics graphics = XGraphics.FromPdfPage(documento.Pages[ubicacionTramites.PageNumber - 1]);
+
+                        graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionTramites.Rectangles[0].Left), Convert.ToInt32(topPagina - (float)ubicacionTramites.Rectangles[0].Top) - 2, Convert.ToInt32(ubicacionTramites.Rectangles[0].Width), Convert.ToInt32(ubicacionTramites.Rectangles[0].Height) + 2));
+
+                        XFont font = new XFont("Arial", 9, XFontStyle.Regular);
+                        var formatter = new XTextFormatter(graphics);
+
+                        List<string> lineas;
+
+                        if (proyeccionDocumento.S_TRAMITES != null && proyeccionDocumento.S_TRAMITES.Trim() != "")
+                        {
+                            lineas = LineasTextoTramitesPdf(proyeccionDocumento.S_TRAMITES, font, graphics);
+                        }
+                        else
+                        {
+                            lineas = new List<string>();
+
+                            lineas.Add("Trámites:");
+                            lineas.Add("Nuevo Trámite.");
+                        }
+
+
+                        int cont = 0;
+                        foreach (string linea in lineas)
+                        {
+                            var layoutRectangle = new XRect(Convert.ToInt32(ubicacionTramites.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionTramites.Rectangles[0].Top) + cont*10, 450, 10);
+
+                            formatter.DrawString(linea, font, XBrushes.Black, layoutRectangle, XStringFormats.TopLeft);
+                            cont++;
+                        }
+
+                        graphics.Dispose();
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+
+                var archivosAdjuntos = (from da in dbSIM.PROYECCION_DOC_DET_ARCH
+                                        where da.PROYECCION_DOC_ARCHIVOS.ID_PROYECCION_DOC == id && da.PROYECCION_DOC_ARCHIVOS.N_TIPO == 2 && da.PROYECCION_DOC_ARCHIVOS.S_ACTIVO == "S" && da.S_ACTIVO == "S"
+                                        select da);
+
+                if (archivosAdjuntos != null)
+                {
+                    foreach (var archivoAdjunto in archivosAdjuntos)
+                    {
+                        if (Path.GetExtension(archivoAdjunto.S_RUTA_ARCHIVO).ToUpper().Contains("DOCX"))
+                        {
+                            MemoryStream streamDocumentoWord;
+                            streamDocumentoWord = (MemoryStream)Archivos.ConvertirAPDF(archivoAdjunto.S_RUTA_ARCHIVO);
+
+                            var inputDocument = PdfReader.Open(streamDocumentoWord, PdfDocumentOpenMode.Import);
+                            var count = inputDocument.PageCount;
+                            for (int idx = 0; idx < count; idx++)
+                            {
+                                PdfSharp.Pdf.PdfPage page = inputDocument.Pages[idx];
+
+                                documento.AddPage(page);
+
+                                numPaginas++;
+                            }
+
+                            streamDocumentoWord.Close();
+                            streamDocumentoWord.Dispose();
+                        }
+                        else
+                        {
+                            PdfDocumentProcessor documentoDE = new PdfDocumentProcessor();
+                            documentoDE.LoadDocument(archivoAdjunto.S_RUTA_ARCHIVO, true);
+
+                            MemoryStream documentoDEPDF = new MemoryStream();
+                            documentoDE.SaveDocument(documentoDEPDF);
+                            documentoDE.CloseDocument();
+
+                            var inputDocument = PdfReader.Open(documentoDEPDF, PdfDocumentOpenMode.Import);
+
+                            //var inputDocument = PdfReader.Open(archivoAdjunto.S_RUTA_ARCHIVO, PdfDocumentOpenMode.Import);
+
+                            var count = inputDocument.PageCount;
+                            for (int idx = 0; idx < count; idx++)
+                            {
+                                PdfSharp.Pdf.PdfPage page = inputDocument.Pages[idx];
+
+                                documento.AddPage(page);
+
+                                numPaginas++;
+                            }
+
+                            inputDocument.Close();
+                            inputDocument.Dispose();
+                            documentoDEPDF.Close();
+                            documentoDEPDF.Dispose();
+                        }
+
+                        numPaginas = documento.Pages.Count;
+                    }
+                }
+
+                if (watermark)
+                    AddWatermark("BORRADOR", documento);
+
+                MemoryStream ms = new MemoryStream();
+                documento.Save(ms);
+
+                var documentoRetorno = ms.GetBuffer();
+
+                documento.Close();
+                ms.Close();
+                ms.Dispose();
+
+                return new { documentoBinario = documentoRetorno, numPaginas = numPaginas };
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void DocumentoMarcaAgua(string rutaArchivo, string watermark, bool copiaOriginal)
+        {
+            if (copiaOriginal)
+            {
+                File.Copy(rutaArchivo, rutaArchivo.Replace(".pdf", "_Anulado.pdf"));
+            }
+
+            PdfSharp.Pdf.PdfDocument documento = PdfReader.Open(rutaArchivo, PdfDocumentOpenMode.Modify);
+
+            AddWatermarkRed("ANULADO", documento);
+
+            MemoryStream archivo = new MemoryStream();
+
+            documento.Save(archivo);
+            documento.Close();
+            documento.Dispose();
+
+            FileStream archivoAnulado = new FileStream(rutaArchivo, FileMode.Create);
+            archivo.WriteTo(archivoAnulado);
+
+            archivoAnulado.Close();
+            archivoAnulado.Dispose();
+            archivo.Close();
+            archivo.Dispose();
+        }
+
+        private List<string> LineasTextoTramitesPdf(string tramites, XFont font, XGraphics graphics)
+        {
+            double tamanoLinea = 480;
+            string linea = "";
+            List<string> lineas = new List<string>();
+
+            tramites = tramites.Replace(" ", "") + ".";
+
+            lineas.Add("Trámites:");
+
+            var listaTramites = tramites.Split(',');
+
+            foreach (string tramite in listaTramites)
+            {
+                if (linea == "")
+                    linea = tramite;
+                else
+                {
+                    XSize sizeLine = graphics.MeasureString(linea + "," + tramite, font);
+
+                    if (sizeLine.Width <= tamanoLinea)
+                    {
+                        linea += "," + tramite;
+                    }
+                    else
+                    {
+                        lineas.Add(linea + ",");
+                        linea = tramite;
+                    }
+                }
+            }
+
+            lineas.Add(linea);
+
+            return lineas;
+        }
+
+        private System.Drawing.Image ObtenerImagenTextoTramites(string tramites)
+        {
+            int letrasLinea = 110;
+            string linea = "";
+            List<string> lineas = new List<string>();
+
+            tramites = tramites.Replace(" ", "") + ".";
+
+            lineas.Add("Trámites:");
+
+            var listaTramites = tramites.Split(',');
+
+            foreach (string tramite in listaTramites)
+            {
+                if (linea == "")
+                    linea = tramite;
+                else
+                {
+                    if ((linea + "," + tramite).Length <= letrasLinea)
+                    {
+                        linea += "," + tramite;
+                    }
+                    else
+                    {
+                        lineas.Add(linea + ",");
+                        linea = tramite;
+                    }
+                }
+            }
+
+            lineas.Add(linea);
+
+            int textLength = tramites.Length;
+            int fontSize = 10;
+
+            // Set canvas width & height
+            int width;
+            int height;
+
+            //width = (fontSize * textLength) - ((textLength * fontSize) / 3);
+            width = (fontSize * letrasLinea) - ((letrasLinea * fontSize) / 3);
+            height = (fontSize + 2)*lineas.Count;
+
+            // Initialize graphics
+            RectangleF rectF = new RectangleF(-1, -1, width+1, height+1);
+            Bitmap pic = new Bitmap(width, height, PixelFormat.Format64bppArgb);
+            Graphics g = Graphics.FromImage(pic);
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+            // Set colors
+            Color fontColor = Color.Black;
+            Color rectColor = Color.White;
+            SolidBrush fgBrush = new SolidBrush(fontColor);
+            SolidBrush bgBrush = new SolidBrush(rectColor);
+
+            g.FillRectangle(bgBrush, rectF);
+
+            FontFamily fontFamily = FontFamily.GenericMonospace;
+
+            FontStyle style = FontStyle.Regular;
+            Font font = new Font(fontFamily, fontSize, style, GraphicsUnit.Pixel);
+
+            // Finally, draw the font
+            //g.DrawString(tramites, font, fgBrush, rectF, StringFormat.GenericDefault);
+
+            int cont = 0;
+            foreach (string lineaTexto in lineas)
+            {
+                RectangleF rectFLinea = new RectangleF(0, cont*(fontSize + 2), width, (fontSize + 2));
+
+                g.DrawString(lineaTexto, font, fgBrush, rectFLinea, StringFormat.GenericDefault);
+                cont++;
+            }
+
+            // Dispose objects
+            return pic;
+        }
+
+        private void DrawImage(XGraphics gfx, System.Drawing.Image imageFirma, int x, int y, int width, int height)
+        {
+            var stream = new System.IO.MemoryStream();
+            imageFirma.Save(stream, ImageFormat.Jpeg);
+            stream.Position = 0;
+
+            XImage image = XImage.FromStream(stream);
+            gfx.DrawImage(image, x, y, width, height);
+        }
+
+        public dynamic DocumentoRadicadoDE(int id, bool radicado, int idRadicado, bool watermark, string textoFirma)
+        {
+            EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+            int numPaginas = 0;
+
+            PROYECCION_DOC proyeccionDocumento = dbSIM.PROYECCION_DOC.Where(pd => pd.ID_PROYECCION_DOC == id).FirstOrDefault();
+
+            if (proyeccionDocumento != null)
+            {
+                PdfDocumentProcessor documento = new PdfDocumentProcessor();
+
+                // Se carga el documento principal
+
+                PROYECCION_DOC_DET_ARCH archivoPrincipal = (from da in dbSIM.PROYECCION_DOC_DET_ARCH
+                                                            where da.PROYECCION_DOC_ARCHIVOS.ID_PROYECCION_DOC == id && da.PROYECCION_DOC_ARCHIVOS.N_TIPO == 1 && da.S_ACTIVO == "S"
+                                                            select da).FirstOrDefault();
+
+                //var firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id && pf.S_ESTADO == "S");
+                var firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id);
+
+                if (archivoPrincipal != null)
+                {
+                    if (Path.GetExtension(archivoPrincipal.S_RUTA_ARCHIVO).ToUpper().Contains("DOCX"))
+                    {
+                        MemoryStream streamDocumento;
+                        streamDocumento = (MemoryStream)Archivos.ConvertirAPDF(archivoPrincipal.S_RUTA_ARCHIVO);
+
+                        documento.LoadDocument(streamDocumento, true);
+                        streamDocumento.Close();
+                        streamDocumento.Dispose();
+                    }
+                    else
+                    {
+                        documento.AppendDocument(archivoPrincipal.S_RUTA_ARCHIVO);
+                    }
+
+                    numPaginas = documento.Document.Pages.Count;
+
+                    foreach (PROYECCION_DOC_FIRMAS firma in firmas)
+                    {
+                        PdfTextSearchResults ubicacionFirma = documento.FindText("[Firma" + firma.N_ORDEN.ToString() + "]");
+
+                        if (ubicacionFirma.Status == PdfTextSearchStatus.Found)
+                        {
+                            // Dibujo Firmas
+                            Image imagenFirma = Security.ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true, textoFirma);
+                            //Image imagenFirma = (new AreaMetro.Seguridad.FuncionarioC()).ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true);
+
+                            if (imagenFirma != null)
+                            {
+                                float topPagina = (float)ubicacionFirma.Page.CropBox.Top;
+
+                                using (PdfGraphics graphics = documento.CreateGraphics())
+                                {
+                                    graphics.FillRectangle(Brushes.White, new RectangleF((float)ubicacionFirma.Rectangles[0].Left, topPagina - (float)ubicacionFirma.Rectangles[0].Top, (float)ubicacionFirma.Rectangles[0].Width, (float)ubicacionFirma.Rectangles[0].Height));
+                                    graphics.AddToPageForeground(ubicacionFirma.Page, 72, 72);
+
+                                    graphics.DrawImage(imagenFirma, new RectangleF((float)ubicacionFirma.Rectangles[0].Left, topPagina - (float)ubicacionFirma.Rectangles[0].Top, 240, 78));
+                                    graphics.AddToPageForeground(ubicacionFirma.Page, 72, 72);
+                                }
+                            }
+                        }
+                    }
+
+                    if (radicado)
+                    {
+                        float topPagina = (float)documento.Document.Pages[0].CropBox.Top;
+
+                        /*Radicado01Report etiqueta = new Radicado01Report();
+                        MemoryStream imagenEtiqueta = etiqueta.GenerarEtiqueta(idRadicado, "png");*/
+
+                        MemoryStream imagenEtiqueta = new MemoryStream();
+
+                        Radicador radicador = new Radicador();
+                        var imagenRadicado = radicador.ObtenerImagenRadicadoArea(idRadicado);
+                        imagenRadicado.Save(imagenEtiqueta, ImageFormat.Bmp);
+
+                        using (PdfGraphics graphics = documento.CreateGraphics())
+                        {
+                            graphics.DrawImage(imagenEtiqueta, new RectangleF(300, 30, 288, 72));
+                            graphics.AddToPageBackground(documento.Document.Pages[0], 72, 72);
+                        }
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+
+                var archivosAdjuntos = (from da in dbSIM.PROYECCION_DOC_DET_ARCH
+                                        where da.PROYECCION_DOC_ARCHIVOS.ID_PROYECCION_DOC == id && da.PROYECCION_DOC_ARCHIVOS.N_TIPO == 2 && da.PROYECCION_DOC_ARCHIVOS.S_ACTIVO == "S" && da.S_ACTIVO == "S"
+                                        select da);
+
+                if (archivosAdjuntos != null)
+                {
+                    foreach (var archivoAdjunto in archivosAdjuntos)
+                    {
+                        if (Path.GetExtension(archivoAdjunto.S_RUTA_ARCHIVO).ToUpper().Contains("DOCX"))
+                        {
+                            MemoryStream streamDocumento;
+                            streamDocumento = (MemoryStream)Archivos.ConvertirAPDF(archivoAdjunto.S_RUTA_ARCHIVO);
+
+                            documento.AppendDocument(streamDocumento);
+                            streamDocumento.Close();
+                            streamDocumento.Dispose();
+                        }
+                        else
+                        {
+                            documento.AppendDocument(archivoAdjunto.S_RUTA_ARCHIVO);
+                        }
+
+                        numPaginas = documento.Document.Pages.Count;
+                    }
+                }
+
+                MemoryStream ms = new MemoryStream();
+
+                documento.SaveDocument(ms);
+
+                if (watermark)
+                    this.AddWatermarkDE("BORRADOR", ms);
+
+                var documentoRetorno = ms.GetBuffer();
+
+                documento.CloseDocument();
+                ms.Close();
+                ms.Dispose();
+
+                return new { documentoBinario = documentoRetorno, numPaginas = numPaginas };
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string ValidarFirmasDocumento(int id)
+        {
+            int numFirmas = 0;
+            string respuesta = "";
+            PROYECCION_DOC proyeccionDocumento = dbSIM.PROYECCION_DOC.Where(pd => pd.ID_PROYECCION_DOC == id).FirstOrDefault();
+
+            if (proyeccionDocumento != null)
+            {
+                //PdfDocumentProcessor documento = new PdfDocumentProcessor();
+                PdfSharp.Pdf.PdfDocument documento = new PdfSharp.Pdf.PdfDocument();
+
+                // Se carga el documento principal
+
+                PROYECCION_DOC_DET_ARCH archivoPrincipal = (from da in dbSIM.PROYECCION_DOC_DET_ARCH
+                                                            where da.PROYECCION_DOC_ARCHIVOS.ID_PROYECCION_DOC == id && da.PROYECCION_DOC_ARCHIVOS.N_TIPO == 1 && da.S_ACTIVO == "S"
+                                                            select da).FirstOrDefault();
+
+                var firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id);
+
+                if (archivoPrincipal != null)
+                {
+                    PdfDocumentProcessor documentoRadicado = new PdfDocumentProcessor();
+                    documentoRadicado.LoadDocument(archivoPrincipal.S_RUTA_ARCHIVO, true);
+
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        PdfTextSearchResults ubicacionFirma = documentoRadicado.FindText("[Firma" + i.ToString() + "]");
+
+                        if (ubicacionFirma.Status == PdfTextSearchStatus.Found)
+                        {
+                            ubicacionFirma = documentoRadicado.FindText("[Firma" + i.ToString() + "]");
+
+                            if (ubicacionFirma.Status == PdfTextSearchStatus.Found)
+                            {
+                                respuesta = "La etiqueta [Firma" + i.ToString() + "] se encuentra repetida en el documento Principal.";
+                                break;
+                            }
+
+                            numFirmas++;
+
+                            var firmaConfigurada = firmas.Where(f => f.N_ORDEN == i).FirstOrDefault();
+
+                            if (firmaConfigurada == null)
+                            {
+                                respuesta = "La cantidad etiquetas de Firmas en el documento no corresponden a las firmas configuradas para el documento.";
+                                break;
+                            }
+                        }
+                    }
+
+                    documentoRadicado.CloseDocument();
+                    documentoRadicado.Dispose();
+
+                    if (respuesta == "" && numFirmas != firmas.Count())
+                    {
+                        respuesta = "La cantidad etiquetas de Firmas en el documento no corresponden a las firmas configuradas para el documento.";
+                    }
+                }
+                else
+                {
+                    respuesta = "Error Cargando el Archivo Principal.";
+                }
+            }
+            else
+            {
+                respuesta = "Error Consultando el Documento.";
+            }
+
+            return respuesta;
+        }
+
+        private void AddWatermark(string text, PdfSharp.Pdf.PdfDocument document)
+        {
+            try
+            {
+                string fontName = "Arial Black";
+                //int fontSize = 12;
+                //var fontBase = new Font(fontName, fontSize);
+                var font = new XFont(fontName, 60, XFontStyle.Bold);
+
+                foreach (var page in document.Pages)
+                {
+                    var gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Prepend);
+                    // Get the size (in points) of the text.
+                    var size = gfx.MeasureString(text, font);
+                    // Define a rotation transformation at the center of the page.
+                    gfx.TranslateTransform(page.Width / 2, page.Height / 2);
+                    gfx.RotateTransform(-Math.Atan(page.Height / page.Width) * 180 / Math.PI);
+                    gfx.TranslateTransform(-page.Width / 2, -page.Height / 2);
+
+                    // Create a string format.
+                    var format = new XStringFormat();
+                    format.Alignment = XStringAlignment.Near;
+                    format.LineAlignment = XLineAlignment.Near;
+                    // Create a dimmed red brush.
+                    //XBrush brush = new XSolidBrush(XColor.FromArgb(128, 255, 0, 0));
+                    XBrush brush = new XSolidBrush(XColor.FromKnownColor(KnownColor.LightGray));
+                    // Draw the string.
+                    gfx.DrawString(text, font, brush, new XPoint((page.Width - size.Width) / 2, (page.Height - size.Height) / 2), format);
+                }
+            } catch (Exception error)
+            {
+                string e = error.Message;
+            }
+        }
+
+        private void AddWatermarkDE(string text, string fileName, string resultFileName)
+        {
+            using (var documentProcessor = new PdfDocumentProcessor())
+            {
+                string fontName = "Arial Black";
+                int fontSize = 12;
+                PdfStringFormat stringFormat = PdfStringFormat.GenericTypographic;
+                stringFormat.Alignment = PdfStringAlignment.Center;
+                stringFormat.LineAlignment = PdfStringAlignment.Center;
+                documentProcessor.LoadDocument(fileName);
+
+                using (var brush = new SolidBrush(Color.FromArgb(63, Color.Black)))
+                {
+                    using (var font = new Font(fontName, fontSize))
+                    {
+                        foreach (var page in documentProcessor.Document.Pages)
+                        {
+                            //Single watermarkSize = Convert.ToSingle(page.CropBox.Width * 0.75);
+                            Single watermarkSize = Convert.ToSingle(page.CropBox.Width * 0.9);
+                            using (var graphics = documentProcessor.CreateGraphics())
+                            {
+                                SizeF stringSize = graphics.MeasureString(text, font);
+                                Single scale = watermarkSize / stringSize.Width;
+                                graphics.TranslateTransform(Convert.ToSingle(page.CropBox.Width * 0.5), Convert.ToSingle(page.CropBox.Height * 0.5));
+                                graphics.RotateTransform(-45.0F);
+                                graphics.TranslateTransform(Convert.ToSingle(-stringSize.Width * scale * 0.5), Convert.ToSingle(-stringSize.Height * scale * 0.5));
+                                using (var actualFont = new Font(fontName, fontSize * scale))
+                                {
+                                    RectangleF rect = new RectangleF(0, 0, stringSize.Width * scale, stringSize.Height * scale);
+                                    graphics.DrawString(text, actualFont, brush, rect, stringFormat);
+                                }
+                                graphics.AddToPageForeground(page, 72, 72);
+                            }
+                        }
+                    }
+                }
+                documentProcessor.SaveDocument(resultFileName);
+            }
+        }
+
+        private void AddWatermarkDE(string text, Stream document)
+        {
+            using (var documentProcessor = new PdfDocumentProcessor())
+            {
+                string fontName = "Arial Black";
+                int fontSize = 12;
+                PdfStringFormat stringFormat = PdfStringFormat.GenericTypographic;
+                stringFormat.Alignment = PdfStringAlignment.Center;
+                stringFormat.LineAlignment = PdfStringAlignment.Center;
+                documentProcessor.LoadDocument(document);
+
+                using (var brush = new SolidBrush(Color.FromArgb(63, Color.Black)))
+                {
+                    using (var font = new Font(fontName, fontSize))
+                    {
+                        foreach (var page in documentProcessor.Document.Pages)
+                        {
+                            //Single watermarkSize = Convert.ToSingle(page.CropBox.Width * 0.75);
+                            Single watermarkSize = Convert.ToSingle(page.CropBox.Width * 0.9);
+                            using (var graphics = documentProcessor.CreateGraphics())
+                            {
+                                SizeF stringSize = graphics.MeasureString(text, font);
+                                Single scale = watermarkSize / stringSize.Width;
+                                graphics.TranslateTransform(Convert.ToSingle(page.CropBox.Width * 0.5), Convert.ToSingle(page.CropBox.Height * 0.5));
+                                graphics.RotateTransform(-45.0F);
+                                graphics.TranslateTransform(Convert.ToSingle(-stringSize.Width * scale * 0.5), Convert.ToSingle(-stringSize.Height * scale * 0.5));
+                                using (var actualFont = new Font(fontName, fontSize * scale))
+                                {
+                                    RectangleF rect = new RectangleF(0, 0, stringSize.Width * scale, stringSize.Height * scale);
+                                    graphics.DrawString(text, actualFont, brush, rect, stringFormat);
+                                }
+                                graphics.AddToPageForeground(page, 72, 72);
+                            }
+                        }
+                    }
+                }
+
+                documentProcessor.SaveDocument(document);
+            }
+        }
+    }
+}

@@ -1,0 +1,72 @@
+﻿@using SIM.Areas.Poeca.Models
+@model SIM.Data.Poeca.DPOEAIR_ACCION
+
+@{
+    ViewBag.Title = "POECA | Confirmar Eliminación";
+
+    List<DxListItem> medidasSeleccionadas = ViewData["medidasSeleccionadas"] as List<DxListItem>;
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>¿Estás seguro/a de eliminar esta Acción?</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_NOMBRE_ACCION):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_NOMBRE_ACCION)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_DESCRIPCION):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_DESCRIPCION)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TPOEAIR_MEDIDA_ACCION):
+                </dt>
+
+                <dd>
+                    @*<div class="selection-list-box">*@
+                        @(
+                            Html.DevExtreme().List()
+                                .ID("dx-list-medidas-sectores")
+                                .DataSource(medidasSeleccionadas)
+                                .SelectionMode(ListSelectionMode.None)
+                                .Height(167)
+                                .ScrollingEnabled(true)
+                                .UseNativeScrolling(true)
+                                .SearchExpr("text")
+                        )
+                    @*</div>*@
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-primary" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Eliminar" class="btn btn-block btn-danger" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

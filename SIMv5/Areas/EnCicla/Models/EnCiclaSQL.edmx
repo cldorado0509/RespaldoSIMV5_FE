@@ -1,0 +1,556 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ModelEnCiclaSQL.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="B_APARCAMIENTOS">
+          <Key>
+            <PropertyRef Name="Id_Aparcamiento" />
+          </Key>
+          <Property Name="Id_Aparcamiento" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="50" />
+          <Property Name="Num_Puestos" Type="int" Nullable="false" />
+          <Property Name="NombreCorto" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="TEspera" Type="int" Nullable="false" />
+          <Property Name="TAperturaManto" Type="int" Nullable="false" />
+          <Property Name="TAperturaPrestamo" Type="int" Nullable="false" />
+          <Property Name="EsHabilitada" Type="bit" Nullable="false" />
+          <Property Name="UltimaActualizacion" Type="smalldatetime" />
+          <Property Name="Id_Poblacion" Type="int" />
+          <Property Name="id_team" Type="varchar" MaxLength="25" />
+          <Property Name="Compañia_3g" Type="varchar" MaxLength="30" />
+          <Property Name="Telefono" Type="varchar" MaxLength="15" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="mail" Type="varchar" MaxLength="40" />
+          <Property Name="oculta" Type="bit" />
+          <Property Name="tiempo_cadencia" Type="int" />
+          <Property Name="es_manual" Type="bit" />
+          <Property Name="descripcion_web" Type="varchar" MaxLength="100" />
+          <Property Name="orden" Type="int" />
+          <Property Name="foto" Type="varchar" MaxLength="150" />
+          <Property Name="zona" Type="int" />
+          <Property Name="Direccion" Type="text" />
+          <Property Name="cerrada" Type="int" />
+          <Property Name="es_cdo" Type="int" />
+          <Property Name="Oculta_App" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'enciclapru.dbo.I_HISTORICO_PRESTAMO' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="I_HISTORICO_PRESTAMO">
+          <Key>
+            <PropertyRef Name="Id_Historico_Prestamo" />
+          </Key>
+          <Property Name="Id_Historico_Prestamo" Type="bigint" Nullable="false" />
+          <Property Name="Id_Usuario" Type="int" />
+          <Property Name="Id_Tag_Bicicleta" Type="varchar" MaxLength="20" />
+          <Property Name="Fecha_Prestamo" Type="datetime" />
+          <Property Name="Fecha_Devolucion" Type="datetime" />
+          <Property Name="Id_Aparcamiento_Origen" Type="int" />
+          <Property Name="Posicion_Origen" Type="int" />
+          <Property Name="Id_Aparcamiento_Destino" Type="int" />
+          <Property Name="Posicion_Destino" Type="int" />
+          <Property Name="Importe" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="DescripcionImporte" Type="varchar" MaxLength="50" />
+          <Property Name="operario" Type="varchar" MaxLength="250" />
+          <Property Name="Num_Bici_Hist" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="P_BICICLETAS">
+          <Key>
+            <PropertyRef Name="Id_Bicicleta_Tag" />
+          </Key>
+          <Property Name="Id_Bicicleta_Tag" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Id_Estado" Type="int" Nullable="false" />
+          <Property Name="Id_Tipo" Type="int" />
+          <Property Name="Num_bicicleta" Type="int" />
+          <Property Name="Id_Poblacion" Type="int" />
+          <Property Name="Cod_Barras" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="P_OPERADORES">
+          <Key>
+            <PropertyRef Name="Login" />
+          </Key>
+          <Property Name="Login" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="Passwd" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="Per_Consulta" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Per_Modificacion" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="25" />
+          <Property Name="Apellido1" Type="varchar" MaxLength="25" />
+          <Property Name="Apellido2" Type="varchar" MaxLength="25" />
+          <Property Name="DNI" Type="varchar" MaxLength="9" />
+          <Property Name="Direccion" Type="varchar" MaxLength="50" />
+          <Property Name="CP" Type="varchar" MaxLength="6" />
+          <Property Name="Poblacion" Type="varchar" MaxLength="25" />
+          <Property Name="Id_Provincia" Type="int" />
+          <Property Name="Telefono" Type="varchar" MaxLength="9" />
+        </EntityType>
+        <EntityType Name="P_USUARIOS">
+          <Key>
+            <PropertyRef Name="Id_Usuario" />
+          </Key>
+          <Property Name="Id_Usuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id_Sitio_Registro" Type="int" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" />
+          <Property Name="Apellido1" Type="varchar" MaxLength="25" />
+          <Property Name="Apellido2" Type="varchar" MaxLength="25" />
+          <Property Name="DNI" Type="varchar" MaxLength="25" />
+          <Property Name="Letra" Type="varchar" MaxLength="1" />
+          <Property Name="Direccion" Type="varchar" MaxLength="250" />
+          <Property Name="CP" Type="varchar" MaxLength="5" />
+          <Property Name="Telefono" Type="varchar" MaxLength="150" />
+          <Property Name="Numero_Tarjeta" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="Fecha_Alta" Type="datetime" />
+          <Property Name="Fecha_Baja" Type="datetime" />
+          <Property Name="PIN" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Es_Tutor" Type="bit" Nullable="false" />
+          <Property Name="Es_Turista" Type="bit" Nullable="false" />
+          <Property Name="Es_Residente" Type="bit" Nullable="false" />
+          <Property Name="Nombre_M" Type="varchar" MaxLength="50" />
+          <Property Name="Apellido1_M" Type="varchar" MaxLength="20" />
+          <Property Name="Apellido2_M" Type="varchar" MaxLength="20" />
+          <Property Name="Fecha_Nacimiento" Type="datetime" />
+          <Property Name="Es_Mantenimiento" Type="bit" />
+          <Property Name="Id_Perfil" Type="int" />
+          <Property Name="Fecha_Caducidad" Type="datetime" />
+          <Property Name="TarjetaExterna" Type="varchar" MaxLength="20" />
+          <Property Name="LoginUsuario" Type="varchar" MaxLength="10" />
+          <Property Name="Clave" Type="varchar" MaxLength="10" />
+          <Property Name="email" Type="varchar" MaxLength="100" />
+          <Property Name="PendienteOnLine" Type="bit" />
+          <Property Name="Poblacion" Type="varchar" MaxLength="50" />
+          <Property Name="Provincia" Type="varchar" MaxLength="50" />
+          <Property Name="idTipoUso" Type="int" />
+          <Property Name="Monedero" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="FechaFinMonedero" Type="datetime" />
+          <Property Name="idDescuento" Type="int" />
+          <Property Name="TarjetaCredito" Type="varchar" MaxLength="20" />
+          <Property Name="MesCaducidad" Type="varchar" MaxLength="2" />
+          <Property Name="AnoCaducidad" Type="varchar" MaxLength="2" />
+          <Property Name="CosteAlta" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Descuento" Type="int" />
+          <Property Name="idNacionalidad" Type="int" />
+          <Property Name="DNI_M" Type="varchar" MaxLength="15" />
+          <Property Name="IdTipoBonoSolicitado" Type="int" />
+          <Property Name="Sexo" Type="varchar" MaxLength="1" />
+          <Property Name="Sexo_M" Type="varchar" MaxLength="1" />
+          <Property Name="TelefonoMovil" Type="varchar" MaxLength="20" />
+          <Property Name="Fecha_Nacimiento_M" Type="datetime" />
+          <Property Name="TarjetaEnOficina" Type="bit" />
+          <Property Name="Id_Poblacion" Type="int" />
+          <Property Name="Fecha_Caducidad_Seguro" Type="datetime" />
+          <Property Name="Codigo_Patrocinador" Type="varchar" MaxLength="20" />
+          <Property Name="Comision_Patrocinador" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Contacto" Type="bit" />
+          <Property Name="desha_dni" Type="bit" />
+          <Property Name="RH" Type="varchar" MaxLength="5" />
+          <Property Name="PerContacto" Type="varchar" MaxLength="80" />
+          <Property Name="TelContacto" Type="varchar" MaxLength="100" />
+          <Property Name="Estrato" Type="int" />
+          <Property Name="Ocupacion" Type="varchar" MaxLength="100" />
+          <Property Name="Institucion" Type="varchar" MaxLength="200" />
+          <Property Name="Departamento" Type="varchar" MaxLength="50" />
+          <Property Name="Consecutivo" Type="varchar" MaxLength="50" />
+          <Property Name="Empresa" Type="varchar" MaxLength="100" />
+          <Property Name="tel_fijo" Type="varchar" MaxLength="25" />
+          <Property Name="metro" Type="bit" />
+          <Property Name="TransporteRemplaza" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Zonas">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Titulo" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="ModelEnCiclaSQLStoreContainer">
+          <EntitySet Name="B_APARCAMIENTOS" EntityType="Self.B_APARCAMIENTOS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="P_BICICLETAS" EntityType="Self.P_BICICLETAS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="P_OPERADORES" EntityType="Self.P_OPERADORES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="P_USUARIOS" EntityType="Self.P_USUARIOS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Zonas" EntityType="Self.Zonas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="I_HISTORICO_PRESTAMO" EntityType="Self.I_HISTORICO_PRESTAMO" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [I_HISTORICO_PRESTAMO].[Id_Historico_Prestamo] AS [Id_Historico_Prestamo], 
+    [I_HISTORICO_PRESTAMO].[Id_Usuario] AS [Id_Usuario], 
+    [I_HISTORICO_PRESTAMO].[Id_Tag_Bicicleta] AS [Id_Tag_Bicicleta], 
+    [I_HISTORICO_PRESTAMO].[Fecha_Prestamo] AS [Fecha_Prestamo], 
+    [I_HISTORICO_PRESTAMO].[Fecha_Devolucion] AS [Fecha_Devolucion], 
+    [I_HISTORICO_PRESTAMO].[Id_Aparcamiento_Origen] AS [Id_Aparcamiento_Origen], 
+    [I_HISTORICO_PRESTAMO].[Posicion_Origen] AS [Posicion_Origen], 
+    [I_HISTORICO_PRESTAMO].[Id_Aparcamiento_Destino] AS [Id_Aparcamiento_Destino], 
+    [I_HISTORICO_PRESTAMO].[Posicion_Destino] AS [Posicion_Destino], 
+    [I_HISTORICO_PRESTAMO].[Importe] AS [Importe], 
+    [I_HISTORICO_PRESTAMO].[DescripcionImporte] AS [DescripcionImporte], 
+    [I_HISTORICO_PRESTAMO].[operario] AS [operario], 
+    [I_HISTORICO_PRESTAMO].[Num_Bici_Hist] AS [Num_Bici_Hist]
+    FROM [dbo].[I_HISTORICO_PRESTAMO] AS [I_HISTORICO_PRESTAMO]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ModelEnCiclaSQL" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="B_APARCAMIENTOS">
+          <Key>
+            <PropertyRef Name="Id_Aparcamiento" />
+          </Key>
+          <Property Name="Id_Aparcamiento" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Num_Puestos" Type="Int32" Nullable="false" />
+          <Property Name="NombreCorto" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TEspera" Type="Int32" Nullable="false" />
+          <Property Name="TAperturaManto" Type="Int32" Nullable="false" />
+          <Property Name="TAperturaPrestamo" Type="Int32" Nullable="false" />
+          <Property Name="EsHabilitada" Type="Boolean" Nullable="false" />
+          <Property Name="UltimaActualizacion" Type="DateTime" Precision="0" />
+          <Property Name="Id_Poblacion" Type="Int32" />
+          <Property Name="id_team" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Compañia_3g" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Telefono" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="Longitude" Type="Double" />
+          <Property Name="mail" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="oculta" Type="Boolean" />
+          <Property Name="tiempo_cadencia" Type="Int32" />
+          <Property Name="es_manual" Type="Boolean" />
+          <Property Name="descripcion_web" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="orden" Type="Int32" />
+          <Property Name="foto" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="zona" Type="Int32" />
+          <Property Name="Direccion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="cerrada" Type="Int32" />
+          <Property Name="es_cdo" Type="Int32" />
+          <Property Name="Oculta_App" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="P_BICICLETAS">
+          <Key>
+            <PropertyRef Name="Id_Bicicleta_Tag" />
+          </Key>
+          <Property Name="Id_Bicicleta_Tag" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Id_Estado" Type="Int32" Nullable="false" />
+          <Property Name="Id_Tipo" Type="Int32" />
+          <Property Name="Num_bicicleta" Type="Int32" />
+          <Property Name="Id_Poblacion" Type="Int32" />
+          <Property Name="Cod_Barras" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="P_OPERADORES">
+          <Key>
+            <PropertyRef Name="Login" />
+          </Key>
+          <Property Name="Login" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Passwd" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Per_Consulta" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Per_Modificacion" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido1" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido2" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DNI" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="Direccion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CP" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="Poblacion" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Id_Provincia" Type="Int32" />
+          <Property Name="Telefono" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="P_USUARIOS">
+          <Key>
+            <PropertyRef Name="Id_Usuario" />
+          </Key>
+          <Property Name="Id_Usuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id_Sitio_Registro" Type="Int32" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido1" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido2" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DNI" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Letra" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Direccion" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="CP" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Telefono" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Numero_Tarjeta" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Fecha_Alta" Type="DateTime" Precision="3" />
+          <Property Name="Fecha_Baja" Type="DateTime" Precision="3" />
+          <Property Name="PIN" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Es_Tutor" Type="Boolean" Nullable="false" />
+          <Property Name="Es_Turista" Type="Boolean" Nullable="false" />
+          <Property Name="Es_Residente" Type="Boolean" Nullable="false" />
+          <Property Name="Nombre_M" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido1_M" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido2_M" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Fecha_Nacimiento" Type="DateTime" Precision="3" />
+          <Property Name="Es_Mantenimiento" Type="Boolean" />
+          <Property Name="Id_Perfil" Type="Int32" />
+          <Property Name="Fecha_Caducidad" Type="DateTime" Precision="3" />
+          <Property Name="TarjetaExterna" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LoginUsuario" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Clave" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PendienteOnLine" Type="Boolean" />
+          <Property Name="Poblacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Provincia" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="idTipoUso" Type="Int32" />
+          <Property Name="Monedero" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FechaFinMonedero" Type="DateTime" Precision="3" />
+          <Property Name="idDescuento" Type="Int32" />
+          <Property Name="TarjetaCredito" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MesCaducidad" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="AnoCaducidad" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="CosteAlta" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Descuento" Type="Int32" />
+          <Property Name="idNacionalidad" Type="Int32" />
+          <Property Name="DNI_M" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="IdTipoBonoSolicitado" Type="Int32" />
+          <Property Name="Sexo" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Sexo_M" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="TelefonoMovil" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Fecha_Nacimiento_M" Type="DateTime" Precision="3" />
+          <Property Name="TarjetaEnOficina" Type="Boolean" />
+          <Property Name="Id_Poblacion" Type="Int32" />
+          <Property Name="Fecha_Caducidad_Seguro" Type="DateTime" Precision="3" />
+          <Property Name="Codigo_Patrocinador" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Comision_Patrocinador" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Contacto" Type="Boolean" />
+          <Property Name="desha_dni" Type="Boolean" />
+          <Property Name="RH" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="PerContacto" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="TelContacto" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Estrato" Type="Int32" />
+          <Property Name="Ocupacion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Institucion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Departamento" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Consecutivo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Empresa" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="tel_fijo" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="metro" Type="Boolean" />
+          <Property Name="TransporteRemplaza" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Zonas">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Titulo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="I_HISTORICO_PRESTAMO">
+          <Key>
+            <PropertyRef Name="Id_Historico_Prestamo" />
+          </Key>
+          <Property Name="Id_Historico_Prestamo" Type="Int64" Nullable="false" />
+          <Property Name="Id_Usuario" Type="Int32" />
+          <Property Name="Id_Tag_Bicicleta" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Fecha_Prestamo" Type="DateTime" Precision="3" />
+          <Property Name="Fecha_Devolucion" Type="DateTime" Precision="3" />
+          <Property Name="Id_Aparcamiento_Origen" Type="Int32" />
+          <Property Name="Posicion_Origen" Type="Int32" />
+          <Property Name="Id_Aparcamiento_Destino" Type="Int32" />
+          <Property Name="Posicion_Destino" Type="Int32" />
+          <Property Name="Importe" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DescripcionImporte" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="operario" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Num_Bici_Hist" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="EntitiesEnCiclaSQL" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="B_APARCAMIENTOS" EntityType="Self.B_APARCAMIENTOS" />
+          <EntitySet Name="P_BICICLETAS" EntityType="Self.P_BICICLETAS" />
+          <EntitySet Name="P_OPERADORES" EntityType="Self.P_OPERADORES" />
+          <EntitySet Name="P_USUARIOS" EntityType="Self.P_USUARIOS" />
+          <EntitySet Name="Zonas" EntityType="Self.Zonas" />
+          <EntitySet Name="I_HISTORICO_PRESTAMO" EntityType="Self.I_HISTORICO_PRESTAMO" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelEnCiclaSQLStoreContainer" CdmEntityContainer="EntitiesEnCiclaSQL">
+          <EntitySetMapping Name="B_APARCAMIENTOS">
+            <EntityTypeMapping TypeName="ModelEnCiclaSQL.B_APARCAMIENTOS">
+              <MappingFragment StoreEntitySet="B_APARCAMIENTOS">
+                <ScalarProperty Name="Id_Aparcamiento" ColumnName="Id_Aparcamiento" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Num_Puestos" ColumnName="Num_Puestos" />
+                <ScalarProperty Name="NombreCorto" ColumnName="NombreCorto" />
+                <ScalarProperty Name="TEspera" ColumnName="TEspera" />
+                <ScalarProperty Name="TAperturaManto" ColumnName="TAperturaManto" />
+                <ScalarProperty Name="TAperturaPrestamo" ColumnName="TAperturaPrestamo" />
+                <ScalarProperty Name="EsHabilitada" ColumnName="EsHabilitada" />
+                <ScalarProperty Name="UltimaActualizacion" ColumnName="UltimaActualizacion" />
+                <ScalarProperty Name="Id_Poblacion" ColumnName="Id_Poblacion" />
+                <ScalarProperty Name="id_team" ColumnName="id_team" />
+                <ScalarProperty Name="Compañia_3g" ColumnName="Compañia_3g" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="mail" ColumnName="mail" />
+                <ScalarProperty Name="oculta" ColumnName="oculta" />
+                <ScalarProperty Name="tiempo_cadencia" ColumnName="tiempo_cadencia" />
+                <ScalarProperty Name="es_manual" ColumnName="es_manual" />
+                <ScalarProperty Name="descripcion_web" ColumnName="descripcion_web" />
+                <ScalarProperty Name="orden" ColumnName="orden" />
+                <ScalarProperty Name="foto" ColumnName="foto" />
+                <ScalarProperty Name="zona" ColumnName="zona" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="cerrada" ColumnName="cerrada" />
+                <ScalarProperty Name="es_cdo" ColumnName="es_cdo" />
+                <ScalarProperty Name="Oculta_App" ColumnName="Oculta_App" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="P_BICICLETAS">
+            <EntityTypeMapping TypeName="ModelEnCiclaSQL.P_BICICLETAS">
+              <MappingFragment StoreEntitySet="P_BICICLETAS">
+                <ScalarProperty Name="Id_Bicicleta_Tag" ColumnName="Id_Bicicleta_Tag" />
+                <ScalarProperty Name="Id_Estado" ColumnName="Id_Estado" />
+                <ScalarProperty Name="Id_Tipo" ColumnName="Id_Tipo" />
+                <ScalarProperty Name="Num_bicicleta" ColumnName="Num_bicicleta" />
+                <ScalarProperty Name="Id_Poblacion" ColumnName="Id_Poblacion" />
+                <ScalarProperty Name="Cod_Barras" ColumnName="Cod_Barras" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="P_OPERADORES">
+            <EntityTypeMapping TypeName="ModelEnCiclaSQL.P_OPERADORES">
+              <MappingFragment StoreEntitySet="P_OPERADORES">
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Passwd" ColumnName="Passwd" />
+                <ScalarProperty Name="Per_Consulta" ColumnName="Per_Consulta" />
+                <ScalarProperty Name="Per_Modificacion" ColumnName="Per_Modificacion" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
+                <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
+                <ScalarProperty Name="DNI" ColumnName="DNI" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="CP" ColumnName="CP" />
+                <ScalarProperty Name="Poblacion" ColumnName="Poblacion" />
+                <ScalarProperty Name="Id_Provincia" ColumnName="Id_Provincia" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="P_USUARIOS">
+            <EntityTypeMapping TypeName="ModelEnCiclaSQL.P_USUARIOS">
+              <MappingFragment StoreEntitySet="P_USUARIOS">
+                <ScalarProperty Name="Id_Usuario" ColumnName="Id_Usuario" />
+                <ScalarProperty Name="Id_Sitio_Registro" ColumnName="Id_Sitio_Registro" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
+                <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
+                <ScalarProperty Name="DNI" ColumnName="DNI" />
+                <ScalarProperty Name="Letra" ColumnName="Letra" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="CP" ColumnName="CP" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="Numero_Tarjeta" ColumnName="Numero_Tarjeta" />
+                <ScalarProperty Name="Fecha_Alta" ColumnName="Fecha_Alta" />
+                <ScalarProperty Name="Fecha_Baja" ColumnName="Fecha_Baja" />
+                <ScalarProperty Name="PIN" ColumnName="PIN" />
+                <ScalarProperty Name="Es_Tutor" ColumnName="Es_Tutor" />
+                <ScalarProperty Name="Es_Turista" ColumnName="Es_Turista" />
+                <ScalarProperty Name="Es_Residente" ColumnName="Es_Residente" />
+                <ScalarProperty Name="Nombre_M" ColumnName="Nombre_M" />
+                <ScalarProperty Name="Apellido1_M" ColumnName="Apellido1_M" />
+                <ScalarProperty Name="Apellido2_M" ColumnName="Apellido2_M" />
+                <ScalarProperty Name="Fecha_Nacimiento" ColumnName="Fecha_Nacimiento" />
+                <ScalarProperty Name="Es_Mantenimiento" ColumnName="Es_Mantenimiento" />
+                <ScalarProperty Name="Id_Perfil" ColumnName="Id_Perfil" />
+                <ScalarProperty Name="Fecha_Caducidad" ColumnName="Fecha_Caducidad" />
+                <ScalarProperty Name="TarjetaExterna" ColumnName="TarjetaExterna" />
+                <ScalarProperty Name="LoginUsuario" ColumnName="LoginUsuario" />
+                <ScalarProperty Name="Clave" ColumnName="Clave" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="PendienteOnLine" ColumnName="PendienteOnLine" />
+                <ScalarProperty Name="Poblacion" ColumnName="Poblacion" />
+                <ScalarProperty Name="Provincia" ColumnName="Provincia" />
+                <ScalarProperty Name="idTipoUso" ColumnName="idTipoUso" />
+                <ScalarProperty Name="Monedero" ColumnName="Monedero" />
+                <ScalarProperty Name="FechaFinMonedero" ColumnName="FechaFinMonedero" />
+                <ScalarProperty Name="idDescuento" ColumnName="idDescuento" />
+                <ScalarProperty Name="TarjetaCredito" ColumnName="TarjetaCredito" />
+                <ScalarProperty Name="MesCaducidad" ColumnName="MesCaducidad" />
+                <ScalarProperty Name="AnoCaducidad" ColumnName="AnoCaducidad" />
+                <ScalarProperty Name="CosteAlta" ColumnName="CosteAlta" />
+                <ScalarProperty Name="Descuento" ColumnName="Descuento" />
+                <ScalarProperty Name="idNacionalidad" ColumnName="idNacionalidad" />
+                <ScalarProperty Name="DNI_M" ColumnName="DNI_M" />
+                <ScalarProperty Name="IdTipoBonoSolicitado" ColumnName="IdTipoBonoSolicitado" />
+                <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+                <ScalarProperty Name="Sexo_M" ColumnName="Sexo_M" />
+                <ScalarProperty Name="TelefonoMovil" ColumnName="TelefonoMovil" />
+                <ScalarProperty Name="Fecha_Nacimiento_M" ColumnName="Fecha_Nacimiento_M" />
+                <ScalarProperty Name="TarjetaEnOficina" ColumnName="TarjetaEnOficina" />
+                <ScalarProperty Name="Id_Poblacion" ColumnName="Id_Poblacion" />
+                <ScalarProperty Name="Fecha_Caducidad_Seguro" ColumnName="Fecha_Caducidad_Seguro" />
+                <ScalarProperty Name="Codigo_Patrocinador" ColumnName="Codigo_Patrocinador" />
+                <ScalarProperty Name="Comision_Patrocinador" ColumnName="Comision_Patrocinador" />
+                <ScalarProperty Name="Contacto" ColumnName="Contacto" />
+                <ScalarProperty Name="desha_dni" ColumnName="desha_dni" />
+                <ScalarProperty Name="RH" ColumnName="RH" />
+                <ScalarProperty Name="PerContacto" ColumnName="PerContacto" />
+                <ScalarProperty Name="TelContacto" ColumnName="TelContacto" />
+                <ScalarProperty Name="Estrato" ColumnName="Estrato" />
+                <ScalarProperty Name="Ocupacion" ColumnName="Ocupacion" />
+                <ScalarProperty Name="Institucion" ColumnName="Institucion" />
+                <ScalarProperty Name="Departamento" ColumnName="Departamento" />
+                <ScalarProperty Name="Consecutivo" ColumnName="Consecutivo" />
+                <ScalarProperty Name="Empresa" ColumnName="Empresa" />
+                <ScalarProperty Name="tel_fijo" ColumnName="tel_fijo" />
+                <ScalarProperty Name="metro" ColumnName="metro" />
+                <ScalarProperty Name="TransporteRemplaza" ColumnName="TransporteRemplaza" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Zonas">
+            <EntityTypeMapping TypeName="ModelEnCiclaSQL.Zonas">
+              <MappingFragment StoreEntitySet="Zonas">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="I_HISTORICO_PRESTAMO">
+            <EntityTypeMapping TypeName="ModelEnCiclaSQL.I_HISTORICO_PRESTAMO">
+              <MappingFragment StoreEntitySet="I_HISTORICO_PRESTAMO">
+                <ScalarProperty Name="Id_Historico_Prestamo" ColumnName="Id_Historico_Prestamo" />
+                <ScalarProperty Name="Id_Usuario" ColumnName="Id_Usuario" />
+                <ScalarProperty Name="Id_Tag_Bicicleta" ColumnName="Id_Tag_Bicicleta" />
+                <ScalarProperty Name="Fecha_Prestamo" ColumnName="Fecha_Prestamo" />
+                <ScalarProperty Name="Fecha_Devolucion" ColumnName="Fecha_Devolucion" />
+                <ScalarProperty Name="Id_Aparcamiento_Origen" ColumnName="Id_Aparcamiento_Origen" />
+                <ScalarProperty Name="Posicion_Origen" ColumnName="Posicion_Origen" />
+                <ScalarProperty Name="Id_Aparcamiento_Destino" ColumnName="Id_Aparcamiento_Destino" />
+                <ScalarProperty Name="Posicion_Destino" ColumnName="Posicion_Destino" />
+                <ScalarProperty Name="Importe" ColumnName="Importe" />
+                <ScalarProperty Name="DescripcionImporte" ColumnName="DescripcionImporte" />
+                <ScalarProperty Name="operario" ColumnName="operario" />
+                <ScalarProperty Name="Num_Bici_Hist" ColumnName="Num_Bici_Hist" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

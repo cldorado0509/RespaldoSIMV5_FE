@@ -1,0 +1,13 @@
+15:16:01 - ProyeccionDocumento [PostAvanzarDocumento - 482 ] : Referencia a objeto no establecida como instancia de un objeto.
+15:30:29 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026619, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored
+15:30:29 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026620, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored

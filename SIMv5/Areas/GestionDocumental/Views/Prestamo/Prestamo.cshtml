@@ -1,0 +1,124 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/prestamo.js")"></script>
+<div ng-app="SIM">
+    <div ng-controller="PrestamoController" class="panel panel-default">
+        <div dx-popup="popBusquedaDocumentosSettings" id="popBusquedaDocumentos">
+            <div dx-scroll-view="{ direction: 'both' }">
+                <div class="dx-fieldset" style="padding: 20px !important;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div class="dx-field-label">Texto de B&uacute;squeda</div>
+                                <div class="dx-field-value">
+                                    <div dx-text-box="bindingOptions: { value: 'busqueda.Texto' }}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <label class="header">Préstamo de Documentos</label>
+            </h3>
+        </div>
+        <div class="dx-fieldset">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Identificación</div>
+                        <div class="dx-field-value" style="width:5%;">
+                            <div dx-number-box="{bindingOptions: { value: 'datosTercero.N_DIGITOVER' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Dígito de Verficación Requerido' }] }"></div>
+                        </div>
+                        <div class="dx-field-value" style="width:2%;padding-left:0px">
+                            -
+                        </div>
+                        <div class="dx-field-value" style="width:35%;">
+                            <div dx-number-box="IdentificacionSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Identificación Requerida' }] }"></div>
+                        </div>
+                        <div class="dx-field-value" style="width:17%;">
+                            <div dx-select-box="TipoDocumentoSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Documento Requerido' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Género</div>
+                        <div class="dx-field-value">
+                            <div dx-select-box="GeneroSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Género Requerido' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Nombres</div>
+                        <div class="dx-field-value">
+                            <div dx-text-box="{bindingOptions: { value: 'nombres.NOMBRES' }, readOnly: true}" dx-validator="{ validationRules: [{ type: 'required', message: 'Nombres Requerido' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Apellidos</div>
+                        <div class="dx-field-value">
+                            <div dx-text-box="{bindingOptions: { value: 'nombres.APELLIDOS' }, readOnly: true}" dx-validator="{ validationRules: [{ type: 'required', message: 'Apellidos Requerido' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="dx-fieldset">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div dx-button="btnBuscarDocumentosSettings" id="btnBuscarDocumentos"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Código Documento</div>
+                        <div class="dx-field-value">
+                            <div dx-text-box="CodigoDocumentoSettings" id="codigoDocumento"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Observación</div>
+                        <div class="dx-field-value">
+                            <div dx-text-box="ObservacionesDocumentoSettings" id="observacionDocumento"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div dx-data-grid="grdDocumentosSeleccionadosSettings" id="grdDocumentosSeleccionados"></div>
+                <hr />
+                <div class="dx-fieldset">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow">Observaciones Préstamo</div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-text-box="{bindingOptions: { value: 'datosPrestamo.S_OBSERVACIONES' } }" id="observaciones"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="panel-body clearfix">
+                    <div dx-button="btnPrestarDocumentosSettings" id="btnPrestarDocumentos"></div>
+                </div>
+            </div>
+        </div>

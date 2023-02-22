@@ -1,0 +1,117 @@
+﻿@model SIM.Areas.Seguridad.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Iniciar sesión";
+}
+<br />
+<br />
+<style type="text/css">
+    #formLogin {
+        width: 460px;
+        height: 210px;
+        padding: 20px 40px 40px 40px;
+        border-radius: 3px;
+        box-shadow: black 10px 10px 10px;
+        background-color: rgb(234, 234, 234);
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);
+    }
+
+    .height-box {
+        min-height: 100px !important;
+    }
+</style>
+<script>
+
+    function registrar() {
+        location.href = "@Url.Action("Register", "Account", new { area = "Seguridad" })";
+    }
+</script>
+@*<div class="row">*@
+<div class="column">
+    @*<div class="col-md-8">*@
+    <section id="loginForm">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div align="center">
+                <div id="formLogin">
+                    <div class="form-group">
+                        <label for="user" class="text-left">Usuario</label>
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Usuario", id = "user", required = "required" })
+                        @Html.ValidationMessageFor(m => m.UserName)
+                    </div>
+                    <div class="form-group">
+                        <label for="pass" class="text-left">Contraseña</label>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña", id = "pass" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-default"><span aria-hidden="true" class="glyphicon glyphicon-user"></span>Iniciar Sesi&oacute;n</button>
+                    <button type="button" class="btn btn-default" onclick="registrar();"><span aria-hidden="true" class="glyphicon glyphicon-list-alt"></span>Registrarse</button>
+                    @Html.ValidationSummary(true)
+                </div>
+                <br />
+                @Html.ActionLink("Olvidó su contraseña?", "RecuperarClave")
+            </div>
+
+            @*<div>
+                    <section id="socialLoginForm">
+                        @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
+                    </section>
+                </div>*@
+
+        }
+    </section>
+</div>
+<div class="container" style="position: relative">
+    <div class="col-12 null-pad row">
+        <div class="row col-12" id="accesosD1">
+            <div class="col-lg-1 col-md-1"></div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-4 padd-box " onclick="abrirurl('https://webservices.metropol.gov.co/sim/')">
+                <div class="cursorAccesos height-box bg-herramientas-institucionales" style="background-color:#006996;border-radius: 9px;padding: 11px 4px;">
+                    <span class="circle-enla"><img src="https://www.metropol.gov.co/SiteAssets/Lists/AccesosDirectos/AllItems/icono-sim4.svg" alt="SIM v.4"></span>
+                    <p class="link-enlace">SIM v.4</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-4 padd-box " onclick="abrirurl('https://login.microsoftonline.com')">
+                <div class="cursorAccesos height-box bg-herramientas-institucionales" style="background-color:#006996;border-radius: 9px;padding: 11px 4px;">
+                    <span class="circle-enla"><img src="https://www.metropol.gov.co/PublishingImages/Lists/AccesosDirectos/AllItems/office365-01.svg" alt="Office 365"></span>
+                    <p class="link-enlace">Office 365</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-4 padd-box " onclick="abrirurl('https://mail.metropol.gov.co/owa')">
+                <div class="cursorAccesos height-box bg-herramientas-institucionales" style="background-color:#006996;border-radius: 9px;padding: 11px 4px;">
+                    <span class="circle-enla"><img src="https://www.metropol.gov.co/PublishingImages/Lists/AccesosDirectos/AllItems/icono-email.svg" alt="Office 365"></span>
+                    <p class="link-enlace">Correo institucional</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-4 padd-box " onclick="abrirurl('https://webservices.metropol.gov.co/helpdesk/')">
+                <div class="cursorAccesos height-box bg-herramientas-institucionales" style="background-color:#006996;border-radius: 9px;padding: 11px 4px;">
+                    <span class="circle-enla"><img src="https://www.metropol.gov.co/SiteAssets/Lists/AccesosDirectos/AllItems/icono-helpdesk.svg" alt="Helpdesk"></span>
+                    <p class="link-enlace">Helpdesk</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-4 padd-box " onclick="abrirurl('https://intranet.metropol.gov.co')">
+                <div class="cursorAccesos height-box bg-entidad" style="background-color:#006996;border-radius: 9px;padding: 11px 4px;">
+                    <span class="circle-enla"><img src="https://www.metropol.gov.co/SiteAssets/Lists/AccesosDirectos/AllItems/icono-intranet.svg" alt="Intranet"></span>
+                    <p class="link-enlace">Intranet</p>
+                </div>
+            </div>
+            <div class="col-lg-1 col-md-1"></div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://www.metropol.gov.co/Style%20library/css/metropol.css">
+<script>
+    function abrirurl(url) {
+        window.open(url);
+    }
+</script>
+@*</div>*@
+@*</div>*@
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,129 @@
+﻿@using SIM.Properties
+<style>
+    body > div.dx-overlay-wrapper.dx-popup-wrapper.dx-overlay-modal.dx-overlay-shader > div > div.dx-popup-content {
+        padding: 0px !important;
+    }
+</style>
+<div ng-controller="ContactosTerceroController" class="panel panel-default">
+    <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoContactoVisible' } }" id="popLoadingContacto"></div>
+    <div dx-popup="popContactosTerceroSettings" id="popContactosTercero">
+        <div dx-scroll-view="{ direction: 'both' }">
+            <div class="dx-fieldset" style="padding: 20px !important;" dx-validation-group="{}" id="contactosGroupValidator">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Identificación</div>
+                            <div class="dx-field-value" style="padding:0px">
+                                <div class="row" style="margin:0px">
+                                    <div class="col-md-3 col-sm-3 col-xs-3" style="padding:0px">
+                                        <div dx-select-box="TipoDocumentoSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Documento Requerido' }] }"></div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding:0px">
+                                        <div dx-number-box="IdentificacionSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Identificación Requerida' }] }"></div>
+                                    </div>
+                                    <div class="col-md-1 col-sm-1 col-xs-1" style="padding:0px">
+                                        <span style="display: inline-block; vertical-align: middle; line-height: normal; width: 100%; text-align: center; ">-</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2" style="padding:0px">
+                                        <div dx-number-box="{bindingOptions: { value: 'datosContactoTercero.TERCERO.N_DIGITOVER', readOnly: 'datosContactoTercero.ID_CONTACTO != 0' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Dígito de Verficación Requerido' }] }"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Género</div>
+                            <div class="dx-field-value">
+                                <div dx-select-box="GeneroSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Género Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Nombres</div>
+                            <div class="dx-field-value">
+                                <div dx-text-box="{bindingOptions: { value: 'nombres.NOMBRES' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Nombres Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Apellidos</div>
+                            <div class="dx-field-value">
+                                <div dx-text-box="{bindingOptions: { value: 'nombres.APELLIDOS' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Apellidos Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Fecha de Nacimiento</div>
+                            <div class="dx-field-value">
+                                <div dx-date-box="{formatstring:'yyyy/MM/dd', acceptCustomValue: false, format: 'date', useCalendar: true, bindingOptions: { value: 'datosContactoTercero.TERCERO.D_NACIMIENTO' }}" style="width:100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Tipo Contacto</div>
+                            <div class="dx-field-value">
+                                <div dx-select-box="TipoContactoSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Contacto Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Actividad Económica</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-lookup="ActividadEconomicaSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Profesión</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-lookup="ProfesionSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="border-color: gainsboro;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Teléfono</div>
+                            <div class="dx-field-value">
+                                <div dx-number-box="{bindingOptions: { value: 'datosContactoTercero.TERCERO.N_TELEFONO' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Teléfono Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Correo Electrónico</div>
+                            <div class="dx-field-value">
+                                <div dx-text-box="{bindingOptions: { value: 'datosContactoTercero.TERCERO.S_CORREO' }}" dx-validator="{ validationRules: [{ type: 'email', message: 'Correo Electrónico Inválido' }, { type: 'required', message: 'Correo Electrónico Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-heading">
+        <div dx-data-grid="grdTerceroContactosSettings" id="grdTerceroContactos"></div>
+    </div>
+
+    <!--div dx-popup="{ showTitle: true, title: 'Terceros' }" id="popTerceros">
+        <div dx-data-grid="grdTercerosSettings" id="grdTerceros"></div>
+    </div-->
+</div>

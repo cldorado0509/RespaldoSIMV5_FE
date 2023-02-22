@@ -1,0 +1,186 @@
+﻿<link href="~/Areas/Encuestas/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+<link href="~/Areas/Encuestas/jqwidgets/styles/jqx.bootstrap.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Scripts/General.js"></script>
+
+<script src="~/Areas/Encuestas/jqwidgets/jqxcore.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxdata.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxgrid.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxgrid.selection.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxgrid.pager.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxbuttons.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxscrollbar.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxdatatable.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxgrid.edit.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxgrid.columnsresize.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxgrid.sort.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxgrid.filter.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqxcheckbox.js"></script>
+
+@model SIM.Areas.Encuestas.Models.ENCUESTA
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutSimple.cshtml";
+}
+
+<div id="dialogo"></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    @Html.HiddenFor(model => model.ID_ENCUESTA)
+    
+    <input type="hidden" id="TipoEncuesta" name="TipoEncuesta" value="@Model.S_TIPO" />
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <table style="width:80%">
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @*@Html.LabelFor(model => model.S_NOMBRE, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.Label("Nombre", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @*@Html.EditorFor(model => model.S_NOMBRE, new { htmlAttributes = new { @class = "form-control" } })*@
+                <input type="text" id="S_NOMBRE" name="S_NOMBRE" class="form-control" value="@Model.S_NOMBRE" />
+                @Html.ValidationMessageFor(model => model.S_NOMBRE, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td valign="top">
+                @*@Html.LabelFor(model => model.S_DESCRIPCION, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.Label("Descripcion", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Html.TextAreaFor(model => model.S_DESCRIPCION, new { @class = "form-control", @rows = 3 })
+                @Html.ValidationMessageFor(model => model.S_DESCRIPCION, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @Html.Label("Formulario", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @{
+                    if (ViewBag.IdFormulario != null)
+                    { 
+                        @Html.DropDownList("IdFormulario", null, htmlAttributes: new { @Disabled = "Disabled", @class = "form-control" })
+                    }
+                }
+                
+                <label style="display:none" id="ErrorFormulario" class="text-danger">El formulario es requerido.</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @Html.Label("Deshabilitar la encuesta para este formulario?", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                <input type="checkbox" class="checkbox" id="Desactivar" name="Desactivar" @(ViewBag.Desactivar != "" ? "checked='checked'" : "")/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @Html.Label("Tipo Encuesta", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                <select id="S_TIPO" disabled="disabled" name="S_TIPO" class="form-control">
+                    @{
+    if (@Model.S_TIPO == "S")
+    {
+            <option selected="selected" value="S">Cuantitativa</option>
+    }
+    else
+    {
+            <option selected="selected" value="N">Cualitativa</option>
+    }
+                    }
+                </select>
+
+                @Html.ValidationMessageFor(model => model.S_TIPO, "", new { @class = "text-danger" })
+               
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" align="right">
+                <input type="button" class="btn btn-primary" id="VincularPregunta"  value="Vincular Preguntas"/>
+            </td>
+        </tr>
+    </table>
+
+    <div class="form-group" style="display:none">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+<hr />
+
+<div id="Preguntas"></div>
+
+<script type="text/javascript">
+    var RutaEncuestas = '@Url.Content("~/Encuestas/")';
+    var RutaPreguntas = '@Url.Content("~/Encuestas/Preguntas/")';
+    var Codigo = '@Model.ID_ENCUESTA';
+
+    $(document).ready(function () {
+        var Error = '@ViewBag.Error';
+
+        if (Error == 'False') {
+            alert('Los cambios fueron guardados.');
+            window.parent.$('#popup').modal('hide');
+            window.parent.Inicializar();
+        }
+
+        window.parent.$('#popupboton').removeAttr('disabled');
+
+        if(Error == 'True')
+        {
+            alert('Los cambios no fueron guardados.');
+        }
+
+        Inicializar();
+
+        AgregarPopUp('dialogo', '95%', null, true);
+    });
+
+    $("#S_NOMBRE").keypress(function (e) {
+        return ValidarTexto(e);
+    });
+
+    $("#S_DESCRIPCION").keypress(function (e) {
+        return ValidarTexto(e);
+    });
+
+    function Inicializar() {
+        CargarPreguntas('Preguntas', Codigo);
+    }
+
+    $('#VincularPregunta').click(function () {       
+        AbrirPopUp('Catalogo de Preguntas', RutaPreguntas + 'VincularPreguntasEncuesta?CodigoEncuesta=' + Codigo + '&TipoEncuesta=' + $('#S_TIPO option:selected').val(), true, 250, 'Vincular Preguntas');
+    });
+
+</script>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

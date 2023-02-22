@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Pqrsd/Scripts/IngresoPqrsd.js?v=0.1")"></script>
+<style>
+    .custom-item {
+        position: relative;
+        min-height: 30px;
+        width: auto;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #BotonGuarda {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Formulario de Registro - PQRSD -</label>
+            </h3>
+        </div>
+        <div id="loadPanel"></div>
+        <br />
+        <h5 class="text-center">Los campos con "<span style="color: #C83200">(*)</span>" son obligatorios. Recuerde que si  brinda mayor información facilitara la labor para el proceso de su solicitud.</h5>
+        <br />
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="col-md-3 form-inline">
+                    <label for="chkUEA">Trámite corresponde a UEA :</label>
+                    <div id="chkUEA"></div>
+                </div>
+                <div class="col-md-1 form-inline">
+                    <label for="txtTramite">Trámite del SIM :</label>
+                </div>
+                <div class="col-md-2 form-inline">
+                    <div id="txtTramite"></div>
+                </div>
+                <div class="col-md-1">
+                    <div id="btnBuscaTramite"></div>
+                </div>
+                <div class="col-md-1">
+                    <div id="btnVerificaTramite"></div>
+                </div>
+                <div class="col-md-4">
+                    <div id="lnkVerificaTramite"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-4">
+                    <label for="sbTipoSolicitud">(*) Tipo de Solicitud : </label>
+                    <div id="sbTipoSolicitud"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sbRecurso" style="visibility: hidden" id="lblRecurso">(*) Recurso afectado : </label>
+                    <div id="sbRecurso"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sbAfectacionAmb" style="visibility: hidden" id="lblAfectacionAmb">(*) Afectación : </label>
+                    <div id="sbAfectacionAmb"></div>
+                    <div id="txtAfectacionAmb"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-4">
+                    <label for="sbTipoPersona">(*) Tipo Solicitante : </label>
+                    <div id="sbTipoPersona"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sbTipoPersona">Medio de Recibo : </label>
+                    <div id="sbFormaRecepcion"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sbTipoSolicitud">Medio de Respuesta : </label>
+                    <div id="sbMedioRespuesta"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-4">
+                    <label for="txtNombre">Nombre completo o Razón Social : </label>
+                    <div id="txtNombre"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sbTipoDoc">Tipo de Identificación : </label>
+                    <div id="sbTipoDoc"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="txtDocumento">Número de identificación : </label>
+                    <div id="txtDocumento"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-2">
+                    <label for="txtNombre">País : </label>
+                    <div id="txtPais"></div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="sbTipoDoc">Departamento :</label>
+                    <div id="sbDepto"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="txtDocumento">Ciudad :</label>
+                    <div id="sbCiudad"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="txtDocumento">Barrio o Vereda :</label>
+                    <div id="txtBarrio"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-4">
+                    <label for="txtDireccion">Dirección :</label>
+                    <div id="txtDireccion"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="txtCorreo">(*) Correo Electrónico :</label>
+                    <div id="txtCorreo"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="txtTelefono">Teléfono Fijo y Celular :</label>
+                    <div id="txtTelefono"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-12">
+                    <label for="txtDireccion">Asunto :</label>
+                    <div id="txtAsunto"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-12">
+                    <label for="txtDireccion">(*) Descripción :</label>
+                    <div id="txtContenido"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-6">
+                    <label for="txtDireccion">Seleccione Archivos Adjuntos :</label>
+                    <div id="ufAnexos"></div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div id="TablaAnexos"></div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="form-row align-items-center">
+                <div class="col-md-12" id="BotonGuarda">
+                    <div id="btnGuardar"></div>
+                </div>
+            </div>
+        </div>
+        <div id="popDetalleTramite"></div>
+        <div id="popupBuscaTra">
+            <iframe src="" id="BuscarTra" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+﻿@Html.DevExpress().ComboBox(
+                    settings =>
+                    {
+                        settings.Name = "comboBox2";
+                        settings.Width = 180;
+                        settings.SelectedIndex = 0;
+                        settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                        settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                        settings.Properties.TextField = "ProductName";
+                        settings.Properties.ValueField = "ProductName";
+                    }
+                ).BindList(ViewData["Instalaciones"]).GetHtml()

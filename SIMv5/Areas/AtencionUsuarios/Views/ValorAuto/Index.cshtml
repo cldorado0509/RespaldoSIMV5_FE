@@ -1,0 +1,289 @@
+﻿@using SIM.Properties
+@using System.Web.UI.WebControls
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+.ui-widget button {
+	line-height: 26px !important;
+}
+</style>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/AtencionUsuarios/Scripts/valorauto.js")"></script>
+
+<script type="text/javascript">
+    var tiposTramiteDataSource = @Html.Raw(ViewBag.tiposTramite);
+</script>
+
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popValorAuto";
+    settings.ShowHeader = true;
+    settings.HeaderText = "Valor Trámite Ambiental";
+    settings.AllowDragging = true;
+    settings.AllowResize = true;
+    settings.Width = 1024;
+    settings.Height = 768;
+    settings.PopupVerticalAlign = PopupVerticalAlign.Middle;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.Center;
+}).GetHtml()
+<div ng-app="SIM" resizable data-url="@Url.Content("~")" id="app" class="my-cloak">
+    <!--div id="myModal">
+            <iframe src="" width="1024" height="768" frameborder="0" id="myIframe"></iframe>
+    </div-->
+    <div>
+        <div ng-controller="ValorAutoController">
+            <div dx-load-panel="{message: 'Calculando...', showIndicator: true, shading: true, bindingOptions: { visible: 'calculandoVisible' } }"></div>
+            <div dx-load-panel="{message: 'Validando Tercero...', showIndicator: true, shading: true, bindingOptions: { visible: 'validacionVisible' } }"></div>
+            <div class="panelSIM panelSIM-default" style="padding:0px">
+                <div class="panelSIM-heading">
+                    <h3 class="panelSIM-title">
+                        <label class="header">Cálculo Valor Trámite Ambiental (Auto de Inicio y Resolución)</label>
+                    </h3>
+                </div>
+                <div class="dx-fieldset col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div class="dx-field-label">NIT o Cédula</div>
+                                <div class="dx-field-value">
+                                    <div dx-number-box="IdentificacionSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Identificación Requerida' }] }"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div class="dx-field-label">Tipo de Trámite</div>
+                                <div class="dx-field-value">
+                                    <div dx-select-box="TipoTramiteSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Trámite Requerido' }] }"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div class="dx-field-label">Profesionales Técnicos</div>
+                                <div class="dx-field-value">
+                                    <div dx-number-box="NumProfSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Número de Profesionales Requerido' }] }"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div class="dx-field-label">Valor del Proyecto</div>
+                                <div class="dx-field-value">
+                                    <div dx-number-box="ValorProySettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Valor de Proyecto Requerido' }] }"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div class="dx-field-label">CM</div>
+                                <div class="dx-field-value">
+                                    <div dx-number-box="CMSettings"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" ng-show="unidadVisible">
+                            <div class="dx-field">
+                                <div class="dx-field-label">Cantidad de {{unidad}}</div>
+                                <div class="dx-field-value">
+                                    <div dx-number-box="UnidadSettings" id="txtUnidad"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="dx-field">
+                            <div class="col-md-12">
+                                Observaciones
+                            </div>
+                            <div class="col-md-12">
+                                <div dx-text-area="ObservacionesSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panelSIM-body clearfix">
+                    <div class="col-lg-4 col-md-3 col-sm-2 col-xs-2"></div>
+                    <div class="col-lg-4 col-md-6 col-sm-8 col-xs-8">
+                        <div dx-button="btnCalcularSettings" id="btnCalcular" style="margin-top:15px"></div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div ng-show="calculoVisible">
+                <div class="panelSIM panelSIM-default col-md-6" style="padding: 0px;overflow: hidden;">
+                    <div class="panelSIM-heading">
+                        <h3 class="panelSIM-title">
+                            <label class="header">Cálculo del Valor del Auto de Inicio</label>
+                        </h3>
+                    </div>
+                    <div class="dx-fieldset">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos Por Sueldos y Honorarios (A)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_SUELDOS_E|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos de Viaje (B)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_VIAJE_E|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos Análisis de Laboratorio y Otros Trabajos Técnicos (C)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_LABORATORIO_E|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos de Administración 25% (D)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_ADMINISTRACION_E|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="background-color: #E0FFA7">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv" style="font-weight: bold">Costo Total de la Tarifa</div>
+                                    <div class="dx-field-value valuefullrowinv" style="font-weight: bold">
+                                        {{datosValorAutoResult.N_TOTALTARIFA_E|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Determinación de los Topes de las Tarifas (To)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_TOPES_E|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="background-color: #E0FFA7">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv" style="font-weight: bold">Valor a Cancelar por Trámite</div>
+                                    <div class="dx-field-value valuefullrowinv" style="font-weight: bold">
+                                        {{datosValorAutoResult.N_TOTALTRAMITE_E|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panelSIM panelSIM-default col-md-6" style="padding: 0px;overflow: hidden;">
+                    <div class="panelSIM-heading">
+                        <h3 class="panelSIM-title">
+                            <label class="header">Cálculo del Valor de la Resolución</label>
+                        </h3>
+                    </div>
+                    <div class="dx-fieldset">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos Por Sueldos y Honorarios (A)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_SUELDOS_S|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos de Viaje (B)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_VIAJE_S|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos Análisis de Laboratorio y Otros Trabajos Técnicos (C)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_LABORATORIO_S|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Gastos de Administración 25% (D)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_ADMINISTRACION_S|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="background-color: #E0FFA7">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv" style="font-weight: bold">Costo Total de la Tarifa</div>
+                                    <div class="dx-field-value valuefullrowinv" style="font-weight: bold">
+                                        {{datosValorAutoResult.N_ADMINISTRACION_S|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv">Determinación de los Topes de las Tarifas (To)</div>
+                                    <div class="dx-field-value valuefullrowinv">
+                                        {{datosValorAutoResult.N_TOPES_S|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="background-color: #E0FFA7">
+                                <div class="dx-field" style="padding-top: 8px">
+                                    <div class="dx-field-label labelfullrowinv" style="font-weight: bold">Valor a Cancelar por Trámite</div>
+                                    <div class="dx-field-value valuefullrowinv" style="font-weight: bold">
+                                        {{datosValorAutoResult.N_TOTALTRAMITE_S|number:2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panelSIM-body clearfix">
+                    <div class="col-lg-4 col-md-3 col-sm-2 col-xs-2"></div>
+                    <div class="col-lg-4 col-md-6 col-sm-8 col-xs-8">
+                        <div dx-button="btnImprimirSettings" id="btnImprimir" style="margin-top:15px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />

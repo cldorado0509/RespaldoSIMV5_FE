@@ -1,0 +1,81 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Categoría";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/EtiquetasAmbientales/Scripts/Monitoreo.js?v=1.01")"></script>
+
+<style>
+    .dx-datagrid-content .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-datagrid-content .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Monitoreos</label>
+            </h3>
+        </div>
+        <div id="GidListado"></div>
+        <br />
+      
+        <div id="PopupNuevoMonitoreo">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Placa :</div>
+                    <div class="col-sm-3" id="txtPlaca"></div>
+
+                    <div class="control-label col-sm-3">F Monitoreo :</div>
+                    <div class="col-md-3" id="dpMonitoreo"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">RPM Ralenti :</div>
+                    <div class="col-sm-3" id="txtRPM"></div>
+
+                    <div class="control-label col-md-3">Valor Monitoreo :</div>
+                    <div class="col-sm-3" id="txtValor"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Kilometraje :</div>
+                    <div class="col-sm-3" id="txtKilometraje"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Empresa :</div>
+                    <div class="col-sm-9" id="txtEmpresa"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Observaciones :</div>
+                    <div class="col-sm-9" id="txtObservaciones"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Foto 1 :</div>
+                    <div class="col-sm-9" id="txtFoto1"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Foto 2 :</div>
+                    <div class="col-sm-9" id="txtFoto2"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Foto 3 :</div>
+                    <div class="col-sm-9" id="txtFoto3"></div>
+                </div>
+                <br />
+                <div id="BotonNewMonitoreo">
+                    <div id="btnGuarda"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

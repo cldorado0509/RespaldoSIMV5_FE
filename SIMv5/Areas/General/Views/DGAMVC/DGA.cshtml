@@ -1,0 +1,115 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Data.General
+@model DGA
+
+<script type="text/javascript">
+    function OnValueChangedSelection(chkControl, lblControl, txtControl) {
+        if (chkControl.GetValue() == 'S') {
+            txtControl.SetVisible(true);
+            lblControl.SetVisible(true);
+        } else {
+            txtControl.SetVisible(false);
+            lblControl.SetVisible(false);
+        }
+    }
+</script>
+
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanelDGA";
+    settings.Modal = true;
+    settings.Text = "Procesando Información";
+}).GetHtml()
+
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanelTerceroDGA";
+    settings.Modal = true;
+    settings.Text = "Procesando...";
+}).GetHtml()
+
+<br />
+<br />
+<br />
+<div class="panel-heading">
+    <h3 class="panel-title">
+        <label>Informe del cumplimiento del decreto 1299 de 2008 - para la conformaci&#243;n del Departamento de Gesti&#243;n Ambiental - DGA</label>
+    </h3>
+</div>
+@using (Html.BeginForm("DGAUpdate", "DGA", FormMethod.Post, new { name = "frmDGA", id = "frmDGA" }))
+{
+    @Html.DevExpress().TextBoxFor(model => Model.ID_DGA, settings =>
+    {
+        settings.ClientVisible = false;
+    }).GetHtml();
+
+    @Html.DevExpress().PageControl(settings =>
+    {
+        settings.Name = "pagDGADatos";
+        settings.Width = Unit.Percentage(100);
+        settings.TabPages.Add("Empresa", "tpgEmpresa").SetContent(() =>
+        {
+            settings.Name = "pagDGADatos";
+            settings.Width = Unit.Percentage(100);
+            settings.TabPages.Add("Empresa", "tpgEmpresa").SetContent(() =>
+            {
+                Html.RenderPartial("_DatosEmpresaDGA", Model);
+        });
+        if (Model.ID_DGA > 0)
+        {
+            settings.TabPages.Add("Personal DGA", "tpgPersonalDGA").SetContent(() =>
+            {
+                Html.RenderPartial("_DatosInformacionAdicionalDGA", Model);
+            });
+        }
+        settings.TabPages.Add("Información DGA", "tpgInformacionDGA").SetContent(() =>
+        {
+            settings.TabPages.Add("Seguimiento", "tpgSeguimiento").SetContent(() =>
+            {
+                Html.RenderPartial("_DatosSeguimientoDGA", Model);
+            });
+        }
+        settings.TabPages.Add("Información Adicional", "tpgInformacionAdicional").SetContent(() =>
+        {
+            settings.EnableClientSideAPI = true;
+
+        //settings.ClientSideEvents.ActiveTabChanged = "OnActiveTabChanged";
+        ////settings.ClientSideEvents.TabClick = "OnTabClick";
+    }).GetHtml()
+
+    if (!ViewBag.ReadOnly)
+    {
+        @Html.DevExpress().RoundPanel(settingsAlmacenar =>
+        {
+            settingsAlmacenar.Name = "rpAlmacenarDGA";
+            settingsAlmacenar.ShowHeader = false;
+            settingsAlmacenar.EnableTheming = true;
+            settingsAlmacenar.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+            settingsAlmacenar.Width = Unit.Percentage(100);
+            settingsAlmacenar.Style.Add("padding-left", "15px");
+            settingsAlmacenar.Style.Add("padding-right", "15px");
+            settingsAlmacenar.Style.Add("padding-top", "10px");
+            settingsAlmacenar.Style.Add("padding-botom", "10px");
+            settingsAlmacenar.Style.Add("text-align", "right");
+
+            settingsAlmacenar.SetContent(() =>
+            {
+                Html.DevExpress().Button(settings =>
+                {
+                    settings.Name = "btnAlmacenarDGA";
+                    settings.EnableTheming = true;
+                    settings.Text = "Almacenar";
+                    settings.Width = Unit.Pixel(150);
+                    settings.AllowFocus = false;
+                    settings.Style.Add("margin-left", "auto");
+                    settings.Style.Add("margin-right", "0px");
+                    settings.ControlStyle.CssClass = "icq";
+                    settings.Styles.Style.HoverStyle.CssClass = "icqHovered";
+                    settings.Styles.Style.PressedStyle.CssClass = "icqPressed";
+                    settings.UseSubmitBehavior = false;
+                    settings.ClientSideEvents.Click = "function(s, e){ if (ASPxClientEdit.ValidateEditorsInContainer(null)) { ProcessPanelDGA.SetText('Almacenando DGA'); ProcessPanelDGA.Show(); $('#frmDGA').submit(); }}";
+                }).GetHtml();
+            });
+        }).GetHtml()
+    }
+}

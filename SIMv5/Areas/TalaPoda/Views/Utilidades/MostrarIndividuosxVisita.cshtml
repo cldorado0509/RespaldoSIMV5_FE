@@ -1,0 +1,55 @@
+﻿@using SIM.Data.Flora
+@model IEnumerable<INV_INDIVIDUO_DISPERSO>
+
+@{
+    ViewBag.Title = "Individuos por Visita";
+    Layout = "~/Areas/TalaPoda/Views/Shared/Movil.cshtml";
+    int Contador = 0;
+}
+<br />
+<p>
+    @Html.ActionLink("Agregar Individuo", "CrearIndividuo", new { CodigoVisita = ViewBag.CodigoVisita }, new { @class = "btn btn-default", @target = "_blank" })
+</p>
+<table class="table table-hover table-striped">
+    <tr>
+        <th>
+            @Html.Label("Consecutivo")
+        </th>
+        <th>
+            @Html.Label("IdIndividuo")
+        </th>
+        <th>
+            @Html.Label("Especie")
+        </th>
+        <th>
+            @Html.Label("Estado")
+        </th>
+        <th>
+            @Html.Label("Accion")
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        Contador++;
+        <tr>
+            <td>
+                @Html.Raw(Contador.ToString())
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_INDIVIDUO_DISPERSO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FLR_ESPECIE.S_NOMBRE_COMUN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.INV_ESTADO_INDIVIDUO.S_ESTADO)
+            </td>
+            <td>
+                <input type="button" id="Editar" value="Editar" class="btn btn-primary" />
+                <input type="button" id="Replicar" value="Replicar" class="btn btn-success" />
+            </td>
+        </tr>
+    }
+
+</table>

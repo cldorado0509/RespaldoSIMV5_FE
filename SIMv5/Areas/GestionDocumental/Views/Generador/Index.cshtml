@@ -1,0 +1,215 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Data.Tramites
+@model IEnumerable<PRESTAMO_TIPO>
+
+<script type="text/javascript">
+    function TipoSeleccionado()
+    {
+        ProcessPanel.Show();
+        $.ajax({
+            type: 'POST',
+            //cache: false,
+            //contentType: false,
+            //processData: false,
+            url: '@Url.Action("ObtenerConfiguracionTipo", "Generador")',
+            data: { idTipo: cboTipos.GetValue() },
+            success: function (response) {
+                $('#GeneradorContainer').html(response);
+                ProcessPanel.Hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ProcessPanel.Hide();
+                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+            }
+        });
+    }
+
+    function CampoSeleccionado(s, e)
+    {
+        var contCampos = 0;
+
+        ProcessPanel.Show();
+
+        $("input[name^='" + s.name + "C']").each(function (index) {
+            this.value = s.GetValue();
+        });
+
+        $("input[name^='" + s.name + "__']").each(function (index) {
+            var nameControlParam = this.name;
+            var nameControl = this.name.split('__')[1];
+            var control = ASPxClientControl.GetControlCollection().GetByName(nameControl);
+            contCampos++;
+            $.ajax({
+                type: 'POST',
+                //cache: false,
+                //contentType: false,
+                //processData: false,
+                url: '@Url.Action("ObtenerConfiguracionCampo", "Generador")',
+                data: { id: nameControl, ancho: control.GetWidth(), sqlDatos: this.value, param: s.GetValue() },
+                success: function (response) {
+                    contCampos--;
+                    $('#' + nameControlParam + 'Container').html(response);
+                    if (contCampos == 0)
+                        ProcessPanel.Hide();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    ProcessPanel.Hide();
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                }
+            });
+        });
+
+        if (contCampos == 0)
+            ProcessPanel.Hide();
+    }
+
+    function GenerarID(s, e) {
+        var control;
+        var texto = '';
+        var id;
+
+        if (ASPxClientEdit.ValidateEditorsInContainer(null)) {
+            ProcessPanel.Show();
+
+            s.SetEnabled(false);
+
+            var formData = new FormData(document.getElementById("CamposIDForm"))
+
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                //contentType: 'multipart/form-data',
+                url: '@Url.Action("GenerarID", "Generador")',
+                data: formData,
+                processData: false,
+                success: function (response) {
+                    var dataResult;
+
+                    dataResult = response.split('|')[1].split(',');
+                    for (var i = 0; i < dataResult.length; i++) {
+                        control = ASPxClientControl.GetControlCollection().GetByName(dataResult[i]);
+
+                        if (control != null) {
+                            if (texto == '')
+                                texto = control.GetText();
+                            else
+                                texto += ' ' + control.GetText();
+                        }
+                    }
+
+                    dataResult = response.split('|')[2].split(',');
+                    for (var i = 0; i < dataResult.length; i++) {
+                        control = ASPxClientControl.GetControlCollection().GetByName(dataResult[i]);
+
+                        if (control != null) {
+                            control.SetText(null);
+                            control.SetValue(null);
+                        }
+                    }
+
+                    if (response.substring(0, 4) == 'FAIL') {
+                        if (confirm(response.split('|')[0].split('%')[1] + '. Desea reimprimir el tiquete ?'))
+                            id = response.split('|')[0].split('%')[2];
+                        else
+                            id = '';
+                    } else if (response.substring(0, 8) == 'ERR_FAIL') {
+                        alert("Error: " + response.split('%')[1]);
+                        id = '';
+                    } else {
+                        id = response.split('|')[0];
+                    }
+
+                    if (id != '')
+                    {
+                        popTiquete.SetContentUrl(txtURL_CB.GetText() + '?codigoBarras=' + id + '&texto=' + texto);
+                        popTiquete.Show();
+                    }
+
+                    s.SetEnabled(true);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                    s.SetEnabled(true);
+                }
+            });
+
+            ProcessPanel.Hide();
+        }
+    }
+
+    function pad(a, b) { return (1e15 + a + "").slice(-b) }
+</script>
+
+<br />
+<br />
+<br />
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanel";
+    settings.Modal = true;
+    settings.Text = "Procesando Datos";
+}).GetHtml()
+<div class="panel panel-default" style="padding-bottom: 10px">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <label>Generador de Identificadores</label>
+        </h3>
+    </div>
+    <div style="padding: 15px">
+        @using (Html.BeginForm("GenerarID", "Generador", FormMethod.Post, new { name = "CamposIDForm", id = "CamposIDForm" }))
+        {
+            @Html.DevExpress().Label(settings =>
+            {
+                settings.Name = "lblTipo";
+                settings.Text = "Tipo:";
+            }).GetHtml()
+
+            @Html.DevExpress().ComboBox(settings =>
+    {
+        settings.Name = "cboTipos";
+        settings.Properties.Width = Unit.Pixel(300);
+        settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.None;
+        settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+        settings.Properties.ValueField = "ID_TIPOPRESTAMO";
+        settings.Properties.TextField = "S_NOMBRE";
+
+        settings.Properties.ClientSideEvents.SelectedIndexChanged = "TipoSeleccionado";
+    }).BindList(Model).GetHtml()
+
+            <div id="GeneradorContainer">
+            </div>
+            <br />
+            @Html.DevExpress().Button(settings =>
+    {
+        settings.Name = "btnGenerarID";
+        settings.Text = "Generar Identificador";
+        settings.Width = Unit.Pixel(150);
+        settings.ClientSideEvents.Click = "GenerarID";
+    }).GetHtml();
+        }
+
+        @Html.DevExpress().TextBox(settings =>
+    {
+        settings.Name = "txtURL_CB";
+        //settings.Text = Url.Action("GenerarCB", "GeneradorCB");
+        settings.Text = Url.Action("RadicadorApi", "api");
+        settings.ClientVisible = false;
+    }).GetHtml()
+
+        @Html.DevExpress().PopupControl(settings =>
+    {
+        settings.Name = "popTiquete";
+        settings.ShowHeader = true;
+        settings.HeaderText = "Tiquete Generado";
+        settings.AllowDragging = true;
+        settings.AllowResize = true;
+        settings.Width = 600;
+        settings.Height = 400;
+        settings.PopupVerticalAlign = PopupVerticalAlign.Middle;
+        settings.PopupHorizontalAlign = PopupHorizontalAlign.Center;
+        settings.ContentUrl = Url.Action("GenerarCB", "GeneradorCB");
+        //settings.ContentUrl = @Url.Action("Index", "GeneradorCB/Test", new { codigoBarras = ViewData["CodigoBarras"].ToString() });
+    }).GetHtml()
+    </div>
+</div>

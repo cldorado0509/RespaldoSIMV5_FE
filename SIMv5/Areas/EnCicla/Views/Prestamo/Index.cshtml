@@ -1,0 +1,23 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="@Url.Content("~/Content/encicla.css")" rel="stylesheet" type="text/css" />
+    <title>Al Trabajo En Cicla</title>
+</head>
+<body>
+        <div class="button-wrapper">
+            <a href="@Url.Action("Prestamo", "Prestamo", new { area = "EnCicla" })?idEstacion=1" class="a-btn">
+                <span class="a-btn-text">Pr&eacute;stamos</span>
+            </a>
+            <a href="@Url.Action("Devolucion", "Prestamo", new { area = "EnCicla" })?idEstacion=1" class="a-btn-2">
+                <span class="a-btn-2-text">Devoluciones</span>
+            </a>
+        </div>   
+</body>
+</html>

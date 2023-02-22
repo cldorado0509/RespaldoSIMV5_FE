@@ -1,0 +1,60 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Data.General
+@model DGA
+
+<script type="text/javascript">
+    function CargarTercero(idTerceroDGA)
+    {
+        ProcessPanelTerceroDGA.Show();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("LoadTerceroDGA", "Tercero")',
+            data: { id: idTerceroDGA, idDGA: @(Model.ID_DGA) },
+            success: function (response) {
+                $("#terceroDGADetalles").html(response);
+                $("#terceroDGADetalles").show();
+                ProcessPanelTerceroDGA.Hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ProcessPanelTerceroDGA.Hide();
+                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+            }
+        });
+    }
+
+    function CancelarEdicionTercero()
+    {
+        $("#terceroDGADetalles").hide();
+    }
+
+    function AlmacenarTercero()
+    {
+        ProcessPanelTerceroDGA.Show();
+
+        var formData = new FormData(document.getElementById("frmTercero"))
+
+        $.ajax({
+            type: 'POST',
+            contentType: false,
+            url: '@Url.Action("TerceroDGAUpdate", "Tercero")',
+            data: formData,
+            processData: false,
+            success: function (response) {
+                ProcessPanelTerceroDGA.Hide();
+                gvwProfesionalesDGA.Refresh();
+                $("#terceroDGADetalles").hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ProcessPanelTerceroDGA.Hide();
+                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+            }
+        });
+    }
+
+</script>
+<div id="terceroDGADetalles" style="display:none">
+
+</div>
+
+@Html.Action("gvwAdministrarProfesionalesDGA", "Tercero", new { id = Model.ID_DGA, readOnly = ViewBag.ReadOnly })

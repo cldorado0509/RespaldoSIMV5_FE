@@ -1,0 +1,97 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/consultaprestamos.js")?v=1.00"></script>
+
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="ConsultaPrestamosController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Consultando Datos...', showIndicator: true, shading: true, bindingOptions: { visible: 'consultandoVisible' } }"></div>
+
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Consulta de Pr&eacute;stamos</label>
+                </h3>
+            </div>
+            <div class="dx-fieldset">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Identificaci&oacute;n</div>
+                            <div class="dx-field-value">
+                                <div dx-number-box="txtIdentificacionSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label label3-4row">Prestado por</div>
+                            <div class="dx-field-value value3-4row">
+                                <div dx-text-box="txtPrestadoPorSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Estado Pr&eacute;stamo</div>
+                            <div class="dx-field-value">
+                                <div dx-select-box="cboEstadoPrestamoSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="width: 55%;">D&iacute;as Prestado</div>
+                            <div class="dx-field-value" style="width: 45%;">
+                                <div dx-number-box="txtDiasPrestadoSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="width:30%">Rango Fechas</div>
+                            <div class="dx-field-value" style="width:70%">
+                                <div class="col-md-5 col-sm-5 col-xs-5" style="padding:0px">
+                                    <div dx-date-box="datFechaInicialSettings" id="datFechaInicial"></div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-2" style="padding:0px">
+                                    <span style="display: inline-block; vertical-align: middle; line-height: normal; width: 100%; text-align: center; padding-top: 20%">-</span>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-5" style="padding:0px">
+                                    <div dx-date-box="datFechaFinalSettings" id="datFechaFinal"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="width: 12.7%">Texto de B&uacute;squeda</div>
+                            <div class="dx-field-value" style="width: 87.3%">
+                                <div dx-text-box="txtTextoBusquedaSettings"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <span style="display: inline-block; vertical-align: middle; line-height: normal; width: 100%; text-align: center;"></span>
+                </div>
+                <div class="row">
+                    <div class="col-md-10">
+                    </div>
+                    <div class="col-md-2">
+                        <div dx-button="btnConsultarSettings" id="btnConsultar"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div dx-data-grid="grdResultadoConsultaSettings" id="grdResultadoConsulta"></div>
+            </div>
+        </div>
+    </div>
+</div>

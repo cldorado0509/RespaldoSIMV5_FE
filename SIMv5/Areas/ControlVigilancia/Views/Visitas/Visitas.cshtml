@@ -1,0 +1,2334 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+
+@{
+    ViewBag.Title = "Actuaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/visitas.css?v=1.00")" />
+<script type="text/javascript">
+    var swVisita = false;
+    var swVisitaAconpanante = false;
+    var swDetalleTramiteVisita = false;
+    var arrTramite;
+    var TipoUbicacion = "Manual";
+    var IdsTramite = "";
+    var IdsTramite_E = "";
+    var IdsCopias = "";
+    var TipoVisita = "";
+    var TramiteEditar = "";
+    var IdVisita = "";
+    var CX = "";
+    var CY = "";
+    var ASUNTO = "";
+    var RADICADO = "";
+    var FILTROTRAMITES = "";
+    var Global = "";
+    var GlobalCopias = "";
+    var COPIAS = "";
+    var RESPONSABLE = "";
+    var ESTADOVISITA = "";
+    var OBSERVACION = "";
+    var EdicionVisita = "";
+    var NombreAcompanante = "";
+    var DocumentoAcompanante = "";
+    var CargarDetalleTramitesVisitas = false;
+    var NOMBRECOPIAS = "";
+    var dirglobal = "";
+
+
+
+    $(document).ready(function () {
+        cargarSoloMapa();
+        $("#Tab4 a").click();
+        GridAcompanantesAsignados({});
+        ConsultarTipoVisita();
+        cargarVisita();
+        gridDeatalleTramiteVisita({});
+        consultarVisitasTramite({});
+
+        cargarDatoMisTramites();
+
+    });
+    function cargarDatoMisTramites() {
+        var arrDatoNuevo = new Array();
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/consultarTramitesVisitaNuevo")",
+
+            beforeSend: function () { },
+            success: function (response) {
+
+                var datos = eval("(" + response + ')');
+                for (var i = 0; i < datos.length; i++) {
+                    dato = {
+
+                        "CODTRAMITE": datos[i].CODTRAMITE,
+                        "ASUNTO": datos[i].ASUNTO,
+                        "FECHAINI": datos[i].FECHAINICIOTRAMITE,
+                        "DIRECCION": datos[i].DIRECCION,
+                        "MUNICIPIO": datos[i].MUNICIPIO,
+                        "x": datos[i].X,
+                        "y": datos[i].Y
+                    }
+                    arrDatoNuevo.push(dato);
+                }
+
+                misTramites(arrDatoNuevo);
+            }
+        });
+
+
+    }
+    function misTramites(datos) {
+        $(function () {
+            $("#GrdMistramites").dxDataGrid({
+                dataSource: datos,
+                selection: {
+                    mode: 'none'
+                },
+                columns: [
+                { dataField: 'CODTRAMITE', caption: 'Codigo trámite', allowGrouping: true, width: '10%' },
+                { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '40%' },
+                { dataField: 'FECHAINI', caption: 'Fecha inicio trámite', allowGrouping: true, width: '15%', dataType: 'string' },
+                { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '12%' },
+                { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '12%' },
+                    {
+                        dataField: 'DETALLETRAMITE', allowGrouping: true, alignment: 'center', caption: 'Detalle trámite', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
+                            container.height(5);
+                            $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"   class="btnEditar" onclick="abrirDetalleTramite(' + options.data.CODTRAMITE + ')" />')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                        }
+                    }
+                ], onCellClick: function (e) {
+                    var id = e.data.CODTRAMITE;
+                    var tipoBoton = e.columnIndex;
+
+                    switch (tipoBoton) {
+
+                        case 5: //detalle
+                            abrirDetalleTramite(id)
+                            break;
+
+
+                    }
+
+                },
+                allowColumnReordering: true,
+                sorting: { mode: 'multiple' },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [20, 30, 50]
+                }
+            });
+        });
+    }
+
+    function cargarSoloMapa() {
+        var rep = conectar();
+
+        if (rep == -1) {
+            setTimeout(cargarSoloMapa, 2000);
+        } else {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarUser", "Reparto")',
+
+                beforeSend: function () { },
+                success: function (response) {
+                    for (servicio in $("#mapa")[0].contentWindow.map._layers) {
+
+                        servicio = $("#mapa")[0].contentWindow.map._layers[servicio];
+                        servicio.nombre = servicio.name;
+                        servicio.servicio = servicio.url;
+                        if (servicio.id == "Tramites_a visitar") {
+                            $("#mapa")[0].contentWindow.map.removeLayer(servicio)
+                            servicio.icono = "" + servicio.renderer.symbol.url + "|" + servicio.renderer.symbol.width + "|" + servicio.renderer.symbol.height
+
+                            $("#mapa")[0].contentWindow.FectureLayerOnloadQuery(servicio, "CODFUNCIONARIO=" + response);
+
+                        }
+                        if (servicio.id == "visitas") {
+                            $("#mapa")[0].contentWindow.map.removeLayer(servicio)
+                            servicio.icono = "" + servicio.renderer.symbol.url + "|" + servicio.renderer.symbol.width + "|" + servicio.renderer.symbol.height
+
+                            $("#mapa")[0].contentWindow.FectureLayerOnloadQuery(servicio, "ID_TERCERO=" + response);
+
+                        }
+                    }
+
+
+                }
+            });
+
+        }
+    }
+    function ConsultarTipoVisita() {
+
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTipoVisita")",
+            success: function (result) {
+                var datos = result;
+                var comb = document.getElementById("cmbTipoVisitaN");
+                $("#cmbTipoVisitaN").children().remove();
+                var combE = document.getElementById("cmbTipoVisitaE");
+                $("#cmbTipoVisitaE").children().remove();
+                if (datos.length > 0) {
+                    for (var i = 0; i < datos.length; i++) {
+                        comb.innerHTML += "<option value=" + datos[i].ID_TIPOVISITA + ">" + datos[i].S_NOMBRE + "</option>";
+                        combE.innerHTML += "<option value=" + datos[i].ID_TIPOVISITA + ">" + datos[i].S_NOMBRE + "</option>";
+                    }
+                }
+            }
+        });
+    }
+
+
+
+    //función que permite habilitar el tab de nueva visita.
+    var NuevaVisita = function () {
+        $("#newpost").css({ "display": "none" });
+        $("#Tramites").css({ "display": "block" });
+        cargarVisitasAconpanante();
+        $("#Acompanantes").css({ "display": "none" });
+        var mydiv = document.getElementById('Tab2');
+        mydiv.style.display = 'block';
+        var mydiv = document.getElementById('Tab3');
+        mydiv.style.display = 'none';
+        cargarDatoTramiteVisitaNuevo();
+        $("#Tab2 a").click();
+    }
+
+    //función que permite habilitar el tab de editar visita.
+    var EditarVisitas = function () {
+
+        var mydiv = document.getElementById('Tab3');
+        mydiv.style.display = 'block';
+
+        var mydiv = document.getElementById('Tab2');
+        mydiv.style.display = 'none'
+
+        $("#Tab3 a").click();
+        EdicionVisita = true;
+
+
+    }
+
+    var DescargarReporte = function (id) {
+        window.open("@Url.Content("~/ControlVigilancia/Visitas/GenerarPDFActuacion?idActuacion=")" + id);
+    };
+
+    //función que permite habilitar el tab de nueva visita en el div de coordenadas.
+    var toggle = function () {
+        // var datos = $("#GrdTramitesVisitas").dxDataGrid('instance')._controllers.data._dataSource._items;
+        var arrayTramites = $("#GrdTramitesVisitas").dxDataGrid('instance').getSelectedRowsData();
+    
+        $("#txt_X").val("");
+        $("#txt_Y").val("");
+        $("#txtAsunto").val("");
+        if (arrayTramites.length > 0) {
+            $("#txt_X").val(arrayTramites[0].x);
+            $("#txt_Y").val(arrayTramites[0].y);
+            $("#txtAsunto").val(arrayTramites[0].ASUNTO);
+            var mydiv = document.getElementById('newpost');
+            mydiv.style.display = 'block'
+
+            var mydiv = document.getElementById('Tramites');
+            mydiv.style.display = 'none'
+
+            var mydiv = document.getElementById('Acompanantes');
+            mydiv.style.display = 'none'
+
+        } else {
+            mensajeAlmacenamiento("Debe seleccionar un tramite")
+        }
+
+
+    }
+
+    //función que permite habilitar el tab de nueva visita en el div de trámites.
+    var toggle1 = function () {
+
+        var mydiv = document.getElementById('Tramites');
+        mydiv.style.display = 'block'
+
+        var mydiv = document.getElementById('newpost');
+        mydiv.style.display = 'none'
+
+        var mydiv = document.getElementById('Acompanantes');
+        mydiv.style.display = 'none'
+    }
+
+    //función que permite habilitar el tab de nueva visita en el div de Acompanantes.
+    var toggle2 = function () {
+
+        if (document.getElementById("txt_X").value != "" && document.getElementById("txt_Y").value != "") {
+
+            var mydiv = document.getElementById('Acompanantes');
+            mydiv.style.display = 'block'
+
+
+            var mydiv = document.getElementById('newpost');
+            mydiv.style.display = 'none'
+
+            var mydiv = document.getElementById('Tramites');
+            mydiv.style.display = 'none'
+        }
+        else {
+            mensajeAlmacenamiento("Debe ubicar un las coordenadas 'X' 'Y' para continuar con el registro de la Actuación")
+        }
+    }
+
+    //Editar Visita
+    //función que permite habilitar el tab de editar visita en el div de coordenadas.
+    var toggle_E = function () {
+
+        var datos = $("#GrdTramitesVisitas_E").dxDataGrid('instance')._controllers.data._dataSource._items;
+        var arrayTramites = "";
+
+
+        var arrDatos = new Array();
+        for (var i = 0; i < datos.length; i++) {
+            if (datos[i].VINCULAR == true) {
+                arrayTramites += datos[i].ID_TRAMITE + ",";
+                var Resultado = {
+                    "ID_TRAMITE": datos[i].ID_TRAMITE,
+                    "ASUNTO": datos[i].ASUNTO,
+                    "FECHAINI": datos[i].FECHAINI,
+                    "DIRECCION": datos[i].DIRECCION,
+                    "MUNICIPIO": datos[i].MUNICIPIO
+                };
+                arrDatos.push(Resultado);
+            }
+        }
+        if (arrDatos.length > 0) {
+            var mydiv = document.getElementById('newpost_E');
+            mydiv.style.display = 'block'
+
+            var mydiv = document.getElementById('Tramites_E');
+            mydiv.style.display = 'none'
+
+            var mydiv = document.getElementById('Acompanantes_E');
+            mydiv.style.display = 'none'
+        } else {
+            mensajeAlmacenamiento("Debe seleccionar un tramite")
+        }
+
+    }
+
+    //función que permite habilitar el tab de editar visita en el div de trámites.
+    var toggle1_E = function () {
+
+        var mydiv = document.getElementById('Tramites_E');
+        mydiv.style.display = 'block'
+
+        var mydiv = document.getElementById('newpost_E');
+        mydiv.style.display = 'none'
+
+        var mydiv = document.getElementById('Acompanantes_E');
+        mydiv.style.display = 'none'
+    }
+
+    //función que permite habilitar el tab de editar visita en el div de Acompanantes.
+    var toggle2_E = function () {
+
+        if (document.getElementById("txt_X_E").value != "" && document.getElementById("txt_Y_E").value != "") {
+            var mydiv = document.getElementById('Acompanantes_E');
+            mydiv.style.display = 'block'
+
+            var mydiv = document.getElementById('newpost_E');
+            mydiv.style.display = 'none'
+
+            var mydiv = document.getElementById('Tramites_E');
+            mydiv.style.display = 'none'
+        }
+        else {
+            mensajeAlmacenamiento("Debe ubicar un las coordenadas 'X' 'Y' para continuar con el registro de la Actuación")
+        }
+    }
+
+    //función que permite capturar la informacion del nombre y el documento por el cual desea filtrar en el tab de nueva visita.
+    function BuscarAcompanante() {
+        NombreAcompanante = document.getElementById("txt_Nombres").value
+        DocumentoAcompanante = document.getElementById("txt_Documento").value
+        Acompanante();
+    }
+
+    //función que permite capturar la informacion del nombre y el documento por el cual desea filtrar en el tab de editar visita.
+    function BuscarAcompanante_E() {
+        NombreAcompanante = document.getElementById("txt_Nombres_E").value
+        DocumentoAcompanante = document.getElementById("txt_Documento_E").value
+        Acompanante_E();
+    }
+
+    //función que realiza el filtro por los campos nombre y documento para el tab de editar visita.
+    function Acompanante_E() {
+        mensajeAlmacenamiento(COPIAS);
+        var CargarDatosEncargados_E = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                var take = loadOptions.take;
+                var skip = loadOptions.skip;
+                var d = $.Deferred();
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetEncargados_E")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                });
+                return d.promise();
+            }
+        });
+
+        var GrdEncargados_EConfiguracion = {
+            store: CargarDatosEncargados_E
+        };
+
+        $(function () {
+            $("#GrdEncargados_E").dxDataGrid({
+                dataSource: GrdEncargados_EConfiguracion,
+                selection: {
+                    mode: 'multiple'
+                },
+                columns: [
+                   { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%' },
+                { dataField: 'NOMBRECOMPLETO', caption: 'Nombres', allowGrouping: true, width: '70%' },
+                ],
+
+                sorting: { mode: 'multiple' },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [20, 30, 50]
+                }, filterRow: { visible: true },
+                selectionChanged: function (selecteditems) {
+
+                    try {
+                        IdsCopias = "";
+                        IdsCopiasFuncionario = "";
+                        for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+
+                            IdsCopias += selecteditems.selectedRowsData[i].CODFUNCIONARIO + ","
+                        }
+                        IdsCopias = IdsCopias.substring(0, IdsCopias.length - 1);
+
+                        for (var x = 0; x < GlobalCopias.length; x++) {
+
+                            IdsCopiasFuncionario += GlobalCopias[x]["CODFUNCIONARIO"] + ","
+                        }
+                        IdsCopiasFuncionario = IdsCopiasFuncionario.substring(0, IdsCopiasFuncionario.length - 1);
+                        IdsCopias = IdsCopias + "," + IdsCopiasFuncionario;
+                    }
+                    catch (e) {
+                    }
+                },
+            });
+        });
+    }
+
+
+    //función que realiza el filtro de las visitas cuando el usuario logueado es copia.
+    function AcompanateXVisita() {
+
+        var CargarDatosComoAcompanante = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                var take = loadOptions.take;
+                var skip = loadOptions.skip;
+                var d = $.Deferred();
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetAcompantesXVisita")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                });
+                return d.promise();
+            }
+        });
+
+        var GrdVisitasComoAcompananteConfiguracion = {
+            store: CargarDatosComoAcompanante
+        };
+
+        $(function () {
+            $("#GrdVisitasComoAcompanante").dxDataGrid({
+                dataSource: GrdVisitasComoAcompananteConfiguracion,
+                selection: {
+                    mode: 'none'
+                },
+                columns: [
+                    { dataField: 'ID_VISITA', caption: 'Id Actuación', allowGrouping: true, width: '8%', dataType: 'number' },
+                    { dataField: 'NOMBRERESPONSABLE', caption: 'Responsable', allowGrouping: true, width: '14%', dataType: 'string' },
+                    { dataField: 'TRAMITES', allowGrouping: true, caption: 'Trámites', width: '10%', dataType: 'string' },
+                    { dataField: 'S_ASUNTO', allowGrouping: true, caption: 'Asunto', width: 'width:70%', dataType: 'string' },
+                    { dataField: 'D_ASIGNACION', allowGrouping: true, caption: 'Fecha asignación', width: '15%', dataType: 'string' },
+                ],
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [2, 30, 50]
+                }, filterRow: { visible: true }
+            });
+        });
+    }
+
+    //función que realiza el filtro del detalle de la visita por el codigo del trámite.
+    function DetalleTramitesVisitas(CODTRAMITE) {
+
+
+
+
+        var CargarDatosDetalleTramitesVisitas = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var d = $.Deferred();
+                var take = loadOptions.take;
+                var skip = loadOptions.skip;
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetDetalleTramitesVisitas")" + "?id=" + CODTRAMITE + "&take=" + take + "&skip=" + skip).done(function (data) {
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                });
+                return d.promise();
+            }
+        });
+
+
+        var GrdDetalleTramitesVisitasConfiguracion = {
+            store: CargarDatosDetalleTramitesVisitas
+        };
+
+        if (CargarDetalleTramitesVisitas == false) {
+            $(function () {
+                $("#GrdDetalleTramitesVisitas").dxDataGrid({
+                    dataSource: GrdDetalleTramitesVisitasConfiguracion,
+                    selection: {
+                        mode: 'none'
+                    },
+                    columns: [
+                    { dataField: 'CODTRAMITE', caption: 'Codigo trámite', allowGrouping: true, width: '10%' },
+                    { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '65%' },
+                    { dataField: 'FECHAINICIOTRAMITE', caption: 'Fecha inicio trámite', allowGrouping: true, width: '15%', dataType: 'string' },
+                    { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '12%' },
+                    { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '12%' },
+                    {
+                        dataField: 'DETALLETRAMITE', allowGrouping: true, alignment: 'center', caption: 'Detalle trámite', width: '20%', allowEditing: false, cellTemplate: function (container, options) {
+                            container.height(5);
+                            $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"   class="btnEditar" onclick="abrirDetalleTramite(' + options.data.CODTRAMITE + ')" />')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                        }
+                    }
+
+                    ],
+                    allowColumnReordering: true,
+                    sorting: { mode: 'multiple' },
+                    paging: {
+                        pageSize: 10
+                    },
+                    pager: {
+                        showPageSizeSelector: true,
+                        allowedPageSizes: [20, 30, 50]
+                    }
+                });
+            });
+            CargarDetalleTramitesVisitas = true;
+        }
+        else {
+            $("#GrdDetalleTramitesVisitas").dxDataGrid({
+                dataSource: GrdDetalleTramitesVisitasConfiguracion,
+            });
+        }
+    }
+
+    //función que realiza el filtro por la visita seleccionada para editarla.
+    function EditarVisita(CODVISITA, CX, CY, ASUNTO, TRAMITES, NOMBRECOPIAS) {
+
+        var CargarDatosTramiteVisita_E = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var d = $.Deferred();
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramiteVisita_E")" + '/' + TRAMITES).done(function (data) {
+                    d.resolve(data, { totalCount: data.length }, Global = data);
+                });
+                return d.promise();
+            }
+        });
+
+        var GrdTramiteVisita_EConfiguracion = {
+            store: CargarDatosTramiteVisita_E
+        };
+
+        $(function () {
+            $("#GrdTramiteVisita_E").dxDataGrid({
+                dataSource: GrdTramiteVisita_EConfiguracion,
+                selection: {
+                    mode: 'none'
+                },
+                columns: [
+                { dataField: 'CODTRAMITE', caption: 'Código trámite', allowGrouping: true, width: '12%' },
+                { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '65%' },
+                { dataField: 'FECHAINICIOTRAMITE', caption: 'Fecha inicio trámite', allowGrouping: true, width: '15%' },
+                { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '12%' },
+                { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '12%' },
+                ],
+                selectionChanged: function (selecteditems) {
+
+                    try {
+                        IdsTramite_E = "";
+                        for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+
+                            IdsTramite_E += selecteditems.selectedRowsData[i].CODTRAMITE + ","
+                        }
+                        IdsTramite_E = IdsTramite_E.substring(0, IdsTramite_E.length - 1);
+                    }
+                    catch (e) {
+
+                    }
+                },
+                allowColumnReordering: true,
+                sorting: { mode: 'multiple' },
+                loadPanel: {
+                    height: 100,
+                    width: 100,
+                    text: 'Cargando...'
+                },
+                groupPanel: { visible: false, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+                pager: { visible: true },
+                paging: { pageSize: 10 },
+                filterRow: { visible: false },
+                searchPanel: { visible: false },
+            });
+        });
+        document.getElementById("txt_X_E").value = CX;
+        document.getElementById("txt_Y_E").value = CY;
+        document.getElementById("txt_ASUNTO_E").value = ASUNTO;
+
+
+        var CargarDatosDetalleEncargados_E = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var take = loadOptions.take;
+                var skip = loadOptions.skip;
+                var d = $.Deferred();
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetDetalleEncargados_E")" + "?id=" + NOMBRECOPIAS + "&take=" + take + "&skip=" + skip).done(function (data) {
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                });
+                return d.promise();
+            }
+        });
+
+
+        var GrdDetalleEncargados_EConfiguracion = {
+            store: CargarDatosDetalleEncargados_E
+        };
+
+        $(function () {
+            $("#GrdDetalleEncargados_E").dxDataGrid({
+                dataSource: GrdDetalleEncargados_EConfiguracion,
+                selection: {
+                    mode: 'none'
+                },
+                columns: [
+                    { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%' },
+                    { dataField: 'NOMBRECOMPLETO', caption: 'Nombres', allowGrouping: true, width: '70%' },
+                ],
+                allowColumnReordering: true,
+                sorting: { mode: 'multiple' },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [20, 30, 50]
+                }, filterRow: { visible: true }
+            });
+        });
+    }
+
+    //función que concatena los ids de los tramites.
+    function ConcatenarTramites(TramiteEditar) {
+        try {
+            IdsTRamite = IdsTramite + TramiteEditar + ",";
+
+        } finally { }
+    }
+
+    //función que reubica las coordenas "X" y "Y" para una nueva visita.
+    function Reubicar() {
+
+        $("#Tab4 a").click();
+
+        conectar();
+        var x = $("#txt_X").val();
+        var y = $("#txt_Y").val();
+        if (x != "" && y != "") {
+            m.verPoint(x, y, 4326, 255, 0, 0, " ", "");
+            m.zoomPto(x, y, 4326, 15);
+        }
+
+
+        m.drawPoint(function (g, g1) {
+            m.noDraw();
+            capa = { servicio: { url: "/arcgis/rest/services/Amva/tramites_visitas/MapServer" }, id: "0" };
+            m.execQuery(capa, "1=1", true,
+              function (resultado) {
+
+              },
+              function () {
+
+              }, g1);
+            mensajeAlmacenamiento(g.x + "," + g.y)
+            document.getElementById("txt_X").value = g.x
+            document.getElementById("txt_Y").value = g.y
+            $("#Tab2 a").click();
+        }, 255, 0, 0, "ubica", srid);
+    };
+
+    //función que reubica las coordenas "X" y "Y" para una nueva visita.
+    function Reubicar_E() {
+        conectar();
+        $("#Tab4 a").click();
+        var x = $("#txt_X_E").val();
+        var y = $("#txt_Y_E").val();
+        if (x != "" && y != "") {
+            m.verPoint(x, y, 4326, 255, 0, 0, " ", "");
+            m.zoomPto(x, y, 4326, 15);
+        }
+
+        m.drawPoint(function (g, g1) {
+            m.noDraw();
+            capa = { servicio: { url: "/arcgis/rest/services/Amva/tramites_visitas/MapServer" }, id: "0" };
+            m.execQuery(capa, "1=1", true,
+              function (resultado) {
+
+              },
+              function () {
+
+              }, g1);
+            mensajeAlmacenamiento(g.x + "," + g.y)
+            document.getElementById("txt_X_E").value = g.x
+            document.getElementById("txt_Y_E").value = g.y
+
+            $("#Tab3 a").click();
+        }, 255, 0, 0, "ubica", srid);
+    };
+
+    //función que oculta el div de mis visitas para visualizar el div de acompañantes.
+    var OcultarMisVisitas = function () {
+        var mydiv = document.getElementById('VisitasAcompanantes');
+        mydiv.style.display = 'block'
+
+        var mydiv = document.getElementById('MisVisitas');
+        mydiv.style.display = 'none'
+
+        //Carga grid AcompanteXVisita
+        AcompanateXVisita();
+    };
+
+    //función que oculta el div de acompañantes para visualizar el div de mis visitas.
+    var OcultarAcompanante = function () {
+        var mydiv = document.getElementById('MisVisitas');
+        mydiv.style.display = 'block'
+
+        var mydiv = document.getElementById('VisitasAcompanantes');
+        mydiv.style.display = 'none'
+    };
+
+    //Carga los datos de acomñantexvisita
+    var CargarDatosComoAcompanante = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/AcompantesXVisita")").done(function (data) {
+                d.resolve(data, { totalCount: data.length });
+            });
+            return d.promise();
+        }
+    });
+
+    //Carga los datos de tramitesvisitas
+    var CargarDatosTramitesVisitas = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var d = $.Deferred();
+
+            $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesVisitas")" + "?filtro=" + filterOptions).done(function (data) {
+                d.resolve(data, { totalCount: data.length });
+            });
+            return d.promise();
+        }
+    });
+
+    //Carga los datos de tramitesvisitas_E
+    var CargarDatosTramitesVisitas_E = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var take = loadOptions.take;
+            var skip = loadOptions.skip;
+            var d = $.Deferred();
+            $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesVisitas_E")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+
+    //Carga las grids de visitas cuando inica la pagina
+
+
+    var GrdTramitesVisitasConfiguracion = {
+        store: CargarDatosTramitesVisitas
+    };
+
+    var GrdTramitesVisitas_EConfiguracion = {
+        store: CargarDatosTramitesVisitas_E
+    };
+
+
+
+
+    //función que redirecciona al formulario de realizar visita.
+    function RealizarVisita() {
+        if (IdVisita > 0) {
+            if (ESTADOVISITA == null) {
+                mensajeAlmacenamiento("Estado de la Actuación Inválido.");
+                return;
+            }
+
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "@Url.Content("~/ControlVigilancia/Visitas//RealizarVisita")");
+
+            form.setAttribute("target", "view");
+
+            var campo1 = document.createElement("input");
+            campo1.setAttribute("type", "hidden");
+            campo1.setAttribute("name", "id_visita");
+            campo1.setAttribute("value", IdVisita);
+            form.appendChild(campo1);
+            var campo2 = document.createElement("input");
+            campo2.setAttribute("type", "hidden");
+            campo2.setAttribute("name", "p_ESTADOVISITA");
+            campo2.setAttribute("value", ESTADOVISITA);
+            form.appendChild(campo2);
+            document.body.appendChild(form);
+
+            window.open('', 'view');
+
+            form.submit();
+        }
+        else {
+            mensajeAlmacenamiento("Debe seleccionar una Actuación para realizar el proceso de realizar Actuación.");
+        }
+    }
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msText").text(mensaje);
+
+
+        $("#msAlmacenamiento").dialog({
+
+            buttons: [
+      {
+          text: "Aceptar",
+
+          click: function () { $(this).dialog("close"); },
+
+          class: "btn btn-default "
+      },
+            ]
+        });
+
+
+    }
+    //función que limpia las grids y los campos despues de guardar o editar una visita.
+    function LimpiarGrids() {
+
+        //Carga los datos de tramitesvisitas
+        var CargarDatosTramitesVisitas = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                var d = $.Deferred();
+                //alert('a');
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesVisitas")" + "?filtro=" + filterOptions).done(function (data) {
+                    d.resolve(data, { totalCount: data.length });
+                });
+                return d.promise();
+            }
+        });
+
+        var GrdTramitesVisitasConfiguracion = {
+            store: CargarDatosTramitesVisitas
+        };
+
+      
+
+
+
+
+        //acompanantes
+        var GrdAcompanantesConfiguracion = {
+
+        };
+
+        $(function () {
+            $("#GrdAcompanantes").dxDataGrid({
+                dataSource: GrdAcompanantesConfiguracion,
+                selection: {
+                    mode: 'multiple'
+                },
+                columns: [
+                    { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%' },
+                    { dataField: 'NOMBRECOMPLETO', caption: 'Nombres', allowGrouping: true, width: '70%' },
+                ],
+                selectionChanged: function (selecteditems) {
+
+                    try {
+                        IdsCopias = "";
+                        for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+
+                            IdsCopias += selecteditems.selectedRowsData[i].CODFUNCIONARIO + ","
+                        }
+                        IdsCopias = IdsCopias.substring(0, IdsCopias.length - 1);
+                    }
+                    catch (e) {
+
+                    }
+                },
+                allowColumnReordering: true,
+                sorting: { mode: 'multiple' },
+                loadPanel: {
+                    height: 100,
+                    width: 100,
+                    text: 'Cargando...'
+                },
+                groupPanel: { visible: false, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+                pager: { visible: true },
+                paging: { pageSize: 10 },
+                filterRow: { visible: true },
+                searchPanel: { visible: false },
+            });
+        });
+
+
+        document.getElementById("txtAsunto").value = "";
+        document.getElementById("txt_X").value = "";
+        document.getElementById("txt_Y").value = "";
+        document.getElementById("txtComentario").value = "";
+
+        toggle1();
+        $("#Tab1 a").click();
+
+    }
+
+
+
+    //carga de grids vacias
+    var CargarDatosAcompanantes = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var d = $.Deferred();
+            $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetAcompanantes")" + "?filtro=" + filterOptions).done(function (data) {
+
+                d.resolve(data, { totalCount: data.length });
+            });
+            return d.promise();
+        }
+    });
+
+    var GrdAcompanantesConfiguracion = {
+        store: CargarDatosAcompanantes
+    };
+
+    $(function () {
+        $("#GrdAcompanantes").dxDataGrid({
+            dataSource: GrdAcompanantesConfiguracion,
+            selection: {
+                mode: 'multiple'
+            },
+            columns: [
+                  { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%' },
+                  { dataField: 'NOMBRECOMPLETO', caption: 'Nombres', allowGrouping: true, width: '70%' },
+            ],
+            selectionChanged: function (selecteditems) {
+
+                try {
+                    IdsCopias = "";
+                    for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+
+                        IdsCopias += selecteditems.selectedRowsData[i].CODFUNCIONARIO + ","
+                    }
+                    IdsCopias = IdsCopias.substring(0, IdsCopias.length - 1);
+                }
+                catch (e) {
+
+                }
+            },
+            allowColumnReordering: true,
+            sorting: { mode: 'multiple' },
+            groupPanel: { visible: false, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+            pager: { visible: true },
+            paging: { pageSize: 10 },
+            filterRow: { visible: true },
+            loadPanel: {
+                height: 100,
+                width: 100,
+                text: 'Cargando...'
+            },
+            searchPanel: { visible: false },
+        });
+    });
+
+    var CargarDatosEncargados_E = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var take = loadOptions.take;
+            var skip = loadOptions.skip;
+            var d = $.Deferred();
+            $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetEncargados_E")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+
+    var GrdEncargados_EConfiguracion = {
+        store: CargarDatosEncargados_E
+    };
+
+    $(function () {
+        $("#GrdEncargados_E").dxDataGrid({
+            dataSource: GrdEncargados_EConfiguracion,
+            selection: {
+                mode: 'multiple'
+            },
+            columns: [
+               { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%' },
+            { dataField: 'NOMBRECOMPLETO', caption: 'Nombres', allowGrouping: true, width: '70%' },
+            ],
+
+
+            sorting: { mode: 'multiple' },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [20, 30, 50]
+            }, filterRow: { visible: true },
+            selectionChanged: function (selecteditems) {
+
+                try {
+                    IdsCopias = "";
+                    IdsCopiasFuncionario = "";
+                    for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+
+                        IdsCopias += selecteditems.selectedRowsData[i].CODFUNCIONARIO + ","
+                    }
+                    IdsCopias = IdsCopias.substring(0, IdsCopias.length - 1);
+
+                    for (var x = 0; x < GlobalCopias.length; x++) {
+
+                        IdsCopiasFuncionario += GlobalCopias[x]["CODFUNCIONARIO"] + ","
+                    }
+                    IdsCopiasFuncionario = IdsCopiasFuncionario.substring(0, IdsCopiasFuncionario.length - 1);
+                    IdsCopias = IdsCopias + "," + IdsCopiasFuncionario;
+                }
+                catch (e) {
+                }
+            },
+        });
+    });
+
+
+
+    function abrirAtiende() {
+
+        $("#pantallaDetalleVisita").dialog(
+           {
+               width: 850,
+               height: 550,
+               modal: true
+           });
+        $("#DetalleVisita").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/DetalleVisitas")");
+
+    }
+
+    function Ayudas() {
+
+        var tab4activo = document.getElementById('Tab4');
+        var tab1activo = document.getElementById('Tab1');
+        var tab2activo = document.getElementById('Tab2');
+        var tab3activo = document.getElementById('Tab3');
+
+        if (tab4activo.className == 'active') {
+
+            window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 80);
+
+        }
+        else if (tab1activo.className == 'active') {
+            window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 7);
+
+        }
+        else if (tab2activo.className == 'active') {
+            window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 5);
+        }
+        else if (tab3activo.className == 'active') {
+            window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 6);
+
+        }
+    }
+
+    ////////////////////////////////////////////////
+    function cargarVisita() {
+
+
+
+
+        $(function () {
+            $("#GrdVisitas").dxDataGrid({
+
+                selection: {
+                    mode: 'single'
+                },
+                columns: [
+                    { dataField: 'ID_VISITA', allowGrouping: true, caption: 'Id Actuación', width: '8%', allowFiltering: true, dataType: 'number' },
+                    { dataField: 'NOMBRERESPONSABLE', caption: 'Responsable', allowGrouping: true, width: '19%', dataType: 'string' },
+                    { dataField: 'S_ASUNTO', caption: 'Asunto', allowGrouping: true, width: '65%', dataType: 'string' },
+                    { dataField: 'D_ASIGNACION', caption: 'Fecha asignación', allowGrouping: true, width: '18%', dataType: 'string' },
+                    { dataField: 'ESTADO_VISITA', caption: 'Estado Actuación', allowGrouping: true, width: '10%', dataType: 'string' },
+                    {
+                        dataField: 'EDITARVISITAS', alignment: 'center', allowGrouping: true, caption: 'Editar Actuación', width: '7%', cellTemplate: function (container, options) {
+
+                            $('<img src="@Url.Content("../../Content/Images/EditarVisita.png")" style="width:25px;height:25px" class="btnEditar" onclick="EditarVisitas()" />')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                        }
+                    },
+                    {
+                        dataField: 'DESCARGARINFORME', alignment: 'center', allowGrouping: true, caption: 'Reporte Actuación', width: '7%', cellTemplate: function (container, options) {
+
+                            //$('<img src="@Url.Content("../../Content/Images/Pdf.png")" style="width:25px;height:25px" class="glyphicon glyphicon-download-alt" onclick="DescargarReporte(' + options.data.ID_VISITA + ')" />')
+                            $('<span onclick="DescargarReporte(' + options.data.ID_VISITA + ')"><svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-download" fill="currentColor" xmlns="http://www.w3.org/2000/svg">  <path fill-rule="evenodd" d="M.5 8a.5.5 0 0 1 .5.5V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8.5A.5.5 0 0 1 .5 8z"/>  <path fill-rule="evenodd" d="M5 7.5a.5.5 0 0 1 .707 0L8 9.793 10.293 7.5a.5.5 0 1 1 .707.707l-2.646 2.647a.5.5 0 0 1-.708 0L5 8.207A.5.5 0 0 1 5 7.5z"/>  <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 8 1z"/></svg></span>')
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                        }
+                    }
+                ], allowColumnReordering: true,
+                onSelectionChanged: function (selecteditems) {
+                    IdVisita = selecteditems.selectedRowsData[0].ID_VISITA;
+
+                    ESTADOVISITA = selecteditems.selectedRowsData[0].ID_ESTADOVISITA;
+
+                    if (ESTADOVISITA > 1)
+                    {
+                        $('#btnRealizarVisita').text('Continuar Actuación');
+                    } else {
+                        $('#btnRealizarVisita').text('Realizar Actuación');
+                    }
+                },
+                onCellClick: function (e) {
+                    var tramite = e.data.TRAMITES;
+                    var idVisita = e.data.ID_VISITA;
+                    var CX = e.data.X;
+                    var CY = e.data.Y;
+                    var ASUNTO = e.data.S_ASUNTO;
+                    var NOMBRECOPIAS = e.data.NOMBRECOPIAS;
+                    var tipoBoton = e.columnIndex;
+                    var tipoVisita = e.data.ID_TIPOVISITA;
+                    IdVisita = idVisita;
+                    cargarDetalleTramite(tramite, idVisita);
+                    switch (tipoBoton) {
+
+
+
+                        case 5: //editar
+                            $("#newpost_E").css({ "display": "none" });
+                            $("#Acompanantes_E").css({ "display": "none" });
+                            if (document.getElementById("Check").checked == true) {
+                                tramiteAsignado(idVisita);
+                                $("#Tab2").css({ "display": "none" });
+                                $("#Tab3").css({ "display": "block" });
+
+                                $("#btnSiguiente").css({ "display": "none" });
+
+                                $("#btnGuardar").css({ "display": "block" });
+                                $("#Tramites_E").css({ "display": "block" });
+
+
+                                $("#Tab3 a").click();
+
+
+                            } else {
+                                tramiteAsignado(idVisita);
+                                $("#txt_X_E").val(CX);
+                                $("#txt_Y_E").val(CY);
+                                $("#txt_ASUNTO_E").val(ASUNTO);
+                                $("#cmbTipoVisitaE").val(tipoVisita);
+                                $("#btnVisitaFin").css({ "display": "none" });
+
+                                $("#Tab2").css({ "display": "none" });
+                                $("#Tab3").css({ "display": "block" });
+
+                                $("#btnSiguiente").css({ "display": "block" });
+
+                                $("#btnGuardar").css({ "display": "none" });
+                                $("#Tramites_E").css({ "display": "block" });
+
+
+
+                            }
+
+                            break;
+
+                    }
+
+                },
+
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [20, 30, 50]
+                }, filterRow: { visible: true }
+            }).dxDataGrid('instance');
+        });
+    }
+
+    function gridDeatalleTramiteVisita(datos) {
+        $(function () {
+            $("#GrdDetalleTramitesVisitas").dxDataGrid({
+                dataSource: datos,
+                selection: {
+                    mode: 'none'
+                },
+                columns: [
+                { dataField: 'ID_TRAMITE', caption: 'Codigo trámite', allowGrouping: true, width: '10%' },
+                { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '65%' },
+                { dataField: 'FECHAINI', caption: 'Fecha inicio trámite', allowGrouping: true, width: '15%', dataType: 'string' },
+                { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '12%' },
+                { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '12%' },
+                   {
+                       dataField: 'DETALLETRAMITE', allowGrouping: true, alignment: 'center', caption: 'Detalle trámite', width: '20%', allowEditing: false, cellTemplate: function (container, options) {
+                           container.height(5);
+                           $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"   class="btnEditar" onclick="abrirDetalleTramite(' + options.data.ID_TRAMITE + ')" />')
+
+                                       .attr('src', options.value)
+                                       .appendTo(container);
+                       }
+                   }
+                ],
+                allowColumnReordering: true,
+                sorting: { mode: 'multiple' },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [20, 30, 50]
+                }
+            });
+        });
+    }
+
+    function cargarVisitas() {
+
+        onLoad("Tab1");
+        if (!swVisita) {
+            var CargarDatosVisitas = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var take = loadOptions.take;
+                    var skip = loadOptions.skip;
+                    var d = $.Deferred();
+                    gridDeatalleTramiteVisita({});
+                    if (take == undefined) {
+                        take = 10;
+                        skip = 0;
+                    }
+                    var tipo;
+                    if (document.getElementById("Check").checked == true) {
+                        tipo = 1;
+                    } else {
+                        tipo = 0;
+                    }
+                    $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetVisitas")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip + "&tipo=" + tipo).done(function (data) {
+                        d.resolve(data.datos, { totalCount: data.numRegistros });
+                        offLoad("Tab1");
+                    });
+                    return d.promise();
+                }
+            });
+
+
+            var GrdVisitasConfiguracion = {
+                store: CargarDatosVisitas
+            };
+
+
+            $(function () {
+                $("#GrdVisitas").dxDataGrid({
+                    height: '280px',
+                    dataSource: GrdVisitasConfiguracion
+                });
+            });
+            swVisita = true;
+        } else {
+            offLoad("Tab1");
+        }
+
+    }
+    function cargarDetalleTramite(CODTRAMITE, visita) {
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/DetalleTramitesVisitas")",
+            data: { id_visita: visita },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval(response);
+                gridDeatalleTramiteVisita(datos);
+
+            }
+        });
+
+
+    }
+    function CargarVisitasFinalizadas() {
+        $("#Tab3").css({ "display": "none" });
+        if (document.getElementById("Check").checked == true) {
+            $("#btnRealizarVisita").css({ "display": "none" });
+            $("#GrdDetalleTramitesVisitas").css({ "display": "none" });
+            $("#btnNuevaVisita").css({ "display": "none" });
+            $("#btnVisitaFin").css({ "display": "block" });
+
+            gridDeatalleTramiteVisita({});
+            cargarVisita();
+        }
+        else {
+            $("#btnVisitaFin").css({ "display": "none" });
+            $("#btnRealizarVisita").css({ "display": "block" });
+            $("#GrdDetalleTramitesVisitas").css({ "display": "block" });
+            $("#btnNuevaVisita").css({ "display": "block" });
+            cargarVisita();
+            gridDeatalleTramiteVisita({});
+        }
+    }
+
+    function consultarVisitasTramite(datos) {
+
+
+        $("#GrdTramitesVisitas_E").dxDataGrid({
+            dataSource: datos,
+            selection: {
+                mode: 'single'
+            }, filterRow: { visible: false },
+            editing: {
+                editMode: 'batch',
+                editEnabled: true
+            },
+            columns: [
+                {
+                    dataField: 'VINCULAR', allowGrouping: true, alignment: 'center', width: '10%', caption: 'Asociar', cellTemplate: function (container, options) {
+                        container.height(5);
+
+                        $('<input id="idVincular" type="checkbox" style="text-align:center" />')
+                            .prop("checked", options.value)
+                            .appendTo(container);
+                    }
+                },
+                                { dataField: 'ID_TRAMITE', caption: 'Código trámite', allowGrouping: true, width: '10%' },
+                    { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '50%' },
+                    { dataField: 'FECHAINI', caption: 'Fecha inicio trámite', allowGrouping: true, width: '10%' },
+                    { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '10%' },
+                    { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '10%' }, {
+                        dataField: 'DETALLETRAMITE', allowGrouping: true, alignment: 'center', caption: 'Detalle trámite', width: '20%', allowEditing: false, cellTemplate: function (container, options) {
+                            container.height(5);
+                            $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"   class="btnEditar" onclick="abrirDetalleTramite(' + options.data.ID_TRAMITE + ')" />')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                        }
+                    }
+
+            ],
+            scrolling: { mode: 'infinite' },
+            cellClick: function (e) {
+                e.data.editar = true;
+                var id = e.data.Codigo;
+                var tipoBoton = e.columnIndex;
+                switch (tipoBoton) {
+                    case 0: //eliminar
+                        if (datos[e.rowIndex].VINCULAR) {
+                            datos[e.rowIndex].VINCULAR = false;
+                        } else {
+                            datos[e.rowIndex].VINCULAR = true;
+                        }
+                        break;
+                }
+
+
+                $("#GrdTramitesVisitas_E").dxDataGrid({
+                    dataSource: datos
+                });
+            },
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+
+            allowColumnResizing: true
+                , columnAutoWidth: true, loadPanel: {
+                    height: 100,
+                    width: 100,
+                    text: 'Cargando...'
+                }, onCellHoverChanged: function (hoverCell) {
+                    if (hoverCell.eventType == 'mouseover')
+                        hoverCell.cellElement.addClass("hovered");
+                    else
+                        hoverCell.cellElement.removeClass("hovered");
+                }
+        });
+    }
+
+    function abrirDetalleTramite(id) {
+
+        $("#pantallaDetalleTramites").dialog(
+               {
+                   width: 650,
+                   height: 550,
+                   modal: true
+               });
+        $("#DetalleTramites").attr("src", "http://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=" + id);
+    }
+    function cargarDatoTramiteVisita(arrTramiteAsignado, id) {
+        onLoad("Tab3");
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/consultarTramitesVisita")",
+            data: { idVisita: id },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = response;
+                var obj = eval("(" + response + ')');
+                var arrDatos = new Array();
+                var sw = 0;
+                for (var i = 0; i < obj.length; i++) {
+                    for (var k = 0; k < arrTramiteAsignado.length; k++) {
+                        if (arrTramiteAsignado[k].ID_TRAMITE == obj[i].ID_TRAMITE) {
+                            sw = 1
+                            break;
+
+                        } else {
+
+                            sw = 0;
+                        }
+
+
+
+                    }
+                    var dato = ""
+                    if (sw == 1) {
+                        dato = {
+                            "VINCULAR": true,
+                            "ID_TRAMITE": obj[i].ID_TRAMITE,
+                            "ASUNTO": obj[i].ASUNTO,
+                            "FECHAINI": obj[i].FECHAINI,
+                            "DIRECCION": obj[i].DIRECCION,
+                            "MUNICIPIO": obj[i].MUNICIPIO
+                        }
+                        sw = 0;
+
+                    } else {
+                        dato = {
+                            "VINCULAR": false,
+                            "ID_TRAMITE": obj[i].ID_TRAMITE,
+                            "ASUNTO": obj[i].ASUNTO,
+                            "FECHAINI": obj[i].FECHAINI,
+                            "DIRECCION": obj[i].DIRECCION,
+                            "MUNICIPIO": obj[i].MUNICIPIO
+                        }
+                    }
+                    arrDatos.push(dato);
+                }
+
+                // offLoad("Tab3");
+                consultarVisitasTramite(arrDatos);
+
+            }
+        });
+
+
+    }
+
+    function cancelar() {
+
+        $("#Tab1 a").click();
+        $("#Tab3").css({ "display": "none" });
+    }
+    function cancelarNueva() {
+
+        $("#Tab1 a").click();
+        $("#Tab2").css({ "display": "none" });
+    }
+    function tramiteAsignado(id) {
+        arrTramite = "";
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/DetalleTramitesVisitas")",
+            data: { id_visita: id },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval("(" + response + ')');
+                arrTramite = datos;
+                consultarResponsableAS();
+                cargarDatoTramiteVisita(datos, id);
+
+            }
+        });
+
+
+    }
+    function guardarTramiteFinalizado() {
+        onLoad("Tab3");
+
+        var datos = $("#GrdTramitesVisitas_E").dxDataGrid('instance')._controllers.data._dataSource._items;
+        var arrayTramites = "";
+
+        var arrDatos = new Array();
+        for (var i = 0; i < datos.length; i++) {
+            if (datos[i].VINCULAR == true) {
+                arrayTramites += datos[i].ID_TRAMITE + ",";
+                var Resultado = {
+                    "ID_TRAMITE": datos[i].ID_TRAMITE,
+                    "ASUNTO": datos[i].ASUNTO,
+                    "FECHAINI": datos[i].FECHAINI,
+                    "DIRECCION": datos[i].DIRECCION,
+                    "MUNICIPIO": datos[i].MUNICIPIO
+                };
+                arrDatos.push(Resultado);
+            }
+        }
+        arrayTramites = arrayTramites.substring(0, arrayTramites.length - 1);
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/asociarTramiteVisita")",
+            data: { tramite: arrayTramites, idVisita: 82 },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = response;
+
+                alert("almacenamiento exitoso")
+                //  offLoad("Tab3");
+                cancelar();
+            }
+        });
+
+    }
+
+    function GridAcompanantesAsignados(datos) {
+        $("#GrdDetalleEncargados_E").dxDataGrid({
+            dataSource: datos,
+            selection: {
+                mode: 'none'
+            },
+            columns: [
+                { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%' },
+                { dataField: 'NOMBRECOMPLETO', caption: 'Nombres', allowGrouping: true, width: '70%' },
+            ],
+            allowColumnReordering: true,
+            sorting: { mode: 'multiple' },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [20, 30, 50]
+            }, filterRow: { visible: true }
+        });
+    }
+    function consultarResponsableAS() {
+        var tramiteCod = "";
+        for (var i = 0; i < arrTramite.length; i++) {
+            tramiteCod += arrTramite[i].ID_TRAMITE + ",";
+        }
+        tramiteCod = tramiteCod.substring(0, tramiteCod.length - 1);
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/consultarResponsableVisita")",
+            data: { tramite: tramiteCod },
+            beforeSend: function () { },
+            success: function (response) {
+
+                var obj = eval("(" + response + ')');
+                GridAcompanantesAsignados(obj);
+            }
+        });
+    }
+
+ 
+
+    function consultarVisitasTramiteNuevo(datos) {
+
+
+        $("#GrdTramitesVisitas").dxDataGrid({
+            dataSource: datos,
+            selection: {
+                mode: 'multiple'
+            }, filterRow: { visible: false },
+
+            columns: [
+
+                    { dataField: 'CODTRAMITE', caption: 'Código trámite', allowGrouping: true, width: '10%' },
+                    { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '50%' },
+                    { dataField: 'FECHAINI', caption: 'Fecha inicio trámite', allowGrouping: true, width: '10%' },
+                    { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '10%' },
+                    { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '10%' },
+                    { dataField: 'x', caption: 'x', allowGrouping: true, width: '10%' },
+                    { dataField: 'y', caption: 'y', allowGrouping: true, width: '10%' },
+
+            ],
+            scrolling: { mode: 'infinite' },
+            cellClick: function (e) {
+                e.data.editar = true;
+                var id = e.data.Codigo;
+                var tipoBoton = e.columnIndex;
+
+
+                $("#GrdTramitesVisitas_E").dxDataGrid({
+                    dataSource: datos
+                });
+            },
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+
+            allowColumnResizing: true
+                , columnAutoWidth: true, loadPanel: {
+                    height: 100,
+                    width: 100,
+                    text: 'Cargando...'
+                }, onCellHoverChanged: function (hoverCell) {
+                    if (hoverCell.eventType == 'mouseover')
+                        hoverCell.cellElement.addClass("hovered");
+                    else
+                        hoverCell.cellElement.removeClass("hovered");
+                }
+        });
+    }
+
+    function cargarDatoTramiteVisitaNuevo() {
+        var arrDatoNuevo = new Array();
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/consultarTramitesVisitaNuevo")",
+
+            beforeSend: function () { },
+            success: function (response) {
+
+                var datos = eval("(" + response + ')');
+                for (var i = 0; i < datos.length; i++) {
+                    dato = {
+                        "VINCULAR": false,
+                        "CODTRAMITE": datos[i].CODTRAMITE,
+                        "ASUNTO": datos[i].ASUNTO,
+                        "FECHAINI": datos[i].FECHAINICIOTRAMITE,
+                        "DIRECCION": datos[i].DIRECCION,
+                        "MUNICIPIO": datos[i].MUNICIPIO,
+                        "x": datos[i].X,
+                        "y": datos[i].Y
+                    }
+                    arrDatoNuevo.push(dato);
+                }
+
+                consultarVisitasTramiteNuevo(arrDatoNuevo);
+            }
+        });
+
+
+    }
+
+    function gridAconpananteNuevo() {
+        $("#GrdAcompanantes").dxDataGrid({
+
+            selection: {
+                mode: 'multiple'
+            },
+            columns: [
+                { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%' },
+                { dataField: 'NOMBRECOMPLETO', caption: 'Nombres', allowGrouping: true, width: '70%' },
+            ],
+            selectionChanged: function (selecteditems) {
+                try {
+                    IdsCopias = "";
+                    for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+
+                        IdsCopias += selecteditems.selectedRowsData[i].CODFUNCIONARIO + ","
+                    }
+                    IdsCopias = IdsCopias.substring(0, IdsCopias.length - 1);
+                }
+                catch (e) {
+
+                }
+            },
+            allowColumnReordering: true,
+            loadPanel: {
+                height: 100,
+                width: 100,
+                text: 'Cargando...'
+            },
+            sorting: { mode: 'multiple' },
+            groupPanel: { visible: false, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+            pager: { visible: true },
+            paging: { pageSize: 10 },
+            filterRow: { visible: true },
+            searchPanel: { visible: false },
+        });
+
+    }
+
+
+
+    function cargarVisitasAconpanante() {
+        if (!swVisitaAconpanante) {
+            var CargarDatosAcompanantes = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var take = loadOptions.take;
+                    var skip = loadOptions.skip;
+                    var d = $.Deferred();
+                    $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetEncargados_E")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+
+                        d.resolve(data.datos, { totalCount: data.numRegistros });
+                    });
+                    return d.promise();
+                }
+            });
+
+
+            var GrdAcompanantesConfiguracion = {
+                store: CargarDatosAcompanantes
+            };
+
+
+            $(function () {
+                $("#GrdAcompanantes").dxDataGrid({
+                    dataSource: GrdAcompanantesConfiguracion
+                });
+            });
+            swVisitaAconpanante = true;
+        }
+
+    }
+
+
+    function consultarTramiteVisita() {
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/consultarTramiteVisita")",
+            data: {
+                idVisita: IdVisita
+            },
+
+            beforeSend: function () { },
+            success: function (response) {
+
+                var obj = eval("(" + response + ')');
+                GuardarModificar(obj);
+            }
+        });
+    }
+    function GuardarModificar(arrvisitaTra) {
+        onLoad("Tab3");
+        var strTramiteEliminado = "";
+        var dataGrid = $('#GrdEncargados_E').dxDataGrid('instance');
+        var ddd = arrTramite;
+
+        var gridResponsable = dataGrid.getSelectedRowsData();
+        var arrResponsable = "";
+        var datos = $("#GrdTramitesVisitas_E").dxDataGrid('instance')._controllers.data._dataSource._items;
+        var arrayTramites = "";
+        var arrDatos = new Array();
+
+
+
+        for (var i = 0; i < datos.length; i++) {
+            if (datos[i].VINCULAR == true) {
+
+
+                var Resultado = {
+                    "ID_TRAMITE": datos[i].ID_TRAMITE,
+                    "ASUNTO": datos[i].ASUNTO,
+                    "FECHAINI": datos[i].FECHAINI,
+                    "DIRECCION": datos[i].DIRECCION,
+                    "MUNICIPIO": datos[i].MUNICIPIO
+                };
+                arrDatos.push(Resultado);
+
+
+
+            }
+        }
+
+
+        for (var i = 0; i < gridResponsable.length; i++) {
+            arrResponsable += gridResponsable[i].CODFUNCIONARIO + ",";
+        }
+        arrResponsable = arrResponsable.substring(0, arrResponsable.length - 1);
+
+
+        for (var i = 0; i < arrTramite.length; i++) {
+            var sw = 0;
+            for (var j = 0; j < arrDatos.length; j++) {
+                if (arrTramite[i].ID_TRAMITE == arrDatos[j].ID_TRAMITE) {
+                    sw = 1;
+                }
+            }
+            if (sw == "0") {
+                strTramiteEliminado += arrTramite[i].ID_TRAMITE + ",";
+            }
+        }
+
+        strTramiteEliminado = strTramiteEliminado.substring(0, strTramiteEliminado.length - 1);
+        if (strTramiteEliminado != "")
+            guardarDesasociarTramite(strTramiteEliminado, document.getElementById("txtComentario_E").value);
+
+
+
+        for (var i = 0; i < datos.length; i++) {
+            var sw = 0;
+            if (datos[i].VINCULAR == true) {
+                for (var j = 0; j < arrvisitaTra.length; j++) {
+                    if (datos[i].ID_TRAMITE == arrvisitaTra[j].ID_TRAMITE) {
+                        sw = 1;
+
+                    }
+                }
+                if (sw == "0") {
+                    arrayTramites += datos[i].ID_TRAMITE + ",";
+                }
+
+
+            }
+        }
+        arrayTramites = arrayTramites.substring(0, arrayTramites.length - 1);
+        //if (arrayTramites != "") {
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/Visitas/modificarVisita")",
+                data: {
+                    p_Asunto: document.getElementById("txt_ASUNTO_E").value, cx: document.getElementById("txt_X_E").value,
+                    cy: document.getElementById("txt_Y_E").value, p_TipoUbicacion: TipoUbicacion, p_IdsTramite: arrayTramites,
+                    p_Cometario: document.getElementById("txtComentario_E").value, p_IdsCopias: arrResponsable, p_IdTipoVisita: $("#cmbTipoVisitaE").val(), p_IdVisita: IdVisita
+                },
+
+                beforeSend: function () { },
+                success: function (response) {
+
+                    mensajeAlmacenamiento("Informacion guardada satisfactoriamente");
+                    IdsTramite = "";
+                    cancelar();
+                    cargarVisita();
+                    // offLoad("#Tab3");
+
+                }
+            });
+        //} else {
+
+        //    mensajeAlmacenamiento("Informacion guardada satisfactoriamente");
+        //    IdsTramite = "";
+        //    cancelar();
+        //    cargarVisita();
+        //}
+
+
+    }
+
+    function guardarDesasociarTramite(strTramiteEliminado, strComentario) {
+        var dataGridCopias = $('#GrdDetalleEncargados_E').dxDataGrid('instance')._controllers.data._dataSource._items;
+        var arrCopia = "";
+        for (var i = 0; i < dataGridCopias.length; i++) {
+            arrCopia += dataGridCopias[i].CODFUNCIONARIO + ",";
+        }
+        arrCopia = arrCopia.substring(0, arrCopia.length - 1);
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/desasociarTramite")",
+            data: { idTramites: strTramiteEliminado, comentarios: strComentario, arrCopias: arrCopia, tipo: 1 },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = response;
+
+            }
+        });
+    }
+    function validar() {
+        var c = Session["_UserName"];
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/validarUser")",
+
+            beforeSend: function () { },
+            success: function (response) {
+
+
+            }
+        });
+
+
+    }
+    function GuardarNuevo() {
+        var arrResponsableNuevo = "";
+        var datosNuevo = $("#GrdTramitesVisitas").dxDataGrid('instance').getSelectedRowsData();
+        var arrayTramitesNuevo = "";
+        var arrDatosNuevo = new Array();
+
+        var dataGridNuevo = $('#GrdAcompanantes').dxDataGrid('instance');
+        var gridResponsableNuevo = dataGridNuevo.getSelectedRowsData();
+        for (var i = 0; i < datosNuevo.length; i++) {
+
+            arrayTramitesNuevo += datosNuevo[i].CODTRAMITE + ",";
+            var Resultado = {
+                "CODTRAMITE": datosNuevo[i].CODTRAMITE,
+                "ASUNTO": datosNuevo[i].ASUNTO,
+                "FECHAINI": datosNuevo[i].FECHAINI,
+                "DIRECCION": datosNuevo[i].DIRECCION,
+                "MUNICIPIO": datosNuevo[i].MUNICIPIO
+            };
+            arrDatosNuevo.push(Resultado);
+
+        }
+        arrayTramitesNuevo = arrayTramitesNuevo.substring(0, arrayTramitesNuevo.length - 1);
+        for (var i = 0; i < gridResponsableNuevo.length; i++) {
+            arrResponsableNuevo += gridResponsableNuevo[i].CODFUNCIONARIO + ",";
+        }
+        arrResponsableNuevo = arrResponsableNuevo.substring(0, arrResponsableNuevo.length - 1);
+
+        //alert(parseFloat(document.getElementById("txt_X").value));
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/modificarVisita")",
+            data: {
+                p_Asunto: document.getElementById("txtAsunto").value, cx: document.getElementById("txt_X").value,
+                cy: document.getElementById("txt_Y").value, p_TipoUbicacion: TipoUbicacion, p_IdsTramite: arrayTramitesNuevo,
+                p_Cometario: document.getElementById("txtComentario").value, p_IdsCopias: arrResponsableNuevo, p_IdTipoVisita: $("#cmbTipoVisitaN").val(), p_IdVisita: 0
+            },
+
+            beforeSend: function () { },
+            success: function (response) {
+
+                mensajeAlmacenamiento("Informacion guardada satisfactoriamente");
+                IdsTramite = "";
+                cancelarNueva();
+                cargarVisita();
+                //offLoad("#Tab3");
+
+            }
+        });
+
+    }
+    var contConet = 0;
+    function Conectar() {
+        try {
+            contConet++;
+            var rta = conectar()
+            if (rta == -1) {
+                setTimeout('Conectar()', 3000);
+            }
+        } catch (e) {
+            if (contConet < 20) {
+                setTimeout('Conectar()', 3000);
+            }
+
+        }
+    }
+    function abrirDetalleTramite(id) {
+
+        $("#pantallaDetalleTramites").dialog(
+               {
+                   width: 650,
+                   height: 550,
+                   modal: true
+               });
+        $("#DetalleTramites").attr("src", "http://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=" + id);
+    }
+
+</script>
+
+
+
+<div class="panel panel-default" style=" margin-top: 2px;">
+    <div class="panel-heading">
+        <img src="../../Content/Images/Ayuda.png" id="btnAyudas" onclick="Ayudas()"></>
+        <div>
+            <button onclick="validar()" style="display:none;">validar</button>
+            <ul class="nav nav-tabs">
+                <li id="Tab4" class="active"><a href="#Mapas" data-toggle="tab" onclick="Conectar()">Mapa</a></li>
+                <li id="Tab1"><a href="#home" data-toggle="tab" onclick="setTimeout('cargarVisitas()', 0300);">Actuaciones</a></li>
+                <li id="Tab2" style='display:none'><a href="#NuevaVisita" data-toggle="tab">Nueva Actuaci&oacute;n</a></li>
+                <li id="Tab3" style="display:none;"><a href="#profile" data-toggle="tab">Editar Actuaci&oacute;n</a></li>
+                <li id="Tab2" ><a href="#tramite" data-toggle="tab">Tr&aacute;mites</a></li>
+            </ul>
+            <div id="pantallaDetalleVisita" title="Detalle Visita" style="display: none;overflow:hidden;">
+                <iframe src="" id="DetalleVisita" width="100%" height="100%"></iframe>
+            </div>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade in" id="home">
+                    <br />
+                    <table style="width: 100%;margin-top: -20px;background-color: #fff;">
+                        <tr>
+                            <td align="left" style="display: inline-block;width: 190px;">
+                                <div>
+                                    <div class="col-md-12" style="  border-right: 1px solid #ddd;">
+                                        <a id="ss" onclick="OcultarAcompanante()" class="btn btn-success" style="color: #3CB21C; font-weight:bold; background-color: rgba(92, 184, 92, 0); border-color: rgba(76, 174, 76, 0); ">Mis Actuaciones</a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td align="left" style="width: 279px;display: inline-block;">
+                                <div>
+                                    <div class=" col-md-12" style=" border-right: 1px solid #ddd;">
+                                        <a onclick="OcultarMisVisitas()" class="btn btn-success" style="color: #3CB21C; font-weight: bold; background-color: #FFFFFF; border-color: #FFFFFF; ">Actuaciones como acompañante</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id='MisVisitas'>
+                        <div class="row">
+                            <div class="col-sm-12" style=" margin-bottom: 10px;margin-top:10px;">
+                                <div class="row">
+                                    <div class="col-sm-6" id="chkvisitas">
+                                        <label for="Check"><input id="Check" type="checkbox" name="option1" value="VistasAsignadas" onchange="CargarVisitasFinalizadas()">Actuaciones finalizadas</label>
+                                    </div>
+                                    <div class="col-sm-6" id="btnvisitas">
+                                        <button id="btnNuevaVisita" onclick="NuevaVisita()" class="btn btn-default btn-sm" style=" ">Nueva Actuaci&oacute;n</button>
+                                        <button id="btnRealizarVisita" onclick="RealizarVisita()" class="btn btn-default btn-sm">Realizar Actuaci&oacute;n</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="GrdVisitas" style="height: 200px; width: 100%; padding-left: 0px; padding-right: 0px; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="  margin-top: 10px;">
+                            <div class="col-sm-12">
+                                <div id="GrdDetalleTramitesVisitas" style="height: 200px; padding-left: 0px; padding-right: 0px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding-left: 0px; padding-right: 0px; ">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id='VisitasAcompanantes' style='display:none;margin-top: 17px;'>
+                        <div id="GrdVisitasComoAcompanante" class="height:420px; max-width:750px; margin: 0 auto"></div>
+                    </div>
+                </div>
+              
+
+                <div class="tab-pane fade" id="NuevaVisita">
+                    <br />
+                  
+                    <div id='Tramites'>
+                        <div style='text-align: left; color: #0EC210; font-size: 18px; padding-left:10px;'>
+                            <h3>Paso 1. Trámites</h3>
+                        </div>
+                        <div class="col-sm-12">
+                            <label style="    margin-left: -5px;    margin-bottom: 7px;">Seleccione el trámite asociado a la Actuaci&oacute;n</label>
+                        </div>
+                        <div class="row" style="margin-right: 10px; margin-left: 10px; ">
+                            <div id="GrdTramitesVisitas" style="height: 200px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;"></div>
+                        </div>
+                        <div class="row" style=" margin-top: 100px;">
+                            <div class="col-sm-12">
+                                <label style="float: left; padding-left: 10px;">Comentario de cierre de los trámites de la Actuaci&oacute;n:</label>
+                            </div>
+                            <div class="row" style=" margin-right: 10px; margin-left: 10px; ">
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" id="txtComentario" style=" padding-left: 10px; padding-right: 10px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="menuInferior" style="width: 100%;">
+                                    <div class='form-group'>
+                                        <div class='text-right'>
+                                            <a onclick="cancelarNueva()" class="btn btn-default btn-sm">Cancelar</a>
+                                            <a onclick="toggle()" class="btn btn-default btn-sm">Siguiente</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id='newpost' style="display:none">
+                        <div style='text-align: left; color: #0EC210; font-size: 18px; padding-left:10px;'>
+                            <h3>Paso 2. Actuaci&oacute;n</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label style="margin-left:11px;">Información requerida para la Actuaci&oacute;n</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <label style=" float: left;">Tipo Actuaci&oacute;n:</label>
+                                </div>
+                                <div class="col-sm-12">
+                                    <select id="cmbTipoVisitaN" class="form-control"></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12" style="margin-left:-15px">
+                                        <label style=" float: left;">X:</label>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-left:-15px">
+                                        <input class="form-control" id="txt_X" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12" style="margin-left:-15px">
+                                        <label style=" float: left;">Y:</label>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-left: -15px; margin-right: 0px;">
+                                        <input class="form-control" id="txt_Y" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <label style=" float: left;">Asunto:</label>
+                                </div>
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" id="txtAsunto"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="menuInferior" style="width: 100%;">
+                                    <a onclick="cancelarNueva()" class="btn btn-default btn-sm">Cancelar</a>
+                                    <a onclick="Reubicar()" class="btn btn-default btn-sm btnReubicarPunto" style=" margin-bottom: 10px; margin-top: 10px;">Reubicar</a>
+                                    <a id="btnAnteriorCoordenadas" onclick="toggle1()" class="btn btn-default btn-sm"><< Anterior</a>
+                                    <a onclick="toggle2()" class="btn btn-default btn-sm">Siguiente >></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id='Acompanantes' style="display: none;">
+                        <div style='text-align: left; color: #0EC210; font-size: 18px;padding-left:10px;'>
+                            <h3>Paso 3.Acompañantes</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12" style="    margin-left: 11px;    margin-top: -7px;    margin-bottom: 8px;">
+                                <label>Puede ir a la Actuaci&oacute;n con o sin acompañante</label>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-right: 10px; margin-left: 10px; ">
+                            <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                                <div id="GrdAcompanantes" style=" width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="menuInferior text-right" style="width: 100%;">
+                                    <a onclick="cancelarNueva()" class="btn btn-default btn-sm">Cancelar</a>
+                                    <a id="btnAnteriorAcompanantes" onclick="toggle()" class="btn btn-default btn-sm"><< Anterior</a>
+                                    @*<a onclick="GuardarNuevo()" class="btn btn-default btn-sm btnGuardar">Guardar</a>*@
+                                    <a onclick="GuardarNuevo()" class="btn btn-default btn-sm">Guardar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="profile" style="    padding-top: 11px;">
+
+                    <div id='Tramites_E'>
+                        <div style='text-align: left; color: #0EC210; font-size: 18px;padding-left:10px;'>
+                            <h3>Paso 1. Trámites</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label style=" margin-left: 9px; margin-bottom: 7px;">Seleccione el trámite asociado a la Actuaci&oacute;n</label>
+                            </div>
+                        </div>
+                        <div class="row" style=" margin-right: 0px; margin-left: 0px;">
+                            <div class="col-sm-12">
+                                <div id="GrdTramitesVisitas_E" class="height:420px; max-width:750px; margin: 0 auto"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label style="float:left;padding-left:10px;">Cometario de cierre de los trámites de la Actuaci&oacute;n</label>
+                            </div>
+                        </div>
+                        <div class="row" style=" margin-right: 0px; margin-left: 0px;">
+                            <div class="col-sm-12">
+                                <textarea class="form-control" id="txtComentario_E"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="menuInferior" style="width: 100%;">
+
+                                    <div class='form-group'>
+                                        <div class='col-md-offset-2 col-md-10'>
+                                            <button id="btnSiguiente" class="btn btn-default btn-sm" onclick="toggle_E()">Siguiente >></button>
+
+                                            <button id="btnCancelar" class="btn btn-default btn-sm" onclick="cancelar()">Cancelar</button>
+                                            <button id="btnVisitaFin" class="btn btn-default btn-sm" onclick="guardarTramiteFinalizado()">Guardar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id='newpost_E' style="display:none">
+                        <div style='text-align: left; color: #0EC210; font-size: 18px; padding-left:10px;'>
+                            <h3>Paso 2. Actuaci&oacute;n</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label style="margin-left:11px;">Información requerida para la Actuaci&oacute;n</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <label style=" float: left;">Tipo Actuaci&oacute;n:</label>
+                                </div>
+                                <div class="col-sm-12">
+                                    <select id="cmbTipoVisitaE" class="form-control"></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12" style="margin-left:-15px">
+                                        <label style=" float: left;">X:</label>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-left:-15px">
+                                        <input class="form-control" id="txt_X_E" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12" style="margin-left:-15px">
+                                        <label style=" float: left;">Y:</label>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-left: -15px; margin-right: 0px;">
+                                        <input class="form-control" id="txt_Y_E" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <label style=" float: left;">Asunto:</label>
+                                </div>
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" id="txt_ASUNTO_E"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="menuInferior text-right" style="width: 100%;">
+                                    <a onclick="cancelar()" class="btn btn-default btn-sm">Cancelar</a>
+                                    <a onclick="Reubicar_E()" class="btn btn-default btn-sm btnReubicarPunto" style=" margin-bottom: 10px; margin-top: 10px;">Reubicar</a>
+                                    <a onclick="toggle1_E()" class="btn btn-default btn-sm"> &lt;&lt; Anterior</a>
+                                    <a onclick="toggle2_E()" class="btn btn-default btn-sm">Siguiente >></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id='Acompanantes_E' style="display: none;">
+                        <div style='text-align: left; color: #0EC210; font-size: 18px;padding-left:10px;'>
+                            <h3>Paso 3.Acompañantes</h3>
+                        </div>
+                        <div class="row" style="margin-right: 10px; margin-left: 10px; ">
+                            <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                                <div id="GrdDetalleEncargados_E" style=" width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label style="    margin-left: 11px;    margin-top: -7px;    margin-bottom: 8px;">Puede ir a la Actuaci&oacute;n con o sin acompañante</label>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-right: 10px; margin-left: 10px; ">
+                            <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                                <div id="GrdEncargados_E" style=" width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="menuInferior text-right" style="width: 100%;">
+                                    <a onclick="cancelar()" class="btn btn-default btn-sm">Cancelar</a>
+                                    <a onclick="toggle_E()" class="btn btn-default btn-sm"><< Anterior</a>
+                                    <a onclick="consultarTramiteVisita()" class="btn btn-default btn-sm btnGuardar">Guardar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="dropdown1">
+                    <div data-bind="dxTabs:{dataSource: tabs, onItemClick: tabClicked}"></div>
+                    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</p>
+                </div>
+                <div class="tab-pane fade active in" id="Mapas">
+                    <div class="col-sm-12" style="height:800px">
+                        <iframe id="mapa" src="/MAPGISV5_WEB/tools/AMVA/inicio_visita.htm" style=" border: none; width: 100%; height: 100%" onload="Conectar()"></iframe>
+                    </div>                    
+                </div>
+                <div class="tab-pane fade" id="tramite">
+
+                    <div class="col-sm-12" style="height:500px">
+                        <div id="GrdMistramites" style="height: 200px; padding-left: 0px; padding-right: 0px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding-left: 0px; padding-right: 0px; ">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="msAlmacenamiento" title="Información" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+</div>
+<div id="pantallaDetalleTramites" title="Detalle Tramite" style="display: none; overflow: hidden;">
+    <iframe src="" id="DetalleTramites" width="100%" height="100%"></iframe>
+</div>

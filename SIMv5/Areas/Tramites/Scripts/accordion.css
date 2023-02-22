@@ -1,0 +1,379 @@
+﻿.form-control {
+height: auto;/*25px;*/
+padding: 6px 4px;
+font-size: 10px;
+}
+
+/**Estilo Acordeon Verde*/
+
+.acordeonVerde  .panel-default > .panel-heading {
+color: #333333;
+background-color: rgb(165, 200, 62);
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+box-shadow: none;
+border: 1px solid #577e04;
+}
+.acordeonVerde  .panel-default > .panel-heading:hover{
+     opacity: .8;
+}
+.acordeonVerde .panel-group .panel + .panel {
+margin-top: -1px;
+}
+.acordeonVerde .panel-default {
+    margin-top: -1px !important;
+border-color: rgba(221, 221, 221, 0);
+border: none;
+}
+.acordeonVerde .titleAcordeon{
+text-decoration: blink;
+color: #fff;
+width: 100%;
+height: 100%;
+display: block;
+font-family: 'Roboto Condensed', sans-serif;
+font-size: 14px;
+font-weight: normal;
+padding: 5px;
+}
+
+.acordeonVerde .titleAcordeon:hover{
+    opacity: .8;
+color: #000;
+}
+
+.acordeonVerde .panel-default > .glyphicon-triangle-bottom {
+background-image: url(../Content/images/flechavBotton.png);
+background-repeat: no-repeat;
+background-size: 15px;
+background-position: 99% 10px;
+height: 30px;
+text-align: left;
+}
+.acordeonVerde .panel-default > .glyphicon-triangle-top {
+background-image: url(../Content/images/flechavTop.png);
+background-repeat: no-repeat;
+background-size: 15px;
+background-position: 99% 10px;
+background-color: rgba(165, 200, 62, 0.66);
+}
+.acordeonVerde label {
+  margin-bottom: -5px;
+}
+
+/**Acordeon segundo nivel*/
+div#subcabezoteAcordeon_2_0 {
+color: #333333;
+background-color: #f7f6f6;
+-webkit-border-radius: 0px;
+-moz-border-radius: 0px;
+border-radius: 0px;
+box-shadow: none;
+border: none;
+border-bottom: 1px solid #dfdede;
+border-top: 2px solid #dfdede;
+}
+.acordeonVerde .acordeonSecundario .titleAcordeon{
+color: #424141;
+padding-left: 23px;
+font-size: 12px;
+font-family: 'Roboto Condensed', sans-serif;
+font-weight: normal;
+
+}
+.acordeonVerde .acordeonSecundario .panel-default > .glyphicon-triangle-bottom {
+background-position: 5px 8px;
+background-size: 13px;
+padding:  0px;
+height: 36px;
+}
+.acordeonVerde .acordeonSecundario .panel-default > .glyphicon-triangle-top {
+background-position: 5px 8px;
+background-size: 13px;
+}
+.acordeonVerde .acordeonSecundario .panel-group .panel + .panel {
+margin-top: -1px;
+border-top: 1px solid #dfdede;
+border-radius: 0px;
+}
+.acordeonVerde .acordeonSecundario .Cantidad {
+position: relative;
+top: -36px;
+color: #888585;
+float: right;
+font-size: 12px;
+font-family: 'Roboto Condensed', sans-serif;
+font-weight: normal;
+right: 59px;
+margin-bottom: -50px;
+display: inline-block;
+}
+.acordeonVerde .agregar {
+position: relative;
+top: -24px;
+float: right;
+right: 10px;
+width: 25px; 
+height: 18px;
+background-image: url(../Content/images/agregarAcordeon.png);
+border: none;
+background-size: 36px;
+background-position: -4px -4px;
+z-index: 102;
+outline: 0;
+margin-bottom: -18px;
+}
+.acordeonVerde .quitar {
+    background-image: url(../Content/images/quitarAcordeon.png);
+    background-color: rgba(165, 200, 62, 0);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+
+.acordeonVerde .contenidoSub {
+padding-top: 0px;
+padding-bottom: 0px;
+padding: 0px;
+border: none;
+}
+
+.acordeonVerde .contenidoSub .col-md-12 {
+    padding-top: 5px;
+    
+    margin: 0px;
+    padding-bottom: 5px;
+}
+.acordeonVerde .contenidoSub hr {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.acordeonVerde .contenidoSub input,.acordeonVerde .contenidoSub select,.acordeonVerde .contenidoSub textarea{
+font-weight:normal;
+}
+.acordeonVerde .fechaleft
+
+{ 
+    background-position: 6px !important;
+
+    padding-left: 23px!important;
+}
+.acordeonVerde .acordeonSecundario .agregar {
+position: relative;
+top: -21px;
+float: right;
+right: 13px;
+width: 26px;
+height: 20px;
+background-image: url(../Content/images/agregarAcordeon.png);
+border: none;
+background-size: 31px;
+background-position: -2px -2px;
+z-index: 102;
+outline: 0;
+margin-bottom: -18px;
+}
+.acordeonVerde .acordeonSecundario .quitar
+{
+    background-image: url(../Content/images/quitarAcordeon1.png);
+    margin-top: -7px;
+    background-color: transparent;
+    background-size: cover;
+}
+.acordeonVerde .datosRecursos label{
+color: #888585;
+font-size: 12px;
+font-family: 'Roboto Condensed', sans-serif;
+font-weight: normal;
+display: inline-block;
+margin: 0px;
+margin-top: -13px;
+}
+.acordeonVerde .datosRecursos .diligenciar {
+background: #2c9cad;
+border-color: #2c9cad;
+height: 20px;
+padding: 1px 5px;
+font-size: 12px;
+width: 103px;
+font-family: 'Roboto Condensed', sans-serif;
+float: right;
+right: 12px;
+position: relative;
+cursor:pointer;
+}
+.acordeonVerde .datosRecursos .diligenciar:hover{
+    opacity:0.7;
+}
+.acordeonVerde .datosRecursos .estado {
+   background: transparent;
+border-color: #2c9cad;
+height: 20px;
+padding: 1px 5px;
+font-size: 12px;
+width: 36px;
+font-family: 'Roboto Condensed', sans-serif;
+float: right;
+right: -150px;
+position: relative;
+}
+.acordeonVerde .datosRecursos .estadoOn {
+background: url(../Content/images/aprobado.png);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: 50%;
+}
+
+.acordeonVerde .datosRecursos li {
+display: block;
+padding: 7px 24px;
+border-bottom: 1px solid #dfdede;
+height: 34px;
+margin-bottom: 0px;
+}
+.acordeonVerde .datosRecursos {
+margin-top: 0;
+margin-bottom: 0px;
+border-bottom: 1px solid #DFDEDE;
+}
+.acordeonVerde input[type="radio"], .acordeonVerde input[type="checkbox"] {
+margin: 4px 0 0;
+margin-top: 1px \9;
+line-height: normal;
+height: 13px;
+text-align: left;
+box-shadow: none;
+outline: none;
+}
+/**fin segundo nivel*/
+/**sub acordeon hijohijohijo**/
+ .CARAC_HIJO2  .panel-default > .panel-heading {
+color: #333333 !important;
+background-color: rgb(165, 200, 62) !important;
+-webkit-border-radius: 3px !important;
+-moz-border-radius: 3px !important;
+border-radius: 3px !important;
+box-shadow: none;
+border: 1px solid #577e04;
+}
+.CARAC_HIJO2   .panel-default > .panel-heading:hover{
+     opacity: .8 !important;
+}
+ .CARAC_HIJO2   .panel + .panel {
+margin-top: -1px !important;
+}
+ .CARAC_HIJO2  .panel-default {
+    margin-top: -1px !important;
+border-color: rgba(221, 221, 221, 0) !important;
+border: none !important;
+}
+.CARAC_HIJO2  .agregar {
+  position: relative;
+  top: -23px;
+  float: right;
+  right: 10px;
+  width: 24px ! important;
+  height: 15px !important;
+  background-image: url(../Content/images/agregarAcordeon.png);
+  border: none;
+  background-size: 36px !important;
+  background-position: -5px -5px !important;
+  z-index: 102;
+  outline: 0;
+  margin-bottom: -18px;
+}
+ .CARAC_HIJO2  .titleAcordeon{
+text-decoration: blink;
+color: #fff !important;
+width: 100% !important;
+height: 100% !important;
+display: block !important;
+font-family: 'Roboto Condensed', sans-serif !important;
+font-size: 14px !important;
+font-weight: normal !important;
+padding: 5px !important;
+}
+div.CARAC_HIJO2 .panel-collapse {
+  border: 1px solid rgba(103, 103, 103, 0.05);
+  border-top-style: solid;
+  border-top-width: 0px;
+  border-right-color: rgba(103, 103, 103, 0.26);
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-bottom-color: rgba(103, 103, 103, 0.26);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-left-color: rgba(103, 103, 103, 0.26);
+  border-left-style: solid;
+  border-left-width: 1px;
+  margin-left:15px;
+  margin-right:15px;
+}
+
+.CARAC_HIJO2  .titleAcordeon:hover{
+    opacity: .8 !important;
+color: #000 !important;
+}
+
+ .CARAC_HIJO2  .panel-default > .glyphicon-triangle-bottom {
+background-image: url(../Content/images/flechavBotton.png) !important;
+background-repeat: no-repeat !important;
+background-size: 15px !important;
+background-position: 99% 10px ;
+height: 30px !important;
+text-align: left !important;
+}
+ .CARAC_HIJO2 .acordeonVerde .panel-default > .glyphicon-triangle-top {
+background-image: url(../Content/images/flechavTop.png) !important;
+background-repeat: no-repeat !important;
+background-size: 15px !important;
+background-position: 99% 10px ;
+}
+
+ .acordeonVerde label{
+  text-align: left;
+  position: relative;
+  font-size: 12px;
+}
+.acordeonVerde .panel-default > .not-flecha{
+    background-image:none;
+}
+.panel-collapse{
+    background:#fff;
+}
+
+div.CARAC_HIJO {
+  margin-top: 5px;
+  margin-left: 12px;
+  margin-right: 12px;
+  margin-bottom: 5px;
+}
+div.CARAC_HIJO .panel-collapse {
+  border: 1px solid rgba(103, 103, 103, 0.05);
+  border-top-style: solid;
+  border-top-width: 0px;
+  border-right-color: rgba(103, 103, 103, 0.26);
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-bottom-color: rgba(103, 103, 103, 0.26);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-left-color: rgba(103, 103, 103, 0.26);
+  border-left-style: solid;
+  border-left-width: 1px;
+}
+
+.EncuestaCol1{
+    background: rgba(162, 163, 159, 0.15);
+      border-left: 1px solid #CDCCCC;
+  border-right: 1px solid #CDCCCC;
+}
+.EncuestaCol2{
+    background:#fff;
+      border-left: 1px solid #CDCCCC;
+  border-right: 1px solid #CDCCCC;
+}

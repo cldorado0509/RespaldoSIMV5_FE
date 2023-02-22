@@ -1,0 +1,683 @@
+﻿ .navbar.navbar-inverse.navbar-fixed-top {
+        z-index: 1 !important;
+    }
+
+    .dx-datagrid-rowsview.dx-datagrid-nowrap.dx-scrollable.dx-scrollable-customizable-scrollbars.dx-scrollable-both.dx-scrollable-simulated.dx-visibility-change-handler.dx-select-checkboxes-hidden {
+        height: 317px !important;
+    }
+
+    .dx-datagrid-bottom-load-panel {
+        border-top: 1px solid #d2d2d2;
+        display: none !important;
+    }
+
+.btn {
+    display: inline-block;
+    padding: 4px 16px;
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    height: 30px;
+    margin-left: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+    .panel-default > .panel-heading {
+        color: #333333;
+        background-color: #f5f5f5;
+        border-color: #dddddd;
+        background-color: rgb(234, 234, 234);
+        padding-left: 12px;
+        padding-right: 12px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);
+        height: 100%;
+        padding-bottom: 12px;
+    
+       
+}
+    /*******/
+    .nav-tabs {
+        border-bottom: 1px solid #ddd;
+    }
+        .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+            color: #555;
+            cursor: default;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+        }
+    .nav > li > a {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: 0px;
+    }
+
+    label, textarea, select, input, a {
+        display: inline-block;
+        margin-bottom: 1px;
+        font-weight: bold;
+        font-size: 12px;
+        color: rgb(119, 118, 118);
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        vertical-align: bottom;
+        padding-top: 13px;
+    }
+    
+    a:hover {
+        color: #39832D;
+    }
+    button#btnAsignarTramites {
+        position: relative;
+        top: 20px;
+        background-image: url(../Content/images/Asignar_Tramites.png);
+        right: -28px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+    div#MisVisitas {
+        height: 408px;
+    }
+    #btnRealizarVisita {
+        position: relative;
+        top: 13px;
+        background-image: url(../Content/images/Geocodificar.png);
+        right: -28px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 20px;
+        background-position: 8px 5px;
+        margin-bottom: 5px;
+    }
+    button#btnRectangulo {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Rectangulo.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 18px;
+        background-position: 8px 5px;
+    }
+    button#btnCirculo {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Circulo.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 19px;
+        background-position: 8px 5px;
+    }
+    button#btnPoligono {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Poligono.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 18px;
+        background-position: 8px 5px;
+    }
+    button#btnLimpiar {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Limpiar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+    button#btnAcercarvarios {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Agregar_Tramites.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+    div#Tramites {
+        height: 376px;
+    }
+    img#btnAyudas {
+        float: right;
+        position: relative;
+        right: 161px;
+        top: -9px;
+        cursor: pointer;
+    }
+    img#btnAyudas:hover{
+        opacity:.7;
+    }
+        img#btnAyudas:active {
+            opacity: .2;
+        }
+    button.ui-dialog-titlebar-close {
+        height: 20px;
+        width: 20px;
+    }
+    .ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix.ui-draggable-handle {
+        padding: 5px;
+    }
+    /****responsive heigh*/
+    #mapa{
+        height:400px;
+
+    }
+@media screen and (max-height: 1350px) {
+    .panel-default > .panel-heading {
+        height: 1132px;
+    }
+     #mapa{
+        height: 1002px;
+
+    }
+}
+@media screen and (max-height: 1250px) {
+    .panel-default > .panel-heading {
+        height: 1032px;
+    }
+     #mapa{
+        height:1000px;
+
+    }
+}
+@media screen and (max-height: 1150px) {
+    .panel-default > .panel-heading {
+        height: 890px;
+    }
+     #mapa{
+        height: 785px;
+
+    }
+}
+@media screen and (max-height: 1000px) {
+    .panel-default > .panel-heading {
+        height: 793px;
+    }
+     #mapa{
+        height:750px;
+
+    }
+}
+@media screen and (max-height: 900px) {
+    .panel-default > .panel-heading {
+        height: 720px;
+    }
+     #mapa{
+        height: 607px;
+
+    }
+}
+@media screen and (max-height: 800px) {
+    .panel-default > .panel-heading {
+        height: 602px;
+    }
+     #mapa{
+        height: 498px;
+
+    }
+}
+@media screen and (max-height: 700px) {
+    .panel-default > .panel-heading {
+        height: 509px;
+    }
+     #mapa{
+        height: 400px;
+
+    }
+}
+@media screen and (max-height: 600px) {
+    .panel-default > .panel-heading {
+        height: 451px;
+    }
+     #mapa{
+        height:400px;
+
+    }
+}
+#frm_mapa{
+    
+border: 4px solid #d2d2d2;
+}
+
+#btnReubicar,#btnBuscar{
+    
+margin-top: 12px;
+    
+background-image: url(images/Reubicar.png);
+    
+padding-left: 30px;
+    
+background-repeat: no-repeat;
+    
+background-position: 5px;
+    
+background-size: 14px;
+    
+margin-bottom: -3px;
+}
+
+.contenedorPR{
+    
+padding: 0px;
+    
+border: 2px solid #d2d2d2;
+    
+-moz-border-radius:8px;
+    
+-webkit-border-radius:8px;
+    
+border-radius: 9px;
+    
+padding-left: 10px;
+    
+margin-top: 20px;
+    
+padding-bottom: 15px;
+}
+
+.contenedorPR legend{
+    
+display: block;
+    
+padding-inline-start: 6px;
+    
+padding-inline-end: 10px;
+    
+border-width: initial;
+    
+border-style: none;
+    
+border-color: initial;
+    
+border-image: initial;
+    
+width: auto;
+    
+font-size: 15px;
+    
+font-style: italic;
+    
+color: #5cb85c;
+    
+margin-bottom: -2px;
+    
+font-weight: bold;
+}
+
+#btnBuscar{
+    
+background-image: url(images/Agregar_Tramites.png);
+    
+padding-left: 30px;
+    
+background-repeat: no-repeat;
+    
+background-position: 5px;
+}
+
+#showCoords, #btnToc {
+  
+display: none;
+}
+.esriLargeSliderBR{
+    
+bottom: 118px;
+    
+right: 12px;
+}
+
+#zoomin{
+
+bottom: 54px;
+
+right: 13px;
+}
+ #zoomout{
+
+bottom: 81px;
+
+right: 13px;
+
+} 
+
+ #divControl{
+     
+top: initial;
+     
+bottom: 12px;
+     
+width: 30px;
+     
+height: 30px;
+     
+right: 8px;
+ }
+#borderContainer {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0px !important;
+      pádding: 0px !important;
+}
+
+
+#panelMapa{
+     width: 100% !important;
+    height: 100% !important;
+    margin: 0px !important;
+      pádding: 0px !important;
+      top:0px !important;
+        left: -1px !important;
+}
+
+
+
+#MnubaseMap_{
+    display: inline-block !important;
+    font-size: 0px;
+    width: 31px !important;
+    height: auto;
+    overflow: hidden;
+    right: 5px !important;
+    left: 4px !important;
+    top: initial !important;
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    background-color: #33A24F;
+}
+
+.dijitPopup{
+    
+top: initial !important;
+    
+bottom: 132px;
+    
+left: -11px;
+}
+#MnubaseMap_ tr{width: 20px;height: 20px;position: relative;display: inline-block;border: 2px solid #33A24F;padding: 6px;background-color: #33A24F;width: 15px !important;height: 15px !important;position: relative;display: inline-block;border: 2px solid #33A24F;padding: 6px;background-color: #33A24F;display: block !important;}
+#MnubaseMap_ td.dijitMenuItemLabel {/* padding-top: 5px; *//* padding-bottom: 5px; */width: 27px  !important;padding: 0px;background: rgba(159, 159, 159, 0.69);position: relative;display: inline-block;height: 27px !important;top: -10px;left: -6px;-moz-box-shadow: inset 2px 0px 5px 1px rgba(245, 245, 245, 0.64);-webkit-box-shadow: inset 2px 0px 5px 1px rgba(245, 245, 245, 0.64);box-shadow: inset 2px 0px 5px 1px rgba(245, 245, 245, 0.64);}
+#MnubaseMap_ tr.menu1 {
+background: url('/MAPGISV5_WEB/images/General/imagen.png');
+background-size: contain;
+}
+#MnubaseMap_ tr.menu2 {
+background: url('/MAPGISV5_WEB/images/General/cartogarfia.png');
+background-size: contain;
+}
+#MnubaseMap_ tr.menu3 {
+background: url('/MAPGISV5_WEB/images/General/topografia.png');
+background-size: contain;
+}
+#MnubaseMap_ tr.Seleccionado td.dijitMenuItemLabel {
+background: rgba(0, 0, 0, 0);
+-moz-box-shadow: inset 2px 0px 5px 1px rgba(5, 5, 5, 0.61);     
+-webkit-box-shadow: inset 2px 0px 5px 1px rgba(5, 5, 5, 0.61);     
+box-shadow: inset 2px 0px 5px 1px rgba(5, 5, 5, 0.61);
+}
+
+.btnMapaAccion{
+    position:relative;
+    display:inline-block !important;
+    width:30px;
+    height:30px;
+    top:0px;
+    margin-left: 10px;
+}
+
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: 25px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: rgb(119, 118, 118);
+    line-height: 1.428571429;
+    vertical-align: middle;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.rallita_separadorB{
+    
+border-top: 1px dashed #d2d2d2 !important;
+    
+border-top: 0px;
+}
+
+#txtBusuqedaMapgis{
+    
+position: relative;
+    
+top: 13px;
+    
+left: -34px;
+}
+#btnBuscarVisor{
+    position:relative;
+    top: -13px;
+    left: 10px;
+    height: 26px;
+    background-image: url(images/iconos/Consulta.png);
+    background-repeat: no-repeat;
+    background-position: 5px;
+    font-size: 0px;
+}
+#btnzoomout{
+    position:relative;
+    margin-top: 10px;
+    background-image: url(images/iconos/Acercar.png);
+    background-repeat: no-repeat;
+    background-position: 5px;
+    font-size: 0px;
+    height: 26px;
+}
+#btnUbicacion{
+    position:relative;
+    margin-top: 10px;
+    height: 26px;
+    background-image: url(images/iconos/BuscarUbicacion.png);
+    background-repeat: no-repeat;
+    background-position: 5px;
+    font-size: 0px;
+}
+#btnzoomin{
+    position:relative;
+    margin-top: 10px;
+    height: 26px;
+    background-image: url(images/iconos/AlejarZoom.png);
+    background-repeat: no-repeat;
+    background-position: 5px;
+    font-size: 0px;
+}
+
+.VisorPR{
+    
+/* height: 62px; */
+    
+padding-bottom: 0px;
+}
+
+#btnGuardar{
+    display:none;
+}
+
+#txtDireccion{
+    cursor:pointer;
+}
+
+#btnAgregarDir{
+    height: 25px;
+    position: absolute;
+    right: 16px;
+    top: 31px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    background-image: url(images/iconos/agregar.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+.divLocateButton{
+    
+top: initial !important;
+    
+bottom: 45px;
+    
+right: 38px !important;
+}
+
+#LocateButton {
+    top: -1px !important;
+    right: 0px !important;
+    width: 38px !important;
+    height: 38px !important;
+    background: url(../images/menu/B_Ubicacion.png) no-repeat;
+    background-size: contain;
+}
+
+#btnLimpiarConsultas{
+    display:none;
+}
+
+.esriLargeSliderVertical .esriLargeSliderLabels {
+    width: 2em;
+    font-family: Verdana;
+    font-size: 50%;
+    display: none;
+}
+
+#boxFind{
+    
+left: 0px;
+    
+top: 0px;
+    
+width: 100%;
+}
+
+#boxFind .txtFind{
+    
+width: 250px;
+    
+height: 22px;
+    
+padding: 0px;
+    
+border-radius: 3px;
+    
+border: 1px solid #cecece;
+    
+padding: 2px;
+    
+padding-right: 26px;
+    
+color: #3a3a3a;
+    
+position: relative;
+    
+display: inline-block;
+    
+font-weight: 500;
+    
+display: none;
+    
+top: -16px;
+}
+
+#boxFind .findIcon{
+    
+background-color: transparent;
+    
+width: 30px;
+    
+height: 30px;
+    
+padding: 0px;
+    
+margin: 0px;
+    
+background-image: url(images/buscarV.png);
+    
+top: 15px;
+    
+background-size: 25px;
+    
+left: initial;
+    
+right: 30px;
+    
+display: none;
+    
+float: right;
+}
+
+.btnMapaAdd{
+    
+background: #96c93e;
+    
+display: inline-block;
+    
+color: #ffffff;
+    
+padding: 10px 30px;
+    
+margin: 11px;
+    
+border-radius: 3px;
+    
+font-weight: bold;
+    
+cursor: pointer;
+}
+
+.esriPopup {
+    box-shadow: 0 0 0.75em #777777;
+    -moz-box-shadow: 0 0 0.75em #777777;
+    -webkit-box-shadow: 0 0 0.75em #777777;
+    -o-box-shadow: 0 0 0.75em #777777;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    display: none;
+}
+
+
+.map .container {
+    position: relative;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+    width: 100% !important;
+    height: 100%;
+}
+
+

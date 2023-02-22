@@ -1,0 +1,815 @@
+﻿body {
+    overflow: hidden;
+    font-family: Cambria, Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+}
+
+.container {
+    height: 100% !important;
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    position: absolute;
+    top: 0px;
+    padding: 0px;
+    left: 0px;
+    width: 100%;
+    max-width: 100%;
+}
+
+#popUpArbol {
+    position: absolute;
+    z-index: 99999999;
+    background: #000000f2;
+    width: 100%;
+    height: 100vh;
+}
+
+    #popUpArbol .contenedor {
+        background: #fff;
+        height: auto;
+        top: 10%;
+        position: relative;
+        padding: 0px;
+        padding-bottom: 15px;
+    }
+
+
+    #popUpArbol .title {
+        background: url(Images/tala/popUpTitle.png) #5b7925;
+        height: 40px;
+        background-repeat: no-repeat;
+    }
+
+        #popUpArbol .title button {
+            background: transparent;
+            color: #ffffff;
+            border: none;
+            width: 30px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 25px;
+        }
+
+    #popUpArbol .cuerpo {
+    }
+
+
+.image_carousel {
+    padding: 0px;
+    position: relative;
+    width: 100%;
+    background: #f1f1f1;
+    margin: 0px auto;
+    margin-top: 0px;
+    border-radius: 0px;
+    box-shadow: none;
+    border-bottom: 1px solid #b7b7b7;
+    border-bottom-style: dashed;
+}
+
+    .image_carousel img {
+        border: none;
+        background-color: white;
+        margin: 7px;
+        display: block;
+        float: left;
+    }
+
+a.prev, a.next {
+    background: url(images/carousel_control.png) no-repeat transparent;
+    width: 45px;
+    height: 50px;
+    display: block;
+    position: absolute;
+    top: 85px;
+    cursor: pointer;
+}
+
+a.prev {
+    left: 0px;
+    background-position: 27px 25px;
+}
+
+a.next {
+    right: 0px;
+    background-position: -15px 25px;
+}
+
+    a.prev span, a.next span {
+        display: none;
+    }
+
+.pagination {
+    text-align: center;
+}
+
+    .pagination a {
+        background: url(images/miscellaneous_sprite.png) 0 -300px no-repeat transparent;
+        width: 15px;
+        height: 15px;
+        margin: 0 5px 0 0;
+        display: inline-block;
+    }
+
+        .pagination a.selected {
+            background-position: -25px -300px;
+            cursor: default;
+        }
+
+        .pagination a span {
+            display: none;
+        }
+
+.clearfix {
+    float: none;
+    clear: both;
+}
+
+.caroufredsel_wrapper {
+    width: 100% !important;
+}
+
+#Carusel1 {
+    margin-left: 5px !important;
+}
+
+.cuerpo label {
+    text-transform: capitalize;
+    font-size: 17px;
+    color: #000000;
+    font-weight: 100;
+}
+
+.cuerpo .title {
+    background: none !important;
+    height: auto !important;
+    color: aqua;
+    width: auto;
+    color: #000;
+    text-transform: capitalize;
+    font-size: 17px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.DesPDF {
+    background: url(Images/tala/imagen1.png);
+    width: 100%;
+    height: 54px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    outline: none;
+}
+
+.SelArbol {
+    background: url(Images/tala/imagen2.png);
+    width: 100%;
+    height: 54px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    margin-top: 7px;
+    cursor: pointer;
+    outline: none;
+}
+
+.load {
+    background: url(Images/tala/loading.gif);
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    background-position: center;
+    background-size: 22%;
+}
+
+iframe {
+    border: none;
+}
+
+label {
+    text-transform: capitalize;
+    color: #000;
+    margin: 0px;
+    margin-top: 15px;
+}
+
+.descripcionLabel {
+    display: block;
+    margin: 0px;
+    margin-bottom: -2px;
+    color: black;
+    font-weight: 100;
+}
+
+.form-control {
+    border: 1px solid #696969;
+    outline: none;
+    color: #000;
+    height: 40px;
+}
+
+    .form-control:focus {
+        border-color: #96c93e;
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgb(150, 201, 62);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgb(150, 201, 62);
+    }
+
+.continuarG {
+    background: url(Images/tala/Continue.png);
+    background-size: auto;
+    width: 100%;
+    height: 55px;
+    border: none;
+    margin: 15px 0px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #96c93c;
+    border-radius: 3px;
+    outline: none;
+    box-shadow: 1px 3px 1px #79a232;
+}
+
+    .continuarG:hover, button:hover {
+        opacity: .7;
+    }
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    cursor: not-allowed;
+    background-color: #e3e3e3;
+    border: none;
+    border-radius: 0px;
+}
+
+.agregarDir {
+    position: absolute;
+    left: 0px;
+    float: left;
+    top: 37px;
+    height: 39px;
+    width: 50px;
+    border-radius: 0px;
+    left: 16px;
+    border: none;
+    background-color: #96c940;
+    font-size: 23px;
+    color: #5e7c26;
+    font-weight: bold;
+    line-height: 5px;
+}
+
+
+.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable {
+    z-index: 9999999;
+    padding: 0px;
+    border-radius: 0px;
+    top: 79px !important;
+    border: none;
+}
+
+.ui-widget-overlay {
+    background: #5d5d5d;
+    opacity: .7;
+    filter: Alpha(Opacity=30);
+    top: 0px;
+}
+
+.ui-draggable .ui-dialog-titlebar {
+    cursor: move;
+    background: url(Images/tala/Direccion.png) #5b7925;
+    border-radius: 0px;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0px;
+    height: 36px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+    position: absolute;
+    right: .3em;
+    top: 50%;
+    width: 20px;
+    margin: -11px 6px 0px 0px;
+    padding: 1px;
+    height: 20px;
+    background: url(../Content/images/ui-icons_ffffff_256x240.png) rgb(91, 121, 37);
+    border: none;
+    border-radius: 20px;
+    background-position: -96.5px -128px;
+    background-size: 260px;
+    cursor: pointer;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    text-align: left;
+    border-width: 1px 0 0 0;
+    background-image: none;
+    margin-top: .5em;
+    padding: 0px 27px;
+    border: none;
+    text-align: center;
+}
+
+.ui-dialog-buttonset {
+    width: 100%;
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+    margin: 0px;
+    cursor: pointer;
+    color: #fff;
+    background: url(Images/tala/Direccionbtn.png);
+    border-color: none;
+    display: inline-block;
+    padding: 0px;
+    margin-bottom: 0;
+    font-size: 0px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    margin-left: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    height: 30px;
+    border-radius: 4px;
+    width: 100%;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-size: inherit;
+    background-position: center;
+    outline: none;
+    background-size: 65px;
+    width: 100%;
+    height: 43px;
+    border: none;
+    margin: 15px 0px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #96c93c;
+    border-radius: 3px;
+    outline: none;
+    box-shadow: 1px 3px 1px #79a232;
+}
+
+
+.msgAlert {
+    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    height: 100%;
+    z-index: 9999999;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.msgConfirm {
+    top: 115px;
+    height: 268px;
+    background: transparent;
+}
+
+.msgAlert .msgcontenedor {
+    background: #fff;
+    position: relative;
+    top: 160px;
+    padding: 0px;
+}
+
+.msgConfirm .msgcontenedor {
+    background: #fff;
+    position: initial;
+    top: 160px;
+    padding: 0px;
+    box-shadow: 1px 3px 9px 0px #666;
+}
+
+
+.msgAlert .msgtitle {
+    background: #79a131;
+    padding: 12px;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.msgAlert .msgbtn {
+    align-items: center;
+    height: 40px;
+    display: block;
+    text-align: center;
+}
+
+.msgAlert .msgcuerpo {
+    padding: 15px 5px;
+    text-align: center;
+}
+
+
+.msgAlert .btAceptar {
+    background: #79a131;
+    position: absolute;
+    display: block;
+    width: 99px;
+    color: #fff;
+    border: none;
+    height: 30px;
+    left: 40%;
+    border-radius: 3px;
+}
+
+.msgAlert .si {
+    background: #79a131;
+    display: inline-block;
+    width: 151px;
+    color: #fff;
+    border: none;
+    height: 30px;
+    border-radius: 3px;
+    margin-left: 14px;
+    float: inherit;
+}
+
+.msgAlert .no {
+    background: #79a131;
+    display: inline-block;
+    width: 99px;
+    color: #fff;
+    border: none;
+    height: 30px;
+    border-radius: 3px;
+    margin: 0 7px;
+    margin-left: 16px;
+    position: relative;
+    float: inherit;
+}
+
+.clsnotareglamento {
+    background: #e3e3e3;
+    padding: 13px;
+    color: #848484;
+    font-size: 18px;
+    text-align: justify;
+    margin-top: 11px;
+    background-repeat: no-repeat;
+}
+
+.clsnotareglamentosopan {
+    background: #e3e3e3;
+    position: absolute;
+    background-repeat: no-repeat;
+    width: 17px;
+    height: 17px;
+    display: inline-block;
+    top: -7px;
+    left: 49%;
+    background-size: 36px;
+    transform: rotate(135deg);
+}
+
+.clsAdjuntarArc {
+}
+
+.clsAdjuntarArcInput {
+    padding-left: 34px;
+    border-left: 49px solid #fff !important;
+    background-image: url(Images/tala/flechaAdj.png);
+    background-repeat: no-repeat;
+    background-position: 7px center;
+}
+
+.clsAdjuntarArcLabel {
+    width: 90%;
+    margin-bottom: 10px;
+}
+
+.custom-file-upload {
+    background: aqua;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    bottom: 24px;
+    background: url(Images/tala/adjuntarArc.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #96c93c;
+    border-radius: 0px;
+    outline: none;
+    cursor: pointer;
+}
+
+    .custom-file-upload:hover {
+        opacity: 0.7;
+    }
+
+.formatoadjunto {
+    display: block;
+    background: url(Images/tala/formato.png);
+    background-repeat: no-repeat;
+    background-position: 61px 100%;
+    padding-bottom: 24px;
+}
+
+
+.formatoadjuntoimg {
+    display: block;
+    padding-bottom: 24px;
+    margin-bottom: -26px;
+}
+
+.lblTitleCarac {
+}
+
+
+.formatoadjuntoimg input {
+    padding-left: 52px;
+}
+
+#divEstados li {
+    list-style: none;
+}
+
+
+/* The container */
+.squaredFour {
+    display: block;
+    position: relative;
+    padding-left: 27px;
+    margin-bottom: 13px;
+    cursor: pointer;
+    font-size: 13px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #424242;
+}
+
+    /* Hide the browser's default checkbox */
+    .squaredFour input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    background-color: #ffffff;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+}
+
+/* On mouse-over, add a grey background color */
+.squaredFour:hover input ~ .checkmark {
+    background-color: #ccc;
+    background-color: #ffffff;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+}
+
+/* When the checkbox is checked, add a blue background */
+.squaredFour input:checked ~ .checkmark {
+    background-color: #ffffff;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.squaredFour input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.squaredFour .checkmark:after {
+    left: 7px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid #424242;
+    border-width: 0 3px 3px 0px;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.nopadding {
+    padding: 0px;
+}
+
+.aceptarSolicitud {
+    background: url(Images/tala/enviarbtnSol.PNG);
+    background-size: auto;
+    width: 100%;
+    height: 55px;
+    border: none;
+    margin: 15px 0px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #96c93c;
+    border-radius: 3px;
+    outline: none;
+    box-shadow: 1px 3px 1px #79a232;
+}
+
+    .aceptarSolicitud:hover, button:hover {
+        opacity: .7;
+    }
+
+
+.clBtnSolAgr {
+    width: 100%;
+    height: 67px;
+    position: fixed;
+    bottom: 0px;
+    background: url(Images/tala/solAgr.png);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-color: #00ab4d;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    float: left;
+    left: 0px;
+}
+
+#contSolAgr {
+    width: 100%;
+    height: -webkit-fill-available;
+    position: fixed;
+    bottom: 0px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-color: #cccccc;
+    border: none;
+    cursor: pointer;
+    padding: 0px;
+    overflow: auto;
+    max-height: 310px;
+}
+
+.clBtnSolAgr:hover {
+    opacity: 1;
+}
+
+#contSolAgr table {
+    border: none;
+    margin: 0px;
+    border-bottom: 2px solid #777;
+}
+
+#contSolAgr .titletable {
+    width: 121px;
+    color: #000000;
+    font-weight: bold;
+    vertical-align: inherit;
+    font-size: 13px;
+    background: #bebfc1;
+    border: 1px solid #fff;
+    border-top: none;
+    border-left: none;
+    cursor: pointer;
+}
+
+#contSolAgr .cuerpotable {
+    width: auto;
+    color: #232323;
+    font-weight: 100;
+    vertical-align: inherit;
+    font-size: 13px;
+    background: #cccccc;
+    border: 1px solid #fff;
+    border-top: none;
+    border-left: none;
+}
+
+#contSolAgr .cuerpotable1 {
+    width: auto;
+    color: #232323;
+    font-weight: 100;
+    vertical-align: inherit;
+    font-size: 13px;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-left: none;
+    cursor: pointer;
+}
+
+#contSolAgr .solubiagr {
+    width: 68px;
+    border-bottom: none;
+    border-top: none;
+    background: #949599;
+}
+
+#contSolAgr .btnsolubiagr {
+    border-top: none;
+    border-bottom: none;
+    background: url(Images/tala/brnsolUbi.png);
+    background-position: 50%;
+    cursor: pointer;
+}
+
+#contSolAgr .solubiagr1 {
+    width: 68px;
+    border-top: none;
+    background: #949599;
+}
+
+.btnEnviarsol_ {
+    bottom: 0px;
+    position: absolute;
+    left: 38%;
+    background: url(Images/tala/enviarbtnSol.PNG);
+    background-size: auto;
+    width: 400px;
+    height: 33px;
+    border: none;
+    margin: 9px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #96c93c;
+    border-radius: 3px;
+    outline: none;
+    box-shadow: 1px 3px 1px #79a232;
+}
+
+
+#contSolAgr .contenedorInfo {
+    height: 85%;
+    padding: 0px 80px 0px 80px;
+    overflow: auto;
+}
+
+
+.clBtnSolAgr1 {
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    bottom: 307px;
+    background: url(Images/tala/brnsolUbi1.png);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-color: #00ab4d;
+    border: none;
+    cursor: pointer;
+}
+
+#boxFind {
+    display: none;
+}
+
+
+.clspantallaCoordenadas .ui-dialog-titlebar {
+    cursor: move;
+    background: url(Images/tala/title2c.png) #5b7925;
+    border-radius: 0px;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0px;
+    height: 36px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+}
+
+#load_ {
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    background: url(Images/tala/Load.gif);
+    z-index: 999999999999999999999999999999;
+    background-color: rgba(0, 0, 0, 0.7);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40px;
+}
+
+div#load_ {
+}

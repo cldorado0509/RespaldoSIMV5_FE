@@ -1,0 +1,74 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_PLAN
+
+@{
+    ViewBag.Title = "POECA | Confirmar Eliminación";
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>¿Estás seguro/a de eliminar este Plan?</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+                    @Html.DisplayNameFor(model => model.N_ANIO):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.N_ANIO)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_REMITENTE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_REMITENTE)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_CARGO_REMITENTE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_CARGO_REMITENTE)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_OBSERVACIONES):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_OBSERVACIONES)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_URL_ANEXO):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_URL_ANEXO)
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-primary" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Eliminar" class="btn btn-block btn-danger" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

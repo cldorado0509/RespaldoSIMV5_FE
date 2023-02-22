@@ -1,0 +1,81 @@
+﻿@using SIM.Properties
+@{
+    //ViewBag.Title = "NuevoTramite";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .ui-dialog .ui-dialog-titlebar-close {
+        width: 20px;
+        height: 20px;
+    }
+</style>
+<link href="~/Areas/Tramites/Scripts/Modal.css" rel="stylesheet" />
+<script src="~/Areas/Tramites/Scripts/jquery.carouFredSel-6.2.1-packed.js"></script>
+<script src="~/Areas/Tramites/Scripts/jquery.carouFredSel-6.2.1.js"></script>
+<link href="~/Areas/Tramites/Scripts/accordion.css" rel="stylesheet" />
+<link href="~/Content/TramitesLinea.css" rel="stylesheet" />
+<script src="~/Areas/Tramites/Scripts/FcomponentesGenerales.js?v=2.09"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/tramite.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/RecargarGrid.js")"></script>
+<script src="~/Areas/Tramites/Scripts/jquery.confirm.min.js"></script>
+
+
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" data-idtramite="@ViewBag.IdTramite" data-idtercero="@ViewBag.IdTercero" data-idinstalacion="@ViewBag.IdInstalacion" class="my-cloak">
+    <div ng-controller="TramiteController" class="panelSIM panelSIM-default" ng-init="init();" id="MyAngularControl">
+        <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+        <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div id="Tramite0" ng-show="isActive(0)" class="panelSIM-heading">
+            @Html.Partial("_InformacionTercero")
+        </div>
+        <div id="Tramite1" ng-show="isActive(1)" class="panelSIM-heading">
+            @Html.Partial("_InformacionTramiteyTC")
+        </div>
+        <div id="Tramite2" ng-show="isActive(2)" class="panelSIM-heading">
+            @Html.Partial("_Caracteristicas")
+        </div>
+        <div id="Tramite3" ng-show="isActive(3)" class="panelSIM-heading">
+            @Html.Partial("_Requisitos")
+        </div>
+        <div class="panelSIM-body clearfix">
+            <div dx-validation-summary="{  }"></div>
+            <div class="col-lg-7 col-md-5 col-sm-3 col-xs-3 error-validacion">
+                {{mensajeValidacion}}
+            </div>
+
+
+            <div class="col-lg-7 col-md-5 col-sm-3 col-xs-3">
+                <div dx-button="btnVistaPrevia" id="btnVistaPrev" class="col-xs-5 col-sm-5 col-md-5 col-lg-5 dx-button-validar" ng-show="mostrarbtnVistaPrev()"></div>
+                <div dx-button="btnGuardaParcial" id="btnGuarPar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5" ng-show="mostrarbtnGuardarPar()" style="display:none"></div>
+            </div>
+            <div class="col-lg-5 col-md-7 col-sm-9 col-xs-9">
+                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+
+                <div dx-button="btnSiguientePestana" id="btnSiguiente" disabled="true" class="col-xs-5 col-sm-5 col-md-5 col-lg-5" ng-show="mostrarBtnSiguiente()" style="width: 130px; margin-left: 180px; height: 30px; padding-top: 0px; "></div>
+                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                <div dx-button="btnCancelarSettings" id="btnCancelar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5" ng-show="mostrarBtnCancelar()" style=" margin-left: -25px; width: 130px; height: 30px; padding-top:0px"></div>
+            </div>
+
+        </div>
+
+        <div dx-popup="popInstalacionTipoTramiteSettings" id="popTipoTramite">
+            <div class="col-md-12">
+                <div class="dx-field">
+                    <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Tipo Tr&aacute;mite</label></div>
+                    <div class="dx-field-value valuefullrow">
+                        <div dx-select-box="tipoTramiteSelectBoxSettings" id="cboTipoTramite"></div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="col-lg-8 col-md-6 col-sm-4 col-xs-2">
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
+                <div dx-button="aceptarTTSettings" id="btnTTAceptar"></div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
+                <div dx-button="cancelarTTSettings" id="btnTTCancelar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

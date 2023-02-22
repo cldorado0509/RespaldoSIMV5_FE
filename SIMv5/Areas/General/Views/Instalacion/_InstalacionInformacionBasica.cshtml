@@ -1,0 +1,224 @@
+﻿@using SIM.Properties
+    <div class="dx-fieldset">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dx-field">
+                    <div class="dx-field-label labelfullrow">Nombre Instalación</div>
+                    <div class="dx-field-value valuefullrow">
+                        <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.S_NOMBRE' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Nombre Requerido' }] }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Cédula Catastral</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.S_CEDULACATASTRAL' }}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Matrícula Inmobiliaria</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.S_MATRICULAINMOBILIARIA' }}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Teléfono</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.S_TELEFONO' }}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Municipio</div>
+                    <div class="dx-field-value">
+                        <div dx-select-box="municipioSettings" id="cboMunicipio"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Fecha Registro</div>
+                    <div class="dx-field-value">
+                        <div dx-date-box="{ readOnly: true, bindingOptions: { value: 'datosInstalacion.D_REGISTRO' }}" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr style="border-color: gainsboro;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dx-field" style="padding-top:0px">
+                    <div class="dx-field-label">Dirección</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <div class="dx-field">
+                    <div class="dx-field-value" style="width:26%;padding-right:2px;">
+                        <div>
+                            Sentido
+                        </div>
+                        <div>
+                            <div dx-select-box="sentidoViaPpalSettings" id="sentidoViaPpal"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            Sur
+                        </div>
+                    </div>
+                    <div class="dx-field-value" style="width:26%;padding-right:2px;">
+                        <div>
+                            Letra
+                        </div>
+                        <div>
+                            <div dx-select-box="letraViaPpalSettings" id="letraViaPpal"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            A
+                        </div>
+                    </div>
+                    <div class="dx-field-value" style="width:18%;padding-right:2px;">
+                        <div>
+                            N&uacute;mero
+                        </div>
+                        <div>
+                            <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.N_NUMEROVIAPPAL' }, tabIndex: 2,}" id="numeroPpal"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            38
+                        </div>
+                    </div>
+                    <div class="dx-field-value" style="width:30%;padding-right:2px;">
+                        <div>
+                            V&iacute;a Principal
+                        </div>
+                        <div>
+                            <div dx-select-box="tipoViaPpalSettings" id="tipoViaPpal"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            Carrera
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="dx-field">
+                    <div class="dx-field-value" style="width:26%;padding-right:2px;">
+                        <div>
+                            Sentido
+                        </div>
+                        <div>
+                            <div dx-select-box="sentidoViaSecSettings" id="sentidoViaSec"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            Sur
+                        </div>
+                    </div>
+                    <div class="dx-field-value" style="width:26%;padding-right:2px;">
+                        <div>
+                            Letra
+                        </div>
+                        <div>
+                            <div dx-select-box="letraViaSecSettings" id="letraViaSec"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            B
+                        </div>
+                    </div>
+                    <div class="dx-field-value" style="width:18%;padding-right:2px;">
+                        <div>
+                            N&uacute;mero
+                        </div>
+                        <div>
+                            <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.N_NUMEROVIASEC' }, tabIndex: 6,}" id="numeroSec"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            50
+                        </div>
+                    </div>
+                    <div class="dx-field-value" style="width:30%;padding-right:2px;">
+                        <div>
+                            V&Iacute;a Principal
+                        </div>
+                        <div>
+                            <div dx-select-box="tipoViaSecSettings"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            Calle
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="dx-field">
+                    <div class="dx-field-value" style="width:50%;padding-right:2px;">
+                        <div>
+                            Interior
+                        </div>
+                        <div>
+                            <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.N_INTERIOR' }, tabIndex: 10,}"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            1203
+                        </div>
+                    </div>
+                    <div class="dx-field-value" style="width:50%;padding-right:2px;">
+                        <div>
+                            Placa
+                        </div>
+                        <div>
+                            <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.N_PLACA' }, tabIndex: 9,}" id="placa"></div>
+                        </div>
+                        <div style="text-decoration:underline;text-align: center;">
+                            25
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="dx-field">
+                    <div class="dx-field-label">Coordenada X</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.N_COORDX' }, readOnly: true}" id="coordenadaX"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dx-field">
+                    <div class="dx-field-label">Coordenada Y</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.N_COORDY' }, readOnly: true}" id="coordenadaY"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div dx-button="btnUbicarDireccionSettings" id="btnUbicarDireccion"></div>
+            </div>
+        </div>
+        <hr style="border-color: gainsboro;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dx-field">
+                    <div class="dx-field-label labelfullrow">Descripción</div>
+                    <div class="dx-field-value valuefullrow">
+                        <div dx-text-box="{bindingOptions: { value: 'datosInstalacion.S_OBSERVACION' }}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

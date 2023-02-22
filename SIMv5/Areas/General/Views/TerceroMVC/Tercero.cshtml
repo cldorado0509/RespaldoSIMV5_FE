@@ -1,0 +1,1113 @@
+﻿@model TERCERO
+@using SIM.Data.General
+@using System.Web.UI.WebControls
+
+<script type="text/javascript">
+    function OnTextChangedDocTercero(s, e) {
+        cambioDocTercero = true;
+    }
+
+    function OnKeyDownDocTercero(s, e) {
+        if (e.htmlEvent.keyCode == 13) {
+            ValidarTercero();
+        }
+    }
+
+    function OnLostFocusDocTercero(s, e) {
+        ObtenerDV(N_DOCUMENTON, N_DIGITOVER);
+
+        if (cambioDocTercero)
+            ValidarTercero();
+    }
+
+    function ValidarTercero() {
+        var terceroID = ASPxClientControl.GetControlCollection().GetByName("ID_TERCERO");
+        var terceroTipoDoc = ASPxClientControl.GetControlCollection().GetByName("ID_TIPODOCUMENTO");
+        var terceroDoc = ASPxClientControl.GetControlCollection().GetByName("N_DOCUMENTON");
+
+        if (terceroDoc != '' && terceroDoc.GetIsValid()) {
+            ProcessPanelTercero.Show();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ValidarTercero", "Tercero")',
+                data: { idTercero: terceroID.GetText(), tipoDoc: terceroTipoDoc.GetValue(), documento: terceroDoc.GetText() },
+                success: function (response) {
+                    if (response != '') {
+                        popErrorMessage.SetContentHtml(response);
+                        popErrorMessage.Show();
+                    }
+                    ProcessPanelTercero.Hide();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    ProcessPanelTercero.Hide();
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                }
+            });
+        } else {
+            alert("Docuemtno Invalido");
+        }
+        cambioDocTercero = false;
+    }
+
+    function ActivarCamposContacto()
+    {
+        field_n.SetEnabled(true);
+        field_a.SetEnabled(true);
+        field_e.SetEnabled(true);
+        field_w.SetEnabled(true);
+    }
+
+    function InactivarCamposContacto()
+    {
+        field_n.SetEnabled(false);
+        field_a.SetEnabled(false);
+        field_e.SetEnabled(false);
+        field_w.SetEnabled(false);
+    }
+
+    function CargarDatosTercero()
+    {
+        ProcessPanelTercero.Show();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CargarDatosTercero", "Tercero")',
+            data: { tipodoc: field_td.GetValue(), documento: field_i.GetText() },
+            success: function (response) {
+                if (response != '') {
+                    var datosTercero = JSON.parse(response);
+
+                    //field_tn.SetText(datosTercero.ID);
+                    field_n.SetText(datosTercero.Nombres);
+                    field_a.SetText(datosTercero.Apellidos);
+                    field_e.SetText(datosTercero.Email);
+                    field_w.SetText(datosTercero.WebSite);
+
+                    InactivarCamposContacto();
+                } else {
+                    field_tn.SetText('');
+                    field_n.SetText('');
+                    field_a.SetText('');
+                    field_e.SetText('');
+                    field_w.SetText('');
+
+                    ActivarCamposContacto();
+                }
+
+                ProcessPanelTercero.Hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ProcessPanelTercero.Hide();
+                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+            }
+        });
+    }
+
+    function SeleccionRegistroAE(s, e) {
+        gvwActividadesEconomicas.GetSelectedFieldValues('ID_ACTIVIDADECONOMICA;S_CODIGO;S_NOMBRE', OnSelectRowAE);
+    }
+
+    function OnSelectRowAE(Value) {
+        ID_ACTIVIDADECONOMICA.SetText(Value[0][0]);
+        cboAE.SetText(Value[0][2] + ' (' + Value[0][1] + ')');
+        cboAE.HideDropDown();
+    }
+
+    function SeleccionRegistroTLAE(s, e) {
+        s.GetNodeValues(e.nodeKey, 'ID_ACTIVIDADECONOMICA;S_NOMBRE', OnSelectRowTLAE);
+    }
+
+    function OnSelectRowTLAE(Value) {
+        ID_ACTIVIDADECONOMICA.SetText(Value[0]);
+        cboAE.SetText(Value[1]);
+        cboAE.HideDropDown();
+    }
+
+    function SeleccionarRegistroUsuario(s, e) {
+        gvwSelectUsuarios.GetSelectedFieldValues('ID_USUARIO;S_NOMBRE;S_LOGIN', OnSelectRowUsuario);
+    }
+
+    function OnSelectRowUsuario(selectedValues) {
+        cboUsuario.SetText(selectedValues[0][1] + ' ' + ' (' + selectedValues[0][2] + ')');
+        cboUsuario.HideDropDown();
+
+        usuario = ASPxClientControl.GetControlCollection().GetByName('ID_USUARIO_SEL');
+        if (usuario != null)
+            usuario.SetText(Value[0][0]);
+    }
+
+    function ObtenerDV(campoNumero, campoDV) {
+        nume = parseInt(campoNumero.GetValue());
+        if (nume >= 1)
+            ceros = "00000000000000";
+        if (nume >= 10)
+            ceros = "0000000000000";
+        if (nume >= 100)
+            ceros = "000000000000";
+        if (nume >= 1000)
+            ceros = "00000000000";
+        if (nume >= 10000)
+            ceros = "0000000000";
+        if (nume >= 100000)
+            ceros = "000000000";
+        if (nume >= 1000000)
+            ceros = "00000000";
+        if (nume >= 10000000)
+            ceros = "0000000";
+        if (nume >= 100000000)
+            ceros = "000000";
+        if (nume >= 1000000000)
+            ceros = "00000";
+        if (nume >= 10000000000)
+            ceros = "0000";
+        if (nume >= 100000000000)
+            ceros = "000";
+        if (nume >= 1000000000000)
+            ceros = "00";
+        if (nume >= 10000000000000)
+            ceros = "0";
+        if (nume >= 100000000000000)
+            ceros = "";
+
+        li_peso = new Array();
+        li_peso[0] = 71;
+        li_peso[1] = 67;
+        li_peso[2] = 59;
+        li_peso[3] = 53;
+        li_peso[4] = 47;
+        li_peso[5] = 43;
+        li_peso[6] = 41;
+        li_peso[7] = 37; //8
+        li_peso[8] = 29; //3
+        li_peso[9] = 23; //0
+        li_peso[10] = 19; //1
+        li_peso[11] = 17; //2
+        li_peso[12] = 13; //0
+        li_peso[13] = 7; //9
+        li_peso[14] = 3; //9
+
+        ls_str_nit = ceros + campoNumero.GetValue();
+        li_suma = 0;
+        for (i = 0; i < 15; i++) {
+            li_suma += ls_str_nit.substring(i, i + 1) * li_peso[i];
+        }
+        digito_chequeo = li_suma % 11;
+        if (digito_chequeo >= 2)
+            digito_chequeo = 11 - digito_chequeo;
+
+        campoDV.SetText(digito_chequeo);
+    }
+
+    function OnCustomButtonClick(s, e, t, url) {
+        var destUrl;
+
+        if (e.buttonID === "EditButton") {
+            var key = s.GetRowKey(e.visibleIndex);
+            destUrl = url + "/" + key;
+        } else {
+            destUrl = url;
+        }
+
+        window.location.href = destUrl;
+    }
+</script>
+<br />
+<br />
+<br />
+@{
+    Html.RenderPartial("_popErrorMessage");
+}
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanelTercero";
+    settings.Modal = true;
+    settings.Text = "Procesando Tercero";
+}).GetHtml()
+<div class="panel panel-default" style="padding-bottom: 10px">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            @if (ViewBag.tipoTercero == "N")
+            {
+                <label>Tercero Natural</label>
+            }
+            else
+            {
+                <label>Tercero Jur&iacute;dico</label>
+            }
+        </h3>
+    </div>
+    @using (Html.BeginForm("TerceroUpdate", "Tercero", FormMethod.Post, new { name = "frmTercero", id = "frmTercero" }))
+    {
+        @Html.DevExpress().TextBoxFor(model => Model.ID_TERCERO, settings =>
+        {
+            settings.ClientVisible = false;
+        }).GetHtml();
+
+        if (ViewBag.tipoTercero == "N")
+        {
+            // Tercero Natural
+            @Html.DevExpress().RoundPanel(settingsRP =>
+    {
+        settingsRP.Name = "rpInformacionBasica";
+        settingsRP.EncodeHtml = false;
+        settingsRP.HeaderText = "Informaci&oacute;n B&aacute;sica";
+        settingsRP.EnableTheming = true;
+        settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+        settingsRP.Width = Unit.Percentage(100);
+        settingsRP.Style.Add("padding-left", "15px");
+        settingsRP.Style.Add("padding-right", "15px");
+        settingsRP.Style.Add("padding-top", "10px");
+        settingsRP.Style.Add("padding-botom", "10px");
+
+        settingsRP.SetContent(() =>
+        {
+            // Primera línea de Información Básica
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+            ViewContext.Writer.Write("<div class=\"col-md-1\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Identificaci&oacute;n:";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+
+            ViewContext.Writer.Write("<div class=\"col-md-3\">");
+            ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+            Html.DevExpress().ComboBoxFor(model => Model.ID_TIPODOCUMENTO, settings =>
+            {
+                settings.Width = 60;
+                settings.Properties.DropDownWidth = 290;
+                settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                settings.Properties.TextFormatString = "{0}";
+                settings.Properties.ValueField = "ID_TIPODOCUMENTO";
+                //settings.Properties.TextField = "S_ABREVIATURA";
+                settings.Properties.ValueType = typeof(int);
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                settings.Properties.ValidationSettings.RequiredField.ErrorText = "Tipo Documento Requerido";
+
+                //settings.Properties.Columns.Add("ID_TIPODOCUMENTO", "ID", 20);
+                settings.Properties.Columns.Add("S_ABREVIATURA", "Abr", 50);
+                settings.Properties.Columns.Add("S_NOMBRE", "Descripci&oacute;n", 240);
+            }).BindList(ModelsToListGeneral.GetTiposDocumentoNatural()).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div style=\"width:55%; float:left; padding-left:3%\">");
+            Html.DevExpress().TextBoxFor(model => Model.N_DOCUMENTON, settings =>
+            {
+                settings.Width = Unit.Percentage(100);//150;
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                settings.Properties.ValidationSettings.RequiredField.ErrorText = "Documento Requerido";
+                settings.Properties.ValidationSettings.RegularExpression.ValidationExpression = "\\d+";
+                settings.Properties.ValidationSettings.RegularExpression.ErrorText = "Documento Inválido";
+                settings.Properties.ClientSideEvents.TextChanged = "OnTextChangedDocTercero";
+                settings.Properties.ClientSideEvents.KeyDown = "OnKeyDownDocTercero";
+                settings.Properties.ClientSideEvents.LostFocus = "OnLostFocusDocTercero";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.Text = "DV:";
+                settings.Width = Unit.Percentage(100); //30;
+                settings.Style.Add("padding", "3px 3px 2px 3px");
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+            Html.DevExpress().TextBoxFor(model => Model.N_DIGITOVER, settings =>
+            {
+                settings.Width = Unit.Percentage(100); //30;
+                settings.ReadOnly = true;
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+
+            ViewContext.Writer.Write("<div class=\"col-md-1\" style=\"padding-right:0px\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Raz&oacute;n Social:";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+
+            ViewContext.Writer.Write("<div class=\"col-md-7\">");
+            Html.DevExpress().TextBoxFor(model => Model.S_RSOCIAL, settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Width = Unit.Percentage(100);
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+
+            // Segunda línea de Información Básica
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+            ViewContext.Writer.Write("<div class=\"col-md-1\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Nombres:";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div class=\"col-md-3\">");
+            Html.DevExpress().TextBox(settings =>
+            {
+                settings.Name = "txtNombres";
+                settings.Width = Unit.Percentage(100);
+                settings.Text = (Model.NATURAL == null ? "" : Model.NATURAL.S_NOMBRE1.Trim() + (Model.NATURAL.S_NOMBRE2 == null ? "" : " " + Model.NATURAL.S_NOMBRE2.Trim()));
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                settings.Properties.ValidationSettings.RequiredField.ErrorText = "Nombres Requerido";
+            }).GetHtml();
+            Html.DevExpress().TextBoxFor(model => Model.NATURAL.S_NOMBRE1, settings =>
+            {
+                settings.ClientVisible = false;
+            }).GetHtml();
+            Html.DevExpress().TextBoxFor(model => Model.NATURAL.S_NOMBRE2, settings =>
+            {
+                settings.ClientVisible = false;
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div class=\"col-md-1\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Apellidos:";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div class=\"col-md-3\">");
+            Html.DevExpress().TextBox(settings =>
+            {
+                settings.Name = "txtApellidos";
+                settings.Width = Unit.Percentage(100);
+                settings.Text = (Model.NATURAL == null ? "" : Model.NATURAL.S_APELLIDO1.Trim() + (Model.NATURAL.S_APELLIDO2 == null ? "" : " " + Model.NATURAL.S_APELLIDO2.Trim()));
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                settings.Properties.ValidationSettings.RequiredField.ErrorText = "Apellidos Requeridos";
+            }).GetHtml();
+            Html.DevExpress().TextBoxFor(model => Model.NATURAL.S_APELLIDO1, settings =>
+            {
+                settings.ClientVisible = false;
+            }).GetHtml();
+            Html.DevExpress().TextBoxFor(model => Model.NATURAL.S_APELLIDO2, settings =>
+            {
+                settings.ClientVisible = false;
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+
+            ViewContext.Writer.Write("<div class=\"col-md-4\">");
+            ViewContext.Writer.Write("<div style=\"width:15%; float:left\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Genero:";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+
+            ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+            Html.DevExpress().ComboBoxFor(model => Model.NATURAL.S_GENERO, settings =>
+            {
+                settings.Width = Unit.Percentage(100);
+                settings.Properties.Items.Add(new ListEditItem("Femenino", "F"));
+                settings.Properties.Items.Add(new ListEditItem("Masculino", "M"));
+                settings.Properties.ValueType = typeof(string);
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+
+            ViewContext.Writer.Write("<div style=\"width:7%; float:left\">&nbsp;</div>");
+
+            ViewContext.Writer.Write("<div style=\"width:20%; float:left\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Fecha Nac:";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div style=\"width:33%; float:left\">");
+            Html.DevExpress().DateEditFor(model => Model.NATURAL.D_NACIMIENTO, settings =>
+            {
+                settings.Properties.DisplayFormatString = "yyyy/MM/dd";
+                settings.Width = Unit.Percentage(100);
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+
+            ViewContext.Writer.Write("<hr style=\"margin:5px; border-color: gainsboro;\" />");
+
+            // Tercera línea de Información Básica
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+            ViewContext.Writer.Write("<div class=\"col-md-4\">");
+            ViewContext.Writer.Write("<div style=\"width:40%; float:left\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Matr&iacute;cula Profesional:";
+                settings.Width = Unit.Percentage(100);
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div style=\"width:60%; float:left\">");
+            Html.DevExpress().TextBoxFor(model => Model.NATURAL.S_MATRICULAPROFESIONAL, settings =>
+            {
+                settings.Width = Unit.Percentage(100);
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div class=\"col-md-8\">");
+            ViewContext.Writer.Write("<div style=\"width:20%; float:left\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.EncodeHtml = false;
+                settings.Text = "Actividad Econ&oacute;mica:";
+                settings.Width = Unit.Percentage(100);
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div style=\"width:80%; float:left\">");
+            Html.DevExpress().TextBoxFor(model => Model.ID_ACTIVIDADECONOMICA, settings =>
+            {
+                settings.Width = Unit.Percentage(100);
+                settings.ClientVisible = false;
+            }).GetHtml();
+
+            Html.DevExpress().DropDownEdit(settings =>
+            {
+                settings.Name = "cboAE";
+                //settings.Width = Unit.Percentage(100);
+                settings.Width = Unit.Pixel(550);
+                settings.Text = ViewBag.ActividadEconomica;
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                settings.Properties.ValidationSettings.RequiredField.ErrorText = "Actividad Económica Requerida";
+                settings.ReadOnly = true;
+
+                settings.SetDropDownWindowTemplateContent(c =>
+                {
+                    ViewContext.Writer.Write(Html.Action("gvwSeleccionarActividadEconomica", "ActividadEconomica", new { area = "General" }));
+                    ViewContext.Writer.Write("<table style=\"width:550px\"><tr><td align=\"right\">");
+
+                    ViewContext.Writer.Write("<div style=\"width:550px; height: 250px; overflow:scroll \">");
+                    ViewContext.Writer.Write(Html.Action("tvwSeleccionarActividadEconomica", "ActividadEconomica", new { area = "General" }));
+                    ViewContext.Writer.Write("</div>");
+
+                    Html.DevExpress().Button(
+                        buttonSettings =>
+                        {
+                            buttonSettings.Name = "buttonClose";
+                            buttonSettings.Text = "Cerrar";
+                            buttonSettings.ClientSideEvents.Click = "function(s, e){ cboAE.HideDropDown(); }";
+                        })
+                        .Render();
+                    ViewContext.Writer.Write("</td></tr></table>");
+                });
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+        });
+    }).GetHtml()
+
+            @Html.DevExpress().RoundPanel(settingsRP =>
+            {
+                settingsRP.Name = "rpInformacionContacto";
+                settingsRP.EncodeHtml = false;
+                settingsRP.HeaderText = "Informaci&oacute;n de Contacto";
+                settingsRP.ShowHeader = true;
+                settingsRP.EnableTheming = true;
+                settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsRP.Width = Unit.Percentage(100);
+                settingsRP.Style.Add("padding-left", "15px");
+                settingsRP.Style.Add("padding-right", "15px");
+                settingsRP.Style.Add("padding-top", "10px");
+                settingsRP.Style.Add("padding-botom", "10px");
+
+                settingsRP.SetContent(() =>
+                {
+                    // Primera línea de Información de Contacto
+                    ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    ViewContext.Writer.Write("<div style=\"width:20%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Tel&eacute;fono:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:32%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.N_TELEFONO, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.ValidationSettings.RegularExpression.ValidationExpression = "\\d+";
+                        settings.Properties.ValidationSettings.RegularExpression.ErrorText = "Teléfono Inválido";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:6%; float:left\">&nbsp;</div>");
+                    ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Fax:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:32%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.N_FAX, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.ValidationSettings.RegularExpression.ValidationExpression = "\\d+";
+                        settings.Properties.ValidationSettings.RegularExpression.ErrorText = "Fax Inválido";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    ViewContext.Writer.Write("<div style=\"width:35%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Correo Electr&oacute;nico:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:65%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.S_CORREO, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "P&aacute;gina Web:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:75%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.S_WEB, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                });
+            }).GetHtml()
+            /*
+            Html.DevExpress().RoundPanel(settingsRP =>
+            {
+                settingsRP.Name = "rpUsuario";
+                settingsRP.ShowHeader = false;
+                settingsRP.EnableTheming = true;
+                settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsRP.Width = Unit.Percentage(100);
+                settingsRP.Style.Add("padding-left", "15px");
+                settingsRP.Style.Add("padding-right", "15px");
+                settingsRP.Style.Add("padding-top", "10px");
+                settingsRP.Style.Add("padding-botom", "10px");
+
+                settingsRP.SetContent(() =>
+                {
+                    ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.Text = "Usuario:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    Html.DevExpress().TextBoxFor(model => Model.N_USUARIO, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                        settings.ClientVisible = false;
+                    }).GetHtml();
+
+                    Html.DevExpress().DropDownEdit(settings =>
+                    {
+                        settings.Name = "cboUsuario";
+                        settings.Width = Unit.Percentage(100);
+                        settings.Text = ViewBag.Usuario;
+                        settings.ReadOnly = true;
+
+                        settings.SetDropDownWindowTemplateContent(c =>
+                        {
+                            ViewContext.Writer.Write(@Html.Action("UsuariosGridViewPartial"));
+                            ViewContext.Writer.Write("<table style=\"width:450px\"><tr><td align=\"right\">");
+                            ViewContext.Writer.Write("</td></tr></table>");
+                        });
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                });
+            }).GetHtml();*/
+
+            Html.DevExpress().RoundPanel(settingsAlmacenar =>
+            {
+                settingsAlmacenar.Name = "rpAlmacenar";
+                settingsAlmacenar.ShowHeader = false;
+                settingsAlmacenar.EnableTheming = true;
+                settingsAlmacenar.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsAlmacenar.Width = Unit.Percentage(100);
+                settingsAlmacenar.Style.Add("padding-left", "15px");
+                settingsAlmacenar.Style.Add("padding-right", "15px");
+                settingsAlmacenar.Style.Add("padding-top", "10px");
+                settingsAlmacenar.Style.Add("padding-botom", "10px");
+                settingsAlmacenar.Style.Add("text-align", "right");
+
+                settingsAlmacenar.SetContent(() =>
+                {
+                    Html.DevExpress().Button(settings =>
+                    {
+                        settings.Name = "btnAlmacenar";
+                        settings.EnableTheming = true;
+                        settings.Text = "Almacenar";
+                        settings.Width = Unit.Pixel(150);
+                        settings.AllowFocus = false;
+                        settings.Style.Add("margin-left", "auto");
+                        settings.Style.Add("margin-right", "0px");
+                        settings.ControlStyle.CssClass = "icq";
+                        settings.Styles.Style.HoverStyle.CssClass = "icqHovered";
+                        settings.Styles.Style.PressedStyle.CssClass = "icqPressed";
+                        settings.UseSubmitBehavior = false;
+                        if (ViewBag.tipoTercero == "J")
+                            settings.ClientSideEvents.Click = "function(s, e){ if (ASPxClientEdit.ValidateEditorsInContainer(null)) { ProcessPanelTercero.SetText('Almacenando Tercero'); ProcessPanelTercero.Show(); /*var repLegalID = ASPxClientControl.GetControlCollection().GetByName('RepLegal.ID_TERCERO'); var juridicaRepLegal = ASPxClientControl.GetControlCollection().GetByName('JURIDICA.ID_TERCEROREPLEGAL'); juridicaRepLegal.SetText(repLegalID.GetValue());*/ $('#frmTercero').submit(); }}";
+                        else
+                            settings.ClientSideEvents.Click = "function(s, e){ if (ASPxClientEdit.ValidateEditorsInContainer(null)) { ProcessPanelTercero.SetText('Almacenando Tercero'); ProcessPanelTercero.Show(); $('#frmTercero').submit(); }}";
+                    }).GetHtml();
+                });
+            }).GetHtml();
+        }
+        else
+        {
+            // Tercero Jurídica
+            Html.DevExpress().RoundPanel(settingsRP =>
+            {
+                settingsRP.Name = "rpInformacionBasica";
+                settingsRP.EncodeHtml = false;
+                settingsRP.HeaderText = "Informaci&oacute;n B&aacute;sica";
+                settingsRP.EnableTheming = true;
+                settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsRP.Width = Unit.Percentage(100);
+                settingsRP.Style.Add("padding-left", "15px");
+                settingsRP.Style.Add("padding-right", "15px");
+                settingsRP.Style.Add("padding-top", "10px");
+                settingsRP.Style.Add("padding-botom", "10px");
+
+                settingsRP.SetContent(() =>
+                {
+            // Primera línea de Información Básica
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Identificaci&oacute;n:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-3\">");
+                    ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+                    Html.DevExpress().ComboBoxFor(model => Model.ID_TIPODOCUMENTO, settings =>
+                    {
+                        settings.Width = 60;
+                        settings.Properties.DropDownWidth = 290;
+                        settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        settings.Properties.TextFormatString = "{0}";
+                        settings.Properties.ValueField = "ID_TIPODOCUMENTO";
+                //settings.Properties.TextField = "S_ABREVIATURA";
+                settings.Properties.ValueType = typeof(int);
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "Tipo Documento Requerido";
+
+                //settings.Properties.Columns.Add("ID_TIPODOCUMENTO", "ID", 20);
+                settings.Properties.Columns.Add("S_ABREVIATURA", "Abr", 50);
+                        settings.Properties.Columns.Add("S_NOMBRE", "Descripci&oacute;n", 240);
+                    }).BindList(ModelsToListGeneral.GetTiposDocumentoJuridica()).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:55%; float:left; padding-left:3%\">");
+                    Html.DevExpress().TextBoxFor(model => Model.N_DOCUMENTON, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);//150;
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "Documento Requerido";
+                        settings.Properties.ValidationSettings.RegularExpression.ValidationExpression = "\\d+";
+                        settings.Properties.ValidationSettings.RegularExpression.ErrorText = "Documento Inválido";
+                        settings.Properties.ClientSideEvents.TextChanged = "OnTextChangedDocTercero";
+                        settings.Properties.ClientSideEvents.KeyDown = "OnKeyDownDocTercero";
+                        settings.Properties.ClientSideEvents.LostFocus = "OnLostFocusDocTercero";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.Text = "DV:";
+                        settings.Width = Unit.Percentage(100); //30;
+                settings.Style.Add("padding", "3px 3px 2px 3px");
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.N_DIGITOVER, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100); //30;
+            }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-1\" style=\"padding-right:0px\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Raz&oacute;n Social:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-7\">");
+                    Html.DevExpress().TextBoxFor(model => Model.S_RSOCIAL, settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "Raz&oacute;n Social Requerida";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<hr style=\"margin:5px; border-color: gainsboro;\" />");
+
+            // Segunda línea de Información Básica
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Naturaleza:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                    Html.DevExpress().ComboBoxFor(model => Model.JURIDICA.S_NATURALEZA, settings =>
+                        {
+                            settings.EncodeHtml = false;
+                            settings.Width = Unit.Percentage(100);
+                            settings.Properties.Items.Add(new ListEditItem("Privada", "V"));
+                            settings.Properties.Items.Add(new ListEditItem("P&uacute;blica", "U"));
+                            settings.Properties.Items.Add(new ListEditItem("Mixta", "M"));
+                            settings.Properties.ValueType = typeof(string);
+                        }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-1\"></div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-3\">");
+                    ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Sigla:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:60%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.JURIDICA.S_SIGLA, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-3\">");
+                    ViewContext.Writer.Write("<div style=\"width:60%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Fecha de Constituci&oacute;n:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:40%; float:left\">");
+                    Html.DevExpress().DateEditFor(model => Model.JURIDICA.D_CONSTITUCION, settings =>
+                    {
+                        settings.Properties.DisplayFormatString = "yyyy/MM/dd";
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+
+            // Tercera línea de Información Básica
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    ViewContext.Writer.Write("<div style=\"width:60%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Registro Cámara de Comercio:";
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:40%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.JURIDICA.S_DCAMCOMERCIO, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-8\">");
+                    ViewContext.Writer.Write("<div style=\"width:20%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Actividad Econ&oacute;mica:";
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:80%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.ID_ACTIVIDADECONOMICA, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                        settings.ClientVisible = false;
+                    }).GetHtml();
+
+                    Html.DevExpress().DropDownEdit(settings =>
+                    {
+                        settings.Name = "cboAE";
+                        settings.Width = Unit.Percentage(100);
+                        settings.Text = ViewBag.ActividadEconomica;
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "Actividad Económica Requerida";
+                        settings.ReadOnly = true;
+
+                        settings.SetDropDownWindowTemplateContent(c =>
+                        {
+                            ViewContext.Writer.Write(@Html.Action("gvwSeleccionarActividadEconomica", "ActividadEconomica", new { area = "General" }));
+                            ViewContext.Writer.Write("<table style=\"width:550px\"><tr><td align=\"right\">");
+
+                            ViewContext.Writer.Write("<div style=\"width:550px; height: 250px; overflow:scroll \">");
+                            ViewContext.Writer.Write(Html.Action("tvwSeleccionarActividadEconomica", "ActividadEconomica", new { area = "General" }));
+                            ViewContext.Writer.Write("</div>");
+
+                            @Html.DevExpress().Button(
+                                buttonSettings =>
+                                {
+                                    buttonSettings.Name = "btnCerrar";
+                                    buttonSettings.Text = "Cerrar";
+                                    buttonSettings.ClientSideEvents.Click = "function(s, e){ cboAE.HideDropDown(); }";
+                                })
+                                .Render();
+                            ViewContext.Writer.Write("</td></tr></table>");
+                        });
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                });
+            }).GetHtml();
+
+            Html.DevExpress().RoundPanel(settingsRP =>
+            {
+                settingsRP.Name = "rpInformacionContacto";
+                settingsRP.EncodeHtml = false;
+                settingsRP.HeaderText = "Informaci&oacute;n de Contacto";
+                settingsRP.ShowHeader = true;
+                settingsRP.EnableTheming = true;
+                settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsRP.Width = Unit.Percentage(100);
+                settingsRP.Style.Add("padding-left", "15px");
+                settingsRP.Style.Add("padding-right", "15px");
+                settingsRP.Style.Add("padding-top", "10px");
+                settingsRP.Style.Add("padding-botom", "10px");
+
+                settingsRP.SetContent(() =>
+                {
+            // Primera línea de Información de Contacto
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    ViewContext.Writer.Write("<div style=\"width:20%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Tel&eacute;fono:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:32%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.N_TELEFONO, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.ValidationSettings.RegularExpression.ValidationExpression = "\\d+";
+                        settings.Properties.ValidationSettings.RegularExpression.ErrorText = "Teléfono Inválido";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:6%; float:left\">&nbsp;</div>");
+                    ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Fax:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:32%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.N_FAX, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.ValidationSettings.RegularExpression.ValidationExpression = "\\d+";
+                        settings.Properties.ValidationSettings.RegularExpression.ErrorText = "Fax Inválido";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    ViewContext.Writer.Write("<div style=\"width:35%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Correo Electr&oacute;nico:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:65%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.S_CORREO, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                    ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "P&aacute;gina Web:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:75%; float:left\">");
+                    Html.DevExpress().TextBoxFor(model => Model.S_WEB, settings =>
+                    {
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                });
+            }).GetHtml();
+
+            /*
+            Html.DevExpress().TextBoxFor(model => Model.JURIDICA.ID_TERCEROREPLEGAL, settings =>
+            {
+                settings.ClientVisible = false;
+            }).GetHtml();
+
+            Html.DevExpress().RoundPanel(settingsRP =>
+            {
+                settingsRP.Name = "rpRepresentanteLegal";
+                settingsRP.EncodeHtml = false;
+                settingsRP.HeaderText = "Representante Legal";
+                settingsRP.EnableTheming = true;
+                settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsRP.Width = Unit.Percentage(100);
+                settingsRP.Style.Add("padding-left", "15px");
+                settingsRP.Style.Add("padding-right", "15px");
+                settingsRP.Style.Add("padding-top", "10px");
+                settingsRP.Style.Add("padding-botom", "10px");
+
+                settingsRP.SetContent(() =>
+                {
+                    Html.RenderAction("frmAdministrarTerceroBasico", "Tercero", new { id = (Model.JURIDICA == null ? null : Model.JURIDICA.ID_TERCEROREPLEGAL) });
+
+                });
+            }).GetHtml();*/
+
+            /*
+            @Html.DevExpress().RoundPanel(settingsRP =>
+            {
+                settingsRP.Name = "rpUsuario";
+                settingsRP.ShowHeader = false;
+                settingsRP.EnableTheming = true;
+                settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsRP.Width = Unit.Percentage(100);
+                settingsRP.Style.Add("padding-left", "15px");
+                settingsRP.Style.Add("padding-right", "15px");
+                settingsRP.Style.Add("padding-top", "10px");
+                settingsRP.Style.Add("padding-botom", "10px");
+
+                settingsRP.SetContent(() =>
+                {
+                    ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.Text = "Usuario:";
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("<div class=\"col-md-4\">");
+
+                    Html.DevExpress().DropDownEdit(settings =>
+                    {
+                        settings.Name = "cboUsuario";
+                        settings.Width = Unit.Percentage(100);
+                        if (ViewBag.Propietario != null)
+                            settings.Text = ViewBag.Propietario.ToString();
+                        settings.ReadOnly = true;
+
+                        settings.SetDropDownWindowTemplateContent(c =>
+                        {
+                            ViewContext.Writer.Write(@Html.Action("UsuariosGridViewPartial"));
+                            ViewContext.Writer.Write("<table style=\"width:450px\"><tr><td align=\"right\">");
+                            ViewContext.Writer.Write("</td></tr></table>");
+                        });
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                });
+            }).GetHtml()*/
+
+            Html.DevExpress().RoundPanel(settingsAlmacenar =>
+            {
+                settingsAlmacenar.Name = "rpAlmacenar";
+                settingsAlmacenar.ShowHeader = false;
+                settingsAlmacenar.EnableTheming = true;
+                settingsAlmacenar.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+                settingsAlmacenar.Width = Unit.Percentage(100);
+                settingsAlmacenar.Style.Add("padding-left", "15px");
+                settingsAlmacenar.Style.Add("padding-right", "15px");
+                settingsAlmacenar.Style.Add("padding-top", "10px");
+                settingsAlmacenar.Style.Add("padding-botom", "10px");
+                settingsAlmacenar.Style.Add("text-align", "right");
+
+                settingsAlmacenar.SetContent(() =>
+                {
+                    Html.DevExpress().Button(settings =>
+                    {
+                        settings.Name = "btnAlmacenar";
+                        settings.EnableTheming = true;
+                        settings.Text = "Almacenar";
+                        settings.Width = Unit.Pixel(150);
+                        settings.AllowFocus = false;
+                        settings.Style.Add("margin-left", "auto");
+                        settings.Style.Add("margin-right", "0px");
+                        settings.ControlStyle.CssClass = "icq";
+                        settings.Styles.Style.HoverStyle.CssClass = "icqHovered";
+                        settings.Styles.Style.PressedStyle.CssClass = "icqPressed";
+                        settings.UseSubmitBehavior = false;
+                        settings.ClientSideEvents.Click = "function(s, e){ if (ASPxClientEdit.ValidateEditorsInContainer(null)) { ProcessPanelTercero.SetText('Almacenando Tercero'); ProcessPanelTercero.Show(); /*var repLegalID = ASPxClientControl.GetControlCollection().GetByName('RepLegal.ID_TERCERO'); var juridicaRepLegal = ASPxClientControl.GetControlCollection().GetByName('JURIDICA.ID_TERCEROREPLEGAL'); juridicaRepLegal.SetText(repLegalID.GetValue());*/ $('#frmTercero').submit(); }}";
+                    }).GetHtml();
+                });
+            }).GetHtml();
+        }
+    }
+    <br />
+    @if (Model.ID_TERCERO != -1000)
+    {
+        Html.DevExpress().PageControl(settings =>
+        {
+            settings.Name = "pagRelacionesTercero";
+            settings.Width = Unit.Percentage(100);
+            settings.TabPages.Add("Instalaciones", "Instalaciones").SetContent(() =>
+            {
+                Html.RenderAction("gvwAdministrarInstalacionesTercero", new { terceroID = Model.ID_TERCERO });
+            });
+
+            if (ViewBag.tipoTercero == "J")
+            {
+                settings.TabPages.Add("Contactos", "Contactos").SetContent(() =>
+                {
+                    Html.RenderAction("gvwAdministrarContactosTercero", new { terceroID = Model.ID_TERCERO });
+                });
+            }
+
+            settings.TabPages.Add("Usuarios", "Usuarios").SetContent(() =>
+            {
+                Html.RenderAction("gvwAdministrarUsuariosTercero", new { terceroID = Model.ID_TERCERO });
+            });
+            settings.EnableClientSideAPI = true;
+    //settings.ClientSideEvents.ActiveTabChanged = "OnActiveTabChanged";
+    ////settings.ClientSideEvents.TabClick = "OnTabClick";
+}).GetHtml();
+    }
+</div>

@@ -1,0 +1,195 @@
+﻿@model SIM.Areas.ParqueAguas.Models.ReservaMasiva
+
+@using SIM.Properties
+
+@{
+    ViewBag.Title = "Confirmar Visitantes";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+    <div class="row col-md-12">
+        @using (Html.BeginForm("ReservasMasivas", "ParqueAguas", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <br />
+            <h3 style="align-content:center; color:darkblue">RESERVAS MASIVAS</h3>
+            <hr />
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h4>Seleccione la fecha de la reserva:</h4>
+                </div>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(x => x.Fecha,
+                          new { @class = "form-control", id = "txtFechaReserva", type = "date", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.Fecha, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <br />
+            <br />
+            <div id="divSpinner" class="row col-md-10">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-10">
+                    <label id="lblMensaje" class="form-control" style="color:darkblue"></label>
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-10">
+                    <h4 style="color:darkblue">Responsable de la reserva</h4>
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Tipo de documento</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.DropDownListFor(x => x.TipoDocumentoId, Model.TiposDocumentos, new { @class = "form-control", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.TipoDocumentoId, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Número de documento</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(x => x.NumeroDocumento,
+                           new { @class = "form-control", placeholder = "Número de Documento", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.NumeroDocumento, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Nombres</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(x => x.Nombres,
+                            new { @class = "form-control", placeholder = "Nombres", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.Nombres, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Apellidos</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(x => x.Apellidos,
+                         new { @class = "form-control", placeholder = "Apellidos", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.Apellidos, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Correo electrónico</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(x => x.EMail,
+                         new { @class = "form-control", type = "email", placeholder = "example@mail.co", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.EMail, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Teléfono</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(x => x.Telefono,
+                          new { @class = "form-control", placeholder = "Teléfono", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.Telefono, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Dirección</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(x => x.Direccion,
+                         new { @class = "form-control", placeholder = "Dirección", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.Direccion, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <br />
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Ingrese el número de personas de la reserva:</h5>
+                </div>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(x => x.NumeroPersonas,
+                           new { @class = "form-control", placeholder = "Número de personas", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.NumeroPersonas, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" value=Crear id="btnGuardar" reserva class="btn btn-warning" />
+                </div>
+            </div>
+
+
+
+            <div class="row col-md-10">
+                <div class="col-md-4">
+                    <h5>Comprobante</h5>
+                </div>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(x => x.Comprobante,
+                         new { @class = "form-control", placeholder = "Comprobante", autofocus = "autofocus", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(x => x.Comprobante, null, new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <br />
+            <br />
+
+        }
+
+    </div>
+@section Scripts {
+
+    <script type="text/javascript">
+        window.onload = IniciarRangoFechas;
+
+        function IniciarRangoFechas() {
+            var initdate = document.getElementById('txtFechaReserva'),
+            currentdate = new Date();
+            initdate.min = convertToISO(currentdate);
+
+            var now = new Date();
+            now.setDate(now.getDate() + 30);
+            initdate.max = convertToISO(now);
+        }
+
+        function convertToISO(timebit) {
+            timebit.setHours(0, -timebit.getTimezoneOffset(), 0, 0);
+            var isodate = timebit.toISOString().slice(0, 10);
+            return isodate;
+        }
+
+        $("#txtFechaReserva").change(function () {
+            $('#divSpinner').show();
+            $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ObtenerAforoDisponible")',
+                    dataType: 'json',
+                    data: { fecha: $("#txtFechaReserva").val() },
+                 success: function (aforo) {
+                     $('#divSpinner').hide();
+                     $('#lblMensaje').html(aforo.Mensaje);
+                     if (aforo.Aforo === 0) {
+                         alert('No hay aforo disponible para este día!');
+                     }
+                    },
+                    error: function (ex) {
+                        alert('Se presentó un evento no esperado!' + ' - ' + ex);
+                        $('#btnConfirm').prop("disabled", true);
+                        $('#divSpinner').hide();
+                    }
+                });
+                return false;
+        });
+
+
+    </script>
+}

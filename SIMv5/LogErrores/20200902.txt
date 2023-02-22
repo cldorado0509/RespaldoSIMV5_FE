@@ -1,0 +1,4 @@
+12:37:41 - AnulacionDocumento [GetGenerarAnulacionDocumento (85] : Se presentó un error generando el documento de anulación.
+Referencia a objeto no establecida como instancia de un objeto.
+12:39:31 - AnulacionDocumento [GetGenerarAnulacionDocumento (85] : Se presentó un error generando el documento de anulación.
+Referencia a objeto no establecida como instancia de un objeto.

@@ -1,0 +1,48 @@
+﻿<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+<script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1.js")"></script>
+<script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1-packed.js")"></script>
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/accordion.css")" />
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ConsultarJson", "Acordeon", new { area = "General" })',
+            success: function (response) {
+                jsonDetalle = eval('(' + response + ')');
+                var html = consultarDetalle(jsonDetalle, 0, 0, "acordionDetallePrincipal");
+                $("#acordionDetallePrincipal").remove();
+                $("#acordionDetalleGeneral").append(html);
+            }
+        });
+
+        $('#btnGuardar').click(GuardarAcordeon);
+    });
+
+    function GuardarAcordeon() {
+        var jsoE = guardarDetalle("acordionDetallePrincipal", 0);
+        var jsonOficial = JSON.stringify(jsoE)
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarAcordeon", "Acordeon", new { area = "General" })',
+            data: { jsonInfo: jsonOficial },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "OK") {
+                    alert("Almacenamiento Exitoso");
+                } else {
+                    alert("Error Almacenando el Acordeón");
+                }
+            }
+        });
+    }
+</script>
+<div class="col-md-12" id="acordionDetalleGeneral">
+    <!--Nivel1-->
+    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+    </div>
+</div>
+<br />
+<div class="actionBar">
+    <button type="button" id="btnGuardar" class="btn btn-default btn-sm">Guardar</button>
+</div>
+<br />

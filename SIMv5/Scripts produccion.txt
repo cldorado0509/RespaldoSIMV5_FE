@@ -1,0 +1,496 @@
+
+A TODO DARLE PERMISO AL USUARIO SIMEDICION
+
+#############################################################################################
+################################ESQUEMA AGUAS################################################
+#############################################################################################
+
+A LAS SIGUIENTES VISTAS DE AGUAS DARLE PERMISOS AL ESQUEMA CONTROL 
+
+VWR_CAPTACION
+VWR_USOS
+VWR_USOS_VARIABLES
+VWR_VERTIMIENTO
+
+#############################################################################################
+################################ESQUEMA CONTROL##############################################
+#############################################################################################
+
+#####################################TABLAS, SP Y TRIGGER########################################
+CREATE TABLE "CONTROL"."ITEM_VISITA" 
+   (	"ID_ITEM_VISITA" NUMBER(10,0) NOT NULL ENABLE, 
+	"ID_VISITA" NUMBER(10,0), 
+	"ID_ITEM" NUMBER(10,0), 
+	 CONSTRAINT "ITEM_VISITA_PK" PRIMARY KEY ("ID_ITEM_VISITA")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "GDB_CONTROL_DATOS"  ENABLE
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "GDB_CONTROL_DATOS" ;
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "CONTROL"."TRG_ITEM_VISITA" BEFORE
+  INSERT ON CONTROL.ITEM_VISITA FOR EACH ROW
+    WHEN (
+NEW.ID_ITEM_VISITA IS NULL
+      ) BEGIN :NEW.ID_ITEM_VISITA := CONTROL.SEQ_ITEM_VISITA.NEXTVAL;
+END; 
+
+
+//CREAR SECUENCIA SEQ_ITEM_VISITA
+
+create or replace TRIGGER "CONTROL"."TRG_ITEM_VISITA" BEFORE
+  INSERT ON CONTROL.ITEM_VISITA FOR EACH ROW
+   WHEN (
+NEW.ID_ITEM_VISITA IS NULL
+      ) BEGIN :NEW.ID_ITEM_VISITA := CONTROL.SEQ_ITEM_VISITA.NEXTVAL;
+END; 
+
+
+create or replace PROCEDURE           "SP_GET_CARACTERISTICAS_TL" (IDESTADO in NUMBER, TBLESTADO in varchar2, id_Formulario in number, grupo_form in number, Id_Caract_padre in number, jsonOut out clob) AS 
+    json_caract json_list;
+    json_caractEst json_list;
+    json_variables json_list;
+    json_opciones json_list;
+    
+    rtaL json_list := json_list();
+    rtaJ json := json();
+    
+    json_c json;
+    json_ce json;
+    json_v json;
+    plantilla json;
+    
+    str_sql varchar2(2000);
+
+    c NUMBER;
+    ce NUMBER;
+    v NUMBER;
+    
+    id_c NUMBER;
+    id_ce NUMBER;
+    id_v NUMBER;
+    
+    hijos clob;
+    json_hijos json_list := json_list();
+BEGIN
+    str_sql := 'SELECT ID_CARACTERISTICA, S_DESCRIPCION, S_CARDINALIDAD, N_ORDEN, DESPLIEGUE_FORM FROM control.EST_CARACTERISTICA WHERE ID_CARACTETERISTICA_PADRE = ' || Id_Caract_padre || ' AND GRUPO_FORMULARIO = ' || grupo_form || ' AND D_FIN is null and ID_FORMULARIO = ' || id_Formulario || ' order by 4';
+    json_caract := json_dyn.executeList(str_sql);
+    rtaJ.put('rta',json_caract);
+    FOR c IN 1..json_caract.count
+    LOOP
+        json_c := json(json_caract.get(c));
+        id_c := json_c.get('ID_CARACTERISTICA').get_number;
+        plantilla := json();
+        plantilla.put('ID_CARACTERISTICA_ESTADO',0);
+        plantilla.put('NOMBRE','Plantilla');
+        plantilla.put('ID_ESTADO',IDESTADO);
+        str_sql := 'SELECT v.id_variable, v.s_nombre, v.id_tipo_dato, v.b_requerido, v.s_formula, v.s_ayuda, null ID_VALOR, null N_VALOR, null S_VALOR, null D_VALOR FROM control.est_caracteristica_variable c, control.est_variable v WHERE v.id_variable = c.id_variable AND c.id_caracteristica = ' || id_c || ' AND c.d_fin is null ORDER BY c.n_orden ASC';
+        json_variables := json_dyn.executeList(str_sql);
+        plantilla.put('VARIABLES',json_variables);
+        json_ext.put(rtaJ, 'rta[' || c || '].PLANTILLA',plantilla);
+        FOR v IN 1..json_variables.count
+        LOOP
+            json_v := json(json_variables.get(v));
+            id_v := json_v.get('ID_VARIABLE').get_number;
+            str_sql := 'SELECT ID_OPCION, S_NOMBRE DESCRIPCION FROM EST_OPCIONES_VARIABLE WHERE ID_VARIABLE = ' || id_v || ' order by 1';
+            json_opciones := json_dyn.executeList(str_sql);
+            json_ext.put(rtaJ, 'rta[' || c || '].PLANTILLA.VARIABLES[' || v || '].OPCIONES',json_opciones);
+        END LOOP;
+        SP_GET_CARACTERISTICAS_TL(IDESTADO, TBLESTADO, id_Formulario, grupo_form, id_c, hijos);
+        json_hijos := json_list(hijos);
+        json_ext.put(rtaJ, 'rta[' || c || '].CARACTERISTICAS',json_hijos);
+        str_sql := 'SELECT ID_CARACTERISTICA_ESTADO, NOMBRE, ID_ESTADO FROM EST_CARACTERISTICA_ESTADO WHERE activo = 1 and ID_CARACTERISTICA =' || id_c || ' and ID_ESTADO = ' || IDESTADO || ' and TBL_ESTADO = ''' || TBLESTADO || ''' order by 1';
+        json_caractEst := json_dyn.executeList(str_sql);
+        json_ext.put(rtaJ, 'rta[' || c || '].ITEMCARACTERISTICA',json_caractEst);
+        FOR ce IN 1..json_caractEst.count
+        LOOP
+            json_ce := json(json_caractEst.get(ce));
+            id_ce := json_ce.get('ID_CARACTERISTICA_ESTADO').get_number;
+            str_sql := 'SELECT v.id_variable, v.s_nombre, v.id_tipo_dato, v.b_requerido, v.s_formula, v.s_ayuda, DECODE(v.ID_TIPO_DATO,7,ROWCONCAT(''SELECT E.ID_OPCION FROM EST_VALOR_ESTRUCTURA_OPCION E WHERE E.ID_VALOR_EST_ESTADO = '' || vv.ID_VALOR_EST_ESTADO),10,ROWCONCAT(''SELECT E.ID_OPCION FROM EST_VALOR_ESTRUCTURA_OPCION E WHERE E.ID_VALOR_EST_ESTADO = '' || vv.ID_VALOR_EST_ESTADO),vv.id_valor) id_valor, vv.n_valor, vv.s_valor, to_char(vv.d_valor,''YYYY-MM-DD'') d_valor FROM est_caracteristica_variable c, est_variable v, est_valor_estructura_estado vv WHERE v.id_variable = c.id_variable AND c.id_caracteristica_variable = vv.id_caracteristica_variable AND c.id_caracteristica = ' || id_c || ' AND vv.ID_ESTRUCTURA_ESTADO = ' || id_ce || ' AND c.d_fin is null ORDER BY c.n_orden ASC';
+            json_variables := json_dyn.executeList(str_sql);
+            json_ext.put(rtaJ, 'rta[' || c || '].ITEMCARACTERISTICA[' || ce || '].VARIABLES',json_variables);
+            FOR v IN 1..json_variables.count
+            LOOP
+                json_v := json(json_variables.get(v));
+                id_v := json_v.get('ID_VARIABLE').get_number;
+                str_sql := 'SELECT ID_OPCION, S_NOMBRE DESCRIPCION FROM EST_OPCIONES_VARIABLE WHERE ID_VARIABLE = ' || id_v || ' order by 1';
+                json_opciones := json_dyn.executeList(str_sql);
+                json_ext.put(rtaJ, 'rta[' || c || '].ITEMCARACTERISTICA[' || ce || '].VARIABLES[' || v || '].OPCIONES',json_opciones);
+            END LOOP;
+        END LOOP;
+    END LOOP; 
+    
+    rtaL := json_list(rtaJ.get('rta'));
+    rtaL.print;
+    dbms_lob.createtemporary(jsonOut, true);
+    rtaL.to_clob(jsonOut);
+EXCEPTION  -- exception handlers begin
+WHEN OTHERS THEN  -- handles all other errors
+    jsonOut := '{"Error":"' || SQLCODE || ' - ' || SUBSTR(SQLERRM, 1, 500) || '"}';
+    rollback;
+END SP_GET_CARACTERISTICAS_TL;
+
+
+create or replace PROCEDURE           "SP_SET_CARACTERISTICAS_TL" (IDESTADO in NUMBER, TBLESTADO in varchar2, jsonOut in clob, rta out varchar2) AS 
+    json_caract json_list;
+    json_caractEst json_list;
+    json_variables json_list;
+    json_caract_hijos  json_list;
+    json_variables_opciones  json_list;
+    
+    jsonOutHijos clob;
+    rtaTemp varchar2(1000);
+    
+    json_c json;
+    json_ce json;
+    json_v json;
+
+    c NUMBER;
+    ce NUMBER;
+    v NUMBER;
+    n NUMBER;  
+    o number;  
+    
+    id_c NUMBER;
+    id_o NUMBER;
+    id_tipo_dato NUMBER;
+    id_ce NUMBER;
+    nombre_ce varchar2(2000);
+    id_estado_ce NUMBER;
+    id_v NUMBER;
+    id_cv NUMBER;
+    tempdata json_value;
+    d_valorJ date;
+    s_valorJ varchar2(2000);
+    n_valorJ number;
+    id_valorJ number;
+    id_valoresJ varchar2(100);
+    err_num number;
+    err_msg varchar2(500);
+BEGIN
+    json_caract := json_list(jsonOut);
+    FOR c IN 1..json_caract.count
+    LOOP
+        json_c := json(json_caract.get(c));
+        id_c := json_c.get('ID_CARACTERISTICA').get_number;
+        json_caract_hijos := json_list(json_c.get('CARACTERISTICAS'));
+        if json_caract_hijos.count > 0 then
+             dbms_lob.createtemporary(jsonOutHijos, true);
+            json_caract_hijos.to_clob(jsonOutHijos);
+             SP_SET_CARACTERISTICAS_TL(IDESTADO, TBLESTADO, jsonOutHijos, rtaTemp);
+        end if;
+        json_caractEst := control.json_list(json_c.get('ITEMCARACTERISTICA'));
+        FOR ce IN 1..json_caractEst.count
+        LOOP
+            json_ce := json(json_caractEst.get(ce));
+            id_ce := json_ce.get('ID_CARACTERISTICA_ESTADO').get_number;
+             dbms_lob.createtemporary(nombre_ce, true);
+              begin
+                    nombre_ce :=  json_ce.get('NOMBRE').get_string;                exception 
+                WHEN OTHERS THEN
+                   nombre_ce := '';
+                end;
+           
+            id_estado_ce := json_ce.get('ID_ESTADO').get_number;
+            if id_ce < 0 then 
+                UPDATE EST_CARACTERISTICA_ESTADO SET activo = 0 WHERE ID_CARACTERISTICA_ESTADO = abs(id_ce);
+            elsif id_ce =0 or id_estado_ce <> IDESTADO then
+                id_ce := SEC_ESTRUCTURA_ESTADO.NEXTVAL;
+                INSERT INTO EST_CARACTERISTICA_ESTADO (ID_CARACTERISTICA_ESTADO, ID_CARACTERISTICA, ID_ESTADO, TBL_ESTADO, NOMBRE,activo) 
+                VALUES (id_ce, id_c, IDESTADO, TBLESTADO, nombre_ce,1);            
+            else
+                UPDATE EST_CARACTERISTICA_ESTADO SET NOMBRE = nombre_ce WHERE ID_CARACTERISTICA_ESTADO = id_ce;
+            end if;
+            json_variables := json_list(json_ce.get('VARIABLES'));
+            FOR v IN 1..json_variables.count
+            LOOP
+                json_v := json(json_variables.get(v));
+                id_v := json_v.get('ID_VARIABLE').get_number;
+                id_tipo_dato := json_v.get('ID_TIPO_DATO').get_number;
+                if(json_v.get('ID_VALOR').is_number) then
+                    id_valorJ := json_v.get('ID_VALOR').get_number;
+                else
+                    id_valoresJ := json_v.get('ID_VALOR').get_string;
+                end if;
+                n_valorJ := json_v.get('N_VALOR').get_number;
+                s_valorJ := json_v.get('S_VALOR').get_string;
+                d_valorJ := TO_DATE(json_v.get('D_VALOR').get_string,'YYYY-MM-DD');
+                SELECT E.ID_CARACTERISTICA_VARIABLE into id_cv FROM EST_CARACTERISTICA_VARIABLE E WHERE E.ID_CARACTERISTICA = id_c and E.ID_VARIABLE = id_v and E.D_FIN is null;
+                begin
+                    SELECT E.ID_VALOR_EST_ESTADO into n FROM EST_VALOR_ESTRUCTURA_ESTADO E, EST_CARACTERISTICA_ESTADO CE where E.ID_ESTRUCTURA_ESTADO = CE.ID_CARACTERISTICA_ESTADO AND E.ID_CARACTERISTICA_VARIABLE = id_cv and  CE.ID_ESTADO = IDESTADO and CE.ID_CARACTERISTICA_ESTADO=id_ce;
+                exception 
+                WHEN OTHERS THEN
+                    n := 0;
+                end;
+                if n > 0 then
+                 if(id_valorJ=-1) then
+                    UPDATE EST_VALOR_ESTRUCTURA_ESTADO SET ID_VALOR = NULL, S_VALOR = s_valorJ, D_VALOR = d_valorJ, N_VALOR = n_valorJ WHERE ID_VALOR_EST_ESTADO = n;             
+               else
+                     UPDATE EST_VALOR_ESTRUCTURA_ESTADO SET ID_VALOR = id_valorJ, S_VALOR = s_valorJ, D_VALOR = d_valorJ, N_VALOR = n_valorJ WHERE ID_VALOR_EST_ESTADO = n;             
+
+               end if;
+             else
+                    n := SEC_IDVALOR_EST_CARAC_VAR.NEXTVAL;
+                  if(id_valorJ=-1) then
+                    INSERT INTO EST_VALOR_ESTRUCTURA_ESTADO (ID_VALOR_EST_ESTADO, ID_CARACTERISTICA_VARIABLE, ID_ESTRUCTURA_ESTADO, ID_VALOR, S_VALOR, D_VALOR, N_VALOR, D_CREACION) VALUES (n, id_cv, id_ce, NULL, S_VALORJ, D_VALORJ, N_VALORJ, sysdate);                
+                   else
+                    INSERT INTO EST_VALOR_ESTRUCTURA_ESTADO (ID_VALOR_EST_ESTADO, ID_CARACTERISTICA_VARIABLE, ID_ESTRUCTURA_ESTADO, ID_VALOR, S_VALOR, D_VALOR, N_VALOR, D_CREACION) VALUES (n, id_cv, id_ce, id_valorJ, S_VALORJ, D_VALORJ, N_VALORJ, sysdate);                
+                 end if;
+                
+                end if;
+                if id_tipo_dato = 7 or id_tipo_dato = 10 then
+                    DELETE EST_VALOR_ESTRUCTURA_OPCION where ID_VALOR_EST_ESTADO  = n;
+                    if instr (id_valoresJ,',') = 0 then
+                        id_o := TO_NUMBER(id_valoresJ);
+                        INSERT INTO EST_VALOR_ESTRUCTURA_OPCION (ID_VALOR_EST_ESTADO, ID_OPCION) VALUES (n,id_o);
+                    else
+                        json_variables_opciones := json_list(id_valoresJ);
+                        FOR o IN 1..json_variables_opciones.count
+                        Loop
+                            id_o := TO_NUMBER(json_variables_opciones.get(o).get_string);
+                            INSERT INTO EST_VALOR_ESTRUCTURA_OPCION (ID_VALOR_EST_ESTADO, ID_OPCION) VALUES (n,id_o);
+                        end loop;
+                    end if;
+                end if;
+            END LOOP; 
+        END LOOP;
+    END LOOP; 
+    
+    rta := 'Ok';
+    commit;
+EXCEPTION  -- exception handlers begin
+   WHEN OTHERS THEN  -- handles all other errors
+        err_num := SQLCODE;
+        err_msg := SUBSTR(SQLERRM, 1, 500);
+        rta := 'Error:' || err_num || ' - ' || err_msg;
+        rollback;
+END SP_SET_CARACTERISTICAS_TL;
+
+#############################################################################################################################################
+
+#############################################################################################
+
+#############################################################################################
+###################################ESQUEMA TRAMITES##########################################
+#############################################################################################
+
+A LAS SIGUIENTES VISTAS DARLE PERMISO A CONTROL 
+
+
+CREATE OR REPLACE FORCE EDITIONABLE VIEW "TRAMITES"."TL_V_ACTUACION" ("ID_VISITA", "ID_TERCERO", "ID_INSTALACION", "N_DOCUMENTO", "S_RSOCIAL", "TIPO_TERCERO", "N_TELEFONO", "S_CORREO") AS 
+  SELECT DISTINCT IVIS.ID_VISITA,
+       IVIS.ID_TERCERO,
+       IVIS.ID_INSTALACION,
+       TG.N_DOCUMENTO, 
+       TG.S_RSOCIAL,
+       (CASE WHEN (SELECT ID_TERCERO FROM GENERAL."NATURAL" NAT WHERE NAT.ID_TERCERO = TG.ID_TERCERO) IS NULL THEN 'Persona Jurídica (Empresa)' ELSE 'Persona Natural' END) AS TIPO_TERCERO,
+       TG.N_TELEFONO, 
+       TG.S_CORREO
+       FROM GENERAL.TERCERO TG 
+       INNER JOIN CONTROL.INSTALACION_VISITA IVIS ON TG.ID_TERCERO = IVIS.ID_TERCERO
+       INNER JOIN CONTROL.ITEM_VISITA IV ON IVIS.ID_VISITA = IV.ID_VISITA;
+
+
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "TRAMITES"."TL_V_INFOAPODERADO" ("SOLICITANTE_IDTERCERO", "APODERADO_DOC", "APODERADO_NOM", "APODERADO_MAIL", "APODERADO_DIR", "APODERADO_MUNIC") AS 
+  SELECT  DISTINCT TG.ID_TERCERO AS SOLICITANTE_IDTERCERO,
+       APO.APO_DOCUMENTO AS APODERADO_DOC,
+       APO_NOMBRE AS APODERADO_NOM,
+       APO_MAIL AS APODERADO_MAIL,
+       QAPO.DIRECCION AS APODERADO_DIR,
+       QAPO.MUNICIPIO AS APODERADO_MUNIC
+FROM GENERAL.TERCERO TG 
+LEFT JOIN CONTROL.VW_APODERADO APO ON TG.ID_TERCERO = APO.ID_JURIDICO
+LEFT JOIN GENERAL.QRYINSTALACION_TERCERO QAPO ON QAPO.ID_TERCERO = APO.ID_TERCERO;
+
+
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "TRAMITES"."TL_V_INFOGRAL_SOLICITANTE" ("SOLICITANTE_IDTERCERO", "SOLICITANTE_NUM_DOC", "S_RSOCIAL", "TIPO_TERCERO", "SOLICITANTE_DIR", "SOLICITANTE_MUNICIPIO", "SOLICITANTE_TIPO_DOC", "SOLICITANTE_TEL", "SOLICITANTE_MAIL", "ID_INSTALACION") AS 
+  SELECT  DISTINCT TG.ID_TERCERO AS SOLICITANTE_IDTERCERO,
+TG.N_DOCUMENTO AS SOLICITANTE_NUM_DOC,
+       TG.S_RSOCIAL, 
+        (CASE WHEN (SELECT ID_TERCERO FROM GENERAL."NATURAL" NAT WHERE NAT.ID_TERCERO=TG.ID_TERCERO) IS NULL THEN 'Persona Jurídica (Empresa)' ELSE 'Persona Natural' END) AS TIPO_TERCERO,
+        QIT.DIRECCION AS SOLICITANTE_DIR,
+        QIT.MUNICIPIO AS SOLICITANTE_MUNICIPIO,
+       TD.S_ABREVIATURA AS SOLICITANTE_TIPO_DOC,
+       TG.N_TELEFONO AS SOLICITANTE_TEL,
+       TG.S_CORREO AS  SOLICITANTE_MAIL,
+       TI.ID_INSTALACION AS ID_INSTALACION
+FROM GENERAL.TERCERO TG 
+LEFT JOIN GENERAL.TERCERO_INSTALACION TI ON  TG.ID_TERCERO = TI.ID_TERCERO
+LEFT JOIN GENERAL.TIPO_DOCUMENTO TD ON TD.ID_TIPODOCUMENTO= TG.ID_TIPODOCUMENTO
+LEFT JOIN GENERAL.QRYINSTALACION_TERCERO QIT ON QIT.ID_INSTALACION = TI.ID_INSTALACION;
+
+
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "TRAMITES"."TL_V_INFOINSTALACION" ("NOMBRE_INST", "DIRECCION_INST", "MUNICIPIO_INST", "ACTIV_ECONO_INST", "CEDULA_CASTARTAL_INST", "ID_INSTALACION") AS 
+  SELECT 
+INS.S_NOMBRE AS NOMBRE_INST,
+QINST.DIRECCION AS DIRECCION_INST,
+QINST.MUNICIPIO AS MUNICIPIO_INST,
+AECO.S_NOMBRE AS ACTIV_ECONO_INST,
+INS.S_CEDULACATASTRAL AS CEDULA_CASTARTAL_INST,
+INS.ID_INSTALACION AS ID_INSTALACION
+FROM GENERAL.QRYINSTALACION_TERCERO QINST
+LEFT JOIN GENERAL.INSTALACION INS ON INS.ID_INSTALACION = QINST.ID_INSTALACION
+LEFT JOIN GENERAL.TERCERO_INSTALACION TINS ON TINS.ID_INSTALACION = QINST.ID_INSTALACION
+LEFT JOIN GENERAL.ACTIVIDAD_ECONOMICA AECO ON AECO.ID_ACTIVIDADECONOMICA = TINS.ID_ACTIVIDADECONOMICA;
+
+
+ CREATE OR REPLACE FORCE EDITIONABLE VIEW "TRAMITES"."TL_V_INFOREPRESENTANTE_LEGAL" ("SOLICITANTE_IDTERCERO", "RL_DOCUMENTO", "RL_NOMBRE", "RL_ID", "RL_IDTERCERO", "RL_MAIL", "RL_DIRECCION", "RL_MUNICIPIO", "ID_INSTALACION") AS 
+  SELECT  DISTINCT TG.ID_TERCERO AS SOLICITANTE_IDTERCERO,
+       RL."DOCUMENTO" AS RL_DOCUMENTO,
+       RL."NOMBRE" AS RL_NOMBRE,
+       RL."ID_JURIDICO" AS RL_ID,
+       RL."ID_TERCERO" AS RL_IDTERCERO,
+       RL."mail" AS RL_MAIL,
+       QIT.DIRECCION AS RL_DIRECCION,
+       QIT.MUNICIPIO AS RL_MUNICIPIO,      
+       TI.ID_INSTALACION AS ID_INSTALACION
+FROM GENERAL.TERCERO TG 
+LEFT JOIN GENERAL.TERCERO_INSTALACION TI ON  TG.ID_TERCERO = TI.ID_TERCERO
+LEFT JOIN CONTROL.VW_REPRESENTANTE_LEGAL RL ON TG.ID_TERCERO = RL.ID_JURIDICO
+LEFT JOIN GENERAL.QRYINSTALACION_TERCERO QIT ON QIT.ID_INSTALACION = TI.ID_INSTALACION AND QIT.ID_TERCERO = RL.ID_TERCERO;
+
+
+CREAR LA SECUENCIA REQUISITOS_TRAMITE_SEQ
+
+create or replace TRIGGER "TRAMITES"."TRG_REQUISITOS_TRAMITE" BEFORE
+INSERT ON "REQUISITOS_TRAMITE" FOR EACH ROW
+begin
+    if :new.ID_REQUISITOTRAMITE is null then
+        select REQUISITOS_TRAMITE_SEQ.NEXTVAL
+        into   :new.ID_REQUISITOTRAMITE
+        from   Dual;
+    end if;
+end; 
+
+
+#####################################################TABLAS##############################################################
+
+DARLE PERMISO AL ESQUEMA CONTROL A LAS SIGUIENTES TABLAS, VISTAS O SP 
+
+ CREATE TABLE "TRAMITES"."REQUISITOS_TRAMITE" 
+   (	"ID_REQUISITOTRAMITE" NUMBER(10,0) NOT NULL ENABLE, 
+	"ID_TRAMITE" NUMBER(10,0) NOT NULL ENABLE, 
+	"ID_REQUISITO" NUMBER(10,0) NOT NULL ENABLE, 
+	"ID_TERCERO" NUMBER(10,0) NOT NULL ENABLE, 
+	"ID_INSTALACION" NUMBER(10,0) NOT NULL ENABLE, 
+	"D_CARGA" DATE NOT NULL ENABLE, 
+	"RUTA_DOCUMENTO" VARCHAR2(255 BYTE) NOT NULL ENABLE, 
+	"EXTENSION" VARCHAR2(20 BYTE), 
+	 CONSTRAINT "REQUISITOS_TRAMITE_PK" PRIMARY KEY ("ID_REQUISITOTRAMITE")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "TRAMITES_DETALLE_DATOS"  ENABLE, 
+	 CONSTRAINT "REQUISITOS_TRAMITE_FK1" FOREIGN KEY ("ID_TRAMITE")
+	  REFERENCES "ATENCION"."CLASE_ATENCION" ("ID_CLASEATENCION") ENABLE, 
+	 CONSTRAINT "REQUISITOS_TRAMITE_FK3" FOREIGN KEY ("ID_TERCERO")
+	  REFERENCES "GENERAL"."TERCERO" ("ID_TERCERO") ENABLE, 
+	 CONSTRAINT "REQUISITOS_TRAMITE_FK4" FOREIGN KEY ("ID_INSTALACION")
+	  REFERENCES "GENERAL"."INSTALACION" ("ID_INSTALACION") ENABLE
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "TRAMITES_DETALLE_DATOS" ;
+
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."ID_REQUISITOTRAMITE" IS 'Clace primaria';
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."ID_TRAMITE" IS 'Clave foránea a la tabla clase atención';
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."ID_REQUISITO" IS 'Clave foránea a la tabla chequeo';
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."ID_TERCERO" IS 'Clave foránea a la tabla tercero';
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."ID_INSTALACION" IS 'Clave foránea a la tabla instalación';
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."D_CARGA" IS 'Fecha de carga del documento';
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."RUTA_DOCUMENTO" IS 'Ruta de almacenamiento del documento en el servidor de archivos.';
+   COMMENT ON COLUMN "TRAMITES"."REQUISITOS_TRAMITE"."EXTENSION" IS 'Extension del documento';
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "TRAMITES"."TRG_REQUISITOS_TRAMITE" BEFORE
+INSERT ON "REQUISITOS_TRAMITE" FOR EACH ROW
+begin
+    if :new.ID_REQUISITOTRAMITE is null then
+        select REQUISITOS_TRAMITE_SEQ.NEXTVAL
+        into   :new.ID_REQUISITOTRAMITE
+        from   Dual;
+    end if;
+end; 
+/
+ALTER TRIGGER "TRAMITES"."TRG_REQUISITOS_TRAMITE" ENABLE;
+
+
+CREATE TABLE "TRAMITES"."TERMINO_CONDICIONES" 
+   (	"IDTERMINO" NUMBER NOT NULL ENABLE, 
+	"MENSAJE" VARCHAR2(500 BYTE), 
+	"TIPOSOLICITUD" NUMBER, 
+	"FECHAINI" DATE, 
+	"FECHAFIN" DATE, 
+	 CONSTRAINT "TERMINO_CONDICIONES_PK" PRIMARY KEY ("IDTERMINO")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "TRAMITES_DETALLE_DATOS"  ENABLE
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "TRAMITES_DETALLE_DATOS" ;
+
+
+CREATE TABLE "TRAMITES"."TERMINOSCONDICIONES_TRAMITE" 
+   (	"ID_TRAMITE" NUMBER(20,0) NOT NULL ENABLE, 
+	"ID_INSTALACION" NUMBER(20,0) NOT NULL ENABLE, 
+	"ID_TERCERO" NUMBER(20,0) NOT NULL ENABLE, 
+	"TEXTO_TERMINOSCODICIONES" CLOB, 
+	"ACEPTA_TYC" NUMBER(1,0), 
+	"FECHA_ACEPTA_TYC" DATE, 
+	 CONSTRAINT "TERMINOSCONDICIONES_TRAMIT_PK" PRIMARY KEY ("ID_TRAMITE", "ID_INSTALACION", "ID_TERCERO")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "TRAMITES_DETALLE_DATOS"  ENABLE
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "TRAMITES_DETALLE_DATOS" 
+ LOB ("TEXTO_TERMINOSCODICIONES") STORE AS BASICFILE (
+  TABLESPACE "TRAMITES_DETALLE_DATOS" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION 
+  NOCACHE LOGGING 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) ;
+
+
+create or replace PROCEDURE  "SP_SET_ITEMVISITA" (idVisista in NUMBER, idItem in NUMBER, rtaI out varchar2) AS
+
+  err_num number;
+  err_msg varchar2(500);
+  
+BEGIN    
+INSERT INTO CONTROL.ITEM_VISITA (ID_ITEM_VISITA, ID_VISITA, ID_ITEM) VALUES (CONTROL.SEQ_ITEM_VISITA.NEXTVAL,idVisista,idItem);
+
+rtaI:= 'Ok';
+   commit;
+EXCEPTION  -- exception handlers begin
+   WHEN OTHERS THEN  -- handles all other errors
+        err_num := SQLCODE;
+        err_msg := SUBSTR(SQLERRM, 1, 500);
+        rtaI := 'Error:' || err_num || ' - ' || err_msg;
+        rollback;
+  
+END SP_SET_ITEMVISITA;
+
+

@@ -1,0 +1,60 @@
+﻿@{
+    System.Collections.Generic.List<SIM.Areas.TalaPoda.Models.FLR_RIESGO> Riesgos = (System.Collections.Generic.List<SIM.Areas.TalaPoda.Models.FLR_RIESGO>)ViewBag.Riesgos;
+    System.Collections.Generic.List<SIM.Areas.TalaPoda.Models.FLR_SINTOMA_EF> Sintomas = (System.Collections.Generic.List<SIM.Areas.TalaPoda.Models.FLR_SINTOMA_EF>)ViewBag.Sintomas;
+}
+
+<table style="width:100%">
+    <tr>
+        <td valign="top">
+            <table class="table table-striped table-condensed">
+                @{
+                    foreach (SIM.Areas.TalaPoda.Models.FLR_RIESGO Riesgo in Riesgos)
+                    {
+                        <tr>
+                            <td>
+                                <input style="height:50px;width:50px" type="checkbox"  id="ChkR_@Riesgo.ID_RIESGO">
+                            </td>
+                            <td>
+                                <label>@Riesgo.S_RIESGO</label>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </td>
+        <td valign="top">
+            <table class="table table-striped table-condensed">
+                @{
+                    foreach (SIM.Areas.TalaPoda.Models.FLR_SINTOMA_EF Sintoma in Sintomas)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="checkbox" id="ChkS_@Sintoma.ID_SINTOMA_EF">
+                            </td>
+                            <td>
+                                <label>@Sintoma.S_SINTOMA_EF</label>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $('[id^="ChkR"]').click(function () {
+        var Control = $(this).attr('id');
+        var Chequeado = $('#' + Control).is(':checked');
+        
+        $.ajax({
+            url: '//localhost:59180/TalaPoda/Utilidades/GuardarTipoPerjuicio?Tipo=' + $(this).attr('id') + '&Chequeado=' + Chequeado,
+            type: 'POST',
+            async: false,
+            contentType: 'application/json;',
+            success: function (data) {
+                alert('Recibido ' + data);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,380 @@
+﻿@{
+    ViewBag.Title = "Foto intervencion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+<style>
+        #wrapper {
+        width: 735px;
+        height: 220px;
+        margin: -110px 0 0 -367px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+    }
+      #carousel {
+        /*width: 735px;*/
+        width: 90%;
+        position: relative;
+        /*left: 20%;*/
+        left: 5%;
+    }
+
+        #carousel ul {
+            list-style: none;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        #carousel li {
+            background: #fff;
+            box-shadow: 3px 4px 11px -2px #666;
+            font-size: 40px;
+            color: #999;
+            text-align: center;
+            display: block;
+            width: 232px;
+            height: 178px;
+            padding: 0;
+            margin: 6px;
+            float: left;
+            position: relative;
+        }
+
+            #carousel li img {
+                width: 201px;
+                height: 127px;
+                margin-top: 14px;
+            }
+
+            #carousel li .texto {
+                display: block;
+                overflow: hidden;
+                width: 201px;
+                position: absolute;
+                z-index: 2;
+                bottom: 0px;
+                left: 16px;
+                font-size: 12px;
+            }
+
+    .clearfix {
+        float: none;
+        clear: both;
+    }
+
+
+    #carousel .prev, #carousel .next {
+        background: transparent url(../../Content/Images/carousel_control.png) no-repeat 0 0;
+        text-indent: -999px;
+        display: block;
+        overflow: hidden;
+        width: 15px;
+        height: 21px;
+        margin-left: 10px;
+        position: absolute;
+        top: 100px;
+    }
+
+    #carousel .prev {
+        background-position: 0 0;
+        left: -30px;
+    }
+
+        #carousel .prev:hover {
+            left: -31px;
+        }
+
+    #carousel .next {
+        background-position: -18px 0;
+        right: -20px;
+    }
+
+        #carousel .next:hover {
+            right: -21px;
+        }
+
+    #carousel .pager {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+        #carousel .pager a {
+            background: transparent url(img/carousel_control.png) no-repeat -2px -32px;
+            text-decoration: none;
+            text-indent: -999px;
+            display: inline-block;
+            overflow: hidden;
+            width: 8px;
+            height: 8px;
+            margin: 0 5px 0 0;
+        }
+
+            #carousel .pager a.selected {
+                background: transparent url(img/carousel_control.png) no-repeat -12px -32px;
+                text-decoration: underline;
+            }
+                .caroufredsel_wrapper {
+        width: 100% !important;
+        height: 200px !important;
+    }
+
+    #Carusel1 {
+        width: 100% !important;
+        height: 200px !important;
+    }
+          #btncamara:hover {
+                opacity:0.7;
+                cursor:pointer;
+            }
+          #btncamara{
+             right: 0px;
+            position: absolute;
+            margin-right: 25px;
+
+          }
+          
+        #loadingImg{
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.17) !important;
+    position: fixed;
+    z-index: 100000;
+    cursor: not-allowed;
+}
+
+.loadingImg{
+	position: fixed;
+    z-index: 100000;
+    background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat;
+    left: 50%;
+    background-size: contain;
+    top: 50%;
+    cursor: not-allowed;
+}
+</style>
+<div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+
+<div id="" class="col-sm-12">
+
+    <div id="carousel" style="height:190px;display:none">
+
+        <div class="clearfix"></div>
+        <a id="prev" class="prev" href="#">&lt;</a>
+        <a id="next" class="next" href="#">&gt;</a>
+        <div id="pager" class="pager"></div>
+    </div>
+
+</div>
+<div class="row">
+    <div id="" class="col-sm-12">
+        <img id="btncamara" src="@Url.Content("../../Content/Images/camara.png")" style="width:50px;height:50px" onclick="abrirFotos()"/>
+    </div>
+</div>
+</br>
+</br>
+<input id="txtid" style="display: none;" />
+<input id="txttipo" style="display: none;" />
+<div class="row">
+    <div id="" class="col-sm-12">
+        <div id="" class="col-sm-12">
+            <label>Observación</label>
+        </div>
+        <textarea class="form-control" id="txtobservacion"></textarea>
+    </div>
+</div>
+    <div class="row">
+    <div id="" class="col-sm-12">
+        <button class="btn btn-default" id="btnGuardar" style="margin-top:10px" onclick="recorerCarusel()">Guardar</button>
+        <button class="btn btn-default" id="btnCerrar" style="margin-top:10px" onclick="cerrar()">Cerrar</button>
+
+    </div>
+    <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+        <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+
+
+    </div>
+</div>
+        @Scripts.Render("~/bundles/carouFredSel")
+        <script>
+    $(document).ready(function () {
+
+        $("#txttipo").val(@ViewBag.tipo);
+
+        $("#txtid").val(@ViewBag.id);
+        $("#fotocarusel").carousel(0);
+        if ($("#txttipo").val() == "1")
+        {
+            consultarFoto();
+            consultarObservacion();
+            $("#btnGuardar").css("display", "none");
+            $("#btncamara").css("display", "none");
+            $("#btnCerrar").css("display", "block");
+            
+        } else {
+            $("#btnCerrar").css("display", "none");
+            $("#btnGuardar").css("display", "block");
+            $("#btncamara").css("display", "block");
+        }
+    });
+            function consultarFoto() {
+                card = 1;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("consultarFotoIntv", "Tala")',
+                    data: { id: $("#txtid").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var datos = eval('(' + response + ')');
+                        llenarFoto(datos);
+                    }
+                });
+            }
+            function consultarObservacion() {
+                card = 1;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("consultarobservacionTercero", "Tala")',
+                    data: { id: $("#txtid").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var datos = eval('(' + response + ')');
+                        $("#txtobservacion").val(datos[0].OBSERVACION);
+                        //var obs = datos[0].OBSERVACION;
+                    }
+                });
+            }
+            function llenarFoto(arrFoto) {
+                prenderload();
+                setTimeout(function () {
+                    
+
+                    var html = "";
+                    var cantidaDatos = 0;
+                    $("#carousel .caroufredsel_wrapper").remove();
+                    html += ' <ul id="Carusel1">';
+
+                    for (var j = 0; j < arrFoto.length; j++) {
+
+                        html += ' <li ><img src="' + arrFoto[j].URL + '"   ></li>';
+
+                    }
+                    html += "</ul>";
+                    $("#carousel").append(html);
+                    $('#carousel ul').carouFredSel({
+                        auto: false,
+                        responsive: true,
+                        align: 'center',
+                        prev: '#prev',
+                        next: '#next',
+                        pagination: "#pager1",
+                        mousewheel: true,
+                        items: 1,
+
+                        swipe: {
+                            onMouse: true,
+                            onTouch: true
+                        },
+                    });
+                    apagarload();
+                }, 6000);
+                $("#carousel").css({ "display": "block" })
+            }
+    function abrirFotos() {
+        $("#pantallaCargarImg").dialog(
+        {
+
+            width: 400,
+            height: 150,
+            modal: true
+        });
+        $("#fotos").attr("src", "@Url.Content("~/tala/tala/fototerceroint")");
+
+    }
+
+    var Totalimg = new Array();
+    function getcarusel(datos) {
+        prenderload();
+        setTimeout(function () {
+            Totalimg.push(datos);
+
+            var html = "";
+            var cantidaDatos = 0;
+            $("#carousel .caroufredsel_wrapper").remove();
+            html += ' <ul id="Carusel1">';
+
+            for (var j = 0; j < Totalimg.length; j++) {
+               // var dto = Totalimg[j].url.replace("localhost", "172.16.0.173");
+                var dto = Totalimg[j].url;
+                html += ' <li ><img src="' + dto + '"   ></li>';
+
+            }
+            html += "</ul>";
+            $("#carousel").append(html);
+            $('#carousel ul').carouFredSel({
+                auto: false,
+                responsive: true,
+                align: 'center',
+                prev: '#prev',
+                next: '#next',
+                pagination: "#pager1",
+                mousewheel: true,
+                items: 1,
+
+                swipe: {
+                    onMouse: true,
+                    onTouch: true
+                },
+            });
+            apagarload();
+        }, 6000);
+        $("#carousel").css({ "display": "block" })
+    }
+
+    function recorerCarusel()
+    {
+        var arrfoto=new Array();
+        $("#carousel").each(function () {
+            $(this).find('li').each(function () {
+                var obj = new Object();
+                obj = { url: $("img", this).prop("src") };
+                arrfoto.push(obj);
+
+            });
+
+
+        });
+        var ff = JSON.stringify(arrfoto);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("guardarfotointv", "Tala")',
+                data: {
+                    json: JSON.stringify(arrfoto), observacio: $("#txtobservacion").val(),
+                    id: $("#txtid").val()
+                },
+                beforeSend: function () { },
+                success: function (response) {
+                    alert("almacenamiento exitoso");
+                    window.open('@Url.Content("~/Tala/Tala/tercerointervencion")', '_self');
+                }
+            });
+    }
+            function cerrar()
+            {
+                window.open('@Url.Content("~/Tala/Tala/tercerointervencion")', '_self');
+                
+            }
+
+            function prenderload() {
+                $("#loadingImg").css({ "display": "block" });
+            }
+            function apagarload() {
+                $("#loadingImg").css({ "display": "none" });
+            }
+        </script>
+

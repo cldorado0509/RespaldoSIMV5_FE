@@ -1,0 +1,235 @@
+﻿ .navbar.navbar-inverse.navbar-fixed-top {
+        z-index: 1 !important;
+    }
+
+    .dx-datagrid-rowsview.dx-datagrid-nowrap.dx-scrollable.dx-scrollable-customizable-scrollbars.dx-scrollable-both.dx-scrollable-simulated.dx-visibility-change-handler.dx-select-checkboxes-hidden {
+        height: 317px !important;
+    }
+
+    .dx-datagrid-bottom-load-panel {
+        border-top: 1px solid #d2d2d2;
+        display: none !important;
+    }
+
+    .panel-default > .panel-heading {
+        color: #333333;
+        background-color: #f5f5f5;
+        border-color: #dddddd;
+        background-color: rgb(234, 234, 234);
+        padding-left: 12px;
+        padding-right: 12px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);
+        height: 100%;
+        padding-bottom: 12px;
+    
+       
+}
+    /*******/
+    .nav-tabs {
+        border-bottom: 1px solid #ddd;
+    }
+        .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+            color: #555;
+            cursor: default;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+        }
+    .nav > li > a {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: 0px;
+    }
+
+    label, textarea, select, input, a {
+        display: inline-block;
+        margin-bottom: 1px;
+        font-weight: bold;
+        font-size: 13px;
+        color: rgb(92, 82, 82);
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        vertical-align: bottom;
+        padding-top: 13px;
+    }
+    
+    a:hover {
+        color: #39832D;
+    }
+    button#btnAsignarTramites {
+        position: relative;
+        top: 20px;
+        background-image: url(../Content/images/Asignar_Tramites.png);
+        right: -28px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+    div#MisVisitas {
+        height: 408px;
+    }
+    #btnRealizarVisita {
+        position: relative;
+        top: 13px;
+        background-image: url(../Content/images/Geocodificar.png);
+        right: -28px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 20px;
+        background-position: 8px 5px;
+        margin-bottom: 5px;
+    }
+    button#btnRectangulo {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Rectangulo.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 18px;
+        background-position: 8px 5px;
+    }
+    button#btnCirculo {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Circulo.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 19px;
+        background-position: 8px 5px;
+    }
+    button#btnPoligono {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Poligono.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 18px;
+        background-position: 8px 5px;
+    }
+    button#btnLimpiar {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Limpiar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+    button#btnAcercarvarios {
+        position: relative;
+        top: 0px;
+        background-image: url(../Content/images/Agregar_Tramites.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+    div#Tramites {
+        height: 376px;
+    }
+    img#btnAyudas {
+        float: right;
+        position: relative;
+        right: 161px;
+        top: -9px;
+        cursor: pointer;
+    }
+    img#btnAyudas:hover{
+        opacity:.7;
+    }
+        img#btnAyudas:active {
+            opacity: .2;
+        }
+    button.ui-dialog-titlebar-close {
+        height: 20px;
+        width: 20px;
+    }
+    .ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix.ui-draggable-handle {
+        padding: 5px;
+    }
+    /****responsive heigh*/
+    #mapa{
+        height:400px;
+
+    }
+@media screen and (max-height: 1350px) {
+    .panel-default > .panel-heading {
+        height: 1132px;
+    }
+     #mapa{
+        height: 1002px;
+
+    }
+}
+@media screen and (max-height: 1250px) {
+    .panel-default > .panel-heading {
+        height: 1032px;
+    }
+     #mapa{
+        height:1000px;
+
+    }
+}
+@media screen and (max-height: 1150px) {
+    .panel-default > .panel-heading {
+        height: 890px;
+    }
+     #mapa{
+        height: 785px;
+
+    }
+}
+@media screen and (max-height: 1000px) {
+    .panel-default > .panel-heading {
+        height: 793px;
+    }
+     #mapa{
+        height:750px;
+
+    }
+}
+@media screen and (max-height: 900px) {
+    .panel-default > .panel-heading {
+        height: 720px;
+    }
+     #mapa{
+        height: 607px;
+
+    }
+}
+@media screen and (max-height: 800px) {
+    .panel-default > .panel-heading {
+        height: 602px;
+    }
+     #mapa{
+        height: 498px;
+
+    }
+}
+@media screen and (max-height: 700px) {
+    .panel-default > .panel-heading {
+        height: 509px;
+    }
+     #mapa{
+        height: 400px;
+
+    }
+}
+@media screen and (max-height: 600px) {
+    .panel-default > .panel-heading {
+        height: 451px;
+    }
+     #mapa{
+        height:400px;
+
+    }
+}

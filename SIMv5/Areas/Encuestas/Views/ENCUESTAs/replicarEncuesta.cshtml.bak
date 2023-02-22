@@ -1,0 +1,520 @@
+﻿
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Scripts/General.js"></script>
+@using System.Web.UI.WebControls
+@model SIM.Areas.Encuestas.Models.ENCUESTA
+
+@{
+    ViewBag.Title = "Modificar Encuesta";
+    //Layout = "~/Views/Shared/_LayoutSimple.cshtml";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+
+}
+
+@*<h2>Create</h2>*@
+
+
+<!doctype html>
+
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>jQuery Tree Filter Plugin Demo</title>
+
+    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.6/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.6/css/dx.light.css" />
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.6/js/dx.webappjs.js"></script>
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.6/js/dx.all.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        html, body {
+            height: 980px;
+            overflow: hidden;
+        }
+
+        .modal-body {
+            position: relative;
+            padding: 0px;
+        }
+
+        .ui-dialog .ui-dialog-content {
+            padding: 0px !important;
+            overflow: hidden !important;
+        }
+
+        .dx-datagrid-checkbox-size .dx-checkbox-icon {
+            margin-right: 22px;
+            margin-top: 5px;
+        }
+
+     
+        .container {
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+
+        .form-control {
+            height: 28px;
+            width: 364px;
+            padding: 6px 4px;
+            font-size: 10px;
+        }
+
+        button.btn.btn-default.btn-sm {
+            margin-top: 10px;
+            margin-right: 0px;
+        }
+
+        label, textarea, select, input, a {
+            display: inline-block;
+            margin-bottom: 1px;
+            font-weight: bold;
+            float: left;
+            font-size: 13px;
+            color: rgb(92, 82, 82);
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+            vertical-align: bottom;
+            padding-top: 13px;
+            /* top: -6px; */
+            bottom: 9px;
+        }
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 0px;
+            padding-left: 15px;
+        }
+        button#Crear {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Guardar.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+    </style>
+
+</head>
+<body>
+
+
+    <div class="col-sm-12">
+        <div class="alert alert-success" role="alert" id="mensaje" style="display:none"></div>
+    </div>
+
+    <div id="dialogo"></div>
+
+
+
+    <div class="col-sm-12">
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div id="div_Tablas" class="container tablesContainer divPrincipal" align="center">
+            <div id="tramitsTable" align="center" class="customerTable divCentradoVertical">
+                <table style="width:100%">
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label class="control-label col-md-2">Nombre:</label>
+                        </td>
+                        <td>
+                            <input type="text" id="S_NOMBRE" name="S_NOMBRE" class="form-control" maxlength="250" style="  margin-bottom: 10px;" />
+                            <label style="display:none" id="ErrorNombre" class="text-danger">El nombre es requerido.</label>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top"></td>
+                        <td valign="top">
+                          
+                            <label class="control-label col-md-2">Descripción:</label>
+                        </td>
+                        <td>
+                            <textarea id="S_DESCRIPCION" maxlength="1000" class="form-control" style=" margin-bottom: 10px; top: 0px;"></textarea>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label class="control-label col-md-2">Formulario:</label>
+                        </td>
+                        <td>
+                       
+                            <select id="IdFormulario" name="IdFormulario" class="form-control" style="  margin-bottom: 10px;" disabled>  </select>
+                            <label style="display:none" id="ErrorFormulario" class="text-danger">El formulario es requerido.</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label style="margin-right: 9px;" class="control-label col-md-2">Tipo Encuesta:</label>
+                        </td>
+                        <td>
+                            <select id="S_Tipo" name="S_Tipo" class="form-control" disabled>
+                                <option value="" selected="selected"></option>
+                                <option value="S">Cuantitativa</option>
+                                <option value="N">Cualitativa</option>
+                            </select>
+                            <label style="display:none" id="ErrorTipo" class="text-danger">El tipo encuesta es requerido.</label>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td colspan="3" align="right">
+                            <div class="divTitleAndButtons">
+                                <button id="Crear" class="btn btn-default btn-sm" style=" margin-right: 10px;    margin-top: -5px;">Replicar</button>
+                            
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group" style="display:none">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" id="btnCrear" class="btn btn-default" />
+            </div>
+        </div>
+
+        <input type="text" id="txtIdEncuesta" name="Encuesta" style="display:none;" />
+        <div id="Preguntas"></div>
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+        <table style="width:100%">
+            <tr>
+                <td style="width:20%">
+                    <div id="GridPreguntasV" style="height: 180px; padding-right: 10px;" class="archivosDiv"></div>
+                </td>
+            </tr>
+
+        </table>
+        <div id="pantallaVincularPreg" title="Vincular Preguntas" style="display: none; overflow: auto;">
+            <iframe src="" id="VincularPreg" width="100%" height="100%"></iframe>
+
+
+        </div>
+    </div>
+
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>
+</body>
+
+
+
+</html>
+
+<script type="text/javascript">
+                var Codigo;
+                var RutaEncuestas = '@Url.Content("~/Encuestas/")';
+        var jsonDatos={};
+        var codigoEnc = '@ViewBag.codEnc';
+    var nombreEncuesta = "";
+        $(document).ready(function () {
+            BuscarPreguntasEncuesta()
+            ConsultarFormulario();
+            $("#S_DESCRIPCION").prop('disabled', true);
+            
+        });
+
+
+
+                $("#S_NOMBRE").keypress(function (e) {
+                    return ValidarTexto(e);
+                });
+
+                $("#S_DESCRIPCION").keypress(function (e) {
+                    return ValidarTexto(e);
+                });
+
+
+                $('#Crear').click(function () {
+                    $("#mensaje").show(0800);
+                    if ($("#S_NOMBRE").val() == "") {
+                        $("#mensaje").text("Ingrese el nombre")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+                   
+                  
+                        ValidarNonmbreEncuesta($('#S_NOMBRE').val());
+                    
+
+                });
+
+                $('#VincularPregunta').click(function () {
+
+                    abrirVicularPregunta();
+                });
+
+                function guardarEncuesta(validarE)
+                {
+
+                    if (validarE == "0") {
+                        ModificarEcuesta();
+                    } else {
+                        mensajeAlmacenamiento("el nombre de la encuesta ya existe");
+                    }
+                }
+
+                function ValidarNonmbreEncuesta(Nombre) {
+                    var Datos = "";
+                    $.ajax({
+                        type: "POST",
+
+                        url: RutaEncuestas + "Encuestas/validarNombreEncuesta",
+                        data: { nombre: Nombre },
+                        beforeSend: function () { },
+                        success: function (response) {
+                            var dato = response;
+                            if (dato.length > 0) {
+                                Datos = 1;
+                            } else {
+                                Datos = 0;
+                            }
+                            guardarEncuesta(Datos);
+                        }
+                    });
+
+
+                }
+
+                function ModificarEcuesta() {
+                    var Datos = "";
+                    $.ajax({
+                        type: "POST",
+
+                        url: RutaEncuestas + "Encuestas/GuardarClonar",
+                        data: { Nombre: $("#S_NOMBRE").val(), CodigoEncuesta: codigoEnc, tipo: $("#S_Tipo").val(), descripcion: $("#S_DESCRIPCION").val(), id_form: $("#IdFormulario").val() },
+                        beforeSend: function () { },
+                        success: function (response) {
+                         
+                            mensajeAlmacenamiento("Almacenamiento exitoso");
+                                parent.BuscarEncuesta();
+                                parent.$("#pantallaReplicaEncuesta").dialog('close');
+                            
+                        }
+                    });
+
+
+                }
+
+                function abrirVicularPregunta() {
+                    $("#pantallaVincularPreg").dialog(
+                    {
+
+                        width: 400,
+                        height: 300
+                    });
+                    $("#VincularPreg").attr("src", "@Url.Content("~/Encuestas/preguntas/VincularPreguntasEncuesta")" + '?CodigoEncuesta=' +codigoEnc + '&TipoEncuesta=' + $('#S_Tipo option:selected').val());
+
+                }
+
+
+        function gridPreguntaV(jsonEncuesta) {
+            $("#GridPreguntasV").dxDataGrid({
+                dataSource: jsonEncuesta,
+                selection: {
+
+                }, filterRow: { visible: false },
+
+                columns: [
+
+                                  { dataField: 'Codigo', caption: 'Codigo', allowGrouping: true, width: '20%', dataType: 'string' },
+                                   { dataField: 'Pregunta', caption: 'Pregunta', allowGrouping: true, width: '20%', dataType: 'string' },
+                                       { dataField: 'Orden', caption: 'Orden', allowGrouping: true, width: '20%', dataType: 'number' },
+                                    { dataField: 'Peso', caption: 'Peso', allowGrouping: true, width: '20%', dataType: 'number' },
+
+                {
+                    dataField: 'Requerida', allowGrouping: true, caption: 'Requerida', cellTemplate: function (container, options) {
+                        container.height(5);
+
+                        $('<input id="idRequiere" type="checkbox"  />')
+
+                            .prop("checked", options.value)
+                            .appendTo(container);
+                    }
+
+                }
+
+
+                ],
+
+
+                scrolling: { mode: 'infinite' },
+
+                cellClick: function (e) {
+                    var id = e.data.Codigo;
+                    var tipoBoton = e.columnIndex;
+
+                    switch (tipoBoton) {
+                        case 5: //eliminar
+                            EliminarPreguntaVinculada(id);
+                        break;
+
+                    }
+
+                },
+                columnChooser: { enabled: false },
+                allowColumnReordering: true,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 5 },
+                allowColumnResizing: true
+                          , columnAutoWidth: true, loadPanel: {
+                              height: 100,
+                              width: 100,
+                              text: 'Cargando...'
+                          }, onCellHoverChanged: function (hoverCell) {
+                              if (hoverCell.eventType == 'mouseover')
+                                  hoverCell.cellElement.addClass("hovered");
+                              else
+                                  hoverCell.cellElement.removeClass("hovered");
+                          }
+            });
+        }
+
+        function EliminarPreguntaVinculada(idPreg) {
+
+
+            $.ajax({
+                type: "POST",
+
+                url: RutaEncuestas + "Encuestas/EliminarPreguntaVinculada",
+                data: { idEnc: $("#txtIdEncuesta").val(), idPregunta: idPreg },
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = response;
+                    if (datos == "1") {
+                        mensajeAlmacenamiento("Eliminación exitosa");
+                        BuscarPreguntasEncuesta();
+                    }
+
+                }
+            });
+        }
+        function BuscarPreguntasEncuesta() {
+
+
+            $.ajax({
+                type: "POST",
+
+                url: RutaEncuestas + "Preguntas/ObtenerPreguntasxEncuenta",
+                data: { CodigoEncuesta: codigoEnc },
+                beforeSend: function () { },
+                success: function (response) {
+                    gridPreguntaV(response);
+
+                }
+            });
+        }
+        function ConsultarFormulario() {
+
+            $.ajax({
+                type: "POST",
+
+                url: RutaEncuestas + "Encuestas/ConsultarFormularioCombo",
+
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = response;
+                    var comb = document.getElementById("IdFormulario");
+                    $("#IdFormulario").children().remove();
+                    comb.innerHTML += " <option value='0'>--seleccionar--</option>";
+                    if (datos.length > 0) {
+
+                        for (var i = 0; i < datos.length; i++) {
+                            comb.innerHTML += "<option value=" + datos[i].ID_FORMULARIO + ">" + datos[i].S_NOMBRE + "</option>";
+
+                        }
+                    }
+                    ConsultarDatosEditar();
+                }
+            });
+        }
+
+        function ConsultarDatosEditar() {
+
+            $.ajax({
+                type: "POST",
+
+                url: RutaEncuestas + "Encuestas/ConsultarEncuestaEditar",
+                data: { CodigoEncuesta: codigoEnc },
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = response;
+                    nombreEncuesta = datos[0].S_NOMBRE;
+                    $("#S_NOMBRE").val(datos[0].S_NOMBRE);
+                    $("#S_DESCRIPCION").val(datos[0].S_DESCRIPCION);
+                    $("#IdFormulario").val(datos[0].ID_FORMULARIO);
+                    $("#S_Tipo").val(datos[0].TIPO);
+
+                }
+            });
+        }
+
+
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default "
+          },
+                ]
+            });
+
+
+        }
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

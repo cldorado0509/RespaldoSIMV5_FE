@@ -1,0 +1,48 @@
+@using System.Web.UI.WebControls
+
+@{
+	var grid = Html.DevExpress().GridView(settings => {
+            settings.Name = "gvwProyectos";
+            settings.CallbackRouteValues = new { Controller = "Proyecto", Action = "ProyectosComboGridViewPartial", Area = "Tramites" };
+
+		    settings.CommandColumn.Visible = false;
+
+            settings.Width = Unit.Percentage(100);
+            settings.KeyFieldName = "CODIGO_PROYECTO";
+
+		    settings.SettingsPager.Visible = true;
+		    settings.Settings.ShowGroupPanel = false;
+		    settings.Settings.ShowFilterRow = true;
+            settings.SettingsBehavior.AllowSelectByRowClick = true;
+            settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+            settings.Columns.Add(column => 
+                {
+                    column.FieldName = "CM";
+                    column.Caption = "CM";
+                    column.Width = 80;
+                    column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                }
+            );
+            settings.Columns.Add(column =>
+                {
+                    column.FieldName = "NOMBRE";
+                    column.Caption = "Nombre";
+                    column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                    column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+                }
+            );
+
+            settings.ClientSideEvents.SelectionChanged = "SeleccionRegistroProyecto";
+		});
+        
+		if (ViewData["EditError"] != null)
+        {
+            grid.SetEditErrorText((string)ViewData["EditError"]);
+        }
+}
+@*grid.Bind(Model).GetHtml()*@
+@grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "CODIGO_PROYECTO";
+}).GetHtml()

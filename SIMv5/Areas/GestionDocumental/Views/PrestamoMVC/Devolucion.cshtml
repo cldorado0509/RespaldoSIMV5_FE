@@ -1,0 +1,209 @@
+﻿@using System.Web.UI.WebControls
+
+<script type="text/javascript">
+    function DevolucionOnClick(s, e) {
+        var documents;
+
+        if (lbDocumentos.GetItemCount() == 0)
+        {
+            alert('No hay documentos registrados.');
+            return;
+        } else {
+            ProcessPanel.Show();
+
+            for (i = 0; i < lbDocumentos.GetItemCount() ; i++) {
+                if (documents == null)
+                    documents = lbDocumentos.GetItem(i).value;
+                else
+                    documents += '^' + lbDocumentos.GetItem(i).value;
+            }
+
+            var idTerceroSel = ASPxClientControl.GetControlCollection().GetByName("RepLegal.ID_TERCERO");
+
+            $.ajax({
+                type: "POST",
+                //cache: false,
+                //contentType: false,
+                //processData: false,
+                url: '@Url.Action("DevolucionDocumentos", "Prestamo", new { area = "GestionDocumental" })',
+                data: { documentosIDs: documents },
+                success: function (response) {
+                    var dataResult;
+                    dataResult = response.split('%');
+
+                    if (dataResult[0] == 'FAIL') {
+                        ProcessPanel.Hide();
+                        alert(dataResult[1]);
+                    }
+                    else {
+                        ProcessPanel.Hide();
+                        alert(dataResult[1]);
+                        lbDocumentos.ClearItems();
+                    }
+
+                    txtCodigoDocumento.SetText('');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    ProcessPanel.Hide();
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                }
+            });
+        }
+    }
+
+    function OnKeyDownCB(s, e) {
+        if (e.htmlEvent.keyCode == 13) {
+            txtObservaciones.Focus();
+        }
+    }
+
+    function OnKeyDownObs(s, e) {
+        var documents = '';
+        var ID;
+
+        if (e.htmlEvent.keyCode == 13) {
+            if (txtCodigoDocumento.GetText() != '') {
+                ID = txtCodigoDocumento.GetText().trim();
+
+                ProcessPanel.Show();
+
+                for (i = 0; i < lbDocumentos.GetItemCount() ; i++) {
+                    if (ID == lbDocumentos.GetItem(i).text.substring(0, ID.length)) {
+                        ProcessPanel.Hide();
+                        if (confirm('El Documento ya se encuentra registrado. Desea borrarlo de la lista ?'))
+                        {
+                            lbDocumentos.RemoveItem(i);
+                        }
+
+                        txtCodigoDocumento.SetText('');
+                        txtObservaciones.SetText('');
+                        txtCodigoDocumento.Focus();
+                        return;
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    //cache: false,
+                    //contentType: false,
+                    //processData: false,
+                    url: '@Url.Action("ValidarDevolucionDocumento", "Prestamo", new { area = "GestionDocumental" })',
+                    data: { documentoID: ID },
+                    success: function (response) {
+                        var dataResult;
+                        dataResult = response.split('%');
+
+                        if (dataResult[0] == 'FAIL') {
+                            ProcessPanel.Hide();
+                            alert(dataResult[1]);
+                        }
+                        else {
+                            lbDocumentos.AddItem([dataResult[3], dataResult[4], dataResult[8], txtObservaciones.GetText(), dataResult[5], dataResult[6], dataResult[7]], dataResult[2] + '|' + txtObservaciones.GetText());
+                            ProcessPanel.Hide();
+                        }
+
+                        txtCodigoDocumento.SetText('');
+                        txtObservaciones.SetText('');
+                        txtCodigoDocumento.Focus();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        ProcessPanel.Hide();
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                    }
+                });
+                return;
+            }
+            e.SetText('');
+        }
+    }
+</script>
+
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanel";
+    settings.Modal = true;
+    settings.Text = "Procesando Documento";
+}).GetHtml();
+
+<br />
+<br />
+<br />
+<div class="panel panel-default" style="padding-bottom: 10px">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <label>Devoluci&oacute;n de Documentos</label>
+        </h3>
+    </div>
+    <div class="row" style="padding:5px">
+        <div class="col-md-4">
+            @Html.DevExpress().Label(settingsLabel =>
+                    {
+                        settingsLabel.EncodeHtml = false;
+                        settingsLabel.Text = "C&oacute;digo Documento:";
+                    }).GetHtml()
+        </div>
+        <div class="col-md-8">
+            @Html.DevExpress().Label(settingsLabel =>
+                    {
+                        settingsLabel.EncodeHtml = false;
+                        settingsLabel.Text = "Observaciones Documento:";
+                    }).GetHtml()
+        </div>
+    </div>
+    <div class="row" style="padding:5px">
+        <div class="col-md-4">
+            @Html.DevExpress().TextBox(settingsTextBox =>
+                    {
+                        settingsTextBox.Name = "txtCodigoDocumento";
+                        settingsTextBox.Width = Unit.Percentage(90);
+                        settingsTextBox.Properties.ClientSideEvents.KeyDown = "OnKeyDownCB";
+                        //settingsTextBox.Enabled = false;
+                    }).GetHtml()
+        </div>
+        <div class="col-md-8">
+            @Html.DevExpress().TextBox(settingsTextBox =>
+                    {
+                        settingsTextBox.Name = "txtObservaciones";
+                        settingsTextBox.Width = Unit.Percentage(100);
+                        settingsTextBox.Properties.ClientSideEvents.KeyDown = "OnKeyDownObs";
+                    }).GetHtml()
+        </div>
+    </div>
+    <br />
+    @Html.DevExpress().ListBox(settings =>
+    {
+        settings.EncodeHtml = false;
+        settings.Name = "lbDocumentos";
+        //settings.CallbackRouteValues = new { Controller = "Editors", Action = "ListBoxPartial" };
+        settings.Width = Unit.Percentage(100);
+        settings.Height = 200;
+        settings.Properties.EnableClientSideAPI = true;
+        settings.Properties.SelectionMode = ListEditSelectionMode.Single;
+        settings.Properties.ValueField = "ID_IDENTIFICADOR";
+        settings.Properties.ValueType = typeof(int);
+        settings.Properties.Columns.Add("S_IDENTIFICADOR", "ID").Width = Unit.Percentage(20);
+        settings.Properties.Columns.Add("S_DESCRIPCION", "Documento").Width = Unit.Percentage(20);
+        settings.Properties.Columns.Add("S_OBSERVACIONESPRESTAMO", "Observaciones Pr&eacute;stamo").Width = Unit.Percentage(15);
+        settings.Properties.Columns.Add("S_OBSERVACIONES", "Observaciones Devoluci&oacute;n").Width = Unit.Percentage(15);
+        settings.Properties.Columns.Add("D_PRESTAMO", "Fecha L&iacute;mite").Width = Unit.Percentage(7);
+        settings.Properties.Columns.Add("S_TERCERO", "Prestado Por").Width = Unit.Percentage(8);
+        settings.Properties.Columns.Add("S_TIPO", "Tipo").Width = Unit.Percentage(15);
+    }).BindList(Model).GetHtml()
+    <div class="row" style="padding:5px">
+        <div class="col-md-9">
+        </div>
+        <div class="col-md-3">
+            <div style="width:150px; float:right">
+                @Html.DevExpress().Button(settingsButton =>
+                    {
+                        settingsButton.EncodeHtml = false;
+                        settingsButton.Name = "btnDevolucion";
+                        settingsButton.Text = "Realizar Devoluci&oacute;n";
+                        settingsButton.Width = Unit.Pixel(150);
+                        settingsButton.ClientSideEvents.Click = "DevolucionOnClick";
+                    }).GetHtml()
+
+            </div>
+        </div>
+    </div>
+</div>

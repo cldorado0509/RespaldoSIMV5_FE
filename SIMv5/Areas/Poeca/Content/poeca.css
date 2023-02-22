@@ -1,0 +1,150 @@
+﻿@media print {
+  @page {
+    size: 23cm 100cm landscape;
+    margin: 0;
+    /* change the margins as you want them to be. */ }
+  table {
+    font-size: 8px; }
+  #gridSeguimientos * {
+    font-size: 6px; }
+  button, h1, h2, h3, a {
+    display: none;
+    visibility: hidden; } }
+
+.poeca {
+  margin: -10px -15px 0 -15px; }
+  .poeca .row {
+    margin-right: -15px;
+    margin-left: -15px; }
+  .poeca nav.navbar {
+    width: 100%;
+    height: 50px;
+    color: white;
+    background-color: #b4cd5f;
+    margin: 0;
+    border-radius: initial;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    padding: 0; }
+    .poeca nav.navbar .btn {
+      height: 100%;
+      border-radius: 0px;
+      background: none;
+      border-right: 1px solid #99ac55;
+      float: initial;
+      margin: 0;
+      width: 150px;
+      box-shadow: 0px -10px 20px -15px rgba(0, 0, 0, 0.15) inset; }
+      .poeca nav.navbar .btn:hover {
+        background-color: #b9cb7a;
+        color: white; }
+      .poeca nav.navbar .btn:active {
+        background-color: #aec757;
+        color: white; }
+      .poeca nav.navbar .btn:focus {
+        color: white; }
+  .poeca .container-fluid {
+    /*margin-right: 20px;*/
+    padding: 15px;
+    margin: auto;
+    border-radius: initial; }
+    .poeca .container-fluid.maxed {
+      max-width: 750px; }
+      @media (min-width: 770px) {
+        .poeca .container-fluid.maxed {
+          margin-top: 15px; } }
+  .poeca dl.details {
+    padding: 20px;
+    margin-bottom: 15px;
+    text-align: left;
+    display: inline-block; }
+    .poeca dl.details dt {
+      white-space: initial;
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 17px; }
+    .poeca dl.details dd {
+      margin-bottom: 10px;
+      line-height: 17px; }
+  .poeca h2 {
+    margin-top: 5px;
+    margin-bottom: 15px; }
+  .poeca .btn {
+    margin-left: 0; }
+    .poeca .btn.btn-primary {
+      background-color: #00acc4; }
+  .poeca .actionButtons {
+    padding: 10px 0px; }
+  .poeca .table th {
+    font-weight: bold; }
+  .poeca .form {
+    text-align: left; }
+    @media (min-width: 650px) {
+      .poeca .form {
+        margin-left: 60px;
+        margin-right: 60px; } }
+  .poeca .selection-list-box {
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 2px;
+    margin-bottom: 5px;
+    text-align: left; }
+  .poeca .seleccion-medidas-accion {
+    padding-left: 11px;
+    padding-right: 11px; }
+    .poeca .seleccion-medidas-accion .control-label {
+      margin-left: -11px;
+      margin-right: -11px; }
+    .poeca .seleccion-medidas-accion .col-sm-1, .poeca .seleccion-medidas-accion .col-sm-2, .poeca .seleccion-medidas-accion .col-sm-3, .poeca .seleccion-medidas-accion .col-sm-4, .poeca .seleccion-medidas-accion .col-sm-5, .poeca .seleccion-medidas-accion .col-sm-6, .poeca .seleccion-medidas-accion .col-sm-7, .poeca .seleccion-medidas-accion .col-sm-8, .poeca .seleccion-medidas-accion .col-sm-9, .poeca .seleccion-medidas-accion .col-sm-10, .poeca .seleccion-medidas-accion .col-sm-11 {
+      padding-left: 4px;
+      padding-right: 4px; }
+  .poeca .acciones-seleccion-medidas {
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+    @media screen and (min-width: 768px) {
+      .poeca .acciones-seleccion-medidas {
+        flex-direction: column;
+        height: 187px; } }
+    .poeca .acciones-seleccion-medidas button[type="button"].btn.btn-seleccion-medida {
+      float: none;
+      margin-bottom: 10px;
+      font-size: 18px; }
+      @media screen and (max-width: 768px) {
+        .poeca .acciones-seleccion-medidas button[type="button"].btn.btn-seleccion-medida {
+          transform: rotate(90deg);
+          margin-right: 20px; } }
+  .poeca .contenedor-oscuro {
+    padding: 15px 0;
+    border-radius: 10px;
+    /*margin: 0 -15px;*/
+    margin-bottom: 15px;
+    background-color: rgba(0, 0, 0, 0.03); }
+  .poeca .height-147 {
+    height: 147px; }
+  .poeca .table-responsive {
+    width: 100%;
+    margin-bottom: 15px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    border: 1px solid #ddd;
+    white-space: nowrap; }
+  .poeca .btn-descarga {
+    color: #353735; }
+  .poeca .plan-details {
+    background-color: #ececec;
+    border-radius: 15px;
+    margin-top: 15px;
+    margin-bottom: 30px; }
+    .poeca .plan-details dl {
+      margin: 0px; }
+  .poeca button, .poeca html input[type="button"], .poeca input[type="reset"], .poeca input[type="submit"] {
+    float: none;
+    /*margin-bottom: 5px;*/ }
+  .poeca .dx-list-item {
+    white-space: initial; }
+    .poeca .dx-list-item .dx-list-item-content {
+      white-space: initial; }
+  .poeca th {
+    min-width: 100px; }

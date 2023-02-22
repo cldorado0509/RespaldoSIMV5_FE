@@ -1,0 +1,17 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/mistramites.js")"></script>
+
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="MisTramitesController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+            <div class="panelSIM-heading" style="min-height: 600px">
+                <div dx-data-grid="misTramitesGridSettings" id="grdMisTramitesGrid"></div>
+            </div>
+        </div>
+    </div>
+</div>

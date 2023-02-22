@@ -1,0 +1,79 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/foliar.js")"></script>
+
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popFoliar";
+    settings.ShowHeader = true;
+    settings.HeaderText = "Foliar";
+    settings.AllowDragging = true;
+    settings.AllowResize = true;
+    settings.Width = 600;// Unit.Percentage(60);
+    settings.Height = 400;// Unit.Percentage(60);
+    settings.PopupVerticalAlign = PopupVerticalAlign.Middle;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.Center;
+}).GetHtml()
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak">
+    <div ng-controller="FoliarController" class="panel panel-default">
+        <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+        <div dx-tabs="tabsOptions" class="panel-heading" style="padding-bottom: 0px"></div>
+        <div ng-show="isActive(0)" dx-validation-group="{}" class="panel-heading">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <label class="header">Foliar Documentos de Tomos</label>
+                </h3>
+            </div>
+            <div class="dx-fieldset">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Código Barras Tomo</div>
+                            <div class="dx-field-value">
+                                <div dx-text-box="{ placeholder: '[Código de Barras]', bindingOptions: { value: 'foliar.CBTomo' }, onKeyDown: SoloNumeros }" dx-validator="{ validationRules: [{ type: 'required', message: 'Código de Barras Requerido' }] }" id="codigoBarrasTomo"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Código Barras Documento</div>
+                            <div class="dx-field-value">
+                                <div dx-text-box="{ placeholder: '[Código de Barras]', bindingOptions: { value: 'foliar.CBDocumento' }, onKeyDown: SoloNumeros }" dx-validator="{ validationRules: [{ type: 'required', message: 'Código de Barras Requerido' }] }" id="codigoBarrasDocumento"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Folio Inicial</div>
+                            <div class="dx-field-value" style="float: left; width: 100px">
+                                <div dx-number-box="{ placeholder: '[Folio Inicial]', bindingOptions: { value: 'foliar.folioInicial' } }" dx-validator="{ validationRules: [{ type: 'required', message: 'Folio Inicial Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Folio Final</div>
+                            <div class="dx-field-value" style="float: left; width: 100px">
+                                <div dx-number-box="{ placeholder: '[Folio Final]', bindingOptions: { value: 'foliar.folioFinal' } }" dx-validator="{ validationRules: [{ type: 'required', message: 'Folio Final Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="panel-body clearfix">
+                <div dx-button="btnGenerarFolioSettings" id="btnGenerarFolio"></div>
+            </div>
+        </div>
+    </div>
+</div>

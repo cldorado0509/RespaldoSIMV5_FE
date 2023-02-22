@@ -1,0 +1,57 @@
+﻿@model SIM.Areas.Seguridad.Models.RegisterViewModel
+@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "Recuperar Contraseña";
+}
+
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/Seguridad/Scripts/recuperacionpwdnd.js")"></script>
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" data-hash="@ViewBag.Hash" class="my-cloak">
+    <div ng-controller="recuperacionController" class="row" style="margin-right: 0px;">
+        @if (ViewBag.ResultadoValidacion == "OK")
+        {
+            <div dx-load-panel="{message: 'Procesando...', showIndicator: true, shading: true, bindingOptions: { visible: 'procesandoVisible' } }"></div>
+            <div class="col-md-6 col-md-offset-3 registrocontenedor" ng-hide="RecuperacionProcesada()">
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <h4>RECUPERAR CONTRASE&Ntilde;A</h4>
+                    <hr />
+                    <div class="form-group">
+                        @Html.Label("Nueva Contraseña", new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            <div dx-text-box="{ mode: 'password', bindingOptions: { value: 'model.Password' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'La Contraseña no puede estar vacia' }] }"></div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        @Html.Label("Confirmar Contraseña", new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            <div dx-text-box="{ mode: 'password', bindingOptions: { value: 'model.ConfirmPassword' }}" dx-validator="{ validationRules: [{ type: 'compare', comparisonTarget: validarConfirmacionPassword, message: 'Confirmación de Contraseña Inválida' }] }"></div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-md-offset-4 col-md-4">
+                            <div dx-button="btnRecuperarSettings" id="btnRecuperar" class="btn-lg"></div>
+                        </div>
+                    </div>
+                    <br />
+                }
+            </div>
+            <div class="row" ng-show="RecuperacionProcesada()">
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="alert alert-success" role="alert">Proceso Realizado Satisfactoriamente. Presione clic <a href="@Url.Action("Login", "Account", new { area = "Seguridad" })">aqu&iacute;</a> para ingresar al sistema.</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="alert alert-danger" role="alert">@ViewBag.ResultadoValidacion</div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Ubicación Urbano/Rural";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        .ui-datepicker-calendar {
+            display: none;
+        }
+
+        button#btnNuevaEmpresa {
+            position: relative;
+            top: 9px;
+            background-image: url(../../Content/images/Nueva_Empresa.png);
+            right: 0px;
+            padding-left: 39px;
+            left: -20px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+    </style>
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+    <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+</head>
+<body>
+   
+    <div id="divUbicacion" title="Ubicación Urbana/Rural" style="display: none; overflow: hidden;">
+        <iframe src="" id="frm_Ubicacion" width="100%" height="100%"></iframe>
+
+    </div>
+    <div id="divUbicacionUrbana" title="Ubicación Urbana/Rural" style="display: none; overflow: hidden;">
+        <iframe src="" id="frm_UbicacionUrbana" name="frm_UbicacionUrbana" width="100%" height="100%"></iframe>
+
+    </div>
+    <script>
+
+    $(document).ready(function () {
+        abrirUbicacion();
+    });
+
+    function abrirUbicacion() {
+        $("#divUbicacion").dialog(
+        {
+
+            width: 500,
+            height: 250,
+            modal: true
+        });
+        $("#frm_Ubicacion").attr("src", "@Url.Content("~/LimiteUrbano/Limite/Ubicacion")");
+
+    }
+    function abrirUrbanoRural(direcion, municipio) {
+        $("#divUbicacion").dialog('close');
+        $("#divUbicacionUrbana").dialog(
+    {
+
+        width: 900,
+        height: 700,
+        modal: true
+    });
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "@Url.Content("~/LimiteUrbano/Limite/UbicacionUrbana")");
+
+        form.setAttribute("target", "frm_UbicacionUrbana");
+
+        var campo1 = document.createElement("input");
+        campo1.setAttribute("type", "hidden");
+        campo1.setAttribute("name", "direccion");
+        campo1.setAttribute("value", direcion);
+        form.appendChild(campo1);
+        var campo2 = document.createElement("input");
+        campo2.setAttribute("type", "hidden");
+        campo2.setAttribute("name", "municipio");
+        campo2.setAttribute("value", municipio);
+        form.appendChild(campo2);
+        var campo3 = document.createElement("input");
+        campo3.setAttribute("type", "hidden");
+        campo3.setAttribute("name", "tipo");
+        campo3.setAttribute("value", 0);
+        form.appendChild(campo3);
+        var campo4 = document.createElement("input");
+        campo4.setAttribute("type", "hidden");
+        campo4.setAttribute("name", "id");
+        campo4.setAttribute("value", 0);
+        form.appendChild(campo4);
+        document.body.appendChild(form);
+
+        //window.open('', 'view');
+
+        form.submit();
+        //$("#frm_UbicacionUrbana").attr("src", "@Url.Content("~/LimiteUrbano/Limite/UbicacionUrbana?direccion=")" + encodeURI(direcion) + "&municipio=" + municipio + "&tipo=0");
+
+        }
+        function cerrar()
+        {
+            window.open('@Url.Action("../../../SIM/")', '_self');
+        }
+    </script>
+</body>
+

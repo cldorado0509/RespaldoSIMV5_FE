@@ -1,0 +1,82 @@
+﻿@model IEnumerable<SIM.Data.Poeca.TPOEAIR_PLAN>
+
+@{
+    ViewBag.Title = "POECA | Lista de Planes de Acción";
+}
+<div class="container-fluid">
+    <div class="col-xs-12">
+
+        <h2>Lista de Planes de Acción</h2>
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="actionButtons">
+                    @{
+                        if (!User.IsInRole("CEPISODIOS"))
+                        {
+                            @Html.ActionLink("Crear Nuevo", "Crear", null, new { @class = "btn btn-default" })
+                        }
+                    }
+                </div>
+
+                <table class="table table-striped">
+
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.N_ANIO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_REMITENTE)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_CARGO_REMITENTE)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_OBSERVACIONES)
+                        </th>
+                        <th>Acciones</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.N_ANIO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_REMITENTE)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_CARGO_REMITENTE)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_OBSERVACIONES)
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-xs">
+                                    @Html.ActionLink("📄", "Detalles", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Detalles" })
+                                    @{
+                                        if (!String.IsNullOrEmpty(item.S_URL_ANEXO))
+                                        {
+                                            <a class="btn btn-primary btn-descarga" href="@Url.Action("DescargarAnexo", new { id = item.ID })" title="Descargar Anexo">
+                                                <i class='glyphicon glyphicon-download-alt'></i>
+                                            </a>
+                                        }
+                                    }
+                                    @{
+                                        if (item.N_RADICADO == null && item.N_RADICADO_ANIO == null && !User.IsInRole("CEPISODIOS"))
+                                        {
+                                            @Html.ActionLink("✏️", "Editar", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Editar" })
+                                            @Html.ActionLink("🗑️", "Eliminar", new { id = item.ID }, new { @class = "btn btn-danger", @title = "Eliminar" })
+                                        }
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

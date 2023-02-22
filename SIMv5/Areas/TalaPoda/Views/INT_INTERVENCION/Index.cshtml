@@ -1,0 +1,117 @@
+﻿@model IEnumerable<SIM.Areas.TalaPoda.Models.INT_INTERVENCION>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.D_FECHA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ID_ACTOR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.S_OBSERVACIONES)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.S_FICHA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ID_INDIVIDUO_DISPERSO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ID_OPERADOR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_ACTUALIZACION)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.L_PROPUESTO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ID_CONTRATO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ID_ESTADO_INT_CONTRATO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ID_USUARIO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ID_INTERVENTOR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FECHA_INGRESO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FLR_INTERVENCION.S_INTERVENCION)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.INT_CARACTERISTICAS.ID_INTERVENCION)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_FECHA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID_ACTOR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.S_OBSERVACIONES)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.S_FICHA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID_INDIVIDUO_DISPERSO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID_OPERADOR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_ACTUALIZACION)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.L_PROPUESTO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID_CONTRATO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID_ESTADO_INT_CONTRATO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID_USUARIO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID_INTERVENTOR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FECHA_INGRESO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FLR_INTERVENCION.S_INTERVENCION)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.INT_CARACTERISTICAS.ID_INTERVENCION)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID_INTERVENCION }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID_INTERVENCION }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID_INTERVENCION })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,211 @@
+﻿@{
+    ViewBag.Title = "Tala";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Tala</title>
+
+  
+ 
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    </head>
+
+
+
+
+<body>
+    <div class="panel panel-default">
+        <div class="panel-heading" style="width:100%">
+
+            <div>
+                <div style="padding: 15px">
+                    <ul class="nav nav-tabs">
+                        <li id="Tab1" class="active"><a href="#Mapa" data-toggle="tab">Mapa</a></li>
+                        <li id="Tab4"><a href="#tala" data-toggle="tab">Tala poda</a></li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade active in" id="Mapa">
+                       
+                            <div class="row">
+                                <div class="col-sm-12" style="height:600px">
+                                    <iframe id="mapa" src="/MAPGISV5_WEB/tools/AMVA/inicio_flora.htm" style="height:100%; width:100%"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tala" style="height:400px">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Tipo de Solicitante</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <select id="cmbTipoSolicitud" class="form-control"><option value="-1">--Selecione--</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Medio de Respuesta</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <select id="cmbMedioRespuesta" class="form-control"><option value="-1">--Selecione--</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Correo Electrónico</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtCorreo" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Dirección</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtDiraccion" class="form-control" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Nombre completo o Razón Social</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtRazonSocial" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Barrio o Vereda</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtBarrio" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Teléfono o Celular</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtTelefono" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Pais</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtPais" class="form-control" />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Tipo de Identificación</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <select id="cmbTipoIdentificacion" class="form-control"> <option value="-1">--Seleccione--</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Departamento</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <select id="cmbDepartamento" class="form-control"> <option value="-1">--Seleccione--</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Número de Identificación</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input id="txtIdentificacion" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <label>Ciudad</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <select id="cmbCiudad" class="form-control"><option>--Seleccione--</option></select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-12">
+                                        <label>Asunto</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <textarea id="txtAsunto" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-12">
+                                        <label>Descripción</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <textarea id="txtDescripcion" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div id="pantallaCargarExcel" title="Cargar Archivo" style="display: none;">
+        <iframe src="" id="excel" width="100%" height="100%"></iframe>
+
+
+    </div>
+
+    <div id="pantallaAsociarArbol" title="Cargar arbol" style="display: none; overflow: hidden;">
+        <iframe src="" id="frmArbol" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <div id="msConfir" title="Abvertencia" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    $( function() {
+    $( "#accordion" ).accordion();
+    } );
+    </script>
+</body>
+  
+
+
+
+
+

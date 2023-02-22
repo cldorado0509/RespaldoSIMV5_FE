@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNet.Identity
+@using SIM.Areas.Seguridad.Models
+@using SIM.Utilidades
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/Content/Images/favico-area.ico?v=1.01")" />
+    <title>@ViewBag.Title - SIM</title>
+    @Styles.Render("~/Contentv5/css")
+    @Scripts.Render("~/bundlesv5/modernizr")
+    @Styles.Render("~/Content/ContentV5/ContentV5DevExtremeBundle")
+    @Scripts.Render("~/Scripts/ScriptsV5/DevExtremeBundle")
+
+    <style>
+        #loader {
+            border: 12px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 12px solid #444444;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .center {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+    </style>
+
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular-route.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular-sanitize.js")"></script>
+
+    <link href="@Url.Content("~/Content/homepage.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/style.css?v=1.01")" />
+    <link href="@Url.Content("~/Content/forms.css?v=1.02")" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EstiloPagina.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/normalize.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/stylesV5/Principal.css?v=1.08")" />
+</head>
+<body style="height:100%; visibility: hidden">
+    <div id="loader" class="center" style="visibility: visible"></div>
+    <div class="body-content" style="height:100%">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundlesv5/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script>
+        document.onreadystatechange = VisualizarPagina;
+
+        function VisualizarPagina() {
+            if (document.readyState !== "complete") {
+                document.querySelector(
+                    "body").style.visibility = "hidden";
+                document.querySelector(
+                    "#loader").style.visibility = "visible";
+            } else {
+                if (typeof listoMostrar == 'undefined' || listoMostrar) {
+                    document.querySelector(
+                        "#loader").style.display = "none";
+                    document.querySelector(
+                        "body").style.visibility = "visible";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

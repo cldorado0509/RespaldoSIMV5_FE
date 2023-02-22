@@ -1,0 +1,795 @@
+﻿@{
+    ViewBag.Title = "Encuesta";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+
+
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .ui-datepicker-calendar {
+            display: none;
+        }
+
+        #loadingImg{
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.17) !important;
+    position: fixed;
+    z-index: 100000;
+    cursor: not-allowed;
+}
+
+.loadingImg{
+	position: fixed;
+    z-index: 100000;
+    background: url(/SIM/Content/Imagenes/ajax-loader.gif) transparent;
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat;
+    left: 50%;
+    background-size: contain;
+    top: 50%;
+    cursor: not-allowed;
+}
+.ui-dialog .ui-dialog-buttonpane button {
+    height: 20px;
+}
+
+.tabledependientes {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tabledependientes td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+
+[aria-describedby ~= pantallaReporte] .ui-dialog-titlebar-close {
+  display: none;
+}
+
+        #txtnombreEncMult {
+                font-size: 13px !important;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+    <!--Dialog informacion ubicacion-->
+    <div id="dialogAyuda" title="Ayuda" style="display:none">
+        <div class="col-md-12 " id="ContenidoAyuda" style="height: 200px;">
+        </div>
+    </div>
+    <!--dialog de observacion-->
+    <div id="dialogObservacion" title="Observacion" style="        display: none
+">
+        <div class="col-md-12 " id="ContenidoObservacion">
+        </div>
+    </div>
+    <!--archivos-->
+    <div id="dialogArchivo" title="Archivo" style="display:none;">
+        <div class="col-md-12 " id="ContenidoArchivo">
+        </div>
+    </div>
+    <!--hora-->
+    <div id="pantallaHora" title="Hora" style=" display: none; overflow: hidden;">
+        <iframe src="" id="frHora" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <!--geo-->
+    <div id="dialogGeo" title="Geografico" style="display:none">
+        <div class="col-md-12 " id="ContenidoGeo">
+        </div>
+    </div>
+    <!--geocodificador-->
+    <div id="divUbicacionUrbana" title="Ubicación Urbana/Rural" style="display: none; overflow: hidden; padding: 0px">
+        <iframe src="" id="frm_UbicacionUrbana" name="frm_UbicacionUrbana" width="100%" height="100%"></iframe>
+    </div>
+    <div id="app" data-url="@Url.Content("~")" data-vd="@ViewBag.Dependencias" class="row">
+        <div class="row col-md-12" id="divNombre" style="
+    margin-bottom: 10px;display:none;
+">
+            <h4 class="col-md-2" style="
+    height: 30px;
+    line-height: 29px;
+    width: 185px;
+">
+                Nombre Encuesta
+            </h4>
+            <!--input type="text" class="form-control col-md-4" value="" id="txtnombreEncMult" style="width:60%" -->
+            <span class="form-control col-md-4" id="txtnombreEncMult" style="width:60%"></span>
+        </div>
+                <div class="col-md-12" id="acordionEncuestaGeneral">
+                    <!--Nivel1-->
+                    <div class="panel-group acordeonVerde " id="acordionEncuestaPrincipal">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" style="margin-top: 10px;">
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-default" id="btnEnviar" style="width:100%" onclick="EnviarEncuesta()" disabled>Enviar</button>
+                    </div>
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-default" id="btnAceptar" style="width:100%" onclick="guardarEncuesta(0)" disabled>Guardar y Cerrar</button>
+                    </div>
+                </div>
+            </div>
+            <input id="txtIdEnc" style="display:none" />
+            <input id="txtIdVgen" style="display:none" />
+            <input id="txtIdEstado" style="display:none" />
+            <div id="msAlmacenamiento" title="Información" style="display:none">
+                <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+            </div>
+            <div id="msAdvertencia" title="Advertencia" style="display:none">
+                <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msAdv"></p>
+            </div>
+            <div id="pantallaVigencia" title="Vigencia" style="display: none; overflow: hidden;">
+                <iframe src="" id="frVigencia" width="100%" height="100%"></iframe>
+            </div>
+            <div id="validacionEnvio" title="Validación Envío" style="display: none;">
+                <h4>Las siguientes encuestas no han sido enviadas a&uacute;n para la vigencia actual.</h4>
+                <div>&nbsp;</div>
+                <table id="dependencias" class="tabledependientes"></table>
+            </div>
+            <div id="pantallaReporte" title="PDF" style="display: none; overflow: hidden;">
+
+                <iframe src="" id="frEncuestaPDF" width="100%" height="100%"></iframe>
+
+
+            </div>
+            <div id="msConfirmacion" title="Terminos Condiciones" style="display:none">
+                <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextConf"></p>
+            </div>
+            <script>
+    var arrFechaIni = "";
+    var arrFechaFin = "";
+    var jsonEncuestas = null;
+    var rutaDoc="";
+    var tipo=0;
+    var cardinalidad=0;
+    var card=0;
+    var valorV=0;
+    var idInstalacion = 0;
+    var idTercero = 0;
+    var radicado = 0;
+
+    $(document).ready(function () {
+        prenderload();
+
+        $("#txtIdVgen").val(@ViewBag.idVigen);
+        card=@ViewBag.card;
+        tipo=@ViewBag.tipo;
+        idEstadoEncuesta = @ViewBag.estado;
+
+        if(card==2)
+        {
+            //$("#btnEnviar").css("display", "none");
+            $("#divNombre").css("display", "");
+            //$("#txtnombreEncMult").val("@ViewBag.no")
+            $("#txtnombreEncMult").text("@ViewBag.no")
+
+        }else{
+            $("#btnEnviar").css("display", "block");
+        }
+        if(tipo==0)
+        {
+            consultarVigencia($("#txtIdVgen").val());
+        }else{
+            $("#txtIdEstado").val(@ViewBag.estado);
+            consultarJsonEncuesta(@ViewBag.estado);
+        }
+        consultarEstadoV($("#txtIdEstado").val());
+
+        setTimeout(function () { $('#btnAceptar').attr('disabled', false); }, 15000);
+        setTimeout(function () { $('#btnEnviar').attr('disabled', false); }, 15000);
+        setTimeout(function () { apagarload(); }, 10000);
+    });
+
+    function consultarVigencia(id) {
+        //prenderload();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarVigenciaEnc", "EncuestaExterna")',
+            data: { id: id },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                cardinalidad=datos[0].CARDINALIDAD;
+                try {
+
+                    arrFechaIni = datos[0].FECHA_INICIO.split("-");
+                    arrFechaFin = datos[0].FECHA_FIN.split("-");
+                }catch(err) {
+                }
+                if (datos[0].VIGENCIA != "0") {
+
+                } else {
+                    if (datos[0].TIPOVIGENCIA == 1 || datos[0].TIPOVIGENCIA == 2) {
+                        abrirVigencia(0);
+                    }else{
+                        if (datos[0].TIPOVIGENCIA == 3)
+                        {
+                            abrirVigencia(3);
+                            //consultarVigenciaEncValidar( $("#txtIdVgen").val());
+
+                        }else{
+
+                            if (datos[0].TIPOVIGENCIA == 4)
+                            {
+                                abrirVigencia(4);
+                            }
+                        }
+                    }
+                }
+                @*}else{
+                    apagarload();
+                    window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad")' , '_self');
+
+                }*@
+                //apagarload();
+            }
+        });
+    }
+
+    function consultarVigenciaEncValidar(id) {
+        arrVigenValidar = [];
+        var int=idInstalacion;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarEncVigen", "EncuestaExterna")',
+            data: { id: id },
+            beforeSend: function () { },
+            success: function (response) {
+                if(response=="[]")
+                {
+                    abrirVigencia(3);
+                }else{
+                    mensajeAdvertencia("Esta encuesta solo se puede diligenciar una vez");
+
+
+                }
+
+
+
+
+            }
+        });
+    }
+    function consultarEstadoV(id) {
+        if($("#txtIdEstado").val()!="")
+        {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarEstadoV", "EncuestaExterna")',
+                data: { idesatdo: id },
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+                    valorV = datos[0].VALOR;
+                    idTercero=datos[0].ID_TERCERO;
+                    idInstalacion=datos[0].ID_INSTALACION;
+                }
+            });
+        }
+    }
+    function consultarJsonEncuesta(idestado) {
+        //prenderload();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarJsonEncuestas", "EncuestaExterna")',
+            data: { idEstado: idestado, form: 14,idvigen:$("#txtIdVgen").val(), anterior: '@ViewBag.old' },
+            beforeSend: function () { },
+            success: function (response) {
+                //alert(response);
+                if (response != "[]") {
+                    jsonEncuestas = eval('(' + response + ')');
+                    var html = consultarEncuestas(jsonEncuestas);
+                    $("#acordionEncuestaPrincipal").remove();
+                    $("#acordionEncuestaGeneral").append(html);
+                    ejecutarDependenciar();
+                    $("a.titleAcordeon").click();
+                    $("button.agregar").click();
+                    $("button.agregar").css("display", "none");
+
+                }
+                //apagarload();
+
+            }
+        });
+    }
+
+
+    @*function validarEstado() {
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("consultarEstado", "EncuestaExterna")',
+                    data: { idEnc: $("#txtIdEnc").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        if (response == "[]") {
+                            crearEstadoNuevo();
+                            consultarJsonEncuesta("-1");
+                        } else {
+
+                            var datos = eval('(' + response + ')');
+                            consultarJsonEncuesta(datos[0].ID_ESTADO);
+                            $("#txtIdEstado").val(datos[0].ID_ESTADO);
+                        }
+
+                    }
+                });
+            }*@
+    function consultarcombohijo(idPregunta,comb,idencuesta) {
+        var filtro=$("#"+comb.id).val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarcombohijo", "EncuestaExterna")',
+            data: { idpre:idPregunta,fil:filtro},
+            beforeSend: function () { },
+            success: function (response) {
+                var html = "<option value=-1>-- Seleccionar --</option>";
+                var datos = eval('(' + response + ')');
+                for (var i = 0; i < datos.length; i++)
+                    html += "<option value=" + datos[i].ID_RESPUESTA + ">" + datos[i].S_VALOR + "</option>";
+
+
+                $("#encuesta_"+idencuesta+"_pregunta_"+idPregunta).html(html);
+
+               // crearVigenciaSolucion(idVigencia, valor, datos);
+            }
+        });
+    }
+            function crearEstadoNuevo(idVigencia, valor,idtercero,idInstalacion,radicado) {
+        card=1;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("crearEstado", "EncuestaExterna")',
+            data: { idEncu: 0,idtercero:idtercero,idInstalacion:idInstalacion,rad:radicado },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                $("#txtIdEstado").val(datos);
+                idEstadoEncuesta = datos;
+
+                crearVigenciaSolucion(idVigencia, valor, datos);
+            }
+        });
+    }
+
+    var datoscardinalidad1 = {};
+    function crearEstadoNuevoCardinalidad(idVigencia, valor, idtercero, idInstalacion, cantidad) {
+        datoscardinalidad1 = {};
+        datoscardinalidad1.valor = valor;
+        datoscardinalidad1.idTercero = idtercero;
+        datoscardinalidad1.idInstalacion = idInstalacion;
+        datoscardinalidad1.idVigencia = idVigencia;
+        card=2;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("crearEstadoCardinalidad", "EncuestaExterna")',
+            data: { idEncu: 0, idtercero: idtercero, idInstalacion: idInstalacion, card: cantidad, vigencia: idVigencia,vige:valor },
+            beforeSend: function () { },
+            success: function (response) {
+                var url = datoscardinalidad1.valor.replace("-","")+ "&tercero=" + datoscardinalidad1.idTercero + "&instalacion=" + datoscardinalidad1.idInstalacion + "&vigencia=" + datoscardinalidad1.idVigencia;
+                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + url , '_self');
+
+                //crearVigenciaSolucion(idVigencia, valor, datos);
+            }
+        });
+    }
+
+    function crearVigenciaSolucion(idVigencia, valor, idestado) {
+        prenderload();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("agregarVigencia", "EncuestaExterna")',
+            data: { idvig: $("#txtIdVgen").val(), vigen: valor, estado: idestado },
+            beforeSend: function () { },
+
+            success: function (response) {
+                mensajeAlmacenamiento("Almacenamiento exitoso");
+                consultarJsonEncuesta($("#txtIdEstado").val());
+
+                apagarload();
+            }
+        });
+    }
+
+    function abrirVigencia(tipo) {
+        $("#pantallaVigencia").dialog(
+        {
+
+            width: 600,
+            height: 700, close : function(){
+
+                @*window.open('@Url.Action("../../../SIM/")','_self');*@
+            } ,
+            modal: true
+                @*,
+            buttons: {
+
+                "Aceptar": function () {
+                    $("#frVigencia").get(0).contentWindow.guardarVigencia();
+
+                },
+                "Cancelar": function () {
+                     window.open('@Url.Content("~/")' , '_self');
+
+                }
+
+            }*@
+
+
+        });
+        $("#frVigencia").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/vigencia?id=")" + $("#txtIdVgen").val()+"&tipo="+tipo);
+
+    }
+
+    function abrirValidacionEnvio() {
+
+        $("#pantallaVigencia").dialog(
+        {
+
+            width: 600,
+            height: 700,
+            modal: true
+        });
+
+        $("#frVigencia").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/vigencia?id=")" + $("#txtIdVgen").val()+"&tipo="+tipo);
+    }
+
+    function guardarEncuesta(tipoGuardado) {
+        var resp = guardarEncuestaJson(jsonEncuestas, tipoGuardado == 1);
+        if(resp!="1") //*********** Comentar este if y el contenido del else para evitar que se devuelva si deben llenarse los campos obligatorios
+        {
+        //    jsonEncuestas=guardarEncuestaJson(jsonEncuestas)
+            guardarEncuestaOficial(tipoGuardado);
+        }
+        else
+            apagarload();
+    }
+
+    function guardarEncuestaOficial(tipoGuardado) {
+        var jsonOficial = JSON.stringify(jsonEncuestas);
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarInformacionEncuesta", "EncuestaExterna")',
+            data: { jsonInfo: jsonOficial, idCapEstado: $("#txtIdEstado").val(), idform: 14},
+            beforeSend: function () { },
+            success: function (response) {
+                if (tipoGuardado == 1)
+                {
+                    terminarEncuesta();
+                } else {
+                    mensajeAlmacenamiento("Almacenamiento Exitoso");
+
+                    @if (ViewBag.TipoInvocacion == "I")
+                    {
+                        <text>
+                        if (card == "1")
+                        {
+                            window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=0")', '_self');
+                        } else {
+
+                            window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + (valorV + "").replace("-", "") + "&tercero=" + idTercero + "&instalacion=" + idInstalacion + "&vigencia=" + $("#txtIdVgen").val(), '_self');
+                        }
+                        </text>
+                    } else
+                    {
+                        <text>
+                        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/IngresoEncuesta")', '_self');
+                        </text>
+                    }
+                }
+
+                apagarload();
+
+            }
+        });
+    }
+
+    function terminarEncuesta() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("enviarEncuesta", "EncuestaExterna")',
+            data: { idestado: $("#txtIdEstado").val() },
+            beforeSend: function () { },
+            success: function (response) {
+
+                mensajeAlmacenamiento("Almacenamiento Exitoso");
+                @if (ViewBag.TipoInvocacion == "I")
+                    {
+                        <text>
+                        if (card == "1") {
+                            if (radicado == 0)
+                                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=")' + $("#txtIdEstado").val(), '_self');
+
+                            if (radicado == 1)
+                                RadicarGenerarDocumento($("#txtIdEstado").val());
+                        }
+                        else
+                        {
+                            //window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad")', '_self');
+                            window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + (valorV+"").replace("-", "") + "&tercero=" + idTercero + "&instalacion=" + idInstalacion + "&vigencia=" + $("#txtIdVgen").val() , '_self');
+                        }
+                        </text>
+                    } else
+                    {
+                        <text>
+                        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/IngresoEncuesta")', '_self');
+                        </text>
+                    }
+            }
+        });
+    }
+
+    function RadicarGenerarDocumento(idEstado) {
+        $("#pantallaReporte").dialog(
+        {
+            width: 800,
+            height: 500,
+            modal: true,
+            buttons: {
+                "Aceptar": function () {
+                    $(this).dialog("close");
+                    window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=")' + $("#txtIdEstado").val(), '_self');
+                },
+            }
+        });
+
+        $("#frEncuestaPDF").attr("src", null);
+        $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/RadicarEncuestaEstado?idEstado=")" + idEstado);
+    }
+
+    function mensajeConfirmar(mensaje) {
+        $("#msTextConf").text(mensaje);
+        $("#msConfirmacion").dialog({
+            width: 350,
+            height: 200,
+            buttons: {
+                "NO": function () {
+                    $(this).dialog("close");
+                },
+                "SI": function () {
+
+                    guardarEncuesta(1);
+                    $(this).dialog("close");
+                }
+            }, class: "btn btn-default"
+        });
+    }
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msTextAlm").text(mensaje);
+        $("#msAlmacenamiento").dialog({
+            buttons: [
+        {
+            text: "Aceptar",
+            click: function () { $(this).dialog("close"); },
+            class: "btn btn-default "
+        },
+            ]
+        });
+    }
+    function mensajeAdvertencia(mensaje) {
+        $("#msAdv").text(mensaje);
+        $("#msAdvertencia").dialog({
+            buttons: [
+        {
+            text: "Aceptar",
+            click: function () { window.open('@Url.Action("../../../SIM/")','_self');$(this).dialog("close"); },
+            class: "btn btn-default "
+        },
+            ]
+        });
+    }
+
+    function generarPdf(idRadicado) {
+        apagarload();
+        $("#pantallaReporte").dialog(
+        {
+            width: 800,
+            height: 500,
+            closeOnEscape: false,
+            modal: true, buttons: {
+                "Cancelar": function () {
+                    $(this).dialog("close");
+                },
+                "Enviar": function () {
+                    mensajeConfirmar("Esta seguro de enviar la encuesta ya que no se podrá modificar ?");
+                }
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("validarenviarenc", "EncuestaExterna")',
+            data: { idEstado:$("#txtIdEstado").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                if(datos[0].RADICADO==0)
+                {
+                    $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/reportEncuesta?idestado=")" + $("#txtIdEstado").val()+"&idRadicado="+idRadicado);
+
+                }else
+                {
+                    $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/reportEncuestasinradicado?ID_ESTADO=")" + $("#txtIdEstado").val()+"&idinstalacion="+idInstalacion);
+
+                }
+
+
+            }
+        });
+
+
+
+
+    }
+
+    ///documentos
+
+
+
+
+
+
+    function guardarArchivoPregunta(idpregunta,id)
+    {
+        $("#" + id.id).val(rutaDoc)
+        $("#dialogArchivo").dialog("close");
+    }
+    function prenderload()
+    {
+        $("#loadingImg").css({ "display": "block" });
+    }
+    function apagarload()
+    {
+        $("#loadingImg").css({ "display": "none" });
+    }
+
+    function EnviarEncuesta() {
+        var idRadicado=0;
+
+        if (card == 2) {
+            mensajeConfirmar("¿Está seguro de finalizar el proceso de diligenciamiento de la encuesta?, ya que no se podrá modificar la información");
+        } else {
+            $.getJSON($('#app').data('url') + 'EncuestaExterna/EncuestaExterna/DatosEstadoVigencia', {
+                //idEstado: @ViewBag.estado
+                idEstado: idEstadoEncuesta
+            }).done(function (data) {
+                if (data == null) {
+                    alert('Error validando los datos de la encuesta para el envío.');
+                } else {
+                    radicado = data.RADICADO;
+
+                    $.getJSON($('#app').data('url') + 'EncuestaExterna/EncuestaExterna/ValidarDependienciasVigencia', {
+                        idVigencia: data.ID_VIGENCIA,
+                        idInstalacion: data.ID_INSTALACION,
+                        valorVigencia: data.VALOR_VIGENCIA
+                    }).done(function (dataDependencias) {
+                        $("#dependencias tr").remove();
+
+                        if (dataDependencias.numRegistros > 0) {
+                            dataDependencias.datos.forEach(function (valor, indice, array) {
+                                $("#dependencias").append('<tr><td>' + valor.VIGENCIA + '</td></tr>');
+                            });
+
+                            $('#validacionEnvio').dxPopup({
+                                toolbarItems: [{
+                                    toolbar: 'bottom', location: 'after', widget: 'dxButton', options: {
+                                        text: 'Cerrar', type: 'success', onClick: (function (itemData) {
+                                            var popup = $('#validacionEnvio').dxPopup("hide");
+                                        })
+                                    }
+                                }],
+                                title: 'Validación de Dependencias',
+                            });
+
+                            $("#validacionEnvio").dxPopup("show");
+                        }
+                        else {
+                            GenerarDocumentoRadicado();
+                        }
+                    }).fail(function (jqxhr, textStatus, error) {
+                        alert('Error validando dependencias de la encuesta - ' + error);
+                    });
+                }
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('Error validando datos del envío - ' + error);
+            });
+        }
+    }
+
+    function GenerarDocumentoRadicado() {
+        var idRadicado=0;
+
+        idRadicado = 1058;
+        if(card=="1")
+        {
+            respuesta = guardarEncuestaJson(jsonEncuestas);
+
+            if (respuesta != "1") {
+                jsonEncuestas = respuesta;
+                var jsonOficial = JSON.stringify(jsonEncuestas);
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GuardarInformacionEncuesta", "EncuestaExterna")',
+                    data: { jsonInfo: jsonOficial, idCapEstado: $("#txtIdEstado").val(), idform: 14 },
+                    beforeSend: function () { },
+                    success: function (response) {
+
+                        generarPdf(idRadicado);
+                    }
+                });
+            } else {
+                apagarload();
+            }
+        }
+        else
+            mensajeConfirmar("¿Está seguro de finalizar el proceso de diligenciamiento de la encuesta?, ya que no se podrá modificar la información");
+    }
+
+    function crearEstadoUnica(idTercero,idInstalacion) {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        var hh=today.getHours();
+        var mi=today.getMinutes();
+        var ss=today.getSeconds();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("crearEstado", "EncuestaExterna")',
+            data: { idEncu: 0,idtercero:idTercero,idInstalacion:idInstalacion,rad:0 },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                $("#txtIdEstado").val(datos);
+                crearVigenciaSolucion(3,dd+"/"+mm+"/"+yyyy+"-"+hh+":"+mi+":"+ss,datos);
+
+
+            }
+        });
+    }
+
+    function AbrirHora(idpregunta, id) {
+
+        $("#pantallaHora").dialog(
+    {
+
+        width: 500,
+        height: 500,
+        modal: true,
+
+
+
+    });
+
+        $("#frHora").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/tipoHora")");
+
+    }
+            </script>
+</body>
+

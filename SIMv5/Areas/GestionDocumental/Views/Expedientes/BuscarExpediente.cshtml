@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Buscar Expedientes";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/BuscaExpediente.js?V=0.1")"></script>
+<style>
+    #BotonExp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .hidden {
+        visibility: hidden;
+    }
+    .info {
+        margin-top: 5px;
+        /*height: 78px;*/
+    }
+    .image-container {
+        width: 65px;
+        float: left;
+        margin-right: 20px;
+    }
+    .image-container img {
+        display: block;
+        width: 100%;
+    }
+    .dx-list .dx-scrollable-content {
+        column-count: 4;
+        -moz-column-count: 4;
+    }
+    .dx-list-item {
+        border-top: none;
+        break-inside: avoid;
+    }
+    .indices {
+        text-align: justify;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9pt;
+        width: 100%;
+        word-wrap: break-word;
+        max-width: 450px;
+    }
+    .dx-popover-wrapper .dx-popup-content {
+        white-space: normal !important;
+    }
+    .title {
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: left;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" style="height: 800px;">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Buscar Expedientes</label>
+            </h3>
+        </div>
+        <div class="row">
+            <div class="col-md-2" id="btnBuscarExp"></div>
+            <div class="col-sm-6" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;" id="lblExpediente"></div>
+            <div class="col-sm-2" id="btnIndices"></div>
+            <div class="col-sm-2" id="cmdShowExpedienteFlip"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <div id="dxTreeView"></div>
+            </div>
+            <div id="PanelDer" class="col-sm-9 hidden">
+                <div class="panel panel-primary" id="main">
+                    <div class="panelSIM-heading">
+                        <h3 class="panelSIM-title">
+                            <label class="header">Documentos del expediente</label>
+                        </h3>
+                    </div>
+                    <div id="ListaDocs"></div>
+                    <div id="tooltip"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="PopupIndicesExp"></div>
+    <div id="popupBuscaExp">
+        <iframe src="" id="BuscarExp" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+    </div>
+</div>
+</div>

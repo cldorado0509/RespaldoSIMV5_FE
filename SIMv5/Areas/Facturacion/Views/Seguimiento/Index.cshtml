@@ -1,0 +1,92 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<script type="text/javascript" src="~/Areas/Facturacion/Scripts/Seguimiento.js?V=0.4"></script>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Facturar visitas de seguimiento</label>
+            </h3>
+        </div>
+        <div id="sebTipoUnidad" class="col-12"></div>
+        <div id="PanelInfTecnico">
+            <div id="grdInformes"></div>
+        </div>
+        <div id="PanelResoluciones">
+            <div id="grdResol"></div>
+        </div>
+        <div id="popCalcular">
+            <iframe src="" id="DocumentoInforme" width="100%" height="50%" class="col-md-12"></iframe>
+            <div class="row">
+                <div class="form-row align-items-center">
+                    <div class="form-group col-md-6">
+                        <label for="TipoTramite">Tipo de Trámite: </label>
+                        <div id="sbTipoTramite"></div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="DocTercero">Tercero: </label>
+                        <div id="DocTercero"></div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="NombreTercero">Nombre Tercero: </label>
+                        <div id="NombreTercero" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-row align-items-center">
+                    <div class="form-group col-md-4">
+                        <label for="CM">CM:</label>
+                        <div id="CM"></div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="cmbAno">Año Factura:</label>
+                        <div id="cmbAno"></div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label id="lblItems" for="CantItem">Items:</label>
+                        <div id="CantItem"></div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label id="lblCatNor" for="CantNormas" style="visibility: hidden">Cantidad Normas:</label>
+                        <div id="CantNormas"></div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label id="lblCatLin" for="CantLineas" style="visibility: hidden">Cantidad Líneas:</label>
+                        <div id="CantLineas"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-row align-items-center">
+                    <div class="form-group col-md-3">
+                        <label for="CantProf">Nro. de profesionales:</label>
+                        <div id="CantProf"></div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="CantVisitas">Nro. Visitas:</label>
+                        <div id="CantVisitas"></div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="CantHorInf">Nro. horas informe:</label>
+                        <div id="CantHorInf"></div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="DuracionVisita">Duración Visita:</label>
+                        <div id="DuracionVisita"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <div id="lblValorFactura" style="font-family: Arial;font-size:20px;font-weight:bold;"></div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            </div>
+            <div id="popDetalles"></div>
+        </div>
+</div>

@@ -1,0 +1,168 @@
+﻿@*model RegisterViewModel*@
+@using System.Web.UI.WebControls
+@using SIM.Areas.Seguridad.Models
+@model IEnumerable<ROLESUSUARIO>
+
+@{
+    ViewBag.Title = "Registrarse";
+}
+
+@functions{
+    public string TokenHeaderValue()
+    {
+        string cookieToken, formToken;
+        AntiForgery.GetTokens(null, out cookieToken, out formToken);
+        return cookieToken + ":" + formToken;
+    }
+}
+
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/Seguridad/Scripts/registro.js?v=1.01")"></script>
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak">
+    <div ng-controller="registroController" class="row" style="margin-right: 0px;">
+        <div dx-load-panel="{message: 'Procesando...', showIndicator: true, shading: true, bindingOptions: { visible: 'procesandoVisible' } }"></div>
+        <div class="col-md-6 registrocontenedor" style="margin-left: 2%" data-af="@TokenHeaderValue()" ng-hide="EsUsuarioRegistrado()" dx-validation-group="{}" id="datosBasicosGroupValidator">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>REGISTRO</h4>
+                <hr />
+                @Html.ValidationSummary()
+
+                <div class="form-group" ng-show="false">
+                    @Html.Label("Registrarse como", new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        <div dx-radio-group="tipoUsuarioSettings"></div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-show="model.TipoPersonaUsuario == 'J'">
+                    @Html.Label("NIT", new { @class = "col-md-4 control-label", @id = "Nit" })
+                    <div class="col-md-8">
+                        <div dx-text-box="{bindingOptions: { value: 'model.Nit', readOnly: 'model.Type != 0' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Nit Requerido' }] }"></div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-show="model.TipoPersonaUsuario == 'J'">
+                    @Html.Label("Razón Social", new { @class = "col-md-4 control-label", @id = "RazonSocial" })
+                    <div class="col-md-8">
+                        <div dx-text-box="{bindingOptions: { value: 'model.RazonSocial', readOnly: 'model.Type != 0' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Razón Social Requerida' }] }"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Apellidos", new { @class = "col-md-4 control-label", @id = "LastName" })
+                    <div class="col-md-8">
+                        <div dx-text-box="{bindingOptions: { value: 'model.LastName', readOnly: 'model.Type != 0' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Apellidos Requerido' }] }"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Nombres", new { @class = "col-md-4 control-label", @id = "FirstName" })
+                    <div class="col-md-8">
+                        <div dx-text-box="{bindingOptions: { value: 'model.FirstName', readOnly: 'model.Type != 0' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Nombres Requerido' }] }"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Correo Electrónico", new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        <div dx-text-box="{mode: 'email', bindingOptions: { value: 'model.Email', readOnly: 'model.Type != 0' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Correo Electrónico Requerido' }, { type: 'email', message: 'Correo Electrónico Inválido' }] }"></div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row" ng-show="MostrarDatosAdicionales(0)">
+                    <div class="col-md-offset-4 col-md-4">
+                        <div dx-button="btnRegistroSettings" id="btnRegistro" class="btn-lg"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div dx-button="btnCancelarSettings" id="btnCancelar" class="btn-lg"></div>
+                    </div>
+                </div>
+                <div class="row" ng-show="MostrarDatosAdicionales(1)" style="margin:10px">
+
+                </div>
+                <div class="row" ng-show="MostrarDatosAdicionales(2)" style="margin:10px">
+
+                </div>
+                <br />
+            }
+        </div>
+        <div class="col-md-5 col-md-offset-1 registrocontenedor form-horizontal" style="margin-left: 3%" ng-show="MostrarDatosAdicionales(3)" dx-validation-group="{}" id="datosComplementariosGroupValidator">
+            <div ng-show="MostrarDatosAdicionales(1)">
+                <h4>DOCUMENTOS</h4>
+                <br />
+                <div>Con el prop&oacute;sito de verificar la veracidad de la informaci&oacute;n suministrada, adjunte el certificado de c&aacute;mara de comercio de su empresa.</div>
+                <div class="col-md-12">
+                    <div class="dx-field">
+                        <div dx-file-uploader="fupArchivos" id="archivos"></div>
+                    </div>
+                </div>
+                <hr />
+            </div>
+            <div ng-show="MostrarDatosAdicionales(3)">
+                <h4>ROLES USUARIO EXTERNO</h4>
+                <br />
+                <div class="row">
+                    @Html.Label("Roles", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-9">
+                        @{
+                            foreach (ROLESUSUARIO rolUsuario in Model)
+                            {
+                                <div class="row">
+                                    <span style="display:none" id="ruId_@rolUsuario.ID_ROL.ToString()">chkru_@rolUsuario.ID_ROL.ToString()</span>
+                                    <div dx-check-box="{ value: @(rolUsuario.SEL ? "true" : "false"), text: '@rolUsuario.S_NOMBRE' }" id="chkru_@rolUsuario.ID_ROL.ToString()"></div><br />
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div ng-show="MostrarDatosAdicionales(3)">
+                <br />
+                <div>
+                    <hr />
+                    <div class="form-group">
+                        @Html.Label("Contraseña", new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            <div dx-text-box="{ mode: 'password', bindingOptions: { value: 'model.Password' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Contraseña Requerida' }] }"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Confirmar", new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            <div dx-text-box="{ mode: 'password', bindingOptions: { value: 'model.ConfirmPassword' }}" dx-validator="{ validationRules: [{ type: 'compare', comparisonTarget: validarConfirmacionPassword, message: 'Confirmación de Contraseña Inválida' }] }"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            <div ng-show="MostrarDatosAdicionales(3)">
+                <br />
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8">
+                        <div dx-button="btnFinalizarRegistroSettings" id="btnFinalizarRegistro" class="btn-lg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="EsUsuarioRegistrado()">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="alert alert-success" role="alert">Usuario Registrado Satisfactoriamente. Recibirá un correo electrónico tan pronto sea validada la información suministrada en el Registro.</div>
+            </div>
+        </div>
+        @if (false)
+        {
+            <div class="col-md-4" style="display:none">
+                <section id="socialLoginForm">
+                    @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
+                </section>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

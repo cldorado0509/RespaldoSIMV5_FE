@@ -1,0 +1,131 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Categoría";
+    //Layout = "~/Views/Shared/_LayoutDesarrolloEconomico.cshtml";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/DesarrolloEconomico/Scripts/Empresa.js?v=1.00")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Listado de Empresas y sus portafolios de Productos y/o Servicios</label>
+            </h3>
+        </div>
+        <div id="GidListado"></div>
+        <br />
+        <div id="btnNuevo"></div>
+        <div id="PopupNuevaEmpresa">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="control-label col-sm-2">Nit :</div>
+                    <div class="col-sm-3" id="txtNit"></div>
+                    <div class="control-label col-sm-2">Razón Social :</div>
+                    <div class="col-sm-4" id="txtRazonSocial"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Descripción :</div>
+                    <div class="col-sm-9" id="txtDescripcion"></div>
+                    <div class="control-label col-sm-2">Sitio Web :</div>
+                    <div class="col-sm-9" id="txtUrlWeb"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Instagram :</div>
+                    <div class="col-sm-3" id="txtUrlInstagram"></div>
+                    <div class="control-label col-sm-2">Facebook :</div>
+                    <div class="col-sm-4" id="txtUrlFacebook"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Dirección :</div>
+                    <div class="col-sm-9" id="txtDireccion"></div>
+                    <div class="control-label col-sm-2">Municipio :</div>
+                    <div class="col-sm-9" id="cboMunicipio"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Teléfono :</div>
+                    <div class="col-sm-3" id="txtTelefono"></div>
+                    <div class="control-label col-sm-2">Otro Teléfono :</div>
+                    <div class="col-sm-4" id="txtOtroTelefono"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Correo Electrónico :</div>
+                    <div class="col-sm-3" id="txtEMail"></div>
+                    <div class="control-label col-sm-2">Logotipo :</div>
+                    <div class="col-sm-4" id="txtLogo"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">categoría :</div>
+                    <div class="col-sm-3" id="cboCategoria"></div>
+                    <div class="control-label col-md-2">Foto :</div>
+                    <div class="col-md-4" id="txtFoto"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-md-3">Habilitado :</div>
+                    <div class="col-md-3" id="chkEstado"></div>
+                </div>
+                <br />
+                <div id="BotonNewEmpresa">
+                    <div id="btnGuarda"></div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <h4 class="panelSIM-title">
+            <label class="header">Productos y/o Servicios</label>
+        </h4>
+        <div id="GidListadoProductos"></div>
+        <br />
+        <div id="btnNuevoProducto"></div>
+
+        <div id="PopupNuevoProducto">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="control-label col-sm-2">Producto :</div>
+                    <div class="col-sm-9" id="txtProducto"></div>
+                    <div class="control-label col-sm-2">Descripción :</div>
+                    <div class="col-sm-9" id="txtDescripcionProducto"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Valor Unitario :</div>
+                    <div class="col-sm-3" id="txtValorUnitario"></div>
+                    <div class="control-label col-sm-2">Unidad de Medida :</div>
+                    <div class="col-sm-4" id="cboUnidadMed"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Descripción :</div>
+                    <div class="col-sm-9" id="txtDescripcionProducto"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Url Imagen :</div>
+                    <div class="col-sm-4" id="txtUrlImagen"></div>
+                    <div class="control-label col-md-3">Habilitado :</div>
+                    <div class="col-md-3" id="chkEstadoProducto"></div>
+                </div>
+                <hr />
+                <div id="BotonNewProducto">
+                    <div id="btnGuardaProducto"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

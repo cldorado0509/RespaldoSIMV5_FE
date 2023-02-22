@@ -1,0 +1,60 @@
+﻿@model SIM.Data.Poeca.DPOEAIR_MEDIDA
+
+@{
+    ViewBag.Title = "POECA | Confirmar Eliminación";
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>¿Estás seguro/a de eliminar esta Medida?</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_NOMBRE_MEDIDA):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_NOMBRE_MEDIDA)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_DESCRIPCION):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_DESCRIPCION)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_ES_OBLIGATORIA):
+                </dt>
+
+                <dd>
+                    @{
+                        var respuestaObligatoriedad = Model.S_ES_OBLIGATORIA.Equals("1") ? "Sí" : "No";
+                        @respuestaObligatoriedad
+                    }
+                </dd>
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-primary" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Eliminar" class="btn btn-block btn-danger" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,150 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "GridAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        label {
+            margin-top: 15px;
+        }
+        hr.line {
+            display: block;
+            position: relative;
+            top: 11px;
+            width: 247px;
+            margin-bottom: 5px;
+        }
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            position: initial;
+            min-height: 1px;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+    </style>
+</head>
+<body style="overflow:hidden;">
+    <div class="container">
+
+
+            
+        
+            <div class="col-sm-12" style="text-align:left">
+                <label class="control-label"  id="lblNombreFoto"></label>
+            </div>
+        <div class="col-sm-12" style="
+    position: relative;
+    left: -40px;
+">
+            <button class="btn btn-default" onclick="eliminarFotografia()">Eliminar</button>
+        </div>
+        <div class="col-sm-12" style="
+    position: relative;
+    left: -31px;
+">
+            <button class="btn btn-default" onclick="decargar()">Descargar</button>
+        </div>
+      
+        <hr class="line" />
+        <div class="form-group">
+            <div class="col-sm-12" style=" text-align:left">
+                <label class="control-label">Etiqueta</label>
+            </div>
+
+
+            <div class="col-sm-12">
+                <textarea class="form-control" id="txtEtiqueta"></textarea>
+            </div>
+            <div class="col-sm-12" style=" text-align:left">
+                <label class="control-label">Palabra clave</label>
+            </div>
+
+
+            <div class="col-sm-12">
+                <input id="txtPalabra" class="form-control" />
+            <div class="col-sm-12">
+                <button class="btn btn-default" style="margin-top: 14px;" onclick="agregarEtiqueta()">Guardar</button>
+            </div>
+        </div>
+        </div>
+      
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <script>
+        var urlFoto = "";
+        var imagen = "";
+        var RutaVisita= '@Url.Content("~/ControlVigilancia/")';
+        $(document).ready(function () {
+             imagen = parent.nombreFoto;
+            var Nombre = parent.nombreFoto.split(".");
+            var etiqueta = parent.etiqueta.split(".");
+                
+            $("#lblNombreFoto").text(Nombre[0]);
+            $("#txtEtiqueta").text(etiqueta[0]);
+            ConsultarPalabra();
+        });
+       
+        
+        function eliminarFotografia()
+        {
+            parent.EliminarFotoVisitaBD();
+            parent.$("#pantallaEliminarFoto").dialog('close');
+        }
+        function agregarEtiqueta() {
+            if ($("#txtEtiqueta").val() != "") {
+                parent.AgregarEtiqueta($("#txtEtiqueta").val(),$("#txtPalabra").val());
+                parent.$("#pantallaEliminarFoto").dialog('close');
+            }
+        }
+        function decargar()
+        {
+
+            window.open("@Url.Content("~/fotoFormulario/")" + parent.$("#txtForm").val() + "/" + imagen);
+        }
+        function ConsultarPalabra() {
+
+            $.ajax({
+                type: "POST",
+
+                url: RutaVisita + "Visitas/ConsultarPalabra",
+                data: { idF: parent.idFotografia },
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = response;
+                    if (response.length>0)
+                    $("#txtPalabra").val(datos[0].PALABRA_CLAVE)
+
+                }
+            });
+        }
+    </script>
+
+
+</body>
+</html>

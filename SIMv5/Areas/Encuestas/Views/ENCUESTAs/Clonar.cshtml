@@ -1,0 +1,156 @@
+﻿<link href="~/Areas/Encuestas/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+<link href="~/Areas/Encuestas/jqwidgets/styles/jqx.bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Areas/Encuestas/jqwidgets/jqx-all.js"></script>
+<script src="~/Scripts/General.js"></script>
+
+@model SIM.Areas.Encuestas.Models.ENCUESTA
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutSimple.cshtml";
+}
+
+@*@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()*@
+    
+    <input type="hidden" id="CodigoEncuesta" name="CodigoEncuesta" value="@ViewBag.CodigoEncuesta" />
+
+    <table style="width:80%">
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @*@Html.LabelFor(model => model.S_NOMBRE, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.Label("Nombre", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @*@Html.EditorFor(model => model.S_NOMBRE, new { htmlAttributes = new { @class = "form-control" } })*@
+                <input type="text" id="S_NOMBRE" name="S_NOMBRE" class="form-control" />
+                <label style="display:none" id="ErrorNombre" class="text-danger">El nombre es requerido.</label>
+                @Html.ValidationMessageFor(model => model.S_NOMBRE, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td valign="top">
+                @Html.LabelFor(model => model.S_DESCRIPCION, htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @*@Html.TextAreaFor(model => model.S_DESCRIPCION, new { @class = "form-control", @rows = 3, disabled = "disabled" })*@
+                @Html.Raw(Model.S_DESCRIPCION)
+                @Html.ValidationMessageFor(model => model.S_DESCRIPCION, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-exclamation-sign" title="Este campo es obligatorio."></span>
+            </td>
+            <td>
+                @Html.Label("Formulario", htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Html.DropDownList("IdFormulario", null, htmlAttributes: new { @class = "form-control", disabled = "disabled" })
+                <label style="display:none" id="ErrorFormulario" class="text-danger">El formulario es requerido.</label>
+            </td>
+        </tr>
+    </table>
+
+    <div class="form-group" style="display:none">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" id="btnCrear" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+@*}*@
+
+<hr />
+
+<div id="Preguntas"></div>
+
+<script type="text/javascript">
+    var Codigo = '@ViewBag.CodigoEncuesta';
+    var RutaEncuestas = '@Url.Content("~/Encuestas/")';
+
+    function CallBackEnviar() {
+        try {
+            ValidarNonmbreEncuestaReplica($("#S_NOMBRE").val());
+            
+        }
+        catch (err)
+        {
+            alert(err);
+        }
+    }
+
+    $("#S_NOMBRE").keypress(function (e) {
+        return ValidarTexto(e);
+    });
+
+    $(document).ready(function () {
+        var Error = '@ViewBag.Error';
+
+        if (Error == 'False') {
+            alert('La encuesta ha sido replicada.');
+            window.parent.$('#popup').modal('hide');            
+            window.parent.Inicializar();
+        }
+
+        window.parent.$('#popupboton').removeAttr('disabled');
+
+        if (Error == 'True')
+        {
+            alert('No fue posible replicar la encuesta.');
+        }
+
+        CargarPreguntas('Preguntas', Codigo);
+
+    });
+
+    function ValidarNonmbreEncuestaReplica(Nombre) {
+        var Datos = "";
+        $.ajax({
+            type: "POST",
+
+            url: RutaEncuestas + "Encuestas/validarNombreEncuesta",
+            data: { nombre: Nombre },
+            beforeSend: function () { },
+            success: function (response) {
+                var dato = response;
+                if (dato.length > 0) {
+                    window.parent.$('#popupboton').removeAttr('disabled');
+                    alert("el nombre de la encuesta ya existe");
+                } else {
+                    guardarClonar();
+                }
+                
+            }
+        });
+
+
+    }
+    function guardarClonar() {
+        var Datos = "";
+        $.ajax({
+            type: "POST",
+
+            url: RutaEncuestas + "Encuestas/GuardarClonar",
+            data: { Nombre: $("#S_NOMBRE").val(), CodigoEncuesta: $("#CodigoEncuesta").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                window.parent.$('#popupboton').removeAttr('disabled');
+                alert("La replica fue exitosa");
+            }
+        });
+
+
+    }
+</script>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

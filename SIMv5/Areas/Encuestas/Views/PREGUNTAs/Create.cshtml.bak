@@ -1,0 +1,439 @@
+﻿<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Scripts/General.js"></script>
+@using System.Web.UI.WebControls
+@model SIM.Areas.Encuestas.Models.ENCUESTA
+
+@{
+    ViewBag.Title = "Create";
+    //Layout = "~/Views/Shared/_LayoutSimple.cshtml";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+
+}
+
+@*<h2>Create</h2>*@
+
+
+<!doctype html>
+
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>jQuery Tree Filter Plugin Demo</title>
+
+    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.6/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.6/css/dx.light.css" />
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.6/js/dx.webappjs.js"></script>
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.6/js/dx.all.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        html, body {
+            height: 980px;
+            overflow: hidden;
+        }
+
+        .modal-body {
+            position: relative;
+            padding: 0px;
+        }
+
+        .ui-dialog .ui-dialog-content {
+            padding: 0px !important;
+            overflow: hidden !important;
+        }
+
+        .dx-datagrid-checkbox-size .dx-checkbox-icon {
+            margin-right: 22px;
+        }
+        .row {
+            margin-right: 0px; 
+            margin-left: 0px; 
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="col-sm-12">
+        <div class="alert alert-success" role="alert" id="mensaje" style="display:none"></div>
+    </div>
+    <div id="dialogo"></div>
+
+
+    <div class="col-sm-12">
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div id="div_Tablas" class="container tablesContainer divPrincipal" align="center">
+            <div id="tramitsTable" align="center" class="customerTable divCentradoVertical">
+                <table style="width:100%">
+                    <tr>
+                        <td></td>
+                        <td>
+
+                            <label class="control-label col-md-2">Nombre</label>
+                        </td>
+                        <td>
+
+
+                            <input type="text" id="S_NOMBRE" name="S_NOMBRE" class="form-control" maxlength="250" />
+                            <label style="display:none" id="ErrorNombre" class="text-danger">El nombre es requerido.</label>
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top"></td>
+                        <td valign="top">
+
+                            @Html.Label("Descripcion", htmlAttributes: new { @class = "control-label col-md-2" })
+                        </td>
+                        <td>
+                            <textarea id="S_DESCRIPCION" maxlength="1000" class="form-control"></textarea>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @Html.Label("Formulario", htmlAttributes: new { @class = "control-label col-md-2" })
+                        </td>
+                        <td>
+                           
+                            <label style="display:none" id="ErrorFormulario" class="text-danger">El formulario es requerido.</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @Html.Label("Tipo Encuesta", htmlAttributes: new { @class = "control-label col-md-2" })
+                        </td>
+                        <td>
+                            <select id="S_Tipo" name="S_Tipo" class="form-control">
+                                <option value="" selected="selected"></option>
+                                <option value="S">Cuantitativa</option>
+                                <option value="N">Cualitativa</option>
+                            </select>
+                            <label style="display:none" id="ErrorTipo" class="text-danger">El tipo encuesta es requerido.</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" align="right">
+                            <div class="divTitleAndButtons">
+                                <button id="Crear" class="btn btn-default btn-sm" style="height:25px;">Crear Encuesta</button>
+                                <button id="VincularPregunta" class="btn btn-default btn-sm" style="height:25px;" disabled>Vincular Preguntas</button>
+                                @*<a id="Crear" class="btn btn-success btn_left"><span class="glyphicon glyphiconButton glyphicon-plus-sign" style="cursor:pointer"></span><label style="cursor:pointer" class="txt_hide">&nbsp;Crear Encuesta</label></a>
+                                    <a id="VincularPregunta" class="disabled btn btn-primary"><span class="glyphicon glyphiconButton glyphicon-expand" style="cursor:pointer"></span><label style="cursor:pointer" class="txt_hide">&nbsp;Vincular Preguntas</label></a>*@
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group" style="display:none">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" id="btnCrear" class="btn btn-default" />
+            </div>
+        </div>
+
+        <input type="text" id="txtIdEncuesta" name="Encuesta" style="display:none;" />
+        <div id="Preguntas"></div>
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+
+        <br />
+        <br />
+        <table style="width:100%">
+            <tr>
+                <td style="width:20%">
+                    <div id="GridPreguntasV"></div>
+                </td>
+            </tr>
+
+        </table>
+        <div id="pantallaVincularPreg" title="Vincular Preguntas" style="display: none; overflow: auto;">
+            <iframe src="" id="VincularPreg" width="100%" height="100%"></iframe>
+
+
+        </div>
+    </div>
+</body>
+
+
+
+</html>
+
+<script type="text/javascript">
+                var Codigo;
+                var RutaEncuestas = '@Url.Content("~/Encuestas/")';
+        var jsonDatos={};
+
+        $(document).ready(function () {
+            gridPreguntaV(jsonDatos)
+        });
+
+
+
+                $("#S_NOMBRE").keypress(function (e) {
+                    return ValidarTexto(e);
+                });
+
+                $("#S_DESCRIPCION").keypress(function (e) {
+                    return ValidarTexto(e);
+                });
+
+                //$(document).ready(function () {
+                //    AgregarPopUp('dialogo', '95%', null, true);
+                //});
+
+                $('#Crear').click(function () {
+                    $("#mensaje").show(0800);
+                    if ($("#S_NOMBRE").val() == "") {
+                        $("#mensaje").text("Ingrese el nombre")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+                    if ($("#S_DESCRIPCION").val() == "") {
+                        $("#mensaje").text("Ingrese la descripción")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+                    if ($("#IdFormulario").val() == "") {
+                        $("#mensaje").text("seleccione el formulario")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+                    if ($("#S_Tipo").val() == "") {
+                        $("#mensaje").text("seleccione el tipo de encuesta")
+                        $("#mensaje").show(0800);
+                        return;
+                    } else {
+                        $("#mensaje").hide();
+                    }
+                    ValidarNonmbreEncuesta($('#S_NOMBRE').val());
+                });
+
+                $('#VincularPregunta').click(function () {
+                    //AbrirPopUp('Catalogo de Preguntas', '/encuestas/preguntas/VincularPreguntasEncuesta?CodigoEncuesta=' + Codigo + '&TipoEncuesta=' + $('#S_Tipo option:selected').val(), true, 250, 'Vincular Preguntas');
+                    abrirVicularPregunta();
+                });
+
+                function guardarEncuesta(validarE)
+                {
+
+                    if (validarE == "0") {
+                      CrearEncuesta($('#S_NOMBRE').val(), $('#S_DESCRIPCION').val(), $('#IdFormulario').val(), $('#S_Tipo').val());
+                    } else {
+                        alert("el nombre de la encuesta ya existe");
+                    }
+                }
+
+                function ValidarNonmbreEncuesta(Nombre) {
+                    var Datos = "";
+                    $.ajax({
+                        type: "POST",
+
+                        url: RutaEncuestas + "Encuestas/validarNombreEncuesta",
+                        data: { nombre: Nombre },
+                        beforeSend: function () { },
+                        success: function (response) {
+                            var dato = response;
+                            if (dato.length > 0) {
+                                Datos = 1;
+                            } else {
+                                Datos = 0;
+                            }
+                            guardarEncuesta(Datos);
+                        }
+                    });
+
+
+                }
+
+                function CrearEncuesta(Nombre, Descripcion, Formulario, Tipo) {
+                    var Datos = "";
+                    $.ajax({
+                        dataType: 'json',
+                        async: false,
+                        type: "POST",
+                        url: RutaEncuestas + "Encuestas/CrearEncuesta?Nombre=" + Nombre + "&Descripcion=" + Descripcion + "&CodigoFormulario=" + Formulario + "&TipoEncuesta=" + Tipo,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (result) {
+                            Datos = result;
+                            var res = Datos.split("|");
+                            if (res[0] == "Ok") {
+                                $('#txtIdEncuesta').val(res[1])
+                                $("#Crear").prop('disabled', true);
+                                $("#S_NOMBRE").prop('disabled', true);
+                                $("#S_DESCRIPCION").prop('disabled', true);
+                                $("#IdFormulario").prop('disabled', true);
+                                $("#S_Tipo").prop('disabled', true);
+
+                                $("#VincularPregunta").prop('disabled', false);
+                                alert("Almacenamiento exitoso");
+                            }else
+                            {
+                                alert(res[1]);
+                            }
+                        }
+                    });
+
+
+                }
+                function abrirVicularPregunta() {
+                    $("#pantallaVincularPreg").dialog(
+                    {
+
+                        width: 400,
+                        height: 300,
+                        modal: true
+                    });
+                    $("#VincularPreg").attr("src", "@Url.Content("~/Encuestas/preguntas/VincularPreguntasEncuesta")" + '?CodigoEncuesta=' + $('#txtIdEncuesta').val() + '&TipoEncuesta=' + $('#S_Tipo option:selected').val());
+
+                }
+
+
+        function gridPreguntaV(jsonEncuesta) {
+            $("#GridPreguntasV").dxDataGrid({
+                dataSource: jsonEncuesta,
+                selection: {
+
+                }, filterRow: { visible: false },
+
+                columns: [
+
+                                  { dataField: 'Codigo', caption: 'Codigo', allowGrouping: true, width: '20%', dataType: 'string' },
+                                   { dataField: 'Pregunta', caption: 'Pregunta', allowGrouping: true, width: '20%', dataType: 'string' },
+                                       { dataField: 'Orden', caption: 'Orden', allowGrouping: true, width: '20%', dataType: 'number' },
+                                    { dataField: 'Peso', caption: 'Peso', allowGrouping: true, width: '20%', dataType: 'number' },
+
+                {
+                    dataField: 'Requerida', allowGrouping: true, caption: 'Requerida', cellTemplate: function (container, options) {
+                        container.height(5);
+
+                        $('<input id="idRequiere" type="checkbox"  />')
+
+                            .prop("checked", options.value)
+                            .appendTo(container);
+                    }
+
+                },    { dataField: 'eliminar', allowGrouping: true, caption: 'Eliminar', cellTemplate: function (container, options) {
+                    container.height(5);
+                    $('<img src="@Url.Content("../../Content/Images/delete.png")" style="width:25px;height:25px" class="btnEditar" />')
+
+                            .attr('src', options.value)
+                            .appendTo(container);
+                 }
+                 }
+
+
+
+                ],
+
+
+                scrolling: { mode: 'infinite' },
+
+                cellClick: function (e) {
+                    var id = e.data.Codigo;
+                    var tipoBoton = e.columnIndex;
+
+                    switch (tipoBoton) {
+                        case 5: //eliminar
+                            EliminarPreguntaVinculada(id);
+                        break;
+
+                    }
+
+                },
+                columnChooser: { enabled: false },
+                allowColumnReordering: true,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 5 },
+                allowColumnResizing: true
+                          , columnAutoWidth: true, loadPanel: {
+                              height: 100,
+                              width: 100,
+                              text: 'Cargando...'
+                          }, onCellHoverChanged: function (hoverCell) {
+                              if (hoverCell.eventType == 'mouseover')
+                                  hoverCell.cellElement.addClass("hovered");
+                              else
+                                  hoverCell.cellElement.removeClass("hovered");
+                          }
+            });
+        }
+
+        function EliminarPreguntaVinculada(idPreg) {
+
+
+            $.ajax({
+                type: "POST",
+
+                url: RutaEncuestas + "Encuestas/EliminarPreguntaVinculada",
+                data: { idEnc: $("#txtIdEncuesta").val(), idPregunta: idPreg },
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = response;
+                    if (datos == "1") {
+                        alert("Eliminación exitosa");
+                        BuscarPreguntasEncuesta();
+                    }
+
+                }
+            });
+        }
+        function BuscarPreguntasEncuesta() {
+
+
+            $.ajax({
+                type: "POST",
+
+                url: RutaEncuestas + "Preguntas/ObtenerPreguntasxEncuenta",
+                data: {CodigoEncuesta:$("#txtIdEncuesta").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    gridPreguntaV(response);
+
+                }
+            });
+        }
+
+
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

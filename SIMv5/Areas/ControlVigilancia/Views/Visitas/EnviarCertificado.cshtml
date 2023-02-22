@@ -1,0 +1,72 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "RealizarVisitaAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+
+
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="row">
+            <div class="col-sm-12">
+                <label>PDF</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-default" onclick="EnviarCertificado()">Enviar</button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+
+   <script type="text/javascript">
+
+       function EnviarCertificado()
+       {
+           parent.CerrarVisita();
+           parent.$("#pantallaEnviarCertificado").dialog('close');
+         
+       }
+
+
+   </script>
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="VisitasDataSource" targetNamespace="http://tempuri.org/VisitasDataSource.xsd" xmlns:mstns="http://tempuri.org/VisitasDataSource.xsd" xmlns="http://tempuri.org/VisitasDataSource.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="EntittiesControlOracle" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="EntittiesControlOracle (Settings)" ParameterPrefix=":" PropertyReference="ApplicationSettings.DashBoardDesigner.Properties.Settings.GlobalReference.Default.EntittiesControlOracle" Provider="Oracle.ManagedDataAccess.Client" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="VW_VISITASTableAdapter" GeneratorDataComponentClassName="VW_VISITASTableAdapter" Name="VW_VISITAS" UserDataComponentName="VW_VISITASTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="EntittiesControlOracle (Settings)" DbObjectName="CONTROL.VW_VISITAS" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT D_ASIGNACIONVISITA, ID_VISITA, S_ASUNTO, D_ASIGNACION, D_ACEPTACION, D_INICIAL, D_INICIOREV, D_FINAL, S_OBSERVACION, ID_ESTADOVISITA, ESTADO_VISITA, RADICADO_VISITA, ID_TIPOVISITA, S_NOMBRE_TIPOVISITA, X, Y, TRAMITES, COPIAS, NOMBRECOPIAS, RESPONSABLE, NOMBRERESPONSABLE, ID_INFORME, "STR_ID_VISITA", "R" FROM CONTROL.VW_VISITAS</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="D_ASIGNACIONVISITA" DataSetColumn="D_ASIGNACIONVISITA" />
+              <Mapping SourceColumn="ID_VISITA" DataSetColumn="ID_VISITA" />
+              <Mapping SourceColumn="S_ASUNTO" DataSetColumn="S_ASUNTO" />
+              <Mapping SourceColumn="D_ASIGNACION" DataSetColumn="D_ASIGNACION" />
+              <Mapping SourceColumn="D_ACEPTACION" DataSetColumn="D_ACEPTACION" />
+              <Mapping SourceColumn="D_INICIAL" DataSetColumn="D_INICIAL" />
+              <Mapping SourceColumn="D_INICIOREV" DataSetColumn="D_INICIOREV" />
+              <Mapping SourceColumn="D_FINAL" DataSetColumn="D_FINAL" />
+              <Mapping SourceColumn="S_OBSERVACION" DataSetColumn="S_OBSERVACION" />
+              <Mapping SourceColumn="ID_ESTADOVISITA" DataSetColumn="ID_ESTADOVISITA" />
+              <Mapping SourceColumn="ESTADO_VISITA" DataSetColumn="ESTADO_VISITA" />
+              <Mapping SourceColumn="RADICADO_VISITA" DataSetColumn="RADICADO_VISITA" />
+              <Mapping SourceColumn="ID_TIPOVISITA" DataSetColumn="ID_TIPOVISITA" />
+              <Mapping SourceColumn="S_NOMBRE_TIPOVISITA" DataSetColumn="S_NOMBRE_TIPOVISITA" />
+              <Mapping SourceColumn="X" DataSetColumn="X" />
+              <Mapping SourceColumn="Y" DataSetColumn="Y" />
+              <Mapping SourceColumn="TRAMITES" DataSetColumn="TRAMITES" />
+              <Mapping SourceColumn="COPIAS" DataSetColumn="COPIAS" />
+              <Mapping SourceColumn="NOMBRECOPIAS" DataSetColumn="NOMBRECOPIAS" />
+              <Mapping SourceColumn="RESPONSABLE" DataSetColumn="RESPONSABLE" />
+              <Mapping SourceColumn="NOMBRERESPONSABLE" DataSetColumn="NOMBRERESPONSABLE" />
+              <Mapping SourceColumn="ID_INFORME" DataSetColumn="ID_INFORME" />
+              <Mapping SourceColumn="STR_ID_VISITA" DataSetColumn="STR_ID_VISITA" />
+              <Mapping SourceColumn="R" DataSetColumn="R" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="VisitasDataSource" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="VisitasDataSource" msprop:Generator_UserDSName="VisitasDataSource">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="VW_VISITAS" msprop:Generator_TableClassName="VW_VISITASDataTable" msprop:Generator_TableVarName="tableVW_VISITAS" msprop:Generator_TablePropName="VW_VISITAS" msprop:Generator_RowDeletingName="VW_VISITASRowDeleting" msprop:Generator_RowChangingName="VW_VISITASRowChanging" msprop:Generator_RowEvHandlerName="VW_VISITASRowChangeEventHandler" msprop:Generator_RowDeletedName="VW_VISITASRowDeleted" msprop:Generator_UserTableName="VW_VISITAS" msprop:Generator_RowChangedName="VW_VISITASRowChanged" msprop:Generator_RowEvArgName="VW_VISITASRowChangeEvent" msprop:Generator_RowClassName="VW_VISITASRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="D_ASIGNACIONVISITA" msprop:Generator_ColumnVarNameInTable="columnD_ASIGNACIONVISITA" msprop:Generator_ColumnPropNameInRow="D_ASIGNACIONVISITA" msprop:Generator_ColumnPropNameInTable="D_ASIGNACIONVISITAColumn" msprop:Generator_UserColumnName="D_ASIGNACIONVISITA" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ID_VISITA" msprop:Generator_ColumnVarNameInTable="columnID_VISITA" msprop:Generator_ColumnPropNameInRow="ID_VISITA" msprop:Generator_ColumnPropNameInTable="ID_VISITAColumn" msprop:Generator_UserColumnName="ID_VISITA" type="xs:long" />
+              <xs:element name="S_ASUNTO" msprop:Generator_ColumnVarNameInTable="columnS_ASUNTO" msprop:Generator_ColumnPropNameInRow="S_ASUNTO" msprop:Generator_ColumnPropNameInTable="S_ASUNTOColumn" msprop:Generator_UserColumnName="S_ASUNTO" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="400" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="D_ASIGNACION" msprop:Generator_ColumnVarNameInTable="columnD_ASIGNACION" msprop:Generator_ColumnPropNameInRow="D_ASIGNACION" msprop:Generator_ColumnPropNameInTable="D_ASIGNACIONColumn" msprop:Generator_UserColumnName="D_ASIGNACION" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="D_ACEPTACION" msprop:Generator_ColumnVarNameInTable="columnD_ACEPTACION" msprop:Generator_ColumnPropNameInRow="D_ACEPTACION" msprop:Generator_ColumnPropNameInTable="D_ACEPTACIONColumn" msprop:Generator_UserColumnName="D_ACEPTACION" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="D_INICIAL" msprop:Generator_ColumnVarNameInTable="columnD_INICIAL" msprop:Generator_ColumnPropNameInRow="D_INICIAL" msprop:Generator_ColumnPropNameInTable="D_INICIALColumn" msprop:Generator_UserColumnName="D_INICIAL" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="D_INICIOREV" msprop:Generator_ColumnVarNameInTable="columnD_INICIOREV" msprop:Generator_ColumnPropNameInRow="D_INICIOREV" msprop:Generator_ColumnPropNameInTable="D_INICIOREVColumn" msprop:Generator_UserColumnName="D_INICIOREV" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="D_FINAL" msprop:Generator_ColumnVarNameInTable="columnD_FINAL" msprop:Generator_ColumnPropNameInRow="D_FINAL" msprop:Generator_ColumnPropNameInTable="D_FINALColumn" msprop:Generator_UserColumnName="D_FINAL" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="S_OBSERVACION" msprop:Generator_ColumnVarNameInTable="columnS_OBSERVACION" msprop:Generator_ColumnPropNameInRow="S_OBSERVACION" msprop:Generator_ColumnPropNameInTable="S_OBSERVACIONColumn" msprop:Generator_UserColumnName="S_OBSERVACION" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="4000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ID_ESTADOVISITA" msprop:Generator_ColumnVarNameInTable="columnID_ESTADOVISITA" msprop:Generator_ColumnPropNameInRow="ID_ESTADOVISITA" msprop:Generator_ColumnPropNameInTable="ID_ESTADOVISITAColumn" msprop:Generator_UserColumnName="ID_ESTADOVISITA" type="xs:long" minOccurs="0" />
+              <xs:element name="ESTADO_VISITA" msprop:Generator_ColumnVarNameInTable="columnESTADO_VISITA" msprop:Generator_ColumnPropNameInRow="ESTADO_VISITA" msprop:Generator_ColumnPropNameInTable="ESTADO_VISITAColumn" msprop:Generator_UserColumnName="ESTADO_VISITA" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="200" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RADICADO_VISITA" msprop:Generator_ColumnVarNameInTable="columnRADICADO_VISITA" msprop:Generator_ColumnPropNameInRow="RADICADO_VISITA" msprop:Generator_ColumnPropNameInTable="RADICADO_VISITAColumn" msprop:Generator_UserColumnName="RADICADO_VISITA" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ID_TIPOVISITA" msprop:Generator_ColumnVarNameInTable="columnID_TIPOVISITA" msprop:Generator_ColumnPropNameInRow="ID_TIPOVISITA" msprop:Generator_ColumnPropNameInTable="ID_TIPOVISITAColumn" msprop:Generator_UserColumnName="ID_TIPOVISITA" type="xs:long" minOccurs="0" />
+              <xs:element name="S_NOMBRE_TIPOVISITA" msprop:Generator_ColumnVarNameInTable="columnS_NOMBRE_TIPOVISITA" msprop:Generator_ColumnPropNameInRow="S_NOMBRE_TIPOVISITA" msprop:Generator_ColumnPropNameInTable="S_NOMBRE_TIPOVISITAColumn" msprop:Generator_UserColumnName="S_NOMBRE_TIPOVISITA" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="200" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="X" msprop:Generator_ColumnVarNameInTable="columnX" msprop:Generator_ColumnPropNameInRow="X" msprop:Generator_ColumnPropNameInTable="XColumn" msprop:Generator_UserColumnName="X" type="xs:decimal" minOccurs="0" />
+              <xs:element name="Y" msprop:Generator_ColumnVarNameInTable="columnY" msprop:Generator_ColumnPropNameInRow="Y" msprop:Generator_ColumnPropNameInTable="YColumn" msprop:Generator_UserColumnName="Y" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TRAMITES" msprop:Generator_ColumnVarNameInTable="columnTRAMITES" msprop:Generator_ColumnPropNameInRow="TRAMITES" msprop:Generator_ColumnPropNameInTable="TRAMITESColumn" msprop:Generator_UserColumnName="TRAMITES" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="COPIAS" msprop:Generator_ColumnVarNameInTable="columnCOPIAS" msprop:Generator_ColumnPropNameInRow="COPIAS" msprop:Generator_ColumnPropNameInTable="COPIASColumn" msprop:Generator_UserColumnName="COPIAS" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="NOMBRECOPIAS" msprop:Generator_ColumnVarNameInTable="columnNOMBRECOPIAS" msprop:Generator_ColumnPropNameInRow="NOMBRECOPIAS" msprop:Generator_ColumnPropNameInTable="NOMBRECOPIASColumn" msprop:Generator_UserColumnName="NOMBRECOPIAS" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RESPONSABLE" msprop:Generator_ColumnVarNameInTable="columnRESPONSABLE" msprop:Generator_ColumnPropNameInRow="RESPONSABLE" msprop:Generator_ColumnPropNameInTable="RESPONSABLEColumn" msprop:Generator_UserColumnName="RESPONSABLE" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="NOMBRERESPONSABLE" msprop:Generator_ColumnVarNameInTable="columnNOMBRERESPONSABLE" msprop:Generator_ColumnPropNameInRow="NOMBRERESPONSABLE" msprop:Generator_ColumnPropNameInTable="NOMBRERESPONSABLEColumn" msprop:Generator_UserColumnName="NOMBRERESPONSABLE" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="3000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ID_INFORME" msprop:Generator_ColumnVarNameInTable="columnID_INFORME" msprop:Generator_ColumnPropNameInRow="ID_INFORME" msprop:Generator_ColumnPropNameInTable="ID_INFORMEColumn" msprop:Generator_UserColumnName="ID_INFORME" type="xs:decimal" minOccurs="0" />
+              <xs:element name="STR_ID_VISITA" msprop:Generator_ColumnVarNameInTable="columnSTR_ID_VISITA" msprop:Generator_ColumnPropNameInRow="STR_ID_VISITA" msprop:Generator_ColumnPropNameInTable="STR_ID_VISITAColumn" msprop:Generator_UserColumnName="STR_ID_VISITA" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="40" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="R" msprop:Generator_ColumnVarNameInTable="columnR" msprop:Generator_ColumnPropNameInRow="R" msprop:Generator_ColumnPropNameInTable="RColumn" msprop:Generator_UserColumnName="R" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

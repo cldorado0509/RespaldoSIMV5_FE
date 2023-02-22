@@ -1,0 +1,61 @@
+﻿<img src="../../Content/Images/Ayuda.png" id="btnAyudasInformacionAdicional" style="float:right" onclick="MostrarAyuda(95, 'DGA-Información Adicional');" />
+<div class="dx-fieldset">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">
+                    Posee o est&aacute; en proceso de implementar sistemas de gesti&oacute;n ambiental:
+                    <div dx-radio-group="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Si', value: 'S' }, { text: 'No', value: 'N' } ], layout: 'horizontal',  bindingOptions: { value: 'datosDGA.S_ESSGA' } }"></div>
+                </div>
+                <div class="dx-field-value  row-no-padding">
+                    <div ng-show="datosDGA.S_ESSGA == 'S'">
+                        Cu&aacute;l(es) ?
+                        <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.S_SGA' }, height: '80px' }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">
+                    Posee o est&aacute; en proceso de implementar sistemas de gesti&oacute;n calidad:
+                    <div dx-radio-group="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Si', value: 'S' }, { text: 'No', value: 'N' } ], layout: 'horizontal',  bindingOptions: { value: 'datosDGA.S_ESSGC' } }"></div>
+                </div>
+                <div class="dx-field-value  row-no-padding">
+                    <div ng-show="datosDGA.S_ESSGC == 'S'">
+                        Cu&aacute;l(es) ?
+                        <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.S_SGC' }, height: '80px' }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">
+                    Hace uso del Eco-Etiquetado:
+                    <div dx-radio-group="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Si', value: 'S' }, { text: 'No', value: 'N' } ], layout: 'horizontal',  bindingOptions: { value: 'datosDGA.S_ESECOETIQUETADO' } }"></div>
+                </div>
+                <div class="dx-field-value  row-no-padding">
+                    <div ng-show="datosDGA.S_ESECOETIQUETADO == 'S'">
+                        Cu&aacute;l ?
+                        <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.S_ECOETIQUETADO' }, height: '80px' }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">
+                    Hace parte de procesos de producci&oacute;n y consumo Sostenible:
+                    <div dx-radio-group="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Si', value: 'S' }, { text: 'No', value: 'N' } ], layout: 'horizontal',  bindingOptions: { value: 'datosDGA.S_PRODUCCIONMASLIMPIA' } }"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

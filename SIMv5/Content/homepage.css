@@ -1,0 +1,241 @@
+/*******************************
+            Global
+*******************************/
+
+html,
+body {
+  font-size: 15px;
+  height: 100%;
+  min-height: 100%
+}
+
+body {
+  font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  background: #FFFFFF;
+  margin: 0px;
+  padding: 0px;
+  color: #555555;
+  text-rendering: optimizeLegibility;
+  min-width: 320px;
+}
+
+/*******************************
+          UI Overrides
+*******************************/
+
+.ui.header {
+  font-family: 'Source Sans Pro', "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+.ui.header,
+h1,
+h2 {
+  font-weight: normal !important;
+}
+
+h1.ui.header {
+  font-size: 3em;
+}
+
+h4.ui.header,
+h5.ui.header,
+.ui.icon.header {
+  font-weight: bold !important;
+}
+
+.ui.button {
+  font-weight: normal;
+  text-decoration: none;
+}
+
+a {
+  color: #009FDA;
+  text-decoration: none;
+  -webkit-transition: color 0.3s ease;
+  -moz-transition: color 0.3s ease;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #00BAFF;
+}
+
+p a {
+  font-weight: bold;
+}
+
+/*******************************
+            Global
+*******************************/
+/*rtl:ignore*/
+.menu .right.menu > .mobile.item {
+  display: none;
+}
+
+.ui.page.grid.segment {
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+
+.masthead.segment {
+ margin: 0em;
+background: rgba(50,119,143,1);
+background: -moz-linear-gradient(left, rgba(50,119,143,1) 0%, rgba(63,135,151,1) 69%, rgba(91,158,164,1) 99%, rgba(91,158,164,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(50,119,143,1)), color-stop(69%, rgba(63,135,151,1)), color-stop(99%, rgba(91,158,164,1)), color-stop(100%, rgba(91,158,164,1)));
+background: -webkit-linear-gradient(left, rgba(50,119,143,1) 0%, rgba(63,135,151,1) 69%, rgba(91,158,164,1) 99%, rgba(91,158,164,1) 100%);
+background: -o-linear-gradient(left, rgba(50,119,143,1) 0%, rgba(63,135,151,1) 69%, rgba(91,158,164,1) 99%, rgba(91,158,164,1) 100%);
+background: -ms-linear-gradient(left, rgba(50,119,143,1) 0%, rgba(63,135,151,1) 69%, rgba(91,158,164,1) 99%, rgba(91,158,164,1) 100%);
+background: linear-gradient(to right, rgba(50,119,143,1) 0%, rgba(63,135,151,1) 69%, rgba(91,158,164,1) 99%, rgba(91,158,164,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#32778f', endColorstr='#5b9ea4', GradientType=1 );
+padding-top: 4rem;
+overflow: hidden;
+-webkit-box-shadow: 0 -20px 10px 0 rgba(0, 0, 0, 0.1) inset !important;
+box-shadow: 0 -20px 10px 0 rgba(0, 0, 0, 0.1) inset !important;
+}
+
+.masthead.segment .column {
+  position: relative;
+}
+
+.masthead.segment .information {
+  margin: 3em 1em 1em 280px;
+}
+
+.masthead.segment .information p {
+  max-width: 600px;
+  margin: 0em 0px 2em 0em;
+  font-size: 1.2em;
+}
+
+.masthead.segment h1.ui.header .sub {
+  font-size: 0.7em;
+}
+
+.masthead.segment .image {
+  position: absolute;
+  left: 0%;
+  bottom: -10px;
+}
+
+.overview .divided.grid .header + p {
+  min-height: 100px;
+}
+
+.ui.shape .icon,
+.link.list .icon {
+  margin: 0em;
+  padding: 0em;
+}
+
+.ui.cube.shape .side {
+  background-color: transparent;
+}
+
+
+
+/*******************************
+          Responsive
+*******************************/
+
+/* Mobile Only */
+
+@media only screen and (max-width : 768px) {
+  .ui.page.grid.segment {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  /*rtl:ignore*/
+  .menu .right.menu > .item {
+    display: none;
+  }
+  /*rtl:ignore*/
+  .menu .right.menu > .mobile.item {
+    display: block;
+  }
+
+  h1.ui.header {
+    font-size: 1.5em;
+  }
+
+  .masthead.segment {
+    background-size: auto;
+  }
+
+  .masthead.segment .information {
+    margin-left: 190px;
+  }
+
+  .masthead.segment .image {
+    bottom: -10px;
+    width: 150px;
+  }
+
+  #logo {
+     width: 100px;
+     height: 100px;
+  }
+
+  .ui.form {
+     max-width: 90%;
+   }
+
+   .ui.buttons .button, .ui.button {
+     font-size: 0.8rem;
+   }
+
+  .masthead.segment .button {
+    font-size: 1rem;
+  }
+
+  .overview .divided.grid .header .icon {
+    font-size: 1.5em;
+  }
+
+  .overview .divided.grid .header + p {
+    min-height: 0px;
+  }
+
+  .masthead.segment .column {
+    font-size: 0.7rem;
+  }
+
+  .masthead.segment .column p {
+    display: none;
+  }
+  /*rtl:ignore*/
+  .selection.list .right.floated {
+    display: none;
+  }
+}
+
+@media only screen and (max-width : 1000px) {
+
+}
+
+#footer {
+     background-color: white;
+     color: #616666;
+     font-size: 0.8em;
+     text-align: center;
+     line-height: 1.3em;
+     clear: both;
+     position: relative;
+     z-index: 10;
+     height: 3em;
+     margin-top: 3em;
+     margin-right: 3em;
+     margin-bottom: 2em;
+     margin-left: 3em;
+}
+
+#menu {
+     width: 70px;
+     position: fixed;
+     top: 0em;
+     z-index: 500;
+     width: 70px;
+}
+
+
+
+

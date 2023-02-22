@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="TramitesModel.Store" Provider="Oracle.ManagedDataAccess.Client" ProviderManifestToken="12.1" Alias="Self" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <Function Name="SP_ASIGNAR_TEMPORAL_TRAMITE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="CODTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="CODTAREA" Type="number" Mode="In" />
+          <Parameter Name="CODFUNCIONARIO" Type="number" Mode="In" />
+          <Parameter Name="ORDEN" Type="number" Mode="In" />
+          <Parameter Name="VERSIONDOC" Type="number" Mode="In" />
+          <Parameter Name="DESCRIPCION" Type="varchar2" Mode="In" />
+          <Parameter Name="RUTA" Type="varchar2" Mode="In" />
+          <Parameter Name="RTARESULTADO" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_CREAR_INDICE_FULLTEXT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="CODTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="CODDOCUMENTO" Type="number" Mode="In" />
+          <Parameter Name="RTARESULTADO" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_AVANZA_TAREA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="TIPO" Type="number" Mode="In" />
+          <Parameter Name="CODTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="CODTAREA" Type="number" Mode="In" />
+          <Parameter Name="CODTAREA_SIGUIENTE" Type="number" Mode="In" />
+          <Parameter Name="CODFUNCIONARIO" Type="number" Mode="In" />
+          <Parameter Name="CODFUNCIONARIOACTUAL" Type="number" Mode="In" />
+          <Parameter Name="COPIAS" Type="varchar2" Mode="In" />
+          <Parameter Name="COMENTARIO" Type="varchar2" Mode="In" />
+          <Parameter Name="RTARESULTADO" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_AVANZA_TAREA_FORMULARIO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="CODTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="CODTAREA" Type="number" Mode="In" />
+          <Parameter Name="CODTAREA_SIGUIENTE" Type="number" Mode="In" />
+          <Parameter Name="CODFUNCIONARIO" Type="number" Mode="In" />
+          <Parameter Name="FORMULARIO_SIGUIENTE" Type="varchar2" Mode="In" />
+          <Parameter Name="COPIAS" Type="varchar2" Mode="In" />
+          <Parameter Name="COMENTARIO" Type="varchar2" Mode="In" />
+          <Parameter Name="RTARESULTADO" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_NUEVO_TRAMITE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="CODPROCESO" Type="number" Mode="In" />
+          <Parameter Name="CODTAREA" Type="number" Mode="In" />
+          <Parameter Name="CODFUNCIONARIO" Type="number" Mode="In" />
+          <Parameter Name="MENSAJE" Type="varchar2" Mode="In" />
+          <Parameter Name="RESPCODTRAMITE" Type="number" Mode="Out" />
+          <Parameter Name="RESPCODTAREA" Type="number" Mode="Out" />
+          <Parameter Name="RTARESULTADO" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_NUEVO_TRAMITE_REGISTRO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="CODPROCESO" Type="number" Mode="In" />
+          <Parameter Name="CODFUNCIONARIO" Type="number" Mode="In" />
+          <Parameter Name="MENSAJE" Type="varchar2" Mode="In" />
+          <Parameter Name="RESPCODTRAMITE" Type="number" Mode="Out" />
+          <Parameter Name="RESPCODTAREA" Type="number" Mode="Out" />
+          <Parameter Name="RTARESULTADO" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_OBTENER_PROCESO_TAREA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="CODTAREA" Type="number" Mode="In" />
+          <Parameter Name="RESPCODPROCESO" Type="number" Mode="Out" />
+          <Parameter Name="RTARESULTADO" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_ITEMVISITA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="TRAMITES">
+          <Parameter Name="IDVISITA" Type="number" Mode="In" />
+          <Parameter Name="IDITEM" Type="number" Mode="In" />
+          <Parameter Name="IDTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="RTAI" Type="varchar2" Mode="Out" />
+        </Function>
+        <EntityContainer Name="TramitesModelStoreContainer" />
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TramitesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="EntitiesTramitesOracle" annotation:LazyLoadingEnabled="true" >
+          <FunctionImport Name="SP_ASIGNAR_TEMPORAL_TRAMITE">
+            <Parameter Name="CODTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="CODTAREA" Mode="In" Type="Decimal" />
+            <Parameter Name="CODFUNCIONARIO" Mode="In" Type="Decimal" />
+            <Parameter Name="ORDEN" Mode="In" Type="Decimal" />
+            <Parameter Name="VERSIONDOC" Mode="In" Type="Decimal" />
+            <Parameter Name="DESCRIPCION" Mode="In" Type="String" />
+            <Parameter Name="RUTA" Mode="In" Type="String" />
+            <Parameter Name="RTARESULTADO" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_CREAR_INDICE_FULLTEXT">
+            <Parameter Name="CODTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="CODDOCUMENTO" Mode="In" Type="Decimal" />
+            <Parameter Name="RTARESULTADO" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_AVANZA_TAREA">
+            <Parameter Name="TIPO" Mode="In" Type="Decimal" />
+            <Parameter Name="CODTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="CODTAREA" Mode="In" Type="Decimal" />
+            <Parameter Name="CODTAREA_SIGUIENTE" Mode="In" Type="Decimal" />
+            <Parameter Name="CODFUNCIONARIO" Mode="In" Type="Decimal" />
+            <Parameter Name="CODFUNCIONARIOACTUAL" Mode="In" Type="Decimal" />
+            <Parameter Name="COPIAS" Mode="In" Type="String" />
+            <Parameter Name="COMENTARIO" Mode="In" Type="String" />
+            <Parameter Name="RTARESULTADO" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_AVANZA_TAREA_FORMULARIO">
+            <Parameter Name="CODTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="CODTAREA" Mode="In" Type="Decimal" />
+            <Parameter Name="CODTAREA_SIGUIENTE" Mode="In" Type="Decimal" />
+            <Parameter Name="CODFUNCIONARIO" Mode="In" Type="Decimal" />
+            <Parameter Name="FORMULARIO_SIGUIENTE" Mode="In" Type="String" />
+            <Parameter Name="COPIAS" Mode="In" Type="String" />
+            <Parameter Name="COMENTARIO" Mode="In" Type="String" />
+            <Parameter Name="RTARESULTADO" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_NUEVO_TRAMITE">
+            <Parameter Name="CODPROCESO" Mode="In" Type="Decimal" />
+            <Parameter Name="CODTAREA" Mode="In" Type="Decimal" />
+            <Parameter Name="CODFUNCIONARIO" Mode="In" Type="Decimal" />
+            <Parameter Name="MENSAJE" Mode="In" Type="String" />
+            <Parameter Name="RESPCODTRAMITE" Mode="Out" Type="Decimal" />
+            <Parameter Name="RESPCODTAREA" Mode="Out" Type="Decimal" />
+            <Parameter Name="RTARESULTADO" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_NUEVO_TRAMITE_REGISTRO">
+            <Parameter Name="CODPROCESO" Mode="In" Type="Decimal" />
+            <Parameter Name="CODFUNCIONARIO" Mode="In" Type="Decimal" />
+            <Parameter Name="MENSAJE" Mode="In" Type="String" />
+            <Parameter Name="RESPCODTRAMITE" Mode="Out" Type="Decimal" />
+            <Parameter Name="RESPCODTAREA" Mode="Out" Type="Decimal" />
+            <Parameter Name="RTARESULTADO" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_OBTENER_PROCESO_TAREA">
+            <Parameter Name="CODTAREA" Mode="In" Type="Decimal" />
+            <Parameter Name="RESPCODPROCESO" Mode="Out" Type="Decimal" />
+            <Parameter Name="RTARESULTADO" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ITEMVISITA">
+            <Parameter Name="IDVISITA" Mode="In" Type="Decimal" />
+            <Parameter Name="IDITEM" Mode="In" Type="Decimal" />
+            <Parameter Name="IDTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="RTAI" Mode="Out" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TramitesModelStoreContainer" CdmEntityContainer="EntitiesTramitesOracle" >
+          <FunctionImportMapping FunctionImportName="SP_ASIGNAR_TEMPORAL_TRAMITE" FunctionName="TramitesModel.Store.SP_ASIGNAR_TEMPORAL_TRAMITE" />
+          <FunctionImportMapping FunctionImportName="SP_CREAR_INDICE_FULLTEXT" FunctionName="TramitesModel.Store.SP_CREAR_INDICE_FULLTEXT" />
+          <FunctionImportMapping FunctionImportName="SP_AVANZA_TAREA" FunctionName="TramitesModel.Store.SP_AVANZA_TAREA" />
+          <FunctionImportMapping FunctionImportName="SP_AVANZA_TAREA_FORMULARIO" FunctionName="TramitesModel.Store.SP_AVANZA_TAREA_FORMULARIO" />
+          <FunctionImportMapping FunctionImportName="SP_NUEVO_TRAMITE" FunctionName="TramitesModel.Store.SP_NUEVO_TRAMITE" />
+          <FunctionImportMapping FunctionImportName="SP_NUEVO_TRAMITE_REGISTRO" FunctionName="TramitesModel.Store.SP_NUEVO_TRAMITE_REGISTRO" />
+          <FunctionImportMapping FunctionImportName="SP_OBTENER_PROCESO_TAREA" FunctionName="TramitesModel.Store.SP_OBTENER_PROCESO_TAREA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ITEMVISITA" FunctionName="TramitesModel.Store.SP_SET_ITEMVISITA" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

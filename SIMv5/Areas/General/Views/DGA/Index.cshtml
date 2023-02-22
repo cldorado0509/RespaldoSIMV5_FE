@@ -1,0 +1,51 @@
+﻿@using SIM.Properties
+@using System.Web.UI.WebControls
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+
+@if (ViewBag.Administrador) {
+    <script type="text/javascript" src="@Url.Content("~/Areas/General/Scripts/dgai-a.js?v=1.02")"></script>
+}
+else
+{
+    <script type="text/javascript" src="@Url.Content("~/Areas/General/Scripts/dgai.js?v=1.02")"></script>
+}
+@*Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popDGA";
+    settings.ShowHeader = true;
+    settings.HeaderText = "DGA";
+    settings.AllowDragging = true;
+    settings.AllowResize = true;
+    settings.Width = 800;// Unit.Percentage(60);
+    settings.Height = 600;// Unit.Percentage(60);
+    settings.PopupVerticalAlign = PopupVerticalAlign.Middle;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.Center;
+}).GetHtml()*@
+
+<div ng-app="SIM" resizable data-url="@Url.Content("~")" data-iddga="@ViewBag" id="app" class="my-cloak">
+    <div class="panelSIM panelSIM-default" style="padding-bottom: 10px">
+        <div ng-controller="DGAIndexController" class="panelSIM panelSIM-default">
+            <div dx-popup="popDGASettings" id="popDGA">
+                <iframe src="" id="frmDGA" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+            </div>
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Informe del cumplimiento del decreto 1299 de 2008 - para la conformación del Departamento de Gestión Ambiental - DGA</label>
+                </h3>
+            </div>
+            <div dx-data-grid="grdDGASettings" id="grdDGA"></div>
+        </div>
+        <div style="padding-top: 10px">
+            <img src="@Url.Content("~")Content/Images/edit.png" />&nbsp;Editar&nbsp;&nbsp;&nbsp;
+            <img src="@Url.Content("~")Content/Images/view.png" />&nbsp;Visualizar&nbsp;&nbsp;&nbsp;
+            <img src="@Url.Content("~")Content/Images/send.png" />&nbsp;Enviar&nbsp;&nbsp;&nbsp;
+            <img src="@Url.Content("~")Content/Images/print.png" />&nbsp;Imprimir
+        </div>
+        <div style="padding-top: 10px">
+            El DGA puede ser editado las veces que se desee hasta que &eacute;ste sea enviado, después de esto para realizar algún cambio debe generarse un nuevo registro.
+        </div>
+    </div>
+</div>

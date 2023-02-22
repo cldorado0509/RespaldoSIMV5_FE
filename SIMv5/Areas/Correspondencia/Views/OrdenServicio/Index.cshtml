@@ -1,0 +1,514 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    var IdCod;
+    var myApp = angular.module('SIM', ['dx']);
+    myApp.controller("OrdenServController", function ($scope, $location, $http) {
+        $scope.isPopupVisibleDetalle = false;
+        $scope.isPopupVisibleOrden = false;
+        $scope.isPopupVisibleSoportes = false;
+        $scope.btnAceptDisable = true;
+        $scope.MensajeError = "";
+        $scope.TipoServSel = "";
+        $scope.IdCod = 0;
+        $scope.txtFecTipoSer = "";
+        $scope.txtOrdenSer = "";
+        $scope.value = [];
+        $scope.UploadUrl = "";
+
+        $scope.grdOrdenesSettings = {
+            dataSource: grdOrdenesSource,
+            allowColumnResizing: true,
+            loadPanel: { text: 'Cargando Datos...' },
+            noDataText: "Sin datos para mostrar",
+            paging: {
+                pageSize: 5
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true
+            },
+            groupPanel: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            selection: {
+                mode: 'single'
+            },
+            editing: { useIcons: true },
+            onEditorPreparing: true,
+            columns: [
+                {
+                    dataField: "ID_COD",
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: "D_FECHA",
+                    width: '15%',
+                    caption: 'Fecha',
+                    dataType: 'date',
+                    format: 'dd/MM/yyyy' 
+                }, {
+                    dataField: 'S_TIPOSERVICIO',
+                    width: '40%',
+                    caption: 'Tipo de Servicio',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_ORDEN',
+                    width: '36%',
+                    caption: 'Numero de Orden de Servicio',
+                    dataType: 'string',
+                }, {
+                    width: '3%',
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        if (options.row.data.S_ORDEN != null) {
+                            $('<div/>').dxButton({
+                                icon: '@Url.Content("~")/Content/Images/Scan.png',
+                                hint: 'Escanear el documento de soporte de la orden',
+                                onClick: function (e) {
+                                    $scope.isPopupVisibleSoportes = true;
+                                    $scope.IdCod = options.row.data.ID_COD;
+                                    $scope.UploadUrl = @Url.Content("~") + "Correspondencia/api/CodApi/SubirSoportes?IDOrden=" + $scope.IdCod;
+                                }
+                            }).appendTo(container);
+                        }
+                    }
+                }, {
+                    width: '3%',
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/edit.png',
+                            hint: 'Ingresar los datos de la orden de servicio',
+                            onClick: function (e) {
+                                $scope.txtFecTipoSer = options.row.data.D_FECHA;
+                                $scope.TipoServSel = options.row.data.S_TIPOSERVICIO;
+                                $scope.txtOrdenSer = options.row.data.S_ORDEN;
+                                $scope.IdCod = options.row.data.ID_COD;
+                                $scope.isPopupVisibleOrden = true;
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    width: '3%',
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/view.png',
+                            hint: 'Ver el detalle de los documentos que componen la orden de servicio',
+                            onClick: function (e) {
+                                $scope.IdCod = options.row.data.ID_COD;
+                                IdCod = options.row.data.ID_COD;
+                                window.location.href = '@Url.Content("~")/Correspondencia/correspondencia?IdCod=' + IdCod;
+                                //$scope.isPopupVisibleDetalle = true;
+                                //$('#gridDist').dxDataGrid({ dataSource: grdCODDistDataSource });
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            ]
+        }
+
+        $scope.grdCODDistSetting = {
+            dataSource: grdCODDistDataSource,
+            allowColumnResizing: true,
+            caption: 'Formato de Distribución de Correspondencia',
+            loadPanel: { enabled: true, text: 'Cargando Datos...' },
+            noDataText: "Sin datos para mostrar",
+            showBorders: true,
+            paging: {
+                pageSize: 5
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            'export': {
+                enabled: true,
+                fileName: 'Formato_distribucion_correspondencia'
+            },
+            columns: [
+                {
+                    dataField: "CODTRAMITE",
+                    width: '1%',
+                    caption: 'Codigo del Trámite',
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: 'CODDOCUMENTO',
+                    width: '1%',
+                    caption: 'Documento',
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: 'S_DESTINATARIO',
+                    width: '25%',
+                    caption: 'Destinatario',
+                    dataType: 'string'
+                }, {
+                    dataField: 'S_DIRECCION',
+                    width: '15%',
+                    caption: 'Dirección',
+                    dataType: 'string'
+                }, {
+                    dataField: 'S_CIUDAD',
+                    width: '15%',
+                    caption: 'Ciudad',
+                    dataType: 'string'
+                }, {
+                    dataField: 'N_PESO',
+                    width: '10%',
+                    caption: 'Peso',
+                    dataType: 'number'
+                }, {
+                    dataField: 'S_OBSERVACIONES',
+                    width: '15%',
+                    caption: 'Observaciones',
+                    dataType: 'string'
+                }, {
+                    dataField: 'S_REFERENCIA',
+                    width: '10%',
+                    caption: 'Referencia',
+                    dataType: 'string'
+                }, {
+                    dataField: 'S_CONTENIDO',
+                    width: '10%',
+                    caption: 'Contenido',
+                    dataType: 'string'
+                }
+            ]
+        }
+
+        $scope.popupDetalle = {
+            width: 900,
+            height: 500,
+            showTitle: true,
+            title: 'Detalle Tipo de Servicio',
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            bindingOptions: {
+                visible: 'isPopupVisibleDetalle'
+            }
+        }
+
+        $scope.popupOrden = {
+            width: 600,
+            height: 300,
+            showTitle: true,
+            title: 'Editar Orden de Servicio',
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            bindingOptions: {
+                visible: 'isPopupVisibleOrden'
+            }
+        }
+
+        $scope.popupSoportes = {
+            width: 1100,
+            height: 700,
+            showTitle: true,
+            closeOnOutsideClick: true,
+            title: 'Subir soportes Orden de Servicio',
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            deferRendering: false,
+            contentTemplate: 'TemDigitaliza',
+            bindingOptions: {
+                visible: 'isPopupVisibleSoportes'
+            }
+
+        }
+
+        $scope.btnSalvaTipoSer = {
+            text: 'Guardar Orden de Servicio',
+            icon: '../Content/Images/Save.png',
+            onClick: function (e) {
+                if ($scope.txtFecTipoSer == "") {
+                    DevExpress.ui.dialog.alert("Se debe ingresar una fecha para el tipo de servicio!!");
+                    return;
+                }
+                if ($scope.TipoServSel == "") {
+                    DevExpress.ui.dialog.alert("El tipo de servicio es un dato obligatorio!!");
+                    return;
+                }
+                if ($scope.OrdenServ == "") {
+                    DevExpress.ui.dialog.alert("la orden de servicio es un dato obligatorio!!");
+                    return;
+                }
+                var itemOrden = { IDCOD: $scope.IdCod, FECHA: $scope.txtFecTipoSer, TIPOSERVICIO: $scope.TipoServSel, ORDEN: $scope.OrdenServ };
+                $http.post(@Url.Content("~") + 'Correspondencia/api/CodApi/GuardaOrden', JSON.stringify(itemOrden)).success(function (data, status, headers, config) {
+                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
+                    else {
+                        $('#grid').dxDataGrid({ dataSource: grdOrdenesSource });
+                        $('#SubeArchivo').dxFileUploader('instance').reset();
+                        DevExpress.ui.dialog.alert('Datos Guardados correctamente', 'Guardar Datos');
+                    }
+                }).error(function (data, status, headers, config) {
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data.mensaje, 'Guardar Datos');
+                }
+                );
+                $scope.isPopupVisibleOrden = false;
+            }
+        }
+
+        $scope.txtFechaTipoServ = {
+            width: '100%',
+            //acceptCustomValue: false,
+            bindingOptions: {
+                value: 'txtFecTipoSer'
+            }
+        }
+
+        $scope.txtOrdenServicio = {
+            width: '100%',
+            mode: 'text',
+            value: '',
+            onValueChanged: function (data) {
+                $scope.OrdenServ = data.value;
+            },
+            bindingOptions: {
+                value: 'txtOrdenSer '
+            }
+        }
+
+        $scope.cboTipoServicio = {
+            dataSource: ListTipoServicio,
+            onValueChanged: function (data) {
+                $scope.TipoServSel = data.value;
+            },
+            bindingOptions: {
+                value: 'TipoServSel'
+            }
+        }
+
+        $scope.btnTipoServicio = {
+            icon: '../Content/Images/Courrier.png',
+            onClick: function (e) {
+                $scope.isPopupVisibleDetalle = true;
+            }
+        }
+
+        $scope.btnSubirSettings = {
+            text: 'Subir Documento',
+            type: 'success',
+            width: '100%',
+            onClick: function (params) {
+                if (DWObject) {
+                    if (DWObject.HowManyImagesInBuffer > 0) {
+                        var strHTTPServer = location.hostname;
+                        DWObject.HTTPPort = location.port == "" ? 80 : location.port;
+                        //var strActionPage = @Url.Content("~") + "Correspondencia/api/CodApi/SubirSoportes?IDOrden=" + $scope.IdCod;
+                        var strActionPage = @Url.Content("~") + "Correspondencia/api/CodApi/SubirArchivo";
+                        DWObject.IfSSL = false;
+                        DWObject.HTTPUploadAllThroughPostAsPDF(
+                            strHTTPServer,
+                            strActionPage,
+                            "imageData.pdf",
+                            OnHttpUploadSuccess,
+                            OnHttpUploadFailure
+                        );
+                        DWObject.RemoveAllImages();
+                        $scope.isPopupVisibleSoportes = false;
+                    } else {
+                        alert('No hay imágenes para subir al servidor');
+                    }
+                }
+            }
+        };
+
+        function OnHttpUploadSuccess() {
+            DevExpress.ui.dialog.alert('Documento subido exitosamente', 'Digitalizar Documento');
+        }
+
+        function OnHttpUploadFailure(errorCode, errorString, sHttpResponse) {
+            alert(errorCode + ' - ' + errorString + sHttpResponse);
+        }
+
+        $scope.fileUploadOrdenServ = {
+            multiple: false,
+            selectButtonText: "Seleccione documento o arrastre hasta este control",
+            readyToUploadMessage: "Listo para subir al servidor",
+            uploadButtonText: "Subir al servidor",
+            uploadMode: "useButtons",
+            allowedFileExtensions: [".tif", ".pdf"],
+            bindingOptions: {
+                value: "value",
+                uploadUrl: 'UploadUrl'
+            },
+            onInitialized: function (e) {
+                $scope.fileUploader = e.component;
+            },
+            onUploaded: function (e) {
+                $scope.fileUploader.reset();
+                $scope.isPopupVisibleSoportes = false;
+            }      
+        };
+    });
+
+    var ListTipoServicio = new DevExpress.data.ArrayStore({
+        data: [
+            "Al Día",
+            "Correo Certificado Nacional",
+            "Correo Electrónico Certificado y SMS Certificado",
+            "EMS",
+            "Express Time",
+            "Notiexpress Personal",
+            "Notiexpress Por Aviso",
+            "Paqueteria",
+            "Postexpress",
+            "SMS Certificado",
+            "Varios Servicios",
+            "Descentralizado",
+            "Anónimos",
+            "Para anulación"]
+    });
+
+    var grdCODDistDataSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"ID_COD","desc":true}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Correspondencia/api/CodApi/DetalleOrden', {
+                IdCod: IdCod,
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: false
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+
+    var grdOrdenesSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"D_FECHA","desc":true}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Correspondencia/api/CodApi/Ordenes', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: false
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+</script>
+<style>
+    button, html input[type="button"], input[type="reset"], input[type="submit"] {
+        float: none !important;
+    }
+</style>
+<div ng-app="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="OrdenServController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Almacenando...', showIndicator: true, shadingColor: 'transparent gray', shading: true, bindingOptions: { visible: 'almacenandoVisible' } }"></div>
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Ordenes de Servicio Correspondencia</label>
+                </h3>
+            </div>
+            <div dx-data-grid="grdOrdenesSettings" id="grid"></div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="popup" dx-popup="popupDetalle">
+                <div dx-data-grid="grdCODDistSetting" id="gridDist"></div>
+            </div>
+            <div class="popup" dx-popup="popupOrden">
+                <div id="form">
+                    <div class="dx-fieldset">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Fecha de despacho </div>
+                            <div class="dx-field-value">
+                                <div id="selected-date" dx-date-box="txtFechaTipoServ"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Tipo de Servicio </div>
+                            <div class="dx-field-value">
+                                <div dx-select-box="cboTipoServicio" id="cboTipoServ"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Orden de Servicio </div>
+                            <div class="dx-field-value">
+                                <div dx-text-box="txtOrdenServicio"></div>
+                            </div>
+                        </div>
+                        <br />
+                        <div id="summary" dx-validation-summary="{{MensajeError}}"></div>
+                        <div style="text-align: center;">
+                            <div dx-button="btnSalvaTipoSer" id="btnSalTipoSer" class="btn_lg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="popup" dx-popup="popupSoportes" id="Digitaliza">
+                <div data-options="dxTemplate: { name:'TemDigitaliza' }">
+                    <div id="fileuploader-container">
+                        <div dx-file-uploader="fileUploadOrdenServ"></div>
+                        <div class="content">
+                            <div ng-if="value.length > 0">
+                                <h4>Archivo Seleccionado</h4>
+                            </div>
+                            <div ng-repeat="val in value">
+                                <div class="selected-item">
+                                    Nombre archivo: <span>{{val.name}}</span><br />
+                                    Tamaño: <span>{{val.size}}</span> bytes<br />
+                                    Tipo: <span>{{val.type}}</span><br />
+                                    Última fecha modificación: <span>{{val.lastModifiedDate}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="note">Maximum file size: <span>4 MB</span>.</span>
+                    </div>
+                    @*<div class="row" style="margin-bottom: 10px">
+                        <div class="col-md-3 col-sm-3 col-xs-3">
+                            <div dx-button="btnSubirSettings" id="btnSubir"></div>
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

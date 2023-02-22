@@ -1,0 +1,96 @@
+@using System.Security.Claims
+@using System.Web
+@using System.Web.UI.WebControls
+@using SIM.Areas.Seguridad.Models
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvAdministrarCargo";
+        settings.Caption = "Cargos";
+        settings.CallbackRouteValues = new { Controller = "Cargo", Action = "gvwAdministrarCargo" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Cargo", Action = "gvwAdministrarCargoCrear" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Cargo", Action = "gvwAdministrarCargoActualizar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Cargo", Action = "gvwAdministrarCargoEliminar" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowNewButtonInHeader = claimppal.IsInRole("CCARGO");
+        settings.CommandColumn.ShowDeleteButton = claimppal.IsInRole("ECARGO");
+        settings.CommandColumn.ShowEditButton = claimppal.IsInRole("ACARGO");
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.KeyFieldName = "ID_CARGO";
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_DESCRIPCION";
+            column.Caption = "Descripción";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_INICIO";
+            column.Caption = "Fecha inicio";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "{0:dd/MM/yyyy HH:mm}";
+            var dateEditProperties = column.PropertiesEdit as DateEditProperties;
+            dateEditProperties.EditFormatString = "dd/MM/yyyy HH:mm";
+            dateEditProperties.UseMaskBehavior = true;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_FIN";
+            column.Caption = "Fecha fin";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "{0:dd/MM/yyyy HH:mm}";
+            var dateEditProperties = column.PropertiesEdit as DateEditProperties;
+            dateEditProperties.EditFormatString = "dd/MM/yyyy HH:mm";
+            dateEditProperties.UseMaskBehavior = true;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_DEPENDENCIA";
+            column.Caption = "Dependencia";
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            column.Settings.FilterMode = ColumnFilterMode.DisplayText;
+            column.Settings.SortMode = DevExpress.XtraGrid.ColumnSortMode.DisplayText;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListSeguridad.GetDependencia();
+            comboBoxProperties.ValueField = "ID_DEPENDENCIA";
+            comboBoxProperties.TextField = "S_NOMBRE";
+            comboBoxProperties.ValueType = typeof(int);
+            comboBoxProperties.Columns.Add("S_NOMBRE", "Nombre",Unit.Parse("250"));
+            comboBoxProperties.Columns.Add("S_DESCRIPCION", "Descripción", Unit.Parse("250"));
+            comboBoxProperties.Columns.Add("N_CODDEPENDENCIA", "Código", Unit.Parse("50"));
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

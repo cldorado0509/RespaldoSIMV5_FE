@@ -1,0 +1,25 @@
+11:22:05 - ProyeccionDocumento [PostAvanzarDocumento - 78914 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-01403: No se ha encontrado ningún dato
+ORA-06512: en "CONTROL.SP_OBTENER_CODFUNCIONARIO", línea 4
+ORA-06512: en línea 1
+11:27:10 - ProyeccionDocumento [PostAvanzarDocumento - 78914 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-01403: No se ha encontrado ningún dato
+ORA-06512: en "CONTROL.SP_OBTENER_CODFUNCIONARIO", línea 4
+ORA-06512: en línea 1
+11:32:38 - ProyeccionDocumento [PostAvanzarDocumento - 78914 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-01403: No se ha encontrado ningún dato
+ORA-06512: en "CONTROL.SP_OBTENER_CODFUNCIONARIO", línea 4
+ORA-06512: en línea 1
+11:33:49 - ProyeccionDocumento [PostAvanzarDocumento - 78914 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-01403: No se ha encontrado ningún dato
+ORA-06512: en "CONTROL.SP_OBTENER_CODFUNCIONARIO", línea 4
+ORA-06512: en línea 1
+11:40:49 - ProyeccionDocumento [PostAvanzarDocumento - 78914 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-01403: No se ha encontrado ningún dato
+ORA-06512: en "CONTROL.SP_OBTENER_CODFUNCIONARIO", línea 4
+ORA-06512: en línea 1

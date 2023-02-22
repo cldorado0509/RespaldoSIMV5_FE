@@ -1,0 +1,23 @@
+﻿<!DOCTYPE >
+<html>
+<head>
+    <script type="text/javascript">
+        function carga(){
+       
+        var datos=getUrlVars();
+            parent.parent.abrirPopup(datos.id);
+        }
+        function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
+    function(m,key,value) {vars[key] = value;
+    });
+    return vars;
+ }
+    </script>
+    <title></title>
+</head>
+<body onload="carga();">
+
+</body>
+</html>

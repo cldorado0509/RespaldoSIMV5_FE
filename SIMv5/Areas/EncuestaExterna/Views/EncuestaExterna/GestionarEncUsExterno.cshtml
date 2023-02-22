@@ -1,0 +1,645 @@
+﻿@{
+    ViewBag.Title = "Administrador Encuesta";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .ui-datepicker-calendar {
+            display: none;
+        }
+        
+
+.ui-dialog .ui-dialog-buttonpane button {
+    margin: .5em .4em .5em 0;
+    cursor: pointer;
+    background-color: rgb(165, 200, 62);
+    height: 32px;
+    width: 71px;
+    border-radius: 4px;
+
+}
+#loadingImg{
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.17) !important;
+    position: fixed;
+    z-index: 100000;
+    cursor: not-allowed;
+}
+
+.loadingImg{
+	position: fixed;
+    z-index: 100000;
+    background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat;
+    left: 50%;
+    background-size: contain;
+    top: 50%;
+    cursor: not-allowed;
+}
+    </style>
+</head>
+<body>
+    <div data-url="@Url.Content("~")" data-tercero="@ViewBag.idTercero" data-nombretercero="@ViewBag.NombreTercero" id="app" stye="display:none" />
+
+    <div id="popTercero">
+        <div id="grdTercero"></div>
+    </div>
+    <div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+    <div class="row">
+        @if (ViewBag.seleccionTercero)
+        {
+            <div style="width: 100%">
+                <div style="width: 100px; float: left;"><label style="font-weight:bold; font-size: 14px; padding-top: 7px; padding-left: 20px;">Tercero</label></div>
+                <div style="width: 600px; float: left;">
+                    <div id="cboTercero"></div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-sm-12" style=" padding-left: 20px;padding-right:20px;">
+
+            <div id="GrdUserEx" style=" margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);">
+            </div>
+
+        </div>
+    </div>
+    <div id="pantallaEncuesta" title="Encuesta" style="display: none; overflow: hidden;">
+        <iframe src="" id="frEncuestaEditar" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <div id="pantallaReporte" title="PDF" style="display: none; overflow: hidden;">
+        <iframe src="" id="frEncuestaPDF" width="100%" height="100%"></iframe>
+
+
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="        display: none
+">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+    <div id="msConfirmacion" title="Terminos Condiciones" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextConf"></p>
+    </div>
+
+    <script>
+            var idestado = 0;
+            radicado=0;
+            var codradicado = 0;
+            var idTercero = @ViewBag.idTercero;
+            var nombreTercero;
+            var itemSeleccionadoTercero = false;
+
+            $(document).ready(function () {
+
+                //gridUsuarioExterno({});
+                idestado=@ViewBag.idestado;
+                //if(idestado!=0)
+                    //generarPdf(idestado,0);
+
+                $('#popTercero').dxPopup({
+                    showTitle: true,
+                    deferRendering: false,
+                    title: 'Seleccionar Tercero',
+                    onHidden: function () {
+                        if (itemSeleccionadoTercero) {
+                            itemSeleccionadoTercero = false;
+
+                            cboTercerosDataSource.store().clear();
+                            cboTercerosDataSource.store().insert({ ID_TERCERO: idTercero, S_RSOCIAL: nombreTercero });
+                            cboTercerosDataSource.load();
+
+                            window.location = $('#app').data('url') + 'EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=0&t=' + idTercero;
+                        }
+                    },
+                });
+
+                $('#grdTercero').dxDataGrid({
+                    dataSource: terceroDataSource,
+                    allowColumnResizing: true,
+                    loadPanel: { text: 'Cargando Datos...' },
+                    paging: {
+                        pageSize: 10
+                    },
+                    pager: {
+                        showPageSizeSelector: false
+                    },
+                    filterRow: {
+                        visible: true,
+                    },
+                    groupPanel: {
+                        visible: false,
+                    },
+                    editing: {
+                        editEnabled: false,
+                        removeEnabled: false,
+                        insertEnabled: false
+                    },
+                    selection: {
+                        mode: 'single'
+                    },
+                    columns: [
+                        {
+                            dataField: 'ID_TERCERO',
+                            caption: 'ID_TERCERO',
+                            visible: false,
+                            dataType: 'number'
+                        },
+                        {
+                            dataField: 'N_DOCUMENTON',
+                            width: '25%',
+                            caption: 'DOCUMENTO',
+                            visible: true,
+                            dataType: 'number'
+                        },
+                        {
+                            dataField: 'S_RSOCIAL',
+                            width: '75%',
+                            caption: 'RAZON SOCIAL',
+                            visible: true,
+                            dataType: 'string'
+                        }
+                    ],
+                    onSelectionChanged: function (selecteditems) {
+                        var data = selecteditems.selectedRowsData[0];
+                        itemSeleccionadoTercero = true;
+                        idTercero = data.ID_TERCERO;
+                        nombreTercero = data.S_RSOCIAL;
+
+                        var popup = $('#popTercero').dxPopup('instance');
+                        popup.hide();
+                    }
+                });
+
+                cboTercerosDataSource.store().clear();
+                cboTercerosDataSource.store().insert({ ID_TERCERO: $('#app').data('tercero'), S_RSOCIAL: $('#app').data('nombretercero') });
+                cboTercerosDataSource.load();
+
+                $('#cboTercero').dxSelectBox({
+                    dataSource: cboTercerosDataSource,
+                    valueExpr: 'ID_TERCERO',
+                    displayExpr: 'S_RSOCIAL',
+                    placeholder: '[Seleccionar Tercero]',
+                    value: idTercero,
+                    onOpened: function () {
+                        $('#cboTercero').dxSelectBox('instance').close();
+                        var popup = $('#popTercero').dxPopup('instance');
+                        popup.show();
+                    }
+                });
+
+                consultarEncuestaUsuario();
+            });
+
+            function gridUsuarioExterno(arrDato) {
+
+                $("#GrdUserEx").dxDataGrid({
+
+                    dataSource: arrDato,
+                    selection: {
+                        mode: 'single'
+                    },
+                    columns: [
+
+
+                        { dataField: 'ENCUESTA', caption: 'Encuesta', allowGrouping: true, width: '35%' },
+                        { dataField: 'TIPOVIGENCIA', caption: 'Tipo Vigencia', allowGrouping: true, width: '15%' },
+                        { dataField: 'VIGENCIA', caption: 'Vigencia', allowGrouping: true, width: '15%' },
+                        { dataField: 'ESTADOENCUESTA', caption: 'Estado Encuesta', allowGrouping: true, width: '20%' },
+                        { dataField: 'D_EDICION', caption: 'Fecha Actualización', allowGrouping: true, width: '25%' },
+                         { dataField: 'EMPRESA', caption: 'Tercero', allowGrouping: true, width: '@(ViewBag.Habilitar ? "20%" : "25%")' },
+                          { dataField: 'INSTALACION', caption: 'Instalacion', allowGrouping: true, width: '25%' },
+                        { dataField: 'ID_ESTADO', visible: false },
+                         { dataField: 'ID_VIGENCIA', visible: false },
+                        { dataField: 'TIPO_GUARDADO', visible: false },
+                        {
+                            dataField: 'CARD', caption: 'No. Encuestas', allowGrouping: true, width: '20%', alignment: 'center', cellTemplate: function (container, options) {
+                                container.height(5);
+                                if (options.value == 'N') {
+                                    $('<span title="Total de Encuestas" style="display: inline-block;min-width: 30px;text-align: center;padding:4px; border:1px solid #999999;border-radius: 20px;background-color:white;font-size: 9px;">' + options.data.TOTAL + '</span>').appendTo(container);
+                                    $('<span title="Encuestas en estado Borrador o Sin Diligenciar" style="display: inline-block;min-width: 30px;text-align: center;padding:4px; border:1px solid #999999;border-radius: 20px;background-color:yellow;font-size: 9px;">' + options.data.BORRADOR + '</span>').appendTo(container);
+                                    $('<span title="Encuestas Enviadas" style="display: inline-block;min-width: 30px;text-align: center;padding:4px; border:1px solid #999999;border-radius: 20px;background-color:greenyellow;font-size: 9px;">' + options.data.ENVIADAS + '</span>').appendTo(container);
+                                } else {
+                                    $('<span>' + options.value + '</span>').appendTo(container);
+                                }
+                            }
+                        },
+                        {
+                            dataField: 'ver', allowGrouping: true, caption: '', width: '7%', cellTemplate: function (container, options) {
+                                container.height(5);
+                                $('<img src="@Url.Content("../../Content/Images/edit.png")" style="width:25px;height:25px" class="btnEditar"/>').attr('src', options.value).appendTo(container);
+                            }
+                        }, {
+                            dataField: 'ELIMINAR', allowGrouping: true, caption: '', width: '7%', cellTemplate: function (container, options) {
+                                container.height(5);
+                                $('<img src="@Url.Content("../../Content/Images/delete.png")" style="width:25px;height:25px" class="btnEditar" />')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                            }
+                        },{
+                            dataField: 'DESCARGAR', allowGrouping: true, visible: true, caption: '', width: '7%', alignment: 'center', cellTemplate: function (container, options) {
+                                container.height(5);
+                                $('<img src="@Url.Content("../../Content/Images/descargar.png")" style="width:25px;height:25px" class="btnEditar" />').attr('src', options.value).appendTo(container);
+                            }
+                        },
+                        {
+                            dataField: 'HABILITAR', allowGrouping: true, visible: @(ViewBag.Habilitar ? "true" : "false"), caption: '', width: '7%', alignment: 'center', cellTemplate: function (container, options) {
+                                container.height(5);
+                                if (options.data.ESTADOENCUESTA == 'Enviada')
+                                    $('<img src="@Url.Content("../../Content/Images/aprobado.png")" style="width:25px;height:25px" class="btnEditar" />').attr('src', options.value).appendTo(container);
+                            }
+                        },{ dataField: 'CARDINALIDAD', visible: false },
+                        { dataField: 'ID_INSTALACION', visible: false }
+
+
+                    ],
+
+                    //scrolling: { mode: 'infinite' },
+                    onSelectionChanged: function (selecteditems) {
+                            },
+                    onCellClick: function (e) {
+
+                                var tipoBoton = e.columnIndex;
+
+                                switch (tipoBoton) {
+
+                                    case 8:
+                                        if (e.data.CARDINALIDAD == 2) {
+                                            if (e.data.TIPO_GUARDADO == 0){
+                                                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + e.data.VIGENCIA.replace("-","") + "&tercero=" + e.data.ID_TERCERO + "&instalacion=" + e.data.ID_INSTALACION + "&vigencia=" +e.data.ID_VIGENCIA , '_self');
+                                            }else
+                                                //validarGenerarRadicado(e.data.ID_INSTALACION,e.data.VIGENCIA,e.data.ID_ESTADO)
+                                                generarPdfCard(e.data.ID_INSTALACION,e.data.VIGENCIA,0);
+                                            //alert("La Encuesta ya se envió")
+                                        } else {
+                                            if (e.data.TIPO_GUARDADO == 0)
+                                            {
+                                                abrirEncuesta(e.data.ID_ESTADO,e.data.ID_ENCUESTA,e.data.ID_VIGENCIA);
+                                            } else {
+                                                onload();
+                                                //alert(e.data.ID_INSTALACION);
+                                                //alert(e.data.VIGENCIA);
+                                                //alert(e.data.ID_ESTADO);
+                                                validarGenerarRadicado(e.data.ID_INSTALACION,e.data.VIGENCIA,e.data.ID_ESTADO)
+        
+                                        //generarPdf(e.data.ID_ESTADO,0)
+
+                                            }
+                                        }
+
+
+                                        break;
+                                    case 9:
+                                        if (e.data.TIPO_GUARDADO == 1)
+                                        {
+                                            mensajeAlmacenamiento("La encuesta no se puede eliminar esta en estado enviado");
+                                        }else{
+                                            mensajeConfirmar("Esta seguro de eliminar la encuesta",e.data.ID_ESTADO,e.data.CARDINALIDAD,e.data.ID_VIGENCIA,e.data.VIGENCIA,e.data.ID_INSTALACION);
+                                        }
+
+
+                                        break;
+                                    case 10:
+                                        window.open('@Url.Content("~/Reporte/Encuesta/DetalleRespuestas?idTercero=")' + e.data.ID_TERCERO + '&idInstalacion=' + e.data.ID_INSTALACION + '&idVigencia=' + e.data.ID_VIGENCIA + '&valorVigencia=' + e.data.VIGENCIA);
+                                        break;
+                                    case 11:
+                                        if (e.data.ESTADOENCUESTA == 'Enviada') {
+                                            var result = DevExpress.ui.dialog.confirm("Está Seguro de Habilitar la Encuesta ?", "Confirmación");
+
+                                            result.done(function (dialogResult) {
+                                                if (dialogResult) {
+                                                    $.getJSON($('#app').data('url') + 'EncuestaExterna/EncuestaExterna/HabilitarEncuesta', {
+                                                        idInstalacion: e.data.ID_INSTALACION,
+                                                        idVigencia: e.data.ID_VIGENCIA,
+                                                        valor: e.data.VIGENCIA
+                                                    }).done(function (data) {
+                                                        window.location.reload(true);
+                                                    }).fail(function (jqxhr, textStatus, error) {
+                                                        alert('falla: ' + textStatus + ", " + error);
+                                                    });
+                                                }
+                                            });
+                                        }
+                                        break;
+
+                                }
+                            },
+                    columnChooser: { enabled: false },
+                    allowColumnReordering: true,
+                    sorting: { mode: 'single' },
+                    pager: { visible: false },
+                    paging: { enabled: false, pageSize: 5 }
+
+                        });
+                offload();
+            }
+            function validarGenerarRadicado(idInstalacion,valor,ID_ESTADO) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("validarGenerarRadicado", "EncuestaExterna")',
+                    data:{ID_ESTADO: ID_ESTADO,idinstalacion:idInstalacion},
+                    beforeSend: function () { },
+                    success: function (response) {
+                        //alert(response);
+                        //alert(ID_ESTADO);
+                        var datos = eval('(' + response + ')');
+                        radicado=datos[0].RADICADO;
+                        codradicado=datos[0].CODRADICADO;
+                        if(radicado==0)//no radicado
+                        {
+                            generarPdf(ID_ESTADO,0);
+
+                            offload();
+                        }else{// con radicado
+                            GenerarDocumentoRadicadoCardinalida(idInstalacion,valor,ID_ESTADO)
+                        }
+                    }
+                });
+            }
+            function consultarEncuestaUsuario() {
+                onload();
+                $.ajax({
+                    type: "POST",
+                    data: { t: idTercero },
+                    url: '@Url.Action("ConsultarEncuestaUsuarioFormulario", "EncuestaExterna")',
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var datos = eval('(' + response + ')');
+                        if(datos=="[]")
+                            datos = "{}";
+
+                        gridUsuarioExterno(datos);
+                    }
+                });
+            }
+            function clonarEncuestaUserExterno(idvigencia,valor,idestado) {
+                onload();
+                $.ajax({
+                    type: "POST",
+                    data: { idvigencia: idvigencia,valor:valor,idestado:idestado },
+                    url: '@Url.Action("clonarEncuesta", "EncuestaExterna")',
+
+                    success: function (response) {
+                        consultarEncuestaUsuario();
+                    }
+                });
+            }
+
+            function eliminarEcuestaUseExterno(idestado)
+            {
+
+                $.ajax({
+                    type: "POST",
+                    data: { idestado: idestado },
+                    url: '@Url.Action("EliminarEncuesta", "EncuestaExterna")',
+                    success: function (resultado) {
+                        consultarEncuestaUsuario();
+                        mensajeAlmacenamiento("Eliminación exitosa")
+                        offload();
+                    }
+
+
+                });
+            }
+            function eliminarEcuestaUseExternoCard(idv,val,inst)
+            {
+
+                $.ajax({
+                    type: "POST",
+                    data: { idv: idv, val: val, inst: inst },
+                    url: '@Url.Action("EliminarEncuestaCardi", "EncuestaExterna")',
+                    success: function (resultado) {
+                        consultarEncuestaUsuario();
+                        mensajeAlmacenamiento("Eliminación exitosa")
+                        offload();
+                    }
+
+
+                });
+            }
+            function abrirEncuesta(idestado,idencuesta,idvigencia) {
+                //window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaUsuarioExterno?idVigencia=")' +idvigencia+"&tipo=1"+"&estado="+idestado+"&card=1", '_self');
+                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaEstado")?e=' + idestado + '&t=1&cr=1', '_self');
+            }
+
+            function generarPdf(idEstado,idRadicado) {
+
+                $("#pantallaReporte").dialog(
+                {
+
+                    width: 800,
+                    height: 500,
+
+
+
+                });
+
+                $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/reportEncuesta?idestado=")" + idEstado+"&idRadicado="+idRadicado);
+
+            }
+            function generarPdfCard(idintalacion,valor,idRadicado) {
+
+                $("#pantallaReporte").dialog(
+                {
+
+                    width: 800,
+                    height: 500,
+
+
+
+                });
+
+                $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/reportEncuestaCard?idinstalacion=")" + idintalacion + "&valor=" + valor + "&idRadicado=" + idRadicado);
+
+            }
+            function generarPdfCardRadicado(idintalacion,valor,idRadicado,ID_ESTADO) {
+
+                $("#pantallaReporte").dialog(
+                {
+
+                    width: 800,
+                    height: 500,
+
+
+
+                });
+
+                $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/reportEncuestaCardRadicado?idinstalacion=")" + idintalacion+"&valor="+valor+"&idRadicado="+idRadicado+"&ID_ESTADO="+ID_ESTADO);
+
+            }
+            function generarPdfCardExistente(ID_ESTADO) {
+
+                $("#pantallaReporte").dialog(
+                {
+
+                    width: 800,
+                    height: 500,
+
+
+
+                });
+
+
+                $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/conaultardocradicado?ID_ESTADO=")" +ID_ESTADO);
+
+            }
+            function mensajeConfirmar(mensaje,idestado,card,idv,val,intst) {
+                $("#msTextConf").text(mensaje);
+                $("#msConfirmacion").dialog({
+                    width: 350,
+                    height: 150,
+                    buttons: {
+                        "NO": function () {
+                            $(this).dialog("close");
+                        },
+                        "SI": function () {
+                            onload();
+                            if(card==1)
+                                eliminarEcuestaUseExterno(idestado);
+                            else
+                                eliminarEcuestaUseExternoCard(idv,val,intst);
+                            $(this).dialog("close");
+                        }
+                    }, class: "btn btn-default"
+                });
+            }
+            function mensajeAlmacenamiento(mensaje) {
+                $("#msTextAlm").text(mensaje);
+                $("#msAlmacenamiento").dialog({
+                    buttons: [
+              {
+                  text: "Aceptar",
+                  click: function () { $(this).dialog("close"); },
+                  class: "btn btn-default "
+              },
+                    ]
+                });
+            }
+
+            function onload()
+            {
+                $("#loadingImg").css({ "display": "block" });
+            }
+            function offload()
+            {
+                $("#loadingImg").css({ "display": "none" });
+            }
+            function GenerarDocumentoRadicado(idestado) {
+                var idRadicado=0;
+                var unidadDocumental = 10;
+                 @*$.ajax({
+                  type: "GET",
+                  url: "@Url.Content("~/Tramites/api/RadicadorUDApi/Radicar")",
+                 data: { idUnidadDocumental: unidadDocumental, tipoRetorno: 'key' },
+                 success: function (response) {
+                  var dato = response;
+                  idRadicado = dato.IdRadicado;
+                  generarPdf(idestado,idRadicado);
+
+
+                 },
+                 });*@
+                idRadicado = 1058;
+                generarPdf(idestado,idRadicado);
+
+
+            }
+            function GenerarDocumentoRadicadoCardinalida(idinstalacion,valor,ID_ESTADO) {
+                var idRadicado=0;
+                if(codradicado==0)
+                {
+                   // idRadicado = 1058;
+                    var unidadDocumental = 10;
+                     $.ajax({
+                      type: "GET",
+                      url: "@Url.Content("~/Tramites/api/RadicadorUDApi/RadicarFuncionario")",
+                         data: { idUnidadDocumental: unidadDocumental, tipoRetorno: 'key',claveFuncionario:'FuncionarioPMES' },
+                     success: function (response) {
+                      var dato = response;
+                      idRadicado = dato.IdRadicado;
+                     generarPdfCardRadicado(idinstalacion,valor,idRadicado,ID_ESTADO);
+                     guardarradicado(ID_ESTADO,idRadicado);
+
+                     offload();
+                     },
+                     });
+
+
+                   // generarPdfCardRadicado(idinstalacion,valor,idRadicado,ID_ESTADO);
+                    //guardarradicado(ID_ESTADO,idRadicado);
+                }else{
+                    generarPdfCardExistente(ID_ESTADO);
+
+                    //onload();
+                }
+
+
+
+            }
+            function guardarradicado(ID_ESTADO,idRadicado)
+            {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("guardarradicadocod", "EncuestaExterna")',
+                    data: { idestado: ID_ESTADO,codradicado:idRadicado },
+                    success: function (response) {
+
+                    },
+                });
+            }
+
+        var cboTercerosDataSource = new DevExpress.data.DataSource([]);
+
+        terceroDataSource = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var d = $.Deferred();
+
+                var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"S_RSOCIAL","desc":false}]';
+                var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+                var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+                var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+                $.getJSON($('#app').data('url') + 'General/api/TerceroApi/Terceros', {
+                    filter: filterOptions,
+                    sort: sortOptions,
+                    group: groupOptions,
+                    skip: skip,
+                    take: take,
+                    searchValue: '',
+                    searchExpr: '',
+                    comparation: '',
+                    tipoData: 'l',
+                    noFilterNoRecords: true
+                }).done(function (data) {
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                }).fail(function (jqxhr, textStatus, error) {
+                    alert('error cargando datos: ' + textStatus + ", " + error);
+                });
+                return d.promise();
+            },
+            byKey: function (key, extra) {
+                return key.toString();
+            },
+        });
+
+    </script>
+</body>
+
+
+
+

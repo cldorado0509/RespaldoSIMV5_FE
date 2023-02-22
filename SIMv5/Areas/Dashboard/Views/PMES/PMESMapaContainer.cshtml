@@ -1,0 +1,56 @@
+﻿@using SIM.Areas.Dashboard.Controllers
+@{
+    Layout = "~/Views/Shared/_LayoutPopup.cshtml";
+}
+<style>
+    .dx-checkbox-has-text .dx-checkbox-text {
+        vertical-align: middle;
+        font-size: 10px;
+    }
+</style>
+
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Dashboard/Scripts/pmesmapa.js?v=1.08")"></script>
+<div ng-app="SIM" data-url="@Url.Content("~")" data-tercero="@ViewBag.idTercero" data-e="@ViewBag.IdEncuesta" data-v="@ViewBag.Vigencia" id="app" class="my-cloak" resizable>
+    <div ng-controller="PMESMapaController">
+        <div class="row">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow" style="font-weight: bold; text-overflow: unset; width: 20%">SEDE</div>
+                        <div class="dx-field-value valuefullrow" style="width: 80%">
+                            <div dx-select-box="InstalacionesSettings"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div style="font-weight: bold;">MODOS DE TRANSPORTE</div>
+                        @{
+                            foreach (ModoTransporte modoTransporte in ViewBag.ModosTransporte)
+                            {
+                                <div>
+                                    <span style="display:none" id="mtId_@modoTransporte.ID_MODO.ToString()">chkmt_@modoTransporte.ID_MODO.ToString()</span>
+                                    <span style="display:none" id="mtRGB_@modoTransporte.ID_MODO.ToString()">@modoTransporte.COLOR</span>
+                                    <div class="col-xs-1" style="float: left; background-color: rgb(@modoTransporte.COLOR)">&nbsp;</div>
+                                    <div class="col-xs-10" dx-check-box="{ value: false, text: '@modoTransporte.MODO' }" id="chkmt_@modoTransporte.ID_MODO.ToString()"></div><br />
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div dx-button="RefrescarMapaSettings" id="btnRefrescarMapa"></div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div style="width: 100%; height: 0; padding-bottom: 80%" id="pnlMapaPMES">
+                    <iframe src="" style="position: relative; width: 100%; height: 450px; border: none" id="frmMapaPMES" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

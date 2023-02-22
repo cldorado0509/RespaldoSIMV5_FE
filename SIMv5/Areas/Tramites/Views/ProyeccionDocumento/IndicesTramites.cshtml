@@ -1,0 +1,23 @@
+﻿@using SIM.Properties
+@model IEnumerable<int>
+@{
+        Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/indicesTramites.js?v=1.06")"></script>
+
+<div style="padding: 0px; height:100%">
+    <div data-url="@Url.Content("~")" id="app" data-t="@ViewBag.Tramites" class="my-cloak" style="height:100%" resizable>
+        <div id="loadPanel"></div>
+        <div class="panelSIM-default" style="height:100%">
+            <div id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px; height:10%"></div>
+            @foreach (var tramite in Model)
+            {
+                <div id="tab_@tramite" style="display: none; height:90%">
+                    <div id="txtDescripcion_@tramite"></div>
+                    <div id="grdIndices_@tramite"></div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

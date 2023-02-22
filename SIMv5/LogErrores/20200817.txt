@@ -1,0 +1,30 @@
+15:16:37 - Tramites [PostActualizarIndiceTramite - 993327 - 0 - 'CL 40 88-10']: Se presentó un error Almacenando el Indice del Trámite.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-02291: restricción de integridad (TRAMITES.TBINDICETRAMITE_FK00) violada - clave principal no encontrada
+15:17:29 - Tramites [PostActualizarIndiceTramite - 993327 - 0 - 'CL 40 88-10']: Se presentó un error Almacenando el Indice del Trámite.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-02291: restricción de integridad (TRAMITES.TBINDICETRAMITE_FK00) violada - clave principal no encontrada
+15:17:37 - Tramites [PostActualizarIndiceTramite - 993327 - 0 - 'CL 40 88-10']: Se presentó un error Almacenando el Indice del Trámite.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-02291: restricción de integridad (TRAMITES.TBINDICETRAMITE_FK00) violada - clave principal no encontrada
+15:17:56 - Tramites [PostActualizarIndiceTramite - 993327 - 0 - 'CL 40 88-10']: Se presentó un error Almacenando el Indice del Trámite.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-02291: restricción de integridad (TRAMITES.TBINDICETRAMITE_FK00) violada - clave principal no encontrada
+15:19:50 - Tramites [PostActualizarIndiceTramite - 993327 - 0 - 'CL 40 88-10']: Se presentó un error Almacenando el Indice del Trámite.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-02291: restricción de integridad (TRAMITES.TBINDICETRAMITE_FK00) violada - clave principal no encontrada

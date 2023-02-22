@@ -1,0 +1,81 @@
+﻿@model IEnumerable<SIM.Areas.Encuestas.Models.SOLUCION>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.S_TIPOTEXTO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.N_TIPONUMERO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_TIPOFECHA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.S_OBSERVACION)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_SOLUCION)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ENCUESTA.S_NOMBRE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OBJETO_CONTROL.S_NOMBRETABLA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PREGUNTA.S_NOMBRE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RESPUESTA.S_VALOR)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.S_TIPOTEXTO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.N_TIPONUMERO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_TIPOFECHA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.S_OBSERVACION)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_SOLUCION)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ENCUESTA.S_NOMBRE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OBJETO_CONTROL.S_NOMBRETABLA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PREGUNTA.S_NOMBRE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RESPUESTA.S_VALOR)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID_SOLUCION }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID_SOLUCION }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID_SOLUCION })
+        </td>
+    </tr>
+}
+
+</table>

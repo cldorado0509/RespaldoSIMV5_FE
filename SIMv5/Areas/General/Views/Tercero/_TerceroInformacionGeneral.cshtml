@@ -1,0 +1,189 @@
+﻿@using SIM.Properties
+    
+@{
+    var razonSocialReadOnly = "true";
+    if (ViewBag.tipoTercero != "N") {
+        razonSocialReadOnly = "false";
+    }
+}
+<script type="text/javascript">
+    var tiposIdentificacionDataSource = @Html.Raw(ViewBag.tiposIdentificacion);
+    var tiposIdentificacionNaturalDataSource = @Html.Raw(ViewBag.tiposIdentificacionNatural);
+</script>
+<div class="dx-fieldset">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Identificación</div>
+                <div class="dx-field-value" style="padding:0px">
+                    <div class="row" style="margin:0px">
+                        <div class="col-md-3 col-sm-3 col-xs-3" style="padding:0px">
+                            <div dx-select-box="TipoDocumentoSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Documento Requerido' }] }"></div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6" style="padding:0px">
+                            <div dx-number-box="{bindingOptions: { value: 'datosTercero.N_DOCUMENTON', min: 0, max: 9, onChange: 'CalcularDV' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Identificación Requerida' }] }"></div>
+                        </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1" style="padding:0px">
+                            <span style="display: inline-block; vertical-align: middle; line-height: normal; width: 100%; text-align: center; ">-</span>
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-xs-2" style="padding:0px">
+                            <div dx-number-box="{ readOnly: true, bindingOptions: { value: 'datosTercero.N_DIGITOVER' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Dígito de Verficación Requerido' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (ViewBag.tipoTercero == "N")
+        {
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Género</div>
+                    <div class="dx-field-value">
+                        <div dx-select-box="GeneroSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Género Requerido' }] }"></div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Naturaleza</div>
+                    <div class="dx-field-value">
+                        <div dx-select-box="NaturalezaSettings"></div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (ViewBag.tipoTercero == "J")
+    {
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label labelfullrow">Razón Social</div>
+                <div class="dx-field-value valuefullrow">
+                    <div dx-text-box="{bindingOptions: { value: 'datosTercero.S_RSOCIAL', readOnly: '@razonSocialReadOnly' }}" @(ViewBag.tipoTercero != "N" ? Html.Raw("dx-validator = \"{ validationRules: [{ type: 'required', message: 'Razón Social Requerida' }] }\"") : Html.Raw(""))></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+    @if (ViewBag.tipoTercero == "N")
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Nombres</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'nombres.NOMBRES' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Nombres Requerido' }] }"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Apellidos</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'nombres.APELLIDOS' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Apellidos Requerido' }] }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Fecha de Nacimiento</div>
+                    <div class="dx-field-value">
+                        <div dx-date-box="{formatstring:'yyyy/MM/dd', format: 'date', useCalendar: true, bindingOptions: { value: 'datosTercero.NATURAL.D_NACIMIENTO' }}" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Matrícula Profesional</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosTercero.NATURAL.S_MATRICULAPROFESIONAL' }}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Sigla</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosTercero.JURIDICA.S_SIGLA' }}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Registro Camara de Comercio</div>
+                    <div class="dx-field-value">
+                        <div dx-text-box="{bindingOptions: { value: 'datosTercero.JURIDICA.S_DCAMCOMERCIO' }}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dx-field">
+                    <div class="dx-field-label">Fecha de Constitución</div>
+                    <div class="dx-field-value">
+                        <div dx-date-box="{ bindingOptions: { value: 'datosTercero.JURIDICA.D_CONSTITUCION' }}" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label labelfullrow">Actividad Económica</div>
+                <div class="dx-field-value valuefullrow">
+                    <div dx-lookup="ActividadEconomicaSettings"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="border-color: gainsboro;">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Teléfono</div>
+                <div class="dx-field-value">
+                    <div dx-number-box="{bindingOptions: { value: 'datosTercero.N_TELEFONO' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Teléfono Requerido' }] }"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Fax</div>
+                <div class="dx-field-value">
+                    <div dx-number-box="{bindingOptions: { value: 'datosTercero.N_FAX' }}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Correo Electrónico</div>
+                <div class="dx-field-value">
+                    <div dx-text-box="{bindingOptions: { value: 'datosTercero.S_CORREO' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Correo Electrónico Requerido' }] }"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Página Web</div>
+                <div class="dx-field-value">
+                    <div dx-text-box="{bindingOptions: { value: 'datosTercero.S_WEB' }}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

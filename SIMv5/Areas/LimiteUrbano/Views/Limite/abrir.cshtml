@@ -1,0 +1,870 @@
+﻿@{
+    ViewBag.Title = "Limite Urbano";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="UTF-8">
+<link href="@Url.Content("~/Content/arbolUrbanoF.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery-1.12.3.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.11.4.js"></script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="es-Es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   
+
+    <title>Tala</title>
+    <style>
+        .ui-dialog .ui-dialog-titlebar-close {
+            width:20px;
+            height:20px;
+        }
+        footer {
+            display:none;
+        }
+            .container {
+            margin-top:0px !important;
+        }
+           .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+             footer {
+            display:none;
+        }
+          hr {
+            display: none;
+        }
+.ui-widget button {
+ 
+    height: 24px;
+    margin-right: 10px;
+}
+    
+         #loadingImg{
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.17) !important;
+    position: fixed;
+    z-index: 100000;
+    cursor: not-allowed;
+}
+
+.loadingImg{
+    position: fixed;
+    z-index: 100000;
+    background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat;
+    left: 50%;
+    background-size: contain;
+    top: 50%;
+    cursor: not-allowed;
+}
+
+.container {
+  height: 100%;
+  
+    display: block;
+     font-family: 'Roboto', sans-serif;
+    position: absolute;
+    top: 0px;
+    padding: 0px;
+    left: 0px;
+    width: 100%;
+    max-width: 100%;
+}
+
+#Tala_header{
+  background:  #96c93e;
+    min-height: 50px;
+   position: relative;
+    width: 100%;
+    left: 0px;
+    color: #FFFFFF;
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    text-align: center;
+    display: block;
+    line-height: 67px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 12%;
+}
+#Tala_titulo2 {
+       font-size: 15px;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0px;
+    background: #d4d4d4;
+    color: #1b1b1b;
+}
+
+label {
+    text-transform: capitalize;
+    color: #000;
+    margin: 0px;
+    margin-top: 15px;
+    font-size: 14px !important;
+}
+
+.form-control {
+    border: 1px solid #b1b1b1;
+    outline: none;
+    color: #000;
+    height: 31px;
+    font-size: 14px !important;
+    font-family: inherit !important;
+}
+
+.labelt{
+  height: 100%;
+    padding-bottom: 15px;
+    margin-top: 7px;
+    text-align: center;
+    width: 100%;
+    margin-left: 11px;
+    font-size: 13px !important;
+}
+
+
+.clspantallaCoordenadas .ui-dialog .ui-dialog-buttonpane button {
+
+}
+.ui-draggable .ui-dialog-titlebar {
+    cursor: move;
+    background: url(@Url.Content("~/Content/Images/tala/Direccion1.png")) #5b7925;
+    border-radius: 0px;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0px;
+    height: 36px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+}
+.clspantallaCoordenadas .ui-dialog-titlebar {
+    cursor: move;
+    background: url(@Url.Content("~/Content/Images/tala/Direccion2.png")) #5b7925;
+    border-radius: 0px;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0px;
+    height: 36px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+}
+
+.tipoDato1 {
+    display: inline-block;
+    width: 5px;
+    position: absolute;
+    top: 0px;
+    float: right;
+    right: 5px;
+}
+
+
+
+</style>
+
+
+
+
+ 
+</head>
+
+
+
+<body contenteditable="false">
+   
+
+   <div id="Tala_header" class="col-xs-12 col-sm-12 col-md-12" >
+             Jurisdicci&oacute;n &Aacute;rea Metropolitana del Valle de Aburr&aacute;
+   </div>
+   <div id="pag_n1" >
+       <div id="Tala_titulo2" class="col-xs-12 col-sm-12 col-md-12" >
+            SELECCIONA UBICACI&Oacute;N PARA CONOCER JURISDICCI&Oacute;N
+       </div>
+      <div id="divCuerpo1" class="col-xs-12 col-sm-12 col-md-12" style="padding-left: 0px;padding-right  : 0px;">
+           
+                <iframe id="mapa" src="/MAPGISV5_WEB/tools/AMVA/inicio_limite_urbano.htm" style="height: 88vh;width:100%;border: none;"></iframe>
+    
+               
+     </div>
+</div>
+<div id="pantallaDirecion" title="Agregar Direcci&oacute;n" style="display: none; overflow: hidden;">
+        <iframe src="" id="frDirecion" width="100%" height="100%"></iframe>
+</div>
+
+
+<div id="pantallaCoordenadas" title="COORDENADAS A IDENTIFICAR" style="display: none; overflow: hidden;">
+               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label>Sistema de Coordenadas:</label>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                   <select id="cboSistemaRef" class="form-control">
+                          <option selected="selected" value="-1">Seleccione</option>
+                          <option value="4326">WGS84</option>
+                          <option value="3116">MAGNA_Colombia_Bogot&aacute;</option>
+                            <option value="6257">MAGNA_Medellin_Antioquia_2010</option>
+                    </select>
+                </div>
+                  <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                      <input type="radio" id="rdbDegDec" name="decOSex" checked="checked"  value="decimales"><label>Grados Decimales</label>
+                    </div>
+                    <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+                      <input type="radio" id="rdbDegSex" name="decOSex" value="sexagesimales"><label>Grados Minutos Segundos</label>
+                    </div>
+                  </div>
+
+
+
+
+ 
+  <br>
+  <div id="divDecimal"  class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+      <label for="txtXCoor" id="lblXCoor" class="labelt">X:</label>
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+      <input id="txtXCoor" type="number" value="0.0" class="tipoDato form-control ">
+    </div>
+    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+      <label for="txtYCoor" id="lblYCoor"  class="labelt">Y:</label>
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+      <input id="txtYCoor" type="number" value="0.0" class="tipoDato form-control ">
+    </div>
+  </div>
+  <div id="divSexagesimal" hidden="true" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="row form-inline letraPeq">
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <label for="txtLongCoor" id="lblLongitud" class="labelt">Longitud:</label>
+        </div>
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <input id="txtLongCoor" type="number" value="0.0" min="0.0" class="tipoDato form-control">
+          <p class="tipoDato1">°</p>
+        </div>
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <input id="txtLongMin" type="number" value="0.0" min="0.0" class="tipoDato form-control">
+          <p class="tipoDato1">'</p> 
+        </div>
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <input id="txtLongSec" type="number" value="0.0" min="0.0" class="tipoDato form-control">
+          <p class="tipoDato1">"</p>
+        </div>
+        <div class="divPaddingPeq col-xs-4 col-sm-4 col-md-4 col-lg-4">
+          <select id="cboEsteOeste" class="tipoDato form-control">
+            <option selected="selected" value="-1">Oeste</option>
+            <option value="1">Este</option>
+          </select>
+        </div>
+      </div>
+      <div class="row form-inline letraPeq">
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <label for="txtLatCoor" id="lblLatitud" class="labelt">Latitud:</label>
+        </div>
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <input id="txtLatCoor" type="number" value="0.0" min="0.0" class="tipoDato form-control">
+          <p class="tipoDato1">°</p>
+        </div>
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <input id="txtLatMin" type="number" value="0.0" min="0.0" class="tipoDato form-control">
+          <p class="tipoDato1">'</p>
+        </div>
+        <div class="divPaddingPeq col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <input id="txtLatSec" type="number" value="0.0" min="0.0" class="tipoDato form-control">
+          <p class="tipoDato1">"</p>
+        </div>
+        <div class="divPaddingPeq col-xs-4 col-sm-4 col-md-10 col-lg-4">
+          <select id="cboNorteSur" class="tipoDato form-control">
+            <option selected="selected" value="1">Norte</option>
+            <option value="-1">Sur</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+</div> 
+</div>
+ 
+ <div id="load_"></div>
+
+</body>
+
+
+    <script>
+var direccionCONS=null;
+var coordenadaCONS=null;
+var ptoCONS=null;
+function prenderLoad(){
+  $("#load_").show();
+}
+function apagarLoad(){
+  $("#load_").hide();
+}
+         $(document).ready(function () {
+             addCssMapa();
+             consultarMunicipioArea();
+            
+         });
+      
+var geometriaAconsultar=null;
+       function ubicar() {
+     
+        var mapa=$("#mapa")[0].contentWindow;
+        mapa.drawPoint(function (g, g1) {
+              objetoMapgis = new MapGIS("mapa");
+              objetoMapgis.initMapGIS();
+              objetoMapgis.limpiarGraphics();
+          geometriaAconsultar=g;
+          retornaDirecioninverso(g.x,g.y);
+
+
+        }, 255, 0, 0, "ubica", 4326);
+          alert("Señor usuario para realizar la consulta de la ubicaci&oacute;n, seleccione dando clic en el mapa.");
+    }
+
+
+
+        function addCssMapa(){
+            var mapa=$("#mapa")[0].contentWindow;
+                try{
+                   ubicar();
+                        mapa.loadCSS("mapacss", "@Url.Content("~/Content/arbolUrbano.css")")
+                    var botonesMap = '<div class="col-xs-offset-0 col-sm-offset-0 col-md-offset-4 col-xs-12 col-sm-12 col-md-4" style="text-align:center;"><button class="btnMapaAdd" onclick="parent.abrirPopUp(1)">DIRECCI&Oacute;N</button><button class="btnMapaAdd" onclick="parent.abrirPopUp(2)">COORDENADAS</button></div>'
+                  $("#mapa").contents().find("#boxFind").prepend(botonesMap);
+                  apagarLoad()
+                  
+                }catch(e){
+                    setTimeout(function() {
+
+                   addCssMapa()
+
+                }, 4000);
+                }
+       
+        }
+
+        function abrirPopUp(tipo){
+            if (tipo==1) {
+                agregarDirecion();
+            }else{
+              agregarCoordenada()
+            }
+        }
+           function agregarDirecion() {
+                   
+            $("#pantallaDirecion").dialog(
+            {
+
+                width: 466,
+                height: 382,
+                modal: true, buttons: {
+                   
+                    "Agregar": function () {
+                        $("#frDirecion").get(0).contentWindow.agregar();
+
+                    }
+                }, class: "btn btn-default"
+
+
+            });
+            $("#frDirecion").attr("src", "@Url.Content("~/Tala/Tala/agregarDireccion")");
+
+        }
+
+                 function agregarCoordenada() {
+                   
+            $("#pantallaCoordenadas").dialog(
+            {
+
+                width: 550,
+                height: 340,
+                dialogClass: 'clspantallaCoordenadas',
+                modal: true, buttons: {
+                   
+                    "Agregar": function () {
+                       consultarcoordenadas();
+
+                    }
+                }, class: "btn btn-default"
+
+
+            });
+
+        }
+
+          var arrayMunicipiosGeneral=[];
+        function consultarMunicipioArea() {
+            var html = "<option value=-1>Seleccionar</option>";
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("../../Tala/Tala/consultarMunicipioArea")',
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+
+                    arrayMunicipiosGeneral=datos;
+
+                    for (var i = 0; i < datos.length; i++){
+                      var cont=datos[i].NOMBRE.search("-");
+                      var  nombre=datos[i].NOMBRE;
+                           nombre=nombre.substr(cont+1,nombre.length);
+                          html += "<option value=" + datos[i].CODIGO + ">" + nombre+ "</option>";
+                      }
+                    $("#cmbMunicipioArea").html(html);
+
+
+
+
+                }
+            });
+        }
+
+          function retornaDirecion(direccion,dep) {
+
+            direccion=direccion.replace("#"," ")
+              var cont=direccion.search("-");
+               direccionCONS={};
+               direccionCONS.direccionestandarizada=direccion;     
+               direccion=direccion.substr(cont+1,direccion.length);
+                 $.ajax({
+                type: "GET",
+                url: '/MAPGISV5_WEB/Geocodificador/geocod.do?direccion='+direccion,
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+                    if(datos.xcoord_out!=0){
+                      direccionCONS.x=datos.xcoord_out;
+                      direccionCONS.y=datos.ycoord_out; 
+                       direccionCONS.xcoord_out=datos.xcoord_out;
+                      direccionCONS.ycoord_out=datos.ycoord_out;
+                        ZoomXYmapa(datos.xcoord_out,datos.ycoord_out)
+                      consultaGeodir(direccionCONS);
+
+
+                    }else{
+                      alert("La direcci&oacute;n ingresada no ha podido ser ubicada, intente ubicarla en el mapa.");
+                    }
+
+                  
+
+
+
+
+                }
+            });
+            
+             
+        }
+
+            function retornaDirecioninverso(x,y) {
+              try{
+                  $("#pantallaCoordenadas").dialog("close");
+
+              }catch(e){
+
+              }
+  prenderLoad();
+        direccionCONS={}
+                 $.ajax({
+                type: "GET",
+                url: '/MAPGISV5_WEB/Geocodificador/geocodInverso.do?x='+x*1+'&y='+y*1,
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+                    apagarLoad();
+                     if(datos.xcoord_out!=0 && datos.xcoord_out!="null"){
+                      direccionCONS.x=datos.xcoord_out;
+                      direccionCONS.y=datos.ycoord_out;
+                      direccionCONS.xcoord_out=datos.xcoord_out;
+                      direccionCONS.ycoord_out=datos.ycoord_out;
+                      direccionCONS.direccionestandarizada=datos.direccionestandarizada;     
+
+                        ZoomXYmapa(datos.xcoord_out,datos.ycoord_out)
+                      consultaGeodir(direccionCONS);
+
+
+                    }else{
+                      alert("Las coordenadas ingresadas no ha podido ser ubicadas, intente ubicarlas en el mapa.");
+                    }
+
+               
+
+
+
+
+                }
+            });
+            
+             
+        }
+function ZoomXYmapa(x, y) {
+        var geo = {
+            spatialReference: { "wkid": 4326 },
+            "x": x, "y": y, "type": "point"
+
+        };
+        var Atributos = {
+            "Direcci&oacute;n": $("#txtDireccion").val(),
+            "Municipio": $("#cmbMunicipio option:selected").text(),
+            "X": x,
+            "Y":y
+
+        };
+
+        try {
+            var rt = conectar();
+            objetoMapgis = new MapGIS("mapa");
+            objetoMapgis.initMapGIS();
+
+           objetoMapgis.verPoint(x*1, y*1, 4326, 255, 0, 0, "", Atributos, 'ubica', 'Direcci&oacute;n:${Direcci&oacute;n}<br/>Municipio:${Municipio}<br/>X:${X}<br/>Y:${Y}');
+
+            objetoMapgis.zoomPto(x*1, y*1, 4326, 16);
+          
+         
+
+        } catch (e) {
+            setTimeout(function () {
+                ZoomXYmapa(x, y, Atributos)
+            }, 2000);
+        }
+
+    }
+      var TipoJurisdiccion=null;
+     function consultaGeo(geom) {
+        objetoMapgis = new MapGIS("mapa");
+        objetoMapgis.initMapGIS();
+        objetoMapgis.zoomPto(geom.x*1,geom.y*1, 4326, 14);
+
+        objetoMapgis.buffer(geom, 100, true, function (g) {
+            var capa = { servicio: { url: "/arcgis/rest/services/Limites/Limites/MapServer" }, id: "5" };
+            objetoMapgis.execQuery(capa, "1=1", false, function (respuesta) {
+                if (respuesta.features.length != 0) {
+                    var datos = respuesta.features;
+                   TipoJurisdiccion=" est&aacute; en la Jurisdicci&oacute;n del Area Metropolitana"
+                   
+
+                } else {
+                     TipoJurisdiccion=" no &aacute; en la Jurisdicci&oacute;n del Area Metropolitana"
+                }
+                   $.ajax({
+                type: "GET",
+                url: '/MAPGISV5_WEB/Geocodificador/geocodInverso.do?x='+geometriaAconsultar.x*1+'&y='+geometriaAconsultar.y*1,
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+
+                  consultarDireccion(datos);
+
+
+
+
+
+                }
+                });
+                   
+
+              
+            }, function (error) {
+
+            }, g)
+        });
+
+
+    }
+
+
+
+    function consultaGeodir(geom) {
+      prenderLoad()
+        objetoMapgis = new MapGIS("mapa");
+        objetoMapgis.initMapGIS();
+         objetoMapgis.limpiarGraphics();
+        objetoMapgis.zoomPto(geom.x*1,geom.y*1, 4326, 14);
+            var g = {
+            spatialReference: { "wkid": 4326 },
+            "x": geom.x, "y": geom.y, "type": "point"
+
+        };
+       
+            var capa = { servicio: { url: "/arcgis/rest/services/Limites/Limites/MapServer" }, id: "5" };
+            objetoMapgis.execQuery(capa, "1=1", false, function (respuesta) {
+                if (respuesta.features.length != 0) {
+                    
+                   TipoJurisdiccion=" est&aacute; en la Jurisdicci&oacute;n del &Aacute;rea Metropolitana"
+                } else {
+                     TipoJurisdiccion=" no est&aacute; en la Jurisdicci&oacute;n del &Aacute;rea Metropolitana"
+                }
+                   var datos=direccionCONS;
+                  consultarDireccion(datos);
+                  apagarLoad()
+          }, function (error) {
+
+            }, g)
+   
+
+
+    }
+    function consultarDireccion(obj){
+        var html ='<div class="col-xs-10 col-sm-6 col-md-4 msgAlert msgConfirm">';
+                     html+='<div class="msgcontenedor">';
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgtitle">Informaci&oacute;n Consulta';
+                         html+='</div>'
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgcuerpo" style="text-align: left; padding-left: 46px;" id="divPrint">';
+                         html+='<b>Direcci&oacute;n</b>:'+obj.direccionestandarizada+'<br>' 
+                          html+='<b>Coordenadas</b>:<br><b>Longitud:</b>'+obj.xcoord_out+'     <b>Latitud:</b>'+obj.ycoord_out+'<br>'
+                         html+='<div class="lblj"><b>La ubicaci&oacute;n '+TipoJurisdiccion+'</b></div><br>'
+                                
+                         html+='</div>'
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgbtn">';
+                              html+='<button class="no" onclick="$(\'.msgAlert\').remove()">Cerrar</button>'
+                              html+='<button class="si" onclick="PrintElem() ">Imprimir</button>'
+                         html+='</div>'
+                     html+='</div>'
+                html+='</div>'
+                parent.$("body").append(html);
+    }
+
+function PrintElem()
+
+
+{
+  prenderLoad();
+  objetoMapgis = new MapGIS("mapa");
+        objetoMapgis.initMapGIS();
+        objetoMapgis.exportMap(600, 600, function (url) {
+            var rutaA = url.url.replace("http://amgis01:8888/", "https://sim.metropol.gov.co/");
+            url.url = rutaA;
+    var mywindow = window.open('', 'Imprimir' ,'height=1000,width=1000');
+
+    mywindow.document.write('<html><head><title>Reporte Jurisdicci&oacute;n</title>');
+     mywindow.document.write('<style>.lblj{ color: red;margin: 20px 0px; width: 100%; text-align: center;}h1{    text-align: center;}</style>');
+    mywindow.document.write('</head><body >');
+    mywindow.document.write('<h1>Reporte Jurisdicci&oacute;n</h1><img style=" position: absolute; top: 0px;  float: right; right: 5px;" src="data:image/png;base64,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"></img>');
+    mywindow.document.write(document.getElementById("divPrint").innerHTML);
+    mywindow.document.write('<div style="text-align: center;"><img width="600px" height="600px" src="'+url.url+'"></img></div></body></html>');
+
+    mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); 
+    apagarLoad();// necessary for IE >= 10*/
+ setTimeout(function() {
+
+              mywindow.print();
+   mywindow.close();
+
+                }, 0500);
+   
+
+    return true;
+  });
+}
+    
+    function conectar() {
+        //cbpExample.PerformCallback();
+        m = new MapGIS("mapa");
+        var rta = m.initMapGIS(listener);
+        return rta;
+    }
+
+        function alert(cont){
+            var html='<div class="col-xs-12 col-sm-12 col-md-12 msgAlert msgAlert">';
+                     html+='<div class="col-xs-offset-1 col-sm-offset-2 col-md-offset-4 col-xs-10 col-sm-10 col-md-4 msgcontenedor">';
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgtitle">Informaci&oacute;n';
+                         html+='</div>'
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgcuerpo">';
+                         html+=cont
+                         html+='</div>'
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgbtn">';
+                              html+='<button class="btAceptar" onclick="$(\'.msgAlert\').remove()">Aceptar</button>'
+                         html+='</div>'
+                     html+='</div>'
+                html+='</div>'
+                parent.$("body").append(html);
+        }
+
+        /****/
+ var objPrm = null;
+var objCoord = null ;//jsonArray con los diferentes sistemas de coordenadas
+var valorSrid = "-1" ;
+var tipoSistema = ""; //indica si el sistema seleccionado es Proyectado o Geografico
+var transDatum = "null"; //Codigo de transformacion de Datum a MAGNA
+var wkidCoord = 4326;
+var tipoInput ="decimales";//indica si la entrada es decimal o sexagesimal
+var coordX = 0.0;
+var coordY = 0.0;
+
+function configAjax(){
+  $.ajaxSetup({
+    //funci�n para que los ajax enviados est�n en codificaci�n ISO-8859-1, y las respuestas sean recibidas en esa codificacion.
+    'beforeSend' : function(xhr) {
+    try{
+    xhr.overrideMimeType('text/html; charset=ISO-8859-1');//ISO-8859-1
+    }
+    catch(e){ 
+    }
+  }});
+}
+
+function seleccionCoord(deciOSexa){
+  if(deciOSexa == "sexagesimales"){
+    gradX = chkValorNumerico($("#txtLongCoor").val()," Grados Longitud","#txtLongCoor");
+    minX = chkValorNumerico($("#txtLongMin").val()," Minutos Longitud","#txtLongMin");
+    secX = chkValorNumerico($("#txtLongSec").val()," Segundos Longitud","#txtLongSec");
+    gradY = chkValorNumerico($("#txtLatCoor").val()," Grados Latitud","#txtLatCoor");
+    minY = chkValorNumerico($("#txtLatMin").val()," Minutos Latitud","#txtLatMin");
+    secY = chkValorNumerico($("#txtLatSec").val()," Segundos Latitud","#txtLatSec");
+    coordX = (gradX + minX/60 + secX/3600)* parseFloat($("#cboEsteOeste option:selected").val());
+    coordY = (gradY + minY/60 + secY/3600)* parseFloat($("#cboNorteSur option:selected").val());
+  }
+  if(deciOSexa == "decimales"){
+    coordX = chkValorNumerico($("#txtXCoor").val()," X/Longitud","#txtXCoor");
+    coordY = chkValorNumerico($("#txtYCoor").val()," Y/Latitud","#txtYCoor");
+  }
+}
+
+function chkValorNumerico(valor,textoMensaje,idInput){
+  var numero = 0.0;
+  try {
+      numero = parseFloat(valor);
+      }
+      catch(err) {
+          alert("Aseg�rese de que en"+ textoMensaje +" el valor ingresado sea n�merico!");
+          $(idInput).val("0.0");
+      }
+    return numero;
+}
+
+
+
+$("#cboSistemaRef").change(function(){
+  valorSrid = $("#cboSistemaRef option:selected").val();
+  tipoInput = "decimales"
+  if(valorSrid != "-1"){
+    tipoSistema = $("#cboSistemaRef option:selected").attr('label');
+    for(index in objCoord){
+      if(objCoord[index].SRID == valorSrid){
+        transDatum = objCoord[index].TO_WGS84;
+        break;
+      }
+    }
+
+    if(tipoSistema == "PROYECTADO"){
+      $("#divBtnOp").attr('hidden',true);
+      $("#divDecimal").attr('hidden',false);
+      $("#divSexagesimal").attr('hidden',true);
+      $("#lblXCoor").text("X:");
+      $("#lblYCoor").text("Y:");
+    }else{
+      $("#divBtnOp").attr('hidden',false);
+      $("#divDecimal").attr('hidden',false);
+      $("#divSexagesimal").attr('hidden',true);
+        $("#rdbDegDec").attr('checked',true);
+      $("#rdbDegSex").attr('checked',false);
+      $("#rdbDegDec").trigger('click');
+
+
+    }
+  }else{
+    $("#divDecimal").attr('hidden',true);
+    $("#divSexagesimal").attr('hidden',true);
+    $("#divBtnOp").attr('hidden',true); 
+  }
+});
+
+$("input:radio[name=decOSex]").click(function(){
+  tipoInput = $('input:radio[name=decOSex]:checked').val();
+  if(tipoInput == "decimales"){
+    $("#divDecimal").attr('hidden',false);
+    $("#divSexagesimal").attr('hidden',true);
+    
+  }
+  if(tipoInput == "sexagesimales"){
+    $("#divDecimal").attr('hidden',true);
+    $("#divSexagesimal").attr('hidden',false);
+  }
+});
+
+function consultarcoordenadas(){
+  if(valorSrid != "-1" ){
+   
+    //obtencion de las coordenadas de los inputs
+    seleccionCoord(tipoInput);
+  
+    $.ajax({
+      type:"POST",
+      url:"/arcgis/rest/services/Utilities/Geometry/GeometryServer/project?inSR="+valorSrid+"&outSR="+wkidCoord+"&geometries="+coordX+"%2C"+coordY+"&transformation="+transDatum+"&transformForward=true&f=pjson",
+    
+      dataType:"json",
+      success:function(result,status,xhr){
+        //Verificacion de Geometria
+        if(result.geometries != undefined){
+          //verificacion de Coordenada
+          if(result.geometries[0].x != undefined && result.geometries[0].x != "NaN" ){
+            retornaDirecioninverso(result.geometries[0].x,result.geometries[0].y)
+          
+          }else{
+         
+            alert("Las coordenadas ingresadas se salen del marco de referencia.");
+          }
+        }else{
+       
+          alert("No se pudo construir una geometria a partir de las coordenadas ingresadas");
+        }
+      },
+      error:function(xhr,status,err){
+        
+        alert("no fue posible comunicarse con el REST Geogr�fico");
+      }
+    });
+  }
+}
+
+
+  function mensajeConfirmar() {
+        var mensaje='Esta Seguro de consultar en esta ubicaci&oacute;n';
+        var html='<div class="col-xs-12 col-sm-12 col-md-12 msgAlert msgAlert">';
+                     html+='<div class="col-xs-offset-1 col-sm-offset-2 col-md-offset-4 col-xs-10 col-sm-10 col-md-4 msgcontenedor">';
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgtitle">Informaci&oacute;n';
+                         html+='</div>'
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgcuerpo">';
+                         html+=mensaje
+                         html+='</div>'
+                         html+='<div class="col-xs-12 col-sm-12 col-md-12 msgbtn">';
+                              html+='<button class="no" onclick="$(\'.msgAlert\').remove()">No</button>'
+                              html+='<button class="si" onclick="abrirPopupInformacion() ">Si</button>'
+                         html+='</div>'
+                     html+='</div>'
+                html+='</div>'
+                parent.$("body").append(html);
+
+
+
+     }
+
+
+     function abrirPopupInformacion(){
+      $('.msgAlert').remove();
+     consultaGeo(geometriaAconsultar);
+     }
+    </script>
+ 
+
+
+
+
+
+

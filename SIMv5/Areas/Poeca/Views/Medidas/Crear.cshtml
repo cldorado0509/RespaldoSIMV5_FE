@@ -1,0 +1,86 @@
+﻿@model SIM.Data.Poeca.DPOEAIR_MEDIDA
+
+@{
+    ViewBag.Title = "POECA | Crear Medida";
+}
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+        <h2>Crear Medida</h2>
+
+        @{
+            if (!String.IsNullOrEmpty((string)ViewBag.MensajeError))
+            {
+                <div class="alert alert-danger" style="white-space: pre-line">@ViewBag.MensajeError</div>
+            }
+        }
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_NOMBRE_MEDIDA, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_NOMBRE_MEDIDA, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_NOMBRE_MEDIDA, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_DESCRIPCION, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_DESCRIPCION, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_DESCRIPCION, "", new { @class = "text-danger" })
+                </div>
+                @{
+                    if (User.IsInRole("CEPISODIOS"))
+                    {
+                        <div id="dxCheckbox" class="form-group"></div>
+                    }
+                }
+
+                <div class="form-check">
+                    @Html.EditorFor(model => model.S_ES_OBLIGATORIA, new { htmlAttributes = new { @id = "S_ES_OBLIGATORIA", @class = "form-check-input hidden" } })
+                    @Html.LabelFor(model => model.S_ES_OBLIGATORIA, htmlAttributes: new { @class = "form-check-label hidden" })
+                    @Html.ValidationMessageFor(model => model.S_ES_OBLIGATORIA, "", new { @class = "text-danger" })
+                </div>
+
+                @*<div class="form-group">
+                    @Html.LabelFor(model => model.ID_RESPONSABLE, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ID_RESPONSABLE, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ID_RESPONSABLE, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-danger" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Guardar" class="btn btn-block btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundlesv5/jqueryval")
+
+    <script>
+         $(function () {
+            $("#dxCheckbox").dxCheckBox({
+                text: $('<textarea />').html(
+                    "@Html.DisplayNameFor(model => model.S_ES_OBLIGATORIA)"
+                ).text(),
+                onValueChanged: function (e) {
+                    $("#S_ES_OBLIGATORIA").val(e.value? '1' : '0');
+                }
+            });
+        });
+    </script>
+}

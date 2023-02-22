@@ -1,0 +1,47 @@
+﻿@using (Html.BeginForm())
+{
+    @*Html.DevExpress().PageControl(
+    settings => {
+        settings.Name = "pcFeatures";
+        settings.ActivateTabPageAction = Model.ActivateTabPageAction;
+        settings.EnableHotTrack = Model.EnableHotTrack;
+        settings.SaveStateToCookies = Model.SaveStateToCookies;
+        settings.TabAlign = Model.TabAlign;
+        settings.TabPosition = Model.TabPosition;
+        settings.Width = Unit.Percentage(100);
+        settings.ControlStyle.CssClass = "dxtcFixed";
+        settings.TabPages.Add("Acura").SetContent(() => {
+            @Html.Action("MovilidadPartial");
+        });
+        settings.TabPages.Add("BMW").SetContent(() => {
+            ViewContext.Writer.Write(
+                "<img class=\"dxtmImage\" alt=\"\" src=\"" + Url.Content("~/Content/TabControl/Cars/BMW_760i_Sedan.jpg") + "\" />"
+            );
+        });
+        settings.TabPages.Add("Audi").SetContent(() => {
+            ViewContext.Writer.Write(
+                "<img class=\"dxtmImage\" alt=\"\" src=\"" + Url.Content("~/Content/TabControl/Cars/Audi_TT_Roadster.jpg") + "\" />"
+            );
+        });
+}).GetHtml()*@
+    <div dx-tabs="dxTabsOptions" id="tabOpciones" class="dx-tabs dx-widget dx-visibility-change-handler dx-collection dx-tabs-expanded" style="padding-bottom: 0px" role="tablist" tabindex="0">
+	    <div class="dx-tabs-wrapper">
+		    <div class="ng-scope dx-item dx-tab dx-tab-selected">
+			    <div class="dx-template-wrapper ng-scope dx-item-content dx-tab-content">
+				    <span class="dx-tab-text ng-binding ng-scope" style="font-size:large; font-weight:bold">Poblaci&oacute;n</span>
+			    </div>
+		    </div>
+		    <div class="ng-scope dx-item dx-tab">
+			    <div class="dx-template-wrapper ng-scope dx-item-content dx-tab-content">
+                    <span class="dx-tab-text ng-binding ng-scope" onclick="window.location = '@Url.Content("~/Dashboard/PMES/Movilidad2")'">Toneladas de CO<sub>2</sub></span>
+			    </div>
+		    </div>
+            <div class="ng-scope dx-item dx-tab">
+                <div class="dx-template-wrapper ng-scope dx-item-content dx-tab-content">
+                    <span class="dx-tab-text ng-binding ng-scope" onclick="window.location = '@Url.Content("~/Dashboard/PMES/Movilidad3")'">PM 2.5</span>
+                </div>
+            </div>
+	    </div>
+    </div>
+    @Html.Action("MovilidadPartial1")
+}

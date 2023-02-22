@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SIM.Areas.Encuestas.Models.ENCUESTA_PREGUNTA>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.N_ORDEN)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.N_FACTOR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.S_REQUERIDA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ENCUESTA.S_NOMBRE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PREGUNTA.S_NOMBRE)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.N_ORDEN)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.N_FACTOR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.S_REQUERIDA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ENCUESTA.S_NOMBRE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PREGUNTA.S_NOMBRE)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID_ENCUESTAPREGUNTA }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID_ENCUESTAPREGUNTA }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID_ENCUESTAPREGUNTA })
+        </td>
+    </tr>
+}
+
+</table>

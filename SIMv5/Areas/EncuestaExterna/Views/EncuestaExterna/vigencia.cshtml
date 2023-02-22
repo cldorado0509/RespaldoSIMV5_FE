@@ -1,0 +1,631 @@
+﻿@{
+    ViewBag.Title = "Termino condiciones";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+    
+     .ui-datepicker-calendar {
+       display: none;
+    }
+        button#btnNuevaEmpresa {
+            top: 9px;
+            background-image: url(../../Content/images/Nueva_Empresa.png);
+            right: 0px;
+            padding-left: 39px;
+            left: -20px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+          
+        }
+
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, . row col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, . row col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 5px;
+            padding-left: 5px;
+            margin: 2px 0px;
+        }
+        label, select, button {
+           width:100%;
+        }
+
+       
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+
+       
+
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11 {
+            float: left;
+        }
+        .row {
+            margin: 0px;
+        }
+       
+
+    </style>
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+   
+    <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+</head>
+<body>
+
+
+    <div class="row">
+        <div class="row  col-xs-12 col-sm-12">
+           
+                <div id="divAnual" class=" row " style="display:none">
+                    <div class=" row col-xs-6 col-sm-6  ">
+                        <div class=" row col-xs-12 col-sm-12">
+                            <label>Vigencia anual</label>
+                        </div>
+                        <div class=" row col-xs-12 col-sm-12">
+                        </div>
+                        <select id="cmbano" class="form-control" ></select>
+                    </div>
+                </div>
+            </div>
+            <div id="divMensual" class=" row " style="display:none">
+                <div class=" row col-xs-6 col-sm-6  ">
+                    <div class=" row col-xs-12 col-sm-12">
+                        <label>Vigencia mensual</label>
+                    </div>
+                    <div class=" row col-xs-12 col-sm-12">
+                        <input id="dtfMes" class="form-control"  />
+                        <input id="txttipo" style="display:none"/>
+                </div>
+            </div>
+        </div>
+        <div id="divUnica" class=" row " style="display:none">
+            <div class=" row col-xs-6 col-sm-6  ">
+                <div class=" row col-xs-12 col-sm-12">
+                    <label>Vigencia Unica</label>
+                </div>
+              
+            </div>
+        </div>
+        <div id="divInicioFin"  class=" row "style="display:none">
+            <div class=" row col-xs-6 col-sm-6  ">
+                <div class=" row col-xs-12 col-sm-12">
+                    <label>Periodo</label>
+                </div>
+                <div class=" row col-xs-12 col-sm-12">
+                    <select id="cmbPeriodo" class="form-control" >
+                        <option value="-1">--Seleccione--</option>
+                        <option value="1">Inicio</option>
+                        <option value="2">Fin</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+        <div id="divTercero" class=" row " style="display:none">
+            <div class=" row col-xs-12 col-sm-12">
+                <div class=" row col-xs-12 col-sm-12">
+                    <label>Tercero</label>
+                </div>
+                <div class=" row col-xs-12 col-sm-12">
+                    <div class=" row col-xs-6 col-sm-3">
+                        <input id="txtTercero" class="form-control" disabled />
+                        <input id="txtIdTercero" style="display:none" />
+                        <input id="txtIdTerceroUsuario" style="display:none" />
+                    </div>
+                    <div class=" row col-xs-6 col-sm-3">
+                        <button onclick="abrirAtiende()" class="btn btn-default">Seleccionar Tercero</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div id="divInstalacion" class=" row " style="display:none">
+            <div class=" row col-xs-12 col-sm-12">
+                <div class=" row col-xs-12 col-sm-12">
+                    <label>Instalación/Sedes</label>
+                </div>
+                <div class=" row col-xs-12 col-sm-12">
+                    <div class=" row col-xs-6 col-sm-3">
+                        <select id="cmbInstalacion" class="form-control" onchange="consultarVigenciaEncValidar()"></select>
+                    </div>
+                    <div class=" row col-xs-6 col-sm-3">
+                        <button id="btnNuevaEmpresa" class="btn btn-default" onclick="abrirInstalacion()">Nueva Instalación</button>
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+      
+        <div id="divCantidad" class=" row " style="display:none">
+            <div class=" row col-xs-12 col-sm-12  ">
+                <div class=" row col-xs-12 col-sm-12">
+                    <label id="lblnombrecount">Cantidad Encuestas</label>
+                </div>
+                <div class=" row col-xs-12 col-sm-12">
+
+                    <input id="txtCantidad" type="number" class="form-control" />
+
+
+                </div>
+            </div>
+        </div>
+        <div class=" row col-xs-12 col-sm-12" style=" margin-top: 20px;">
+            <div class=" row col-xs-12 col-sm-12">
+                <label>Términos y condiciones</label>
+            </div>
+            <div class=" row col-xs-12 col-sm-12">
+                <textarea id="txtTeminos" disabled style="width:393px;height:200px;border: 1px solid  #c1c1c1;border-radius: 3px;width: 100%;background: #fff;padding: 5px;"></textarea>
+                <br />
+                <label style="    margin: 10px 0px;"><input type="checkbox" id="chterminos" onclick="aceptarterminos(this)" value="">Aceptar Términos y Condicciones</label>
+                <br />
+            </div>
+            @if (ViewBag.permiteCopia)
+            {
+            <div class=" row col-xs-12 col-sm-12">
+                <div class=" row col-xs-6 col-sm-3" sstyle="margin-top: 10px;">
+                    <span>Copiar Datos de la Vigencia:</span>
+                </div>
+                <div class=" row col-xs-6 col-sm-3">
+                    <select id="cboVigenciasValor" class="form-control"></select>
+                </div>
+            </div>
+            }
+            <div class=" row col-xs-12 col-sm-12" style="min-height: 10px;">
+            </div>
+            <div class=" row col-xs-12 col-sm-12">
+                <div class=" row col-xs-6 col-sm-3">
+                    <button id="btnCancelar" class="btn btn-default" onclick="cerrarr();">Cancelar</button>
+                </div>
+                <div class=" row col-xs-6 col-sm-3">
+                    <button id="btnAceptar" class="btn btn-default" onclick="guardarVigencia()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+      <br />
+        <div id="divRadicar" style="display:none">
+            <div class=" row col-xs-6 col-sm-6  ">
+                <div class="checkbox" style="margin:10px 0;">
+                    <label><input type="checkbox" id="chRadicar" value="">Radicar</label>
+                </div>
+            </div>
+        </div>
+      
+    </div>
+    <input id="txtIdVgen" style="display:none" />
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+    <div id="atiendePantalla" title="Tercero" style="display: none; overflow: hidden;">
+        <iframe src="" id="frm_atiende" width="100%" height="100%"></iframe>
+
+    </div>
+    <script>
+    var arrTercero;
+    var arrVigen;
+    var arrVigenValidar;
+    var intIdVigencia=0;
+        var tipoRadicar = 0;
+        function cerrarr() {
+           parent.window.open('@Url.Content("~/")' , '_self');
+        }
+    $(document).ready(function () {
+
+        $("#btnAceptar").prop("disabled", true).css("opacity", ".5");
+
+
+
+
+
+
+
+
+        $("#txttipo").val(@ViewBag.tipo);
+        consultarTerminos(@ViewBag.idVigen);
+        intIdVigencia=@ViewBag.idVigen;
+        if(parent.cardinalidad=="2")
+            $("#divCantidad").css({ "display": "block" });
+        $("#divRadicar").css({ "display": "none" });
+
+        if(@ViewBag.tipo==3)
+        {
+
+            $("#divAnual").css({ "display": "none" });
+            $("#divMensual").css({ "display": "none" });
+            $("#divUnica").css({ "display": "block" });
+            $("#divInicioFin").css({ "display": "none" });
+              consultarVigencia(@ViewBag.idVigen);
+
+        }else{
+
+            if(@ViewBag.tipo==4)
+            {
+
+                $("#divAnual").css({ "display": "none" });
+                $("#divMensual").css({ "display": "none" });
+                $("#divUnica").css({ "display": "none" });
+                $("#divInicioFin").css({ "display": "block" });
+                $("#txtIdVgen").val(@ViewBag.idVigen);
+                consultarVigencia(@ViewBag.idVigen);
+                //consultarVigenciaEncValidar(@ViewBag.idVigen);
+
+            }else
+            {
+
+                $("#txtIdVgen").val(@ViewBag.idVigen);
+                consultarVigencia(@ViewBag.idVigen);
+                //consultarVigenciaEncValidar(@ViewBag.idVigen);
+
+                $("#dtfMes").datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    showButtonPanel: true,
+                    dateFormat: 'mm-yy',
+                    yearRange: '' + parent.arrFechaIni[1] + ':' + parent.arrFechaFin[1] + '',
+
+                    onClose: function (dateText, inst) {
+                        $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+                    }
+                });
+                $.datepicker.regional['es'] = {
+                    closeText: 'Cerrar',
+                    prevText: '< Ant',
+                    nextText: 'Sig >',
+                    currentText: 'Hoy',
+                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                    dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                    weekHeader: 'Sm',
+                    dateFormat: 'dd/mm/yy',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: ''
+                };
+                $.datepicker.setDefaults($.datepicker.regional['es']);
+                $(function () {
+                    $("#dtfMes").datepicker();
+                });
+            }
+        }
+    });
+        function aceptarterminos(objeto) {
+            if (objeto.checked) {
+                $("#btnAceptar").prop("disabled", false).css("opacity", "");
+            } else {
+                $("#btnAceptar").prop("disabled", true).css("opacity", ".5");
+            }
+        }
+        function consultarTerceroInstalacionUnico(idInstalacion,idTercero,id_vigencia) {
+
+            $.ajax({
+                type: "POST",
+                data: { id: idInstalacion, id_v: id_vigencia },
+                url: '@Url.Action("terceroinstalacionunico", "EncuestaExterna")',
+
+                beforeSend: function () { },
+                success: function (response) {
+                    //var datos = eval('(' + response + ')');
+                    if(response=="[]")
+                    {
+                        parent.crearEstadoUnica(idTercero,idInstalacion);
+                        parent.$("#pantallaVigencia").dialog('close');
+                    }else{
+                        mensajeAlmacenamiento("El formulario ya fue creado para esta instalación");
+                    }
+
+
+                }
+            });
+        }
+    function consultarVigencia(id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarVigenciaEnc", "EncuestaExterna")',
+            data: { id: id },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                arrVigen = datos;
+                if (datos[0].ITEM != "") {
+                    $("#lblnombrecount").text("Cantidad " + datos[0].ITEM);
+                }
+
+                if (datos[0].TIPOVIGENCIA == 1) {
+
+                    $("#divAnual").css({ "display": "block" });
+                    $("#divMensual").css({ "display": "none" });
+                    $("#divUnica").css({ "display": "none" });
+                    $("#divInicioFin").css({ "display": "none" });
+
+                    var html = "<option value=-1>-- Seleccionar --</option>";
+                    for (var i = Number(datos[0].FECHA_INICIO) ; i <= Number(datos[0].FECHA_FIN) ; i++)
+                        html += "<option value=" + i + ">" + i + "</option>";
+
+                    $("#cmbano").html(html);
+                } else {
+                    if (datos[0].TIPOVIGENCIA == 2) {
+
+                        $("#divMensual").css({ "display": "block" });
+                        $("#divAnual").css({ "display": "none" });
+                        $("#divUnica").css({ "display": "none" });
+
+
+                    }
+
+                }
+
+
+            }
+        });
+    }
+    function consultarVigenciaEncValidar() {
+        arrVigenValidar = [];
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarEncVigen", "EncuestaExterna")',
+            data: { id:intIdVigencia ,instalacion:$("#cmbInstalacion").val()},
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                arrVigenValidar = datos;
+
+
+
+            }
+        });
+    }
+
+    function consultarTerminos(id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarTermino", "EncuestaExterna")',
+            data: { id: id },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                arrTercero=datos;
+                $("#txtTeminos").val(datos[0].TERMINO);
+                tipoRadicar=datos[0].RADICAR;
+                if (datos[0].RADICAR == 1) {
+                    $("#divRadicar").css({ "display": "none" });
+                    $("#chRadicar").attr("checked", true);
+                } else {
+                    $("#divRadicar").css({ "display": "none" });
+                    $("#chRadicar").attr("checked", false);
+                }
+               consultarTerceroUsuario();
+                $("#divInstalacion").css({ "display": "block" });
+
+
+
+
+
+            }
+        });
+    }
+
+    function validarVigencia()
+    {
+
+        if (arrVigen[0].TIPOVIGENCIA == 1) {
+
+            valor = $("#cmbano").val();
+        } else {
+            if (arrVigen[0].TIPOVIGENCIA == 2) {
+
+                valor = $("#dtfMes").val();
+            }else{
+
+                if (arrVigen[0].TIPOVIGENCIA == 4) {
+
+                    valor = $("#cmbPeriodo").val();
+                }
+            }
+        }
+        for (var i = 0; i < arrVigenValidar.length; i++)
+        {
+            if (arrVigenValidar[i].VALOR == valor)
+            {
+                mensajeAlmacenamiento("La vigencia seleccionada ya fue diligenciada");
+                return;
+            }
+        }
+
+
+
+    }
+
+    function guardarVigencia() {
+        var idTercero=0;
+        var idInstalacion=0;
+
+        idTercero=$("#txtIdTerceroUsuario").val();
+
+        if($("#cmbInstalacion").val()=="-1")
+        {
+            mensajeAlmacenamiento("seleccione una instalacion");
+            return;
+        }
+        idInstalacion=$("#cmbInstalacion").val();
+
+
+        switch(Number($("#txttipo").val())) {
+            case 0:
+                var valor = "0";
+                if (arrVigen[0].TIPOVIGENCIA == 1)
+                {
+                    if ($("#cmbano").val() == "-1")
+                    {
+                        mensajeAlmacenamiento("Seleccione el año de vigencia")
+                        return;
+                    }
+                    valor = $("#cmbano").val();
+                } else {
+                    if (arrVigen[0].TIPOVIGENCIA == 2)
+                    {
+                        if ($("#dtfMes").val() == "-1") {
+                            mensajeAlmacenamiento("Seleccione el mes de vigencia")
+                            return;
+                        }
+                        valor = $("#dtfMes").val();
+                    }else{
+                        if (arrVigen[0].TIPOVIGENCIA == 4)
+                        {
+                            if ($("#cmbPeriodo").val() == "-1") {
+                                mensajeAlmacenamiento("Seleccione el mes de vigencia")
+                                return;
+                            }
+                            valor = $("#cmbPeriodo").val();
+                        }
+                    }
+                }
+
+                for (var i = 0; i < arrVigenValidar.length; i++) {
+                    if (arrVigenValidar[i].VALOR == valor) {
+                        mensajeAlmacenamiento("La vigencia seleccionada ya fue diligenciada");
+                        return;
+                    }
+                }
+                if(parent.cardinalidad=="1")
+                {
+                    var tipoRadicado = 0;
+
+                    if ($('#chRadicar').is(':checked'))
+                        tipoRadicado = 1;
+                    parent.crearEstadoNuevo($("#txtIdVgen").val(), valor,idTercero,idInstalacion,tipoRadicado);
+                }else
+                {
+                    parent.crearEstadoNuevoCardinalidad($("#txtIdVgen").val(), valor,idTercero,idInstalacion,$("#txtCantidad").val());
+                }
+
+
+                parent.$("#pantallaVigencia").dialog('close');
+                break;
+            case 3:
+                if (parent.cardinalidad == "1") {
+                    consultarTerceroInstalacionUnico(idInstalacion, idTercero, intIdVigencia);
+                } else {
+                    parent.crearEstadoNuevoCardinalidad(intIdVigencia, "0", idTercero, idInstalacion, $("#txtCantidad").val());
+                }
+
+
+                break;
+            case 4:
+                if ($("#cmbPeriodo").val() == "-1")
+                {
+                    mensajeAlmacenamiento("Seleccione la vigencia")
+                    return;
+                }
+                var valor2 = $("#cmbPeriodo").val();
+                for (var i = 0; i < arrVigenValidar.length; i++) {
+                    if (arrVigenValidar[i].VALOR == valor2) {
+                        mensajeAlmacenamiento("La vigencia seleccionada ya fue diligenciada");
+                        return;
+                    }
+                }
+                parent.crearEstadoNuevo($("#txtIdVgen").val(),valor2,idTercero,idInstalacion,0);
+                parent.$("#pantallaVigencia").dialog('close');
+                break;
+        }
+
+
+
+    }
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msTextAlm").text(mensaje);
+        $("#msAlmacenamiento").dialog({
+            buttons: [
+        {
+            text: "Aceptar",
+            click: function () { $(this).dialog("close"); },
+            class: "btn btn-default "
+        },
+            ]
+        });
+    }
+    function consultarIntalacionTercero(idTercero) {
+        var html = "<option value=-1>-- Seleccionar --</option>";
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarIntalacionTercero", "EncuestaExterna")',
+            data: { idTercero: idTercero },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                for (var i = 0; i < datos.length; i++)
+                    html += "<option value=" + datos[i].ID + ">" + datos[i].NOMBRE + "</option>";
+
+
+                $("#cmbInstalacion").html(html);
+
+
+            }
+        });
+    }
+    function consultarTerceroUsuario() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarTerceroUsuario", "EncuestaExterna")',
+
+            beforeSend: function () { },
+            success: function (response) {
+                // var datos = eval('(' + response + ')');
+                $("#txtIdTerceroUsuario").val(response.id);
+                consultarIntalacionTercero(response.id);
+
+            }
+        });
+    }
+
+    function abrirAtiende() {
+        $("#atiendePantalla").dialog(
+        {
+
+            width: 500,
+            height: 400,
+            modal:true
+        });
+        $("#frm_atiende").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/TerceroEncuestaUserExter")");
+
+    }
+    function obtenerTercero(id,nombre)
+    {
+        $("#txtTercero").val(nombre);
+        $("#txtIdTercero").val(id);
+
+    }
+    function abrirInstalacion()
+    {
+        window.open("@Url.Content("~/General/Instalacion/Instalacion/?idTercero=")" +  $("#txtIdTerceroUsuario").val() + "&vistaRetorno=true");
+
+    }
+</script>
+</body>

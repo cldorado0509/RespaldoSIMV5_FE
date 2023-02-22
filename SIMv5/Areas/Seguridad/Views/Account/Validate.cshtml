@@ -1,0 +1,18 @@
+﻿<br />
+@if (ViewBag.ResultadoValidacion == "OK")
+{
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="alert alert-success">Usuario Activado Satisfactoriamente. Presione <a href="@Url.Action("Index", "Home", new { area = "" })">aqu&iacute;</a> para ingresar al Sistema.</div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="alert alert-danger">La Activación del Usuario NO se ha podido realizar. Por favor contactar al Administrador del Sistema.</div>
+            <div class="alert alert-danger">@ViewBag.ResultadoValidacion</div>
+        </div>
+    </div>
+}

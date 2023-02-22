@@ -1,0 +1,640 @@
+﻿@using SIM.Properties
+@{
+    ViewBag.Title = "Atencion a usuarios";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+
+<script type="text/javascript" src="@Url.Content("~/Areas/AtencionUsuarios/Scripts/Atenciones.js?v=1.01")"></script>
+<style>
+    .dx-button .dx-icon {
+        font-size: 13px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+
+<div class="row">
+
+
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+        <div class="panelSIM panelSIM-default" id="pnlContenedor" style="text-align:center">
+            <label class="header">ATENCIÓN A USUARIOS</label>
+        </div>
+    </div>
+
+    <br />
+
+
+    <div class="panelSIM-heading">
+
+        <label class="header">Persona Natural</label>
+    </div>
+
+    <div class="col-sm-9">
+
+        <div class="row">
+
+            <div class="col-sm-1" style="margin-left: 10px">Documento:</div>
+            <div class="col-sm-3" style="margin-right: 10px" id="txtDocumento"></div>
+
+            <div class="col-sm-1" style="margin-left: 100px">Nombre:</div>
+            <div class="col-sm-3" style="margin-right: 10px" id="txtNombre"></div>
+
+            <div id="btnBuscar" style="margin-left: 10px"></div>
+            <div id="btnLimpiar" style="margin-left: 10px"></div>
+
+
+        </div>
+        <div class="row">
+
+            <div class="col-sm-1" style="margin-left: 10px">Dirección:</div>
+            <div class="col-sm-3" style="margin-right: 10px" id="txtDireccion"></div>
+
+            <div class="col-sm-1" style="margin-left: 100px">Telefono:</div>
+            <div class="col-sm-3" style="margin-right: 10px" id="txtTelefono"></div>
+
+
+        </div>
+
+    </div>
+
+</div>
+<br />
+<div class="row">
+
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+        <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+            <div class="panelSIM-heading" style=" background-color: #007096">
+                <h3 class="panelSIM-title">
+                    <label style="color:white " class="header">Listado de Atenciones</label>
+                </h3>
+            </div>
+
+            <div class="row">
+                <div id="GidListadoAtenciones"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br />
+<div class="row">
+
+    <div id="tabs"></div>
+
+
+
+</div>
+
+<div class="panelSIM panelSIM-default" id="Asuntos" style="display: none">
+    <div class="row">
+
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <h3 class="panelSIM-title">
+                    <label class="header">Listado Asuntos</label>
+                </h3>
+
+                <div class="row">
+                    <div id="GidListadoAsuntos"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="btnVincularAsunto">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z" />
+                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z" />
+            </svg>
+        </div>
+
+    </div>
+</div>
+
+<div class="panelSIM panelSIM-default" id="Documentos" style="display: none">
+    <div class="row">
+
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <h3 class="panelSIM-title">
+                    <label class="header">Listado Documentos</label>
+                </h3>
+
+                <div class="row">
+                    <div id="GidListadoDocumentos"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="btnVincularDocumento">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z" />
+                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z" />
+            </svg>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="panelSIM panelSIM-default" id="Quejas" style="display: none">
+    <div class="row">
+
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <h3 class="panelSIM-title">
+                    <label class="header">Listado Quejas</label>
+                </h3>
+
+                <div class="row">
+                    <div id="GidListadoQuejas"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="btnVincularQueja">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z" />
+                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z" />
+            </svg>
+        </div>
+
+    </div>
+</div>
+
+<div class="panelSIM panelSIM-default" id="Notificaciones" style="display: none">
+    <div class="row">
+
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <h3 class="panelSIM-title">
+                    <label class="header">Listado Notificaciones</label>
+                </h3>
+
+                <div class="row">
+                    <div id="GidListadoNotificaciones"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="btnVincularNotificacion">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z" />
+                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z" />
+            </svg>
+        </div>
+
+    </div>
+</div>
+
+<div class="panelSIM panelSIM-default" id="Tramites" style="display: none">
+
+    <div class="row">
+
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <h3 class="panelSIM-title">
+                    <label class="header">Listado de Trámites Asociados a la Atención</label>
+                </h3>
+
+                <div class="row">
+                    <div id="GidListadoTramites"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="row">
+
+        <div id="btnVincularTramite">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z" />
+                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z" />
+            </svg>
+
+        </div>
+       
+
+
+    </div>
+
+</div>
+
+<br />
+<div class="row">
+    <div id="btnNuevaAtencion">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewBox="0 0 16 16">
+            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z" />
+        </svg>
+    </div>
+
+    <div id="btnNuevoReporte">
+
+    </div>
+
+</div>
+
+
+
+
+<div id="PopupAsuntos">
+
+    <div class="row">
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+                <div class="row">
+                    <div id="GidGuardarAsunto"></div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <br />
+    <div class="row">
+
+        <div id="btnCancelarAsuntos"></div>
+
+    </div>
+
+</div>
+
+
+<div id="PopupQuejas">
+
+    <div class="row">
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+                <div class="row">
+                    <div id="GidGuardarQuejas"></div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <br />
+    <div class="row">
+
+        <div id="btnCancelarQuejas"></div>
+
+    </div>
+
+</div>
+
+
+<div id="PopupNotificaciones">
+
+    <div class="row">
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+                <div class="row">
+                    <div id="GidGuardarNotificaciones"></div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <br />
+    <div class="row">
+
+        <div id="btnCancelarNotificaciones"></div>
+
+    </div>
+
+</div>
+
+
+<div id="PopupTramites">
+
+    <div class="row">
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+                <div class="row">
+                    <div id="GidGuardarTramites"></div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <br />
+    <div class="row">
+
+        <div id="btnCancelarTramites"></div>
+
+    </div>
+
+</div>
+
+
+<div id="popupAgregarAtencion">
+
+    <div class="col-sm-7">
+        <div class="row">
+
+            <div class="col-sm-4">Tipo de Atención:(*)</div>
+            <div class="col-sm-2" id="SelectBoxTipoAtencion"></div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-4">Clase de Atención:(*)</div>
+            <div class="col-sm-4" id="SelectBoxClaseAtencion"></div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-4">Forma de Atención:(*)</div>
+            <div class="col-sm-4" id="SelectBoxFormaAtencion"></div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-4">Descripcion(Det):(*)</div>
+            <div class="col-sm-4" id="txtareaDetalle"></div>
+
+        </div>
+
+
+    </div>
+
+    <div class="col-sm-5">
+
+
+
+        <div class="row">
+
+            <div id="ListaChequeo"></div>
+
+        </div>
+
+
+    </div>
+
+
+    <br />
+
+    <div class="col-sm-7">
+        <div class="row">
+
+            <div class="col-sm-1"><b>Compromiso</b></div>
+
+        </div>
+        <br />
+        <div class="row">
+
+            <div class="col-sm-2">Tipo:</div>
+            <div class="col-sm-3" id="SelectBoxTipoCompromiso"></div>
+
+            <div class="col-sm-2">Fecha:</div>
+            <div class="col-sm-3" id="dateFechaCompromiso"></div>
+
+        </div>
+
+        <br />
+        <div class="row">
+
+            <div class="col-sm-2">
+                <div>Estado:</div>
+            </div>
+            <div class="col-sm-3">
+                <div class="col-sm-2" id="EstadoAtencion"></div>
+                <div class="col-sm-1">Terminada</div>
+            </div>
+
+        </div>
+        <br />
+        @*<div class="row">
+
+            <div class="col-sm-4">Usuario Antiguo:</div>
+            <div class="col-sm-4" id="txtUsuarioAntiguo"></div>
+
+        </div>*@
+    </div>
+
+    @*<div class="col-sm-8">
+        <br />
+        <div class="row">
+
+            <div class="col-sm-4"><b>Tercero Representado:</b></div>
+
+        </div>
+        <br />
+        <div class="row">
+
+            <div class="col-sm-2">Identificación:</div>
+            <div class="col-sm-3" id="txtIdTerceroRepre"></div>
+
+            <div class="col-sm-1">Nombre:</div>
+            <div class="col-sm-1" style="margin-left: 35px" id="txtNombreTerceroRepre"></div>
+            <div class="col-sm-1" style="margin-left: 10px" id="btnBuscarTerceroRepre"></div>
+            <div class="col-sm-1" style="margin-left: 10px" id="btnLimpiarTerceroRepre"></div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-2">Instalación Atención:</div>
+            <div class="col-sm-3" id="SelectBoxInstalacionAtencion"></div>
+
+        </div>
+
+    </div>*@
+
+
+
+    <div class="col-sm-8">
+        <br />
+        <br />
+
+        <div class="row">
+
+            <div class="col-sm-1" style="margin-left: 10px" id="btnGuardarAtencion"></div>
+            <div class="col-sm-1" style="margin-left: 10px" id="btnCancelarAtencion"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="popupBuscaDoc">
+    <iframe src="" id="BuscarDoc" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popupBuscarPersona">
+
+    <div class="row">
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+                <div class="panelSIM-heading">
+                    <h3 class="panelSIM-title">
+                        <label class="header">Persona Natural</label>
+                    </h3>
+                </div>
+
+
+                <div class="col-sm-9">
+
+                    <div class="row">
+
+                        <div class="col-sm-1" style="margin-right: 40px">Documento:</div>
+                        <div class="col-sm-6" id="txtDocumentoB"></div>
+
+                        <div class="col-sm-6" style="left: 10px" id="btnBuscarPersona"></div>
+                        <div class="col-sm-6" style="left: 20px" id="btnLimpiarPersona"></div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-1" style="margin-right: 40px">Apellidos:</div>
+                        <div class="col-sm-3" style="margin-right: 10px" id="txtApellido1"></div>
+                        <div class="col-sm-3" id="txtApellido2"></div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-1" style=" margin-right: 40px">Nombres:</div>
+                        <div class="col-sm-3" style="margin-right: 10px" id="txtNombre1"></div>
+                        <div class="col-sm-3" id="txtNombre2"></div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-1" style="margin-right: 40px">Telefono:</div>
+                        <div class="col-sm-3" id="txtTelefonoB"></div>
+                        <div class="col-sm-3" style="margin-left: 10px" id="btnEditarPersona"></div>
+                        <div class="col-sm-3" style="margin-left: 10px" id="btnActualizarPersona"></div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1" style="margin-right: 40px">Email:</div>
+                        <div class="col-sm-3" id="txtEmail"></div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-1" style="margin-right: 40px">Genero:</div>
+                        <div class="col-sm-2" id="radioGenero"></div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-1" style="margin-right: 40px">Dirección:</div>
+                        <div class="col-sm-3" id="txtDireccionB"></div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-3" id="btnAceptar"></div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<div id="popDocumento">
+    <iframe src="" id="Documento" width="100%" height="100%"></iframe>
+</div>
+
+
+<div id="popupReporte">
+
+   
+    <div class="row">
+
+        <div class="col-sm-1">Fecha Inicio:</div>
+        <div class="col-sm-1" id="FechaIReporte"></div>
+
+        <div class="col-sm-1">Fecha Fin:</div>
+        <div class="col-sm-1" id="FechaFReporte"></div>
+
+        <div class="col-sm-1"> </div>
+        <div class="col-sm-1" id="btnFiltrarReporte"></div>
+
+    </div>
+
+
+    <div class="row">
+        <div data-url="@Url.Content("~")" ID="SIM" resizable>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+
+                <div class="row">
+                    <div id="GidListadoAtencionReporte"></div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <br />
+    <div class="row">
+
+        <div id="btnCancelarReporte"></div>
+
+    </div>
+
+</div>
+
+

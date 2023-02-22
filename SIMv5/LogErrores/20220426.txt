@@ -1,0 +1,31 @@
+15:23:40 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+15:23:50 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+15:24:14 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+15:25:53 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+15:27:42 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+15:28:13 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+15:32:03 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+15:37:12 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+16:02:33 - ProyeccionDocumento [PostAvanzarDocumento - 76891 ] : '<>f__AnonymousType446<byte[],int>' no contiene una definición para 'exito'.
+16:06:29 - Errores (AvanzaTareaTramiteFormulario):
+[1266224,0,4858,1111118134,20] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+16:22:01 - Errores (AvanzaTareaTramiteFormulario):
+[1287189,0,4858,1111118134,20] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+16:33:21 - ProyeccionDocumento [PostAvanzarDocumento - 401 ] : Error generando documento. (REINALDO BARCO LOPEZ) [401]Error: Codigo: L002, Mensaje: Campos obligatorios Usuario no registrado El usuario: prueba, no se encuentra registrado en el sistema.
+16:34:07 - ProyeccionDocumento [PostAvanzarDocumento - 404 ] : Trámite 1026591 intenta crear el documento con la ruta '\\Servidores\amdocumental01\tramites\Pruebas\Oficios Recibidos General\0\1\2\65\1026591-11.pdf', la cual ya existte en el trámite 1026591
+16:35:57 - ProyeccionDocumento [PostAvanzarDocumento - 404 ] : An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-01400: no se puede realizar una inserción NULL en ("TRAMITES"."TBTRAMITEDOCUMENTO"."S_ADJUNTO")
+ORA-06512: en línea 4
+16:40:35 - ProyeccionDocumento [PostAvanzarDocumento - 404 ] : Trámite 1026591 intenta crear el documento con la ruta '\\Servidores\amdocumental01\tramites\Pruebas\Oficios Recibidos General\0\1\2\65\1026591-11.pdf', la cual ya existte en el trámite 1026591
+16:48:33 - ProyeccionDocumento [PostAvanzarDocumento - 404 ] : An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-01400: no se puede realizar una inserción NULL en ("TRAMITES"."TBTRAMITEDOCUMENTO"."S_ADJUNTO")
+ORA-06512: en línea 4
+16:50:24 - ProyeccionDocumento [PostAvanzarDocumento - 404 ] : Trámite 1026591 intenta crear el documento con la ruta '\\Servidores\amdocumental01\tramites\Pruebas\Oficios Recibidos General\0\1\2\65\1026591-11.pdf', la cual ya existte en el trámite 1026591

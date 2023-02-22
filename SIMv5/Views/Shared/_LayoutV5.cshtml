@@ -1,0 +1,242 @@
+﻿@using Microsoft.AspNet.Identity
+@using SIM.Areas.Seguridad.Models
+@using SIM.Utilidades
+
+@{    
+    if (Request.IsAuthenticated && Session["_Menu"] == null)
+    {
+        if (Session["_Pendientes"] == null || !Convert.ToBoolean(Session["_Pendientes"]))
+        {
+            Session["_Menu"] = Security.ObtenerHTMLMenu(ModelsToListSeguridad.GetOpcionesMenu());
+        }
+        
+        Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/Content/Images/favico-area.ico?v=1.01")" />
+    <title>@ViewBag.Title - SIM</title>
+    @Styles.Render("~/Contentv5/css")
+    @Scripts.Render("~/bundlesv5/modernizr")
+    @Styles.Render("~/Content/ContentV5/ContentV5DevExtremeBundle")
+    @Scripts.Render("~/Scripts/ScriptsV5/DevExtremeBundle")
+
+    <style>
+        #loader {
+            border: 12px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 12px solid #444444;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .center {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+    </style>
+
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular-route.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/angular-sanitize.js")"></script>
+
+    <link href="@Url.Content("~/Content/homepage.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/style.css?v=1.01")" />
+    <link href="@Url.Content("~/Content/forms.css?v=1.02")" rel="stylesheet" type="text/css" />
+
+    <!--Css editados-->
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EstiloPagina.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/normalize.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/stylesV5/Principal.css?v=1.08")" />
+    <!--Fin Menu-->
+    <!-- Include jQuery.mmenu .css files -->
+    <link type="text/css" href="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/css/jquery.mmenu.all.css")" rel="stylesheet" />
+    <link type="text/css" href="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/css/extensions/jquery.mmenu.themesim.css")" rel="stylesheet" />
+
+    <!-- Include the jQuery.mmenu .js files -->
+    <script type="text/javascript" src="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/js/jquery.mmenu.min.all.js")"></script>
+
+    <!-- Fire the plugin onDocumentReady -->
+    <script type="text/javascript">
+        //Globalize.locale(navigator.language);
+        //DevExpress.localization.locale('es');
+        $(function() {
+            //Globalize.locale(navigator.language);
+            DevExpress.localization.locale('es');
+        });
+
+        function Sesion() {
+            $(".OffLogin").toggle(0700);
+        }
+
+        function cerrarSesion() {
+            document.getElementById('logoutForm').submit();
+        }
+
+        function MostrarAyuda(idAyuda, titulo) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/Ayudas/api/AyudasWebAPI/GetContenido")",
+                data: {
+                    id: idAyuda
+                },
+                success: function (response) {
+                    var dato = response;
+                    $('#datosAyuda').html(dato[0].CONTENIDO);
+                    alert($('#datosAyuda'));
+                    var ayudaInstance = $("#popAyuda").dxPopup("instance");
+                    ayudaInstance.show();
+
+                    $("#popAyuda").dxPopup({
+                        title: titulo,
+                        contentTemplate: function (contentElement) {
+                            contentElement.append(dato[0].CONTENIDO);
+                        }
+                    });
+                    var ayudaInstance = $("#popAyuda").dxPopup("instance");
+                    ayudaInstance.show();
+                },
+            });
+        }
+
+        $(function () {
+            $("#popAyuda").dxPopup();
+        });
+
+        var inrt = "";
+        $(document).ready(function () {
+            $('#menuSIM').removeAttr("style");
+
+            $("#menuSIM").mmenu({
+                "extensions": [
+                   "pageshadow",
+                   "theme-sim"
+                ],
+                /*"offCanvas": {
+                    "zposition": "front"
+                },*/
+                "counters": false,
+                "header": {
+                    "title": "Sistema de Informaci&oacute;n Metropolitano",
+                    "add": true,
+                    "update": true
+                },
+                "searchfield": {
+                    "placeholder": "Buscar",
+                    "noResults": "No se encontraron resultados",
+                    "add": true,
+                    "search": true
+                }
+            });
+        });
+    </script>
+</head>
+<body style="visibility: hidden">
+    <div id="loader" class="center" style="visibility: visible"></div>
+    @if (Request.IsAuthenticated)
+    {
+        if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+        {
+            @Html.Raw(Session["_Menu"])
+        }
+        <div id="popAyuda">
+            <div data-options="dxTemplate:{ name: 'content' }">
+                <div id="datosAyuda">
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+        {
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="OffLogin" style="display:none">
+                        <div class="flecha"></div>
+                        <button type="button" class="top btn btn-default alingRight">@Html.ActionLink("Administrar Cuenta", "Manage", "Account", routeValues: new { area = "Seguridad" }, htmlAttributes: new { title = "Manage", style = "color:white" })</button>
+                        <button type="button" class="bottom btn btn-default alingRight" onclick="cerrarSesion()"> <span class="glyphicon glyphicon-off" aria-hidden="true"></span>Cerrar Sesion</button>
+                    </div>
+                    <div class="encabezado">
+                        @if (Request.IsAuthenticated)
+                        {
+                            <a id="hamburger" href="#menuSIM"><span></span></a>
+                        }
+                        <div class="Logos" id="Logos" @if (!Request.IsAuthenticated) { <text> style="margin-left:0px" </text> }>
+                        </div>
+                        <p id="tituloLargo">Sistema de Información Metropolitano</p>
+                        <p id="tituloCorto">SIM</p>
+                        @if (Request.IsAuthenticated)
+                        {
+                            using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="button" class="btn btn-default alingRight btnGreen Login" onclick="Sesion()"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>@Session["_UserName"]</button>
+                            }
+                        }
+                    </div>
+                    @if (false)
+                    { //(!Request.IsAuthenticated) {
+                        <span class="navbar-right">
+                            @Html.Partial("_LoginPartial")
+                        </span>
+                    }
+                </div>
+            </div>
+        }
+    <div class="container body-content" @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) { <text> style="margin-top: 70px" </text> }>
+        @RenderBody()
+        @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+        {
+            <text>
+                <br />
+                <footer>
+                    <div>
+                        <div style="text-align: left;"><img src="https://www.metropol.gov.co/PublishingImages/imgfuturosostenible.png"></div>
+                        <div style="text-align: center;">Copyright &copy; Area Metropolitana del Valle de Aburr&aacute;. Todos los Derechos Reservados</div>
+                    </div>
+                </footer>
+            </text>
+        }
+    </div>
+    </div>
+
+    @Scripts.Render("~/bundlesv5/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        document.onreadystatechange = VisualizarPagina;
+
+        function VisualizarPagina() {
+            if (document.readyState !== "complete") {
+                document.querySelector(
+                    "body").style.visibility = "hidden";
+                document.querySelector(
+                    "#loader").style.visibility = "visible";
+            } else {
+                if (typeof listoMostrar == 'undefined' || listoMostrar) {
+                    document.querySelector(
+                        "#loader").style.display = "none";
+                    document.querySelector(
+                        "body").style.visibility = "visible";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

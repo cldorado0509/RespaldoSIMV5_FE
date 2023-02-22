@@ -1,0 +1,238 @@
+﻿@using Newtonsoft.Json
+@using SIM.Areas.Poeca.Models
+@model SIM.Data.Poeca.DPOEAIR_ACCION
+
+@{
+    ViewBag.Title = "POECA | Editar Acción o Medio";
+
+    List<DxListItem> sectores = ViewData["Sectores"] as List<DxListItem>;
+    Dictionary<string, List<DxListItem>> medidas = ViewData["Medidas"] as Dictionary<string, List<DxListItem>>;
+    List<DxListItem> medidasSeleccionadas = ViewData["medidasSeleccionadas"] as List<DxListItem>;
+}
+<div class="container-fluid">
+    <div class="col-xs-12">
+        <h2>Editar Acción o Medio</h2>
+
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ID)
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.S_NOMBRE_ACCION, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.S_NOMBRE_ACCION, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.S_NOMBRE_ACCION, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.S_DESCRIPCION, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.S_DESCRIPCION, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.S_DESCRIPCION, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row seleccion-medidas-accion">
+                <div class="col-sm-12">
+                    @Html.LabelFor(model => model.TPOEAIR_MEDIDA_ACCION, htmlAttributes: new { @class = "control-label" })
+                    <div class="row">
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+
+
+                                @Html.ValidationMessageFor(model => model.TPOEAIR_MEDIDA_ACCION, "", new { @class = "text-danger" })
+                                <div class="selection-list-box">
+                                    @(
+                                        Html.DevExtreme().List()
+                                            .ID("dx-list-sectores")
+                                            .DataSource(sectores)
+                                            .SearchEnabled(true)
+                                            .Height(187)
+                                            .SelectionMode(ListSelectionMode.Single)
+                                            .ScrollingEnabled(true)
+                                            .UseNativeScrolling(true)
+                                            .SearchExpr("text")
+                                    )
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                @Html.ValidationMessageFor(model => model.TPOEAIR_MEDIDA_ACCION, "", new { @class = "text-danger" })
+                                <div class="selection-list-box">
+                                    @(
+                                        Html.DevExtreme().List()
+                                            .ID("dx-list-medidas")
+                                            .DataSource(new List<DxListItem>())
+                                            .SearchEnabled(true)
+                                            .Height(187)
+                                            .SelectionMode(ListSelectionMode.Single)
+                                            .ScrollingEnabled(true)
+                                            .UseNativeScrolling(true)
+                                            .SearchExpr("text")
+                                    )
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <div class="acciones-seleccion-medidas">
+                                <button id="agregar-medida" type="button" class="btn btn-default btn-seleccion-medida" title="Agregar">
+                                    »
+                                </button>
+                                <button id="descartar-medida" type="button" class="btn btn-seleccion-medida" title="Quitar">
+                                    «
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                @Html.ValidationMessageFor(model => model.TPOEAIR_MEDIDA_ACCION, "", new { @class = "text-danger" })
+                                <div class="selection-list-box">
+                                    @(
+                                        Html.DevExtreme().List()
+                                            .ID("dx-list-medidas-sectores")
+                                            .DataSource(medidasSeleccionadas)
+                                            .SearchEnabled(true)
+                                            .SelectionMode(ListSelectionMode.Single)
+                                            .Height(187)
+                                            .ScrollingEnabled(true)
+                                            .UseNativeScrolling(true)
+                                            .SearchExpr("text")
+                                    )
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.ListBox("sectoresMedidas", new MultiSelectList(medidas.SelectMany(x => x.Value), "key", "text"), new { @class = "hidden" })
+                    </div>
+                </div>
+            </div>
+            <div>
+                @*<div class="form-group">
+                        @Html.LabelFor(model => model.ID_RESPONSABLE, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ID_RESPONSABLE, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ID_RESPONSABLE, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-danger" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Guardar" class="btn btn-block btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundlesv5/jqueryval")
+
+    <script>
+        $(function () {
+            let medidas = @Html.Raw(JsonConvert.SerializeObject(medidas));
+            let dxListMedidasSectores = $("#dx-list-medidas-sectores").dxList("instance");
+            let dxListSectores = $("#dx-list-sectores").dxList("instance");
+            let dxListMedidasElement = $("#dx-list-medidas");
+
+            let dxListMedidas = dxListMedidasElement.dxList("instance");
+
+            let btnAgregarMedida = $("#agregar-medida");
+            let btnDescartarMedida = $("#descartar-medida");
+
+            dxListSectores.on("itemClick", function (event) {
+                let medidasDataSource = dxListMedidas.option("dataSource");
+
+                let selectedItems = dxListMedidasSectores.getDataSource().items();
+
+                medidasDataSource.store.clear();
+                for (var medida of medidas[event.itemData.id]) {
+
+                    let canShow = true;
+                    for (var item of selectedItems) {
+                        if (item.key === medida.key) {
+                            canShow = false;
+                            break;
+                        }
+                    }
+
+                    if (canShow) {
+                        medidasDataSource.store.insert(medida);
+                    }
+                }
+
+                dxListMedidas.getDataSource().reload();
+            });
+
+            btnAgregarMedida.click(function () {
+                try {
+                    let dataSource = dxListMedidasSectores.option("dataSource");
+                    let medidasDataSource = dxListMedidas.option("dataSource");
+
+                    let sectorSeleccionado = dxListSectores.option("selectedItems");
+                    let medidaSeleccionada = dxListMedidas.option("selectedItems");
+
+                    dataSource.store.insert({
+                        id: medidaSeleccionada[0].id,
+                        key: medidaSeleccionada[0].key,
+                        text: sectorSeleccionado[0].text + " - " + medidaSeleccionada[0].text,
+                    });
+
+                    medidasDataSource.store.remove(medidaSeleccionada[0])
+
+                    dxListMedidas.getDataSource().reload();
+                    dxListMedidasSectores.getDataSource().reload();
+                } catch (error) {
+                    console.warn(error);
+                }
+            });
+
+            btnDescartarMedida.click(function () {
+                try {
+                    let dataSource = dxListMedidasSectores.option("dataSource");
+                    let medidasDataSource = dxListMedidas.option("dataSource");
+
+                    let medidaSeleccionada = dxListMedidasSectores.option("selectedItems");
+
+                    medidasDataSource.store.insert({
+                        id: medidaSeleccionada[0].id,
+                        key: medidaSeleccionada[0].key,
+                        text: medidaSeleccionada[0].text.split(" - ")[1]
+                    });
+
+                    dataSource.store.remove(medidaSeleccionada[0])
+
+                    dxListMedidasSectores.getDataSource().reload();
+                    dxListMedidas.getDataSource().reload();
+                } catch (error) {
+                    console.warn(error);
+                }
+            });
+
+            $("form").submit(function () {
+                let selectedItems = dxListMedidasSectores.getDataSource().items();
+
+                let selectedItemsKeys = selectedItems.map((item) => {
+                    return item.key;
+                })
+
+                $("#sectoresMedidas").val(selectedItemsKeys);
+            });
+        });
+    </script>
+}

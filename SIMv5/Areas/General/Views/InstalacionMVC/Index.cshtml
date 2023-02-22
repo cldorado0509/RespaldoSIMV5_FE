@@ -1,0 +1,43 @@
+﻿<script type="text/javascript">
+    function OnInit(s, e) {
+        AdjustSize();
+        ASPxClientUtils.AttachEventToElement(window, "resize", function (evt) {
+            AdjustSize();
+        });
+    }
+    function OnEndCallback(s, e) {
+        AdjustSize();
+    }
+
+    function AdjustSize() {
+        var height = document.documentElement.clientHeight;
+        gvwInstalacion.SetHeight(height - 180);
+    }
+
+    function OnCustomButtonClick(s, e, t, url) {
+        var destUrl;
+
+        if (e.buttonID === "EditButton") {
+            var key = s.GetRowKey(e.visibleIndex);
+            destUrl = url + "/" + key;
+        } else {
+            destUrl = url;
+        }
+
+        window.location.href = destUrl;
+    }
+</script>
+<br />
+<br />
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <label>Instalaciones</label>
+        </h3>
+    </div>
+
+    <div style="padding: 10px">
+        @Html.Action("gvwAdministrarInstalacion")
+    </div>
+</div>

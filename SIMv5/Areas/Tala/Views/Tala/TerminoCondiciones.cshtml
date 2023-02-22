@@ -1,0 +1,480 @@
+﻿@{
+    ViewBag.Title = "Termino condiciones";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="@Url.Content("~/Content/arbolUrbanoF.css")" rel="stylesheet" type="text/css" />
+
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+    
+        body{
+          overflow: auto;
+        }
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+        input[type="file"] {
+    display: none;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="col-xs-offset-0 col-sm-offset-0 col-md-offset-4 col-xs-12 col-sm-12 col-md-4">
+         <div class="col-xs-12 col-sm-12 col-md-12" style="display:none;">
+             <label>Tipo de predio</label>
+             <select id="cmbTpredio" class="form-control" onchange="validarTipo(this)">
+               <option value="-1">-- Seleccionar --</option>
+               <option value="rdIntitucionE">Instituciones educativas</option>
+               <option value="rdJunta">Juntas de Acción Comunal o consejos de administración</option>
+                 <option value="rdSociedad">Sociedades</option>
+                   <option value="rdOtros" selected>Otros privados</option>
+
+             </select>
+         </div>
+
+  
+   
+   
+   <div class="col-xs-12 col-sm-12 col-md-12" id="contenedorNotaRegla" style="display: none !important;">
+                <p class="lead clsnotareglamento" id="pNota"></p>
+                <span class="clsnotareglamentosopan"></span>Poder General O Especial Debidamente Otorgado
+            </div>
+
+    <!-- archivo 1-->  
+    <div class="col-xs-12 col-sm-12 col-md-12 formatoadjunto" id="div_1" style="display:none">
+        <label  class="clsAdjuntarArcLabel"  id="lblArchivo1"></label>
+        <input id="txtDoc1" disabled class="form-control clsAdjuntarArcInput" />
+        <label class="custom-file-upload">
+            <input type="file" name="file1" id="file1" accept="application/pdf" class="clsAdjuntarArc">
+        </label>
+              
+
+    </div>
+
+
+    <!-- archivo 2-->
+
+    <div class="col-xs-12 col-sm-12 col-md-12 formatoadjunto" id="div_2" style="display:none">
+        <label  class="clsAdjuntarArcLabel"  id="lblArchivo2"></label>
+        <input id="txtDoc2" disabled class="form-control clsAdjuntarArcInput" />
+        <label class="custom-file-upload">
+            <input type="file" name="file2" id="file2" accept="application/pdf" class="clsAdjuntarArc">
+        </label>
+
+    </div>
+    <!-- archivo 3-->
+
+    <div  class="col-xs-12 col-sm-12 col-md-12 formatoadjunto"  id="div_3" style="display:none">
+         <label  class="clsAdjuntarArcLabel"  id="lblArchivo3"></label>
+        <input id="txtDoc3" disabled class="form-control clsAdjuntarArcInput" />
+        <label class="custom-file-upload">
+            <input type="file" name="file3" id="file3" accept="application/pdf" class="clsAdjuntarArc">
+        </label>
+
+    </div>
+    <!-- archivo 4-->
+
+    <div class="col-xs-12 col-sm-12 col-md-12 formatoadjunto" id="div_4" style="display:none">
+        <label  class="clsAdjuntarArcLabel"  id="lblArchivo4"></label>
+        <input id="txtDoc4" disabled class="form-control clsAdjuntarArcInput" />
+        <label class="custom-file-upload">
+            <input type="file" name="file4" id="file4" accept="application/pdf" class="clsAdjuntarArc">
+        </label>
+
+    </div>
+      <div class="col-xs-12 col-sm-12 col-md-12">
+           <button class="continuarG" id="btnContinuar" onclick="abrircaracteristica()" style="display:none"></button>
+      </div>
+
+   
+      </div>
+        
+
+        <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+            <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+
+
+        </div>
+   
+        <script>
+            var arrFoto = [];
+            $(document).ready(function () {
+
+                validarTipo()
+                $("#file1").on('change', function (event) {
+                    var formData = new FormData();
+                    var totalFiles = document.getElementById("file1").files.length;
+                    var file = document.getElementById("file1").files[0];
+                    if (file.type != "application/pdf") {
+                        $("#file1").val("");
+                        alert("Solo se permiten Archivos pdf")
+                        return;
+                    }
+                    if (file.size > 10485760)
+                    {
+                        $("#file1").val("");
+                        alert("Solo se permiten Archivos hasta 10 megas")
+                        return;
+                    }
+                    formData.append("file1", file);
+                    formData.append("id", parent.idArbolDoc);
+                    formData.append("tipo", "1");
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("../../Tala/Tala/UploadArchivo1")',
+                        data: formData,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            alert('succes!!');
+                        },
+                        error: function (error) {
+                            //alert("errror");
+                        }
+                    });
+                    var file = event.target.files[0];
+
+                    if (file.type != "application/pdf") {
+                        alert("Solo se permiten Archivos pdf")
+                        $("#file1").val("");
+                        return;
+                    }
+                    $("#txtDoc1").val(file.name);
+                    $("#btnContinuar").css({ "display": "block" });
+
+
+                });
+                $("#file2").on('change', function (event) {
+                    var formData = new FormData();
+                    var totalFiles = document.getElementById("file2").files.length;
+                    var file = document.getElementById("file2").files[0];
+                    if (file.type != "application/pdf") {
+                        $("#file2").val("");
+                        alert("Solo se permiten Archivos pdf")
+                        return;
+                    }
+                    if (file.size > 10485760) {
+                        $("#file2").val("");
+                        alert("Solo se permiten Archivos hasta 10 megas")
+                        return;
+                    }
+                    formData.append("file2", file);
+                    formData.append("id", parent.idArbolDoc);
+                    formData.append("tipo", "2");
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("../../Tala/Tala/UploadArchivo1")',
+                        data: formData,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            alert('succes!!');
+                        },
+                        error: function (error) {
+                            //alert("errror");
+                        }
+                    });
+                    var file = event.target.files[0];
+
+                    if (file.type != "application/pdf") {
+                        alert("Solo se permiten Archivos pdf")
+                        $("#file2").val("");
+                        return;
+                    }
+                    $("#txtDoc2").val(file.name);
+
+                });
+                $("#file3").on('change', function (event) {
+                    var formData = new FormData();
+                    var totalFiles = document.getElementById("file3").files.length;
+                    var file = document.getElementById("file3").files[0];
+                    if (file.type != "application/pdf") {
+                        $("#file3").val("");
+                        alert("Solo se permiten Archivos pdf")
+                        return;
+                    }
+                    if (file.size > 10485760) {
+                        $("#file3").val("");
+                        alert("Solo se permiten Archivos hasta 10 megas")
+                        return;
+                    }
+                    formData.append("file3", file);
+                    formData.append("id", parent.idArbolDoc);
+                    formData.append("tipo", "3");
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("../../Tala/Tala/UploadArchivo1")',
+                        data: formData,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            alert('succes!!');
+                        },
+                        error: function (error) {
+                            
+                        }
+                    });
+                    var file = event.target.files[0];
+
+                    if (file.type != "application/pdf") {
+                        alert("Solo se permiten Archivos pdf")
+                        $("#file3").val("");
+                        return;
+                    }
+                    $("#txtDoc3").val(file.name);
+
+                });
+                $("#file4").on('change', function (event) {
+                    var formData = new FormData();
+                    var totalFiles = document.getElementById("file4").files.length;
+                    var file = document.getElementById("file2").files[0];
+                    if (file.type != "application/pdf") {
+                        $("#file4").val("");
+                        alert("Solo se permiten Archivos pdf")
+                        return;
+                    }
+                    if (file.size > 10485760) {
+                        $("#file4").val("");
+                        alert("Solo se permiten Archivos de 10 megas")
+                        return;
+                    }
+                    formData.append("file4", file);
+                    formData.append("id", parent.idArbolDoc);
+                    formData.append("tipo", "4");
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("../../Tala/Tala/UploadArchivo1")',
+                        data: formData,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            alert('succes!!');
+                        },
+                        error: function (error) {
+                          
+                        }
+                    });
+                    var file = event.target.files[0];
+
+                    if (file.type != "application/pdf") {
+                        alert("Solo se permiten Archivos pdf")
+                        $("#file4").val("");
+                        return;
+                    }
+                    $("#txtDoc4").val(file.name);
+
+                });
+           
+
+            });
+            function abrircaracteristica() {
+                if ($("#file2")[0].files.length == 0 || $("#file1")[0].files.length == 0) {
+                    alert("Se deben adjuntar los archivos solicitados para continuar con el proceso.")
+                } else {
+                    parent.requisito = "";
+
+                    if ($("#rdIntitucionE").is(':checked'))
+                        parent.requisito = "Instituciones educativas";
+                    if ($("#rdJunta").is(':checked'))
+                        parent.requisito = "Juntas de Acción Comunal o consejos de administración";
+                    if ($("#rdSociedad").is(':checked'))
+                        parent.requisito = "Sociedades";
+                    if ($("#rdOtros").is(':checked'))
+                        parent.requisito = "Otros privados";
+
+
+
+
+
+
+                    parent.abrircaracteristica(2);
+                }
+              
+
+
+            }
+
+            function aceptar() {
+                parent.$("#pantallaCaracteristicas").dialog('close');
+            }
+
+            function abrirFotos() {
+                $("#pantallaCargarImg").dialog(
+                {
+
+                    width: 500,
+                    height: 200,
+                    modal: true
+                });
+                $("#fotos").attr("src", "@Url.Content("~/Tala/Tala/cargarImagen")");
+
+            }
+            function limpiar() {
+                $("#lblArchivo1").text("");
+                $("#lblArchivo2").text("");
+                $("#lblArchivo3").text("");
+                $("#lblArchivo4").text("");
+            }
+            function validarTipo(objeto) {
+                limpiar();
+                var id=$("#cmbTpredio").val();
+               // $("#contenedorNotaRegla").show()
+                switch (id) {
+                    case "rdIntitucionE":
+                        $("#pNota").text("La solicitud de intervenciones a los árboles en predios que corresponden a una Institución Educativa debe hacerse por el Rector de la institución o alguien con un poder debidamente otorgado. Por lo cual se debe adjuntar los siguiente documentos en formato pdf");
+                        $("#div_1").css({ "display": "block" });
+                        $("#div_2").css({ "display": "block" });
+                        $("#div_3").css({ "display": "none" });
+                        $("#div_4").css({ "display": "none" });
+                        $("#lblArchivo1").text("(Obligatorio): Copia de la resolución de nombramiento o acta de posesión ");
+                        $("#lblArchivo2").text("(Obligatorio): certificado de existencia y representación legal");
+
+                        break;
+                    case "rdJunta":
+                        $("#pNota").text("La solicitud de intervenciones a los árboles en predios que corresponden a una Junta de Acción Comunal o consejo de administración debe hacerse por su representante legal (presidente de junta o administrador) o alguien con un poder debidamente otorgado. Por lo cual se debe adjuntar los siguiente documentos en formato pdf");
+                        $("#div_1").css({ "display": "block" });
+                        $("#div_2").css({ "display": "block" });
+                        $("#div_3").css({ "display": "block" });
+                        $("#div_4").css({ "display": "block" });
+                        $("#lblArchivo1").text("(Obligatorio): certificado de existencia y representación legal");
+                        $("#lblArchivo2").text("Personería Jurídica expedida Secretaria a de gobierno  de local o departamental");
+                        $("#lblArchivo3").text("Certificación e Inscripción de Dignatarios expedida Secretaria a de gobierno  de local o departamental");
+                        $("#lblArchivo4").text("Poder general o especial debidamente otorgado");
+                        break;
+                    case "rdSociedad":
+                        $("#pNota").text("La solicitud de intervenciones a los árboles en predios que corresponden a una Sociedad debe hacerse por el representante legal o alguien con un poder debidamente otorgado. Por lo cual se debe adjuntar los siguiente documentos en formato pdf");
+                        $("#div_1").css({ "display": "block" });
+                        $("#div_2").css({ "display": "block" });
+                        $("#div_3").css({ "display": "none" });
+                        $("#div_4").css({ "display": "none" });
+                        $("#lblArchivo1").text("(Obligatorio): certificado de existencia y representación legal (fecha de expedición no superior a 3 meses)");
+                        $("#lblArchivo2").text("Poder general o especial debidamente otorgado");
+                        break;
+                    case "rdOtros":
+                        $("#pNota").text("La solicitud de intervenciones a los árboles en predios privados que no estén en ninguna de las categorías anteriores debe hacerse por el propietario del predio o alguien con un poder debidamente otorgado. Por lo cual se debe adjuntar los siguiente documentos en formato pdf");
+                        $("#div_1").css({ "display": "block" });
+                        $("#div_2").css({ "display": "block" });
+                        $("#div_3").css({ "display": "none" });
+                        $("#div_4").css({ "display": "none" });
+                        $("#lblArchivo1").text("(Obligatorio): Certificado de libertad y tradición del predio (Fecha de expedición no superior a 3 meses)");
+                        $("#lblArchivo2").text("(Obligatorio): certificado de existencia y representación legal");
+                        break;
+                         case "-1":
+                          $("#contenedorNotaRegla").hide()
+                        $("#pNota").text("");
+                        $("#div_1").css({ "display": "none" });
+                        $("#div_2").css({ "display": "none" });
+                        $("#div_3").css({ "display": "none" });
+                        $("#div_4").css({ "display": "none" });
+                        $("#lblArchivo1").text("");
+                        $("#lblArchivo2").text("");
+                        break;
+
+                }
+            }
+            function Agregar() {
+                var imageContainer = [];
+                var file_name = document.getElementsByName('file_name[]');
+                for (var i = 0; i < file_name.length; i++) {
+                    alert(i);
+                    var fileUpload = file_name[i];                    // ***
+                    if (fileUpload.files.length) {                    // ***
+                        imageContainer.push(fileUpload.files[0]);
+                    }
+                }
+
+                var data = new FormData();
+                for (var b = 0; b < imageContainer.length; b++) {
+                    data.append('file_name[]', imageContainer[b]);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("../imgTala/")',
+                    data: data,
+                    dataType: 'json',
+                    contentType: "multipart/form-data",
+                    processData: false,
+                    success: function (response) {
+                        $('#GeneralSection').html(response.responseText);
+                    },
+                    error: function (error) {
+                        $('#GeneralSection').html(error.responseText);
+                    }
+                });
+
+            }
+            function activarcontinuar() {
+                if ($("#rdPublico").is(':checked')) {
+                    $("#btnContinuar").css({ "display": "block" });
+                    
+                    $("#rdIntitucionE").prop('disabled', true);
+                    $("#rdJunta").prop('disabled', true);
+                    $("#rdSociedad").prop('disabled', true);
+                    $("#rdOtros").prop('disabled', true);
+                    $("#div_1").css({ "display": "none" });
+                    $("#div_2").css({ "display": "none" });
+                    $("#div_3").css({ "display": "none" });
+                    $("#div_4").css({ "display": "none" });
+                    $("#pNota").text("");
+                    $("#rdIntitucionE").prop('checked', false);
+                    $("#rdJunta").prop('checked', false);
+                    $("#rdSociedad").prop('checked', false);
+                    $("#rdOtros").prop('checked', false);
+                    $("#btnContinuar").css({ "display": "block" });
+
+                } else {
+
+                    $("#btnContinuar").css({ "display": "none" });
+                    $("#rdIntitucionE").prop('disabled', false);
+                    $("#rdJunta").prop('disabled', false);
+                    $("#rdSociedad").prop('disabled', false);
+                    $("#rdOtros").prop('disabled', false);
+                }
+
+
+            }
+            function alert(cont) {
+                var html = '<div class="col-xs-12 col-sm-12 col-md-12 msgAlert msgAlert">';
+                html += '<div class="col-xs-offset-1 col-sm-offset-2 col-md-offset-4 col-xs-10 col-sm-10 col-md-4 msgcontenedor">';
+                html += '<div class="col-xs-12 col-sm-12 col-md-12 msgtitle">Información';
+                html += '</div>'
+                html += '<div class="col-xs-12 col-sm-12 col-md-12 msgcuerpo">';
+                html += cont
+                html += '</div>'
+                html += '<div class="col-xs-12 col-sm-12 col-md-12 msgbtn">';
+                html += '<button class="btAceptar" onclick="$(\'.msgAlert\').remove()">Aceptar</button>'
+                html += '</div>'
+                html += '</div>'
+                html += '</div>'
+                parent.$("body").append(html);
+            }
+        </script>
+</body>
+
+</html>
+
+

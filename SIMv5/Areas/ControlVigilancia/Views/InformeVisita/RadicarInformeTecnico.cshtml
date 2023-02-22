@@ -1,0 +1,47 @@
+﻿<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        AjustarTamano();
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano()
+    {
+        $("#pnlContenedor").height((window.innerHeight || document.body.clientHeight) - 150);
+        $("#pnlGridUsuarios").height($("#pnlContenedor").outerHeight() - $("#pnlContenedorTitulo").outerHeight() - 4);
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/radicarinformetecnico.js")"></script>
+
+<div class="panelSIM-heading" style="padding: 0px;">
+    <div ng-app="SIM" data-url="@Url.Content("~")" id="app" resizable>
+        <div ng-controller="ActivarUsuariosController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Procesando...', showIndicator: true, shading: true, bindingOptions: { visible: 'procesandoVisible' } }"></div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div class="panelSIM-heading" id="pnlContenedorTitulo">
+                    <h3 class="panelSIM-title">
+                        <label class="header">Radicaci&oacute;n de Informes T&eacute;cnicos</label>
+                    </h3>
+                </div>
+                <div id="pnlGridUsuarios">
+                    <div style="height: 100%">
+                        <div dx-data-grid="grdUsuariosActivacionSettings" id="grdUsuariosActivacion"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

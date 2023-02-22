@@ -1,0 +1,15 @@
+﻿@using SIM.Areas.GestionDocumental.Models
+@using System.Collections.Generic
+@using System.Web.UI.WebControls
+
+@Html.DevExpress().ComboBox(settings =>
+{
+    settings.Name = ViewBag.Nombre;
+    settings.Width = Unit.Pixel(ViewBag.Ancho);
+    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.None;
+    settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+    settings.Properties.ValueField = "ID";
+    settings.Properties.TextField = "DESCRIPCION";
+
+    settings.Properties.ClientSideEvents.SelectedIndexChanged = "CampoSeleccionado";
+}).BindList(Model).GetHtml()

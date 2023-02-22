@@ -1,0 +1,153 @@
+@using SIM.Areas.General.Models
+@using System.Web.UI.WebControls
+
+@{
+	var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "gvwContactosTercero";
+        settings.CallbackRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarContactosTercero", terceroID = ViewBag.terceroID };
+        settings.Width = Unit.Percentage(100);
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarContactosTerceroAddNew", terceroID = ViewBag.terceroID };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarContactosTerceroUpdate", terceroID = ViewBag.terceroID };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarContactosTerceroDelete", terceroID = ViewBag.terceroID };
+        settings.SettingsEditing.Mode = GridViewEditingMode.Inline;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.ButtonType = GridViewCommandButtonType.Image;
+		settings.CommandColumn.Visible = true;
+        settings.CommandColumn.NewButton.Visible = false;
+        settings.CommandColumn.DeleteButton.Visible = true;
+        settings.CommandColumn.EditButton.Visible = false;
+        settings.CommandColumn.ShowUpdateButton = true;
+        settings.CommandColumn.ShowCancelButton = true;
+        settings.CommandColumn.Width = Unit.Pixel(30);
+
+        settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+        settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+
+        settings.CommandColumn.DeleteButton.Image.Url = "~/Content/Images/delete.png";
+        settings.CommandColumn.CancelButton.Image.Url = "~/Content/Images/delete.png";
+        settings.CommandColumn.UpdateButton.Image.Url = "~/Content/Images/save.png";
+
+        settings.CommandColumn.SetHeaderTemplateContent(c =>
+        {
+            @Html.DevExpress().Image(img =>
+            {
+                img.Name = "addNewRowContactos";
+                img.ImageUrl = "~/Content/Images/new.png";
+                img.Height = 20;
+                img.Width = 20;
+                img.Style.Add("float", "left");
+                img.Properties.ClientSideEvents.Click = "function(s, e){ gvwContactosTercero.AddNewRow(); }";
+            }).Render();
+        });
+
+		settings.KeyFieldName = "ID_CONTACTO";
+
+		settings.SettingsPager.Visible = true;
+		settings.Settings.ShowGroupPanel = false;
+		settings.Settings.ShowFilterRow = false;
+		settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_CONTACTO";
+            column.Visible = false;
+        });
+        /*
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_JURIDICO";
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ s.SetText('" + ViewBag.terceroID + "'); }";
+            column.)
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_TERCERO_NATURAL";
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ field_tn = s; }";
+            column.Visible = false;
+        });*/
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "TERCERO.ID_TIPODOCUMENTO";
+            column.Caption = "Tipo Doc.";
+            column.Width = Unit.Percentage(5);
+
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListGeneral.GetTiposDocumento();
+            comboBoxProperties.TextField = "S_ABREVIATURA";
+            comboBoxProperties.ValueField = "ID_TIPODOCUMENTO";
+            comboBoxProperties.ValueType = typeof(int);
+            (column.PropertiesEdit as ComboBoxProperties).ClientSideEvents.Init = "function(s, e){ field_td = s; field_td.SetValue(1); }";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "TERCERO.N_DOCUMENTON";
+            column.Caption = "Identificación";
+            column.Width = Unit.Percentage(12);
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ field_i = s; cambioIdentificacion = false; }";
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.LostFocus = "function(s, e){ ObtenerDV(s, field_dv); if (cambioIdentificacion && !CargarDatosTercero()) ActivarCamposContacto(); else InactivarCamposContacto();}";
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.KeyDown = "function(s, e){ if (e.htmlEvent.keyCode == 13) { if (!CargarDatosTercero()) ActivarCamposContacto(); else InactivarCamposContacto(); } else cambioIdentificacion = true; }";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "TERCERO.N_DIGITOVER";
+            column.Caption = "DV";
+            column.Width = Unit.Percentage(5);
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ field_dv = s; s.SetEnabled(false); }";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.Caption = "Nombres";
+            column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            column.UnboundExpression = "Trim(TERCERO.NATURAL.S_NOMBRE1) + Iif(Trim(TERCERO.NATURAL.S_NOMBRE2) == '' , '' , ' ' + Trim(TERCERO.NATURAL.S_NOMBRE2))";
+            column.Width = Unit.Percentage(16);
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ field_n = s; s.SetEnabled(false); }";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_APELLIDO";
+            column.Caption = "Apellidos";
+            column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            column.UnboundExpression = "Trim(TERCERO.NATURAL.S_APELLIDO1) + Iif(Trim(TERCERO.NATURAL.S_APELLIDO2) == '' , '' , ' ' + Trim(TERCERO.NATURAL.S_APELLIDO2))";
+            column.Width = Unit.Percentage(18);
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ field_a = s; s.SetEnabled(false); }";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "TIPO";
+            column.Caption = "Tipo";
+            column.Width = Unit.Percentage(6);
+
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListGeneral.GetTiposContacto();
+            comboBoxProperties.TextField = "S_NOMBRE";
+            comboBoxProperties.ValueField = "S_CODIGO";
+            comboBoxProperties.ValueType = typeof(string);
+
+            comboBoxProperties.ClientSideEvents.Init = "function(s, e) { field_t = s; field_t.SetValue('R'); }";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "TERCERO.S_CORREO";
+            column.Caption = "e-mail";
+            column.Width = Unit.Percentage(16);
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ field_e = s; s.SetEnabled(false); }";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "TERCERO.S_WEB";
+            column.Caption = "Sitio Web";
+            column.Width = Unit.Percentage(16);
+            (column.PropertiesEdit as TextBoxProperties).ClientSideEvents.Init = "function(s, e){ field_w = s; s.SetEnabled(false); }";
+        });
+	});
+    
+	if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

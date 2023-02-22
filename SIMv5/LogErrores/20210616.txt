@@ -1,0 +1,52 @@
+11:42:04 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."S_DEFINEEXPEDIENTE": identificador no válido
+11:43:49 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."S_DEFINEEXPEDIENTE": identificador no válido
+11:46:22 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."S_DEFINEEXPEDIENTE": identificador no válido
+11:48:50 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."S_DEFINEEXPEDIENTE": identificador no válido
+11:53:27 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."S_DEFINEEXPEDIENTE": identificador no válido
+14:00:48 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-00001: restricción única (TRAMITES.AAAAATBTRAMITEDOCUMENTO_PK) violada
+ORA-06512: en línea 4
+14:16:56 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-00001: restricción única (TRAMITES.AAAAATBTRAMITEDOCUMENTO_PK) violada
+ORA-06512: en línea 4
+14:19:23 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : No se puede crear un archivo que ya existe.
+
+14:31:30 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-00001: restricción única (TRAMITES.AAAAATBTRAMITEDOCUMENTO_PK) violada
+ORA-06512: en línea 4
+14:52:25 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : A null store-generated value was returned for a non-nullable member 'ID_DOCUMENTO' of type 'SIM.Data.TBTRAMITEDOCUMENTO'.
+
+A null store-generated value was returned for a non-nullable member 'ID_DOCUMENTO' of type 'SIM.Data.TBTRAMITEDOCUMENTO'.
+15:18:01 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-00001: restricción única (TRAMITES.AAAAATBTRAMITEDOCUMENTO_PK) violada
+ORA-06512: en línea 4
+15:40:48 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-00001: restricción única (TRAMITES.AAAAATBTRAMITEDOCUMENTO_PK) violada
+ORA-06512: en línea 4
+23:05:17 - ProyeccionDocumento [PostAvanzarDocumento - 39570 ] : No se puede crear un archivo que ya existe.
+

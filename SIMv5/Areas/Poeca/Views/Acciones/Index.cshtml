@@ -1,0 +1,74 @@
+﻿@model IEnumerable<SIM.Data.Poeca.DPOEAIR_ACCION>
+
+@{
+    ViewBag.Title = "POECA | Lista de Acciones o Medios";
+}
+
+<div class="container-fluid">
+    <div class="col-xs-12">
+
+        <h2>Lista de Acciones o Medios</h2>
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="form-group pull-right">
+                    <input type="text" id="buscarTabla" name="buscar" placeholder="Buscar" class="form-control" />
+                </div>
+                <div class="actionButtons">
+                    @Html.ActionLink("Crear Nuevo", "Crear", null, new { @class = "btn btn-default" })
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.S_NOMBRE_ACCION)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.S_DESCRIPCION)
+                            </th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaDatos">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.S_NOMBRE_ACCION)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.S_DESCRIPCION)
+                                </td>
+                                @*<td>
+                                        @Html.DisplayFor(modelItem => item.ID_RESPONSABLE)
+                                    </td>*@
+                                <td>
+                                    <div class="btn-group btn-group-xs">
+                                        @Html.ActionLink("📄", "Detalles", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Detalles" })
+                                        @Html.ActionLink("✏️", "Editar", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Editar" })
+                                        @Html.ActionLink("🗑️", "Eliminar", new { id = item.ID }, new { @class = "btn btn-danger", @title = "Eliminar" })
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#buscarTabla").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#tablaDatos tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

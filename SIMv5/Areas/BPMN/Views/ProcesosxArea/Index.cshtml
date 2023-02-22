@@ -1,0 +1,125 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Procesos BPMN";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<script>
+    var CodigoFuncionario = 4005; //@(ViewBag.CodFuncionario);
+</script>
+<script type="text/javascript" src="@Url.Content("~/Areas/BPMN/Scripts/ModeladorBPMNProceso.js")"></script>
+
+
+<!-- required modeler styles -->
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@9.0.3/dist/assets/bpmn-js.css">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@9.0.3/dist/assets/diagram-js.css">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@9.0.3/dist/assets/bpmn-font/css/bpmn.css">
+
+<!-- modeler distro -->
+<script src="https://unpkg.com/bpmn-js@9.0.3/dist/bpmn-modeler.development.js"></script>
+<style>
+
+    .form-group {
+        margin-bottom: 0px;
+    }
+
+    #BotonNewProceso {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    #BotonDetProceso {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+
+     #canvas {
+        height: 500px;
+        padding: 0;
+        margin: 0;
+    }
+
+    #save-button {
+        position: fixed;
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM">
+    @*<div class="panelSIM panelSIM-default">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Procesos BPMN</label>
+                </h3>
+            </div>
+            <div id="GidListado"></div>
+            <br />
+            <div id="btnNuevo"></div>
+            <div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="control-label col-sm-3">Nombre  :</div>
+                        <div class="col-sm-4" id="txtNombre"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-md-3">Descripcion :</div>
+                        <div class="col-md-9" id="txtDescripcion"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-md-3">Version :</div>
+                        <div class="col-md-3" id="txtVersion"></div>
+                    </div>
+
+                    <br />
+
+                    <br />
+                    <div id="BotonNewProceso">
+                        <div id="btnGuarda"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="PopupDetalleProceso"></div>
+            <div id="LoadingPanel"></div>
+        </div>*@
+
+
+    <div id="canvas"></div>
+
+    <div class="text-center">
+        <div id="content"></div>
+        <div id="btnRegresarEstado"></div>
+        <div id="btnGuardar"></div>
+        <div id="btnCambiarEstado"></div>
+        @*<button id="save-button">print to console</button>*@
+    </div>
+    <!--
+      Thanks for trying out our BPMN toolkit!
+      This example uses the pre-built distribution of the bpmn-js modeler.
+      Consider rolling your own distribution to have more flexibility
+      regarding which features to include.
+      Checkout our advanced examples section to learn more:
+      * https://github.com/bpmn-io/bpmn-js-examples#advanced
+      To get a bit broader overview over how bpmn-js works,
+      follow our walkthrough:
+      * https://bpmn.io/toolkit/bpmn-js/walkthrough/
+      Related starters:
+      * https://raw.githubusercontent.com/bpmn-io/bpmn-js-examples/starter/viewer.html
+    -->
+
+</div>
+
+

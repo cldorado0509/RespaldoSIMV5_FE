@@ -1,0 +1,158 @@
+@using System.Web.UI.WebControls
+
+@{
+	var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "gvwUsuariosTercero";
+        settings.CallbackRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarUsuariosTercero" };
+        settings.Width = Unit.Pixel(690);
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarUsuariosTerceroAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarUsuariosTerceroUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarUsuariosTerceroDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.ButtonType = GridViewCommandButtonType.Image;
+		settings.CommandColumn.Visible = true;
+        settings.CommandColumn.NewButton.Visible = false;
+        settings.CommandColumn.DeleteButton.Visible = true;
+        settings.CommandColumn.EditButton.Visible = false;
+        settings.CommandColumn.Width = Unit.Pixel(30);
+
+        settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+        settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+
+        settings.CommandColumn.DeleteButton.Image.Url = "~/Content/Images/delete.png";
+
+        settings.CommandColumn.SetHeaderTemplateContent(c =>
+        {
+            @Html.DevExpress().Image(img =>
+            {
+                img.Name = "addNewRowUsuarios";
+                img.ImageUrl = "~/Content/Images/new.png";
+                img.Height = 20;
+                img.Width = 20;
+                img.Style.Add("float", "left");
+                img.Properties.ClientSideEvents.Click = "function(s, e){ gvwUsuariosTercero.AddNewRow(); }";
+            }).Render();
+        });
+
+		settings.KeyFieldName = "ID_PROPIETARIO";
+
+		settings.SettingsPager.Visible = true;
+		settings.Settings.ShowGroupPanel = false;
+		settings.Settings.ShowFilterRow = false;
+		settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.ClientSideEvents.BeginCallback = "function(s, e) { usuario = ASPxClientControl.GetControlCollection().GetByName('ID_USUARIO_SEL'); e.customArgs['terceroID'] = ID_TERCERO.GetValue(); if (usuario != null) e.customArgs['usuarioID'] = usuario.GetValue(); }";
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_TERCERO";
+            column.Visible = false;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_INSTALACION";
+            column.Visible = false;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_USUARIO";
+            column.Visible = false;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_LOGIN";
+            column.Caption = "Login";
+            column.Width = Unit.Pixel(150);
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRES";
+            column.Caption = "Nombres";
+            column.Width = Unit.Pixel(250);
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_APELLIDOS";
+            column.Caption = "Apellidos";
+            column.Width = Unit.Pixel(250);
+        });
+
+        settings.SetEditFormTemplateContent(c =>
+        {
+            var user = c.DataItem;
+
+            Html.DevExpress().TextBox(textBoxsettings =>
+            {
+                textBoxsettings.Name = "ID_USUARIO_SEL";
+                textBoxsettings.ClientVisible = false;
+            }).Render();
+            
+            ViewContext.Writer.Write("<div style=\"Padding: 10px\">");
+            Html.DevExpress().Label(settingsLBL =>
+            {
+                settingsLBL.Text = "Usuario:";
+                settingsLBL.Width = Unit.Percentage(20);
+                settingsLBL.Style.Add("float", "left");
+            }).GetHtml();
+            
+            Html.DevExpress().DropDownEdit(settingsDDE =>
+            {
+                settingsDDE.Name = "cboUsuario";
+                settingsDDE.Width = Unit.Percentage(80);
+                settingsDDE.ReadOnly = true;
+
+                settingsDDE.SetDropDownWindowTemplateContent(cu =>
+                {
+                    ViewContext.Writer.Write(Html.Action("gvwSeleccionarUsuario", "Usuario", new { area="Seguridad", idTercero = 10 }));
+                    ViewContext.Writer.Write("<table style=\"width:450px\"><tr><td align=\"right\">");
+                    ViewContext.Writer.Write("</td></tr></table>");
+                });
+            }).GetHtml();
+            ViewContext.Writer.Write(
+                    "</div>" +
+                    "<div class=\"line\">"
+                );
+            Html.DevExpress().Label(
+                edtSettings =>
+                {
+                    edtSettings.ControlStyle.CssClass = "label";
+                }
+            )
+            .GetHtml();
+            ViewContext.Writer.Write("<br />");
+            Html.DevExpress().Button(
+                btnSettings =>
+                {
+                    btnSettings.Name = "btnUpdate";
+                    btnSettings.ControlStyle.CssClass = "button";
+                    btnSettings.Text = "Almacenar";
+                    btnSettings.ClientSideEvents.Click = "function(s, e){ gvwUsuariosTercero.UpdateEdit(); }";
+                    //btnSettings.ClientSideEvents.Click = "function(s, e){ gvwUsuariosTercero.CancelEdit(); }";
+                }
+            )
+            .GetHtml();
+            Html.DevExpress().Button(
+                btnSettings =>
+                {
+                    btnSettings.Name = "btnCancel";
+                    btnSettings.ControlStyle.CssClass = "button";
+                    btnSettings.Text = "Cancelar";
+                    btnSettings.ClientSideEvents.Click = "function(s, e){ gvwUsuariosTercero.CancelEdit(); }";
+                }
+            )
+            .GetHtml();
+            ViewContext.Writer.Write(
+                "</div></div>"
+            );
+            ViewContext.Writer.Write("</div>");
+        });
+	});
+    
+	if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

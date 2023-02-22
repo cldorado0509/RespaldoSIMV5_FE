@@ -1,0 +1,171 @@
+﻿@using SIM.Areas.EnCicla.Models
+@model DATOSPRESTAMO
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="@Url.Content("~/Content/encicla.css")" rel="stylesheet" type="text/css" />
+    <!--script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")" type="text/javascript"></!--script>-->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <title>Al Trabajo En Cicla</title>
+    @Html.DevExpress().GetStyleSheets(
+        new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Editors },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.HtmlEditor },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.GridView },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.PivotGrid },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Chart },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Report },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Scheduler },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.TreeList }
+    )
+    @Html.DevExpress().GetScripts(
+        new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+        new Script { ExtensionSuite = ExtensionSuite.HtmlEditor },
+        new Script { ExtensionSuite = ExtensionSuite.GridView },
+        new Script { ExtensionSuite = ExtensionSuite.PivotGrid },
+        new Script { ExtensionSuite = ExtensionSuite.Editors },
+        new Script { ExtensionSuite = ExtensionSuite.Chart },
+        new Script { ExtensionSuite = ExtensionSuite.Report },
+        new Script { ExtensionSuite = ExtensionSuite.Scheduler },
+        new Script { ExtensionSuite = ExtensionSuite.TreeList }
+    )
+</head>
+<body>
+    @{
+        <script type="text/javascript">
+        function SalirOnClick() {
+            window.location.href = '@Url.Action("Index", "Prestamo")';
+        }
+
+        function ConfirmarDevolucionOnClick() {
+            lpnProcessPanel.Show();
+
+            var formData = new FormData(document.getElementById("frmDevolucion"))
+
+            $.ajax({
+                type: 'POST',
+                contentType: false,
+                url: '@Url.Action("DevolverBicicletaValidacion", "Prestamo")',
+                data: formData,
+                processData: false,
+                success: function (response) {
+                    lpnProcessPanel.Hide();
+                    popMensaje.SetContentHtml(response);
+                    popMensaje.Show();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    lpnProcessPanel.Hide();
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                }
+            });
+        }
+
+        function DevolucionOnClick() {
+            lpnProcessPanel.Show();
+
+            var formData = new FormData(document.getElementById("frmDevolucion"))
+
+            $.ajax({
+                type: 'POST',
+                contentType: false,
+                url: '@Url.Action("DevolverBicicleta", "Prestamo")',
+                data: formData,
+                processData: false,
+                success: function (response) {
+                    lpnProcessPanel.Hide();
+                    popMensaje.SetContentHtml(response);
+                    popMensaje.Show();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    lpnProcessPanel.Hide();
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                }
+            });
+        }
+
+        function LimpiarCampos()
+        {
+            /*$('#codigoBicicleta').value = '';
+            $('#reporteNovedad').value = '';
+            $('#observacionesNovedad').value = '';*/
+            window.location.href = '@Url.Action("Index", "Prestamo")';
+        }
+        </script>
+    }
+    <section class="encicla fondo gr-fondo">
+        <div class="logo">@ViewBag.TituloEstrategia</div>
+        @using (Html.BeginForm("DevolverBicicleta", "Prestamo", FormMethod.Post, new { area = "EnCicla", name = "frmDevolucion", id = "frmDevolucion", autocomplete = "off" }))
+        {
+            <input type="hidden" name="idEstacion" value="@{ViewContext.Writer.Write((Model == null ? "1" : Model.idEstacion.ToString()));}" />
+            
+            <h2>DEVOLUCIONES</h2>
+        <img src="@Url.Content("~/Content/Images/AlTrabajoEnCicla.png")" alt="Al Trabajo En Cicla" class="logoEstrategia" style="float: right; width: 20%; /* margin-top: 20px; */ margin-right: 15px;">
+            <ul class="inputs">
+                <li class="datos">
+                    <label>C&oacute;digo Bicicleta</label>
+                    <input type="text" name="codigoBicicleta" id="codigoBicicleta" value="@Model.codigoBicicleta" class="gr-input" />
+                </li>
+                <li class="novedad last">
+                    <label>Reporte Novedad</label>
+                    
+                    @{
+                        var estados = ModelsToListEnCicla.GetEstadosActivos();
+                        var items = estados.Select(i => new SelectListItem
+                        {
+                            Value = i.ID_ESTADO.ToString(),
+                            Text = i.S_DESCRIPCION,
+                            Selected = (Model.reporteNovedad == i.ID_ESTADO.ToString() ? true : false)
+                        });
+                    }
+                    @Html.DropDownList("reporteNovedad", items, "(Ninguna)", new { @class = "gr-input" })
+                </li>
+                <li class="observaciones last">
+                    <label>Observaciones</label>
+                    <textarea name="observacionesNovedad" id="observacionesNovedad" class="gr-input">@Model.observacionesNovedad</textarea>
+                </li>
+                <div class="clearfix"></div>
+            </ul>
+            <div class="button-wrapper">
+                <div class="a-btn-4" onclick="ConfirmarDevolucionOnClick();">
+                    <span class="a-btn-4-text">Devolver Bicicleta</span>
+                </div>
+            </div>
+            <div class="a-btn-4-back" onclick="SalirOnClick();">
+                <span class="a-btn-4-back-text">Men&uacute;</span>
+            </div>
+        }
+    </section>
+    @Html.DevExpress().LoadingPanel(settings =>
+    {
+        settings.Name = "lpnProcessPanel";
+        settings.Modal = true;
+        settings.Text = "Procesando...";
+    }).GetHtml()
+
+    @Html.DevExpress().PopupControl(
+    settings =>
+    {
+        settings.Name = "popMensaje";
+        settings.Width = 500;
+        settings.AllowDragging = true;
+        settings.CloseAction = CloseAction.CloseButton;
+        settings.PopupAnimationType = AnimationType.None;
+        settings.HeaderText = "Mensaje";
+        settings.Modal = true;
+        settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+        settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+        /*settings.SetContent(() =>
+        {
+
+        });*/
+
+        settings.ClientSideEvents.CloseUp = "function(s, e){ ASPxClientEdit.ClearEditorsInContainer(null, '', true); }";
+    }).GetHtml()
+</body>
+</html>

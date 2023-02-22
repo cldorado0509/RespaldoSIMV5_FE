@@ -1,0 +1,18 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<link href="@Url.Content("~/Areas/Poeca/Content/poeca.min.css")" rel="stylesheet" />
+
+<div class="row poeca">
+    <nav class="navbar">
+        @*<button class="btn">
+            Administración
+        </button>*@
+    </nav>
+    @RenderBody()
+</div>
+
+@section Scripts {
+    @RenderSection("scripts", required: false)
+} 

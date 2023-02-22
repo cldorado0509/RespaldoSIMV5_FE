@@ -1,0 +1,238 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+<script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1.js")"></script>
+<script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1-packed.js")"></script>
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/accordion.css")" />
+<style>
+    .actuacionCell {
+        vertical-align: middle !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ConsultarJson", "Acordeon", new { area = "General" })',
+            success: function (response) {
+                jsonDetalle = eval('(' + response + ')');
+                var html = consultarDetalle(jsonDetalle, 0, 0, "acordionDetallePrincipal");
+                $("#acordionDetallePrincipal").remove();
+                $("#acordionDetalleGeneral").append(html);
+            }
+        });
+    });
+
+    function GuardarAcordeon() {
+        var jsoE = guardarDetalle("acordionDetallePrincipal", 0);
+        var jsonOficial = JSON.stringify(jsoE)
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarAcordeon", "Acordeon", new { area = "General" })',
+            data: { jsonInfo: jsonOficial },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "OK") {
+                    alert("Almacenamiento Exitoso");
+                } else {
+                    alert("Error Almacenando el Acordeón");
+                }
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/actuacionjuridica.js?V=1.02")"></script>
+
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="ActuacionJuridicaController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Almacenando...', showIndicator: true, shading: true, bindingOptions: { visible: 'almacenandoVisible' } }"></div>
+            <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+            <div dx-popup="popInstalacionSettings" id="popInstalacion">
+                <div dx-data-grid="instalacionGridSettings" id="grdInstalacion"></div>
+            </div>
+            <div dx-popup="popDocumentoBusquedaSettings" id="popDocumentoBusqueda">
+                <div dx-data-grid="documentoBusquedaGridSettings" id="grdDocumentoBusqueda"></div>
+            </div>
+            <div dx-popup="popDocumentoSettings" id="popDocumento">
+                <div dx-data-grid="documentoGridSettings" id="grdDocumento"></div>
+            </div>
+            <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+            <div ng-show="isActive(0)" class="panelSIM-heading" style="min-height: 600px">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Documento</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="documentoBusquedaSelectBoxSettings" id="cboDocumentoBusqueda" style="float:left"></div>
+                                <div dx-button="verDocumentoBusquedaSettings" id="btnVerDocumentoBusqueda"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="background: lightgray; padding-top: 5px; padding-bottom: 3px;">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div class="dx-field" style="margin: 0px 0px 0px 0px">
+                                    <div class="dx-field-label labelfullrow"><label style="font-weight: normal">Tercero</label></div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div dx-text-box="terceroIndiceSettings"></div>
+                                    </div>
+                                </div>
+                                <div class="dx-field" style="margin: 0px 0px 0px 0px">
+                                    <div class="dx-field-label labelfullrow"><label style="font-weight: normal">CM</label></div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div dx-text-box="cmIndiceSettings"></div>
+                                    </div>
+                                </div>
+                                <div class="dx-field" style="margin: 0px 0px 0px 0px">
+                                    <div class="dx-field-label labelfullrow"><label style="font-weight: normal">Tipo</label></div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div dx-text-box="tipoIndiceSettings"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Instalaci&oacute;n</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="instalacionSelectBoxSettings" id="cboInstalacion"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row" ng-show="tipoSeleccionActiva(1)">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Tipo Aprovechamiento</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="formularioSelectBoxSettings" id="cboFormulario"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="tipoSeleccionActiva(2)">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Item</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="itemSelectBoxSettings" id="cboItemSelectBox" style="float:left"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="tipoSeleccionActiva(2)">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-text-box="nuevoItemSettings" style="float:left"></div>
+                                <div dx-button="crearItemSettings" id="btnCrearItem"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--br />
+                <div dx-radio-group="{displayExpr: 'text', valueExpr: 'value', dataSource: [{ text: 'Código', value: 1 }, { text: 'SP', value: 2 }], layout: 'horizontal', bindingOptions: { value: 'tipoConsulta' }}" id="tipoConsulta"></div-->
+                <br />
+                <div ng-show="tipoSeleccionActiva(3)">
+                    <h3 class="panelSIM-titleSub">
+                        <label class="header">Actuaciones Asociadas al Item</label>
+                    </h3>
+                    <div class="col-md-12">
+                        <div style="padding: 8px 15px 0 0; width: 7%; float: left; "><label style="font-weight: normal;">Asunto</label></div>
+                        <div dx-text-box="asuntoActuacionSettings" style="float:left"></div>
+                        <div dx-button="nuevaActuacionSettings" id="btnNuevaActuacion"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div dx-data-grid="actuacionesItemGridSettings" id="grdActuacionesItem"></div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="isActive(1)" class="panelSIM-heading" style="min-height: 400px">
+                <div ng-show="actuacion.actuacionSeleccionada">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Documento</label></div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="documentoSelectBoxSettings" id="cboDocumento" style="float:left"></div>
+                                    <div dx-button="cargarDocumentoSettings" id="btnCargarDocumento"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Tipo Acto</label></div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="tipoActoSelectBoxSettings" id="cboTipoActo" style="float:left"></div>
+                                    <div dx-button="verDocumentoSettings" id="btnVerDocumento"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" ng-show="false">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="dx-field">
+                                    <div class="dx-field-label"><label style="font-weight:bold">Item</label></div>
+                                    <div class="dx-field-value">
+                                        <label>{{actuacion.itemNombre}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="dx-field">
+                                    <div class="dx-field-label"><label style="font-weight:bold">Tipo Actuaci&oacute;n</label></div>
+                                    <div class="dx-field-value">
+                                        <label>{{actuacion.tipoActuacion}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="dx-field">
+                                    <div class="dx-field-label"><label style="font-weight:bold">Asunto</label></div>
+                                    <div class="dx-field-value">
+                                        <label>{{actuacion.asunto}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12" id="acordionDetalleGeneral">
+                            <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row" ng-show="almacenar">
+                        <div class="col-md-6" style="text-align:center">
+                            <div dx-button="almacenarCaracteristicasSettings" id="btnAlmacenarCaracteristicas"></div>
+                        </div>
+                        <div class="col-md-6" style="text-align:center">
+                            <div dx-button="finalizarCaracteristicasSettings" id="btnFinalizarCaracteristicas"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

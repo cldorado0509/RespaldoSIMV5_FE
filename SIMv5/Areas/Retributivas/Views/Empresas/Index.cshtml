@@ -1,0 +1,366 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+
+
+<h2>CARACTERISTICAS EMPRESA</h2>
+
+<script src="~/Areas/Retributivas/Scripts/Empresas.js?v=1.1"></script>
+
+<script>
+    $(function () {
+        $("#tabs").tabs();
+    });
+</script>
+
++<div data-url="@Url.Content("~")" ID="SIM" resizable>
+     <div class="panelSIM panelSIM-default">
+         <div class="panelSIM-heading">
+             <h3 class="panelSIM-title">
+                 <label class="header">Información de la Empresa</label>
+             </h3>
+
+         </div>
+
+         <div id=" descripcionGeneralidades">
+             <p>Registre la información solicitada en cada una las pestañas a continuación para completar el registro de su empresa en el Area Metropolitana del Valle de Aburra, este sistema le permitirá realizar el reporte mensual de vertimientos de DBO y SST en los afluentes de agua.</p>
+         </div>
+         <br />
+
+         @using System.Security.Claims
+
+         @{
+
+             ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+
+             if (claimppal.IsInRole("VADMINISTRADOR"))
+             {
+
+                 <div id="tabs">
+                 <ul>
+                     <li><a href="#tabs-1">Generalidades</a></li>
+                     <li><a href="#tabs-2">Productos</a></li>
+                     <li><a href="#tabs-3">Consumo</a></li>
+                     <li><a href="#tabs-4">Produccion</a></li>
+                     <li><a href="#tabs-5">Materias Primas</a></li>
+                     <li><a href="#tabs-6">Turnos</a></li>
+                 </ul>
+
+                 <div id="tabs-1">
+                     <p>Por favor registre la siguiente información de su empresa.</p>
+
+                     <div class="long-title"><h3>Personal details</h3></div>
+                     <div id="form-container">
+                         <div id="formGeneralidades"></div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">Nombre Empresa</div>
+                         <div class="dx-field-value">
+                             <div id="txtNameEmpresa"></div>
+                         </div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">NIT</div>
+                         <div class="dx-field-value">
+                             <div id="numberNit"></div>
+                         </div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">Tipo de Empresa</div>
+                         <div class="dx-field-value">
+                             <div id="txtTipoEmpresa"></div>
+                         </div>
+                     </div>
+                     <div class="dx-field">
+                         <div class="dx-field-label">Clasificación Internacional Industrial Uniforme- CIIU</div>
+                         <div class="dx-field-value">
+                             <div id="ciiu"></div>
+                         </div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">Empresa de Servicios Públicos - ESP</div>
+                         <div class="dx-field-value">
+                             <div id="booleanESP"></div>
+                         </div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">Representante Legal</div>
+                         <div class="dx-field-value">
+                             <div id="txtRL"></div>
+                         </div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">Correo Electrónico</div>
+                         <div class="dx-field-value">
+                             <div id="txtCorreo"></div>
+                         </div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">Dirección</div>
+                         <div class="dx-field-value">
+                             <div id="txtDireccion"></div>
+                         </div>
+                     </div>
+
+                     <div class="dx-field">
+                         <div class="dx-field-label">Telefono</div>
+                         <div class="dx-field-value">
+                             <div id="txtTelefóno"></div>
+                         </div>
+                     </div>
+
+
+                     <br />
+
+
+
+                     <div id="btnGeneralidades"></div>
+
+                     <br /><br /><br />
+
+                 </div>
+
+                 <div id="tabs-2">
+                     <div class="dx-fieldset-header">Productos</div>
+                     <p> En los siguientes campos adicione los productos generados por su empresa.</p> <br />
+
+                     <br />
+                     <div id="btnAddProducts"></div>
+                     <div id="grdProducts"></div>
+
+                     <div id="popupProducts">
+
+                         @*<div class="dx-field">
+                            <div class="dx-field-label">ID</div>
+                            <div class="dx-field-value">
+                                <div id="txtProductId"></div>
+                            </div>
+                        </div>*@
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Nombre del Producto</div>
+                             <div class="dx-field-value">
+                                 <div id="txtProductName"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Descripción del Producto</div>
+                             <div class="dx-field-value">
+                                 <div id="txtProductDescribe"></div>
+                             </div>
+                         </div>
+
+                         <div id="btnProducts"></div>
+
+                     </div>
+
+                 </div>
+
+                 <div id="tabs-3">
+                     <div class="dx-fieldset-header">Materiales e insumos</div>
+                     <p> En los siguientes campos relacione y describa las materias primas (materilaes e insumos) y las cantidades que consume en el proceso de produccion.</p> <br />
+
+                     <br />
+                     <div id="btnAddMaterials"></div>
+                     <div id="grdMaterials"></div>
+
+                     <div id="popupMaterials">
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">ID</div>
+                             <div class="dx-field-value">
+                                 <div id="IdRegistroMaterials"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Nombre de los Materiales</div>
+                             <div class="dx-field-value">
+                                 <div id="cmbRawMaterials"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Unidades</div>
+                             <div class="dx-field-value">
+                                 <div id="cmbUnitsMaterial"></div>
+                             </div>
+                         </div>
+                         <div class="dx-field">
+                             <div class="dx-field-label">Producción Mensual</div>
+                             <div class="dx-field-value">
+                                 <div id="txtMountMaterials"></div>
+                             </div>
+                         </div>
+                         <div class="dx-field">
+                             <div class="dx-field-label">produccion Diaria</div>
+                             <div class="dx-field-value">
+                                 <div id="txtDailyMaterials"></div>
+                             </div>
+                         </div>
+                         <div id="btnMaterials"></div>
+
+                     </div>
+
+                 </div>
+
+                 <div id="tabs-4">
+
+                     <div class="dx-fieldset-header">Produccción de la Empresa</div>
+                     <p> En los siguientes campos relacione los turnos u horarios presente en su organizacion para el proceso de produccion.</p> <br />
+
+                     <br />
+
+                     <div id="btnAddProduction"></div>
+                     <div id="grdProduction"></div>
+                     <div id="popupProduccion">
+                         <div class="dx-field">
+                             <div class="dx-field-label">ID</div>
+                             <div class="dx-field-value">
+                                 <div id="IdRegistro"></div>
+                             </div>
+                         </div>
+                         <div class="dx-field">
+                             <div class="dx-field-label">Nombre del Producto</div>
+                             <div class="dx-field-value">
+                                 <div id="cmbProducts"></div>
+                             </div>
+                         </div>
+                         <div class="dx-field">
+                             <div class="dx-field-label">Unidades</div>
+                             <div class="dx-field-value">
+                                 <div id="cmbUnits"></div>
+                             </div>
+                         </div>
+                         <div class="dx-field">
+                             <div class="dx-field-label">Producción Mensual</div>
+                             <div class="dx-field-value">
+                                 <div id="txtMount"></div>
+                             </div>
+                         </div>
+                         <div class="dx-field">
+                             <div class="dx-field-label">produccion Diaria</div>
+                             <div class="dx-field-value">
+                                 <div id="txtDaily"></div>
+                             </div>
+                         </div>
+                         <div id="btnProduction"></div>
+                     </div>
+                 </div>
+
+                 <div id="tabs-5">
+
+                     <div class="dx-fieldset-header">materialies e insumos</div>
+                     <p> En los siguientes campos relacione los materiales e insumos utilizados para la produccion de su empresa.</p> <br />
+
+                     <br />
+                     <div id="btnAddRawMaterial"></div>
+                     <div id="grdRawMaterials"></div>
+                     <div id="popupRawMaterial">
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">ID</div>
+                             <div class="dx-field-value">
+                                 <div id="txtMaterialId"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Nombre del Material o insumo</div>
+                             <div class="dx-field-value">
+                                 <div id="txtMaterialName"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Descripción del Material o Insumo</div>
+                             <div class="dx-field-value">
+                                 <div id="txtMaterialDescribe"></div>
+                             </div>
+                         </div>
+
+                         <div id="btnRawMaterial"></div>
+
+                     </div>
+
+
+
+
+                 </div>
+
+                 <div id="tabs-6">
+
+                     <div class="dx-fieldset-header">Turnos y Horarios</div>
+                     <p> En los siguientes campos relacione los turnos u horarios presente en su organizacion para el proceso de produccion.</p> <br />
+
+                     <br />
+
+                     <div id="btnAddTurn"></div>
+
+                     <div id="grdTurns"></div>
+
+                     <div id="popupTurns">
+
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Nombre del Turno</div>
+                             <div class="dx-field-value">
+                                 <div id="txtTurnName"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Descripción del turno </div>
+                             <div class="dx-field-value">
+                                 <div id="txtTurnDescription"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Cantidad de Colaboradores</div>
+                             <div class="dx-field-value">
+                                 <div id="intAmountWorker"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Hora Inicio</div>
+                             <div class="dx-field-value">
+                                 <div id="DateStartTurn"></div>
+                             </div>
+                         </div>
+
+                         <div class="dx-field">
+                             <div class="dx-field-label">Hora Fin</div>
+                             <div class="dx-field-value">
+                                 <div id="dateEndTurn"></div>
+                             </div>
+                         </div>
+
+                         <div id="btnTurn"></div>
+
+                     </div>
+
+
+                 </div>
+
+
+             </div>
+
+               }
+             }
+
+         </div>
+</div>
+

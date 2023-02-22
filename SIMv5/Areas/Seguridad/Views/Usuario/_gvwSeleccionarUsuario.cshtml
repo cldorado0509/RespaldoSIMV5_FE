@@ -1,0 +1,36 @@
+@using System.Web.UI.WebControls
+
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvwSelectUsuarios";
+        settings.CallbackRouteValues = new { Controller = "Usuario", Action = "gvwSeleccionarUsuario" };
+
+        settings.CommandColumn.Visible = false;
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = false;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+
+        settings.KeyFieldName = "ID_USUARIO";
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_LOGIN";
+            column.Caption = "Usuario";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+
+        settings.ClientSideEvents.SelectionChanged = "SeleccionarRegistroUsuario";
+    });
+}
+@grid.Bind(Model).GetHtml()

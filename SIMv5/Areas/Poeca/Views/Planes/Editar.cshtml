@@ -1,0 +1,95 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_PLAN
+
+@{
+    ViewBag.Title = "POECA | Editar Plan de Acción";
+}
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+        <h2>Editar Plan de Acción</h2>
+        @{
+            if (!String.IsNullOrEmpty((string)ViewBag.MensajeError))
+            {
+                <div class="alert alert-danger" style="white-space: pre-line">@ViewBag.MensajeError</div>
+            }
+        }
+
+        @using (Html.BeginForm("Editar", "Planes", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formularioEditar" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ID)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.N_ANIO, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownList("N_ANIO", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.N_ANIO, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_REMITENTE, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_REMITENTE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_REMITENTE, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_CARGO_REMITENTE, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_CARGO_REMITENTE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_CARGO_REMITENTE, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_OBSERVACIONES, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_OBSERVACIONES, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_OBSERVACIONES, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_URL_ANEXO, htmlAttributes: new { @class = "control-label" })
+                    <div class="pull-right">
+                        <i>Archivos de 50MB como máximo</i>
+                    </div>
+                    @Html.EditorFor(model => model.S_URL_ANEXO, new { htmlAttributes = new { @class = "form-control", @type = "file", @accept = "application/pdf", data_max_size = "55000000" } })
+                    @Html.ValidationMessageFor(model => model.S_URL_ANEXO, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-danger" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Guardar" class="btn btn-block btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundlesv5/jqueryval")
+
+    <script>
+        $(function () {
+            $('#formularioEditar').submit(function () {
+                var isOk = true;
+                $('input[type=file][data-max-size]').each(function () {
+                    if (typeof this.files[0] !== 'undefined') {
+                        var maxSize = parseInt(this.dataset.maxSize, 10),
+                            size = this.files[0].size;
+                        isOk = maxSize > size;
+                        return isOk;
+                    }
+                });
+                if (!isOk) {
+                    $("[data-valmsg-for=S_URL_ANEXO]").text("El archivo es demasiado grande");
+                }
+                return isOk;
+            });
+        });
+    </script>
+}

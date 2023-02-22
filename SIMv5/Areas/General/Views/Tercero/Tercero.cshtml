@@ -1,0 +1,71 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+
+<style>
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+    }
+</style>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/General/Scripts/tercero.js?v=04")"></script>
+<div ng-app="SIM" data-url="@Url.Content("~")" data-idtercero="@ViewBag.idTercero" data-tipo="@ViewBag.tipoTercero" data-retorno="@ViewBag.vistaRetorno" data-n="@ViewBag.nombres" data-a="@ViewBag.apellidos" data-e="@ViewBag.email" id="app" class="my-cloak">
+    <div ng-controller="TerceroController" class="panelSIM panelSIM-default">
+        <div dx-load-panel="{message: 'Almacenando...', showIndicator: true, shading: true, bindingOptions: { visible: 'almacenandoVisible' } }"></div>
+        <div dx-popup="popTipoTramiteSettings" id="popTipoTramite">
+            <div class="col-md-12">
+                <div class="dx-field">
+                    <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Tipo Tr&aacute;mite</label></div>
+                    <div class="dx-field-value valuefullrow">
+                        <div dx-select-box="tipoTramiteSelectBoxSettings" id="cboTipoTramite"></div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="col-lg-8 col-md-6 col-sm-4 col-xs-2">
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
+                <div dx-button="aceptarTTSettings" id="btnTTAceptar"></div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
+                <div dx-button="cancelarTTSettings" id="btnTTCancelar"></div>
+            </div>
+        </div>
+        @if (ViewBag.vistaRetorno == "S")
+        {
+            <div class="panelSIM-body clearfix">
+                <div dx-button="btnRegresarSettings" id="btnRegresar" class="btn-lg pull-right"></div>
+            </div>
+        }
+        <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div id="Tercero0" ng-show="isActive(0)" class="panelSIM-heading">
+            @Html.Partial("_TerceroInformacionGeneral")
+        </div>
+        @if (ViewBag.tipoTercero == "J")
+        {
+            <div id="Tercero1" ng-show="isActive(1)">
+                @Html.Partial("_TerceroContactos")
+            </div>
+        }
+        <div id="Tercero2" ng-show="isActive(2)">
+            @Html.Partial("_TerceroInstalaciones")
+        </div>
+        <div id="Tercero3" ng-show="isActive(3)">
+            @Html.Partial("_TerceroUsuarios")
+        </div>
+        <div class="panelSIM-body clearfix">
+            <div dx-validation-summary="{  }"></div>
+            <div class="col-lg-7 col-md-5 col-sm-3 col-xs-3 error-validacion">
+                {{mensajeValidacion}}
+            </div>
+            <div class="col-lg-5 col-md-7 col-sm-9 col-xs-9">
+                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                <div dx-button="btnAlmacenarSettings" id="btnAlmacenar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5"></div>
+                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                <div dx-button="btnCancelarSettings" id="btnCancelar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+﻿@using SIM.Properties
+@using SIM.Areas.Seguridad.Models
+@model IEnumerable<ROLESUSUARIO>
+
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        AjustarTamano();
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano() {
+        $("#pnlContenedor").height((window.innerHeight || document.body.clientHeight) - 150);
+        $("#pnlGridUsuarios").height($("#pnlContenedor").outerHeight() - $("#pnlContenedorTitulo").outerHeight() - 4);
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Seguridad/Scripts/activarUsuarios.js")"></script>
+
+<div class="panelSIM-heading" style="padding: 0px;">
+    <div ng-app="SIM" data-url="@Url.Content("~")" id="app" resizable>
+        <div ng-controller="ActivarUsuariosController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Procesando...', showIndicator: true, shading: true, bindingOptions: { visible: 'procesandoVisible' } }"></div>
+            <div dx-popup="popComentarios" id="popComentarios">
+                <div dx-text-area="txtComentarios" id="txtComentarios"></div>
+                <div style="width: 100%; height: 10%; text-align: center; margin-top: 1%">
+                    <div dx-button="btnAceptarRechazo"></div>
+                    <div dx-button="btnCancelarRechazo"></div>
+                </div>
+            </div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div class="panelSIM-heading" id="pnlContenedorTitulo">
+                    <h3 class="panelSIM-title">
+                        <label class="header">Usuarios Pendientes de Activaci&oacute;n</label>
+                    </h3>
+                </div>
+                <div id="pnlGridUsuarios">
+                    <div style="height: 70%">
+                        <div dx-data-grid="grdUsuariosActivacionSettings" id="grdUsuariosActivacion"></div>
+                    </div>
+                    <div style="height: 30%">
+                        <div class="col-md-6" style="padding: 0px; height: 100%">
+                            <div dx-data-grid="grdDocumentosTemporalesSettings" id="grdDocumentosTemporales"></div>
+                        </div>
+                        <div class="col-md-6" style="padding: 5px; height: 100%; overflow: auto">
+                            @{
+                                foreach (ROLESUSUARIO rolUsuario in Model)
+                                {
+                                    <div id="divRol_@rolUsuario.ID_ROL.ToString()" style="padding: 5px;">
+                                        <span style="display:none" id="ruId_@rolUsuario.ID_ROL.ToString()">chkru_@rolUsuario.ID_ROL.ToString()</span>
+                                        <div dx-check-box="{ value: @(rolUsuario.SEL ? "true" : "false"), text: '@rolUsuario.S_NOMBRE', disabled: true }" id="chkru_@rolUsuario.ID_ROL.ToString()"></div><br />
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

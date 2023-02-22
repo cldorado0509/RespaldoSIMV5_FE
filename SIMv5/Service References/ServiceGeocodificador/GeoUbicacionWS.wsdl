@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://util.geo.municipio.com.co/" name="GeoUbicacionWS" targetNamespace="http://util.geo.municipio.com.co/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="http://www.medellin.gov.co:80/UbicaDireccionWS/GeoUbicacionWS?xsd=1" namespace="http://util.geo.municipio.com.co/" />
+    </xsd:schema>
+  </types>
+  <message name="getUbicaDirUrbana">
+    <part name="parameters" element="tns:getUbicaDirUrbana" />
+  </message>
+  <message name="getUbicaDirUrbanaResponse">
+    <part name="parameters" element="tns:getUbicaDirUrbanaResponse" />
+  </message>
+  <message name="getComunaCorregimiento">
+    <part name="parameters" element="tns:getComunaCorregimiento" />
+  </message>
+  <message name="getComunaCorregimientoResponse">
+    <part name="parameters" element="tns:getComunaCorregimientoResponse" />
+  </message>
+  <message name="getBarrioVereda">
+    <part name="parameters" element="tns:getBarrioVereda" />
+  </message>
+  <message name="getBarrioVeredaResponse">
+    <part name="parameters" element="tns:getBarrioVeredaResponse" />
+  </message>
+  <message name="getUbicaDirUrbanaImagen">
+    <part name="parameters" element="tns:getUbicaDirUrbanaImagen" />
+  </message>
+  <message name="getUbicaDirUrbanaImagenResponse">
+    <part name="parameters" element="tns:getUbicaDirUrbanaImagenResponse" />
+  </message>
+  <portType name="GeoUbicacionWS">
+    <operation name="getUbicaDirUrbana">
+      <input message="tns:getUbicaDirUrbana" />
+      <output message="tns:getUbicaDirUrbanaResponse" />
+    </operation>
+    <operation name="getComunaCorregimiento">
+      <input message="tns:getComunaCorregimiento" />
+      <output message="tns:getComunaCorregimientoResponse" />
+    </operation>
+    <operation name="getBarrioVereda">
+      <input message="tns:getBarrioVereda" />
+      <output message="tns:getBarrioVeredaResponse" />
+    </operation>
+    <operation name="getUbicaDirUrbanaImagen">
+      <input message="tns:getUbicaDirUrbanaImagen" />
+      <output message="tns:getUbicaDirUrbanaImagenResponse" />
+    </operation>
+  </portType>
+  <binding name="GeoUbicacionWSPortBinding" type="tns:GeoUbicacionWS">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="getUbicaDirUrbana">
+      <soap:operation soapAction="urn:getUbicaDirUrbana" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getComunaCorregimiento">
+      <soap:operation soapAction="urn:getComunaCorregimiento" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getBarrioVereda">
+      <soap:operation soapAction="urn:getBarrioVereda" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getUbicaDirUrbanaImagen">
+      <soap:operation soapAction="urn:getUbicaDirUrbanaImagen" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="GeoUbicacionWS">
+    <port name="GeoUbicacionWSPort" binding="tns:GeoUbicacionWSPortBinding">
+      <soap:address location="http://www.medellin.gov.co:80/UbicaDireccionWS/GeoUbicacionWS" />
+    </port>
+  </service>
+</definitions>

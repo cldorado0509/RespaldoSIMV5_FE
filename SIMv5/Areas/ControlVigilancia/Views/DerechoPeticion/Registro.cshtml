@@ -1,0 +1,127 @@
+﻿@using SIM.Properties
+@{
+    ViewBag.Title = "Seguimiento y Control Derechos de Petición";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var canRead = false;
+    var canInsert = false
+    var canEdit = false;
+    var canDelete = false;
+     @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/derechospeticion.js?v=1.00")"></script>
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h2 class="panelSIM-title">
+                <label class="header">Listado Derechos de Petición</label>
+            </h2>
+        </div>
+        <div>
+            <div id="GidListado"></div>
+            <br />
+
+            @{
+                if (Model.CanInsert)
+                {
+                    <div id="btnNuevo"></div>
+                }
+            }
+
+            <div id="PopupNuevoDP">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Radicado COR:</div>
+                        <div class="col-sm-2" id="txtRadicado"></div>
+                        <div class="control-label col-sm-3" style="align-content:end">Año COR:</div>
+                        <div class="col-sm-2" id="txtAnio"></div>
+                        <div class="col-sm-2" id="cmdCM"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Proyecto :</div>
+                        <div class="col-sm-9" id="txtProyecto"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">CM :</div>
+                        <div class="col-sm-9" id="txtCM"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Asunto :</div>
+                        <div class="col-sm-9" id="txtAsunto"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nombre del Proyecto :</div>
+                        <div class="col-sm-9" id="txtNombreProyectoA"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Técnico :</div>
+                        <div class="col-sm-9" id="txtTecnico"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Solicitante :</div>
+                        <div class="col-sm-9" id="txtSolicitante"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Radicado Salida :</div>
+                        <div class="col-sm-9" id="txtRadicadoSalida"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Apoyo :</div>
+                        <div class="col-sm-9" id="txtApoyo"></div>
+                    </div>
+                    <br />
+                    <div id="BotonNewDP">
+                        <div id="btnGuarda"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="PupupCM">
+                <div class="form-horizontal">
+                    <div class="row">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">Proyecto :</div>
+                        <div class="col-sm-10" id="txtNombreProyecto"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">Dirección :</div>
+                        <div class="col-sm-10" id="txtDireccionProyecto"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2" style="align-content:end">Asunto :</div>
+                        <div class="col-sm-10" id="cboAsuntos"></div>
+                    </div>
+                    <hr />
+                    <div id="BotonAsignar">
+                        <div id="btnAsignar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

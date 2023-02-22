@@ -1,0 +1,62 @@
+﻿@using SIM.Properties
+@{
+    if (ViewBag.Popup ?? false)
+    {
+        Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutV5.cshtml";
+    }
+}
+
+<script type="text/javascript" src="~/Scripts/Utilidades/BuscarTramite.js?V=0.2"></script>
+<style>
+    #BotonCentro {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+</style>
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+        <div class="panelSIM panelSIM-default">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Buscar Trámites</label>
+                </h3>
+            </div>
+            <div id="rdbTipoBusca"></div>
+            <br />
+            <div id="PanelTramite">
+                <div class="row">
+                    <div class="control-label col-sm-3">Código de Trámite :</div>
+                    <div class="col-sm-7" id="txtTramite"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3">Número VITAL :</div>
+                    <div class="col-sm-7" id="txtVital"></div>
+                </div>
+            </div>
+            <div id="PanelFuncionario">
+                <div class="row">
+                    <div class="control-label col-sm-3">Funcionario :</div>
+                    <div class="col-sm-7" id="cmbFuncionario"></div>
+                </div>
+            </div>
+            <div id="PanelIndices">
+                <div class="row">
+                    <div class="control-label col-sm-3">Tipo Proceso :</div>
+                    <div class="col-sm-9" id="cmbTipoProceso"></div>
+                </div>
+                <div id="FilterBuscar"></div>
+            </div>
+            <br />
+            <div id="BotonCentro">
+                <div id="btnBuscar"></div>
+            </div>
+            <br />
+            <div id="gridTramitesEnc"></div>
+        </div>
+    </div>
+</div>

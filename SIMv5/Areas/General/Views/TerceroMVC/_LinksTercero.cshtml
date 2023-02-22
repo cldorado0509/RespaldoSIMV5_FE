@@ -1,0 +1,11 @@
+﻿@using SIM.Data.General
+@model TERCERO
+
+@if (Model == null)
+{
+    @Html.ActionLink("Crear Tercero", "LoadTercero", "Tercero", new { Area = "General" }, "")
+}
+else
+{
+    @Html.ActionLink("Actualizar Actividad Económica (Actualmente se encuentra en una versión obsoleta)", "LoadTercero", "Tercero", new { id = Model.ID_TERCERO, Area = "General" }, "")
+}

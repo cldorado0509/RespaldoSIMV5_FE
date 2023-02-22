@@ -1,0 +1,172 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    var IdCod;
+    var myApp = angular.module('SIM', ['dx']);
+    myApp.controller("ConsultaOrdenController", function ($scope, $location, $http) {
+        $scope.consultandoVisible = false; 
+
+        $scope.MostrarDocumento = function (CodTramite, CodDocumento) {
+            var _popup = $("#popDocumento").dxPopup("instance");
+            _popup.show();
+            $("#DocumentoAdjunto").attr("src", '@Url.Content("~")Correspondencia/Correspondencia/LeeDoc?CodTramite=' + CodTramite + '&CodDocumento=' + CodDocumento);          
+        };
+
+        $scope.MostrarDocSoporte = function (IdCod) {
+            var _popup = $("#popDocumento").dxPopup("instance");
+            _popup.show();
+            $("#DocumentoAdjunto").attr("src", '@Url.Content("~")Correspondencia/Correspondencia/LeeSoporte?IdCodOrden=' + IdCod);          
+        };
+
+        MostrarDetalleTra = function (CodTramite) {
+            var _popup = $("#popDetalle").dxPopup("instance");
+            _popup.option('title', 'Detalle Trámite - ' + CodTramite);
+            _popup.show();
+            $('#frmDetalleTramite').attr('src', null);
+            $("#frmDetalleTramite").attr("src", 'https://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=' + CodTramite);
+        };
+
+        $scope.grdConsultaOrdenesSettings = {
+            dataSource: grdCosultaOrdenesSource,
+            allowColumnResizing: true,
+            loadPanel: { text: 'Cargando Datos...' },
+            noDataText: "Sin datos para mostrar",
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true
+            },
+            groupPanel: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            editing: { useIcons: true },
+            onEditorPreparing: true,
+            columns: [
+                {
+                    dataField: "ID_COD",
+                    width: '15%',
+                    caption: 'Codigo de la Orden',
+                    dataType: 'string',
+                    visible: false
+                },{
+                    dataField: "CODTRAMITE",
+                    width: '15%',
+                    caption: 'Codigo del Trámite',
+                    dataType: 'number',
+                    cellTemplate: function (cellElement, cellInfo) {
+                        if (cellInfo.data.CODTRAMITE != null && cellInfo.data.CODTRAMITE != '') {
+                            var enlaces = '<a href="#" onclick="MostrarDetalleTra(' + cellInfo.data.CODTRAMITE + ');">' + cellInfo.data.CODTRAMITE + '</a>'
+                        }
+                        cellElement.html(enlaces);
+                    }
+                }, {
+                    dataField: 'CODDOCUMENTO',
+                    width: '5%',
+                    caption: 'Documento',
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: 'S_REFERENCIA',
+                    width: '15%',
+                    caption: 'Radicado - Año',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_DESTINATARIO',
+                    width: '40%',
+                    caption: 'Destinatario',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_ORDEN',
+                    width: '15%',
+                    caption: 'Orden de Servicio',
+                    alignment: 'right',
+                    dataType: 'string',
+                }, {
+                    dataField: 'D_FECHA',
+                    width: '15%',
+                    caption: 'Fecha Orden',
+                    dataType: 'date',
+                }, {
+                    width: 100,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/Ver_Doc.png',
+                            onClick: function (e) {
+                                $scope.MostrarDocumento(options.row.data.CODTRAMITE, options.row.data.CODDOCUMENTO);
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    width: 100,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/VerDetalle.png',
+                            onClick: function (e) {
+                                $scope.MostrarDocSoporte(options.row.data.ID_COD);
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            ]
+        }
+
+    });
+
+    var grdCosultaOrdenesSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"S_ORDEN","desc":true}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Correspondencia/api/CodApi/ConsultaOrden', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: true
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+</script>
+<div ng-app="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="ConsultaOrdenController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Consultando...', showIndicator: true, shadingColor: 'transparent gray', shading: true, bindingOptions: { visible: 'consultandoVisible' } }"></div>
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Consulta Ordenes de Servicio Correspondencia</label>
+                </h3>
+            </div>
+            <div dx-data-grid="grdConsultaOrdenesSettings" id="grid"></div>
+            <div class="popup" dx-popup="popupCargaDocumento" id="popDocumento">
+                <iframe src="" id="DocumentoAdjunto" width="100%" height="100%"></iframe>
+            </div>
+            <div class="popup" dx-popup="popDetalleTramite" id="popDetalle">
+                <iframe src="" id="frmDetalleTramite" width="100%" height="100%" frameborder="0" scrolling="yes"></iframe>
+            </div>
+        </div>
+    </div>
+</div>

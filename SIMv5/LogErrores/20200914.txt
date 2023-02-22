@@ -1,0 +1,2 @@
+09:54:07 - Error (PagosEnLineaApiController -> GetPagarReferencia(1, 2015)
+ORA-00942: la tabla o vista no existe

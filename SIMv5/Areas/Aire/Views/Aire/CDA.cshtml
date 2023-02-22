@@ -1,0 +1,418 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Mvc
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@{
+    ViewBag.Title = "CDA";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+ }
+
+ 
+        <script type="text/javascript" language="javascript" src="//www.esa-sc.org.br/js/carouFredSel-6.2.1/jquery.carouFredSel-6.2.1-packed.js"></script>
+    
+        <script type="text/javascript" language="javascript" src="//www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.mousewheel.min.js"></script>
+        <script type="text/javascript" language="javascript" src="//www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.touchSwipe.min.js"></script>
+        <script type="text/javascript" language="javascript" src="//www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.transit.min.js"></script>
+        <script type="text/javascript" language="javascript" src="//www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.ba-throttle-debounce.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+        <link href='//fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+        <script src="@Url.Content("~/Scripts/mapgis_integracion.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1-packed.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.jquery.mousewheel.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.touchSwipe.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/jquery.transit.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+
+        <script>
+    var almacenandoDetalle = false;
+    var tipoV = "N";
+    $(document).ready(function () {
+
+
+        $("#txtidItem").val("@ViewBag.txtidItem")
+        $("#txtidEstadoBase").val("@ViewBag.txtidEstadoBase")
+        $("#txturlMapa").val("@ViewBag.txturlMapa")
+        $("#txttblFotos").val("@ViewBag.txttblFotos")
+        $("#txtForm").val("@ViewBag.txtForm")
+        $("#txtidVisita").val("@ViewBag.txtidVisita")
+        $("#txtVisita").val("@ViewBag.txtidVisita")
+        $("#txtinstalacion").val("@ViewBag.txtinstalacion")
+        $("#txttercero").val("@ViewBag.txttercero")
+        $("#txttblEstados").val("@ViewBag.txttblEstados")
+        tipoV = "@ViewBag.txttipoV";
+
+                 var textoi = $("#texttoempresa").text()+"@ViewBag.textoEmpresa";
+           $("#texttoempresa").text(textoi.replace("&#243;","ó"));
+           if (tipoV == "CAR1") {
+               $("#Tab1").css('display', 'none');
+               $("#tabMapa").removeClass("active");
+               $("#tabMapa").removeClass("in");
+              
+               $("#Tab3 a").click();
+               $("#Tab3 a").click();
+               CrearEstadoItemUni();
+
+           } else
+                    if (tipoV == "N") {
+
+                        $("#Tab3").css('display', 'none');
+                        $("#Tab4").css('display', 'none');
+                        $("#Tab5").css('display', 'none');
+                        $("#txtNombreOficial").text("(Nuevo)")//ENVIAR COMO PARAMETRO
+                        consultarJsonInfoGeneral();
+
+                    } else if (tipoV == "M") {
+
+                        consultarJsonInfoGeneral();
+                        consultarJsonDetalle();
+                        consultarJsonEncuesta();
+                    }
+                    else if (tipoV == "D") {
+                        consultarJsonInfoGeneral();
+                        consultarJsonDetalle();
+                        consultarJsonEncuesta();
+
+                        $("#Tab3").css('display', 'none');
+                        $("#Tab4").css('display', 'none');
+                        $("#Tab5").css('display', 'none');
+                    }
+            });
+            var jsonInfoGeneral;
+            function consultarJsonInfoGeneral() {
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("consultarJsonInfoGeneral", "Aire")',
+            data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                try {
+                    jsonInfoGeneral = eval('(' + response + ')');
+                    $("#txtidItem").val(jsonInfoGeneral.ID_ITEM);
+                    $("#txtX").val(jsonInfoGeneral.X);
+                    $("#txtY").val(jsonInfoGeneral.Y);
+                } catch (e) {
+
+                }
+
+
+
+            }
+        });
+    }
+
+    function CrearEstadoItem() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CrearEstadoItem", "Aire")',
+            data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val(), idVisita: $("#txtidVisita").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                var dato = eval('(' + response + ')');
+                $("#txtidEstadoBase").val(dato)
+            }
+        });
+    }
+            function CrearEstadoItemUni() {
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CrearEstadoItem", "Aire")',
+                    data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val(), idVisita: $("#txtidVisita").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var dato = eval('(' + response + ')');
+                        $("#txtidEstadoBase").val(dato);
+
+                        if (tipoV != "D") {
+                            consultarJsonDetalle();
+                            consultarJsonEncuesta();
+                        } else {
+                            tipoV = "M";
+                        }
+                    }
+                });
+            }
+    function GuardarInformacionItem() {
+
+        jsonInfoGeneral.NOMBRE = $("#txtNombreOficial").text();
+        jsonInfoGeneral.X = $("#txtX").val() * 1;
+        jsonInfoGeneral.Y = $("#txtY").val() * 1;
+        var jsonOficial = JSON.stringify(jsonInfoGeneral)
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarInformacionItem", "Aire")',
+            data: { jsonInfo: jsonOficial, idFormulario: $("#txtForm").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "Ok") {
+                    mensajeAlmacenamiento("Almacenamiento Exitoso");
+                    $("#Tab3").css('display', 'block');
+                    $("#Tab4").css('display', 'block');
+                    $("#Tab5").css('display', 'block');
+                    if ($("#txtidEstadoBase").val() == "-1" || tipoV == "D") {
+                        CrearEstadoItemUni();
+                    }
+                } else {
+                    mensajeAlmacenamiento("Error al almacenar la informacion")
+                }
+
+
+
+            }
+        });
+
+
+
+    }
+    function GuardarUbicacion(num) {
+        if (num == 1) {
+            GuardarInformacionItem()
+        } else if (num == 2) {
+        } else if (num == 3) {
+            guardarDetalle();
+        } else if (num == 5) {
+            guardarEncuesta()
+        } else if (num == 4) {
+            guardarFotosAguas(Totalimg)
+        }
+    }
+    function rtaUbiPoint(rta) {
+        objetoMapgis.noDraw();
+        $("#txtX").val(rta.x);
+        $("#txtY").val(rta.y);
+        $("#ubicarpuntobtn")[0].title = "Reubicar punto";
+    }
+    function consultarJsonDetalle() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarJsonDetalle", "Aire")',
+            data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), tblEstados: $("#txttblEstados").val(), copia: (tipoV == 'D') },
+            beforeSend: function () { },
+            success: function (response) {
+                almacenandoDetalle = false;
+                if (response != "[]") {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle);
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneral").append(html);
+                } else {
+                    $("#Tab3").css('display', 'none');
+                }
+             
+            }
+        });
+    }
+            function consultarJsonEncuesta() {
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("consultarJsonEncuestas", "Aire")',
+                    data: { idEstado: $("#txtidEstadoBase").val(), form: $("#txtForm").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        if (response != "[]") {
+                        jsonEncuestas = eval('(' + response + ')');
+                        var html = consultarEncuestas(jsonEncuestas);
+                        $("#acordionEncuestaPrincipal").remove();
+                        $("#acordionEncuestaGeneral").append(html);
+                        } else {
+                            $("#Tab5").css('display', 'none');
+                        }
+
+                    }
+                });
+            }
+    function abrirFotos() {
+        $("#pantallaCargarImg").dialog(
+        {
+
+            width: 600,
+            height: 400,
+            modal: true
+        });
+        $("#pantallaCargarImg #fotos").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/cargarImagen")");
+
+    }
+
+            function mensajeAlmacenamiento(mensaje) {
+                $("#msText").text(mensaje);
+
+
+                $("#msAlmacenamiento").dialog({
+
+                    buttons: [
+              {
+                  text: "Aceptar",
+
+                  click: function () { $(this).dialog("close"); },
+
+                  class: "btn btn-default "
+              },
+                    ]
+                });
+
+
+            }
+        </script>
+        <style>
+            .labelUnico {
+                margin-bottom: 17px;
+                width: 0px;
+                text-align: center;
+                font-size: 13px;
+                position: relative;
+                left: 14px;
+            }
+
+            .informacionUbicacion button {
+                top: 0px;
+                left: 0px;
+                margin-top: 0px;
+                float: left;
+            }
+        </style>
+
+        <div id="divNombreCaptacion">
+            <div id="div_nom_1" class="nombretitle">
+                <label id="txtNombreOficial"></label><button type="button" class="btn btn-default" aria-label="Left Align" onclick="nombreOpcion(1)">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="div_nom_2" class="nombretitle" style="display:none">
+                <input type="text" id="txtNombreTemp" style="width: 220px !important;"/><button type="button" class="btn btn-default " onclick="nombreOpcion(2)">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </button>
+            </div>
+            <label id="texttoempresa"> Instalación: <br /></label>
+        </div>
+        <div class="container contenedorcentro ">
+            <div style="position:absolute;top:0px;z-index:9999;display:none">
+                <input type="text" id="txtidItem" value="">
+                <input type="text" id="txtidEstadoBase" value="">
+                <input type="text" id="txturlMapa" value="">
+                <input type="text" id="txttblFotos" value="">
+                <input type="text" id="txtForm" value="">
+                <input type="text" id="txtidVisita" value="">
+                <input type="text" id="txtVisita" value="">
+                <input type="text" id="txtinstalacion" value="">
+                <input type="text" id="txttercero" value="">
+                <input type="text" id="txttblEstados" value="">
+            </div>
+            <!--dialog -->
+            <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+                <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+            </div>
+            <!--Dialog informacion ubicacion-->
+            <div id="dialogAyuda" title="Ayuda" style="display:none">
+                <div class="col-md-12 " id="ContenidoAyuda">
+                </div>
+            </div>
+            <!--dialog de observacion-->
+            <div id="dialogObservacion" title="Observacion" style="display:none">
+                <div class="col-md-12 " id="ContenidoObservacion">
+                </div>
+            </div>
+            <div class="col-sm-12" style="margin-top: 39px; margin-bottom: -6px;">
+                <div class="panel panel-default" style="padding-bottom: 0px">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"></h3>
+                        <div class="subContenedor">
+                            <!--contenedor tab-->
+                            <div style="padding: 15px">
+                                <ul class="nav nav-tabs">
+                                    <li id="Tab1" class="active"><a href="#tabMapa" onclick="CambiarGuardarbtn(1)" data-toggle="tab">Mapa</a></li>
+                                    <li id="Tab3"><a href="#tabDetalle" onclick="CambiarGuardarbtn(3)" data-toggle="tab">Detalle</a></li>
+                                    <li id="Tab4"><a href="#tabFotos" onclick="CambiarGuardarbtn(4)" data-toggle="tab">Fotos</a></li>
+                                    <li id="Tab5"><a href="#tabAdicional" onclick="CambiarGuardarbtn(5)" data-toggle="tab">Adicional</a></li>
+                                </ul>
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                                <!--TabMapa-->
+                                <div class="tab-pane fade  active in" id="tabMapa">
+                                    <div class="col-md-12 mapacont1">
+                                        <table class="informacionUbicacion">
+                                            <tr>
+                                                <td>
+                                                    <label class="labelUnico">x:</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" id="txtX" />
+                                                </td>
+                                                <td>
+                                                    <label class="labelUnico">y:</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" id="txtY" />
+                                                </td>
+                                                <td>
+                                                    <button title="Ubicar punto mapa" class="form-control glyphicon-mapaP" id="ubicarpuntobtn" onclick="UbicarPunto()"></button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <iframe id="mapa" style="width: 100%; height: 350px; overflow: hidden; border: none; " src="/MAPGISV5_WEB/tools/AMVA/inicio_aguas.htm"></iframe>
+                                    </div>
+                                </div>
+                            
+                       
+                            <div id="tabDetalle" class="tab-pane fade ">
+                                <!--Inicio Acordion -->
+                                <div class="col-md-12" id="acordionDetalleGeneral">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--fin tab usos-->
+                            <!--inicio tabFotografia-->
+                            <div id="tabFotos" class="tab-pane fade ">
+                                <!--carusel-->
+                                <div class="col-sm-12">
+                                    <div id="carousel">
+                                        <a id="prev" class="prev" href="#" style="display: none;">&lt;</a>
+                                        <a id="next" class="next" href="#" style="display: none;">&gt;</a>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                            <!--inicio tabAdicional-->
+                            <div id="tabAdicional" class="tab-pane fade ">
+                                <div class="col-md-12" id="acordionEncuestaGeneral">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionEncuestaPrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+                <div class="actionBar">
+                    <button type="button" id="btnCerra" class="btn btn-default btn-sm" onclick="cerrarPestala()">Cerrar</button>
+                    <button type="button" id="btnGuardar1" class="btn btn-default btn-sm" onclick="GuardarUbicacion(1)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar2" class="btn btn-default btn-sm" onclick="GuardarUbicacion(2)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar3" class="btn btn-default btn-sm" onclick="GuardarUbicacion(3)">Guardar</button>
+                    <button class="btn btn-default btn-sm" style="display:none" onclick="abrirFotos()" id="btnCargarFoto">Cargar Fotos</button>
+                    <button type="button" style="display:none" id="btnGuardar4" class="btn btn-default btn-sm" onclick="GuardarUbicacion(4)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar5" class="btn btn-default btn-sm" onclick="GuardarUbicacion(5)">Guardar</button>
+                </div>
+            </div>
+        </div>
+        <!--Fin TabUbicacion-->
+        </div>
+
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        <div id="msAlmacenamiento" title="Información" style="display:none">
+            <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+        </div>

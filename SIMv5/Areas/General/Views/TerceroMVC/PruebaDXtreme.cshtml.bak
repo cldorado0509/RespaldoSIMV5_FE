@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+@{
+    Layout = null;
+}
+<head>
+    <title>Configuring DataGrid</title>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.1.8/js/dx.webappjs.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.1.8/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.1.8/css/dx.light.css" />
+    <script type="text/javascript" src="grid.js"></script>
+</head>
+<script type="text/javascript">
+    var customStore = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            $.getJSON('/General/api/TerceroWebAPI').done(function (data) {
+                d.resolve(data, { totalCount: data.length });
+            });
+            return d.promise();
+        }
+    });
+
+    var customStoreMVC = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            $.getJSON('/General/Tercero/TerceroWebAPI').done(function (data) {
+                d.resolve(data, { totalCount: data.length });
+            });
+            return d.promise();
+        }
+    });
+
+    var gridDataSourceConfiguration = {
+        store: customStore
+    };
+
+    var gridDataSourceConfigurationMVC = {
+        store: customStoreMVC
+    };
+
+    $(function () {
+        $("#gridContainer").dxDataGrid({
+            dataSource: gridDataSourceConfiguration,
+            selection: {
+                mode: 'multiple'
+            },
+            columns: [
+                { dataField: 'S_NOMBRE', allowGrouping: false, width: 125 },
+                { dataField: 'S_DESCRIPCION', allowGrouping: false },
+                {
+                    dataField: 'S_ACTIVO',
+                    width: 60,
+                    width: 80,
+                    dataType: 'boolean',
+                    /*customizeText: function (cellInfo) {
+                        switch (cellInfo.value) {
+                            case '1':
+                                return 'Si'
+                                break;
+                            case '0':
+                                return 'No'
+                                break;
+                        }
+                    }*/
+                },
+            ],
+            columnChooser: { enabled: true },
+            allowColumnReordering: true,
+            sorting: { mode: 'multiple' },
+            groupPanel: { visible: true, emptyPanelText: 'Drag a column header here to group grid records' },
+            pager: { visible: true },
+            paging: { pageSize: 7 },
+            editing: {
+                editEnabled: true,
+                editMode: 'row',
+                insertEnabled: true,
+                removeEnabled: true
+            },
+            filterRow: { visible: true },
+            searchPanel: { visible: true },
+        });
+
+        $("#gridContainerMVC").dxDataGrid({
+            dataSource: gridDataSourceConfigurationMVC,
+            selection: {
+                mode: 'multiple'
+            },
+            columns: [
+                { dataField: 'S_NOMBRE', allowGrouping: false, width: 125 },
+                { dataField: 'S_DESCRIPCION', allowGrouping: false },
+                {
+                    dataField: 'S_ACTIVO',
+                    width: 60,
+                    width: 80,
+                    dataType: 'boolean',
+                },
+            ],
+            columnChooser: { enabled: true },
+            allowColumnReordering: true,
+            sorting: { mode: 'multiple' },
+            groupPanel: { visible: true, emptyPanelText: 'Drag a column header here to group grid records' },
+            pager: { visible: true },
+            paging: { pageSize: 7 },
+            editing: {
+                editEnabled: true,
+                editMode: 'row',
+                insertEnabled: true,
+                removeEnabled: true
+            },
+            filterRow: { visible: true },
+            searchPanel: { visible: true },
+        });
+
+        $("#btnSelectedRows").dxButton({
+            text: 'Registros Seleccionados',
+            clickAction: function (info) {
+                var dataGrid = $('#gridContainer').dxDataGrid('instance');
+                //$("#selectedItems").dxList("instance").option('items', dataGrid.getSelectedRowsData());
+                registros = dataGrid.getSelectedRowsData();
+
+                registros.forEach(function (entry) {
+                    alert(entry.S_NOMBRE);
+                });
+            }
+        });
+    });
+</script>
+<body>
+    <div id="gridContainer" style="height:420px; max-width:750px; margin: 0 auto"></div>
+    <div style="text-align: center; margin-top: 5px; display: block">
+        <div id="btnSelectedRows" style="height: 45px;"></div>
+    </div>
+    <div id="gridContainerMVC" style="height:420px; max-width:750px; margin: 0 auto"></div>
+</body>
+</html>

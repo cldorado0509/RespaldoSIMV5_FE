@@ -1,0 +1,33 @@
+﻿@{
+    var pos = 0;
+    
+    foreach (var item in Model)
+    {
+        var codigo = item.GetType().GetProperty("S_CODIGO").GetValue(item, null).ToString();
+        var estado = item.GetType().GetProperty("S_DISPONIBLE").GetValue(item, null).ToString();
+        
+        if (pos % 4 == 0)
+        {
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+        }
+        ViewContext.Writer.Write("<div class=\"btnrow\"><div class=\"btncheck " + (estado == "2" ? "ok" : estado == "1" ? "partial" : "fail") + "\" onclick=\"CambiarEstado(this);\">" + item.GetType().GetProperty("S_CODIGO").GetValue(item, null).ToString() + "</div></div>");
+        pos++;
+    }
+    /* Este código en comentarios es el que crea un botón para seleccionar todas las bicicletas
+    if (pos % 4 == 0)
+    {
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+    }
+    
+    for (int i = pos+1; i % 4 != 0; i++)
+    {
+        ViewContext.Writer.Write("<div class=\"btnrow\"><span style=\"width:100%\">&nbsp;</span></div>");
+    }
+
+    ViewContext.Writer.Write("<div class=\"btnrow\"><div class=\"a-btn-2\" style=\"width: 100%;left: -25%;\" onclick=\"SeleccionarTodosOnClick();\"><span class=\"a-btn-2-text\">Todas</span></div></div>");
+    */
+
+    ViewContext.Writer.Write("</div>");
+}

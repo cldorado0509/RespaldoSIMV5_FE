@@ -1,0 +1,56 @@
+@using System.Security.Claims
+@using System.Web
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvRol";
+        settings.Caption = "Roles";
+        settings.CallbackRouteValues = new { Controller = "Rol", Action = "gvwAdministrarRol" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Rol", Action = "gvwAdministrarRolCrear" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Rol", Action = "gvwAdministrarRolActualizar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Rol", Action = "gvwAdministrarRolEliminar" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowNewButtonInHeader = claimppal.IsInRole("CROL");
+        settings.CommandColumn.ShowDeleteButton = claimppal.IsInRole("EROL");
+        settings.CommandColumn.ShowEditButton = claimppal.IsInRole("AROL");
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+
+        settings.KeyFieldName = "ID_ROL";
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_DESCRIPCION";
+            column.Caption = "Descripción";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

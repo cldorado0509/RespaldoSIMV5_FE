@@ -1,0 +1,84 @@
+@using System.Security.Claims
+@using System.Web
+@using System.Web.UI.WebControls
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvGrupo";
+        settings.Caption = "Grupos";
+        settings.CallbackRouteValues = new { Controller = "Grupo", Action = "gvwAdministrarGrupo" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Grupo", Action = "gvwAdministrarGrupoCrear" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Grupo", Action = "gvwAdministrarGrupoActualizar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Grupo", Action = "gvwAdministrarGrupoEliminar" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.Width = Unit.Percentage(100);
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowNewButtonInHeader = claimppal.IsInRole("CGRUPO");
+        settings.CommandColumn.ShowDeleteButton = claimppal.IsInRole("EGRUPO");
+        settings.CommandColumn.ShowEditButton = claimppal.IsInRole("AGRUPO");
+
+        settings.KeyFieldName = "ID_GRUPO";
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_VISIBLE";
+            column.Caption = "Visible para usuario externo";
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbvsv_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_VISIBLE").ToString() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_INICIO";
+            column.Caption = "Fecha inicio";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "{0:dd/MM/yyyy HH:mm}";
+            var dateEditProperties = column.PropertiesEdit as DateEditProperties;
+            dateEditProperties.EditFormatString = "dd/MM/yyyy HH:mm";
+            dateEditProperties.UseMaskBehavior = true;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_FIN";
+            column.Caption = "Fecha fin";
+            column.ColumnType = MVCxGridViewColumnType.DateEdit;
+            column.PropertiesEdit.DisplayFormatString = "{0:dd/MM/yyyy HH:mm}";
+            var dateEditProperties = column.PropertiesEdit as DateEditProperties;
+            dateEditProperties.EditFormatString = "dd/MM/yyyy HH:mm";
+            dateEditProperties.UseMaskBehavior = true;
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

@@ -1,0 +1,146 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "GridAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+ 
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+        label {
+            margin-top: 15px;
+        }
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+        button#btnNuevaEmpresa {
+            position: relative;
+            top: 9px;
+            background-image: url(../../Content/images/Nueva_Empresa.png);
+            right: 0px;
+            padding-left: 39px;
+            left: -20px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="row">
+            <div class="col-sm-12">
+              
+                        <button id="btnNuevaEmpresa" class="btn btn-default" onclick="abrirEmpresa()">Nueva</button>
+                    </div>
+                
+            <div class="col-sm-12">
+                <div class="col-sm-6" style="margin-top: 32px;">
+                    <div id="GrdRealizarVisitasAtiende" style="height: 280px; max-width: 800px; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);">
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+
+ 
+            var CargarDatosDetalleRealizarVisitaAtiende = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var d = $.Deferred();
+                        $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTercero")"+ "?filtro=" + filterOptions).done(function (data) {
+
+                        d.resolve(data, { totalCount: data.length });
+                    });
+                    return d.promise();
+                }
+            });
+
+            var GrdDetallerealizarVisitaAtiende = {
+                store: CargarDatosDetalleRealizarVisitaAtiende
+            };
+            //grid atiende
+
+            $("#GrdRealizarVisitasAtiende").dxDataGrid({
+                dataSource: GrdDetallerealizarVisitaAtiende,
+                selection: {
+                    mode: 'single'
+                },
+                columns: [
+                    { dataField: 'ID', allowGrouping: true, width: 125, visible: false },
+                    { dataField: 'DOCUMENTO', allowGrouping: true ,dataType: 'number'},
+                    { dataField: 'NOMBRE', allowGrouping: true, dataType: 'string' },
+
+
+                ],
+                scrolling: { mode: 'infinite' },
+                selectionChanged: function (selecteditems) {
+                    var data = selecteditems.selectedRowsData[0]
+                    parent.obtenerTercero(data.ID, data.NOMBRE);
+                    parent.consultarIntalacionTercero(data.ID);
+                    parent.$("#atiendePantalla").dialog('close');
+
+                },
+                columnChooser: { enabled: false },
+                allowColumnReordering: true,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 5 },
+
+                filterRow: {
+                    visible: true, showOperationChooser: true
+                   
+
+                },
+                searchPanel: { visible: false },
+            });
+           
+
+        });
+
+        function cerrar() {
+
+
+        }
+        
+        function abrirEmpresa()
+        {
+            window.open("@Url.Content("~/General/Tercero/Tercero/?vistaRetorno=true")");
+        }
+    </script>
+
+
+</body>
+</html>

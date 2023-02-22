@@ -1,0 +1,90 @@
+﻿@model SIM.Areas.Tramites.Models.DatosTareasFuncionario
+@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<script>
+    var CodigoFuncionario = @Model.CodFuncionario;
+</script>
+<style>
+    #MisTarGrid .dx-datagrid-header-panel .dx-toolbar-before .dx-radiogroup-horizontal {
+        padding-right: 30px;
+        border-right: solid 1px black;
+    }
+
+    #BotonesTareas {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    #ListaDevol .dx-scrollable-content {
+        column-count: 3;
+        -moz-column-count: 3;
+    }
+
+    #ListaDevol .dx-list-item {
+        border-top: none;
+        break-inside: avoid;
+    }
+
+        #ListaDevol .dx-list-item:last-of-type {
+            border: none;
+        }
+
+    #ListaDevol .dx-checkbox-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    #ListaDevol .dx-item-content .dx-list-item-content {
+        font-size: 10pt;
+    }
+</style>
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/MisTareas.js")"></script>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Mis tareas</label>
+            </h3>
+        </div>
+        <div id="TabPanel"></div>
+        <br>
+        <div class="row col-md-12">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                    <table cellpadding=0 cellspacing=0 border=1 width="100%">
+                        <tr>
+                            <td align="center" bgcolor="gainsboro" colspan="3" width="50%" style="border-style: solid; border-width: 1px; border-color: #000000;">
+                                <Label Font-Bold="True" Font-Names="Arial" Font-Size="8pt" Width="100%">De mi responsabilidad</Label>
+                            </td>
+                            <td align="center" bgcolor="gainsboro" width="50%" colspan="3" style="border-style: solid; border-width: 1px; border-color: #000000;">
+                                <Label Font-Bold="True" Font-Names="Arial" Font-Size="8pt" Width="100%">De mi conocimiento</Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" bgcolor="whitesmoke"><Label Font-Names="Arial" Font-Size="8pt" Width="100%">Pendientes: @Model.NroTareasPendientes</Label></td>
+                            <td align="center" bgcolor="whitesmoke"><Label Font-Names="Arial" Font-Size="8pt" Width="100%">Terminadas: @Model.NroTareasTerminadas</Label></td>
+                            <td align="center" bgcolor="whitesmoke"><Label Font-Names="Arial" Font-Size="8pt" Width="100%">No abiertas: @Model.NroTareasNoAbiertas</Label></td>
+                            <td align="center" bgcolor="whitesmoke"><Label Font-Names="Arial" Font-Size="8pt" Width="100%">Pendientes: @Model.NroTareasCopiaPendientes</Label></td>
+                            <td align="center" bgcolor="whitesmoke"><Label Font-Names="Arial" Font-Size="8pt" Width="100%">Terminadas: @Model.NroTareasCopiaTerminadas</Label></td>
+                            <td align="center" bgcolor="whitesmoke"><Label Font-Names="Arial" Font-Size="8pt" Width="100%">No abiertas: @Model.NroTareasCopiaNoAbiertas</Label></td>
+                        </tr>
+                    </table>
+            </div>
+        </div>
+            <div class="panelSIM-footer" style="width: 100%;">
+                <h2 class="panelSIM-title"><label class="header" style="width: 100%; text-align: center">Convenciones</label></h2>
+                <div class="col-md-12" style="text-align: center;"><img src="~/Content/Images/convenciones.png" /></div>
+            </div>
+            <script id="MisTareasTemplate" type="text/html">
+            </script>
+            <script id="tareasDepTemplate" type="text/html">
+            </script>
+            <div id="popAvanzaTareaTramite" style="padding: 0px">
+                <iframe src="" id="frmAvanzaTareaTramite" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </div>
+</div>

@@ -1,0 +1,1302 @@
+﻿.container nav {
+    display: none;
+}
+
+html, body {
+    font-size: 15px;
+    height: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+label, textarea, select, input, a {
+    display: inline-block;
+    margin-bottom: 1px;
+    float: left;
+    font-size: 13px;
+    color: rgb(92, 82, 82);
+    font-family: 'Roboto', sans-serif;
+    vertical-align: bottom;
+    padding-top: 11px;
+    /* width: 100%; */
+    border-radius: 5px;
+    box-shadow: none;
+    font-weight: initial;
+}
+
+table {
+    max-width: 143%;
+    background-color: transparent;
+}
+
+input[type="text"], input[type="number"], input[type="time"], textarea, select {
+    font-weight: normal;
+    font-size: small;
+    /*font-size: 10px;*/
+    font-family: 'Roboto Condensed', sans-serif;
+    border: 1px solid #cacaca;
+    font-size: 13px !important;
+    padding-top: 0px;
+    height: 30px !important;
+    padding: 5px;
+    width: 100% !important;
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    cursor: not-allowed;
+    background-color: #eeeeee;
+    font-size: 10px;
+    font-weight: normal;
+}
+
+button.btn.btn-default.btn-sm {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.container {
+    max-width: 100%;
+    margin-bottom: -9px;
+    margin: 0px;
+}
+
+.contenedorcentro {
+    background: #ffffff;
+    padding: 0px;
+}
+
+    .contenedorcentro .subContenedor {
+        margin-top: 34px;
+        height: 483px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin-bottom: 0px;
+        border-radius: 3px 0px 0px 0px;
+        border: none;
+        border-top-left-radius: 0;
+        padding-bottom: 10px;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+        box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0);
+    }
+
+    .contenedorcentro .actionBar {
+        width: 100%;
+        height: 50px;
+        position: relative;
+        bottom: 0px;
+        background: rgb(209, 210, 210);
+        border-radius: 3px 0px 0px 0px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);
+        border: none;
+    }
+
+.form-control {
+    height: auto; /*25px;*/
+    padding: 6px 4px;
+    font-size: 10px;
+}
+
+.informacionUbicacion {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+}
+
+    .informacionUbicacion button {
+        width: 25px;
+        height: 25px;
+        position: relative;
+        top: 14px;
+        padding: 3px 5px;
+        font-size: 15px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        outline: 0px;
+        color: #009AA3;
+        margin-right: -4px;
+        margin-left: 5px;
+    }
+
+.mapacont2 {
+    padding-right: 0px;
+    margin-top: -12px;
+}
+
+.informacionUbicacion td {
+    padding-right: 7px;
+}
+
+.informacionUbicacion .informacion1 {
+    width: 50px;
+}
+
+.informacionUbicacion .informacion {
+}
+
+@media (min-width: 992px) {
+    .col-md-8 {
+        width: 66.66666666666666%;
+        background-color: transparent;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 1010px) {
+    .mapacont1 {
+        width: 97% !important;
+        margin: 0px 0px 0px 16px !important;
+        padding: 0px !important;
+    }
+
+    .mapacont2 {
+        width: 97% !important;
+        margin: 0px 0px 0px 16px !important;
+        padding: 0px !important;
+    }
+
+        .mapacont2 table {
+            width: 97% !important;
+        }
+}
+
+@media (max-width: 991px) {
+    .mapacont1 {
+        width: 96% !important;
+        margin: 0px 0px 0px 16px !important;
+        padding: 0px !important;
+    }
+
+    .mapacont2 {
+        width: 95% !important;
+        margin: 0px 0px 0px 16px !important;
+        padding: 0px !important;
+    }
+
+        .mapacont2 table {
+            width: 100% !important;
+        }
+}
+
+@media (max-width: 580px) {
+    .mapacont1 {
+        width: 92% !important;
+        margin: 0px 0px 0px 16px !important;
+        padding: 0px !important;
+    }
+
+    .mapacont2 {
+        width: 92% !important;
+        margin: 0px 0px 0px 16px !important;
+        padding: 0px !important;
+    }
+
+        .mapacont2 table {
+            width: 100% !important;
+        }
+}
+/*Dialog movile*/
+.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable {
+    border: none;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    box-shadow: 1px 3px 12px 1px rgba(0, 0, 0, 0.5);
+    padding: 0px;
+}
+
+.ui-widget-header {
+    border: none;
+    background: #00acc4;
+    color: #FFF;
+    font-weight: normal;
+}
+
+#dialogUbicacion label {
+    width: 107px;
+}
+
+.ui-dialog .ui-dialog-content {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+a:hover {
+    color: #39832D;
+}
+/**Estilo Acordeon Verde*/
+
+.acordeonVerde .panel-default > .panel-heading {
+    color: #333333;
+    background-color: rgb(165, 200, 62);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    box-shadow: none;
+    border: 1px solid #577e04;
+}
+
+    .acordeonVerde .panel-default > .panel-heading:hover {
+        opacity: .9;
+    }
+
+.acordeonVerde .panel-group .panel + .panel {
+    margin-top: -1px;
+}
+
+.acordeonVerde .panel-default {
+    margin-top: 10px !important;
+    border-color: rgba(221, 221, 221, 0);
+    border: none;
+    border-radius: 0px;
+}
+
+.acordeonVerde .titleAcordeon {
+    text-decoration: blink;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    display: block;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 5px;
+    padding-top: 11px;
+}
+
+    .acordeonVerde .titleAcordeon:hover {
+        opacity: 1;
+        color: #ffffff;
+    }
+
+.acordeonVerde .panel-default > .glyphicon-triangle-bottom {
+    text-align: left;
+    background-image: url(../Content/images/flechaE1.png);
+    background-repeat: no-repeat;
+    background-size: 20px;
+    background-position: 99% 10px !important;
+    background-color: #898989;
+    border: none;
+    border-radius: 0px;
+    height: 40px;
+    color: #ffffff !important;
+}
+
+.acordeonVerde .panel-default > .glyphicon-triangle-top {
+    background-image: url(../Content/images/flechaE.png);
+    background-repeat: no-repeat;
+    background-size: 21px;
+    background-position: 99% 10px !important;
+    background-color: #009ACE;
+    border: none;
+    border-radius: 0px;
+    height: 40px;
+    color: #ffffff !important;
+}
+
+.acordeonVerde label {
+    margin-bottom: -5px;
+}
+
+/**Acordeon segundo nivel*/
+div#subcabezoteAcordeon_2_0 {
+    color: #333333;
+    background-color: #f7f6f6;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid #dfdede;
+    border-top: 2px solid #dfdede;
+}
+
+.acordeonVerde .acordeonSecundario .titleAcordeon {
+    color: #424141;
+    padding-left: 23px;
+    font-size: 12px;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: normal;
+}
+
+.acordeonVerde .acordeonSecundario .panel-default > .glyphicon-triangle-bottom {
+    background-position: 5px 8px;
+    background-size: 13px;
+    padding: 0px;
+    height: 36px;
+}
+
+.acordeonVerde .acordeonSecundario .panel-default > .glyphicon-triangle-top {
+    background-position: 5px 8px;
+    background-size: 13px;
+}
+
+.acordeonVerde .acordeonSecundario .panel-group .panel + .panel {
+    margin-top: -1px;
+    border-top: 1px solid #dfdede;
+    border-radius: 0px;
+}
+
+.acordeonVerde .acordeonSecundario .Cantidad {
+    position: relative;
+    top: -36px;
+    color: #888585;
+    float: right;
+    font-size: 12px;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: normal;
+    right: 59px;
+    margin-bottom: -50px;
+    display: inline-block;
+}
+
+.acordeonVerde .agregar {
+    position: relative;
+    top: -24px;
+    float: right;
+    right: 10px;
+    width: 25px;
+    height: 18px;
+    background-image: url(../Content/images/agregarAcordeon.png);
+    border: none;
+    background-size: 36px;
+    background-position: -4px -4px;
+    z-index: 102;
+    outline: 0;
+    margin-bottom: -18px;
+}
+
+.acordeonVerde .quitar {
+    background-image: url(../Content/images/quitarAcordeon.png);
+    background-color: rgba(165, 200, 62, 0);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+
+.acordeonVerde .contenidoSub {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding: 0px;
+    border: none;
+}
+
+    .acordeonVerde .contenidoSub .col-md-12 {
+        padding-top: 5px;
+        margin: 0px;
+        padding-bottom: 5px;
+    }
+
+    .acordeonVerde .contenidoSub hr {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border: 0;
+        border-top: 1px solid #eee;
+    }
+
+    .acordeonVerde .contenidoSub input, .acordeonVerde .contenidoSub select, .acordeonVerde .contenidoSub textarea {
+        font-weight: normal;
+    }
+
+.acordeonVerde .fechaleft {
+    background-position: 6px !important;
+    padding-left: 23px !important;
+}
+
+.acordeonVerde .acordeonSecundario .agregar {
+    position: relative;
+    top: -21px;
+    float: right;
+    right: 13px;
+    width: 26px;
+    height: 20px;
+    background-image: url(../Content/images/agregarAcordeon.png);
+    border: none;
+    background-size: 31px;
+    background-position: -2px -2px;
+    z-index: 102;
+    outline: 0;
+    margin-bottom: -18px;
+}
+
+.acordeonVerde .acordeonSecundario .quitar {
+    background-image: url(../Content/images/quitarAcordeon1.png);
+    margin-top: -7px;
+    background-color: transparent;
+    background-size: cover;
+}
+
+.acordeonVerde .datosRecursos label {
+    color: #888585;
+    font-size: 12px;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: normal;
+    display: inline-block;
+    margin: 0px;
+    margin-top: -13px;
+}
+
+.acordeonVerde .datosRecursos .diligenciar {
+    background: #2c9cad;
+    border-color: #2c9cad;
+    height: 20px;
+    padding: 1px 5px;
+    font-size: 12px;
+    width: 103px;
+    font-family: 'Roboto Condensed', sans-serif;
+    float: right;
+    right: 12px;
+    position: relative;
+    cursor: pointer;
+}
+
+    .acordeonVerde .datosRecursos .diligenciar:hover {
+        opacity: 0.7;
+    }
+
+.acordeonVerde .datosRecursos .estado {
+    background: transparent;
+    border-color: #2c9cad;
+    height: 20px;
+    padding: 1px 5px;
+    font-size: 12px;
+    width: 36px;
+    font-family: 'Roboto Condensed', sans-serif;
+    float: right;
+    right: -150px;
+    position: relative;
+}
+
+.acordeonVerde .datosRecursos .estadoOn {
+    background: url(../Content/images/aprobado.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.acordeonVerde .datosRecursos li {
+    display: block;
+    padding: 7px 24px;
+    border-bottom: 1px solid #dfdede;
+    height: 34px;
+    margin-bottom: 0px;
+}
+
+.acordeonVerde .datosRecursos {
+    margin-top: 0;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #DFDEDE;
+}
+
+.acordeonVerde input[type="radio"], .acordeonVerde input[type="checkbox"] {
+    margin: 4px 0 0;
+    margin-top: 1px \9;
+    line-height: normal;
+    height: 13px;
+    text-align: left;
+    box-shadow: none;
+    outline: none;
+}
+/**fin segundo nivel*/
+/**sub acordeon hijohijohijo**/
+.CARAC_HIJO2 .panel-default > .panel-heading {
+    color: #333333 !important;
+    background-color: rgb(165, 200, 62) !important;
+    -webkit-border-radius: 3px !important;
+    -moz-border-radius: 3px !important;
+    border-radius: 3px !important;
+    box-shadow: none;
+    border: 1px solid #577e04;
+}
+
+    .CARAC_HIJO2 .panel-default > .panel-heading:hover {
+        opacity: .8 !important;
+    }
+
+.CARAC_HIJO2 .panel + .panel {
+    margin-top: -1px !important;
+}
+
+.CARAC_HIJO2 .panel-default {
+    margin-top: -1px !important;
+    border-color: rgba(221, 221, 221, 0) !important;
+    border: none !important;
+}
+
+.CARAC_HIJO2 .agregar {
+    position: relative;
+    top: -23px;
+    float: right;
+    right: 10px;
+    width: 24px !important;
+    height: 15px !important;
+    background-image: url(../Content/images/agregarAcordeon.png);
+    border: none;
+    background-size: 36px !important;
+    background-position: -5px -5px !important;
+    z-index: 102;
+    outline: 0;
+    margin-bottom: -18px;
+}
+
+.CARAC_HIJO2 .titleAcordeon {
+    text-decoration: blink;
+    color: #fff !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    font-family: 'Roboto Condensed', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    padding: 5px !important;
+}
+
+div.CARAC_HIJO2 .panel-collapse {
+    border: 1px solid rgba(103, 103, 103, 0.05);
+    border-top-style: solid;
+    border-top-width: 0px;
+    border-right-color: rgba(103, 103, 103, 0.26);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-bottom-color: rgba(103, 103, 103, 0.26);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color: rgba(103, 103, 103, 0.26);
+    border-left-style: solid;
+    border-left-width: 1px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.CARAC_HIJO2 .titleAcordeon:hover {
+    opacity: .8 !important;
+    color: #000 !important;
+}
+
+.CARAC_HIJO2 .panel-default > .glyphicon-triangle-bottom {
+    background-image: url(../Content/images/flechavBotton.png) !important;
+    background-repeat: no-repeat !important;
+    background-size: 15px !important;
+    background-position: 99% 10px;
+    height: 30px !important;
+    text-align: left !important;
+}
+
+.CARAC_HIJO2 .acordeonVerde .panel-default > .glyphicon-triangle-top {
+    background-image: url(../Content/images/flechavTop.png) !important;
+    background-repeat: no-repeat !important;
+    background-size: 15px !important;
+    background-position: 99% 10px;
+}
+/***************************************************/
+
+/**carusel*/
+/* Container */
+.container-fluid {
+    background: #FFFFFF;
+    margin: 40px auto 10px;
+    padding: 20px 40px 0;
+    max-width: 960px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Page Header */
+.page-header {
+    background: #f9f9f9;
+    margin: -30px -40px 40px;
+    padding: 20px 40px;
+    border-top: 4px solid #ccc;
+    color: #999;
+    text-transform: uppercase;
+}
+
+    .page-header h3 {
+        line-height: 0.88rem;
+        color: #000;
+    }
+
+
+
+/* Thumbnail Box */
+.caption h4 {
+    font-size: 1rem;
+    color: #444;
+}
+
+.caption p {
+    font-size: 0.75rem;
+    color: #999;
+}
+
+.btn.btn-mini {
+    font-size: 0.63rem;
+}
+
+
+#wrapper {
+    width: 735px;
+    height: 220px;
+    margin: -110px 0 0 -367px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+#carousel {
+    width: 735px;
+    position: relative;
+    left: 20%;
+}
+
+    #carousel ul {
+        list-style: none;
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    #carousel li {
+        background: #fff;
+        box-shadow: 3px 4px 11px -2px #666;
+        font-size: 40px;
+        color: #999;
+        text-align: center;
+        display: block;
+        width: 232px;
+        height: 178px;
+        padding: 0;
+        margin: 6px;
+        float: left;
+        position: relative;
+    }
+
+        #carousel li img {
+            width: 201px;
+            height: 127px;
+            margin-top: 14px;
+        }
+
+        #carousel li .texto {
+            display: block;
+            overflow: hidden;
+            width: 170px;
+            position: absolute;
+            z-index: 2;
+            bottom: 7px;
+            text-align: left;
+            left: 16px;
+            font-size: 12px;
+        }
+
+.clearfix {
+    float: none;
+    clear: both;
+}
+
+#carousel .prev, #carousel .next {
+    background: transparent url(img/carousel_control.png) no-repeat 0 0;
+    text-indent: -999px;
+    display: block;
+    overflow: hidden;
+    width: 15px;
+    height: 21px;
+    margin-left: 10px;
+    position: absolute;
+    top: 70px;
+}
+
+#carousel .prev {
+    background-position: 0 0;
+    left: -30px;
+}
+
+    #carousel .prev:hover {
+        left: -31px;
+    }
+
+#carousel .next {
+    background-position: -18px 0;
+    right: -20px;
+}
+
+    #carousel .next:hover {
+        right: -21px;
+    }
+
+#carousel .pager {
+    text-align: center;
+    margin: 0 auto;
+}
+
+    #carousel .pager a {
+        background: transparent url(img/carousel_control.png) no-repeat -2px -32px;
+        text-decoration: none;
+        text-indent: -999px;
+        display: inline-block;
+        overflow: hidden;
+        width: 8px;
+        height: 8px;
+        margin: 0 5px 0 0;
+    }
+
+        #carousel .pager a.selected {
+            background: transparent url(img/carousel_control.png) no-repeat -12px -32px;
+            text-decoration: underline;
+        }
+
+#source {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+}
+
+    #source, #source a {
+        font-size: 12px;
+        color: #999;
+    }
+/***end carusel*/
+/**fielses*/
+
+.fielsedAguas {
+    border: 1px solid #ddd;
+    padding: 0px 12px 16px;
+    border-radius: 5px;
+    padding-bottom: 9px;
+    margin-bottom: 6px;
+}
+
+.legendAguas {
+    font-size: 14px;
+    border: none;
+    text-align: right;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #319F47;
+    margin-bottom: -12px;
+    width: auto;
+    font-weight: bold;
+}
+
+.acordeonVerde input[type="radio"], .acordeonVerde input[type="checkbox"] {
+    margin: 4px 0 0;
+    margin-top: 1px \9;
+    line-height: normal;
+    height: 13px;
+    text-align: left;
+    box-shadow: none;
+    outline: none;
+    width: auto;
+}
+
+.iconAyudaEncuesta {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    top: -2px;
+    display: inline-block;
+    border-radius: 79px;
+    background: #838080;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);
+    background-image: none;
+    color: #fff;
+    top: 0px;
+    font-size: 11px;
+    font-weight: bold;
+    float: right;
+    right: 0px;
+    margin-bottom: -29px;
+    outline: 0;
+    top: 50%;
+    /* background-image: url(images/mensaje.png); */
+}
+/**nombre*/
+div#divNombreCaptacion {
+    width: 72%;
+    height: 48px;
+    background: transparent;
+    position: absolute;
+    top: 0px;
+    left: 200px;
+    z-index: 22222;
+}
+
+div#div_nom_1, div#div_nom_2 {
+    width: 265px;
+    height: 53px;
+    margin-left: 22px;
+    position: relative;
+    top: 12px;
+}
+
+div#divNombreCaptacion button.btn.btn-default {
+    width: 20px;
+    height: 20px;
+    border-radius: 1px;
+    outline: 0;
+    padding: 6px;
+    outline: 0px;
+    margin: 8px;
+    background: transparent;
+    color: #FFF;
+    border-color: rgba(148, 192, 31, 0);
+    position: relative;
+    top: 7px;
+    left: -5px;
+}
+
+div#divNombreCaptacion input, div#divNombreCaptacion label {
+    margin-top: 8px;
+    width: 220px;
+    padding: 0px;
+}
+
+label#txtNombreOficial {
+    color: #fff;
+    position: relative;
+    top: 12px;
+    font-size: 14px;
+    left: 15px;
+    text-align: left;
+}
+
+.checkbox label {
+    margin-left: -19px;
+    display: block;
+    font-size: 11px !important;
+    position: relative !important;
+    padding-top: 9px !important;
+}
+
+label#texttoempresa {
+    position: relative;
+    top: -45px;
+    color: #FFF;
+    right: 5%;
+    display: block;
+    float: right;
+    width: 300px;
+    width: 50% !important;
+    font-size: 13px;
+    text-align: right;
+    top: -41px;
+}
+
+input.tituloTexto {
+    height: 20px;
+    /*width: 48%;*/
+    width: 70%;
+    padding-left: 6px;
+    padding-bottom: 8px;
+    line-height: 3px;
+    vertical-align: text-top;
+    margin-bottom: 10px;
+}
+
+label.valorLabel {
+    position: relative;
+    top: -11px;
+    float: right;
+    left: -94px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.iconobservacionEncuesta {
+    right: 38px !important;
+    background-image: url(images/mensaje.png);
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#dialogObservacion {
+    width: 344px !important;
+    min-height: 90px;
+    max-height: none;
+    height: 205px !important;
+}
+
+textarea#txt_area_observacion {
+    width: 271px !important;
+    height: 134px !important;
+    resize: none;
+    padding: 0px;
+    font-size: 11px;
+    color: rgb(107, 104, 101);
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.botonObserva {
+    margin-right: 43px !important;
+    margin-top: 13px !important;
+    height: 30px;
+}
+
+.glyphicon-mapaP {
+    background: url(images/PuntoM.jpg) no-repeat !important;
+    background-size: 24px !important;
+}
+
+.acordeonVerde label {
+    text-align: left;
+    top: -10px;
+    position: relative;
+    font-size: 13px;
+}
+
+.acordeonVerde .radio-inline {
+    top: 2px;
+    margin-right: 10px;
+    padding: 0px;
+    cursor: pointer;
+}
+
+.acordeonVerde input {
+    margin-right: 3px !important;
+    cursor: pointer;
+}
+
+.acordeonVerde .panel-default > .not-flecha {
+    background-image: none;
+}
+
+.panel-collapse {
+    background: #fff;
+}
+
+div.CARAC_HIJO {
+    margin-top: 5px;
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-bottom: 5px;
+}
+
+    div.CARAC_HIJO .panel-collapse {
+        border: 1px solid rgba(103, 103, 103, 0.05);
+        border-top-style: solid;
+        border-top-width: 0px;
+        border-right-color: rgba(103, 103, 103, 0.26);
+        border-right-style: solid;
+        border-right-width: 1px;
+        border-bottom-color: rgba(103, 103, 103, 0.26);
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-left-color: rgba(103, 103, 103, 0.26);
+        border-left-style: solid;
+        border-left-width: 1px;
+    }
+
+button#btnCerraU {
+    color: #fff;
+    background-color: #a5cd39;
+    border-color: #94C01F;
+    width: 120px;
+    margin-right: 0px;
+    margin-top: -6px;
+    margin-bottom: 16px;
+}
+
+input#txtNombreTemp {
+    height: 20px;
+    top: 14px;
+    position: relative;
+    left: 14px;
+}
+
+div#div_tipofor {
+    margin-bottom: -23px;
+    color: #fff;
+    text-align: left;
+    margin-left: 36px;
+    position: relative;
+    border-bottom: 1px solid #fff;
+    top: 8px;
+    font-weight: bold;
+    font-size: 17px;
+    width: 240px;
+}
+
+#Logos {
+    left: -17px;
+}
+
+.form-control td {
+    line-height: 19px;
+    font-size: 12px;
+}
+
+@media screen and ( max-height:3000px ) {
+    .contenedorcentro .subContenedor {
+        height: 1230px;
+    }
+}
+
+@media screen and ( max-height:1400px ) {
+    .contenedorcentro .subContenedor {
+        height: 1230px;
+    }
+}
+
+@media screen and ( max-height:1280px ) {
+    .contenedorcentro .subContenedor {
+        height: 969px;
+    }
+
+    iframe#mapa {
+        height: 458px !important;
+        margin-bottom: 5px;
+    }
+}
+
+@media screen and ( max-height:1100px ) {
+    .contenedorcentro .subContenedor {
+        height: 906px;
+    }
+}
+
+@media screen and ( max-height:1000px ) {
+    .contenedorcentro .subContenedor {
+        height: 779px;
+    }
+}
+
+@media screen and ( max-height:900px ) {
+    .contenedorcentro .subContenedor {
+        height: 628px;
+    }
+}
+
+@media screen and ( max-height:800px ) {
+    .contenedorcentro .subContenedor {
+        height: 530px;
+    }
+}
+
+@media screen and ( max-height:700px ) {
+    .contenedorcentro .subContenedor {
+        height: 434px;
+    }
+}
+
+@media screen and ( max-height:600px ) {
+    .contenedorcentro .subContenedor {
+        height: 354px;
+    }
+}
+
+@media screen and ( max-height:500px ) {
+    .contenedorcentro .subContenedor {
+        height: 251px;
+    }
+}
+
+@media screen and ( max-height:400px ) {
+    .contenedorcentro .subContenedor {
+        height: 170px;
+    }
+}
+
+@media screen and ( max-height:300px ) {
+    .contenedorcentro .subContenedor {
+        height: 104px;
+    }
+}
+
+@media screen and ( max-height:200px ) {
+    .contenedorcentro .subContenedor {
+        height: 354px;
+    }
+}
+
+@media screen and ( max-height:100px ) {
+    .contenedorcentro .subContenedor {
+        height: 354px;
+    }
+}
+
+footer {
+    display: none;
+}
+
+.LoadG {
+    background: url(../Content/imagenes/ajax-loader.gif);
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    bottom: 100px;
+    left: 47px;
+}
+
+.EncuestaCol1 {
+    background: rgba(162, 163, 159, 0.15);
+    border-left: 1px solid #CDCCCC;
+    border-right: 1px solid #CDCCCC;
+}
+
+.EncuestaCol2 {
+    background: #fff;
+    border-left: 1px solid #CDCCCC;
+    border-right: 1px solid #CDCCCC;
+}
+
+.checkbox {
+    display: table;
+}
+
+    .checkbox input {
+        margin-right: 12px !important;
+    }
+
+.acordeonVerde .checkbox input[type="checkbox"] {
+    margin: 1px;
+}
+
+.acordeonVerde .agregar:active {
+    width: 23px;
+    height: 16px;
+    background-size: 33px;
+}
+
+.acordeonVerde .quitar:active {
+    background-size: 21px;
+}
+
+textarea.form-control {
+    height: auto;
+    margin-bottom: -1px;
+}
+
+.nav > li > a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 0px;
+}
+
+div#GrdDocumentoAdjunto {
+    /* color: rgb(128, 125, 125); */
+    position: relative;
+    top: 46px;
+}
+
+button.btnimgedit {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: 0px;
+    z-index: 4;
+    background: url(../Content/images/editarFoto.png);
+    border: none;
+    background-size: contain;
+    float: right;
+    right: 12px;
+}
+
+form#logoutForm li > a {
+    position: relative;
+    top: 5px;
+    cursor: default;
+}
+
+    form#logoutForm li > a:hover {
+        position: relative;
+        top: 5px;
+        cursor: default;
+        opacity: 10;
+        color: #fff;
+    }
+
+    form#logoutForm li > a:active {
+        position: relative;
+        top: 5px;
+        cursor: default;
+        color: #fff;
+        opacity: 10;
+    }
+
+form#logoutForm li + li > a {
+    display: none;
+}
+
+div#GrdDocumentoAdjunto {
+    /* color: rgb(128, 125, 125); */
+    position: relative;
+    top: 8px;
+}
+
+.dx-datagrid-header-panel {
+    border-bottom: 1px solid #d2d2d2;
+    position: relative;
+    /* left: -153px; */
+    width: 100%;
+}
+
+#carousel .prev, #carousel .next {
+    background: transparent url(../Content/Images/carousel_control.png) no-repeat 0 0;
+    text-indent: -999px;
+    display: block;
+    overflow: hidden;
+    width: 15px;
+    height: 21px;
+    margin-left: 10px;
+    position: absolute;
+    top: 100px;
+}
+
+#carousel .prev {
+    background-position: 0 0;
+    left: -30px;
+}
+
+    #carousel .prev:hover {
+        left: -31px;
+    }
+
+#carousel .next {
+    background-position: -18px 0;
+    right: -20px;
+}
+
+    #carousel .next:hover {
+        right: -21px;
+    }
+
+.btnGrid {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.btnEditar:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+img#btnAyudas {
+    float: right;
+    position: relative;
+    cursor: pointer;
+}
+
+    img#btnAyudas:hover {
+        opacity: .7;
+    }
+
+    img#btnAyudas:active {
+        opacity: .2;
+    }

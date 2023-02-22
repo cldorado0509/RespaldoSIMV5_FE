@@ -1,0 +1,38 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+<script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+
+<script>
+    $(document).ready(function () {
+        $("#btnEnviar").click(function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ProcesarJson", "Vertimientos")',
+                data: { jsonInfo: $("#texto").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    alert(response);
+                }
+            });
+        });
+    });
+</script>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PruebaJsonPost</title>
+</head>
+<body>
+    <div>
+        
+        <textarea rows="40" cols="150" id="texto"></textarea>
+        <input type="button" value="Enviar" id="btnEnviar" />
+    </div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+﻿@model SIM.Areas.Seguridad.Models.RegisterViewModel
+@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "Registrarse";
+}
+
+<br />
+<br />
+<br />
+<br />
+<div class="row">
+    <div class="col-md-8">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h4>REGISTRARSE</h4>
+            <hr />
+            @Html.ValidationSummary()
+            
+            <div class="form-group">
+                @Html.Label("Registrarse como: ", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.DevExpress().RadioButtonList(settings =>
+                    {
+                        settings.Name = "tipoPersonaUsuario";
+                        settings.Properties.Items.Add("Persona", "P");
+                        settings.Properties.Items.Add("Empresa", "E");
+                        settings.Properties.RepeatColumns = 2;
+                        settings.ControlStyle.Border.BorderStyle = BorderStyle.None;
+                        settings.ControlStyle.VerticalAlign = VerticalAlign.Top;
+                        if (ViewBag.TipoPersonaUsuario == null || ViewBag.TipoPersonaUsuario == "0")
+                            settings.Properties.ClientSideEvents.Init = "function (s,e) { s.SetValue('P'); }";
+                        else
+                            settings.Properties.ClientSideEvents.Init = "function (s,e) { s.SetValue('E'); $(\"[for='LastName']\").text('NIT'); $(\"[for='FirstName']\").text('Razón Social'); }";
+                        settings.Properties.ClientSideEvents.ValueChanged = "function (s,e) { if (tipoPersonaUsuario.GetValue() == 'E') { $(\"[for='LastName']\").text('NIT'); $(\"[for='FirstName']\").text('Razón Social'); } else { $(\"[for='LastName']\").text('Apellidos'); $(\"[for='FirstName']\").text('Nombres'); } }";
+                    }).GetHtml()
+                </div>
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.TipoUsuario, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.TipoUsuario, (SelectList)ViewBag.TIPOUSUARIO)
+                    
+                </div>
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+                        
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Registrarse" />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-4">
+        <section id="socialLoginForm">
+            @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

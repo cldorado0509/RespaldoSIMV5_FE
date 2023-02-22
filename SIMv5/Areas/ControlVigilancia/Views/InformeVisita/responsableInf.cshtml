@@ -1,0 +1,329 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "GridAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        label {
+            margin-top: 15px;
+        }
+
+        .btnGuardar {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Guardar.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+    </style>
+</head>
+<body style="overflow: hidden;">
+    <div class="container">
+
+        <div class="row" style="margin-right: 10px; margin-left: 10px; ">
+            <div class="col-sm-12">
+                <div id="GrdResponsable" style="height: 200px; width:100%; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; ">
+                </div>
+            </div>       
+         </div>
+ 
+        <div class="row">
+            <div class="col-sm-12">
+
+                <button class="btn btn-default btnGuardar" id="btnGuardar" style="margin-top: 10px; margin-right: 6px;" onclick="guardarResponsable()">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>
+
+    <script>
+        var CodResponsable = "";
+        $(document).ready(function () {
+
+            $("#GrdResponsable").dxDataGrid({
+
+                selection: {
+                    mode: 'single'
+                },
+                columns: [
+                    { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%', dataType: 'number' },
+                    { dataField: 'NOMBRECOMPLETO', caption: 'Nombre completo', allowGrouping: true, width: '70%', dataType: 'string' },
+                ],
+                scrolling: { mode: 'infinite' },
+                selectionChanged: function (selecteditems) {
+
+                    try {
+                        CodResponsable = "";
+
+                         CodResponsable = selecteditems.selectedRowsData[0]["CODFUNCIONARIO"];
+                        
+                    }
+                    catch (e) {
+                        console.log(e.message);
+                    }
+                },
+                allowColumnReordering: true,
+                //AllowSelectSingleRowOnly: true,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 7 },
+                filterRow: { visible: true },
+                searchPanel: { visible: false },
+            });
+
+            var CargarDatosResponsable = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var d = $.Deferred();
+                    if (filterOptions == "")
+                    {
+
+                        filterOptions = "0";
+                    }
+                    $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetFuncionarioTarea")" + "?filtro=" + filterOptions + "&codTarea=" + parent.codigoTareaSig).done(function (data) {
+                        d.resolve(data, { totalCount: data.length });
+                    });
+                    return d.promise();
+                }
+            });
+
+            var GrdResponsable = {
+                store: CargarDatosResponsable
+            };
+
+
+            $(function () {
+                $("#GrdResponsable").dxDataGrid({
+                    height: '280px',
+                    dataSource: GrdResponsable
+                });
+            });
+        });
+        function guardarResponsable()
+        {
+            var datos = CodResponsable;
+            if(datos=="")
+            {
+                mensajeAlmacenamiento("Seleccione un responsable");
+            } else {
+                parent.consultarTramitesVisita(CodResponsable);
+                parent.gridTramites({});
+            }
+        }
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default glyphicon  glyphicon-ok-circle"
+          },
+                ]
+            });
+
+
+        }
+        @*function consultarVisitasTramiteNuevo(datos) {
+
+
+            $("#GrdTramitesVisitas").dxDataGrid({
+                dataSource: datos,
+                selection: {
+                }, filterRow: { visible: false },
+                editing: {
+                    editMode: 'batch',
+                    editEnabled: true
+                },
+                columns: [
+                    {
+                        dataField: 'VINCULAR', allowGrouping: true, width: '10%', caption: 'Asociar', cellTemplate: function (container, options) {
+                            container.height(5);
+
+                            $('<input id="idVincular" type="checkbox"/>')
+                                .prop("checked", options.value)
+                                .appendTo(container);
+                        }
+                    },
+                        { dataField: 'CODTRAMITE', caption: 'Código trámite', allowGrouping: true, width: '25%' },
+                        { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '50%' },
+                        { dataField: 'FECHAINI', caption: 'Fecha inicio trámite', allowGrouping: true, width: '25%' }
+
+
+                ],
+                scrolling: { mode: 'infinite' },
+                cellClick: function (e) {
+                    e.data.editar = true;
+                    var id = e.data.Codigo;
+                    var tipoBoton = e.columnIndex;
+                    switch (tipoBoton) {
+                        case 0: //eliminar
+                            if (datos[e.rowIndex].VINCULAR) {
+                                datos[e.rowIndex].VINCULAR = false;
+                            } else {
+                                datos[e.rowIndex].VINCULAR = true;
+                            }
+                            break;
+                    }
+
+                    $("#GrdTramitesVisitas_E").dxDataGrid({
+                        dataSource: datos
+                    });
+                },
+                columnChooser: { enabled: false },
+                allowColumnReordering: true,
+                sorting: { mode: 'single' },
+
+                allowColumnResizing: true
+                    , columnAutoWidth: true, loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    }, onCellHoverChanged: function (hoverCell) {
+                        if (hoverCell.eventType == 'mouseover')
+                            hoverCell.cellElement.addClass("hovered");
+                        else
+                            hoverCell.cellElement.removeClass("hovered");
+                    }
+            });
+        }
+        function cargarDatoTramiteVisitaNuevo() {
+            var arrDatoNuevo = new Array();
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/Visitas/consultarTramitesVisitaNuevo")",
+
+                beforeSend: function () { },
+                success: function (response) {
+
+                    var datos = eval("(" + response + ')');
+                    for (var i = 0; i < datos.length; i++) {
+                        dato = {
+                            "VINCULAR": false,
+                            "CODTRAMITE": datos[i].CODTRAMITE,
+                            "ASUNTO": datos[i].ASUNTO,
+                            "FECHAINI": datos[i].FECHAINICIOTRAMITE,
+                            "DIRECCION": datos[i].DIRECCION,
+                            "MUNICIPIO": datos[i].MUNICIPIO
+                        }
+                        arrDatoNuevo.push(dato);
+                    }
+
+                    consultarVisitasTramiteNuevo(arrDatoNuevo);
+                }
+            });
+
+
+        }
+        function consultarTareaSiguiente() {
+
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/InformeVisita/ConsultarTareaSiguiente")",
+                data: { idVisita: parent.idVisita },
+                beforeSend: function () { },
+                success: function (response) {
+
+                    var datos = eval("(" + response + ')');
+
+                    guardarTramite(datos.CODTAREASIGUIENTE);
+                }
+            });
+
+
+        }
+
+        function guardarTramite(tareaSig) {
+            var datos = $("#GrdTramitesVisitas").dxDataGrid('instance')._controllers.data._dataSource._items;
+            var arrDatos = "";
+            for (var i = 0; i < datos.length; i++) {
+                if (datos[i].VINCULAR == true) {
+                    arrDatos += datos[i].CODTRAMITE + ",";
+                }
+            }
+            arrDatos = arrDatos.substring(0, arrDatos.length - 1);
+            if (arrDatos != "") {
+                $.ajax({
+                    type: "POST",
+
+                    url: "@Url.Content("~/ControlVigilancia/InformeVisita/guardarTramiteInf")",
+                    data: { tramites: arrDatos, tareaSiguiente: tareaSig, idVisita: parent.idVisita },
+                    beforeSend: function () { },
+                    success: function (response) {
+
+                        var dato = response;
+
+                        parent.confirmarTramite();
+                        parent.$("#pantallaTramites").dialog('close');
+                    }
+                });
+            } else {
+                mensajeAlmacenamiento("seleccione un tramite");
+            }
+        }
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default glyphicon  glyphicon-ok-circle"
+          },
+                ]
+            });
+
+
+        }*@
+    </script>
+
+
+</body>
+</html>

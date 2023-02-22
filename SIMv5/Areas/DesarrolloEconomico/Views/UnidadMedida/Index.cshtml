@@ -1,0 +1,56 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Unidades de Medida";
+    //Layout = "~/Views/Shared/_LayoutDesarrolloEconomico.cshtml";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/DesarrolloEconomico/Scripts/UnidadMedida.js")"></script>
+
+<style>
+   .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Unidades de Medida</label>
+            </h3>
+        </div>
+        <div id="GidListado"></div>
+        <br />
+        <div id="btnNuevo"></div>
+        <div id="PopupNuevaUnidad">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Nombre de la Unidad :</div>
+                    <div class="col-sm-8" id="txtNombre"></div>
+                    <div class="control-label col-sm-3">Descripción :</div>
+                    <div class="col-sm-8" id="txtDescripcion"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Habilitado :</div>
+                    <div class="col-md-3" id="chkEstado"></div>
+                 </div>
+                <br />
+                <div id="BotonNewUnidad">
+                    <div id="btnGuarda"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

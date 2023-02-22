@@ -1,0 +1,224 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<h2>Reportes de Vertimientos</h2>
+
+<script src="~/Areas/Retributivas/Scripts/Reportes.js"></script>
+
+<link rel="stylesheet" type="text/css" href="~/Areas/Retributivas/Scripts/Reportes.css">
+
+
+
+
+<script>
+    $(function () {
+        $("#tabs").tabs();
+    });
+</script>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Sistema de Autoreportes de Vertimientos Puntulaes</label>
+            </h3>
+
+        </div>
+
+        <div id="reportedevertimientos">
+            <p>Sistema de información para el registro de los autoreportes de vertimientos realizados por su empresa a los caudales de aguas del Area Metropolitana del Valle de Aburra. por medio del presente se podrá realizar el registro mensual de vertimientos de la Demanda Bioquímica de Oxigeno -DBO y los Sólidos Suspendidos Totales - SST, en los afluentes de agua.</p>
+        </div>
+        <br />
+
+        <div id="tabs">
+            <ul>
+
+                <li><a href="#tabs-1">Puntos de Vertimiento</a></li>
+
+                <li><a href="#tabs-2">Reportes SNCAP</a></li>
+            </ul>
+
+            <div id="tabs-2">
+                <div class="dx-fieldset-header"> Reportes Sector no Conectado al Alcantarillado Publico</div>
+                <p>Realice el reportes mes a mes de los vertimientos realizados por su empresa a las afluentes de agua autorizadas.</p> <br />
+
+                <br />
+                <div id="btnAddReports"></div>
+                <div id="grdReports"></div>
+
+                <div id="popupReports">
+
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Identificación del Vertimiento</div>
+                        <div class="dx-field-value">
+                            <div id="apodoReport"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Corriente de Agua</div>
+                        <div class="dx-field-value">
+                            <div id="cmbTributaryname"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Mes</div>
+                        <div class="dx-field-value">
+                            <div id="monthReport"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Año</div>
+                        <div class="dx-field-value">
+                            <div id="yearReport"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Caudal Promedio (Q)</div>
+                        <div class="dx-field-value">
+                            <div id="flowAverage"></div>
+                        </div>
+                    </div>
+
+                    @*<div class="dx-field">
+            <div class="dx-field-label">Tipo de Descargas</div>
+            <div class="dx-field-value">
+                <div id="cmbDownloadType"></div>
+            </div>
+        </div>*@
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Horas de Descarga al Día</div>
+                        <div class="dx-field-value">
+                            <div id="sheddingHours"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Dias de Descargas al Mes</div>
+                        <div class="dx-field-value">
+                            <div id="sheddingDays"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Demanda Bioquímica de Oxígeno</div>
+                        <div class="dx-field-value">
+                            <div id="dboReport"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Sólidos Suspendidos Totales</div>
+                        <div class="dx-field-value">
+                            <div id="sstReport"></div>
+                        </div>
+                    </div>
+
+                    <div id="btnReports"></div>
+
+                </div>
+
+            </div>
+
+
+            <div id="tabs-1">
+                <div class="dx-fieldset-header">Registro de Puntos de Vertimientos</div>
+                <p> Por favor selecciones los afluentes y los puentos de vertimientos registrado para su empresa.</p> <br />
+
+                <br />
+                <div id="btnAddAShedding"></div>
+                <div id="grdShedding"></div>
+
+                <div id="popupShedding">
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Identificación del Vertimiento</div>
+                        <div class="dx-field-value">
+                            <div id="apodo"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="dx-field">
+                        <div class="dx-field-label">Corriente de Agua</div>
+                        <div class="dx-field-value">
+                            <div id="cmbBasin"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Resolución</div>
+                        <div class="dx-field-value">
+                            <div id="numberResolution"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Fecha de Resolución</div>
+                        <div class="dx-field-value">
+                            <div id="dateResolution"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Años de Vigencia</div>
+                        <div class="dx-field-value">
+                            <div id="yearValidity"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Latitud</div>
+                        <div class="dx-field-value">
+                            <div id="numberLatitude"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Longitud</div>
+                        <div class="dx-field-value">
+                            <div id="numberLongitude"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Caudal Autorizado</div>
+                        <div class="dx-field-value">
+                            <div id="numberFlow"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Tipo de Descarga</div>
+                        <div class="dx-field-value">
+                            <div id="cmbDownloadTypeShedding"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Tipo de Agua de Residual</div>
+                        <div class="dx-field-value">
+                            <div id="cmdWasteWater"></div>
+                        </div>
+                    </div>
+
+                    <div id="btnShedding"></div>
+
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+</div>

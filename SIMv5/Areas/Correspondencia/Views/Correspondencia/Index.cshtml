@@ -1,0 +1,716 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script type="text/javascript">
+    var IdCod;
+    var myApp = angular.module('SIM', ['dx']);
+    myApp.controller("CodIndexController", function ($scope, $location, $http) {
+        $scope.isPopupVisible = false;
+        $scope.isPopupVisibleDoc = false;
+        $scope.btnAceptDisable = true;
+        $scope.MensajeError = "";
+        $scope.TipoServSel = "";
+        $scope.FechaOrden = new Date();
+
+        $scope.init = function () {
+            if ($location.search().IdCod) {
+                var Codigo = $location.search()['IdCod'];
+                if (Codigo != "undefined") {
+                    IdCod = Codigo;
+                    $.getJSON('@Url.Content("~")Correspondencia/api/CodApi/ObtenerDetalleOrden?IdCod=' + Codigo).done(function (data) {
+                        for (i = 0; i < data.length; i++) {
+                            grdCODDistDataSource.insert({
+                                CODTRAMITE: data[i].CODTRAMITE,
+                                CODDOCUMENTO: data[i].CODDOCUMENTO,
+                                DESTINATARIO: data[i].DESTINATARIO,
+                                DIRECCION: data[i].DIRECCION,
+                                CIUDAD: data[i].CIUDAD,
+                                PESO: data[i].PESO,
+                                OBSERVACIONES: data[i].OBSERVACIONES,
+                                REFERENCIA: data[i].REFERENCIA,
+                                CONTENIDO: data[i].CENTROCOSTO
+                            });
+                        }
+                        $scope.FechaOrden = data[0].FECHATIPOSERV;
+                        $scope.TipoServSel = data[0].TIPOSERVICIO;
+                        $('#gridDist').dxDataGrid({ dataSource: grdCODDistDataSource });
+                        $scope.btnAceptDisable = false;
+                    });
+                }
+            }
+        }
+
+        $scope.btnAlmacenarSettings = {
+            text: 'Almacenar',
+            type: 'success',
+            onClick: function (e) {
+                var DatosGridDist = grdCODDistDataSource._array;
+                if (DatosGridDist.length > 0) {
+                    var itemCODs = [];
+                    for (j = 0; j < DatosGridDist.length; j++) {
+                        itemCODs.push({ CODTRAMITE: DatosGridDist[j].CODTRAMITE, CODDOCUMENTO: DatosGridDist[j].CODDOCUMENTO, DESTINATARIO: DatosGridDist[j].DESTINATARIO, DIRECCION: DatosGridDist[j].DIRECCION, CIUDAD: DatosGridDist[j].CIUDAD, PESO: DatosGridDist[j].PESO, OBSERVACIONES: DatosGridDist[j].OBSERVACIONES, REFERENCIA: DatosGridDist[j].REFERENCIA, CONTENIDO: DatosGridDist[j].CONTENIDO, FECHATIPOSERV: $scope.txtFechaTipoServ.value, TIPOSERVICIO: $scope.TipoServSel, ORDENSERVICIO: IdCod });
+                    }
+                    $http.post(@Url.Content("~") + 'Correspondencia/api/CodApi/GuardaCOD', JSON.stringify(itemCODs)).success(function (data, status, headers, config) {
+                        if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
+                        else {
+                            DevExpress.ui.dialog.alert('Datos Guardados correctamente', 'Guardar Datos');
+                            $('#gridDist').dxDataGrid({ dataSource: [] });
+                            $('#grid').dxDataGrid({ dataSource: grdCODDataSource });
+                            $scope.btnAceptDisable = true;
+                        }
+                    }).error(function (data, status, headers, config) {
+                        DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data.mensaje, 'Guardar Datos');
+                    });
+                } else {
+                    $scope.almacenandoVisible = false;
+                    DevExpress.ui.dialog.alert('No hay datos en la lista para guardar', 'Guardar Datos');
+                }
+                $scope.Editar = false;
+            },
+            bindingOptions: {
+                disabled: 'btnAceptDisable'
+            }
+        };
+
+        $scope.btnCancelarSettings = {
+            text: 'Cancelar',
+            type: 'success',
+            onClick: function (e) {
+                $('#gridDist').dxDataGrid({ dataSource: [] });
+                $('#grid').dxDataGrid({ dataSource: [] });
+                $scope.btnAceptDisable = false;
+            }
+        };
+
+        $scope.popupCargaDocumento = {
+            width: 900,
+            height: 800,
+            showTitle: true,
+            title: "Visualizar Documento",
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            //bindingOptions: {
+            //    visible: "isPopupVisibleDoc",
+            //}
+        }
+
+        $scope.MostrarDocumento = function (CodTramite, CodDocumento) {
+            //$scope.isPopupVisibleDoc = true;
+            var _popup = $("#popDocumento").dxPopup("instance");
+            _popup.show();
+            $("#DocumentoAdjunto").attr("src", '@Url.Content("~")Correspondencia/Correspondencia/LeeDoc?CodTramite=' + CodTramite + '&CodDocumento=' + CodDocumento);
+        };
+
+        MostrarDetalleTra = function (CodTramite) {
+            var _popup = $("#popDetalle").dxPopup("instance");
+            _popup.option('title', 'Detalle Trámite - ' + CodTramite);
+            _popup.show();
+            $('#frmDetalleTramite').attr('src', null);
+            $("#frmDetalleTramite").attr("src", 'https://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=' + CodTramite);
+        };
+
+        $scope.btnPasaCodSetting = {
+            icon: '../Content/Images/PasarGrid.png',
+            text: 'Pasa COD',
+            type: 'success',
+            onClick: function (e) {
+                var result = DevExpress.ui.dialog.confirm('Desea pasar las comunicaciones seleccionadas ?', 'Confirmación');
+                result.done(function (dialogResult) {
+                    if (dialogResult) {
+                        var grid = $('#grid').dxDataGrid('instance');
+                        var DatosGridCOD = grid.getSelectedRowsData();
+                        for (i = 0; i < DatosGridCOD.length; i++) {
+                     //       var DatosGridCodDist = grdCODDistDataSource.items();
+                            var DatosGridCodDist = grdCODDistDataSource;
+                            var _Existe = false;
+                            if (DatosGridCodDist._array.length > 0)
+                            {
+                                for (j = 0; j < DatosGridCodDist._array.length; j++) {
+                                    if (DatosGridCodDist._array[j].CODTRAMITE == DatosGridCOD[i].CODTRAMITE && DatosGridCodDist._array[j].CODDOCUMENTO == DatosGridCOD[i].CODDOCUMENTO) {
+                                        _Existe = true;
+                                        break;
+                                    }
+                                }
+                                if (!_Existe) {
+                                    var d = new Date(DatosGridCOD[i].FECHA_RADICADO);
+                                    grdCODDistDataSource.insert({
+                                        CODTRAMITE: DatosGridCOD[i].CODTRAMITE,
+                                        CODDOCUMENTO: DatosGridCOD[i].CODDOCUMENTO,
+                                        DESTINATARIO: DatosGridCOD[i].DESTINATARIO,
+                                        DIRECCION: DatosGridCOD[i].DIRECCION,
+                                        CIUDAD: DatosGridCOD[i].CIUDAD,
+                                        PESO: '200',
+                                        OBSERVACIONES: DatosGridCOD[i].RADICADO + '-' + d.getFullYear(),
+                                        REFERENCIA: DatosGridCOD[i].RADICADO + '-' + d.getFullYear(),
+                                        CONTENIDO: DatosGridCOD[i].CENTROCOSTO
+                                    });
+                                }
+                            } else {
+                                var d = new Date(DatosGridCOD[i].FECHA_RADICADO);
+                                grdCODDistDataSource.insert({
+                                    CODTRAMITE: DatosGridCOD[i].CODTRAMITE,
+                                    CODDOCUMENTO: DatosGridCOD[i].CODDOCUMENTO,
+                                    DESTINATARIO: DatosGridCOD[i].DESTINATARIO,
+                                    DIRECCION: DatosGridCOD[i].DIRECCION,
+                                    CIUDAD: DatosGridCOD[i].CIUDAD,
+                                    PESO: '200',
+                                    OBSERVACIONES: DatosGridCOD[i].RADICADO + '-' + d.getFullYear(),
+                                    REFERENCIA: DatosGridCOD[i].RADICADO + '-' + d.getFullYear(),
+                                    CONTENIDO: DatosGridCOD[i].CENTROCOSTO
+                                });
+                            }
+                        }
+                        grid.clearSelection();
+                        $('#gridDist').dxDataGrid({ dataSource: grdCODDistDataSource });
+                    }
+                });
+
+            }
+        }
+
+        $scope.grdCODSettings = {
+            dataSource: grdCODDataSource,
+            allowColumnResizing: true,
+            loadPanel: { text: 'Cargando Datos...' },
+            noDataText: "Sin datos para mostrar",
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true
+            },
+            groupPanel: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            selection: {
+                mode: 'multiple',
+                allowSelectAll: false,
+                showCheckBoxesMode: 'always'
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: true,
+                allowAdding: false,
+                allowDeleting: false
+
+            },
+            onEditorPreparing: true,
+            filterSyncEnabled: true,
+            //onContentReady: function (e) {
+            //    $checkBox = $('.dx-header-row .dx-checkbox').first();
+            //    $checkBox.off('dxclick.MyNamespace');
+            //    $checkBox.on('dxclick.MyNamespace', function () {
+            //        var keys = [];
+            //        var selectedDatasUsers = e.component.getDataByKeys();  
+            //        for (var i = 0; i < selectedDatasUsers.length; i++)
+            //            keys.push(selectedDatasUsers[i].KeyField);
+            //        var value = $checkBox.dxCheckBox('instance').option('value');
+            //        if (value)
+            //            e.component.selectRows(keys, true);
+            //        else
+            //            e.component.deselectRows(keys);  
+            //    });
+            //} ,
+            columns: [
+                {
+                    dataField: "CODTRAMITE",
+                    width: '10%',
+                    caption: 'Codigo del Trámite',
+                    dataType: 'number',
+                    allowEditing: false,
+                    cellTemplate: function (cellElement, cellInfo) {
+                        if (cellInfo.data.CODTRAMITE != null && cellInfo.data.CODTRAMITE != '') {
+                            var enlaces = '<a href="#" onclick="MostrarDetalleTra(' + cellInfo.data.CODTRAMITE + ');">' + cellInfo.data.CODTRAMITE + '</a>'
+                        }
+                        cellElement.html(enlaces);
+                    }
+                }, {
+                    dataField: 'CODDOCUMENTO',
+                    width: '5%',
+                    caption: 'Documento',
+                    dataType: 'number',
+                    allowEditing: false,
+                    visible: false
+                }, {
+                    dataField: 'PROCESO',
+                    width: '5%',
+                    caption: 'Proceso',
+                    dataType: 'string',
+                    allowEditing: false
+                }, {
+                    dataField: 'RADICADO',
+                    width: '10%',
+                    caption: 'Radicado',
+                    dataType: 'string',
+                    allowEditing: false
+                }, {
+                    dataField: 'FECHA_RADICADO',
+                    width: '10%',
+                    caption: 'Fecha del Radicado',
+                    alignment: 'right',
+                    dataType: 'date',
+                    allowEditing: false
+                }, {
+                    dataField: 'ASUNTO',
+                    width: '15%',
+                    caption: 'Asunto del documento',
+                    alignment: 'right',
+                    dataType: 'string',
+                    allowEditing: false
+                }, {
+                    dataField: 'DESTINATARIO',
+                    width: '15%',
+                    caption: 'Destinatario',
+                    dataType: 'string',
+                    allowEditing: false
+                }, {
+                    dataField: 'DIRECCION',
+                    width: '15%',
+                    caption: 'Dirección',
+                    dataType: 'string',
+                    allowEditing: false
+                }, {
+                    dataField: 'CENTROCOSTO',
+                    width: '10%',
+                    caption: 'Centro Costos',
+                    dataType: 'string',
+                    allowEditing: false
+                },
+                {
+                    dataField: 'SERVICIOSEL',
+                    caption: 'Servicio Seleccionado',
+                    width: '10%',
+                    dataType: 'string',
+                    allowEditing: true,
+                    cellTemplate: function (cellElement, cellInfo) {
+                        cellElement.html(cellInfo.data.SERVICIOSEL);
+                    },
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        var div = document.createElement("div");
+                        cellElement.get(0).appendChild(div);
+
+                        $(div).dxSelectBox({
+                            dataSource: ListTipoServicio,
+                            placeholder: "Seleccione",
+                            value: cellInfo.data.SERVICIOSEL,
+                            onValueChanged: function (e) {
+                                cellInfo.setValue(e.value);
+                                $("#grid").dxDataGrid("saveEditData");
+                            },
+                        });
+                    }
+                },
+                {
+                    dataField: 'SERVICIO',
+                    caption: 'Servicio Orden',
+                    width: '10%',
+                    dataType: 'string',
+                    allowEditing: false
+                },
+                {
+                    dataField: 'DEVOLUCION',
+                    caption: 'Devolución',
+                    width: '5%',
+                    dataType: 'string',
+                    allowEditing: false
+                },
+                {
+                    width: 100,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '../Content/Images/Ver_Doc.png',
+                            onClick: function (e) {
+                                $scope.MostrarDocumento(options.row.data.CODTRAMITE, options.row.data.CODDOCUMENTO);
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            ]
+        }
+
+        var dataGridDist;
+        $scope.grdCODDistSetting = {
+            onInitialized: function (e) {
+                dataGridDist = e.component;
+            },
+            dataSource: grdCODDistDataSource,
+            allowColumnResizing: true,
+            caption: 'Formato de Distribución de Correspondencia',
+            loadPanel: { enabled: true, text: 'Cargando Datos...' },
+            noDataText: "Sin datos para mostrar",
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: true,
+                allowAdding: true
+            },
+            'export': {
+                enabled: true,
+                fileName: 'Formato_distribucion_correspondencia'
+            },
+            columns: [
+                {
+                    width: "auto",
+                    cellTemplate: function (container, options) {
+                        container.text(dataGridDist.pageIndex() * dataGridDist.pageSize() + (options.rowIndex + 1));
+                    }
+                },
+                {
+                    dataField: "CODTRAMITE",
+                    width: '1%',
+                    caption: 'Codigo del Trámite',
+                    dataType: 'string',
+                    visible: false,
+                }, {
+                    dataField: 'CODDOCUMENTO',
+                    width: '1%',
+                    caption: 'Documento',
+                    dataType: 'string',
+                    visible: false
+                }, {
+                    dataField: 'DESTINATARIO',
+                    width: '20%',
+                    caption: 'Destinatario',
+                    dataType: 'string'
+                }, {
+                    dataField: 'DIRECCION',
+                    width: '15%',
+                    caption: 'Dirección',
+                    dataType: 'string'
+                }, {
+                    dataField: 'CIUDAD',
+                    width: '15%',
+                    caption: 'Ciudad',
+                    dataType: 'string'
+                }, {
+                    dataField: 'PESO',
+                    width: '5%',
+                    caption: 'Peso',
+                    dataType: 'string'
+                }, {
+                    dataField: 'OBSERVACIONES',
+                    width: '20%',
+                    caption: 'Observaciones',
+                    dataType: 'string'
+                }, {
+                    dataField: 'REFERENCIA',
+                    width: '15%',
+                    caption: 'Referencia',
+                    dataType: 'string'
+                }, {
+                    dataField: 'CONTENIDO',
+                    width: '10%',
+                    caption: 'Contenido',
+                    dataType: 'string'
+                },
+                {
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '../Content/Images/Ver_Doc.png',
+                            onClick: function (e) {
+                                $scope.MostrarDocumento(options.row.data.CODTRAMITE, options.row.data.CODDOCUMENTO);
+                            }
+                        }).appendTo(container);
+                    }
+                },
+                {
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '../Content/Images/Delete.png',
+                            width: 30,
+                            height: 30,
+                            onClick: function (e) {
+                                grdCODDistDataSource.remove(options.data);
+                                $('#gridDist').dxDataGrid({
+                                    dataSource: grdCODDistDataSource
+                                });
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '../Content/Images/btn_duplicar.png',
+                            width: 30,
+                            height: 30,
+                            onClick: function (e) {
+                                grdCODDistDataSource.insert(options.data);
+                                $('#gridDist').dxDataGrid({
+                                    dataSource: grdCODDistDataSource
+                                });
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            ]
+        }
+
+        $scope.cboTipoServicio = {
+            dataSource: ListTipoServicio,
+            onValueChanged: function (data) {
+                $scope.TipoServSel = data.value;
+            },
+            bindingOptions: {
+                value: 'TipoServSel'
+            }
+        }
+
+        $scope.popupDespacho = {
+            width: 600,
+            height: 300,
+            showTitle: true,
+            title: 'Tipo de Servicio',
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            bindingOptions: {
+                visible: 'isPopupVisible'
+            }
+        }
+
+        $scope.btnSalvaTipoSer = {
+            text: 'Guardar Tipo Servicio',
+            icon: '../Content/Images/Save.png',
+            onClick: function (e) {
+                if ($scope.txtFechaTipoServ.value.toLocaleString() == "") {
+                    $scope.MensajeError = "Se debe ingresar una fecha para el tipo de servicio!!";
+                    return;
+                }
+                if ($scope.TipoServSel == "") {
+                    $scope.MensajeError = "El tipo de servicio es un dato obligatorio!!";
+                    return;
+                }
+                $scope.btnAceptDisable = false;
+                $scope.isPopupVisible = false;
+            }
+        }
+
+        $scope.txtFechaTipoServ = {
+            width: '100%',
+            acceptCustomValue: false,
+            value: new Date(),
+            bindingOptions: {
+                value: 'FechaOrden'
+            }
+        }
+
+        $scope.txtOrdenServicio = {
+            width: '100%',
+            mode: 'text',
+            value: '',
+            onValueChanged: function (data) {
+                $scope.OrdenServ = data.value;
+            }
+        }
+
+        $scope.btnTipoServicio = {
+            icon: '../Content/Images/Courrier.png',
+            onClick: function (e) {
+                $scope.isPopupVisible = true;
+            }
+        }
+    }).config(function ($locationProvider) {
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        });
+    });
+
+    var grdCODDistDataSource = new DevExpress.data.ArrayStore({ store: []});
+    var ListTipoServicio = new DevExpress.data.ArrayStore({
+        data: [
+            "Al Día",
+            "Correo Certificado Nacional",
+            "Correo Electrónico Certificado y SMS Certificado",
+            "EMS",
+            "Express Time",
+            "Notiexpress Personal",
+            "Notiexpress Por Aviso",
+            "Paqueteria",
+            "Postexpress",
+            "SMS Certificado",
+            "Varios Servicios",
+            "Descentralizado",
+            "Anónimos",
+            "Para anulación"]
+    });
+
+    var grdCODDistCustomStore = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"ID_COD","desc":true}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Correspondencia/api/CodApi/DetalleOrden', {
+                IdCod: IdCod,
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: false
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+
+
+    var grdCODDataSource = new DevExpress.data.CustomStore({
+        key: ['CODTRAMITE', 'CODDOCUMENTO'],
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"RADICADO","desc":false}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Correspondencia/api/CodApi/COD', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: true
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        },
+        update: function (key, values) {
+            $.postJSON(
+                '@Url.Content("~")Correspondencia/api/CodApi/GuardaSel?CodTramite=' + key.CODTRAMITE + '&CodDoc=' + key.CODDOCUMENTO + '&Seleccion=' + values.SERVICIOSEL
+            ).done(function (data) {
+                var grid = $('#grid').dxDataGrid('instance');
+                grid.refresh();
+            });
+        }
+    });
+
+    $.postJSON = function (url, data) {
+        var o = {
+            url: url,
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8'
+        };
+        if (data !== undefined) {
+            o.data = JSON.stringify(data);
+        }
+        return $.ajax(o);
+    };
+</script>
+<div ng-app="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="CodIndexController" class="panelSIM panelSIM-default">
+            @*<span ng-init="init(@(Context.Request.QueryString.Get("IdCod"))" />*@
+            <span ng-init="init()" />
+            <div dx-load-panel="{message: 'Almacenando...', showIndicator: true, shadingColor: 'transparent gray', shading: true, bindingOptions: { visible: 'almacenandoVisible' } }"></div>
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Correspondencia Despachada</label>
+                </h3>
+            </div>
+            <div dx-data-grid="grdCODSettings" id="grid"></div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row" style="text-align: center">
+                <div dx-button="btnPasaCodSetting" id="btnPasaCod" class="btn-lg"></div>
+            </div>
+            <div class="row">
+                <hr />
+            </div>
+            <div dx-data-grid="grdCODDistSetting" id="gridDist"></div>
+            <div class="row" style="text-align: right">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div dx-button="btnTipoServicio" id="btnTipoServ" class="btn-xs"></div>
+                </div>
+            </div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row" style="text-align: right">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div dx-button="btnAlmacenarSettings" id="btnAlmacenar" class="btn_lg"></div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">&nbsp;</div>
+                    <div dx-button="btnCancelarSettings" id="btnCancelar" class="btn_lg"></div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">&nbsp;</div>
+                </div>
+            </div>
+            <div class="popup" dx-popup="popupCargaDocumento" id="popDocumento">
+                <iframe src="" id="DocumentoAdjunto" width="100%" height="100%"></iframe>
+            </div>
+            <div class="popup" dx-popup="popupDespacho">
+                <div id="form">
+                    <div class="dx-fieldset">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Fecha de despacho </div>
+                            <div class="dx-field-value">
+                                <div id="selected-date" dx-date-box="txtFechaTipoServ"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Tipo de Servicio </div>
+                            <div class="dx-field-value">
+                                <div dx-select-box="cboTipoServicio"></div>
+                            </div>
+                        </div>
+                        @*<div class="dx-field">
+                        <div class="dx-field-label">Orden de Servicio </div>
+                        <div class="dx-field-value">
+                            <div dx-text-box="txtOrdenServicio"></div>
+                        </div>
+                    </div>*@
+                        <br />
+                        <div id="summary" dx-validation-summary="{{MensajeError}}"></div>
+                        <div style="text-align: center;">
+                            <div dx-button="btnSalvaTipoSer" id="btnSalTipoSer" class="btn_lg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="popup" dx-popup="popDetalleTramite" id="popDetalle">
+                <iframe src="" id="frmDetalleTramite" width="100%" height="100%" frameborder="0" scrolling="yes"></iframe>
+            </div>
+        </div>
+    </div>
+</div>

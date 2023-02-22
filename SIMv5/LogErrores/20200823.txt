@@ -1,0 +1,56 @@
+05:21:47 - ProyeccionDocumento [PostAlmacenarDatosProyeccionDocumento - 0 ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.
+An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-01400: no se puede realizar una inserción NULL en ("TRAMITES"."PROYECCION_DOC_FIRMAS"."S_TIPO")
+ORA-06512: en línea 4
+05:46:27 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+06:01:11 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+06:05:37 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+06:06:56 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+06:07:47 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+06:14:25 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+06:16:20 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+07:17:10 - Errores (AvanzaTareaTramiteFormulario):
+[1026580,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026541,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+[1026579,0,0,1111114314,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+09:42:39 - Errores (AvanzaTareaTramiteFormulario):
+[1026395,0,0,71763413,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+09:43:02 - Errores (AvanzaTareaTramiteFormulario):
+[1026395,0,0,71763413,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+09:44:47 - Errores (AvanzaTareaTramiteFormulario):
+[1026395,0,0,71763413,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+

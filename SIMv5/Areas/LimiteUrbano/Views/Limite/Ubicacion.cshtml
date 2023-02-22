@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "Termino condiciones";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        .ui-datepicker-calendar {
+            display: none;
+        }
+
+        button#btnNuevaEmpresa {
+            position: relative;
+            top: 9px;
+            background-image: url(../../Content/images/Nueva_Empresa.png);
+            right: 0px;
+            padding-left: 39px;
+            left: -20px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+    </style>
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+    <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-sm-6">
+                <div class="col-sm-12">
+                    <label>Dirección</label>
+                </div>
+                <div class="col-sm-12">
+                    <input class="form-control" id="txtdireccion" />
+                </div>
+
+            </div>
+            <div class="col-sm-6">
+                <div class="col-sm-12">
+                    <label>Municipio</label>
+                </div>
+                <div class="col-sm-12">
+                    <select id="cmbMunicipio" class="form-control" >
+                        <option value="-1">--Selecione--</option>
+                        <option value="1">BARBOSA</option>
+                        <option value="2">GIRARDOTA</option>
+                        <option value="3">COPACABANA</option>
+                        <option value="4">BELLO</option>
+                        <option value="5">MEDELLIN</option>
+                        <option value="6">ITAGUI</option>
+                        <option value="7">LA ESTRELLA</option>
+                        <option value="8">SABANETA</option>
+                        <option value="9">CALDAS</option>
+                        <option value="10">ENVIGADO</option>
+
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-sm-6">
+            <button id="btnEnviar" class="btn btn-default" onclick="enviar()">Enviar</button>
+
+        </div>
+
+    </div>
+  
+    <script>
+
+        $(document).ready(function () {
+            //abrirUbicacion();
+        });
+
+        function enviar() {
+            if ($("#txtdireccion").val() == "")
+            {
+                alert("Ingrese la dirección");
+                return
+            }
+            if ($("#cmbMunicipio").val() == "-1") {
+                alert("Seleccione un Municipio");
+                return
+            }
+            parent.abrirUrbanoRural($("#txtdireccion").val(), $("#cmbMunicipio").val());
+            
+        
+
+        }
+  
+    </script>
+    </body>

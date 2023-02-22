@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "Usuario - Roles";
+}
+@using DevExpress.Web.Mvc
+@using System.Web.UI.WebControls
+@using System.Security.Claims
+
+<script type="text/javascript">
+
+    //Funcion para capturar los datos cuando se selecciona el usuario al que se le van a agregar roles
+    function SeleccionarRegistroUsuario(s, e) {
+        gvwSelectUsuarios.GetSelectedFieldValues('ID_USUARIO;S_NOMBRE;S_LOGIN', OnSelectRowUsuario);
+    }
+
+    //Funcion para setiar en el campo el nombre y login del usuario seleccionado al que se le van a agregar roles
+    function OnSelectRowUsuario(selectedValues) {
+        ddeUsuario.SetText(selectedValues[0][1] + ' ' + ' (' + selectedValues[0][2] + ')');
+        ddeUsuario.HideDropDown();
+        tbhIdUsuario.SetText(selectedValues[0][0]);
+    }
+
+    function GuardarUsuarioRol() {
+        if (tbhIdUsuario.GetText() == null || tbhIdUsuario.GetText() == "")
+        {
+            alert("Debe seleccionar un usuario.");
+            return;
+        }
+        if(gvSeleccionarRol.GetSelectedRowCount()==0)
+        {
+            alert("Debe seleccionar almenos un rol.");
+            return;
+        }
+        gvSeleccionarRol.GetSelectedFieldValues('ID_ROL;S_NOMBRE', OnSelectRowsRoles);
+    }
+
+    function OnSelectRowsRoles(selectedValues) {
+        tbhIdRoles.SetText("");
+        for (i = 0; i < selectedValues.length; i++) {
+            tbhIdRoles.SetText(tbhIdRoles.GetText() + selectedValues[i][0] + ";");
+            }
+        $('#frmUsuarioRol').submit();
+    }
+</script>
+<br />
+<br />
+<br />
+<br />
+@using (Html.BeginForm("gvwAdministrarUsuarioRolCrear", "UsuarioRol", FormMethod.Post, new { name = "frmUsuarioRol", id = "frmUsuarioRol" }))
+{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+
+    if (claimppal.IsInRole("CUSUARIOROL"))
+    {
+        Html.DevExpress().RoundPanel(settingsRP =>
+        {
+            settingsRP.Name = "rpAgregarUsuario";
+            settingsRP.ShowHeader = true;
+            settingsRP.HeaderText = "Asociar roles con usuarios";
+            settingsRP.EnableTheming = true;
+            settingsRP.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+            settingsRP.Width = Unit.Percentage(100);
+
+
+            settingsRP.SetContent(() =>
+            {
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.Text = "Usuario:";
+                }).GetHtml();
+                
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-5\">");
+
+                Html.DevExpress().DropDownEdit(settings =>
+                {
+                    settings.Name = "ddeUsuario";
+                    settings.ReadOnly = true;
+                    settings.Width = Unit.Parse("500");
+                    settings.SetDropDownWindowTemplateContent(c =>
+                    {
+                        ViewContext.Writer.Write(@Html.Action("gvwSeleccionarUsuario", "Usuario"));
+                    });
+                }).GetHtml();
+                Html.DevExpress().TextBox(settings =>
+                {
+                    settings.ClientVisible = false;
+                    settings.Name = "tbhIdUsuario";
+                }
+                ).GetHtml();
+
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                
+                 Html.DevExpress().Button(settings =>
+                    {
+                        settings.Name = "btGuardar";
+                        settings.EnableTheming = true;
+                        settings.Text = "Guardar";
+                        settings.Width = Unit.Pixel(100);
+                        settings.AllowFocus = false;
+                        settings.UseSubmitBehavior = false;
+                        settings.ClientSideEvents.Click = "GuardarUsuarioRol";
+                    }).GetHtml();
+                
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.Text = "Roles:";
+                }).GetHtml();
+                
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-5\">");
+
+                ViewContext.Writer.Write(@Html.Action("gvwSeleccionarRol", "Rol"));
+                Html.DevExpress().TextBox(settings =>
+                {
+                    settings.ClientVisible = false;
+                    settings.Name = "tbhIdRoles";
+                }
+                ).GetHtml();
+
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.Name = "lbError";
+                    settings.Style.Add("color", "red");
+                    settings.Text = ViewData["EditError"] != null ? (string)ViewData["EditError"] : "";
+                }).GetHtml();
+
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+            });
+        }).GetHtml();
+    }
+}
+<br />
+<br />
+@Html.Action("gvwAdministrarUsuarioRol")

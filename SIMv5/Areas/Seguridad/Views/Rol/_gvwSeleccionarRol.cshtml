@@ -1,0 +1,28 @@
+@using System.Web.UI.WebControls
+
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvSeleccionarRol";
+        settings.CallbackRouteValues = new { Controller = "Rol", Action = "gvwSeleccionarRol" };
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowSelectCheckbox = true;
+        settings.Width = Unit.Percentage(100); 
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = false;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = false;
+        settings.SettingsBehavior.AllowSelectSingleRowOnly = false;
+
+        settings.KeyFieldName = "ID_ROL";
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+    });
+}
+@grid.Bind(Model).GetHtml()

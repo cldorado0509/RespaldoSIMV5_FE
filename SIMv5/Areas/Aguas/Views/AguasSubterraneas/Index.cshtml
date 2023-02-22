@@ -1,0 +1,1192 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Mvc
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "Aguas Subterraneas";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+    <script src="@Url.Content("~/Scripts/js/scripAguas.js?v=1.01")"></script>
+    <script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1-packed.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.jquery.mousewheel.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.touchSwipe.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.transit.min.js")"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="//cdn3.devexpress.com/jslib/14.2.5/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn3.devexpress.com/jslib/14.2.5/css/dx.light.css" />
+    <!-- The line below was commented by the Project Converter, see this link for more info: -->
+    <!--<script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.2.5/js/dx.webappjs.js"></script>-->
+    <script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.2.5/js/dx.all.js"></script>
+    
+
+    <script>
+        var almacenandoDetalle = false;
+        var tipoV = "N";
+        $(document).ready(function () {
+
+
+            $("#txtCaptacion").val("@ViewBag.txtCaptacion");
+            $("#txtTipoEstado").val("@ViewBag.txtTipoEstado");
+            $("#txtVisita").val("@ViewBag.txtVisita");
+            $("#txtEstadoBase").val("@ViewBag.txtEstadoBase");
+            $("#txtForm").val("@ViewBag.txtForm");
+            $("#txturlMapa").val("@ViewBag.txturlMapa")
+            $("#txttblFotos").val("@ViewBag.txttblFotos")
+            $("#txtinstalacion").val("@ViewBag.txtinstalacion")
+            $("#txttercero").val("@ViewBag.txttercero")
+            $("#txttblEstados").val("@ViewBag.txttblEstados")
+            tipoV = "@ViewBag.txttipoV";
+
+            var textoi = $("#texttoempresa").text() + "@ViewBag.textoEmpresa";
+            $("#texttoempresa").text(textoi.replace("&#243;", "ó"));
+            if (tipoV == "N") {
+
+                $("#Tab2").css('display', 'none');
+                $("#Tab3").css('display', 'none');
+                $("#Tab4").css('display', 'none');
+                $("#Tab5").css('display', 'none');
+                $("#Tab6").css('display', 'none');
+                $("#txtNombreOficial").text("Aguas Subterranea(Nuevo)")
+                llamarGetCaptacion($("#txtCaptacion").val(), -1, -1)
+
+            } else if (tipoV == "M") {
+                llamarGetCaptacion($("#txtCaptacion").val(), -1, -1)
+                var dato = $("#txtEstadoBase").val()
+                $("#idCaptacionEstado").val(dato);
+                consultarJsonUsos();
+                consultarJsonEncuesta();
+                consultarJsonDetalle();
+                consultarFotos()
+                CargarGrid()
+
+
+            }
+            else if (tipoV == "D") {
+                llamarGetCaptacion($("#txtCaptacion").val(), -1, -1)
+                var dato = $("#txtEstadoBase").val()
+                $("#idCaptacionEstado").val(dato);
+                consultarJsonUsos();
+                consultarJsonEncuesta();
+                consultarJsonDetalle();
+                consultarFotos()
+                CargarGrid()
+
+                $("#Tab2").css('display', 'none');
+                $("#Tab3").css('display', 'none');
+                $("#Tab4").css('display', 'none');
+                $("#Tab5").css('display', 'none');
+                $("#Tab6").css('display', 'none');
+
+            }
+        });
+
+
+        ///llamados para los json
+        function llamarGetCaptacion(idCaptacion, x, y) {
+            onLoad("tabUbicacion");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarInformacionCaptacion", "AguasSuperficiales")',
+                data: { idCaptacion: idCaptacion, X: x, Y: y },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonUbicacion = eval('(' + response + ')');
+
+                    $("#txtNombreOficial").text(jsonUbicacion.NOMBRE);
+                    if (jsonUbicacion.X == "-1") {
+                        jsonUbicacion.Y = 6.244149674069126;
+                        jsonUbicacion.X = -75.5811904423266;
+                    } 
+                        $("#txtY").val(jsonUbicacion.Y);
+                        $("#txtX").val(jsonUbicacion.X);
+                    
+
+                  
+                    $("#txtCedula1").val(jsonUbicacion.CEDULA_CATASTRAL_INFORMADA);
+                    $("#txtCedula2").val(jsonUbicacion.CEDULA_CATASTRAL_CATASTRO);
+                    if (jsonUbicacion.X != 0 && jsonUbicacion.Y != 0) {
+                        ZoomXYmapa(jsonUbicacion.X, jsonUbicacion.Y, "tabUbicacion")
+                    } else {
+                        offLoad("tabUbicacion");
+                    }
+                    $("#txtdescripcion").val(jsonUbicacion.DESCRIPCION);
+                    $("#txtDlote").val(jsonUbicacion.DESCRIPCION_LOTE);
+                    $("#txtidMunicipio").val(jsonUbicacion.ID_MUNICIPIO);
+                    $("#txtnomMunicipio").val(jsonUbicacion.NOM_MUNICIPIO);
+                    $("#txtidfuente").val(jsonUbicacion.ID_TIPO_FUENTE);
+                    $("#txtnomfuente").val(jsonUbicacion.NOM_TIPO_FUENTE);
+                    $("#txtidareaH").val(jsonUbicacion.ID_AREA_HIDROGRAFICA);
+                    $("#txtnomareaH").val(jsonUbicacion.NOM_AREA_HIDROGRAFICA);
+                    $("#txtidzonaH").val(jsonUbicacion.ID_ZONA_HIDRO);
+                    $("#txtnomzonaH").val(jsonUbicacion.NOM_ZONA_HIDRO);
+                    $("#txtidszonaH").val(jsonUbicacion.ID_SUB_ZH);
+                    $("#txtnomszonaH").val(jsonUbicacion.NOM_SUB_ZH);
+                    $("#txtZ").val(jsonUbicacion.Z);
+                    $("#txtCedula2").val(jsonUbicacion.CEDULA_CATASTRAL_CATASTRO);
+                    $("#txtnombreTramo").val(jsonUbicacion.NOMBRE_TRAMO);
+                    $("#txtnombreFuente").val(jsonUbicacion.NOMBRE_FUENTE);
+
+                    $("#ubicarpuntobtn")[0].title = "Reubicar punto";
+
+                }
+            });
+        }
+        /////////////////////////7
+        function llamarGetCaptacionReubicar(idCaptacion, x, y) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarInformacionCaptacion", "AguasSuperficiales")',
+                data: { idCaptacion: idCaptacion, X: x, Y: y },
+                beforeSend: function () { },
+                success: function (response) {
+                    var jsonUbicaciontemp = eval('(' + response + ')');
+                    if (jsonUbicacion == null) {
+                        jsonUbicacion = jsonUbicaciontemp
+
+                    } else {
+                        jsonUbicacion.ID_MUNICIPIO = jsonUbicaciontemp.ID_MUNICIPIO;
+                        jsonUbicacion.NOM_MUNICIPIO = jsonUbicaciontemp.NOM_MUNICIPIO;
+                        jsonUbicacion.ID_TIPO_FUENTE = jsonUbicaciontemp.ID_TIPO_FUENTE;
+                        jsonUbicacion.NOM_TIPO_FUENTE = jsonUbicaciontemp.NOM_TIPO_FUENTE;
+                        jsonUbicacion.ID_AREA_HIDROGRAFICA = jsonUbicaciontemp.ID_AREA_HIDROGRAFICA;
+                        jsonUbicacion.NOM_AREA_HIDROGRAFICA = jsonUbicaciontemp.NOM_AREA_HIDROGRAFICA;
+                        jsonUbicacion.ID_ZONA_HIDRO = jsonUbicaciontemp.ID_ZONA_HIDRO;
+                        jsonUbicacion.NOM_ZONA_HIDRO = jsonUbicaciontemp.NOM_ZONA_HIDRO;
+                        jsonUbicacion.ID_SUB_ZH = jsonUbicaciontemp.ID_SUB_ZH;
+                        jsonUbicacion.NOM_SUB_ZH = jsonUbicaciontemp.NOM_SUB_ZH;
+                        jsonUbicacion.Z = jsonUbicaciontemp.Z;
+                        jsonUbicacion.CEDULA_CATASTRAL_CATASTRO = jsonUbicaciontemp.CEDULA_CATASTRAL_CATASTRO;
+                    }
+                    $("#txtidMunicipio").val(jsonUbicacion.ID_MUNICIPIO);
+                    $("#txtnomMunicipio").val(jsonUbicacion.NOM_MUNICIPIO);
+                    $("#txtidfuente").val(jsonUbicacion.ID_TIPO_FUENTE);
+                    $("#txtnomfuente").val(jsonUbicacion.NOM_TIPO_FUENTE);
+                    $("#txtidareaH").val(jsonUbicacion.ID_AREA_HIDROGRAFICA);
+                    $("#txtnomareaH").val(jsonUbicacion.NOM_AREA_HIDROGRAFICA);
+                    $("#txtidzonaH").val(jsonUbicacion.ID_ZONA_HIDRO);
+                    $("#txtnomzonaH").val(jsonUbicacion.NOM_ZONA_HIDRO);
+                    $("#txtidszonaH").val(jsonUbicacion.ID_SUB_ZH);
+                    $("#txtnomszonaH").val(jsonUbicacion.NOM_SUB_ZH);
+                    $("#txtZ").val(jsonUbicacion.Z);
+                    $("#txtCedula2").val(jsonUbicacion.CEDULA_CATASTRAL_CATASTRO);
+                    offLoad("tabUbicacion");
+
+                }
+            });
+        }
+        function guardarUbicacionoficial() {
+            if (jsonUbicacion == null) {
+                mensajeAlmacenamiento("Debe diligenciar la información");
+                return;
+            }
+            jsonUbicacion.NOMBRE = $("#txtNombreOficial").text();
+            jsonUbicacion.X = $("#txtX").val() * 1;
+            jsonUbicacion.Y = $("#txtY").val() * 1;
+            jsonUbicacion.NOMBRE_FUENTE = $("#txtnombreFuente").val();
+            jsonUbicacion.NOMBRE_TRAMO = $("#txtnombreTramo").val();
+            jsonUbicacion.DESCRIPCION = $("#txtdescripcion").val();
+            jsonUbicacion.CEDULA_CATASTRAL_INFORMADA = $("#txtCedula1").val();
+            jsonUbicacion.DESCRIPCION_LOTE = $("#txtDlote").val();
+            jsonUbicacion.TIPO_CAPTACION = 2;//MODIFICAR PARA AGUAS SUBTERRANEAS 2
+            var idcap = jsonUbicacion.ID_CAPTACION;
+            var jsonOficial = JSON.stringify(jsonUbicacion)
+
+            if (tipoV == "N" && $("#idCaptacionEstado").val() == "") {
+                onLoad("tabUbicacion");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GuardarInformacionCaptacionAndEstado", "AguasSuperficiales")',
+                    data: { jsonInfo: jsonOficial, tipoestado: $("#txtTipoEstado").val(), idcaptacion: idcap, idVisita: $("#txtVisita").val(), idFormulario: $("#txtForm").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        if (response != "error") {
+                            mensajeAlmacenamiento("Almacenamiento Exitoso");
+                            $("#idCaptacionEstado").val(response);
+                            $("#txtEstadoBase").val(response);
+
+                            if (tipoV == "N") {
+                                CargarComponentes();
+                            }
+                            consultarFotos();
+
+                            cambiarTabs();
+                            offLoad("tabUbicacion");
+
+                        } else {
+                            mensajeAlmacenamiento("Error al almacenar la informacion")
+                            offLoad("tabUbicacion");
+                        }
+
+
+
+                    }
+                });
+            } else if (tipoV == "D") {
+                onLoad("tabUbicacion");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GuardarInformacionCaptacionAndEstado", "AguasSuperficiales")',
+                    data: { jsonInfo: jsonOficial, tipoestado: $("#txtTipoEstado").val(), idcaptacion: idcap, idVisita: $("#txtVisita").val(), idFormulario: $("#txtForm").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        if (response != "error") {
+                            mensajeAlmacenamiento("Almacenamiento Exitoso");
+                            $("#idCaptacionEstado").val(response);
+                            $("#txtEstadoBase").val(response);
+
+                            cambiarTabs();
+                            offLoad("tabUbicacion");
+
+                            tipoV = 'M';
+                        } else {
+                            mensajeAlmacenamiento("Error al almacenar la informacion")
+                            offLoad("tabUbicacion");
+                        }
+                    }
+                });
+            } else {
+                onLoad("tabUbicacion");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GuardarInformacionCaptacion", "AguasSuperficiales")',
+                    data: { jsonInfo: jsonOficial, tipoestado: $("#txtTipoEstado").val(), idcaptacion: idcap, idVisita: $("#txtVisita").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        if (response != "error") {
+                            mensajeAlmacenamiento("Almacenamiento Exitoso");
+                            offLoad("tabUbicacion");
+                        } else {
+                            mensajeAlmacenamiento("Error al almacenar la informacion")
+                            offLoad("tabUbicacion");
+                        }
+
+
+
+                    }
+                });
+            }
+
+
+        }
+        function consultarJsonUsos() {
+            onLoad("tabUsos");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarInformacionUsos", "AguasSuperficiales")',
+                data: { idCapEstado: $("#idCaptacionEstado").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonUsos = eval('(' + response + ')');
+                    consultarUsos();
+                    offLoad("tabUsos");
+
+
+                }
+            });
+        }
+        function consultarJsonEncuesta() {
+            onLoad("tabAdicional");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonEncuestas", "AguasSuperficiales")',
+                data: { idCapEstado: $("#idCaptacionEstado").val(), form: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonEncuestas = eval('(' + response + ')');
+
+                    var htmlGeneral = consultarEncuestas(jsonEncuestas);
+                    $("#acordionEncuestaPrincipal").remove();
+                    $("#acordionEncuestaGeneral").append(htmlGeneral);
+                    offLoad("tabAdicional");
+
+                }
+            });
+        }
+        function consultarJsonDetalle() {
+            onLoad("tabDetalle");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalle", "AguasSuperficiales")',
+                data: { idCapEstado: $("#idCaptacionEstado").val(), form: $("#txtForm").val(), tblEstados: $("#txttblEstados").val(), copia: (tipoV == 'D') },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 0, 0, "acordionDetallePrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneral").append(html);
+                    offLoad("tabDetalle");
+
+                    almacenandoDetalle = false;
+
+                }
+            });
+        }
+        function guardarUsosOficial() {
+            $('#btnGuardar2').attr('disabled', true);
+            onLoad("tabUsos");
+            var jsonOficial = JSON.stringify(jsonUsos)
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarInformacionUsos", "AguasSuperficiales")',
+                data: { jsonInfo: jsonOficial, idCapEstado: $("#idCaptacionEstado").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    //$('#btnGuardar2').attr('disabled', false);
+                    if (response == "Ok") {
+                        consultarJsonUsos();
+
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
+                        offLoad("tabUsos");
+
+                    } else {
+                        mensajeAlmacenamiento("Error al almacenar la informacion usos:" + response)
+                        offLoad("tabUsos");
+                    }
+
+                    setTimeout(function () { $('#btnGuardar2').attr('disabled', false); }, 10000);
+
+
+                }
+            });
+
+        }
+
+        function guardarDetalleOficial() {
+            $('#btnGuardar3').attr('disabled', true);
+            if (!almacenandoDetalle) {
+                almacenandoDetalle = true;
+                var jsoE = guardarDetalle("acordionDetallePrincipal", 0);
+                var jsonOficial = JSON.stringify(jsoE)
+                onLoad("tabDetalle");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GuardarInformacionDetalle", "AguasSuperficiales")',
+                    data: { jsonInfo: jsonOficial, idCapEstado: $("#idCaptacionEstado").val(), tblEstados: $("#txttblEstados").val() },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        //$('#btnGuardar3').attr('disabled', false);
+                        if (response == "Ok") {
+                            consultarJsonDetalle();
+
+                            mensajeAlmacenamiento("Almacenamiento Exitoso");
+                            offLoad("tabDetalle");
+                        } else {
+                            mensajeAlmacenamiento("Error al almacenar la informacion detalle")
+                            offLoad("tabDetalle");
+                        }
+
+                        setTimeout(function () { $('#btnGuardar3').attr('disabled', false); }, 10000);
+                    }
+                });
+            }
+        }
+        function guardarEncuestaOficial() {
+            $('#btnGuardar5').attr('disabled', true);
+            onLoad("tabAdicional");
+            var jsonOficial = JSON.stringify(jsonEncuestas)
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarInformacionEncuesta", "AguasSuperficiales")',
+                data: { jsonInfo: jsonOficial, form: $("#txtForm").val(), idCapEstado: $("#idCaptacionEstado").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    //$('#btnGuardar5').attr('disabled', false);
+                    if (response == "Ok") {
+                        consultarJsonEncuesta();
+
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
+                        offLoad("tabAdicional");
+
+                    } else {
+                        mensajeAlmacenamiento("Error al almacenar la informacion Encuesta")
+                        offLoad("tabAdicional");
+                    }
+
+                    setTimeout(function () { $('#btnGuardar5').attr('disabled', false); }, 10000);
+
+                }
+            });
+
+        }
+
+        function abrirFotos() {
+            $("#pantallaCargarImg").dialog(
+            {
+
+                width: 500,
+                height: 200,
+                modal: true
+            });
+            $("#pantallaCargarImg #fotos").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/cargarImagenForm")");
+
+        }
+        function llenarCarrusel(datos) {
+
+            guardarFotosQuejas(datos);
+        }
+        function llenarCarrusel2(datos) {
+            onLoad("tabFotos");
+            setTimeout(function () {
+                if (Totalimg.length == 0) {
+                    Totalimg = datos;
+                } else {
+                    for (var i = 0; i < datos.length; i++) {
+                        Totalimg.push(datos[i]);
+                    }
+                }
+
+                var html = "";
+                var cantidaDatos = 0;
+                $("#carousel .caroufredsel_wrapper").remove();
+                html += ' <ul id="Carusel1">';
+
+                for (var j = 0; j < Totalimg.length; j++) {
+
+                    html += ' <li ><button class="btnimgedit"  onclick="eliminar(\'' + Totalimg[j].id + '\')"></button><img src="' + Totalimg[j].url + '" alt="' + Totalimg[j].nombre + '" title="' + Totalimg[j].etiqueta + '" id="' + Totalimg[j].id + '" ><label class="texto">' + Totalimg[j].etiqueta + '</label></li>';
+
+                }
+                html += "</ul>";
+                offLoad("tabFotos");
+                $("#carousel").append(html);
+                $('#carousel ul').carouFredSel({
+                    auto: false,
+                    prev: '#prev',
+                    next: '#next',
+                    pagination: "#pager2",
+                    mousewheel: true,
+
+                    swipe: {
+                        onMouse: true,
+                        onTouch: true
+                    }
+                });
+            }, 3000);
+        }
+        function guardarFotos(d) {
+
+        }
+
+        function guardarFotosQuejas(arrfotos) {
+
+
+            var datos = "";
+            for (var i = 0; i < arrfotos.length; i++) {
+                if (arrfotos.length - 1 == i) {
+                    datos += arrfotos[i].id;
+                } else {
+                    datos += arrfotos[i].id + ',';
+                }
+
+            }
+            onLoad("tabFotos");
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetGuardarFotografiasForm")",
+                data: {
+                    captacionestado: $("#txtEstadoBase").val(), idFotos: datos, tabla: $("#txttblFotos").val(), idForm: $("#txtForm").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    consultarFotos();
+                    offLoad("tabFotos");
+
+                },
+            });
+        }
+        function eliminar(nombre) {
+            datos = $("#" + nombre)[0];
+            nombreFoto = "";
+            idFotografia = "";
+            etiqueta = "";
+            idFotografia = datos.id;
+            nombreFoto = datos.alt;
+            etiqueta = datos.title;
+            abrirEliminarFotos();
+        }
+        function abrirEliminarFotos() {
+            $("#pantallaEliminarFoto").dialog(
+            {
+
+                width: 288,
+                height: 360,
+                modal: true
+            });
+            $("#frEliminarFoto").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/EliminarFotoForm")");
+        }
+
+        function AgregarEtiqueta(etiq, palabra) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/AgregarEtiqueta")",
+                data: {
+                    p_idFotografia: idFotografia, etiqueta: etiq, palabra: palabra
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    consultarFotos();
+                },
+            });
+
+        }
+        function CargarGrid() {
+        
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/Documento/api/DocumentoWebAPI/GetConsultarDocumentoAdjunto")",
+                data:{idFormulario:$("#txtForm").val(),idEstado:$("#txtEstadoBase").val()},
+            success: function (result) {
+                var datos = eval(result);
+                gridDocumento(datos);
+         
+            }
+        });
+
+        }
+
+        
+
+         
+        function gridDocumento(datos) {
+            $(function () {
+          
+                $("#GrdDocumentoAdjunto").dxDataGrid({
+                    dataSource: datos,
+                    searchPanelPlaceholder: "Buscar",
+                    selection: {
+                        mode: 'single'
+                    },
+                    columns: [
+                           { dataField: 'S_ARCHIVO', caption: 'Archivo', allowGrouping: true, width: '60%', dataType: 'string' },
+                     {
+                         dataField: 'EDITARVISITA', allowGrouping: true, caption: 'Ver Documento', width: '20%', cellTemplate: function (container, options) {
+                             container.height(5);
+                             $('<img src="@Url.Content("../../Content/Images/EditarVisita.png")" style="width:25px;height:25px" />')
+
+                                         .attr('src', options.value)
+                                         .appendTo(container);
+                         }
+                     },
+
+                 {
+                     dataField: 'EliminarDocumento', allowGrouping: true, caption: 'Eliminar Documento', width: '20%', cellTemplate: function (container, options) {
+                         container.height(5);
+                         $('<img src="@Url.Content("../../Content/Images/eliminarGris.png")" style="width:25px;height:25px" />')
+
+                                     .attr('src', options.value)
+                                     .appendTo(container);
+                     }
+                 }
+                    ], onCellClick: function (e) {
+                        var id = e.data.ID_DOCUMENTO;
+                        IdEliminar = e.data.ID_DOCUMENTO;
+                        urlDoc = e.data.URL;
+                        var tipoBoton = e.columnIndex;
+
+                        switch (tipoBoton) {
+                            case 1: //ver
+                                VerDocumento();
+                                break;
+                            case 2: //eliminar
+                                EliminarDocumentoBD();
+                                break;
+
+
+                        }
+
+                    },
+                    allowColumnReordering: true,
+                   
+                    loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    },
+                    sorting: { mode: 'multiple' },
+                    groupPanel: { visible: false, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+                    pager: { visible: true },
+                    paging: { pageSize: 7 },
+                    filterRow: {
+                        visible: false,
+                        applyFilter: "auto"
+                    },
+                    searchPanel: { visible: false, placeholder: 'Buscar...' },
+                }).dxDataGrid('instance');
+            });
+
+
+        }
+        
+        function abrirDocumento() {
+            $("#pantallaCargarDocumentoAdjunto").dialog(
+            {
+
+                width: 288,
+                height: 240,
+                modal: true
+            });
+            $("#DocumentoAdjunto").attr("src", "@Url.Content("~/Documento/Documento/CargarDocumentoAdjunto")");
+
+        }
+
+        function EliminarDocumentoBD() {
+            if (confirm("¿Esta seguro en Eliminar el documento?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Content("~/Documento/api/DocumentoWebAPI/EliminarDocumentoAdjunto")",
+                    data: {
+                        id_Doc: IdEliminar, idForm: $("#txtForm").val()
+                    },
+                    beforeSend: function () {
+
+                    },
+                    success: function (response) {
+                        var dato = response;
+                        CargarGrid();
+                    },
+                });
+            } else {
+                return false;
+            }
+
+        }
+        function guardarDocumentoAdjunto(arrDocumentoAdjunto) {
+            var datos = "";
+            for (var i = 0; i < arrDocumentoAdjunto.length; i++) {
+                if (arrDocumentoAdjunto.length - 1 == i) {
+                    datos += arrDocumentoAdjunto[i].id;
+                } else {
+                    datos += arrDocumentoAdjunto[i].id + ',';
+                }
+
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/Documento/api/DocumentoWebAPI/GetGuardarDocumentoAdjunto")",
+                data: {
+                    idDocumentoAdjunto: datos, idFormulario: $("#txtForm").val(), idEstado: $("#txtEstadoBase").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    CargarGrid();
+
+                  
+
+                },
+
+            });
+
+        }
+
+        function VerDocumento() {
+
+            window.open(urlDoc);
+        }
+        function consultarFotos() {
+            onLoad("tabFotos");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarFotografiasForm", "AguasSuperficiales")',
+
+                data: {
+                    idForm: $("#txtForm").val(), tabla: $("#txttblFotos").val(), idEstado: $("#txtEstadoBase").val()
+                },
+                beforeSend: function () {
+                    offLoad("tabFotos");
+                },
+                success: function (response) {
+                    var dato = eval('(' + response + ')');
+
+                    Totalimg = [];
+                    if (dato.length > 0) {
+                        var objDatos = new Object();
+                        for (var i = 0; i < dato.length; i++) {
+                            objDatos = new Object();
+                            //objDatos['url'] = dato[i].URL;
+                            objDatos['url'] = '@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/ObtenerFotografia")/' + dato[i].ID_FOTOGRAFIA;
+                            objDatos['etiqueta'] = dato[i].S_ETIQUETA;
+                            objDatos['id'] = dato[i].ID_FOTOGRAFIA;
+                            objDatos['nombre'] = dato[i].S_ARCHIVO;
+
+                            Totalimg.push(objDatos);
+                        }
+
+
+                        offLoad("tabFotos");
+
+                    }
+                    offLoad("tabFotos");
+                    llenarCarrusel2('')
+                },
+            });
+
+        }
+        function EliminarFotoVisitaBD() {
+            if (confirm("¿Esta seguro en Eliminar la foto?")) {
+                onLoad("tabFotos");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("eliminarFotoForm", "AguasSuperficiales")',
+                    data: {
+                        idfoto: idFotografia, tabla: $("#txttblFotos").val()
+                    },
+                    beforeSend: function () {
+
+                    },
+                    success: function (response) {
+                        var dato = response;
+                        var arrFotos = [];
+                        var objDato = new Object();
+                        for (var i = 0; i < Totalimg.length; i++) {
+                            objDato = new Object();
+                            if (Totalimg[i].id != idFotografia) {
+                                objDato['url'] = Totalimg[i].url;
+                                objDato['etiqueta'] = Totalimg[i].etiqueta;
+                                objDato['id'] = Totalimg[i].id;
+                                arrFotos.push(objDato);
+                                offLoad("tabFotos");
+                            }
+                        }
+                        Totalimg = arrFotos;
+                       
+                        consultarFotos();
+
+
+                    },
+                });
+            } else {
+                return;
+            }
+
+        }
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default "
+          },
+                ]
+            });
+
+
+        }
+
+        function Ayudas() {
+
+            var tabUbicacion = document.getElementById('Tab1');
+            var tabUsos = document.getElementById('Tab2');
+            var tabDetalle = document.getElementById('Tab3');
+            var tabFoto = document.getElementById('Tab4');
+            var tabAdicional = document.getElementById('Tab5');
+            var tabArchivo = document.getElementById('Tab6');
+
+            if (tabUbicacion.className == 'active') {
+
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 22);
+
+            }
+            else if (tabUsos.className == 'active') {
+                // moverAyudas(1);
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 23);
+            }
+            else if (tabDetalle.className == 'active') {
+                // moverAyudas(2);
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 26);
+            }
+            else if (tabFoto.className == 'active') {
+                // moverAyudas(2);
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 24);
+            }
+            else if (tabAdicional.className == 'active') {
+                // moverAyudas(2);
+                window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 25);
+            }
+      
+        }
+    </script>
+
+    <div id="divNombreCaptacion">
+        <div id="div_tipofor">@ViewBag.txtNombref</div>
+        <div id="div_nom_1" class="nombretitle">
+            <label id="txtNombreOficial">captacion numero1</label><button type="button" class="btn btn-default" aria-label="Left Align" onclick="nombreOpcion(1)">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div id="div_nom_2" class="nombretitle" style="display:none">
+            <input type="text" id="txtNombreTemp" style="width: 220px !important;"/><button type="button" class="btn btn-default " onclick="nombreOpcion(2)">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            </button>
+        </div>
+        <label id="texttoempresa"> Instalación: <br /></label>
+
+    </div>
+    <div class="container contenedorcentro ">
+        <div style="position:absolute;top:0px;z-index:9999;display:none">
+            <input type="text" id="txtCaptacion" value="">
+            <input type="text" id="txtTipoEstado" value="">
+            <input type="text" id="txtVisita" value="">
+            <input type="text" id="txtEstadoBase" value="">
+            <input type="text" id="txtForm" value="">
+            <input type="text" id="idCaptacionEstado" value="">
+
+            <input type="text" id="txturlMapa" value="">
+            <input type="text" id="txttblFotos" value="">
+            <input type="text" id="txtinstalacion" value="">
+            <input type="text" id="txttercero" value="">
+            <input type="text" id="txttblEstados" value="">
+
+        </div>
+        <!--dialog -->
+
+        <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+            <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+        </div>
+        <!--Dialog informacion ubicacion-->
+        <div id="dialogAyuda" title="Ayuda" style="display:none">
+            <div class="col-md-12 " id="ContenidoAyuda">
+
+            </div>
+        </div>
+        <!--dialog de observacion-->
+        <div id="dialogObservacion" title="Observación" style="display:none">
+            <div class="col-md-12 " id="ContenidoObservacion">
+
+            </div>
+        </div>
+        <div id="pantallaEliminarFoto" title="Detalle fotografía" style="display: none; overflow: hidden;">
+            <iframe src="" id="frEliminarFoto" width="100%" height="100%"></iframe>
+
+
+        </div>
+        <div id="pantallaCargarDocumentoAdjunto" title="Cargar Documento" style="display: none;">
+            <iframe src="" id="DocumentoAdjunto" width="100%" height="100%"></iframe>
+        </div>
+
+        <div id="pantallaEliminarDocumento" title="Eliminar Documento" style="display: none; overflow: hidden;">
+            <iframe src="" id="frEliminarDocumento" width="100%" height="100%"></iframe>
+        </div>
+        <!--Dialog informacion ubicacion-->
+        <div id="dialogUbicacion" title="Información" style="display:none">
+            <div class="col-md-12 ">
+                <table class="informacionUbicacion">
+                    <tr>
+                        <td>
+                            <label>Municipio:</label>
+
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion1 " id="txtidMunicipio" disabled />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion" id="txtnomMunicipio" disabled />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Fuente:</label>
+
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion1" id="txtidfuente" disabled />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion" id="txtnomfuente" disabled />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Area Hidrografica:</label>
+
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion1" id="txtidareaH" disabled />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion" id="txtnomareaH" disabled />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Zona hidrografica:</label>
+
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion1" id="txtidzonaH" disabled />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion" id="txtnomzonaH" disabled />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Sub Zona hidrografica:</label>
+
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion1" id="txtidszonaH" disabled />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control informacion" id="txtnomszonaH" disabled />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Nombre fuente:</label>
+
+                        </td>
+                        <td colspan="2">
+                            <input type="text" maxlength="100" class="form-control" id="txtnombreFuente" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Nombre Tramo:</label>
+
+                        </td>
+                        <td colspan="2">
+                            <input type="text" maxlength="100" class="form-control" id="txtnombreTramo" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <button type="button" id="btnCerraU" class="btn btn-default btn-sm" onclick="  $('#dialogUbicacion').dialog('close');">Aceptar</button>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+        </div>
+        <!--fin dialogo-->
+        <div class="col-sm-12" style="margin-top: 39px; margin-bottom: -6px;">
+            <div class="panel panel-default" style="padding-bottom: 0px">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+
+                    <div class="subContenedor">
+                        <!--contenedor tab-->
+                        <div style="padding: 15px">
+                            <img src="../../Content/Images/Ayuda.png" id="btnAyudas" onclick="Ayudas()"></>
+                            <ul class="nav nav-tabs">
+                                <li id="Tab1" class="active"><a href="#tabUbicacion" onclick="CambiarGuardarbtnA(1)" data-toggle="tab">Ubicación</a></li>
+                                <li id="Tab2"><a href="#tabUsos" data-toggle="tab" onclick="CambiarGuardarbtnA(2)">Usos</a></li>
+                                <li id="Tab3"><a href="#tabDetalle" onclick="CambiarGuardarbtnA(3)" data-toggle="tab">Detalle</a></li>
+                                <li id="Tab4"><a href="#tabFotos" onclick="CambiarGuardarbtnA(4)" data-toggle="tab">Fotos</a></li>
+                                <li id="Tab5"><a href="#tabAdicional" onclick="CambiarGuardarbtnA(5)" data-toggle="tab">Adicional</a></li>
+                                <li id="Tab6"><a href="#tabArchivo" onclick="CambiarGuardarbtnA(6)" data-toggle="tab">Archivo</a></li>
+
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="myTabContent">
+                            <!--TabUbicacion-->
+                            <div class="tab-pane fade active in" id="tabUbicacion">
+
+                                <div class="row col-md-12 informacionUbicacion">
+                                    <div class="col-md-8 mapacont1">
+                                        <iframe id="mapa" style="width: 100%; height: 375px; overflow: hidden; border: none; " src="/MAPGISV5_WEB/tools/AMVA/inicio_aguas_subterraneas.htm"></iframe>
+                                    </div>
+                                    <div class="col-md-4 row mapacont2">
+                                        <fieldset class="fielsedAguas">
+                                            <legend class="legendAguas">Información captación:</legend>
+                                            <table class="informacionUbicacion">
+
+                                                <tr>
+                                                    <td>
+                                                        <label>x:</label>
+                                                        <input type="text" maxlength="50" class="form-control" id="txtX" />
+                                                    </td>
+                                                    <td>
+                                                        <label>y:</label>
+                                                        <input type="text" maxlength="50" class="form-control" id="txtY" />
+                                                    </td>
+                                                    <td>
+                                                        <label>z:</label>
+                                                        <input type="text" maxlength="50" class="form-control" id="txtZ" disabled />
+                                                    </td>
+                                                    <td>
+                                                        <label></label>
+                                                        <button title="Ubicar punto mapa" class="form-control" id="ubicarpuntobtn" onclick="UbicarPunto()">
+                                                            <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>
+
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <label></label>
+                                                        <button class="form-control" title="Información" id="btnInformacionubi" onclick="AbrirInfoUbi()">
+                                                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="5">
+                                                        <label>Descripción:</label>
+                                                        <textarea class="form-control" maxlength="400" id="txtdescripcion" rows="3"></textarea>
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </fieldset>
+                                        <fieldset class="fielsedAguas">
+                                            <legend class="legendAguas">Información lote:</legend>
+                                            <table class="informacionUbicacion">
+                                                <tr>
+
+                                                    <td colspan="5">
+                                                        <label>Cédula catastral informada:</label>
+                                                        <input type="text" maxlength="50" onkeydown="return validarNumeros(event)" class="form-control" id="txtCedula1" />
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="5">
+                                                        <label>Cédula catastral:</label>
+                                                        <input type="text" maxlength="50" onkeydown="return validarNumeros(event)" class="form-control" id="txtCedula2" disabled />
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="5">
+                                                        <label>Descripción lote:</label>
+                                                        <textarea maxlength="400" class="form-control" id="txtDlote" rows="3"></textarea>
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </fieldset>
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!--fin tab Ubicacion-->
+                            <!--inicio tabUsos-->
+                            <div id="tabUsos" class="tab-pane fade ">
+                                <!--Inicio Acordion -->
+
+                                <div class="col-md-12" id="acordionUsosGeneral">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionUsosPrincipal">
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--fin tab usos-->
+                            <!--inicio tabDetalle-->
+                            <div id="tabDetalle" class="tab-pane fade ">
+                                <!--Inicio Acordion -->
+
+                                <div class="col-md-12" id="acordionDetalleGeneral">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--fin tab usos-->
+                            <!--inicio tabFotografia-->
+                            <div id="tabFotos" class="tab-pane fade ">
+                                <!--carusel-->
+                                <div class="col-sm-12">
+                                 
+                                    <div id="carousel">
+
+                                        <div class="clearfix"></div>
+                                        <a id="prev" class="prev" href="#">&lt;</a>
+                                        <a id="next" class="next" href="#">&gt;</a>
+                                        <div id="pager" class="pager"></div>
+                                    </div><!-- /#myCarousel -->
+
+                                </div>
+
+                            </div>
+
+                            <!--inicio tabAdicional-->
+                            <div id="tabAdicional" class="tab-pane fade ">
+                                <div class="col-md-12" id="acordionEncuestaGeneral">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionEncuestaPrincipal">
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!---------------------------->
+                            <div id="tabArchivo" class="tab-pane fade ">
+                             
+                                <div id="GrdDocumentoAdjunto" class="archivosDiv"></div>
+
+                            </div>
+                            <!---------------------------->
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="actionBar">
+                    <button type="button" id="btnCerra" class="btn btn-default btn-sm" onclick="cerrarPestala()">Cerrar</button>
+                    <button type="button" id="btnGuardar1" class="btn btn-default btn-sm" onclick="GuardarUbicacion(1)">Guardar Ubicación</button>
+                    <button type="button" style="display:none" id="btnGuardar2" class="btn btn-default btn-sm" onclick="GuardarUbicacion(2)">Guardar Usos</button>
+                    <button type="button" style="display:none" id="btnGuardar3" class="btn btn-default btn-sm" onclick="GuardarUbicacion(3)">Guardar Detalle</button>
+                    <button class="btn btn-default btn-sm" style="display:none" onclick="abrirFotos()" id="btnCargarFoto">Cargar Fotos</button>
+                    <button class="btn btn-default" style="display:none" onclick="abrirDocumento()" id="btnCargarDocumento">Cargar Documento</button>
+                  
+                    <button type="button" style="display:none" id="btnGuardar5" class="btn btn-default btn-sm" onclick="GuardarUbicacion(5)">Guardar Adicional</button>
+
+
+                </div>
+            </div>
+        </div>
+        <!--Fin TabUbicacion-->
+    </div>
+    <!--fin contenedor tab-->
+    <!----------------------------->
+    <!------------------------->
+    </div>
+
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>

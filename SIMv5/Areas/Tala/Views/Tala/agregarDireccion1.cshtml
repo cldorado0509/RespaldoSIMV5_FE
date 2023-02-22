@@ -1,0 +1,148 @@
+@{
+    ViewBag.Title = "Termino condiciones";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<link href="@Url.Content("~/Content/arbolUrbanoF.css")" rel="stylesheet" type="text/css" />
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+    body{
+        overflow: hidden;
+    }
+        .container {
+               margin-top: 15px !important;
+            padding: 0px;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+    </style>
+</head>
+<body onload="cargarmuni()">
+    <div class="col-xs-12 col-sm-12 col-md-12" style="    height: 40px;">
+        <div class="col-xs-4 col-sm-4 col-md-4">
+                <select id="cmbViaPrincipal" class="form-control">
+                    <option value="-1">Seleccionar</option>
+                    <option value="Calle">Calle (CL)</option>
+                    <option value="Carrera">Carrera (CR)</option>
+                    <option value="Avenida">Avenida (AV)</option>
+                    <option value="Circular">Circular (CQ)</option>
+                    <option value="Diagonal">Diagonal (DG)</option>
+                    <option value="Transversal">Transversal (TV)</option>
+                    <option value="Otra">Otra (OT)</option>
+                </select>
+        </div>
+        
+
+        <div class="col-xs-2 col-sm-2 col-md-2">
+             <input id="txtNumero" type="text" placeholder="000A" class="form-control" />
+        </div>
+
+        <div class="col-xs-3 col-sm-3 col-md-3" style="padding-left: 20px;">
+            <span style="  position: absolute;  left: 3px;  top: 5px;">#</span>
+                <input id="txtPlaca" type="text" placeholder="000AA" class="form-control" />
+        </div>
+         <div class="col-xs-3 col-sm-3 col-md-3" style="padding-left: 20px;">
+             <span style="  position: absolute;  left: 3px;  top: 5px;">-</span>
+                <input id="txtPlaca1" type="text" placeholder="000AA" class="form-control" />
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <label>Direcci&oacute;n Adicional (Opcional)</label>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <input id="txtInterior" type="text"  placeholder="Unidad, Bloque, Torre, Apartamento" class="form-control" />
+
+            </div>
+        </div>
+         <div class="col-xs-12 col-sm-12 col-md-12" >
+            <div class="col-xs-12 col-sm-12 col-md-12" >
+                <label>Municipio</label>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" >
+                  <select id="cmbMunicipioArea" class="form-control"></select>
+              </div>
+         </div>
+    </div>
+</div>
+
+<div id="msAlmacenamiento" title="Información" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+</div>
+</body>
+</html>
+<script>
+
+    function agregar()
+    {
+        if ($("#cmbViaPrincipal").val() == "-1")
+        {
+            mensajeAlmacenamiento("Selecione una v&iacute;a principal");
+            return;
+        }
+        if ($("#txtNumero").val() == "") {
+            mensajeAlmacenamiento("Ingrese el n&uacute;mero");
+            return;
+        }
+     
+        if ($("#txtPlaca").val() == "") {
+            mensajeAlmacenamiento("Ingrese una placa");
+            return;
+        }
+         if ($("#cmbMunicipioArea").val() == "-1") {
+                mensajeAlmacenamiento("Seleccione el municipio");
+                return;
+            }
+    
+        parent.retornaDirecion1($("#cmbMunicipioArea option:selected").text()+", "+$("#cmbViaPrincipal").val() + " " + $("#txtNumero").val() + "#" + $("#txtPlaca").val() + " - " + $("#txtPlaca1").val() + " " + $("#txtInterior").val() ,$("#cmbMunicipioArea").val());
+        parent.$("#pantallaDirecion1").dialog("close");
+    }
+    function mensajeAlmacenamiento(mensaje) {
+       parent.alert(mensaje);
+
+
+    }
+    function cargarmuni(){
+        var html="<option value='-1'>Seleccionar</option>";
+                    var datos=parent.arrayMunicipiosGeneral;
+
+                    for (var i = 0; i < datos.length; i++)
+                        html += "<option value=" + datos[i].CODIGO + ">" + datos[i].NOMBRE + "</option>";
+
+                    $("#cmbMunicipioArea").html(html);
+
+    }
+</script>

@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Capacitaciones";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Capacitacion/Scripts/Capacitaciones.js?V=0.1")"></script>
+<style>
+    #BotonNewCapac {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Administrar Capacitaciones</label>
+            </h3>
+        </div>
+        <div id="grdListaCapac"></div>
+        <br />
+        <div id="btnNuevo"></div>
+        <br />
+        <div id="PopupNuevaCapac">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Nombre de la capacitación :</div>
+                    <div class="col-sm-4" id="txtNombre"></div>
+                    <div class="control-label col-sm-2">Lugar :</div>
+                    <div class="col-sm-3" id="txtLugar"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Fecha del evento :</div>
+                    <div class="col-md-3" id="dpFecha"></div>
+                    <div class="control-label col-md-3">Duración :</div>
+                    <div class="col-md-3" id="txtDuracion"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Responsable del evento :</div>
+                    <div class="col-md-9" id="txtResponsable"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Capacidad :</div>
+                    <div class="col-md-9" id="txtCapacidad"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Contacto :</div>
+                    <div class="col-md-9" id="txtContacto"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Correo Contacto :</div>
+                    <div class="col-md-9" id="txtCorreoContacto"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Dirección Url (Virtual) :</div>
+                    <div class="col-md-9" id="txtUrl"></div>
+                </div>
+                <br />
+                <div id="BotonNewCapac">
+                    <div id="btnGuarda"></div>
+                </div>
+            </div>
+        </div>
+        <div id="PopupInscritos">
+            <div id="grdListaInscritos"></div>
+        </div>
+        <div id="PopupDetalleCapac"></div>
+        <div id="PopupReporte"></div>
+        <div id="LoadingPanel"></div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-CO">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <DataSource ComponentName="dataSource1" Name="Visitas" />
+  </DataSources>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="Visitas" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="TIPO_VISITA" UniqueName="DataItem0" />
+        <Measure DataMember="ID_VISITA" SummaryType="Count" UniqueName="DataItem1" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension UniqueName="DataItem0" />
+      </SeriesDimensions>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutItem DashboardItem="chartDashboardItem1" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

@@ -1,0 +1,551 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FloraModel.Store" Provider="Oracle.ManagedDataAccess.Client" ProviderManifestToken="12.1" Alias="Self" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <Function Name="SP_ASOCIAR_DESASOCIAR_ARBOL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDTEMP" Type="number" Mode="In" />
+          <Parameter Name="IDARBOL" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_ELIMINAR_DOC_TALA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="ARRIDARBOL" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_ELIMINAR_DOC_TALA_TODO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA" />
+        <Function Name="SP_ELIMINAR_FOTO_TALA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="ID_FOTO" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_GET_ACTULIZAR_DOMINIOS_APPT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA" />
+        <Function Name="SP_GET_AGENTE_DM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_ARBOLES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDVISITA" Type="number" Mode="In" />
+          <Parameter Name="LSTIDIND" Type="varchar2" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_ARBOLES_CARGA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="ID_TRAMITE" Type="number" Mode="In" />
+          <Parameter Name="ID_CONTRATO" Type="number" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_COMBOHIJO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDPRE" Type="number" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_DATOSF" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="STR_SQL" Type="varchar2" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_ENCUESTAS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDESTADO" Type="number" Mode="In" />
+          <Parameter Name="ID_FORM" Type="number" Mode="In" />
+          <Parameter Name="IDVIGENCIA" Type="number" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_ENCUESTAS_REPORT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDESTADO" Type="number" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_ENTORNO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_ESPECIES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_ESTADOS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_INTV_VISITA_TEMP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDVISITA" Type="number" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_RIESGO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_GET_SINTOMA_DM" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_ARBOLES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDVISITA" Type="number" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_ARBOLES_CARGA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="In" />
+          <Parameter Name="FIN" Type="number" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_ARBOLES_CARGA_CONTRATO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="In" />
+          <Parameter Name="FIN" Type="number" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_CLONAR_ENCUESTA_EXTERNO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDVIG" Type="number" Mode="In" />
+          <Parameter Name="VALOR" Type="varchar2" Mode="In" />
+          <Parameter Name="COD_FUN" Type="number" Mode="In" />
+          <Parameter Name="IDES" Type="number" Mode="In" />
+          <Parameter Name="INSTALACION" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_CREAR_ESTADO_GENERICO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDENC" Type="number" Mode="In" />
+          <Parameter Name="COD_FUN" Type="number" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+          <Parameter Name="IDTERCERO" Type="number" Mode="In" />
+          <Parameter Name="IDINSTALACION" Type="number" Mode="In" />
+          <Parameter Name="TIPORAD" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_DOC_TALA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDARBOL" Type="number" Mode="In" />
+          <Parameter Name="DOC" Type="blob" Mode="In" />
+          <Parameter Name="TIPO" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_ELI_ENC_CARDINALIAD" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="VAL" Type="number" Mode="In" />
+          <Parameter Name="INST" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_ELIMINAR_ENCUESTA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDESTADO" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_ENCUESTA_ROL2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDVIGENCIA" Type="number" Mode="In" />
+          <Parameter Name="NOMBREENCU" Type="varchar2" Mode="In" />
+          <Parameter Name="FECHAINI" Type="varchar2" Mode="In" />
+          <Parameter Name="IDENCUENTA" Type="number" Mode="In" />
+          <Parameter Name="FECHAFIN" Type="varchar2" Mode="In" />
+          <Parameter Name="ARRENCUESTA" Type="varchar2" Mode="In" />
+          <Parameter Name="ROL" Type="number" Mode="In" />
+          <Parameter Name="TERMINOS" Type="varchar2" Mode="In" />
+          <Parameter Name="TIPOINSTALACION" Type="number" Mode="In" />
+          <Parameter Name="CARD" Type="number" Mode="In" />
+          <Parameter Name="RADICAR" Type="number" Mode="In" />
+          <Parameter Name="NOMBREITEM" Type="varchar2" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_ESTADO_CARDINALIDAD" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDENC" Type="number" Mode="In" />
+          <Parameter Name="COD_FUN" Type="number" Mode="In" />
+          <Parameter Name="IDTERCERO" Type="number" Mode="In" />
+          <Parameter Name="IDINSTALACION" Type="number" Mode="In" />
+          <Parameter Name="CARD" Type="number" Mode="In" />
+          <Parameter Name="IDVIGENCIA" Type="number" Mode="In" />
+          <Parameter Name="VIGEN" Type="varchar2" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_FOTO_INTV" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDTERCERO" Type="number" Mode="In" />
+          <Parameter Name="OBS" Type="varchar2" Mode="In" />
+          <Parameter Name="JSONOUT" Type="clob" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_FOTO_TALA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDTEMP" Type="number" Mode="In" />
+          <Parameter Name="FOTO" Type="blob" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_GUARDARRADICADO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDESTADO" Type="number" Mode="In" />
+          <Parameter Name="CORADICADO" Type="varchar2" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_INDICE_COR" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDDOC" Type="number" Mode="In" />
+          <Parameter Name="FECHARADICADO" Type="varchar2" Mode="In" />
+          <Parameter Name="RADICADO" Type="varchar2" Mode="In" />
+          <Parameter Name="IDTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="ASUNTO" Type="varchar2" Mode="In" />
+          <Parameter Name="NOMBREUSUARIO" Type="varchar2" Mode="In" />
+          <Parameter Name="NOMBRETERCERO" Type="varchar2" Mode="In" />
+          <Parameter Name="IDTERCERO" Type="number" Mode="In" />
+          <Parameter Name="IDINSTALACION" Type="number" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_INDICE_TALA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDDOC" Type="number" Mode="In" />
+          <Parameter Name="MEDIORES" Type="varchar2" Mode="In" />
+          <Parameter Name="MAIL" Type="varchar2" Mode="In" />
+          <Parameter Name="TIPOUSER" Type="varchar2" Mode="In" />
+          <Parameter Name="TIPOSOLI" Type="varchar2" Mode="In" />
+          <Parameter Name="REMITENTE" Type="varchar2" Mode="In" />
+          <Parameter Name="IDTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="MUNICIPIOARBOL" Type="varchar2" Mode="In" />
+          <Parameter Name="DIRECCIONMUNICIPIO" Type="varchar2" Mode="In" />
+          <Parameter Name="FECHARADICADO" Type="varchar2" Mode="In" />
+          <Parameter Name="RADICADO" Type="varchar2" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_INDICE_TALACOD" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDDOC" Type="number" Mode="In" />
+          <Parameter Name="FECHARADICADO" Type="varchar2" Mode="In" />
+          <Parameter Name="RADICADO" Type="varchar2" Mode="In" />
+          <Parameter Name="NOMBRE" Type="varchar2" Mode="In" />
+          <Parameter Name="IDTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="MUNICIPIOARBOL" Type="varchar2" Mode="In" />
+          <Parameter Name="DIRECCIONMUNICIPIO" Type="varchar2" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_INTV_VISITA_TEMP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_MODIFICARENCUESTACARD" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_MODIFICAR_ESTADO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDESTADO" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_MODIFICARVIGENCIA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDVIGENCIA" Type="number" Mode="In" />
+          <Parameter Name="VIGEN" Type="varchar2" Mode="In" />
+          <Parameter Name="IDESTADO" Type="number" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_TALA_PODA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="JSONOUT" Type="clob" Mode="In" />
+          <Parameter Name="IDTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="CODFUNCIONARIO" Type="number" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_TERMINOSCONDICIONES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDTRAMITE" Type="number" Mode="In" />
+          <Parameter Name="MENSAJE" Type="varchar2" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_TRAMITE_PMES" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="MENSAJ" Type="varchar2" Mode="In" />
+          <Parameter Name="FUNCIONARIO" Type="varchar2" Mode="In" />
+          <Parameter Name="TAREA" Type="varchar2" Mode="In" />
+          <Parameter Name="PREOCESO" Type="varchar2" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+          <Parameter Name="RTA2" Type="varchar2" Mode="Out" />
+          <Parameter Name="RTA3" Type="varchar2" Mode="Out" />
+          <Parameter Name="RTA4" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_TRAMITE_TALA_PODA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="MENSAJ" Type="varchar2" Mode="In" />
+          <Parameter Name="RTA" Type="varchar2" Mode="Out" />
+          <Parameter Name="RTA2" Type="varchar2" Mode="Out" />
+          <Parameter Name="RTA3" Type="varchar2" Mode="Out" />
+          <Parameter Name="RTA4" Type="varchar2" Mode="Out" />
+        </Function>
+        <Function Name="SP_SET_URLRADICADO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="IDESTADO" Type="number" Mode="In" />
+          <Parameter Name="URLRAD" Type="varchar2" Mode="In" />
+        </Function>
+        <Function Name="SP_SET_USO_URBANO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="FLORA">
+          <Parameter Name="ID_USOS" Type="number" Mode="In" />
+          <Parameter Name="CX" Type="varchar2" Mode="In" />
+          <Parameter Name="CY" Type="varchar2" Mode="In" />
+          <Parameter Name="DIR" Type="varchar2" Mode="In" />
+          <Parameter Name="MUNICIPIO" Type="number" Mode="In" />
+          <Parameter Name="UBIC" Type="varchar2" Mode="In" />
+        </Function>
+        <EntityContainer Name="FloraModelStoreContainer" />
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FloraModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="EntitiesFloraOracle" annotation:LazyLoadingEnabled="true" >
+          <FunctionImport Name="SP_ASOCIAR_DESASOCIAR_ARBOL">
+            <Parameter Name="IDTEMP" Mode="In" Type="Decimal" />
+            <Parameter Name="IDARBOL" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ELIMINAR_DOC_TALA">
+            <Parameter Name="ARRIDARBOL" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ELIMINAR_DOC_TALA_TODO" />
+          <FunctionImport Name="SP_ELIMINAR_FOTO_TALA">
+            <Parameter Name="ID_FOTO" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ACTULIZAR_DOMINIOS_APPT" />
+          <FunctionImport Name="SP_GET_AGENTE_DM">
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ARBOLES">
+            <Parameter Name="IDVISITA" Mode="In" Type="Decimal" />
+            <Parameter Name="LSTIDIND" Mode="In" Type="String" />
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ARBOLES_CARGA">
+            <Parameter Name="ID_TRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="ID_CONTRATO" Mode="In" Type="Decimal" />
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_COMBOHIJO">
+            <Parameter Name="IDPRE" Mode="In" Type="Decimal" />
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_DATOSF">
+            <Parameter Name="STR_SQL" Mode="In" Type="String" />
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ENCUESTAS">
+            <Parameter Name="IDESTADO" Mode="In" Type="Decimal" />
+            <Parameter Name="ID_FORM" Mode="In" Type="Decimal" />
+            <Parameter Name="IDVIGENCIA" Mode="In" Type="Decimal" />
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ENCUESTAS_REPORT">
+            <Parameter Name="IDESTADO" Mode="In" Type="Decimal" />
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ENTORNO">
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ESPECIES">
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_ESTADOS">
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_INTV_VISITA_TEMP">
+            <Parameter Name="IDVISITA" Mode="In" Type="Decimal" />
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_RIESGO">
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_SINTOMA_DM">
+            <Parameter Name="JSONOUT" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ARBOLES">
+            <Parameter Name="IDVISITA" Mode="In" Type="Decimal" />
+            <Parameter Name="JSONOUT" Mode="In" Type="String" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ARBOLES_CARGA">
+            <Parameter Name="JSONOUT" Mode="In" Type="String" />
+            <Parameter Name="FIN" Mode="In" Type="Decimal" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ARBOLES_CARGA_CONTRATO">
+            <Parameter Name="JSONOUT" Mode="In" Type="String" />
+            <Parameter Name="FIN" Mode="In" Type="Decimal" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_CLONAR_ENCUESTA_EXTERNO">
+            <Parameter Name="IDVIG" Mode="In" Type="Decimal" />
+            <Parameter Name="VALOR" Mode="In" Type="String" />
+            <Parameter Name="COD_FUN" Mode="In" Type="Decimal" />
+            <Parameter Name="IDES" Mode="In" Type="Decimal" />
+            <Parameter Name="INSTALACION" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_CREAR_ESTADO_GENERICO">
+            <Parameter Name="IDENC" Mode="In" Type="Decimal" />
+            <Parameter Name="COD_FUN" Mode="In" Type="Decimal" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+            <Parameter Name="IDTERCERO" Mode="In" Type="Decimal" />
+            <Parameter Name="IDINSTALACION" Mode="In" Type="Decimal" />
+            <Parameter Name="TIPORAD" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_DOC_TALA">
+            <Parameter Name="IDARBOL" Mode="In" Type="Decimal" />
+            <Parameter Name="DOC" Mode="In" Type="Binary" />
+            <Parameter Name="TIPO" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ELI_ENC_CARDINALIAD">
+            <Parameter Name="VAL" Mode="In" Type="Decimal" />
+            <Parameter Name="INST" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ELIMINAR_ENCUESTA">
+            <Parameter Name="IDESTADO" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ENCUESTA_ROL2">
+            <Parameter Name="IDVIGENCIA" Mode="In" Type="Decimal" />
+            <Parameter Name="NOMBREENCU" Mode="In" Type="String" />
+            <Parameter Name="FECHAINI" Mode="In" Type="String" />
+            <Parameter Name="IDENCUENTA" Mode="In" Type="Decimal" />
+            <Parameter Name="FECHAFIN" Mode="In" Type="String" />
+            <Parameter Name="ARRENCUESTA" Mode="In" Type="String" />
+            <Parameter Name="ROL" Mode="In" Type="Decimal" />
+            <Parameter Name="TERMINOS" Mode="In" Type="String" />
+            <Parameter Name="TIPOINSTALACION" Mode="In" Type="Decimal" />
+            <Parameter Name="CARD" Mode="In" Type="Decimal" />
+            <Parameter Name="RADICAR" Mode="In" Type="Decimal" />
+            <Parameter Name="NOMBREITEM" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_ESTADO_CARDINALIDAD">
+            <Parameter Name="IDENC" Mode="In" Type="Decimal" />
+            <Parameter Name="COD_FUN" Mode="In" Type="Decimal" />
+            <Parameter Name="IDTERCERO" Mode="In" Type="Decimal" />
+            <Parameter Name="IDINSTALACION" Mode="In" Type="Decimal" />
+            <Parameter Name="CARD" Mode="In" Type="Decimal" />
+            <Parameter Name="IDVIGENCIA" Mode="In" Type="Decimal" />
+            <Parameter Name="VIGEN" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_FOTO_INTV">
+            <Parameter Name="IDTERCERO" Mode="In" Type="Decimal" />
+            <Parameter Name="OBS" Mode="In" Type="String" />
+            <Parameter Name="JSONOUT" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_FOTO_TALA">
+            <Parameter Name="IDTEMP" Mode="In" Type="Decimal" />
+            <Parameter Name="FOTO" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_GUARDARRADICADO">
+            <Parameter Name="IDESTADO" Mode="In" Type="Decimal" />
+            <Parameter Name="CORADICADO" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_INDICE_COR">
+            <Parameter Name="IDDOC" Mode="In" Type="Decimal" />
+            <Parameter Name="FECHARADICADO" Mode="In" Type="String" />
+            <Parameter Name="RADICADO" Mode="In" Type="String" />
+            <Parameter Name="IDTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="ASUNTO" Mode="In" Type="String" />
+            <Parameter Name="NOMBREUSUARIO" Mode="In" Type="String" />
+            <Parameter Name="NOMBRETERCERO" Mode="In" Type="String" />
+            <Parameter Name="IDTERCERO" Mode="In" Type="Decimal" />
+            <Parameter Name="IDINSTALACION" Mode="In" Type="Decimal" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_INDICE_TALA">
+            <Parameter Name="IDDOC" Mode="In" Type="Decimal" />
+            <Parameter Name="MEDIORES" Mode="In" Type="String" />
+            <Parameter Name="MAIL" Mode="In" Type="String" />
+            <Parameter Name="TIPOUSER" Mode="In" Type="String" />
+            <Parameter Name="TIPOSOLI" Mode="In" Type="String" />
+            <Parameter Name="REMITENTE" Mode="In" Type="String" />
+            <Parameter Name="IDTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="MUNICIPIOARBOL" Mode="In" Type="String" />
+            <Parameter Name="DIRECCIONMUNICIPIO" Mode="In" Type="String" />
+            <Parameter Name="FECHARADICADO" Mode="In" Type="String" />
+            <Parameter Name="RADICADO" Mode="In" Type="String" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_INDICE_TALACOD">
+            <Parameter Name="IDDOC" Mode="In" Type="Decimal" />
+            <Parameter Name="FECHARADICADO" Mode="In" Type="String" />
+            <Parameter Name="RADICADO" Mode="In" Type="String" />
+            <Parameter Name="NOMBRE" Mode="In" Type="String" />
+            <Parameter Name="IDTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="MUNICIPIOARBOL" Mode="In" Type="String" />
+            <Parameter Name="DIRECCIONMUNICIPIO" Mode="In" Type="String" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_INTV_VISITA_TEMP">
+            <Parameter Name="JSONOUT" Mode="In" Type="String" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_MODIFICARENCUESTACARD">
+            <Parameter Name="JSONOUT" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_MODIFICAR_ESTADO">
+            <Parameter Name="IDESTADO" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_MODIFICARVIGENCIA">
+            <Parameter Name="IDVIGENCIA" Mode="In" Type="Decimal" />
+            <Parameter Name="VIGEN" Mode="In" Type="String" />
+            <Parameter Name="IDESTADO" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_TALA_PODA">
+            <Parameter Name="JSONOUT" Mode="In" Type="String" />
+            <Parameter Name="IDTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="CODFUNCIONARIO" Mode="In" Type="Decimal" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_TERMINOSCONDICIONES">
+            <Parameter Name="IDTRAMITE" Mode="In" Type="Decimal" />
+            <Parameter Name="MENSAJE" Mode="In" Type="String" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_TRAMITE_PMES">
+            <Parameter Name="MENSAJ" Mode="In" Type="String" />
+            <Parameter Name="FUNCIONARIO" Mode="In" Type="String" />
+            <Parameter Name="TAREA" Mode="In" Type="String" />
+            <Parameter Name="PREOCESO" Mode="In" Type="String" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+            <Parameter Name="RTA2" Mode="Out" Type="String" />
+            <Parameter Name="RTA3" Mode="Out" Type="String" />
+            <Parameter Name="RTA4" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_TRAMITE_TALA_PODA">
+            <Parameter Name="MENSAJ" Mode="In" Type="String" />
+            <Parameter Name="RTA" Mode="Out" Type="String" />
+            <Parameter Name="RTA2" Mode="Out" Type="String" />
+            <Parameter Name="RTA3" Mode="Out" Type="String" />
+            <Parameter Name="RTA4" Mode="Out" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_URLRADICADO">
+            <Parameter Name="IDESTADO" Mode="In" Type="Decimal" />
+            <Parameter Name="URLRAD" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SET_USO_URBANO">
+            <Parameter Name="ID_USOS" Mode="In" Type="Decimal" />
+            <Parameter Name="CX" Mode="In" Type="String" />
+            <Parameter Name="CY" Mode="In" Type="String" />
+            <Parameter Name="DIR" Mode="In" Type="String" />
+            <Parameter Name="MUNICIPIO" Mode="In" Type="Decimal" />
+            <Parameter Name="UBIC" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FloraModelStoreContainer" CdmEntityContainer="EntitiesFloraOracle" >
+          <FunctionImportMapping FunctionImportName="SP_ASOCIAR_DESASOCIAR_ARBOL" FunctionName="FloraModel.Store.SP_ASOCIAR_DESASOCIAR_ARBOL" />
+          <FunctionImportMapping FunctionImportName="SP_ELIMINAR_DOC_TALA" FunctionName="FloraModel.Store.SP_ELIMINAR_DOC_TALA" />
+          <FunctionImportMapping FunctionImportName="SP_ELIMINAR_DOC_TALA_TODO" FunctionName="FloraModel.Store.SP_ELIMINAR_DOC_TALA_TODO" />
+          <FunctionImportMapping FunctionImportName="SP_ELIMINAR_FOTO_TALA" FunctionName="FloraModel.Store.SP_ELIMINAR_FOTO_TALA" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ACTULIZAR_DOMINIOS_APPT" FunctionName="FloraModel.Store.SP_GET_ACTULIZAR_DOMINIOS_APPT" />
+          <FunctionImportMapping FunctionImportName="SP_GET_AGENTE_DM" FunctionName="FloraModel.Store.SP_GET_AGENTE_DM" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ARBOLES" FunctionName="FloraModel.Store.SP_GET_ARBOLES" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ARBOLES_CARGA" FunctionName="FloraModel.Store.SP_GET_ARBOLES_CARGA" />
+          <FunctionImportMapping FunctionImportName="SP_GET_COMBOHIJO" FunctionName="FloraModel.Store.SP_GET_COMBOHIJO" />
+          <FunctionImportMapping FunctionImportName="SP_GET_DATOSF" FunctionName="FloraModel.Store.SP_GET_DATOSF" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ENCUESTAS" FunctionName="FloraModel.Store.SP_GET_ENCUESTAS" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ENCUESTAS_REPORT" FunctionName="FloraModel.Store.SP_GET_ENCUESTAS_REPORT" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ENTORNO" FunctionName="FloraModel.Store.SP_GET_ENTORNO" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ESPECIES" FunctionName="FloraModel.Store.SP_GET_ESPECIES" />
+          <FunctionImportMapping FunctionImportName="SP_GET_ESTADOS" FunctionName="FloraModel.Store.SP_GET_ESTADOS" />
+          <FunctionImportMapping FunctionImportName="SP_GET_INTV_VISITA_TEMP" FunctionName="FloraModel.Store.SP_GET_INTV_VISITA_TEMP" />
+          <FunctionImportMapping FunctionImportName="SP_GET_RIESGO" FunctionName="FloraModel.Store.SP_GET_RIESGO" />
+          <FunctionImportMapping FunctionImportName="SP_GET_SINTOMA_DM" FunctionName="FloraModel.Store.SP_GET_SINTOMA_DM" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ARBOLES" FunctionName="FloraModel.Store.SP_SET_ARBOLES" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ARBOLES_CARGA" FunctionName="FloraModel.Store.SP_SET_ARBOLES_CARGA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ARBOLES_CARGA_CONTRATO" FunctionName="FloraModel.Store.SP_SET_ARBOLES_CARGA_CONTRATO" />
+          <FunctionImportMapping FunctionImportName="SP_SET_CLONAR_ENCUESTA_EXTERNO" FunctionName="FloraModel.Store.SP_SET_CLONAR_ENCUESTA_EXTERNO" />
+          <FunctionImportMapping FunctionImportName="SP_SET_CREAR_ESTADO_GENERICO" FunctionName="FloraModel.Store.SP_SET_CREAR_ESTADO_GENERICO" />
+          <FunctionImportMapping FunctionImportName="SP_SET_DOC_TALA" FunctionName="FloraModel.Store.SP_SET_DOC_TALA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ELI_ENC_CARDINALIAD" FunctionName="FloraModel.Store.SP_SET_ELI_ENC_CARDINALIAD" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ELIMINAR_ENCUESTA" FunctionName="FloraModel.Store.SP_SET_ELIMINAR_ENCUESTA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ENCUESTA_ROL2" FunctionName="FloraModel.Store.SP_SET_ENCUESTA_ROL2" />
+          <FunctionImportMapping FunctionImportName="SP_SET_ESTADO_CARDINALIDAD" FunctionName="FloraModel.Store.SP_SET_ESTADO_CARDINALIDAD" />
+          <FunctionImportMapping FunctionImportName="SP_SET_FOTO_INTV" FunctionName="FloraModel.Store.SP_SET_FOTO_INTV" />
+          <FunctionImportMapping FunctionImportName="SP_SET_FOTO_TALA" FunctionName="FloraModel.Store.SP_SET_FOTO_TALA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_GUARDARRADICADO" FunctionName="FloraModel.Store.SP_SET_GUARDARRADICADO" />
+          <FunctionImportMapping FunctionImportName="SP_SET_INDICE_COR" FunctionName="FloraModel.Store.SP_SET_INDICE_COR" />
+          <FunctionImportMapping FunctionImportName="SP_SET_INDICE_TALA" FunctionName="FloraModel.Store.SP_SET_INDICE_TALA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_INDICE_TALACOD" FunctionName="FloraModel.Store.SP_SET_INDICE_TALACOD" />
+          <FunctionImportMapping FunctionImportName="SP_SET_INTV_VISITA_TEMP" FunctionName="FloraModel.Store.SP_SET_INTV_VISITA_TEMP" />
+          <FunctionImportMapping FunctionImportName="SP_SET_MODIFICARENCUESTACARD" FunctionName="FloraModel.Store.SP_SET_MODIFICARENCUESTACARD" />
+          <FunctionImportMapping FunctionImportName="SP_SET_MODIFICAR_ESTADO" FunctionName="FloraModel.Store.SP_SET_MODIFICAR_ESTADO" />
+          <FunctionImportMapping FunctionImportName="SP_SET_MODIFICARVIGENCIA" FunctionName="FloraModel.Store.SP_SET_MODIFICARVIGENCIA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_TALA_PODA" FunctionName="FloraModel.Store.SP_SET_TALA_PODA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_TERMINOSCONDICIONES" FunctionName="FloraModel.Store.SP_SET_TERMINOSCONDICIONES" />
+          <FunctionImportMapping FunctionImportName="SP_SET_TRAMITE_PMES" FunctionName="FloraModel.Store.SP_SET_TRAMITE_PMES" />
+          <FunctionImportMapping FunctionImportName="SP_SET_TRAMITE_TALA_PODA" FunctionName="FloraModel.Store.SP_SET_TRAMITE_TALA_PODA" />
+          <FunctionImportMapping FunctionImportName="SP_SET_URLRADICADO" FunctionName="FloraModel.Store.SP_SET_URLRADICADO" />
+          <FunctionImportMapping FunctionImportName="SP_SET_USO_URBANO" FunctionName="FloraModel.Store.SP_SET_USO_URBANO" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

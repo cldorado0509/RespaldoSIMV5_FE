@@ -1,0 +1,108 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/Reporte/Scripts/dinamico.js?v=1.02")"></script>
+
+<div ng-app="SIM" data-url="@Url.Content("~")" @{ if (ViewBag.IdReporte != null) { WriteLiteral("data-idreporte=\"" + ViewBag.IdReporte + "\""); }} id="app" class="my-cloak" resizable>
+    <div ng-controller="ReporteDinamicoController" class="panelSIM panelSIM-default" style="padding: 10px;">
+        <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+@if (ViewBag.IdReporte == null)
+{
+        <div class="row" style="padding-bottom: 15px;">
+            <div class="col-md-12">
+                <div class="dx-field">
+                    <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Reporte</label></div>
+                    <div class="dx-field-value valuefullrow">
+                        <div dx-select-box="reporteSelectBoxSettings" id="cboReporte"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+}
+        <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div ng-show="isActive(0)" class="panelSIM-heading" style="min-height: 500px">
+            <div ng-repeat="filtro in filtros">
+                <div ng-show="filtro.tipo == 1" class="row" style="padding-bottom: 15px;">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">{{filtro.titulo}}</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-text-box="{ width: '100%', bindingOptions: { value: 'filtros[{{$index}}].valor' }}" data-tipo="{{filtro.tipo}}" id="filtrotxt{{filtro.id}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="filtro.tipo == 2" class="row" style="padding-bottom: 15px;">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">{{filtro.titulo}}</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="{ dataSource: filtroDataSource{{filtro.id}}, valueExpr: 'ID', displayExpr: 'NOMBRE', width: '100%', placeholder: '[Seleccionar {{filtro.titulo}}]', bindingOptions: { value: 'filtros[{{$index}}].valor' }}" data-tipo="{{filtro.tipo}}" id="filtrocbo{{filtro.id}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="filtro.tipo == 3" class="row" style="padding-bottom: 15px;">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">{{filtro.titulo}}</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-lookup="{ dataSource: filtroDataSource{{filtro.id}}, valueExpr: 'ID', displayExpr: 'NOMBRE', title: '{{filtro.titulo}}', placeholder: '[Seleccionar {{filtro.titulo}}]', bindingOptions: { value: 'filtros[{{$index}}].valor' }, usePopover: false, cancelButtonText: 'Cancelar', pageLoadingText: 'Cargando...' , refreshingText: 'Refrescando...' , searchPlaceholder: 'Buscar', noDataText: 'Sin Datos', onValueChanged: filtroChanged }" data-idfiltro="{{filtro.id}}" data-tipo="{{filtro.tipo}}" id="filtrolup{{filtro.id}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="filtro.tipo == 4" class="row" style="padding-bottom: 15px;">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">{{filtro.titulo}}</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-tree-view="{ dataSource: {{(filtro.tipo == 4 && filtro.idFiltrosRestriccion.trim() == '') ? 'filtroTreeDataSource' : 'null'}}, showCheckBoxesMode: 'normal', dataStructure: 'plain', parentIdExpr: 'ID_PADRE', keyExpr: 'ID', displayExpr: 'NOMBRE', width: '100%', onItemSelectionChanged: TreeViewSeleccion }" data-idfiltro="{{filtro.id}}" data-tipo="{{filtro.tipo}}" id="{{filtro.tipo == 4 ? 'tvwFiltro' : 'tvw'}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="filtro.tipo == 5" class="row" style="padding-bottom: 15px;">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow"><label style="font-weight:bold">{{filtro.titulo}}</label></div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-date-box="{ width: '100%', formatString:'dd/MM/yyyy', format: 'date', useCalendar: true, bindingOptions: { value: 'filtros[{{$index}}].valor' }}" data-tipo="{{filtro.tipo}}" id="filtrodat{{filtro.id}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="agrupar" class="row" style="padding-bottom: 15px;">
+                <hr />
+                <div class="col-md-12">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow"><label style="font-weight:bold">{{tituloAgrupar}}</label></div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-select-box="{ valueExpr: 'ID', displayExpr: 'NOMBRE', placeholder: '[SELECCIONAR]', width: '100%', bindingOptions: { value: 'agruparIndex' }}" id="cboAgrupar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="idReporte >= 0" class="row" style="padding-bottom: 15px;">
+                <div class="col-md-2 col-sm-2">
+                    <div dx-button="limpiarSettings" id="btnLimpiar"></div>
+                </div>
+                <div class="col-md-2 col-sm-2">
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div dx-button="consultarSettings" id="btnConsultar"></div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                </div>
+            </div>
+        </div>
+        <div ng-show="isActive(1)" class="panelSIM-heading" style="min-height: 500px;">
+            <div>
+                <div id="grdReporte"></div>
+            </div>
+        </div>
+    </div>
+</div>

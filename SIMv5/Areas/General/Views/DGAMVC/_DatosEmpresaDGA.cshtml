@@ -1,0 +1,87 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Data.General
+@model DGA
+
+<div class="row" style="padding:5px">
+    <div class="col-md-8">
+        &nbsp;
+    </div>
+    <div class="col-md-2">
+        Fecha de Versi&oacute;n:
+    </div>
+    <div class="col-md-2">
+        @Html.DevExpress().ComboBox(settings =>
+        {
+            settings.Name = "cboFechaVersion";
+
+            if (Model.ID_DGA > 0)
+            {
+                settings.Enabled = false;
+            }
+
+            settings.Properties.ClientSideEvents.SelectedIndexChanged = "function(s,e){ D_ANO.SetDate(new Date(cboFechaVersion.GetText(), 1, 1)); }";
+        }).BindList(ModelsToListGeneral.GetAnosDGA(ViewBag.IdTercero)).Bind(Model.D_ANO.Year > 2000 ? Model.D_ANO.Year.ToString() : null).GetHtml()
+    </div>
+    @Html.DevExpress().DateEditFor(model => Model.D_ANO, settings =>
+    {
+        settings.ClientVisible = false;
+    }).GetHtml()
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Activos (pesos $):
+    </div>
+    <div class="col-md-7">
+        @Html.DevExpress().TextBoxFor(model => Model.N_ACTIVO, settings =>
+        {
+            settings.Width = Unit.Pixel(200);
+            settings.ReadOnly = ViewBag.ReadOnly;
+            settings.Properties.DisplayFormatString = "#,##0.00";
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Número de Empleados:
+    </div>
+    <div class="col-md-7">
+        @Html.DevExpress().TextBoxFor(model => Model.N_EMPLEADOS, settings =>
+        {
+            settings.Width = Unit.Pixel(100);
+            settings.ReadOnly = ViewBag.ReadOnly;
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Posee otras plantas, filiales y/o sucursales en Colombia:
+    </div>
+    <div class="col-md-7">
+        @Html.DevExpress().MemoFor(model => Model.S_FILIAL, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.Height = Unit.Pixel(100);
+            settings.ReadOnly = ViewBag.ReadOnly;
+        }).GetHtml()
+    </div>
+</div>
+<div class="row" style="padding:5px">
+    <div class="col-md-4">
+        Permisos ambientales con que cuenta la Empresa:
+    </div>
+    <div class="col-md-7">
+        @{
+            foreach (PERMISO_AMBIENTAL permisoAmbiental in ModelsToListGeneral.GetPermisosAmbientales())
+            {
+                Html.DevExpress().CheckBox(settings =>
+                {
+                    settings.Name = "chkpa_" + permisoAmbiental.ID_PERMISOAMBIENTAL.ToString();
+                    settings.Text = permisoAmbiental.S_DESCRIPCION;
+                    var paSel = Model.PERMISO_AMBIENTAL.FirstOrDefault(pa => pa.ID_PERMISOAMBIENTAL == permisoAmbiental.ID_PERMISOAMBIENTAL);
+                    settings.Checked = (paSel == null ? false : true);
+                    settings.ReadOnly = ViewBag.ReadOnly;
+                }).GetHtml();
+            }
+        }
+    </div>
+</div>

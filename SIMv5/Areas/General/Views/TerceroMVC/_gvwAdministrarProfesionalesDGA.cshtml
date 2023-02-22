@@ -1,0 +1,179 @@
+@using SIM.Areas.General.Models
+@using System.Web.UI.WebControls
+
+@{
+	var grid = Html.DevExpress().GridView(settings =>
+        {
+            settings.Name = "gvwProfesionalesDGA";
+            settings.CallbackRouteValues = new { Controller = "Tercero", Action = "gvwAdministrarProfesionalesDGA", id = ViewBag.ID, readOnly = ViewBag.ReadOnly };
+            settings.Width = Unit.Percentage(100);
+            settings.Caption = "Profesionales que conforman el Departamento de Gestión Ambiental - DGA";
+
+            settings.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+            settings.Settings.VerticalScrollBarStyle = GridViewVerticalScrollBarStyle.Standard;
+            settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "DGA", Action = "ProfesionalesDGADelete" };
+            settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+            settings.SettingsPopup.EditForm.AllowResize = true;
+            settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+            settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+            settings.SettingsPager.FirstPageButton.Visible = true;
+            settings.SettingsPager.LastPageButton.Visible = true;
+            settings.SettingsPager.PageSizeItemSettings.Visible = true;
+            settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+            settings.SettingsPager.PageSize = 10;
+            settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+            settings.SettingsPopup.EditForm.Width = Unit.Pixel(700);
+            settings.SettingsPopup.EditForm.Height = Unit.Pixel(500);
+            settings.SettingsBehavior.ConfirmDelete = true;
+
+            settings.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
+
+            settings.CommandColumn.ButtonType = GridViewCommandButtonType.Image;
+            settings.CommandColumn.Visible = true;
+            settings.CommandColumn.ShowNewButton = false;
+            settings.CommandColumn.ShowDeleteButton = true;
+            settings.CommandColumn.ShowEditButton = false;
+            //settings.CommandColumn.DeleteButton.Visible = claimppal.IsInRole("EDGA");
+            settings.CommandColumn.Width = 50;
+
+            settings.Styles.CommandColumn.Spacing = 10;
+
+            settings.CommandColumn.DeleteButton.Image.Url = "~/Content/Images/delete.png";
+
+            GridViewCommandColumnCustomButton btnEditButton = new GridViewCommandColumnCustomButton() { ID = "EditButton", Text = "Editar" };
+            btnEditButton.Image.Url = "~/Content/Images/edit.png";
+
+            //if (claimppal.IsInRole("ADGA"))
+            //{
+            settings.CommandColumn.CustomButtons.Add(btnEditButton);
+            settings.ClientSideEvents.CustomButtonClick =
+                "function(s, e) { if (!$('#terceroDGADetalles').is(':visible')) { var key = s.GetRowKey(e.visibleIndex); CargarTercero(key); } }";
+            //}
+
+            //if (claimppal.IsInRole("CDGA"))
+            //{
+            settings.CommandColumn.SetHeaderTemplateContent(c =>
+            {
+                Html.DevExpress().Image(img =>
+                {
+                    img.Name = "addNewRow";
+                    img.ImageUrl = "~/Content/Images/new.png";
+                    img.Height = 20;
+                    img.Width = 20;
+                    //img.Properties.ClientSideEvents.Click = string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 2, Url.Action("LoadDGA", "DGA"));
+                    img.Properties.ClientSideEvents.Click = "function(s, e) { if (!$('#terceroDGADetalles').is(':visible')) CargarTercero(null); }"; ;
+                }).Render();
+            });
+            //}
+
+
+
+            settings.KeyFieldName = "ID_PERSONALDGA";
+            settings.CommandColumn.Visible = !ViewBag.ReadOnly;
+            settings.SettingsPager.Visible = true;
+            settings.Settings.ShowGroupPanel = false;
+            settings.Settings.ShowFilterRow = false;
+            settings.SettingsBehavior.AllowSelectByRowClick = true;
+            settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "ID_PERSONALDGA";
+                column.Caption = "C&oacute;digo";
+                column.Width = 50;
+                column.Visible = true;
+                column.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "N_DOCUMENTO";
+                column.Caption = "Documento";
+                column.Width = 70;
+                column.Visible = true;
+                column.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "RAZON_SOCIAL";
+                column.Caption = "Nombre";
+                column.Width = 120;
+                column.Visible = true;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "PROFESION";
+                column.Caption = "Profesión";
+                column.Width = 100;
+                column.Visible = true;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "N_DEDICACION";
+                column.Caption = "%<br>Dedicación";
+                column.Width = 70;
+                column.Visible = true;
+                column.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "N_EXPERIENCIA";
+                column.Caption = "Exp<br>(meses)";
+                column.Width = 50;
+                column.Visible = true;
+                column.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "S_ESRESPONSABLE";
+                column.Caption = "Resp.";
+                column.Width = 50;
+                column.Visible = true;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "CORREO_ELECTRONICO";
+                column.Caption = "Correo Electr&oacute;nico";
+                column.Width = 120;
+                column.Visible = true;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "TELEFONO";
+                column.Caption = "Teléfono";
+                column.Width = 60;
+                column.Visible = true;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = "S_OBSERVACION";
+                column.Caption = "Observación";
+                column.Width = 100;
+                column.Visible = true;
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+        });
+
+        grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+        {
+            e.QueryableSource = Model;
+            e.KeyExpression = "ID_PERSONALDGA";
+        }).GetHtml();
+}

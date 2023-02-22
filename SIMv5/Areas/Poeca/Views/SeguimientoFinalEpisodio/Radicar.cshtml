@@ -1,0 +1,106 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_SEGUIMIENTO_GLOBAL
+@{
+    ViewBag.Title = "POECA | Terminar y radicar seguimiento";
+}
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+        <h2>Terminar y radicar seguimiento del episodio</h2>
+
+        @using (Html.BeginForm("Radicar", "SeguimientoFinalEpisodio", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formularioRadicar" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ID_EPISODIO, new { @Value = ViewBag.episodio })
+
+                @*<div class="form-group">
+                        @Html.LabelFor(model => model.ID_PLAN, "ID_PLAN", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("ID_PLAN", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ID_PLAN, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ID_EPISODIO, "ID_EPISODIO", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("ID_EPISODIO", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ID_EPISODIO, "", new { @class = "text-danger" })
+                    </div>*@
+
+                @*<div class="form-group">
+                        @Html.LabelFor(model => model.N_RADICADO, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.N_RADICADO, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.N_RADICADO, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ID_RESPONSABLE, htmlAttributes: new { @class = "control-label" })
+
+                        @Html.EditorFor(model => model.ID_RESPONSABLE, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ID_RESPONSABLE, "", new { @class = "text-danger" })
+                    </div>*@
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_REMITENTE, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_REMITENTE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_REMITENTE, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_CARGO_REMITENTE, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_CARGO_REMITENTE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_CARGO_REMITENTE, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_OBSERVACIONES, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_OBSERVACIONES, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_OBSERVACIONES, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_URL_EVIDENCIA, htmlAttributes: new { @class = "control-label" })
+                    <div class="pull-right">
+                        <i>Archivos de 50MB como máximo</i>
+                    </div>
+                    @Html.EditorFor(model => model.S_URL_EVIDENCIA, new { htmlAttributes = new { @class = "form-control", @type = "file", @accept = "application/pdf", data_max_size = "55000000" } })
+                    @Html.ValidationMessageFor(model => model.S_URL_EVIDENCIA, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", "SeguimientoPlan", null, new { @class = "btn btn-block btn-danger" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Guardar" class="btn btn-block btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $('#formularioRadicar').submit(function () {
+                var isOk = true;
+                $('input[type=file][data-max-size]').each(function () {
+                    if (typeof this.files[0] !== 'undefined') {
+                        var maxSize = parseInt(this.dataset.maxSize, 10),
+                            size = this.files[0].size;
+                        isOk = maxSize > size;
+                        return isOk;
+                    }
+                });
+                if (!isOk) {
+                    $("[data-valmsg-for=S_URL_EVIDENCIAS]").text("El archivo es demasiado grande");
+                }
+                return isOk;
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundlesv5/jqueryval")
+}

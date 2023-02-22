@@ -1,0 +1,21 @@
+﻿@using SIM.Properties
+<div class="dx-fieldset">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label labelfullrow">Tipo de Instalaci&oacute;n:</div>
+                <div class="dx-field-value valuefullrow">
+                    @{
+                        foreach (SIM.Data.Control.MAESTRO_TIPO instalacionTipo in SIM.Areas.ControlVigilancia.Models.ModelsToListControl.GetInstalacionTipos())
+                        {
+                            <div style="margin: 3px">
+                                <span style="display:none" id="tiId_@instalacionTipo.ID_TIPO.ToString()">chkti_@instalacionTipo.ID_TIPO.ToString()</span>
+                                <div dx-check-box="{ value: false, text: '@instalacionTipo.NOMBRE_TIPO' }" id="chkti_@instalacionTipo.ID_TIPO.ToString()"></div><br />
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

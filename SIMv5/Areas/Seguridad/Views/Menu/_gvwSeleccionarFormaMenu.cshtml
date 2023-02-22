@@ -1,0 +1,54 @@
+@using System.Web.UI.WebControls
+
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvSeleccionarFormaMenu";
+        settings.CallbackRouteValues = new { Controller = "Menu", Action = "gvwSeleccionarFormaMenu" };
+
+        settings.CommandColumn.Visible = false;
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = false;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+
+        settings.KeyFieldName = "ID_FORMA";
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_FORMA";
+            column.Caption = "Id";
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRE";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_PADRE";
+            column.Caption = "Item padre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_VISIBLE_MENU";
+            column.Caption = "Visible";
+            column.Width = Unit.Parse("80");
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbvsv_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_VISIBLE_MENU").ToString().ToUpper() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+
+        //settings.ClientSideEvents.SelectionChanged = "SeleccionarRegistroUsuario";
+    });
+}

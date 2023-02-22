@@ -1,0 +1,175 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Información de la Organización";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+    var IdTercero = @(ViewBag.IdTercero);
+
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/MiBici/Scripts/InfRegistroVentas.js?v=1.00")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <form id="form" method="post" action="" enctype="multipart/form-data">
+        <div id="GidListado"></div>
+        <div id="PopupInformacion">
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Descripción :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtDescripcion"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Sitio Web :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtWeb"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Instagram :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtInstagram"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>FaceBook :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtFacebook"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>WhatsApp :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtWhatsApp"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Email Ventas :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtEmailVentas"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Dirección :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtDireccion"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Teléfonos :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="txtTelefonos"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Logo :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div id="imgLogo"></div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-2">
+                    <h5>Foto :</h5>
+                </div>
+                <div class="col-md-10">
+                    <div class="widget-container">
+                        <div id="file-uploader"></div>
+                        <div class="content" id="selected-files">
+                            <div>
+                                <h4>Selected Files</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="row col-md-12">
+                <div id="BotonGuardar">
+                    <div id="btnGuardar"></div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <h3>Listado de Ventas Registradas</h3>
+        <hr />
+        <div id="GridListadoVentas"></div>
+        <br />
+        <div id="btnNuevoRegistro"></div>
+
+        <div id="PopupNuevoRegistro">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="control-label col-sm-3">Fecha venta :</div>
+                    <div class="col-sm-8" id="txtFechaVenta"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3">Nro Documento Cliente :</div>
+                    <div class="col-sm-8" id="txtIdentificacionCliente"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3">Marca :</div>
+                    <div class="col-sm-8" id="txtMarca"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3">Referencia :</div>
+                    <div class="col-sm-8" id="txtReferencia"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-3">Serial :</div>
+                    <div class="col-sm-8" id="txtSerial"></div>
+                </div>
+                <hr />
+                <div id="BotonNewRegistro">
+                    <div id="btnGuardaRegistro"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var json = '@ViewBag.json';
+        json = json.replace(/&quot;/g, '"')
+        json = JSON.parse(json);
+
+        var tercero = json[0].S_NOMBRE;
+        var IdInstalacionSel = json[0].ID_INSTALACION;
+
+    </script>
+}

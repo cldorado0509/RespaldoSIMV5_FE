@@ -1,0 +1,907 @@
+﻿@model INSTALACION
+@using SIM.Data.General
+@using System.Web.UI.WebControls
+
+<script type="text/javascript">
+    function SeleccionRegistroAE(s, e) {
+        gvwActividadesEconomicas.GetSelectedFieldValues('ID_ACTIVIDADECONOMICA;S_NOMBRE', OnSelectRowAE);
+    }
+
+    function OnSelectRowAE(Value) {
+        ID_ACTIVIDADECONOMICA.SetText(Value[0][0]);
+        cboAE.SetText(Value[0][1]);
+        cboAE.HideDropDown();
+    }
+
+    function SeleccionRegistroTercero(s, e) {
+        gvwTerceros.GetSelectedFieldValues('ID_TERCERO;N_DOCUMENTON;S_RSOCIAL', OnSelectRowTercero);
+    }
+
+    function OnSelectRowTercero(Value) {
+        ID_PROPIETARIO.SetText(Value[0][0]);
+        cboTerceros.SetText(Value[0][1] + ' - ' + Value[0][2]);
+        cboTerceros.HideDropDown();
+    }
+
+    function SeleccionRegistroProyecto(s, e) {
+        gvwProyectos.GetSelectedFieldValues('CODIGO_PROYECTO;CM;NOMBRE', OnSelectRowProyecto);
+    }
+
+    function OnSelectRowProyecto(Value) {
+        CODIGO_PROYECTO.SetText(Value[0][0]);
+        cboProyectos.SetText(Value[0][1] + ' - ' + Value[0][2]);
+        cboProyectos.HideDropDown();
+    }
+
+    function SeleccionRegistroU(s, e) {
+        gvwUsuarios.GetSelectedFieldValues('ID_USUARIO;S_NOMBRE;S_LOGIN', OnSelectRowU);
+    }
+
+    function OnSelectRowU(Value) {
+        cboUsuario.SetText(Value[0][1] + ' ' + ' (' + Value[0][2] + ')');
+        cboUsuario.HideDropDown();
+
+        usuario = ASPxClientControl.GetControlCollection().GetByName('ID_USUARIO_SEL');
+        if (usuario != null)
+            usuario.SetText(Value[0][0]);
+    }
+</script>
+<br />
+<br />
+<br />
+@{
+    Html.RenderPartial("_popErrorMessage");
+}
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanelInstalacion";
+    settings.Modal = true;
+    settings.EncodeHtml = false;
+    settings.Text = "Procesando Instalaci&oacute;n";
+}).GetHtml()
+<div class="panel panel-default" style="padding-bottom: 10px">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <label>Instalaci&oacute;n</label>
+        </h3>
+    </div>
+    @using (Html.BeginForm("InstalacionUpdate", "Instalacion", FormMethod.Post, new { name = "frmInstalacion", id = "frmInstalacion" }))
+    {
+        @Html.DevExpress().TextBoxFor(model => Model.ID_INSTALACION, settings =>
+        {
+            settings.ClientVisible = false;
+        }).GetHtml()
+
+        @Html.DevExpress().TextBoxFor(model => Model.ID_ESTADO, settings =>
+        {
+            settings.Text = "1";
+            settings.ClientVisible = false;
+        }).GetHtml()
+
+        @Html.DevExpress().RoundPanel(settingsIB =>
+        {
+            settingsIB.Name = "rpInformacionBasica";
+            settingsIB.EncodeHtml = false;
+            settingsIB.HeaderText = "Informaci&oacute;n B&aacute;sica";
+            settingsIB.ControlStyle.Font.Bold = true;
+            settingsIB.ControlStyle.Font.Size = FontUnit.Small;
+            settingsIB.EnableTheming = true;
+            settingsIB.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+            settingsIB.Width = Unit.Percentage(100);
+            settingsIB.Style.Add("padding-left", "15px");
+            settingsIB.Style.Add("padding-right", "15px");
+            settingsIB.Style.Add("padding-top", "10px");
+            settingsIB.Style.Add("padding-botom", "10px");
+
+            settingsIB.SetContent(() =>
+            {
+                // Primera línea de Información Básica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Nombre Instalaci&oacute;n:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-10\">");
+                Html.DevExpress().TextBoxFor(model => Model.S_NOMBRE, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    settings.Properties.ValidationSettings.RequiredField.ErrorText = "Nombre Instalaci&oacute; Requerido";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                ViewContext.Writer.Write("<hr style=\"margin:5px; border-color: gainsboro;\" />");
+
+                // Segunda línea de Información Básica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-3\">");
+                ViewContext.Writer.Write("<div style=\"width:45%; float:left\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "C&eacute;dula Catastral:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div style=\"width:55%; float:left\">");
+                Html.DevExpress().TextBoxFor(model => Model.S_CEDULACATASTRAL, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                    //settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    //settings.Properties.ValidationSettings.RequiredField.ErrorText = "C&eacute;dula Catastral Requerida";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                ViewContext.Writer.Write("<div style=\"width:45%; float:left\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Matr&iacute;cula Inmobiliaria:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div style=\"width:55%; float:left\">");
+                Html.DevExpress().TextBoxFor(model => Model.S_MATRICULAINMOBILIARIA, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                    //settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    //settings.Properties.ValidationSettings.RequiredField.ErrorText = "Matr&iacute;cula Inmobiliaria:";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Tel&eacute;fono:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().TextBoxFor(model => Model.S_TELEFONO, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    settings.Properties.ValidationSettings.RequiredField.ErrorText = "Tel&eacute;fono Requerido";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                // Tercera línea de Información Básica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Municipio:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-4\">");
+                Html.DevExpress().ComboBoxFor(model => Model.ID_DIVIPOLA, settings =>
+                {
+                    //settings.Name = "MUNICIPIO_ID";
+                    settings.Width = Unit.Pixel(250);
+                    settings.Properties.DropDownWidth = 250;
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_DIVIPOLA";
+                    settings.Properties.TextField = "S_NOMBRE";
+                    settings.Properties.ValueType = typeof(int);
+                    settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    settings.Properties.ValidationSettings.RequiredField.ErrorText = "Municipio Requerido";
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Municipio", 250);
+                }).BindList(ModelsToListGeneral.GetMunicipios()).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\"></div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\" style=\"padding-right: 0px;\" >");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Fecha Reg.:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().DateEditFor(model => Model.D_REGISTRO, settings =>
+                {
+                    settings.Properties.DisplayFormatString = "yyyy/MM/dd";
+                    settings.Width = Unit.Percentage(100);
+                    settings.ReadOnly = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                ViewContext.Writer.Write("<hr style=\"margin:5px; border-color: gainsboro;\" />");
+
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Direcci&oacute;n";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+
+                // Cuarta línea de Información Básica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "V&iacute;a Principal";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "N&uacute;mero";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Letra";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Sentido";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "V&iacute;a Secundaria";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "N&uacute;mero";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Letra";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Sentido";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Placa";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Interior";
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().ComboBoxFor(model => Model.ID_TIPOVIAPPAL, settings =>
+                {
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.DropDownWidth = Unit.Percentage(100);
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_TIPOVIA";
+                    settings.Properties.TextField = "S_NOMBRE";
+                    settings.Properties.ValueType = typeof(int);
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Tipo V&iacute;a");
+                }).BindList(ModelsToListGeneral.GetTiposVia()).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().TextBoxFor(model => Model.N_NUMEROVIAPPAL, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().ComboBoxFor(model => Model.ID_LETRAVIAPPAL, settings =>
+                {
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.DropDownWidth = Unit.Percentage(100);
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_LETRAVIA";
+                    settings.Properties.TextField = "S_NOMBRE";
+                    settings.Properties.ValueType = typeof(int);
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Letra");
+                }).BindList(ModelsToListGeneral.GetLetrasVia()).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().ComboBoxFor(model => Model.S_SENTIDOVIAPPAL, settings =>
+                {
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.DropDownWidth = Unit.Percentage(100);
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_SENTIDO";
+                    settings.Properties.TextField = "S_NOMBRE";
+                    settings.Properties.ValueType = typeof(string);
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Sentido");
+                }).BindList(new[] { new { ID_SENTIDO = "E", S_NOMBRE = "Este" }, new { ID_SENTIDO = "S", S_NOMBRE = "Sur" } }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().ComboBoxFor(model => Model.ID_TIPOVIASEC, settings =>
+                {
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.DropDownWidth = Unit.Percentage(100);
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_TIPOVIA";
+                    settings.Properties.TextField = "S_NOMBRE";
+                    settings.Properties.ValueType = typeof(int);
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Tipo V&iacute;a");
+                }).BindList(ModelsToListGeneral.GetTiposVia()).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().TextBoxFor(model => Model.N_NUMEROVIASEC, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().ComboBoxFor(model => Model.ID_LETRAVIASEC, settings =>
+                {
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.DropDownWidth = Unit.Percentage(100);
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_LETRAVIA";
+                    settings.Properties.TextField = "S_NOMBRE";
+                    settings.Properties.ValueType = typeof(int);
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Letra");
+                }).BindList(ModelsToListGeneral.GetLetrasVia()).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().ComboBoxFor(model => Model.S_SENTIDOVIASEC, settings =>
+                {
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.DropDownWidth = Unit.Percentage(100);
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_SENTIDO";
+                    settings.Properties.TextField = "S_NOMBRE";
+                    settings.Properties.ValueType = typeof(string);
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Sentido");
+                }).BindList(new[] { new { ID_SENTIDO = "E", S_NOMBRE = "Este" }, new { ID_SENTIDO = "S", S_NOMBRE = "Sur" } }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().TextBoxFor(model => Model.N_PLACA, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().TextBoxFor(model => Model.N_INTERIOR, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Carrera";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "38";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "A";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Sur";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Calle";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "50";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "B";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Sur";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "25";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "1203";
+                    settings.ControlStyle.Font.Underline = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                ViewContext.Writer.Write("<hr style=\"margin:5px; border-color: gainsboro;\" />");
+
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Descripci&oacute;n:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-6\">");
+                Html.DevExpress().TextBoxFor(model => Model.S_OBSERVACION, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\" style=\"padding-right: 0px;\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.Name = "lblCodigoEPM";
+                    settings.EncodeHtml = false;
+                    settings.Text = "C&oacute;digo EPM:";
+                    settings.ControlStyle.Font.Bold = true;
+                    settings.ClientVisible = false;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-1\">");
+                Html.DevExpress().TextBoxFor(model => Model.DIVIPOLA.S_CODIGOEPM, settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Width = Unit.Percentage(100);
+                    settings.ClientVisible = false;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().HyperLink(settings =>
+                {
+                    settings.Name = "lblVerEjemplo";
+                    settings.Properties.Text = "Ver Ejemplo";
+                    settings.Properties.Target = "_blank";
+                    settings.Properties.NavigateUrlFormatString = "www.metropol.gov.co";
+                    settings.Width = Unit.Percentage(100);
+                    settings.ClientVisible = false;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+            });
+        }).GetHtml()
+
+        @Html.DevExpress().RoundPanel(settingsIB =>
+        {
+            settingsIB.Name = "rpInformacionTecnica";
+            settingsIB.EncodeHtml = false;
+            settingsIB.HeaderText = "Informaci&oacute;n T&eacute;cnica";
+            settingsIB.ControlStyle.Font.Bold = true;
+            settingsIB.ControlStyle.Font.Size = FontUnit.Small;
+            settingsIB.EnableTheming = true;
+            settingsIB.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+            settingsIB.Width = Unit.Percentage(100);
+            settingsIB.Style.Add("padding-left", "15px");
+            settingsIB.Style.Add("padding-right", "15px");
+            settingsIB.Style.Add("padding-top", "10px");
+            settingsIB.Style.Add("padding-botom", "10px");
+
+            settingsIB.SetContent(() =>
+            {
+                // Primera línea de Información Técnica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Propietario:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-7\">");
+                Html.DevExpress().TextBox(settings =>
+                {
+                    settings.Name = "ID_PROPIETARIO";
+                    settings.Width = Unit.Percentage(100);
+                    if (ViewBag.IdTercero != null)
+                        settings.Text = ViewBag.IdTercero.ToString();
+                    settings.ClientVisible = false;
+                }).GetHtml();
+
+                if (ViewBag.IdTercero == null)
+                {
+                    Html.DevExpress().DropDownEdit(settings =>
+                    {
+                        settings.Name = "cboTerceros";
+                        settings.Width = Unit.Percentage(100);
+                        settings.Text = ViewBag.Tercero;
+                        settings.ReadOnly = true;
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "Propietario Requerido";
+
+                        settings.SetDropDownWindowTemplateContent(c =>
+                        {
+                            ViewContext.Writer.Write(Html.Action("gvwSeleccionarTercero", "Tercero", new { area = "General" }));
+                            ViewContext.Writer.Write("<table style=\"width:100%\"><tr><td align=\"right\">");
+
+                            Html.DevExpress().Button(
+                                buttonSettings =>
+                                {
+                                    buttonSettings.Name = "buttonCloseTercero";
+                                    buttonSettings.Text = "Cerrar";
+                                    buttonSettings.UseSubmitBehavior = false;
+                                    buttonSettings.ClientSideEvents.Click = "function(s, e){ cboTerceros.HideDropDown(); }";
+                                })
+                                .Render();
+                            ViewContext.Writer.Write("</td></tr></table>");
+                        });
+                    }).GetHtml();
+                }
+                else
+                {
+                    Html.DevExpress().TextBox(settings =>
+                    {
+                        settings.Name = "txtTercero";
+                        settings.ReadOnly = true;
+                        settings.Width = Unit.Percentage(100);
+                        settings.Text = ViewBag.Tercero;
+                    }).GetHtml();
+                }
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                // Segunda línea de Información Técnica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Actividad Econ&oacute;mica:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-10\">");
+                Html.DevExpress().TextBox(settings =>
+                {
+                    settings.Name = "ID_ACTIVIDADECONOMICA";
+                    if (ViewBag.IdActividadEconomica != null)
+                        settings.Text = ViewBag.IdActividadEconomica.ToString();
+                    settings.Width = Unit.Percentage(100);
+                    settings.ClientVisible = false;
+                }).GetHtml();
+                Html.DevExpress().DropDownEdit(settings =>
+                {
+                    settings.Name = "cboAE";
+                    settings.Width = Unit.Percentage(100);
+                    settings.Text = ViewBag.ActividadEconomica;
+                    settings.ReadOnly = true;
+                    settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    settings.Properties.ValidationSettings.RequiredField.ErrorText = "Actividad Económica Requerida";
+
+                    settings.SetDropDownWindowTemplateContent(c =>
+                    {
+                        ViewContext.Writer.Write(Html.Action("gvwSeleccionarActividadEconomica", "ActividadEconomica", new { area = "General" }));
+                        ViewContext.Writer.Write("<table style=\"width:100%\"><tr><td align=\"right\">");
+
+                        Html.DevExpress().Button(
+                            buttonSettings =>
+                            {
+                                buttonSettings.Name = "buttonCloseAE";
+                                buttonSettings.Text = "Cerrar";
+                                buttonSettings.UseSubmitBehavior = false;
+                                buttonSettings.ClientSideEvents.Click = "function(s, e){ cboAE.HideDropDown(); }";
+                            })
+                            .Render();
+                        ViewContext.Writer.Write("</td></tr></table>");
+                    });
+
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("</div>");
+
+                // Tercera línea de Información Técnica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Tipo Instalaci&oacute;n:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-6\">");
+                Html.DevExpress().ComboBox(settings =>
+                {
+                    settings.Name = "ID_TIPOINSTALACION";
+                    settings.Width = Unit.Percentage(100);
+                    settings.Properties.DropDownWidth = 450;
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    settings.Properties.TextFormatString = "{0}";
+                    settings.Properties.ValueField = "ID_TIPOINSTALACION";
+                    settings.Properties.ValueType = typeof(int);
+                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                    //settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                    //settings.Properties.ValidationSettings.RequiredField.ErrorText = "Tipo Instalci&oacute;n Requerido";
+
+                    settings.Properties.Columns.Add("S_NOMBRE", "Tipo Instalaci&oacute;n", 450);
+                }).BindList(ModelsToListGeneral.GetTiposInstalaciones()).Bind(ViewBag.IdTipoInstalacion).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                if (ViewBag.Administrador)
+                {
+                    ViewContext.Writer.Write("<div class=\"col-md-4\" style=\"padding-left:0px;\" >");
+                    ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "CM:";
+                        settings.ControlStyle.Font.Bold = true;
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"width:90%; float:left\">");
+                    Html.DevExpress().TextBox(settings =>
+                    {
+                        settings.Name = "CODIGO_PROYECTO";
+                        settings.Width = Unit.Percentage(100);
+                        if (ViewBag.IdProyecto != null)
+                            settings.Text = ViewBag.IdProyecto.ToString();
+                        settings.ClientVisible = false;
+                    }).GetHtml();
+                    Html.DevExpress().DropDownEdit(settings =>
+                    {
+                        settings.Name = "cboProyectos";
+                        settings.Width = Unit.Percentage(100);
+                        settings.Text = ViewBag.Proyecto;
+                        settings.ReadOnly = true;
+
+                        settings.SetDropDownWindowTemplateContent(c =>
+                        {
+                            ViewContext.Writer.Write(Html.Action("ProyectosComboGridViewPartial", "Proyecto", new { area = "Tramites" }));
+                            ViewContext.Writer.Write("<table style=\"width:100%\"><tr><td align=\"right\">");
+
+                            Html.DevExpress().Button(
+                                buttonSettings =>
+                                {
+                                    buttonSettings.Name = "buttonCloseProyecto";
+                                    buttonSettings.Text = "Cerrar";
+                                    buttonSettings.UseSubmitBehavior = false;
+                                    buttonSettings.ClientSideEvents.Click = "function(s, e){ cboProyectos.HideDropDown(); }";
+                                })
+                                .Render();
+                            ViewContext.Writer.Write("</td></tr></table>");
+                        });
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                }
+                ViewContext.Writer.Write("</div>");
+
+                // Cuarta línea de Información Técnica
+                if (ViewBag.Administrador)
+                {
+                    ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                    ViewContext.Writer.Write("<div class=\"col-md-2\" style=\"padding-right:0px\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Tipo Declaraci&oacute;n:";
+                        settings.ControlStyle.Font.Bold = true;
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                    Html.DevExpress().ComboBox(settings =>
+                    {
+                        settings.Name = "ID_TIPODECLARACION";
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.DropDownWidth = 120;
+                        settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        settings.Properties.TextFormatString = "{0}";
+                        settings.Properties.ValueField = "ID_TIPODECLARACION";
+                        settings.Properties.ValueType = typeof(int);
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "Tipo Declaraci&oacute;n Requerido";
+                        settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                        settings.Properties.Columns.Add("S_NOMBRE", "Tipo Declaraci&oacute;n", 120);
+                    }).BindList(ModelsToListGeneral.GetTiposDeclaraciones()).Bind(ViewBag.IdTipoDeclaracion).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-1\" style=\"padding-right:0px\">");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Estado:";
+                        settings.ControlStyle.Font.Bold = true;
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                    Html.DevExpress().ComboBox(settings =>
+                    {
+                        settings.Name = "ID_ESTADO_IT";
+                        settings.Width = Unit.Percentage(100);
+                        settings.Properties.DropDownWidth = 120;
+                        settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                        settings.Properties.TextFormatString = "{0}";
+                        settings.Properties.ValueField = "ID_ESTADO";
+                        settings.Properties.ValueType = typeof(int);
+                        settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                        settings.Properties.ValidationSettings.RequiredField.ErrorText = "Estado Requerido";
+                        settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+
+                        settings.Properties.Columns.Add("S_NOMBRE", "Estado", 120);
+                    }).BindList(ModelsToListGeneral.GetEstados()).Bind(ViewBag.IdEstado).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                }
+
+                // Quinta línea de Información Técnica
+                ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+                ViewContext.Writer.Write("<div class=\"col-md-5\">");
+                Html.DevExpress().Label(settings =>
+                {
+                    settings.EncodeHtml = false;
+                    settings.Text = "Fecha a partir de la cual se ejecuta la Actividad Econ&oacute;mica:";
+                    settings.ControlStyle.Font.Bold = true;
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                Html.DevExpress().DateEdit(settings =>
+                {
+                    settings.Name = "D_INICIO";
+                    if (ViewBag.FechaInicio != null)
+                        settings.Date = ViewBag.FechaInicio;
+                    settings.Properties.DisplayFormatString = "yyyy/MM/dd";
+                    settings.Width = Unit.Percentage(100);
+                }).GetHtml();
+                ViewContext.Writer.Write("</div>");
+                if (ViewBag.Administrador)
+                {
+                    ViewContext.Writer.Write("<div class=\"col-md-1\" style=\"padding-right:0px;\" >");
+                    Html.DevExpress().Label(settings =>
+                    {
+                        settings.EncodeHtml = false;
+                        settings.Text = "Fecha Fin:";
+                        settings.ControlStyle.Font.Bold = true;
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div class=\"col-md-2\">");
+                    Html.DevExpress().DateEdit(settings =>
+                    {
+                        settings.Name = "D_FIN";
+                        if (ViewBag.FechaFin != null)
+                            settings.Date = ViewBag.FechaFin;
+                        settings.Properties.DisplayFormatString = "yyyy/MM/dd";
+                        settings.Width = Unit.Percentage(100);
+                    }).GetHtml();
+                    ViewContext.Writer.Write("</div>");
+                }
+                ViewContext.Writer.Write("</div>");
+            });
+        }).GetHtml()
+
+        @Html.DevExpress().RoundPanel(settingsAlmacenar =>
+        {
+            settingsAlmacenar.Name = "rpAlmacenar";
+            settingsAlmacenar.ShowHeader = false;
+            settingsAlmacenar.EnableTheming = true;
+            settingsAlmacenar.View = DevExpress.Web.ASPxRoundPanel.View.Standard;
+            settingsAlmacenar.Width = Unit.Percentage(100);
+            settingsAlmacenar.Style.Add("padding-left", "15px");
+            settingsAlmacenar.Style.Add("padding-right", "15px");
+            settingsAlmacenar.Style.Add("padding-top", "10px");
+            settingsAlmacenar.Style.Add("padding-botom", "10px");
+            settingsAlmacenar.Style.Add("text-align", "right");
+
+            settingsAlmacenar.SetContent(() =>
+            {
+                Html.DevExpress().Button(settings =>
+                {
+                    settings.Name = "btnAlmacenar";
+                    settings.EnableTheming = true;
+                    settings.Text = "Almacenar";
+                    settings.Width = Unit.Pixel(150);
+                    settings.AllowFocus = false;
+                    settings.Style.Add("margin-left", "auto");
+                    settings.Style.Add("margin-right", "0px");
+                    settings.ControlStyle.CssClass = "icq";
+                    settings.Styles.Style.HoverStyle.CssClass = "icqHovered";
+                    settings.Styles.Style.PressedStyle.CssClass = "icqPressed";
+                    settings.UseSubmitBehavior = false;
+                    settings.ClientSideEvents.Click = "function(s, e){ if (ASPxClientEdit.ValidateEditorsInContainer(null)) { ProcessPanelInstalacion.SetText('Almacenando Instalación'); ProcessPanelInstalacion.Show(); $('#frmInstalacion').submit(); }}";
+                }).GetHtml();
+            });
+        }).GetHtml();
+    }
+</div>

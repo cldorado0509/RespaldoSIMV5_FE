@@ -1,0 +1,68 @@
+﻿<script src="~/Scripts/jquery-1.11.0.js"></script>
+@model IEnumerable<SIM.Areas.TalaPoda.Models.FLR_SINTOMA_EF>
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Tala y poda</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OBJECTID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.S_SINTOMA_EF)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OBJECTID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.S_SINTOMA_EF)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ID_SINTOMA_EF }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ID_SINTOMA_EF }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ID_SINTOMA_EF })
+            </td>
+        </tr>
+    }
+    
+    </table>
+    <hr />
+    <div class="form-group">
+        @*<div id="Perjuicios"></div>*@
+    </div>
+
+</body>
+</html>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Perjuicios').load('../utilidades/MostrarIndividuosDispersos');
+    });
+    alert('terminado');
+    //$('[id^="ChkR"]').click(function () {
+    //    alert('click');
+    });
+</script>

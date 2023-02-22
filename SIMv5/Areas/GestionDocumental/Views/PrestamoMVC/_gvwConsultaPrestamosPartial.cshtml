@@ -1,0 +1,82 @@
+@using System.Web.UI.WebControls
+
+@{
+	var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "gvwConsultaPrestamos";
+
+        settings.SettingsText.GroupPanel = "Arrastre una columna aqu&iacute; para agrupar por dicha columna";
+        settings.CallbackRouteValues = new { Controller = "Prestamo", Action = "ConsultaPrestamosDatos", idTercero = ViewBag.IdTercero, fechaInicial = ViewBag.FechaInicial, fechaFinal = ViewBag.FechaFinal, rangoTiempos = ViewBag.RangoTiempos };
+
+		settings.CommandColumn.Visible = false;
+
+		settings.KeyFieldName = "ID_PRESDETALLE";
+
+		settings.SettingsPager.Visible = true;
+		settings.Settings.ShowGroupPanel = true;
+		settings.Settings.ShowFilterRow = true;
+		settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.Width = Unit.Percentage(100);
+
+        settings.EncodeHtml = false;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_NOMBRETERCERO";
+            column.Caption = "Tercero";
+            column.Width = Unit.Percentage(15);
+            column.Visible = true;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_DESCPRESTAMO";
+            column.Caption = "Documento";
+            column.Visible = true;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        }); 
+        
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_TIPO";
+            column.Caption = "Tipo";
+            column.Width = Unit.Percentage(15);
+            column.Visible = true;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_FECHAPRESTAMO";
+            column.Caption = "Fecha Pr&eacute;stamo";
+            column.PropertiesEdit.DisplayFormatString = "dd-MMM-yyyy";
+            column.Width = Unit.Percentage(10);
+            column.Visible = true;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_FECHAHASTA";
+            column.Caption = "Fecha Vencimiento";
+            column.PropertiesEdit.DisplayFormatString = "dd-MMM-yyyy";
+            column.Width = Unit.Percentage(10);
+            column.Visible = true;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "D_FECHADEVOLUCION";
+            column.Caption = "Fecha Devolucion";
+            column.PropertiesEdit.DisplayFormatString = "dd-MMM-yyyy";
+            column.Width = Unit.Percentage(10);
+            column.Visible = true;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+	});
+	if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

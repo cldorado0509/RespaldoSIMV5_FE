@@ -1,0 +1,39 @@
+@{
+	var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "gvwEstrategias";
+        settings.CallbackRouteValues = new { Controller = "Estrategia", Action = "gvwAdministrarEstrategia" };
+
+				settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Estrategia", Action = "gvwAdministrarEstrategiaAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Estrategia", Action = "gvwAdministrarEstrategiaUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Estrategia", Action = "gvwAdministrarEstrategiaDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+		settings.CommandColumn.Visible = true;
+        /*settings.CommandColumn.NewButton.Visible = true;
+        settings.CommandColumn.DeleteButton.Visible = true;
+        settings.CommandColumn.EditButton.Visible = true;*/
+
+		settings.KeyFieldName = "ID_ESTRATEGIA";
+
+		settings.SettingsPager.Visible = true;
+		settings.Settings.ShowGroupPanel = true;
+		settings.Settings.ShowFilterRow = true;
+		settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+				settings.Columns.Add("S_DESCRIPCION");
+				settings.Columns.Add("S_ACTIVO");
+				settings.Columns.Add("ASIGNACION");
+				settings.Columns.Add("ESTACION");
+				settings.Columns.Add("ESTRATEGIA_ZONA");
+				settings.Columns.Add("HISTORICO");
+				settings.Columns.Add("OPERADOR");
+				settings.Columns.Add("PARAMETRO");
+				settings.Columns.Add("TERCERO_HISTORICO");
+				settings.Columns.Add("TERCERO_ROL");
+			});
+		if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

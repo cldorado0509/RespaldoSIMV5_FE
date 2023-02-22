@@ -1,0 +1,257 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.GestionDocumental.Controllers;
+@using SIM.Areas.GestionDocumental.Models;
+@{
+    ViewBag.Title = "GridAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+ 
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        label {
+            margin-top: 15px;
+        }
+
+        .btnGuardar {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Guardar.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+
+        fieldset.scheduler-border {
+            border: 1px groove #ddd !important;
+            padding: 0 1.4em 1.4em 1.4em !important;
+            margin: 0 0 1.5em 0 !important;
+            -webkit-box-shadow: 0px 0px 0px 0px #000;
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+        legend {
+            display: block;
+            width: 15%;
+            padding: 0;
+            margin-bottom: 1px;
+            font-size: 21px;
+            line-height: inherit;
+            color: #333;
+            border: 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+    </style>
+</head>
+<body style="overflow:hidden;">
+    <div class="container">
+        <div class="divTipo">
+            <fieldset>
+                <legend><label class="control-label Label">Tipo</label></legend>
+                <div class="contenerdorTipos" style="overflow-y: scroll; height: 444px; overflow-x: hidden;">
+                    <div class="contenerdorTipos" id="divTipoRepor">
+                        <div class="Tipos" id="divTipoRepor">
+
+
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="row" style="display:none;">
+            <div class="col-sm-12" style="margin-top: 10px;">
+                <select class="form-control col-sm-12" id="cmbReporte">
+
+                    <option value='-1'>--seleccionar--</option>
+                    <option value='1'>Reporte General</option>
+                    <option value='2'>Vertimientos</option>
+                    <option value='3'>Aguas subterraneas</option>
+                    <option value="4">aguas Superficiales</option>
+                    <option value="5">ocupacion de cauce</option>
+                    <option value="6">Fuentes fijas</option>
+                    <option value="7">CDA</option>
+                    <option value="8">Arbol urbano</option>
+                    <option value="9">Residuos peligrosos</option>
+                    <option value="10">Proyectos contructivos</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+
+                <button class="btn btn-default btnGuardar" id="btnGuardar" style="margin-top: 10px; margin-right: 6px;" onclick="generarPdFTipos()">
+                    PDF
+                </button>
+                @{
+                /*<button class="btn btn-default btnGuardar" id="btnGuardar" style="margin-top: 10px; margin-right: 6px;" onclick="generarRTF()">
+                    RTF
+                </button>*/
+                }
+            </div>
+        </div>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>
+   
+    <script>
+    //var idRadicador = parent.idRad;
+    var jsonFormularios = null;
+    var arrRept = [];
+    var arrRecurso = [];
+    $(document).ready(function () {
+        consultarFormularios();
+
+
+    });
+
+    function generarPdFTipos() {
+        arrRecurso = [];
+        $('#divTipoRepor').find('input[type=checkbox]:checked').each(function () {
+            arrRecurso.push($(this).val());
+        });
+        if (arrRecurso.length != 0) {
+            //window.open('@Url.Content("~/ControlVigilancia/Visitas/previePDFTipos?id=")' + parent.$('#IdVisita').val() + '&tipos=' + arrRecurso.join() + '&idRadicado=' + idRadicador);
+            window.open('@Url.Content("~/ControlVigilancia/Visitas/previePDFTipos?id=")' + parent.$('#IdVisita').val() + '&tipos=' + arrRecurso.join());
+        } else {
+            mensajeAlmacenamiento("Seleccione un recurso");
+        }
+    }
+
+    function generarPdF()
+    {
+        arrRecurso = [];
+        $('#divTipoRepor').find('input[type=checkbox]:checked').each(function () {
+            arrRecurso.push({ id: $(this).val() });
+        });
+        if (arrRecurso.length != 0) {
+            for (var i = 0; i < arrRecurso.length; i++) {
+                if (parent.idRad != "")
+                    //window.open("@Url.Content("~/ControlVigilancia/Visitas/previePDF?id=")+" + parent.$("#IdVisita").val() + "&tipo=" + arrRecurso[i].id + "&idRadicado=" + idRadicador);
+                    window.open("@Url.Content("~/ControlVigilancia/Visitas/previePDF?id=")+" + parent.$("#IdVisita").val() + "&tipo=" + arrRecurso[i].id);
+
+            }
+        } else {
+            mensajeAlmacenamiento("Seleccione un recurso");
+        }
+    }
+    function generarRTF() {
+        arrRecurso = [];
+        $('#divTipoRepor').find('input[type=checkbox]:checked').each(function () {
+            arrRecurso.push({ id: $(this).val() });
+        });
+        if (arrRecurso.length != 0) {
+            for (var i = 0; i < arrRecurso.length; i++) {
+                if (parent.idRad != "")
+                    //window.open("@Url.Content("~/ControlVigilancia/Visitas/previeRTF?id=")+" + parent.$("#IdVisita").val() + "&tipo=" + arrRecurso[i].id + "&idRadicado=" + idRadicador);
+                    window.open("@Url.Content("~/ControlVigilancia/Visitas/previeRTF?id=")+" + parent.$("#IdVisita").val() + "&tipo=" + arrRecurso[i].id);
+            }
+        } else {
+            mensajeAlmacenamiento("Seleccione un recurso");
+        }
+    }
+
+    function cargarTipo() {
+        var html = '<div class="row"><div class="col-sm-12" style="text-align: left; padding-left: 100px;"><input id="chk_tipo0" value="15" type="checkbox">&nbsp;&nbsp;&nbsp;<label class="control-label LabelDesc">Reporte General</label></div></div></div>';
+        //html += '<div class="row"><div class="col-sm-12" style="text-align: left; padding-left: 100px;"><input id="chk_tipo0" value="20" type="checkbox">&nbsp;&nbsp;&nbsp;<label class="control-label LabelDesc">Arbol Urbano</label></div></div></div>';
+
+        for (var i = 0; i < arrRept.length; i++) {
+            html += '   <div class="row"><div class="col-sm-12" style="text-align: left; padding-left: 100px;"><input id="chk_tipo0" value=' + arrRept[i].id + ' type="checkbox">&nbsp;&nbsp;&nbsp;<label class="control-label LabelDesc">' + arrRept[i].nombre + '</label></div></div></div>';
+        }
+        $("#divTipoRepor").append(html);
+    }
+
+    function consultarFormularios() {
+        var idEmpresa = parent.$("#txtId").val();
+        var idIntalacion = parent.$("#txtInstalacion").val();
+        var idV = parent.$("#IdVisita").val();
+        var nombre = "";
+        arrRept = [];
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Content("~/ControlVigilancia/Visitas/ConsultarInformacionFormularios")",
+            data: {
+                ins: idIntalacion,
+                tercero: idEmpresa,
+                visita: idV
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                jsonFormularios = eval('(' + response + ')');
+                for (var i = 0; i < jsonFormularios.length; i++) {
+                    for (var j = 0; j < jsonFormularios[i].FORMULARIOS.length; j++) {
+                        try {
+                            if (jsonFormularios[i].FORMULARIOS[j].ITEMS.length > 0) {
+                                for (var k = 0; k < jsonFormularios[i].FORMULARIOS[j].ITEMS.length; k++) {
+                                    if (jsonFormularios[i].FORMULARIOS[j].ITEMS[k].ESTADO != 0) {
+                                        arrRept.push({ id: jsonFormularios[i].FORMULARIOS[j].ID, nombre: jsonFormularios[i].FORMULARIOS[j].NOMBRE });
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (err) {
+                        }
+                    }
+                }
+                cargarTipo();
+
+            }
+        });
+    }
+
+    function guardar() {
+        arrRecurso = [];
+        $('#divTipoRepor').find('input[type=checkbox]:checked').each(function () {
+            arrRecurso.push({ id: $(this).val() });
+        });
+
+    }
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msText").text(mensaje);
+
+
+        $("#msAlmacenamiento").dialog({
+
+            buttons: [
+      {
+          text: "Aceptar",
+
+          click: function () { $(this).dialog("close"); },
+
+          class: "btn btn-default "
+      },
+            ]
+        });
+
+
+    }
+</script>
+
+
+</body>
+</html>

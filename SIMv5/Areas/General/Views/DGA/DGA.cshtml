@@ -1,0 +1,61 @@
+﻿@using SIM.Data.General
+@using SIM.Areas.General.Models
+@model DGA
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+<script type="text/javascript">
+    function Ayudas() {
+        window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 84);
+    }
+</script>
+<script type="text/javascript" src="@Url.Content("~/Areas/General/Scripts/dga.js?v=1.02")"></script>
+<div ng-app="SIM" resizable data-url="@Url.Content("~")" data-iddga="@ViewBag.idDGA" data-ro="@(ViewBag.ReadOnly ? "1" : "0")" id="app" class="my-cloak">
+    <div ng-controller="DGAController" class="panelSIM panelSIM-default" style="padding-bottom: 10px">
+        <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Informe del cumplimiento del decreto 1299 de 2008 - para la conformación del Departamento de Gestión Ambiental - DGA</label>
+            </h3>
+        </div>
+        <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div id="DGA0" ng-show="isActive(0)" class="panelSIM-heading">
+            @Html.Partial("_DGAEmpresa")
+        </div>
+        <div id="DGA1" ng-show="isActive(1)">
+            @Html.Partial("_DGAPersonal")
+        </div>
+        <div id="DGA2" ng-show="isActive(2)" class="panelSIM-heading">
+            @Html.Partial("_DGAInformacion")
+        </div>
+        <div id="DGA3" ng-show="isActive(3)" class="panelSIM-heading">
+            @Html.Partial("_DGAOrganigrama")
+        </div>
+        <div id="DGA4" ng-show="isActive(4)" class="panelSIM-heading">
+            @Html.Partial("_DGAInformacionAdicional")
+        </div>
+        <div id="DGA5" ng-show="isActive(5)" class="panelSIM-heading">
+            @Html.Partial("_DGASeguimiento")
+        </div>
+        <div class="panelSIM-body clearfix">
+            <div dx-validation-summary="{  }"></div>
+            <div class="col-lg-7 col-md-5 col-sm-3 col-xs-3">
+            </div>
+            <div class="col-lg-5 col-md-7 col-sm-9 col-xs-9">
+                @if (!ViewBag.ReadOnly)
+                {
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                    <div dx-button="btnAlmacenarSettings" id="btnAlmacenar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5"></div>
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                }
+                else
+                {
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5"></div>
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                }
+                <div dx-button="btnCancelarSettings" id="btnCancelar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5"></div>
+            </div>
+        </div>
+    </div>
+</div>

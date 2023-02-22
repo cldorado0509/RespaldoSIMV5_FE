@@ -1,0 +1,74 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_SEGUIMIENTO_META
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TPOEAIR_SEGUIMIENTO_META</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TPOEAIR_ACCIONES_PLAN.S_RESPONSABLE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TPOEAIR_ACCIONES_PLAN.S_RESPONSABLE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.N_SEGUIMIENTO_META)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_SEGUIMIENTO_META)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_FECHA_ACTUALIZACION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_FECHA_ACTUALIZACION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.N_VALORACION_ECONOMICA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_VALORACION_ECONOMICA)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_OBSERVACIONES)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_OBSERVACIONES)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ID_RESPONSABLE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ID_RESPONSABLE)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

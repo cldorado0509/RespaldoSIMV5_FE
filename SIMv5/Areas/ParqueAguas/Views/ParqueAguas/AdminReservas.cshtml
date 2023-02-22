@@ -1,0 +1,38 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Clasificación Documental";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+
+}
+
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/ParqueAguas/Scripts/AdminReservas.js?v=1.00")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <h3>Listado de Reservas para el ingreso al Parque de las Aguas</h3>
+        <hr />
+       
+        <div>
+            <div id="GidListado"></div>
+            <br />
+        </div>
+    </div>
+</div>
+
+
+

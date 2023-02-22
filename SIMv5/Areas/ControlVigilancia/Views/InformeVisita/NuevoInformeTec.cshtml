@@ -1,0 +1,186 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "GridAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        label {
+            margin-top: 15px;
+        }
+
+        .btnGuardar {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Guardar.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+    </style>
+</head>
+<body style="overflow:hidden;">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <select class="form-control" id="cmbVisita" onchange="consulrardatos()"></select>
+            </div>
+        </div>
+  
+        <input id="txtAsunto" style="display:none;" />
+        <input id="txtObservacion" style="display:none;" />
+        <div class="row">
+            <div class="col-sm-12">
+
+                <button class="btn btn-default btnGuardar" id="btnGuardar" style="margin-top: 10px; margin-right: 6px;" onclick="guardarInf()">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>
+   
+    <script>
+        var CodResponsable = "";
+        $(document).ready(function () {
+            consulrarVisita();
+          
+
+        
+        });
+        function consulrarVisita() {
+
+            var copias = "";
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/InformeVisita/consultarVisitaFinalizada")",
+         
+            beforeSend: function () { },
+            success: function (response) {
+
+                var datos = eval("(" + response + ')');
+                var comb = document.getElementById("cmbVisita");
+                comb.innerHTML += "<option value=-1>--Seleccione--</option>";
+                if (datos.length > 0) {
+
+                    for (var i = 0; i < datos.length; i++) {
+                        comb.innerHTML += "<option value=" + datos[i].ID_VISITA + ">" + datos[i].S_ASUNTO + "</option>";
+
+                    }
+                }
+
+
+            }
+        });
+        }
+        function consulrardatos() {
+
+            
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/InformeVisita/consultarVisitaDetalle")",
+                data: {
+                    id: $("#cmbVisita").val()
+                },
+            beforeSend: function () { },
+            success: function (response) {
+
+                var datos = eval("(" + response + ')');
+          
+                $("#txtAsunto").val(datos[0].S_ASUNTO);
+                $("#txtObservacion").val(datos[0].S_OBSERVACION);
+
+            }
+        });
+        }
+        function guardarInf()
+        {
+            if ($("#cmbVisita").val() == "-1")
+            {
+                mensajeAlmacenamiento("selecione la visita");
+                return;
+            }
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/InformeVisita/guardarInfTecnico")",
+            data: {
+                asunto: $("#txtAsunto").val(), observacion: $("#txtObservacion").val(), estado: 1, idVisita: $("#cmbVisita").val()
+            },
+            beforeSend: function () { },
+            success: function (response) {
+                var dato = response;
+                if(dato=="1")
+                {
+                
+                    
+                    
+                    parent.$("#pantallaNuevoInfo").dialog('close');
+                    parent.confirmacionNuevo();
+                    
+                    
+                }
+
+
+            }
+        });
+        }
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default glyphicon  glyphicon-ok-circle"
+          },
+                ]
+            });
+
+
+        }
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+.dx-datagrid-table .dx-row .dx-editor-cell {
+    background-color: #FEFFE8;
+}
+
+.dx-datagrid-headers {
+    background-color: #F0F0F0;
+    font-weight: bold;
+}
+
+.dx-datagrid-rowsview {
+    background-color: white;
+}
+
+.dx-datagrid-table .dx-row .dx-editor-cell {
+    vertical-align: top !important;
+}
+
+.dx-datagrid-rowsview .dx-row:nth-child(odd) 
+{
+    background-color: #FAFAFA ;
+}

@@ -1,0 +1,89 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/EnCicla/Scripts/testexterno.js")"></script>
+
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak" resizable>
+    <div ng-controller="TestExternoController">
+        <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+        <div style="min-height:170px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Documentos</label></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div dx-text-area="{height: 120, bindingOptions: { value: 'parametros.ListaDocumentos' }}"></div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="dx-field">
+                <div class="dx-field-label" style="padding-left:15px">Fecha Inicial (dmy)</div>
+                <div class="dx-field-value">
+                    <div dx-date-box="{formatString:'dd/MM/yyyy', format: 'date', useCalendar: true, bindingOptions: { value: 'parametros.FechaInicial' }}" style="width:100%" id="datFechaInicial"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label" style="padding-left:15px">Fecha Final (dmy)</div>
+                <div class="dx-field-value">
+                    <div dx-date-box="{formatString:'dd/MM/yyyy', format: 'date', useCalendar: true, bindingOptions: { value: 'parametros.FechaFinal' }}" style="width:100%" id="datFechaFinal"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label" style="padding-left:15px">Hora Inicial</div>
+                <div class="dx-field-value">
+                    <div dx-text-box="{bindingOptions: { value: 'parametros.HoraInicial' }}" style="width:100%" id="datHoraInicial"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div class="dx-field-label" style="padding-left:15px">Hora Final</div>
+                <div class="dx-field-value">
+                    <div dx-text-box="{bindingOptions: { value: 'parametros.HoraFinal' }}" style="width:100%" id="datHoraFinal"></div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div style="min-height:170px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Estaciones</label></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div dx-text-area="{height: 120, bindingOptions: { value: 'parametros.Estaciones' }}"></div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-xs-4 col-sm-5 col-md-5 col-lg-5"></div>
+            <div dx-button="consultarSettings" id="btnConsultar" class="col-xs-4 col-sm-2 col-md-2 col-lg-2"></div>
+            <div class="col-xs-4 col-sm-5 col-md-5 col-lg-5"></div>
+        </div>
+        <hr />
+        <div style="min-height:170px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Resultado</label></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div dx-text-area="{height: 120, bindingOptions: { value: 'Resultado' }}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+﻿@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/Areas/EnCicla/Scripts/consultaprestamo.js?v=1.02")"></script>
+
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="ConsultaPrestamoController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+            <div dx-tabs="dxTabsOptions" id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+            <div ng-show="isActive(0)" class="panelSIM-heading" style="min-height: 500px">
+                <div class="row" style="padding-bottom: 15px;">
+                    <div class="col-md-12">
+                        <label style="font-weight:bold">Seleccione la modalidad de ingreso de las cédulas de los colaboradores</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div dx-radio-group="{ displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Subir Archivo', value: 0 }, { text: 'Digitar Documentos', value: 1 } ], layout: 'horizontal',  bindingOptions: { value: 'documentos.tipoDocumentos' } }"></div>
+                    </div>
+                    <br />
+                </div>
+                <div ng-show="tipoDocumentos(0)" style="min-height:170px">
+                    <div class="row" style="padding-bottom: 15px;">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Documentos Almacenados</label></div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-select-box="documentosAlmacenadosSelectBoxSettings" id="cboDocumentosAlmacenados"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="background: lightgray; padding-bottom: 15px; padding-top: 10px;">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow"></div>
+                                <div class="dx-field-value valuefullrow">
+                                    El archivo debe contener las c&eacute;dulas de los colaboradores sin s&iacute;mbolos ni espacios, en una archivo de texto (*.txt) el cual debe contener una c&eacute;dula por l&iacute;nea. Peso m&aacute;ximo del archivo 50MB.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow">Subir Documentos</div>
+                                <div class="dx-field-value valuefullrow">
+                                    <!--div dx-file-uploader="archivoDocumentosSettings" id="archivoDocumentos"></div-->
+                                    <input type="file" id="archivoDocumentos" accept="text/html" style="padding: 8px 15px 9px 0;" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow">Nombre Documentos</div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div dx-text-box="nombreDatosAlmacenadosSettings" id="txtNombreDatosAlmacenados" style="float:left"></div>
+                                    <div dx-button="almacenarArchivoSettings" id="btnAlmacenarArchivo"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="tipoDocumentos(1)" style="min-height:170px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Documentos</label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            Digite las cédulas de los colaboradores sin símbolos, ni espacios separados por comas ej: 43040919,1478354
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div dx-text-area="documentosSettings"></div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="dx-field" style="min-height:0px">
+                            <label style="font-weight:bold">Ingrese el rango de fechas de los viajes que desea consultar (Vigencia 21/11/2016)</label>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="padding-left:15px">Fecha Inicial (dmy)</div>
+                            <div class="dx-field-value">
+                                <div dx-date-box="{formatString:'dd/MM/yyyy', format: 'date', useCalendar: true, bindingOptions: { value: 'parametros.fechaInicial' }}" style="width:100%" id="datFechaInicial"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="padding-left:15px">Fecha Final (dmy)</div>
+                            <div class="dx-field-value">
+                                <div dx-date-box="{formatString:'dd/MM/yyyy', format: 'date', useCalendar: true, bindingOptions: { value: 'parametros.fechaFinal' }}" style="width:100%" id="datFechaFinal"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field" style="min-height:0px">
+                            <label style="font-weight:bold">Ingrese el rango de horas establecido por la organización para la llegada de los empleados</label>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="padding-left:15px">Hora Inicial</div>
+                            <div class="dx-field-value">
+                                <div dx-date-box="{formatString:'HH:mm', format: 'time', useCalendar: true, bindingOptions: { value: 'parametros.horaInicial' }}" style="width:100%" id="datHoraInicial"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="padding-left:15px">Hora Final</div>
+                            <div class="dx-field-value">
+                                <div dx-date-box="{formatString:'HH:mm', format: 'time', useCalendar: true, bindingOptions: { value: 'parametros.horaFinal' }}" style="width:100%" id="datHoraFinal"></div>
+                            </div>
+                        </div>
+                        <div class="dx-field" style="min-height:0px">
+                            <label style="font-weight:bold">Seleccione el tipo de informe que desea visualizar</label>
+                        </div>
+                        <div class="dx-field">
+                            <div class="col-md-12">
+                                <div dx-radio-group="{ displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Resumido', value: 0 }, { text: 'Detallado', value: 1 } ], layout: 'horizontal',  bindingOptions: { value: 'parametros.tipoReporte' } }"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <label style="font-weight:bold">Seleccione la(s) estación(es) ubicadas cerca a su organización</label>
+                        </div>
+                        <div dx-data-grid="estacionesGridSettings" id="grdEstaciones"></div>
+                        <div class="dx-field">
+                            Consulte la ubicación de las estaciones EnCicla <a href="//www.encicla.gov.co/estaciones/" title="Mapas EnCicla" target="_blank">Aqu&iacute;</a>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dx-field">
+                            <label style="font-weight:bold">Estaciones Seleccionadas:&nbsp;</label><span id="selectedItemsContainer">{{parametros.estacionesSeleccionadas}}</span>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="col-xs-4 col-sm-5 col-md-5 col-lg-5"></div>
+                    <div dx-button="consultarSettings" id="btnConsultar" class="col-xs-4 col-sm-2 col-md-2 col-lg-2"></div>
+                    <div class="col-xs-4 col-sm-5 col-md-5 col-lg-5"></div>
+                </div>
+            </div>
+            <div ng-show="isActive(1)" class="panelSIM-heading" style="min-height: 500px">
+                <div ng-show="parametros.tipoReporteSel == 0 && !cargandoVisible">
+                    <div dx-data-grid="reporteResumidoGridSettings" id="grdReporteResumido"></div>
+                </div>
+                <div ng-show="parametros.tipoReporteSel == 1 && !cargandoVisible">
+                    <div dx-data-grid="reporteDetalladoGridSettings" id="grdReporteDetallado"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

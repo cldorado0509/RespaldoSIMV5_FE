@@ -1,0 +1,38 @@
+.dx-editor-cell {
+    text-align: right !important;
+}
+
+@media (min-width: 768px) {
+    .labelfullrow {
+        width: 19.5% !important;
+    }
+    .valuefullrow {
+        width: 80.5% !important;
+    }
+}
+
+.labelfullrowinv {
+    width: 80.5% !important;
+}
+
+.valuefullrowinv {
+    width: 19.5% !important;
+    text-align: right;
+}
+
+@media (min-width: 992px) {
+    .label3-4row {
+        width: 19.25% !important;
+    }
+    .value3-4row {
+        width: 80.75% !important;
+    }
+}
+
+.row {
+    margin: 5px;
+}
+
+.row-no-padding {
+    padding: 0 !important;
+}

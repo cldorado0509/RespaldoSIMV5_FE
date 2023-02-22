@@ -1,0 +1,65 @@
+@using System.Security.Claims
+@using System.Web
+@using System.Web.UI.WebControls
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvAdministrarTipoObjeto";
+        settings.Caption = "Tipos de objetos";
+        settings.CallbackRouteValues = new { Controller = "TipoObjeto", Action = "gvwAdministrarTipoObjeto" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "TipoObjeto", Action = "gvwAdministrarTipoObjetoCrear" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "TipoObjeto", Action = "gvwAdministrarTipoObjetoActualizar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "TipoObjeto", Action = "gvwAdministrarTipoObjetoEliminar" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.Width = Unit.Percentage(100);
+
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowNewButtonInHeader = claimppal.IsInRole("CTIPOOBJETO");
+        settings.CommandColumn.ShowDeleteButton = claimppal.IsInRole("ETIPOOBJETO");
+        settings.CommandColumn.ShowEditButton = claimppal.IsInRole("ATIPOOBJETO");
+        
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.KeyFieldName = "ID_TIPOOBJETO";
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_TIPOOBJETO";
+            column.Caption = "Tipo objeto";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_ACTIVO";
+            column.Caption = "Activo";
+            column.SetDataItemTemplateContent(c =>
+            {
+                Html.DevExpress().CheckBox(checkboxSettings =>
+                {
+                    checkboxSettings.Name = "cbato_" + c.KeyValue.ToString();
+                    checkboxSettings.Checked = DataBinder.Eval(c.DataItem, "S_ACTIVO").ToString() == "1" ? true : false;
+                    checkboxSettings.ClientEnabled = false;
+                }).Render();
+            });
+        });
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

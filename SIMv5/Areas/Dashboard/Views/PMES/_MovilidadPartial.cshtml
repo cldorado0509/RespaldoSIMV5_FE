@@ -1,0 +1,8 @@
+﻿@model DevExpress.DashboardWeb.Mvc.DashboardSourceModel
+@Html.DevExpress().DashboardViewer(settings =>
+{
+    settings.Name = "PMESViewer";
+    settings.CallbackRouteValues = new { Controller = "PMES", Action = "MovilidadPartial" + ViewBag.id, Area = "Dashboard" };
+    settings.ExportRouteValues = new { Controller = "PMES", Action = "MovilidadPartialExport" + ViewBag.id, Area = "Dashboard" };
+    settings.FullscreenMode = true;
+}).BindToSource(Model).GetHtml()

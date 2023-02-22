@@ -1,0 +1,747 @@
+﻿
+@using SIM.Properties
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script type="text/javascript">
+
+    var myApp = angular.module('SIM', ['dx']);
+    myApp.controller("FacturPendController", function ($scope, $location, $http) {
+        $scope.isPopupVisibleFactura = false;
+        $scope.CodTramite = -1;
+        $scope.CodDoc = -1;
+        $scope.Factura = "";
+        $scope.isDisableAsociafact = true;
+        $scope.isPopupVisibleFact = false;
+        $scope.isPopupVisibleCalculo = false;
+        $scope.TipoFactura = "";
+        $scope.CantidadProf = 0;
+        $scope.CantVisitas = 0;
+        $scope.CantHorInf = 0;
+        $scope.DuracionVisita = 0;
+        $scope.NombreTercero = '';
+        $scope.TipoTramite = 0;
+        $scope.Soportes = 0;
+        $scope.ValorPry = 0;
+        $scope.DocTercero = 0;
+        $scope.IdCalculo = 0;
+        $scope.ValorFactura = 0;
+        $scope.CM = '';
+
+        $scope.tabpanelContainer = {
+            dataSource: [{
+                "ID": 1,
+                "title": "Informes Técnicos",
+                "template": "tab1"
+            }, {
+                "ID": 2,
+                "title": "Resoluciones",
+                "template": "tab2"
+            }],
+            width: "100%"
+        };
+
+        $scope.sbTipoTramite = {
+            dataSource: TiposTramiteSource,
+            valueExpr: 'CODIGO_TRAMITE',
+            displayExpr: 'NOMBRE',
+            placeholder: 'Seleccione tipo de trámite',
+            showClearButton: true,
+            onSelectionChanged: function (e) {
+                var item = e.component.option('selectedItem');
+                var data = null;
+                $scope.TipoTramite = item.CODIGO_TRAMITE;
+                var URL = 'https://webservices.metropol.gov.co/SIMAPI2/api/Calculo/ParametrosSeguimiento?Tramite=' + $scope.TipoTramite;
+                $.getJSON(URL, function (result) {
+                    $scope.CantidadProf = result.NumeroProfesionales;
+                    $scope.CantVisitas = result.NumeroVisitas;
+                    $scope.CantHorInf = result.HorasInforme;
+                    $scope.DuracionVisita = result.DuracionVisita;
+                    $.getJSON('@Url.Content("~")Facturacion/Pendientes/ObtenerCMInforme?CodTramite=' + $scope.CodTramite + '&CodDocumento=' + $scope.CodDoc, function (result) {
+                          $scope.CM = result;
+                    });
+                });
+ 
+            }
+        };
+
+        $scope.txtCantProf = {
+            bindingOptions: {
+                value: 'CantidadProf'
+            }
+        };
+
+        $scope.txtCantVisitas = {
+            bindingOptions: {
+                value: 'CantVisitas'
+            }
+        };
+
+        $scope.txtCantHorInf = {
+            bindingOptions: {
+                value : 'CantHorInf'
+            }
+        };
+
+        $scope.txtDuracionVisita = {
+            bindingOptions: {
+                value: 'DuracionVisita'
+            }
+        };
+
+        $scope.txtCM = {
+            bindingOptions: {
+                value: 'CM'
+            }
+        };
+
+        $scope.txtTercero = {
+            showClearButton: true,
+            placeholder: 'Entre el documento',
+            valueChangeEvent: 'focusout',
+            onValueChanged: function (e) {
+                if (e.value > 0) {
+                    $scope.DocTercero = e.value;
+                    var data = null;
+                    var URL = 'https://webservices.metropol.gov.co/SIMAPI2/api/Calculo/ExisteTercero?Documento=' + e.value;
+                    $http.get(URL, data).success(function (data) {
+                        if (data) {
+                            var URL = 'https://webservices.metropol.gov.co/SIMAPI2/api/Calculo/NombreTercero?Documento=' + e.value;
+                            $http.get(URL, data).success(function (data) {
+                                $scope.NombreTercero = data;
+                            });
+                            var URL = 'https://webservices.metropol.gov.co/SIMAPI2/api/Calculo/NombreTercero?Documento=' + e.value;
+                        } else {
+                            $scope.NombreTercero = "El tercero no existe en el SIM";
+                        }
+                    });
+                }
+            },
+            bindingOptions: {
+                value: 'DocTercero'
+            }
+        };
+
+        $scope.txtNombreTercero = {
+            readOnly: true,
+            bindingOptions: {
+                value: 'NombreTercero'
+            }
+        };
+
+        $scope.txtValorPry = {
+            showClearButton: true,
+            placeholder: 'Entre el valor',
+            onValueChanged: function (data) {
+                $scope.ValorPry = data.value;
+            }
+        };
+
+        $scope.chkSoportes = {
+            onValueChanged: function (e) {
+                if (e.value) $scope.Soportes = 1;
+                else $scope.Soportes = 0;
+            }
+        };
+
+        $scope.btnAsociaFactSettings = {
+            text: 'Asociar Factura',
+            type: 'success',
+            onClick: function (e) {
+                if ($scope.TipoFactura == "Informe") {
+                    var URL = '@Url.Content("~")Facturacion/Pendientes/AsociaFacturaInf?Factura=' + $scope.Factura + "&CodTramite=" + $scope.CodTramite + "&CodDoc=" + $scope.CodDoc;
+                    var grid = $('#gridInformes').dxDataGrid('instance');
+                } else if ($scope.TipoFactura == "Resolucion") {
+                    var URL = '@Url.Content("~")Facturacion/Pendientes/AsociaFacturaRes?Factura=' + $scope.Factura + "&CodTramite=" + $scope.CodTramite + "&CodDoc=" + $scope.CodDoc;
+                    var grid = $('#gridResoluciones').dxDataGrid('instance');
+                }
+                var data = null;
+                $http.get(URL, data).success(function (data, status, headers, config) {
+                    DevExpress.ui.dialog.alert(data, 'Guardar Datos');
+                    grid.refresh();
+                    $scope.isPopupVisibleFact = false;
+                    $scope.Factura = "";
+                    $scope.isDisableAsociafact = true;
+                    $("#FacturaAdjunta").attr("src", "");
+                    $("#NumFactura").dxTextBox("instance").reset();
+                }).error(function (data, status, headers, config) {
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data.mensaje, 'Guardar Datos');
+                });
+            },
+            bindingOptions: {
+                disabled: 'isDisableAsociafact'
+            }
+        };
+
+        $scope.txtValorFactura = {
+            readOnly: true,
+            bindingOptions: {
+                value: 'ValorFactura'
+            }
+        };
+
+        $scope.popupCalculo = {
+            title: 'Calcular Seguimiento',
+            toolbarItems: [{
+                widget: 'dxButton',
+                toolbar: 'bottom',
+                location: 'center',
+                options: {
+                    text: 'Calcular Seguimento',
+                    elementAttr: { class: 'btn btn-lg' },
+                    onClick: function (e) {
+                        if ($scope.TipoTramite > 0 && $scope.ValorPry > 0 && $scope.DocTercero > 0) {
+                            var datosSeg = {
+                                TipoTramite: $scope.TipoTramite,
+                                DuracionVisita: $scope.DuracionVisita,
+                                HorasInforme: $scope.CantHorInf,
+                                NumeroVisitas: $scope.CantVisitas,
+                                TramitesSINA: 1,
+                                ValorProyecto: $scope.ValorPry,
+                                NumeroProfesionales: $scope.CantidadProf,
+                                ConSoportes: $scope.Soportes,
+                                CM: $scope.CM,
+                                Observaciones: '',
+                                Items: 1,
+                                Reliquidacion: 0,
+                                NIT: $scope.DocTercero,
+                                CodTramite: $scope.CodTramite,
+                                CodDocumento: $scope.CodDoc
+                            };
+                        } else {
+                            DevExpress.ui.dialog.alert('Faltan datos para el calculo del seguimiento', 'Guardar Datos');
+                        }
+                        var URL = 'https://webservices.metropol.gov.co/SIMAPI2/api/Calculo/CalcularSeguimiento';
+                        $http.post(URL, JSON.stringify(datosSeg)).success(function (RetdataSeg, status, headers, config) {
+                            $scope.IdCalculo = RetdataSeg.IdCalculo;
+                            $("#lblValorFactura").text("Valor a Facturar : " + RetdataSeg.TotalPagar);
+                            var data;
+                            $.ajax({
+                                url: 'https://webservices.metropol.gov.co/SIMAPI2/api/Calculo/SoporteSeguimiento?CodTramite=' + $scope.CodTramite + '&CodDocumento=' + $scope.CodDoc,
+                                type: 'GET',
+                                data: data,
+                                success: function (data) {
+                                    dataPdf = 'data:application/pdf;base64,' + data;
+                                    $("#DocumentoInforme").attr("src", dataPdf);
+                                    if ($scope.TipoFactura == "Informe") {
+                                        var grid = $('#gridInformes').dxDataGrid('instance');
+                                        $http.get('@Url.Content("~")Facturacion/Pendientes/GuardaValorInf?CodTramite=' + $scope.CodTramite + "&CodDocumento=" + $scope.CodDoc + '&Valor=' + RetdataSeg.TotalPagar, datos).success(function (data, status, headers, config) {
+                                            grid.refresh();
+                                        }).error(function (data, status, headers, config) {
+                                            DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data.mensaje, 'Guardar Datos');
+                                        });
+                                    }
+                                }
+                            }).error(function (data, status) {
+                                DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data, 'Guardar Datos');
+                            });
+                            
+                        }).error(function (data, status) {
+                            DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data.value, 'Guardar Datos');
+                        });
+                    }
+                }
+            }]
+            //,
+            //bindingOptions: {
+            //    visible: 'isPopupVisibleCalculo'
+            //}
+        };
+
+        $scope.MostrarDocumento = function (CodTramite, CodDocumento) {
+            var _popup = $("#popDocumento").dxPopup("instance");
+            _popup.show();
+            $("#DocumentoAdjunto").attr("src", '@Url.Content("~")Correspondencia/Correspondencia/LeeDoc?CodTramite=' + CodTramite + '&CodDocumento=' + CodDocumento);          
+        };
+
+        $scope.abrirDetalleTramite = function (id) {
+            var _popup = $("#popDocumento").dxPopup("instance");
+            _popup.show();
+            $("#DocumentoAdjunto").attr("src", "https://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=" + id);
+        };
+
+        $scope.popupCargaFactura = {
+            title: 'Buscar y asociar facturas',
+            bindingOptions: {
+                visible: 'isPopupVisibleFact'
+            }
+        };
+
+        $scope.btnConsultaFactSettings = {
+            text: 'Consulta Factura',
+            type: 'success',
+            onClick: function (e) {
+                $http.get('@Url.Content("~")Facturacion/Pendientes/ExisteFactura?Factura=' + $scope.Factura, null).success(function (data, status, headers, config) {
+                    if (data == 'True') {
+                        $scope.isDisableAsociafact = false;
+                    }
+                    $("#FacturaAdjunta").attr("src", '@Url.Content("~")Facturacion/Pendientes/LeeFactura?Factura=' + $scope.Factura);
+                }).error(function (data, status, headers, config) {
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + status + ' ' + data.mensaje, 'Guardar Datos');
+                }
+                );              
+            }
+        };
+
+        $scope.txtFactura = {
+            placeholder: '99999-AAAA',
+            valueChangeEvent: 'keyup',
+            onValueChanged: function (data) {
+                $scope.Factura = data.value;
+            }
+        };
+
+        $scope.grdInfPendSetting = {
+            dataSource: grdInfDataSource,
+            allowColumnResizing: true,
+            caption: 'Informes Ténicos pendientes de facturación',
+            loadPanel: { enabled: true, text: 'Cargando Datos...' },
+            noDataText: "Sin datos para mostrar",
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            'export': {
+                enabled: true,
+                fileName: 'Informes_Facturas'
+            },
+            onEditingStart: function (e) {
+                isUpdateCanceled = false;
+            },
+            columns: [
+                {
+                    dataField: "CODTRAMITE",
+                    width: '10%',
+                    caption: 'Codigo del Trámite',
+                    dataType: 'number'
+                }, {
+                    dataField: 'CODDOCUMENTO',
+                    width: '5%',
+                    caption: 'Documento',
+                    dataType: 'number'
+                }, {
+                    dataField: 'RADICADO',
+                    width: '10%',
+                    caption: 'Radicado',
+                    dataType: 'string'
+                }, {
+                    dataField: 'FECHA_RADICADO',
+                    width: '10%',
+                    caption: 'Fecha del Radicado',
+                    alignment: 'right',
+                    dataType: 'string'
+                }, {
+                    dataField: 'ASUNTO',
+                    width: '55%',
+                    caption: 'Asunto del documento',
+                    alignment: 'right',
+                    dataType: 'string'
+                }, {
+                    dataField: 'FACTURA_ASIGNADA',
+                    width: '10%',
+                    caption: 'Factura asignada',
+                    dataType: 'string'
+                }, {
+                    dataField: 'VALOR',
+                    width: '10%',
+                    caption: 'Valor Factura',
+                    dataType: 'string'
+                }, {
+                    caption: 'Ver el documento',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '../Content/Images/Ver_Doc.png',
+                            hint: 'Visualizar Documento',
+                            onClick: function (e) {
+                                $scope.MostrarDocumento(options.row.data.CODTRAMITE, options.row.data.CODDOCUMENTO);
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    caption: 'Asociar Facturas',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/Check_icon.png',
+                            hint: 'Validar factura',
+                            onClick: function (e) {
+                                $("#FacturaAdjunta").attr("src", "");
+                                $scope.CodTramite = options.row.data.CODTRAMITE;
+                                $scope.CodDoc = options.row.data.CODDOCUMENTO;
+                                $scope.TipoFactura = "Informe";
+                                $scope.isPopupVisibleFact = true;
+                            },
+                            bindingOptions: {
+                                visible: 'isVisibleValfact'
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    caption: 'Calcular Seguimiento',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/Calculate.gif',
+                            hint: 'Calcular el valor del seguimiento',
+                            onClick: function (e) {
+                                $scope.CantidadProf = 0;
+                                $scope.CantVisitas = 0;
+                                $scope.CantHorInf = 0;
+                                $scope.DuracionVisita = 0;
+                                $scope.NombreTercero = '';
+                                $scope.DocTercero = 0;
+                                $scope.ValorFactura = 0;
+                                $scope.CM = '';
+                                $scope.DocTercero = 0;
+                                var _popup = $("#Calcular").dxPopup("instance");
+                                _popup.show();
+                                $scope.CodTramite = options.row.data.CODTRAMITE;
+                                $scope.CodDoc = options.row.data.CODDOCUMENTO;
+                                $scope.TipoFactura = "Informe";
+                                if (options.row.data.CODTRAMITE > 0 && options.row.data.CODDOCUMENTO > -1) {
+                                    $("#DocumentoInforme").attr("src", '@Url.Content("~")Correspondencia/Correspondencia/LeeDoc?CodTramite=' + options.row.data.CODTRAMITE + '&CodDocumento=' + options.row.data.CODDOCUMENTO);
+                                } else {
+                                    DevExpress.ui.dialog.alert("El registro no posee un codigo de trámite o código de documento");
+                                }
+                            },
+                            bindingOptions: {
+                                visible: 'isPopupVisibleCalculo'
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    caption: 'Detalle',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/VerDetalle.png',
+                            hint: 'Ver detalle del trámite',
+                            onClick: function (e) {
+                                $scope.abrirDetalleTramite(options.row.data.CODTRAMITE);
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            ]
+        };
+
+        $scope.grdResPendSetting = {
+            dataSource: grdResDataSource,
+            allowColumnResizing: true,
+            caption: 'Resoluciones pendientes de facturación',
+            loadPanel: { enabled: true, text: 'Cargando Datos...', position: { my: 'center', at: 'center', of: "#TabPanel" }},
+            noDataText: "Sin datos para mostrar",
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true,
+                emptyPanelText: 'Arrastre una columna para agrupar'
+            },
+            'export': {
+                enabled: true,
+                fileName: 'Informes_Facturas'
+            },
+            onEditingStart: function (e) {
+                isUpdateCanceled = false;
+            },
+            columns: [
+                {
+                    dataField: "CODTRAMITE",
+                    width: '10%',
+                    caption: 'Codigo del Trámite',
+                    dataType: 'number'
+                }, {
+                    dataField: 'CODDOCUMENTO',
+                    width: '5%',
+                    caption: 'Documento',
+                    dataType: 'number'
+                }, {
+                    dataField: 'RADICADO',
+                    width: '10%',
+                    caption: 'Radicado',
+                    dataType: 'string'
+                }, {
+                    dataField: 'FECHA_RADICADO',
+                    width: '10%',
+                    caption: 'Fecha del Radicado',
+                    alignment: 'right',
+                    dataType: 'string'
+                }, {
+                    dataField: 'ASUNTO',
+                    width: '55%',
+                    caption: 'Asunto del documento',
+                    alignment: 'right',
+                    dataType: 'string'
+                }, {
+                    dataField: 'FACTURA_ASIGNADA',
+                    width: '10%',
+                    caption: 'Factura asignada',
+                    dataType: 'string'
+                }, {
+                    dataField: 'PAGO_TOTAL',
+                    width: '10%',
+                    caption: 'Valor Factura',
+                    dataType: 'string'
+                }, {
+                    caption: 'Ver doc.',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '../Content/Images/Ver_Doc.png',
+                            hint: 'Visualizar Documento',
+                            onClick: function (e) {
+                                $scope.MostrarDocumento(options.row.data.CODTRAMITE, options.row.data.CODDOCUMENTO);
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    caption: 'Asocia Fact.',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/Check_icon.png',
+                            hint: 'Validar factura',
+                            onClick: function (e) {
+                                $("#FacturaAdjunta").attr("src", "");
+                                $scope.CodTramite = options.row.data.CODTRAMITE;
+                                $scope.CodDoc = options.row.data.CODDOCUMENTO;
+                                $scope.TipoFactura = "Resolucion";
+                                $scope.isPopupVisibleFact = true;
+                            },
+                            bindingOptions: {
+                                visible: 'isVisibleValfact'
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    caption: 'Calcular Seguimiento',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/Calculate.gif',
+                            hint: 'Calcular el valor del seguimiento',
+                            onClick: function (e) {
+                                $scope.CantidadProf = 0;
+                                $scope.CantVisitas = 0;
+                                $scope.CantHorInf = 0;
+                                $scope.DuracionVisita = 0;
+                                $scope.NombreTercero = '';
+                                $scope.DocTercero = 0;
+                                $scope.ValorFactura = 0;
+                                $scope.CM = '';
+                                $scope.DocTercero = 0;
+                                var _popup = $("#Calcular").dxPopup("instance");
+                                _popup.show();
+                                $scope.CodTramite = options.row.data.CODTRAMITE;
+                                $scope.CodDoc = options.row.data.CODDOCUMENTO;
+                                $scope.TipoFactura = "Resolucion";
+                                if (options.row.data.CODTRAMITE > 0 && options.row.data.CODDOCUMENTO > -1) {
+                                    $("#DocumentoInforme").attr("src", "");
+                                    $("#DocumentoInforme").attr("src", '@Url.Content("~")Correspondencia/Correspondencia/LeeDoc?CodTramite=' + options.row.data.CODTRAMITE + '&CodDocumento=' + options.row.data.CODDOCUMENTO);
+                                    $scope.isPopupVisibleCalculo = true;
+                                } else {
+                                    DevExpress.ui.dialog.alert("El registro no posee un codigo de trámite o código de documento");
+                                }
+                            },
+                            bindingOptions: {
+                                visible: 'isPopupVisibleCalculo'
+                            }
+                        }).appendTo(container);
+                    }
+                }, {
+                    caption: 'Detalle',
+                    width: 50,
+                    alignment: 'center',
+                    cellTemplate: function (container, options) {
+                        $('<div/>').dxButton({
+                            icon: '@Url.Content("~")/Content/Images/VerDetalle.png',
+                            hint: 'Ver detalle del trámite',
+                            onClick: function (e) {
+                                $scope.abrirDetalleTramite(options.row.data.CODTRAMITE);
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            ]
+        };
+    });
+
+    var grdInfDataSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"CODTRAMITE, CODDOCUMENTO","desc":false}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Facturacion/api/FacturApi/InformesPend', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: false
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        },
+        update: function (key, values) { }
+
+    });
+
+    var grdResDataSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"CODTRAMITE, CODDOCUMENTO","desc":false}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")Facturacion/api/FacturApi/ResolucionesPend', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: false
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        },
+        update: function (key, values) { }
+    });
+
+    var TiposTramiteSource = new DevExpress.data.DataSource({
+        store: {
+            type: "odata",
+            url: "https://webservices.metropol.gov.co/SIMAPI2/api/Calculo/TiposTramite",
+            key: "CODIGO_TRAMITE",
+            keyType: "Int32"
+        },
+        paginate: false
+    });
+</script>
+<div ng-app="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="FacturPendController" class="panelSIM panelSIM-default">
+            <div dx-load-panel="{message: 'Almacenando...', showIndicator: true, shadingColor: 'transparent gray', shading: true, bindingOptions: { visible: 'almacenandoVisible' } }"></div>
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Facturación pendiente de asociar</label>
+                </h3>
+                <div dx-tab-panel="tabpanelContainer" id="TabPanel">
+                    <div data-options="dxTemplate : { name: 'tab1' }">
+                        <div dx-data-grid="grdInfPendSetting" id="gridInformes"></div>
+                    </div>
+                    <div data-options="dxTemplate : { name: 'tab2' }">
+                        <div dx-data-grid="grdResPendSetting" id="gridResoluciones"></div>
+                    </div>
+                </div>
+                <div class="popup" dx-popup="popupCargaDocumento" id="popDocumento">
+                    <iframe src="" id="DocumentoAdjunto" width="100%" height="100%"></iframe>
+                </div>
+                <div class="popup" dx-popup="popupCargaFactura" id="popFactura">
+                    <div class="row">
+                        <div class="dx-field-label col-sm-2">Factura (999999-AAAA): </div>
+                        <div dx-text-box="txtFactura" id="NumFactura" class="col-sm-2"></div>
+                        <div style="float:right;" dx-button="btnConsultaFactSettings" id="btnConsultaFact" class="col-sm-2"></div>
+                    </div>
+                    <iframe src="" id="FacturaAdjunta" width="100%" height="90%"></iframe>
+                    <div style="float:right;" dx-button="btnAsociaFactSettings" id="btnAlmacenar" class="btn_lg"></div>
+                </div>
+                <div class="popup" dx-popup="popupCalculo" id="Calcular">
+                        <iframe src="" id="DocumentoInforme" width="100%" height="50%"></iframe>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="TipoTramite">Tipo de Trámite: </label>
+                                <div dx-select-box="sbTipoTramite" id="TipoTramite"></div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="Tercero">Tercero: </label>
+                                <div dx-number-box="txtTercero" id="Tercero"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="NombreTercero">Nombre Tercero: </label>
+                                <div dx-text-box="txtNombreTercero" id="NombreTercero" style="vertical-align:bottom"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="CM">CM:</label>
+                                <div dx-text-box="txtCM" id="CM"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="ValorPry">Valor Proyecto: </label>
+                                <div dx-number-box="txtValorPry" id="ValorPry"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2">
+                                <label for="CantProf">Nro. de profesionales:</label>
+                                <div dx-number-box="txtCantProf" id="CantProf"></div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="CantVisitas">Nro. Visitas:</label>
+                                <div dx-number-box="txtCantVisitas" id="CantVisitas"></div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="CantHorInf">Nro. horas informe:</label>
+                                <div dx-number-box="txtCantHorInf" id="CantHorInf"></div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="DuracionVisita">Duración Visita:</label>
+                                <div dx-number-box="txtDuracionVisita" id="DuracionVisita"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="Soportes">Con soportes: </label>
+                                <div dx-check-box="chkSoportes" id="Soportes"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <div id="lblValorFactura" style="font-family: Arial;font-size:20px;font-weight:bold;"></div>
+                            </div>
+                        </div>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

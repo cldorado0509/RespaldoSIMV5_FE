@@ -1,0 +1,90 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.GestionDocumental.Models
+
+@{
+    string lcstrKeyField = "";
+	var grid = Html.DevExpress().GridView(settings => {
+        string lcstrColumnasValorCadena = "";
+        string lcstrColumnasVisualizarCadena = "";
+        string lcstrColumnasFormato = "[";
+
+        settings.EncodeHtml = false;
+        
+        settings.Name = "DD_" + ViewBag.Name.ToString();
+        settings.CallbackRouteValues = new { Controller = "Generador", Action = "DropDownPartial", name = ViewBag.Name.ToString(), columnasCombo = ViewBag.ColumnasCombo.ToString(), columnasVisualizar = ViewBag.ColumnasVisualizar.ToString(), columnasValor = ViewBag.ColumnasValor.ToString(), SQL = ViewBag.SQL.ToString(), nameValor = ViewBag.NameValor.ToString() };
+
+		settings.CommandColumn.Visible = false;
+        settings.Width = Unit.Percentage(100);
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = false;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+
+        string[] lcstrColumnasCombo = ((string)(ViewBag.ColumnasCombo)).Split(',');
+        string[] lcstrColumnasValor = ((string)(ViewBag.ColumnasValor)).Split(',');
+        string[] lcstrColumnasVisualizar = ((string)(ViewBag.ColumnasVisualizar)).Split(',');
+
+        foreach (string lcstrColumna in lcstrColumnasCombo)
+        {
+            string[] lcstrDatosColumna = lcstrColumna.Split('%');
+
+            if (lcstrDatosColumna[0].Substring(0, 2) == "ID")
+            {
+                settings.KeyFieldName = lcstrDatosColumna[0];
+                lcstrKeyField = lcstrDatosColumna[0];
+            }
+
+            settings.Columns.Add(column =>
+            {
+                column.FieldName = lcstrDatosColumna[0];
+                column.Caption = lcstrDatosColumna[1];
+                column.Width = Convert.ToInt32(lcstrDatosColumna[2]);
+                column.Visible = (lcstrDatosColumna[3] == "S" ? true : false);
+                column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+                column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+            });
+        }
+        
+        foreach (string lcstrColumna in lcstrColumnasVisualizar)
+        {
+            if (lcstrColumnasVisualizarCadena == "")
+                lcstrColumnasVisualizarCadena = lcstrColumna;
+            else
+                lcstrColumnasVisualizarCadena += ";" + lcstrColumna;
+
+            lcstrColumnasFormato += "\"\",";
+        }
+        
+        foreach (string lcstrColumna in lcstrColumnasValor)
+        {
+            string[] lcstrDatosColumna = lcstrColumna.Split('%');
+
+            if (lcstrColumnasValorCadena == "")
+                lcstrColumnasValorCadena = lcstrDatosColumna[0];
+            else
+                lcstrColumnasValorCadena += ";" + lcstrDatosColumna[0];
+
+            lcstrColumnasFormato += "\"" + lcstrDatosColumna[1].Length.ToString() + "\",";
+        }
+
+        lcstrColumnasFormato = lcstrColumnasFormato.Substring(0, lcstrColumnasFormato.Length - 1) + "]";
+
+        int lcintContVisualizar = lcstrColumnasVisualizarCadena.Split(';').Length;
+        int lcintContValor = lcstrColumnasValorCadena.Split(';').Length;
+        
+        //settings.ClientSideEvents.SelectionChanged = "function SeleccionRegistro" + ViewBag.Name.ToString() + "(s, e) { ProcessPanel.Show(); DD_" + ViewBag.Name.ToString() + ".GetSelectedFieldValues('" + lcstrColumnasVisualizarCadena + "', function (values) { var selectedDisplay = ''; if(values.length == 0) return; for(i = 0; i < values[0].length; i++) { if (selectedDisplay == '') selectedDisplay = values[0][i].toString(); else selectedDisplay += ' ' + values[0][i].toString(); } " + ViewBag.Name.ToString() + ".SetText(selectedDisplay); }); DD_" + ViewBag.Name.ToString() + ".GetSelectedFieldValues('" + lcstrColumnasValorCadena + "', function (values) { var selectedValues = ''; if(values.length == 0) return; for(i = 0; i < values[0].length; i++) { if (selectedValues == '') selectedValues = values[0][i].toString(); else selectedValues += values[0][i].toString(); } " + ViewBag.NameValor.ToString() + ".SetText(selectedValues); ProcessPanel.Hide(); }); " + ViewBag.Name.ToString() + ".HideDropDown();}";
+        settings.ClientSideEvents.SelectionChanged = "function SeleccionRegistro" + ViewBag.Name.ToString() + "(s, e) { ProcessPanel.Show(); DD_" + ViewBag.Name.ToString() + ".GetSelectedFieldValues('" + lcstrColumnasVisualizarCadena + ";" + lcstrColumnasValorCadena + "', function (values) { var formatColumns = " + lcstrColumnasFormato + "; var selectedDisplay = ''; var selectedValues = ''; for(i = 0; i < " + lcintContVisualizar.ToString() + "; i++) { if (selectedDisplay == '') selectedDisplay = values[0][i].toString(); else selectedDisplay += ' ' + values[0][i].toString(); } " + ViewBag.Name.ToString() + ".SetText(selectedDisplay); for(i = " + lcintContVisualizar.ToString() + "; i < " + (lcintContVisualizar + lcintContValor).ToString() + "; i++) { if (selectedValues == '') selectedValues = pad(values[0][i], formatColumns[i]); else selectedValues += pad(values[0][i], formatColumns[i]); } " + ViewBag.NameValor.ToString() + ".SetText(selectedValues); ProcessPanel.Hide(); });  " + ViewBag.Name.ToString() + ".HideDropDown();}";
+	});
+
+    /*
+    grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+    {
+        e.QueryableSource = Model;
+        e.KeyExpression = lcstrKeyField;
+    }).GetHtml();   
+    */
+    
+    grid.Bind(Model).GetHtml();
+}

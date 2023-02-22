@@ -1,0 +1,50 @@
+﻿@model SIM.Data.Poeca.DPOEAIR_EPISODIO
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DPOEAIR_EPISODIO</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_ANIO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_ANIO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_OBSERVACIONES)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_OBSERVACIONES)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ID_RESPONSABLE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ID_RESPONSABLE)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

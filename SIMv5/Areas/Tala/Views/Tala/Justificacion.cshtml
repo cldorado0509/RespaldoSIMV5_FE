@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Termino condiciones";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .container {
+            margin-top: 0px !important;
+        }
+
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="row">
+        <div class="col-sm-12" style=" margin-top: 20px;">
+      
+            <div class="col-sm-12">
+                <textarea id="txtJustificacion" style="width:100%"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" style="margin-top: 10px;">
+            <div class="col-sm-8">
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-default" id="btnAceptar" onclick="guardarJustificacion()">Aceptar</button>
+            </div>
+         
+        </div>
+    </div>
+  
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+   
+    <script>
+        $(document).ready(function () {
+       
+
+        });
+        function guardarJustificacion()
+        {
+            parent.$("#txtJustificacion").val($("#txtJustificacion").val());
+            parent.$("#pantallaJustificacion").dialog('close');
+        }
+      
+    </script>
+</body>
+
+
+
+</html>
+
+

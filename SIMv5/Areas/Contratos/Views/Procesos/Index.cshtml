@@ -1,0 +1,87 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Procesos de Contratación";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Contratos/Scripts/Procesos.js")"></script>
+<style>
+    #BotonNewProceso {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    #BotonDetProceso {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }  
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Procesos de Contratación</label>
+            </h3>
+        </div>
+        <div id="GidListado"></div>
+        <br />
+        <div id="btnNuevo"></div>
+        <div id="PopupNuevoProceso">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Nombre del proceso :</div>
+                    <div class="col-sm-4" id="txtNombre"></div>
+                    <div class="control-label col-sm-2">Modalidad :</div>
+                    <div class="col-sm-3" id="cbModalidad"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Objeto del proceso :</div>
+                    <div class="col-md-9" id="txtObjeto"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Fecha de inicio propuestas :</div>
+                    <div class="col-md-3" id="dpFechaInicia"></div>
+                    <div class="control-label col-md-3">Fecha de cierre propuestas :</div>
+                    <div class="col-md-3" id="dpFechaCierre"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Sobre sellado :</div>
+                    <div class="col-md-3" id="chkSobreSellado"></div>
+                    <div class="control-label col-md-3">Fecha de apertura sobres :</div>
+                    <div class="col-md-3" id="dpFechaApertura"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Solicitar propuesta económica independiente :</div>
+                    <div class="col-md-3" id="chkPropuestaEco"></div>
+                    <div class="control-label col-md-3">Fecha apertura propuesta económica :</div>
+                    <div class="col-md-3" id="dpFechaAprEco"></div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <div class="control-label col-md-6">Cantidad de propuestas presentadas :</div>
+                    <div class="control-label col-md-6" id="lblPropuestas" style="text-align:left;">0</div>
+                </div>
+                <br />
+                <div id="BotonNewProceso">
+                    <div id="btnGuarda"></div>
+                </div>
+            </div>
+        </div>
+        <div id="PopupDetalleProceso"></div>
+        <div id="LoadingPanel"></div>
+    </div>
+</div>
+
+

@@ -1,0 +1,527 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "RealizarVisitaAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+
+<html>
+<head>
+
+  
+        
+   
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+    <!-- A DevExtreme library -->
+   <script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.2.12/js/dx.webappjs.js"></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+
+        .panel-default > .panel-heading {
+            color: #333333;
+            background-color: #f5f5f5;
+            border-color: #dddddd;
+            background-color: rgb(234, 234, 234);
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);
+            height: 670px;
+        }
+
+        label {
+            display: inline-block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button#btnAsignar {
+            position: relative;
+            /* top: 20px; */
+            background-image: url(../../Content/images/Asignar_Tramites.png);
+            /* right: -28px; */
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 21px;
+            background-position: 8px 5px;
+        }
+        .btnEliminar:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        .list-group {
+            padding-left: 0;
+            margin-bottom: 1px;
+        }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+    
+
+          
+              
+    
+        
+                    <div >
+                        <label id="lblNombreTarea"></label>
+                        <input id="txtCodTarea" style="display:none;" />
+                        <input id="txtTareaSig" style="display:none;" />
+                     
+                        
+                        
+                          
+                       
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-1">
+                                        <label style="padding-left10px;">Comentario</label>
+                                    </div>
+                                </div>
+                            </div>
+                         
+
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" id="txtComentario" style=" width:100%;"></textarea>
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-1">
+                                    <label style="padding-left10px;">Tareas</label>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-sm-12">
+                                <div id="GrdTareaSiguiente" style="height: 200px; width:100%; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; "></div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-1">
+                                            <label style="padding-left:18px;">Responsable</label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div id="GrdResponsable" style="height: 200px;width:100%; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; "></div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-1">
+                                            <label style=" margin-left: -29px;">Copias</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div id="GrdCopias" style="height: 200px; width:100%; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; ">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <label style=" margin-left: -29px;">Copias seleccionadas</label>
+                            </div>
+                            <div class="col-sm-12" style="border-style: solid; border: 1px solid #BBBABA;">
+                                <ul class="list-group" id="listCopias"></ul>
+                            </div>
+                            <div class="col-sm-12">
+
+                                <button id="btnAsignar" class="btn btn-default" onclick="validarSesionMapa()" style="margin-bottom: 10px; margin-top: 10px;">Asignar</button>
+                            </div>
+                        </div>
+             
+     
+
+    <div id="msAdvertencia" title="Advertencia" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText2"></p>
+    </div>
+    <div id="msAdve" title="Advertencia" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText1"></p>
+    </div>
+    <script type="text/javascript">
+        var CodResponsable = "";
+        var Copias = "";
+        var CodTarea = "";
+        var nombre = "";
+        var codSig = "";
+        $(document).ready(function () {
+            $("#txtCodTarea").val("@ViewBag.CodTarea");
+           
+            //$("#lblNombreTarea").text(decodeURI("@ViewBag.nombre"));
+            ConsultarTareaSiguiente($("#txtCodTarea").val());
+           
+            //grid responsable
+
+            $("#GrdResponsable").dxDataGrid({
+      
+                selection: {
+                    mode: 'single'
+                },
+                columns: [
+                    { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%', dataType: 'number' },
+                    { dataField: 'NOMBRECOMPLETO', caption: 'Nombre completo', allowGrouping: true, width: '70%', dataType: 'string' },
+                ],
+                scrolling: { mode: 'infinite' },
+                selectionChanged: function (selecteditems) {
+
+                    try {
+                        CodResponsable = "";
+
+                        for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+                            CodResponsable = selecteditems.selectedRowsData[i]["CODFUNCIONARIO"];
+                        }
+                    }
+                    catch (e) {
+                        console.log(e.message);
+                    }
+                },
+                allowColumnReordering: true,
+                //AllowSelectSingleRowOnly: true,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 7 },
+                filterRow: { visible: true },
+                searchPanel: { visible: false },
+            });
+
+            var CargarDatosCopias = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var d = $.Deferred();
+                    $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetRepartoResponsable")" + "?filtro=" + filterOptions).done(function (data) {
+                        d.resolve(data, { totalCount: data.length });
+                    });
+                    return d.promise();
+                }
+            });
+
+            var GrdCopias = {
+                store: CargarDatosCopias
+            };
+            //grid atiende
+
+            $("#GrdCopias").dxDataGrid({
+                dataSource: GrdCopias,
+                selection: {
+                    mode: 'single'
+                },
+                columns: [
+                      { dataField: 'CODFUNCIONARIO', caption: 'Código funcionario', allowGrouping: true, width: '30%', dataType: 'number' },
+                    { dataField: 'NOMBRECOMPLETO', caption: 'Nombre completo', allowGrouping: true, width: '70%', dataType: 'string' },
+                ],
+                selectionChanged: function (selecteditems) {
+                    var data = selecteditems.selectedRowsData[0];
+                    llenarListaCopias(data.CODFUNCIONARIO, data.NOMBRECOMPLETO);
+                    //try {
+                    //    Copias = "";
+
+                    //    for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+                    //        Copias = selecteditems.selectedRowsData[i]["CODFUNCIONARIO"];
+                    //    }
+                    //}
+                    //catch (e) {
+                    //    console.log(e.message);
+                    //}
+                },
+                scrolling: { mode: 'infinite' },
+                columnChooser: { enabled: false },
+                allowColumnReordering: true,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 5 },
+                filterRow: { visible: true }
+
+            });
+
+        });
+
+        function gridTareaSiguiente(jsonDatos) {
+
+            $("#GrdTareaSiguiente").dxDataGrid({
+
+                dataSource: jsonDatos,
+                selection: {
+                    mode: 'single'
+                }, filterRow: { visible: false },
+                columns: [
+
+                { dataField: 'CODTAREA', caption: 'Codtarea', allowGrouping: true, width: '30%', dataType: 'number' },
+                    { dataField: 'NOMBRE', caption: 'tarea', allowGrouping: true, width: '70%', dataType: 'string' },
+                ],
+              
+                scrolling: { mode: 'infinite' },
+            
+                onCellClick: function (e) {
+                    codSig = "";
+                    codSig = e.data.CODTAREA;
+                    cargarResponsable(e.data.CODTAREA);
+                },
+                columnChooser: { enabled: false },
+                allowColumnReordering: false,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 5 },
+                filterRow: { visible: false }
+            });
+
+        }
+        function avanzarAsignarTareaTramite() {
+            var CodtramiteGEO = parent.VectorcodtramiteGEO;
+            var CodtramiteNOGEO = parent.VectorcodtramiteNOGEO;
+            var VectortareaGEO = parent.VectortareaGEO;
+            var VectortareaNOGEO = parent.VectortareaNOGEO;
+            var VectorcodordenGEO = parent.VectorcodordenGEO;
+            var VectorcodordenNOGEO = parent.VectorcodordenNOGEO;
+            
+            var dataGrid = $('#GrdCopias').dxDataGrid('instance');
+            var gridCopias = dataGrid.getSelectedRowsData();
+          
+            var entroResp = false;
+            var cod_resp = "";
+            var comentario = "";
+            var cod_copia = "";
+            $("#listCopias").children('li').each(function (i, item) {
+
+                cod_copia += item.id + ",";
+            });
+            cod_copia = cod_copia.substring(0, cod_copia.length - 1);
+            if (CodResponsable != null) {
+                if (CodResponsable.length != 0)
+                    entroResp = true;
+            }
+            if (entroResp) {
+                try {
+                    cod_resp = CodResponsable;
+                    comentario = document.getElementById("txtComentario").value;
+                    if (CodtramiteGEO != null && CodtramiteGEO.length != 0) {
+                        if (CodtramiteGEO.length != 0) {
+                            for (var i = 0; i < CodtramiteGEO.length; i++) {
+                                var cod_tramite = CodtramiteGEO[i];
+                                var cod_tarea = VectortareaGEO[i];
+                                var cod_orden = VectorcodordenGEO[i];
+                                guardarAvanzarAsignarTareaTramite(cod_tramite, cod_tarea, comentario, cod_orden, cod_resp, cod_copia);
+                            }
+                        }
+                    } else {
+                        if (CodtramiteNOGEO != null && CodtramiteNOGEO.length != 0) {
+                            if (CodtramiteNOGEO.length != 0) {
+                                for (var i = 0; i < CodtramiteNOGEO.length; i++) {
+                                    var cod_tramite = CodtramiteNOGEO[i];
+                                    var cod_tarea = VectortareaNOGEO[i];
+                                    var cod_orden = VectorcodordenNOGEO[i];
+                                    guardarAvanzarAsignarTareaTramite(cod_tramite, cod_tarea, comentario, cod_orden, cod_resp, cod_copia);
+                                }
+                            }
+                        } else {
+                            alert("El proceso de asignación de trámite NO se ha efectuado con éxito. Datos Inconsistentes o Inexistentes.");
+                            parent.$("#pantallaAsignacionTramites").dialog("close");
+                            parent.CargarGrids(1);
+                            return;
+                        }
+                    }
+                    alert("El proceso de asignación de trámite se ha efectuado con éxito.");
+                    parent.$("#pantallaAsignacionTramites").dialog("close");
+                    parent.CargarGrids(1);
+                } finally { }
+            }
+            else {
+                alert("Debe seleccionar un responsable para la asignación de trámites.");
+            }
+        }
+
+        function guardarAvanzarAsignarTareaTramite(p_cod_tramite, p_cod_tarea, p_comentario, p_cod_orden, p_cod_resp, p_cod_copias) {
+            if (codSig != "") {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GuardarAvanzaTareaTramite", "Reparto")',
+                    data: { p_cod_tramite: p_cod_tramite, p_cod_tarea: p_cod_tarea, p_comentario: p_comentario, p_cod_orden: p_cod_orden, p_cod_resp: p_cod_resp, p_cod_copias: p_cod_copias, codSig: codSig },
+                    beforeSend: function () {
+                    },
+                    success: function (response) {
+
+                    }
+                });
+            } else {
+                alert("Seleccione la tarea siguiente");
+            }
+        }
+
+
+        function validarSesionMapa() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("validarSesion", "Reparto")',
+
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response == "0") {
+                        mensajeSesion("La Sesión a Caducado");
+
+
+                    } else {
+                     
+                        avanzarAsignarTareaTramite();
+                    }
+
+                }
+            });
+        }
+        
+
+        
+
+
+        function mensajeSesion(mensaje) {
+            $("#msText2").text(mensaje);
+
+
+            $("#msAdvertencia").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () {
+                  $(this).dialog("close");
+                  parent.redirecionarLogin();
+                  parent.$("#pantallaAsignacionTramites").dialog("close");
+                
+              },
+
+              class: "btn btn-default "
+          },
+                ]
+            });
+
+
+        }
+
+        function mensaje(mensaje) {
+            $("#msText1").text(mensaje);
+
+
+            $("#msAdve").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () {
+                  $(this).dialog("close");
+
+
+              },
+
+              class: "btn btn-default "
+          },
+                ]
+            });
+
+
+        }
+        function llenarListaCopias(id,nombre)
+        {
+            var sw = 0;
+            $("#listCopias").children('li').each(function (i, item) {
+                if (item.id==id)
+                sw++;
+            });
+            if (sw == 0)
+            {
+                $("#listCopias").append("<li class='list-group-item' id=" + id + ">" + nombre + "<img onclick='eliminarCopiLista(this)' src='@Url.Content("../../Content/Images/delete.png")' style='width:25px;height:25px;float: right;' class='btnEliminar'/></li>");
+
+            }else
+            {
+                mensaje("la copia seleccionada ya esta asignada");
+            }
+        }
+        function eliminarCopiLista(datos)
+        {
+            datos.parentNode.parentNode.removeChild(datos.parentNode);
+        }
+ 
+        function ConsultarTareaSiguiente(id) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarTareaSiguiente", "Reparto")',
+                data: { codigotarea: id },
+
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+                    gridTareaSiguiente(datos);
+                    
+                }
+            });
+        }
+        function cargarResponsable(id)
+        {
+            $("#txtTareaSig").val(id);
+            var CargarDatosResponsable = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var d = $.Deferred();
+                    if (filterOptions == "")
+                    {
+
+                        filterOptions = "0";
+                    }
+                    $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetFuncionarioTarea")" + "?filtro=" + filterOptions + "&codTarea=" + $("#txtTareaSig").val()).done(function (data) {
+                        d.resolve(data, { totalCount: data.length });
+                    });
+                    return d.promise();
+                }
+            });
+
+            var GrdResponsable = {
+                store: CargarDatosResponsable
+            };
+
+
+            $(function () {
+                $("#GrdResponsable").dxDataGrid({
+                    height: '280px',
+                    dataSource: GrdResponsable
+                });
+            });
+        }
+    </script>
+</body>
+</html>

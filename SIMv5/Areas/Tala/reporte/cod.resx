@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="xrLabel9.Text" xml:space="preserve">
+    <value>con el fin de optimizar nuestro recurso humano y logístico. De esta manera se espera determinar la viabilidad o no de autorizar lo solicitado, atendiendo a lo dispuesto en el Decreto 1076 de 2015, “Por medio del cual se expide el Decreto Único reglamentario del Sector Ambiente y Desarrollo Sostenible”, y la Ley 1523 de 2012, “Por la cual se adopta la política nacional de gestión del riesgo de desastres y se establece el Sistema Nacional de Gestión del Riesgo de Desastres y se dictan otras disposiciones”. 
+
+Es pertinente anotar que de contar con información adicional o registro fotográfico sobre el componente forestal objeto de la solicitud, previo a efectuar la visita, puede proporcionarla a la Entidad, con el fin de ofrecer mayor claridad sobre el asunto.
+
+Los resultados de la visita técnica y la decisión que sobre la misma adopte esta Entidad, le serán comunicados de manera oficial.
+
+Es importante que tenga claro que si lo solicitado para los individuos arbóreos obedece a otra razón diferente a la de presentar riesgo para la infraestructura o transeúntes o por mantenimiento, se debe iniciar ente esta Entidad el Trámite de Aprovechamiento Forestal de Árboles Aislados legalmente establecido en el citado Decreto 1076 de 2015; teniendo en cuenta lo anterior deberá presentar la siguiente documentación:
+
+• Formulario SINA.
+• Certificado de existencia y representación legal actualizado. 
+• Certificado de libertad y tradición del predio (fecha de expedición no superior a 3 meses).
+• Escrituras públicas del predio (si aplica)
+• Plano con el sello de la Curaduría en el cual se apruebe el diseño (formato fácil de visualizar). 
+• Licencia de construcción, remodelación o ampliación. 
+• Dirección especifica del lugar en el cual se pretende adelantar el (los) proyecto(s).
+• Plano en el que se indique la ubicación actual del componente arbóreo y su interferencia con el proyecto,   es decir, plano superpuesto en el que se evidencie la interferencia del componente arbóreo. 
+• Inventario forestal del componente arbóreo localizado en el área de influencia (indirecta y directa)   destinada a la construcción del proyecto, el cual debe contener: nombre común, nombre científico, datos   dasométricos, descripción del estado fitosanitario de los individuos arbóreos y número de inventario, el   cual debe coincidir con el número indicado en el plano de ubicación y con el número de marcación en   campo. Además, se debe indicar el tratamiento silvicultural requerido para cada individuo arbóreo (tala,   rocería, trasplante, poda, conservación) según la interferencia con el proyecto.
+• Propuesta de reposición y/o paisajística, con la cual se busque reponer los impactos ambientales negativos generados por el desarrollo del proyecto, debe contener un listado de especies, preferiblemente nativas o de la flora colombiana, viables de establecer en las zonas verdes generadas o adecuadas por el proyecto y en las áreas aledañas al mismo; la propuesta debe contener la explicación de los arreglos y diseños paisajísticos, considerando no solo la estética de las especies sino la funcionalidad ecológica y ambiental de las mismas. Lo anterior debe estar soportado en un plano en el cual se evidencie el detalle de la propuesta. 
+• Costo del proyecto.
+
+Esta documentación será analizada por el personal técnico y jurídico de esta Entidad y se responderá, de manera 
+oficial, si la Autoridad Ambiental autoriza o no dicho aprovechamiento forestal, o podrá requerírsele documentación adicional.
+
+Así mismo es importante que tenga en cuenta que si mientras llega la fecha de atención a su sector se presenta en los individuos cambios negativos y acelerados como inclinación progresiva, secamiento, deterioro avanzado u otro síntoma que pueda generar riesgo inminente de desplome o caída de ramas, debe informar oportunamente a esta Entidad, por los diferentes medios dispuestos para ello o comunicándose con la Unidad de Atención a Emergencias Ambientales – UEA – del Área Metropolitana del Valle de Aburrá, al teléfono 385-6003.
+
+Se le informa además que para árboles ubicados en predio privado, el peticionario debe adjuntar a la solicitud el Certificado de Libertad y Tradición del predio o documento equivalente, en el cual conste que es el propietario o encargado del mismo, ya que las autorizaciones solo se otorgan al propietario o poseedor del inmueble donde se localicen los individuos arbóreos, o al tenedor con autorización según el caso; lo anterior de acuerdo al artículo 2.2.1.1.9.2 del Decreto 1076 de 2015 “Régimen de aprovechamiento forestal” y que se transcribe a continuación:
+
+Artículo 2.2.1.1.9.2. Si se trata de árboles ubicados en predios de propiedad privada, la solicitud deberá ser presentada por el propietario, quien debe probar su calidad de tal, o por el tenedor con autorización del propietario. Si la solicitud es allegada por persona distinta al propietario alegando daño o peligro causado por árboles ubicados en predios vecinos, sólo se procederá a otorgar autorización para talarlos, previa decisión de autoridad competente para conocer esta clase de litigios
+
+De ser necesaria información adicional, gustosamente será suministrada en el teléfono 385 60 00 extensiones 104, 109, 113, 135 y 138, Oficina de Atención al Usuario.
+
+Cordialmente,
+
+
+</value>
+  </data>
+  <data name="xrLabel8.Text" xml:space="preserve">
+    <value>En atención a la comunicación relacionada en el asunto, nos permitimos informarle que la misma ha sido asentada en la base de datos de esta Entidad y para atenderla se efectuará una visita técnica en el sector de</value>
+  </data>
+</root>

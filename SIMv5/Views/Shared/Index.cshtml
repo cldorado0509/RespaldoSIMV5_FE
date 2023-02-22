@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "Inicio";
+
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+
+    /*ViewBag.CrearTercero = true;
+    ViewBag.AsignarRepresentanteLegal = true;
+    ViewBag.ActualizarActividadEconomica = true;
+    ViewBag.NumeroPendientes = 3;*/
+}
+@if (ViewBag.RolPMES) // (false)
+{
+    <div class="container" style="position: relative; margin-top: 30px; height: fit-content !important;">
+        <div class="row" style="text-align: left; margin-bottom: 10px">
+            <h3 style="color: darkslategray">
+                ATENCI&Oacute;N:
+            </h3>
+        </div>
+        <div class="row" style="text-align: left">
+            <p style="color: black">
+                Para la vigencia actual, la Plataforma PMES SIM V.5., <b>est&aacute; habilitada &uacute;nica y exclusivamente</b> para que las <b>organizaciones que deben presentar su primer y segundo reporte de seguimiento</b> radiquen la informaci&oacute;n requerida hasta el 31/05/2022.
+            </p>
+            <br />
+            <p style="color: black">
+                Si usted pertenece a una organizaci&oacute;n que va a presentar el <b>documento Plan MES por primera vez</b> o el <b>documento de ajuste al Plan MES</b>, le informamos que el proceso <b>no est&aacute; habilitado</b> para ello dado que nos encontramos en el cierre de la primera etapa del programa. Le invitamos a estar atentos a las comunicaciones oficiales de la Entidad a trav&eacute;s de las cuales <b>se informar&aacute; la continuidad del proceso</b>, la cual dar&aacute; inicio a la <b>segunda etapa de Planes MES</b> proyectada hasta el a&ntilde;o 2030.
+            </p>
+            <br />
+            <p style="color: black">
+                Por lo tanto, las organizaciones en estado <b>documento Plan MES por primera vez</b> o <b>documento de ajuste al Plan MES, NO deben realizar ninguna de las encuestas</b> (sitio, &aacute;reas, rutas empresariales, colaboradores) porque no se tendr&aacute;n en cuenta para la vigencia actual. Por favor, estar atento a los nuevos lineamientos del programa para dar cumplimiento al &Aacute;rea Metropolitana del Valle de Aburr&aacute; en los t&eacute;rminos requeridos.
+            </p>
+            <br />
+            <p style="color:black">
+                <b>Es importante que las acciones dirigidas a la promoci&oacute;n de la movilidad sostenible no se detengan, mov&aacute;monos por la corresponsabilidad con el territorio que habitamos.</b>
+            </p>
+        </div>
+    </div>
+}                    
+          
+@if (ViewBag.Usuario == "andres.romero")
+{
+    <div>
+        <a href="@Url.Action("encuestaUsuaroExterno", "EncuestaExterna" , new { area = "EncuestaExterna" })?idEncuesta=0&idVigencia=1320&tipo=0&estado=0">Encuesta de Trabajadores 2022</a>
+    </div>
+    <div>
+        <a href="@Url.Action("encuestaUsuaroExterno", "EncuestaExterna" , new { area = "EncuestaExterna" })?idEncuesta=0&idVigencia=1081&tipo=0&estado=0">Encuesta de Sitio 2022</a>
+    </div>
+}
+
+@if (ViewBag.NumeroPendientes > 0)
+{
+    <div class="container" style="position: relative; margin-top: 30px; height: fit-content !important;">
+        <div class="row" style="text-align: center; margin-bottom: 10px">
+            <h3 style="color: red">
+                Para continuar actualiza esta informaci&oacute;n
+            </h3>
+        </div>
+        <div class="row" style="text-align: center">
+            <h4 style="color: darkgray">
+                Mantener tu informaci&oacute;n al d&iacute;a nos permite ser m&aacute;s eficientes y brindarte un mejor servicio.
+            </h4>
+        </div>
+        <div class="row" style="text-align: center">
+            <h4 style="color: darkgray">
+                Actualiza los datos de tu empresa haciendo clic en las opciones disponibles y diligenciando el formulario.
+            </h4>
+        </div>
+        <div class="row" style="margin-top: 40px">
+            <div class="row" style="text-align: center">
+                @if (ViewBag.CrearTercero)
+                {
+                    ViewContext.Writer.Write("<div style=\"width: 250px; text-align: center; float: left; margin: 20px;\">");
+                    ViewContext.Writer.Write("<div style=\"border: 1px solid lightgray; padding: 20px\">");
+                    ViewContext.Writer.Write("<a href=\"" + Url.Action("tercero", "Tercero", new { area = "General" }) + "\"><img src=\"" + Url.Content("~/Content/Images/creartercero.svg") + "\" style=\"width:150px; background-color: #006996; border-radius: 1rem; padding: 20px;\"></a>");
+
+                    ViewContext.Writer.Write("<div style=\"color: #006996; font-size: 15px; font-weight: bold; margin-top: 10px\">");
+                    ViewContext.Writer.Write("Tercero");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"color: darkgray; font-size: 12px;\">");
+                    ViewContext.Writer.Write("Crear el Tercero relacionado al Usuario");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                }
+
+                @if (ViewBag.AsignarRepresentanteLegal)
+                {
+                    ViewContext.Writer.Write("<div style=\"width: 250px; text-align: center; float: left; margin: 20px;\">");
+                    ViewContext.Writer.Write("<div style=\"border: 1px solid lightgray; padding: 20px\">");
+                    ViewContext.Writer.Write("<a href=\"" + Url.Action("tercero", "Tercero", new { id = ViewBag.IdTercero, area = "General" }) + "\"><img src=\"" + Url.Content("~/Content/Images/asignarrepresentantelegal.svg") + "\" style=\"width:150px; background-color: #006996; border-radius: 1rem; padding: 20px;\"></a>");
+
+                    ViewContext.Writer.Write("<div style=\"color: #006996; font-size: 15px; font-weight: bold; margin-top: 10px\">");
+                    ViewContext.Writer.Write("Representante Legal");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"color: darkgray; font-size: 12px;\">");
+                    ViewContext.Writer.Write("Asignar Representante Legal al Tercero");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                }
+
+                @if (ViewBag.ActualizarActividadEconomica)
+                {
+                    ViewContext.Writer.Write("<div style=\"width: 250px; text-align: center; float: left; margin: 20px;\">");
+                    ViewContext.Writer.Write("<div style=\"border: 1px solid lightgray; padding: 20px\">");
+                    ViewContext.Writer.Write("<a href=\"" + Url.Action("tercero", "Tercero", new { id = ViewBag.IdTercero, area = "General" }) + "\"><img src=\"" + Url.Content("~/Content/Images/asignaractividadeconomica.svg") + "\" style=\"width:150px; background-color: #006996; border-radius: 1rem; padding: 20px;\"></a>");
+
+                    ViewContext.Writer.Write("<div style=\"color: #006996; font-size: 15px; font-weight: bold; margin-top: 10px\">");
+                    ViewContext.Writer.Write("Actividad Econ&oacute;mica");
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("<div style=\"color: darkgray; font-size: 12px;\">");
+                    ViewContext.Writer.Write("Actualizar Actividad Econ&oacute;mica del Tercero");
+                    ViewContext.Writer.Write("</div>");
+
+                    ViewContext.Writer.Write("</div>");
+                    ViewContext.Writer.Write("</div>");
+                }
+
+                @foreach (object[] instalacion in ViewBag.ActualizarActividadEconomicaInst)
+                {
+                    //ViewContext.Writer.Write("<a href=\"" + Url.Action("instalacion", "Instalacion", new { id = instalacion[0], area = "General" }) + "\"><img src=\"" + Url.Content("~ />Content/Images/asignaractividadeconomica.svg") + "\" class=\"rounded\" style=\"width:150px; background-color: rgb(150, 201, 61);\"></a>");
+                }
+            </div>
+        </div>
+    </div>
+}

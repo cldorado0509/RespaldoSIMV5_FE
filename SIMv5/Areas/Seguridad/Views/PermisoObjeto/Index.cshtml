@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Permisos objetos";
+}
+@using DevExpress.Web.Mvc
+@using System.Web.UI.WebControls
+
+<script type="text/javascript">
+
+    //Funcion para capturar los datos cuando se selecciona el usuario al que se le van a agregar roles
+    function SeleccionarRegistroUsuario(s, e) {
+        gvwSelectUsuarios.GetSelectedFieldValues('ID_USUARIO;S_NOMBRE;S_LOGIN', OnSelectRowUsuario);
+    }
+
+    //Funcion para setiar en el campo el nombre y login del usuario seleccionado al que se le van a agregar roles
+    function OnSelectRowUsuario(selectedValues) {
+        ddeUsuario.SetText(selectedValues[0][1] + ' ' + ' (' + selectedValues[0][2] + ')');
+        ddeUsuario.HideDropDown();
+        ID_USUARIO.SetText(selectedValues[0][0]);
+    }
+</script>
+
+<br />
+<br />
+<br />
+<br />
+@Html.Action("gvwAdministrarPermisoObjeto")

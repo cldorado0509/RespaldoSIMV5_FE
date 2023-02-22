@@ -1,0 +1,39 @@
+@{
+	var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "gvwActividadEconomica";
+        settings.CallbackRouteValues = new { Controller = "ActividadEconomica", Action = "gvwActividadEconomicaPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "ActividadEconomica", Action = "gvwAdministrarActividadEconomicaPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "ActividadEconomica", Action = "gvwAdministrarActividadEconomicaPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "ActividadEconomica", Action = "gvwAdministrarActividadEconomicaPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+		settings.CommandColumn.Visible = false;
+        settings.CommandColumn.NewButton.Visible = true;
+        settings.CommandColumn.DeleteButton.Visible = true;
+        settings.CommandColumn.EditButton.Visible = true;
+
+		settings.KeyFieldName = "ID_ACTIVIDADECONOMICA";
+
+		settings.SettingsPager.Visible = true;
+		settings.Settings.ShowGroupPanel = true;
+		settings.Settings.ShowFilterRow = true;
+		settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.Columns.Add("ID_ACTIVIDADECONOMICA");
+        settings.Columns.Add("S_CODIGO");
+        settings.Columns.Add("S_NOMBRE");
+        settings.Columns.Add("ACTIVIDAD_ECONOMICA2.S_NOMBRE");
+		settings.Columns.Add("S_DESCRIPCION");
+		});
+        
+		if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "ID_ACTIVIDADECONOMICA";
+}).GetHtml()

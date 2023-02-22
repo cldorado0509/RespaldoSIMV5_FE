@@ -1,0 +1,325 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<h2>Administrador de tasas Retributivas</h2>
+
+<script src="~/Areas/Retributivas/Scripts/Administrador.js?v=0.4"></script>
+
+
+<script>
+    $(function () {
+        $("#tabs").tabs();
+    });
+</script>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Reportes de Vertimientos</label>
+            </h3>
+
+        </div>
+
+        <div id="reportedevertimientos">
+            <p>Registre la información solicitada en cada una las pestañas a continuación para completar el registro de los vertimientos realizados por su empresa a los caudales de aguas del Area Metropolitana del Valle de Aburra, este sistema le permitirá realizar el reporte mensual de vertimientos de DBO y SST en los afluentes de agua.</p>
+        </div>
+        <br />
+
+
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-6">Quinqueños</a></li>
+                <li><a href="#tabs-4">Periodos</a></li>
+                <li><a href="#tabs-2">Metas Globales</a></li>
+                <li><a href="#tabs-7">Cuerpos de Agua</a></li>
+                @*<li><a href="#tabs-8">DBO</a></li>
+                <li><a href="#tabs-9">SST</a></li>*@
+                <li><a href="#tabs-10">Parametro Ambiental</a></li>
+
+
+            </ul>
+
+            <div id="tabs-7">
+                <div class="dx-fieldset-header">AFLUENTES</div>
+                <p> Este es el administrador de alfuentes del Area Metropolitana del Valle de Aburra, por favor registre cada afluente y ssus cararacteristicas..</p> <br />
+
+                <br />
+                <div id="btnAddATributary"></div>
+                <div id="grdTributary"></div>
+
+                <div id="popupTributary">
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">ID</div>
+                        <div class="dx-field-value">
+                            <div id="intIdTributary"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Codigo</div>
+                        <div class="dx-field-value">
+                            <div id="codigoTributary"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Nombre del Cuerpo de Agua</div>
+                        <div class="dx-field-value">
+                            <div id="txtNameTributary"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Caudal "Q" M3</div>
+                        <div class="dx-field-value">
+                            <div id="numberCaudal"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Area M2</div>
+                        <div class="dx-field-value">
+                            <div id="numberArea"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Longitud M</div>
+                        <div class="dx-field-value">
+                            <div id="numberlongitud"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Tipo</div>
+                        <div class="dx-field-value">
+                            <div id="cmbTipoCuenca"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Municipio</div>
+                        <div class="dx-field-value">
+                            <div id="cmbMunicipio"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Tramo del Río</div>
+                        <div class="dx-field-value">
+                            <div id="cmbTramo"></div>
+                        </div>
+                    </div>
+
+
+                    <div id="btnTributary"></div>
+
+                </div>
+
+            </div>
+
+            <div id="tabs-10">
+                <div class="dx-fieldset-header">Parametro Ambiental</div>
+                <p> Por favor especifique la tarifa correspondiente de cada parametro ambiental por año</p> <br />
+
+                <br />
+                <div id="btnAddAParameter"></div>
+                <div id="grdParameter"></div>
+
+                <div id="popupParameter">
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">ID</div>
+                        <div class="dx-field-value">
+                            <div id="IdParameter"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">AÑO</div>
+                        <div class="dx-field-value">
+                            <div id="intYearParameter"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">TARIFA</div>
+                        <div class="dx-field-value">
+                            <div id="intRateParameter"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Parametro Ambiental</div>
+                        <div class="dx-field-value">
+                            <div id="enviromentParameter"></div>
+                        </div>
+                    </div>
+
+                    <div id="btnParameter"></div>
+
+                </div>
+
+            </div>
+
+
+            <div id="tabs-6">
+                <div class="dx-fieldset-header">Quinqueños</div>
+                <p> Quinqueños establecidos en los acuerdos municipales.</p> <br />
+
+                <br />
+                @*<div id="btnAddQuinqueno"></div>*@
+                <div id="grdQuinqueno"></div>
+
+                <div id="popupQuinqueno">
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">ID</div>
+                        <div class="dx-field-value">
+                            <div id="ID"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Inicio</div>
+                        <div class="dx-field-value">
+                            <div id="intYearStart"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Termina</div>
+                        <div class="dx-field-value">
+                            <div id="intYearEnd"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">No. Acuerdo Metropolitano</div>
+                        <div class="dx-field-value">
+                            <div id="noAcuerdo"></div>
+                        </div>
+                    </div>
+
+                    <div id="btnSaveQuinqueno"></div>
+
+                </div>
+
+            </div>
+
+            <div id="tabs-4">
+                <div class="dx-fieldset-header">Periodos</div>
+                <p> .</p> <br />
+
+                <br />
+                @*<div id="btnAddQuinqueno"></div>*@
+                <div id="grdPeriod"></div>
+
+                <div id="popupPeriod">
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Id Periodo</div>
+                        <div class="dx-field-value">
+                            <div id="IdPeriod"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Inicio Periodo</div>
+                        <div class="dx-field-value">
+                            <div id="intPeriodStart"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Termina Periodo</div>
+                        <div class="dx-field-value">
+                            <div id="intPeriodEnd"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">
+                            I
+                            D
+                        </div>
+                        <div class="dx-field-value">
+                            <div id="IdQuinquegno"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">No. Acuerdo Metropolitano</div>
+                        <div class="dx-field-value">
+                            <div id="noAcuerdo"></div>
+                        </div>
+                    </div>
+
+                    <div id="btnSavePeriod"></div>
+
+                </div>
+
+            </div>
+
+            <div id="tabs-2">
+                <div class="dx-fieldset-header">Metas Grupales</div>
+                <p> .</p> <br />
+
+                <br />
+                <div id="grdGroupsGoal"></div>
+
+                <div id="popupGroupsGoal">
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Id Periodo</div>
+                        <div class="dx-field-value">
+                            <div id="IdGroupsGoal"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Inicio Periodo</div>
+                        <div class="dx-field-value">
+                            <div id="intPeriodStartG"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">Termina Periodo</div>
+                        <div class="dx-field-value">
+                            <div id="intPeriodEndG"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">
+                            I
+                            D
+                        </div>
+                        <div class="dx-field-value">
+                            <div id="IdQuinquegnoG"></div>
+                        </div>
+                    </div>
+
+                    <div class="dx-field">
+                        <div class="dx-field-label">No. Acuerdo Metropolitano</div>
+                        <div class="dx-field-value">
+                            <div id="noAcuerdoG"></div>
+                        </div>
+                    </div>
+
+                    <div id="btnSaveGroupsGoal"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

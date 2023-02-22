@@ -1,0 +1,14 @@
+﻿@using SIM.Areas.General.Models
+
+@if (Model == null)
+    @Html.ActionLink("Crear Instalación", "LoadInstalacion", "Instalacion", new { Area = "General" }, "")
+else
+{
+    @foreach (var instalacion in Model)
+    {
+        if (instalacion.S_VERSION != "4")
+        {
+            Html.ActionLink("Actualizar Instalación", "LoadInstalacion", "Instalacion", new { id = Model.ID_INSTALACION, Area = "General" }, "");
+        }
+    }
+}

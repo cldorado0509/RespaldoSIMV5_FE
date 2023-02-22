@@ -1,0 +1,128 @@
+@using System.Web.UI.WebControls
+@using System.Security.Claims
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvwInstalacion";
+        //settings.Caption = "Instalaciones";
+        settings.CallbackRouteValues = new { Controller = "Instalacion", Action = "gvwAdministrarInstalacion" };
+        settings.Width = Unit.Percentage(100);
+
+
+
+
+        settings.Settings.VerticalScrollBarMode = ScrollBarMode.Auto;
+        settings.Settings.VerticalScrollBarStyle = GridViewVerticalScrollBarStyle.Standard;
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Instalacion", Action = "InstalacionDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsPopup.EditForm.AllowResize = true;
+        settings.SettingsPopup.EditForm.VerticalAlign = PopupVerticalAlign.WindowCenter;
+        settings.SettingsPopup.EditForm.HorizontalAlign = PopupHorizontalAlign.WindowCenter;
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+        settings.SettingsPopup.EditForm.Width = Unit.Pixel(700);
+        settings.SettingsPopup.EditForm.Height = Unit.Pixel(500);
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.ClientSideEvents.Init = "OnInit";
+
+        settings.Settings.ShowFilterBar = GridViewStatusBarMode.Visible;
+
+        settings.CommandColumn.ButtonType = GridViewCommandButtonType.Image;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.NewButton.Visible = false;
+        settings.CommandColumn.DeleteButton.Visible = claimppal.IsInRole("EINSTALACION");
+        settings.CommandColumn.EditButton.Visible = false;
+        settings.CommandColumn.Width = 70;
+
+        settings.Styles.CommandColumn.Spacing = 10;
+
+        settings.CommandColumn.EditButton.Image.Url = "~/Content/Images/edit.png";
+        settings.CommandColumn.DeleteButton.Image.Url = "~/Content/Images/delete.png";
+
+        GridViewCommandColumnCustomButton btnEditButton = new GridViewCommandColumnCustomButton() { ID = "EditButton", Text = "Editar" };
+        btnEditButton.Image.Url = "~/Content/Images/edit.png";
+
+        if (claimppal.IsInRole("AINSTALACION"))
+        {
+            settings.CommandColumn.CustomButtons.Add(btnEditButton);
+            settings.ClientSideEvents.CustomButtonClick =
+                string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 1, Url.Action("LoadInstalacion", "Instalacion"));
+        }
+
+        if (claimppal.IsInRole("CINSTALACION"))
+        {
+            settings.CommandColumn.SetHeaderTemplateContent(c =>
+            {
+                Html.DevExpress().Image(img =>
+                {
+                    img.Name = "addNewRow";
+                    img.ImageUrl = "~/Content/Images/new.png";
+                    img.Height = 20;
+                    img.Width = 20;
+                    img.Properties.ClientSideEvents.Click = string.Format("function(s, e) {{ OnCustomButtonClick(s, e, '{0}', '{1}'); }}", 2, Url.Action("LoadInstalacion", "Instalacion"));
+                }).Render();
+            });
+        }
+
+
+
+        settings.KeyFieldName = "ID_INSTALACION";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_INSTALACION";
+            column.Caption = "C&oacute;digo";
+            column.Width = 80;
+            column.Visible = true;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_INSTALACION";
+            column.Caption = "Nombre";
+            column.Width = 280;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_TIPOINSTALACION";
+            column.Caption = "Tipo";
+            column.Width = 280;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_ACTIVIDADECONOMICA";
+            column.Caption = "Actividad Econ&oacute;mica";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_ESTADO";
+            column.Caption = "Estado";
+            column.Width = 100;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+    });
+}
+@grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "ID_INSTALACION";
+}).GetHtml()

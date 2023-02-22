@@ -1,0 +1,1036 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Mvc
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Areas.ControlVigilancia.Models.TIPO_VISITA
+@{
+    ViewBag.Title = "Arbol Urbano";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <!--scrip-->
+    <script type="text/javascript" language="javascript" src="http://www.esa-sc.org.br/js/carouFredSel-6.2.1/jquery.carouFredSel-6.2.1-packed.js"></script>
+
+    <!-- optionally include helper plugins -->
+    <script type="text/javascript" language="javascript" src="http://www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.mousewheel.min.js"></script>
+    <script type="text/javascript" language="javascript" src="http://www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.touchSwipe.min.js"></script>
+    <script type="text/javascript" language="javascript" src="http://www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.transit.min.js"></script>
+    <script type="text/javascript" language="javascript" src="http://www.esa-sc.org.br/js/carouFredSel-6.2.1/helper-plugins/jquery.ba-throttle-debounce.min.js"></script>
+
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.1.8/js/dx.webappjs.js"></script>
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+   
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.1.8/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.1.8/css/dx.light.css" />
+    <title></title>
+
+    <script>
+
+    var idVisita = "";
+    var Totalimg = new Array();
+    var nombreFoto = "";
+    var idFotografia = "";
+    var etiqueta = "";
+
+
+    $(document).ready(function () {
+
+        $("#txtCaptacion").val("@ViewBag.txtCaptacion");
+        $("#txtTipoEstado").val("@ViewBag.txtTipoEstado");
+        $("#txtVisita").val("@ViewBag.txtVisita");
+        $("#txtEstadoBase").val("@ViewBag.txtEstadoBase");
+        $("#txtForm").val("@ViewBag.txtForm");
+        $("#txturlMapa").val("@ViewBag.txturlMapa")
+        $("#txttblFotos").val("@ViewBag.txttblFotos")
+        $("#txtinstalacion").val("@ViewBag.txtinstalacion")
+        $("#txttercero").val("@ViewBag.txttercero")
+        $("#txttblEstados").val("@ViewBag.txttblEstados")
+
+        CargarCombos();
+
+
+    })
+
+    function CargarCombos() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ConsultarEspecies", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                   var jsonDatos = eval('(' + response + ')');
+
+
+
+                }
+            });
+
+        }
+
+        //función que permite pintar un punto en el mapa.
+        function pintarPunto() {
+            conectar();
+            m.drawPoint(function (g, g1) {
+                cargargrid()
+                m.noDraw();
+                capa = { servicio: { url: "/arcgis/rest/services/Amva/visitas_flora/MapServer" }, id: "0" };
+                m.execQuery(capa, "1=1", true,
+                  function (resultado) {
+                      var ids_objeto = "";
+                      for (var i = 0; i < resultado.features.length; i++) {
+                          ids_objeto += '\"' + resultado.features[i].attributes.OBJECTID + '\",';
+                      }
+                      // ids_objeto = ids_objeto.substring(0, ids_objeto.length - 1);
+
+                      //  pintarFigura(ids_tramites);
+                  },
+                  function () {
+                      // alert("Ha ocurrido un error el proceso de dibujar un círculo.");
+                  }, g1);
+            }, 255, 0, 0, "ubica", srid);
+        }
+
+        //función que permite pintar un rectángulo en el mapa.
+        function pintarRectangulo() {
+            conectar();
+            m.drawRectangulo(function (g, g1) {
+                m.noDraw();
+                capa = { servicio: { url: "/arcgis/rest/services/Amva/visitas_flora/MapServer" }, id: "0" };
+                m.execQuery(capa, "1=1", true,
+                  function (resultado) {
+                      var ids_objeto = "";
+                      for (var i = 0; i < resultado.features.length; i++) {
+                          ids_objeto += '\"' + resultado.features[i].attributes.OBJECTID + '\",';
+                      }
+                      ids_objeto = ids_objeto.substring(0, ids_objeto.length - 1);
+                      alert(ids_objeto);
+                      //  pintarFigura(ids_tramites);
+                  },
+                  function () {
+                      // alert("Ha ocurrido un error el proceso de dibujar un círculo.");
+                  }, g1);
+            }, 255, 0, 0, "ubica", srid);
+        }
+
+        //función que permite pintar un círculo en el mapa.
+        function pintarCirculo() {
+            conectar();
+            var x = '"';
+            m.drawCircle(function (g, g1) {
+                m.noDraw();
+                capa = { servicio: { url: "/arcgis/rest/services/Amva/visitas_flora/MapServer" }, id: "0" };
+                m.execQuery(capa, "1=1", true,
+                  function (resultado) {
+                      var ids_objeto = "";
+                      for (var i = 0; i < resultado.features.length; i++) {
+                          ids_objeto += '\"' + resultado.features[i].attributes.OBJECTID + '\",';
+                      }
+                      ids_objeto = ids_objeto.substring(0, ids_objeto.length - 1);
+                      alert(ids_objeto);
+                      //  pintarFigura(ids_tramites);
+                  },
+                  function () {
+                      // alert("Ha ocurrido un error el proceso de dibujar un círculo.");
+                  }, g1);
+            }, 255, 0, 0, "ubica", srid);
+
+        }
+
+        //función que permite pintar un polígono en el mapa.
+        function pintarPoligono() {
+            conectar();
+            m.drawPolygon(function (g, g1) {
+                m.noDraw();
+                capa = { servicio: { url: "/arcgis/rest/services/Amva/visitas_flora/MapServer" }, id: "0" };
+                m.execQuery(capa, "1=1", true,
+                  function (resultado) {
+                      var ids_objeto = "";
+                      for (var i = 0; i < resultado.features.length; i++) {
+                          ids_objeto += '\"' + resultado.features[i].attributes.OBJECTID + '\",';
+                      }
+                      ids_objeto = ids_objeto.substring(0, ids_objeto.length - 1);
+                      alert(ids_objeto);
+                      //  pintarFigura(ids_tramites);
+                  },
+                  function () {
+                      // alert("Ha ocurrido un error el proceso de dibujar un círculo.");
+                  }, g1);
+            }, 255, 0, 0, "ubica", srid);
+        }
+
+       //función que permite limpiar los datos en las grids GrdTramites y GrdTramitesnoubicados y el mapa.
+        function limpiarSeleccion() {
+            m.limpiarGraphics();
+
+        }
+
+
+
+        $(function () {
+            consultarEspecie()
+          
+        });
+        var DatosArboles = new Array();
+        var DatosEspecie = new Array();
+        var DatosEstados = new Array();
+        var DatosEntorno = new Array();
+        var DatosRiesgo = new Array();
+        var DatosAgente = new Array();
+        var DatosSintomaDM = new Array();
+        var DatosSintomaEF = new Array();
+        function llenarEstadosck() {
+            $("#divReturn").remove();
+            var html = ' <div class="row col-md-8" id="divReturn">';
+            html += ' <div class="row col-md-12">';
+            
+            html += ' <ul class="row col-md-2"><br>Agente<br><hr>';
+
+            for (i = 0; i < DatosAgente.length; i++) {
+                html += '<li><input type="checkbox" id="ckA' + DatosAgente[i].ID_AGENTE_DM + '">' + DatosAgente[i].S_AGENTE_DM + '</li>'
+
+            }
+            html += "</ul>"
+            html += ' <ul class="row col-md-2"><br>Riesgo<br><hr>';
+            for (i = 0; i < DatosRiesgo.length; i++) {
+                html += '<li><input type="checkbox" id="ckR' + DatosRiesgo[i].ID_RIESGO + '">' + DatosRiesgo[i].S_RIESGO + '</li>'
+
+            }
+            html += "</ul>"
+            html += ' <ul class="row col-md-2"><br>Entorno<br><hr>';
+            for (i = 0; i < DatosEntorno.length; i++) {
+                html += '<li><input type="checkbox" id="ckE' + DatosEntorno[i].ID_CARACTERISTICA_ZV + '">' + DatosEntorno[i].S_CARACTERISTICA_ZV + '</li>'
+
+            }
+           
+            html += "</ul>"
+         
+         
+            html += ' <ul class="row col-md-3"><br>Sintoma DM<br><hr>';
+            for (i = 0; i < DatosSintomaDM.length; i++) {
+                html += '<li><input type="checkbox" id="ckDM' + DatosSintomaDM[i].ID_SINTOMA_DM + '">' + DatosSintomaDM[i].S_SINTOMA_DM + '</li>'
+
+            }
+            html += "</ul>"
+            html += ' <ul class="row col-md-3"><br>Sintoma EF<br><hr>';
+            for (i = 0; i < DatosSintomaEF.length; i++) {
+                html += '<li><input type="checkbox" id="ckEF' + DatosSintomaEF[i].ID_SINTOMA_EF + '">' + DatosSintomaEF[i].S_SINTOMA_EF + '</li>'
+
+            }
+            html += "</ul>"
+           
+            html += '</div><button id="" onclick="CerrarVentanaE()" class="btn btn-success">Cerrar</button><button  onclick="GuardarEstados()" class="btn btn-success">Guardar</button>'
+            $("#divEstados").append(html);
+        }
+        function cargarDatosFloraGeneral() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarArboles", "Flora")',
+                data: { idVisita: $("#txtVisita").val(), lstInd: "" },
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+                    DatosArboles = datos;
+                    cargarGidFlora(datos);
+
+
+                }
+            });
+        }
+        function consultarEspecie() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarEspecies", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosEspecie = eval('(' + response + ')');
+                    ConsultarEstados()
+
+                }
+            });
+        }
+        function ConsultarEstados() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarEstados", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosEstados = eval('(' + response + ')');
+
+                    ConsultarEntorno()
+                }
+            });
+        }
+        function ConsultarEntorno() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarEntorno", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosEntorno = eval('(' + response + ')');
+                    ConsultarRiesgos()
+
+                }
+            });
+        }
+        function ConsultarRiesgos() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarRiesgos", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosRiesgo = eval('(' + response + ')');
+                    ConsultarAgente()
+
+                }
+            });
+        }
+        function ConsultarAgente() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarAgente", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosAgente = eval('(' + response + ')');
+                    ConsultarSintomaDM()
+
+                }
+            });
+        }
+        function ConsultarSintomaDM() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarSintomaDM", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosSintomaDM = eval('(' + response + ')');
+
+                    ConsultarSintomaEF()
+                }
+            });
+        }
+        function ConsultarSintomaEF() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarSintomaEF", "Flora")',
+                data: {},
+                beforeSend: function () { },
+                success: function (response) {
+                    DatosSintomaEF = eval('(' + response + ')');
+
+                    cargarDatosFloraGeneral()
+                }
+            });
+        }
+
+        function cargarGidFlora(data) {
+            llenarEstadosck();
+            var CargarDatosFlora = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var d = $.Deferred();
+                    d.resolve(data, { totalCount: data.length });
+                   
+                    return d.promise();
+                }
+            });
+
+            var GrdDetallerFlora = {
+                store: CargarDatosFlora
+            };
+
+            $("#GrdFlora").dxDataGrid({
+                dataSource: GrdDetallerFlora,
+                selection: {
+                    mode: 'single'
+                }, filterRow: { visible: false },
+                columns: [
+                  {
+                      dataField: 'ID_INDIVIDUO_DISPERSO', allowGrouping: true, caption: '', cellTemplate: function (container, options) {
+                        container.height(0);
+                        var html = '<input type="button" id="ckEsp_' + options.data.ID_INDIVIDUO_DISPERSO + '" onclick="GuardarListach(' + options.data.ID_INDIVIDUO_DISPERSO + ')" style="height: 20px;width: 20px;"/>';
+                        
+                        $(html).appendTo(container);
+                    }
+        },
+                     { dataField: 'ID_INDIVIDUO_DISPERSO', allowGrouping: true, width: '20%', caption: 'codigoIndividuo', dataType: 'string', visible: false },
+                        {
+                            dataField: 'ID_ESPECIE', allowGrouping: true, caption: 'Especie', cellTemplate: function (container, options) {
+                                container.height(0);
+                                var html = '<select id="cmbEsp_' + options.data.ID_INDIVIDUO_DISPERSO + '" onChange="GuardarJson(this,1,' + options.data.ID_INDIVIDUO_DISPERSO + ')">';
+                                    for (var i = 0; i < DatosEspecie.length; i++) {
+                                        html += '<option value="' + DatosEspecie[i].ID_ESPECIE + '">' + DatosEspecie[i].S_ESPECIE + '</option>';
+                                    }
+                                    html +='</select>'
+                                    $(html).attr('src', options.value).appendTo(container);
+                                    setTimeout(function () { $('#cmbEsp_' + options.data.ID_INDIVIDUO_DISPERSO).val(options.data.ID_ESPECIE) }, 0500);
+                            }
+                        },
+                        { dataField: 'S_NOMBRE_CIENTIFICO', allowGrouping: true, width: '20%', caption: 'Nombre Cientifico', dataType: 'string' },
+                           {
+                               dataField: 'ID_ESTADO_ARBOL', allowGrouping: true, caption: 'Estado Arbol', cellTemplate: function (container, options) {
+                                container.height(0);
+                                var html = '<select id="cmbEst_' + options.data.ID_INDIVIDUO_DISPERSO + '" onChange="GuardarJson(this,2,' + options.data.ID_INDIVIDUO_DISPERSO + ')">';
+                                for (var i = 0; i < DatosEstados.length; i++) {
+                                    html += '<option value="' + DatosEstados[i].ID_ESTADO_ARBOL + '">' + DatosEstados[i].S_ESTADO_ARBOL + '</option>';
+                                }
+                                html +='</select>'
+                                $(html).attr('src', options.value).appendTo(container);
+                                setTimeout(function () { $('#cmbEst_' + options.data.ID_INDIVIDUO_DISPERSO).val(options.data.ID_ESTADO_ARBOL) }, 0500);
+
+
+                            }
+                        },
+                       {
+                           dataField: 'N_DISTANCIA_AFECTADO', allowGrouping: true, width: '20%', caption: 'Distancia Afectado', cellTemplate: function (container, options) {
+                               container.height(0);
+                               var html = '<input type="number" value="' + options.data.N_DISTANCIA_AFECTADO + '" onChange="GuardarJson(this,3,' + options.data.ID_INDIVIDUO_DISPERSO + ')"/>';
+                              
+                               $(html).attr('src', options.value).appendTo(container);
+
+                           }
+                       },
+                        {
+                            dataField: 'N_ALTURA_TOTAL', allowGrouping: true, width: '20%', caption: 'Altura', cellTemplate: function (container, options) {
+                                container.height(0);
+                                var html = '<input type="number" value="' + options.data.N_ALTURA_TOTAL + '" onChange="GuardarJson(this,4,' + options.data.ID_INDIVIDUO_DISPERSO + ')"/>';
+
+                                $(html).attr('src', options.value).appendTo(container);
+
+                            }
+                        },
+                        {
+                            dataField: 'N_DIAMETRO_NORMAL', allowGrouping: true, width: '20%', caption: 'Diametro Normal', cellTemplate: function (container, options) {
+                            container.height(0);
+                            var html = '<input type="number" value="' + options.data.N_DIAMETRO_NORMAL + '" onChange="GuardarJson(this,5,' + options.data.ID_INDIVIDUO_DISPERSO + ')"/>';
+
+                            $(html).attr('src', options.value).appendTo(container);
+
+                        }
+                },
+                        { dataField: 'S_INTERVENCION', allowGrouping: true, width: '20%', caption: 'intervención', dataType: 'string' },
+                        { dataField: 'D_FECHA', allowGrouping: true, width: '20%', caption: 'Fecha', dataType: 'string' },
+                        {
+                            dataField: 'cargar', allowGrouping: true, caption: 'Cargar imagen', cellTemplate: function (container, options) {
+                                container.height(5);
+                                $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px" onclick="abrircargarimg()" Ver detalle/>')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                            }
+                        }
+
+
+                        
+
+
+                ],
+
+                scrolling: { mode: 'infinite' },
+                
+                allowColumnReordering: true,
+                sorting: { mode: 'single' },
+                pager: { visible: true },
+                paging: { pageSize: 5 },
+                allowColumnResizing: true
+            , columnAutoWidth: true, loadPanel: {
+                height: 100,
+                width: 100,
+                text: 'Cargando...'
+            }, onCellHoverChanged: function (hoverCell) {
+                if (hoverCell.eventType == 'mouseover')
+                    hoverCell.cellElement.addClass("hovered");
+                else
+                    hoverCell.cellElement.removeClass("hovered");
+            },
+                rowPrepared: function (rowElement, rowInfo) {
+
+                    //rowElement.css('background', 'green');
+
+                }
+            });
+          
+        }
+        function GuardarJson(obj, tipo, ind) {
+            var posicion = null;
+            for (var i = 0; i < DatosArboles.length; i++) {
+                if (DatosArboles[i].ID_INDIVIDUO_DISPERSO == ind) {
+                    posicion = i;
+                    i = DatosArboles.length + 10;
+                }
+            }
+            if (tipo == 1) {
+                DatosArboles[posicion].ID_ESPECIE = obj.value;
+                for (var i = 0; i < DatosEspecie.length; i++) {
+                    if (DatosEspecie[i].ID_ESPECIE == obj.value) {
+                        DatosArboles[posicion].S_NOMBRE_CIENTIFICO = DatosEspecie[i].S_NOMBRE_CIENTIFICO;
+                        i = DatosEspecie.length+10;
+                    }
+                }
+            }else  if (tipo == 2) {
+                DatosArboles[posicion].ID_ESTADO_ARBOL = obj.value;
+            }else  if (tipo == 3) {
+                DatosArboles[posicion].N_DISTANCIA_AFECTADO = obj.value;
+            }else  if (tipo == 4) {
+                DatosArboles[posicion].N_ALTURA_TOTAL = obj.value;
+            }else  if (tipo == 5) {
+                DatosArboles[posicion].N_DIAMETRO_NORMAL = obj.value;
+            }
+            
+            RecargarGrid(DatosArboles);
+        }
+        function RecargarGrid(data) {
+            
+                var CargarDatosFlora = new DevExpress.data.CustomStore({
+                    load: function (loadOptions) {
+                        var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                        var d = $.Deferred();
+                        d.resolve(data, { totalCount: data.length });
+                   
+                        return d.promise();
+                    }
+                });
+
+                var GrdDetallerFlora = {
+                    store: CargarDatosFlora
+                };
+                $("#GrdFlora").dxDataGrid({
+                    dataSource: GrdDetallerFlora
+                });
+
+        }
+        var listDatos = new Array();
+        function GuardarListach(ind) {
+           
+            if ($("#ckEsp_" + ind)[0].className == "") {
+                $("#ckEsp_" + ind).addClass("chulito")
+                listDatos.push(ind);
+                return;
+            } else {
+                for (var k = 0; k < listDatos.length; k++) {
+                    if (listDatos[k] == ind) {
+                        listDatos[k] = -1;
+                        $("#ckEsp_" + ind).removeClass("chulito")
+
+                       
+                    }
+                }
+            }
+
+        }
+        function GuardarEstados() {
+            var TEMPDatosAgente = new Array();
+            for (i = 0; i < DatosAgente.length; i++) {
+                if ($("#ckA" + DatosAgente[i].ID_AGENTE_DM).prop("checked") == true) {
+                    TEMPDatosAgente.push(DatosAgente[i].ID_AGENTE_DM)
+                }
+
+            }
+            var TEMPDatosRiesgo = new Array();
+            for (i = 0; i < DatosRiesgo.length; i++) {
+                if ($("#ckR" + DatosRiesgo[i].ID_RIESGO).prop("checked") == true) {
+                    TEMPDatosRiesgo.push(DatosRiesgo[i].ID_RIESGO)
+                }
+
+            }
+            var TEMPDatosEntorno = new Array();
+            for (i = 0; i < DatosEntorno.length; i++) {
+                if ($("#ckE" + DatosEntorno[i].ID_CARACTERISTICA_ZV).prop("checked") == true) {
+                    TEMPDatosEntorno.push(DatosEntorno[i].ID_CARACTERISTICA_ZV)
+                }
+
+            }
+            var TEMPDatosSintomaDM = new Array();
+            for (i = 0; i < DatosSintomaDM.length; i++) {
+                if ($("#ckDM" + DatosSintomaDM[i].ID_SINTOMA_DM).prop("checked") == true) {
+                    TEMPDatosSintomaDM.push(DatosSintomaDM[i].ID_SINTOMA_DM)
+                }
+
+            }
+            var TEMPDatosSintomaEF = new Array();
+            for (i = 0; i < DatosSintomaEF.length; i++) {
+                if ($("#ckEF" + DatosSintomaEF[i].ID_SINTOMA_EF).prop("checked") == true) {
+                    TEMPDatosSintomaEF.push(DatosSintomaEF[i].ID_SINTOMA_EF)
+                }
+
+            }
+            for (var k = 0; k < listDatos.length; k++) {
+                if (listDatos[k] == -1) {
+                    for (var i = 0; i < DatosArboles.length; i++) {
+                        if (DatosArboles[i].ID_INDIVIDUO_DISPERSO == listDatos[k]) {
+                            DatosArboles[i].ENTORNO = TEMPDatosEntorno
+                            DatosArboles[i].RIESGO = TEMPDatosRiesgo
+                            DatosArboles[i].AGENTE_DM = TEMPDatosAgente
+                            DatosArboles[i].SINTOMA_DM = TEMPDatosSintomaDM
+                            DatosArboles[i].ENFERMEDAD = TEMPDatosSintomaEF
+                        }
+                    }
+                }
+            }
+            CerrarVentanaE();
+        }
+        function AgregarEstados() {
+            var cant = 0;
+            for (var k = 0; k < listDatos.length; k++) {
+                if (listDatos[k] == -1) {
+                    cant++;
+                }
+            }
+            var totaldatos=listDatos.length-cant;
+            if (totaldatos == 0) {
+                alert("No se ha selecionado ningun individuo.");
+                return;
+            }else
+                if (totaldatos == 1) {
+                    var posicion = null;
+                    for (var i = 0; i < DatosArboles.length; i++) {
+                        if (DatosArboles[i].ID_INDIVIDUO_DISPERSO == listDatos[0]) {
+                            posicion = i;
+                            i = DatosArboles.length + 10;
+                        }
+                    }
+                    cargarDatosestados(posicion);
+                    $("#divEstados").show();
+                } else {
+                    if (confirm('Usted ha seleccionado varios individuos con información de estado diferente, si continua esta sera descartada y se tomara la nueva que ingrese ¿Desea continuar?')){
+                        llenarEstadosck();
+                    $("#divEstados").show();
+                }else {
+
+                    }
+            }
+            
+        }
+        function CerrarVentanaE() {
+            $("#divEstados").hide();
+
+        }
+        function cargarDatosestados(posicion) {
+            for (var i = 0; i < DatosArboles[posicion].ENTORNO.length; i++) {
+                $("#ckA" + DatosArboles[posicion].ENTORNO[i]).prop("checked", true)
+            }
+            for (var i = 0; i < DatosArboles[posicion].RIESGO.length; i++) {
+                $("#ckR" + DatosArboles[posicion].RIESGO[i]).prop("checked", true)
+            }
+            for (var i = 0; i < DatosArboles[posicion].AGENTE_DM.length; i++) {
+                $("#ckE" + DatosArboles[posicion].AGENTE_DM[i]).prop("checked", true)
+            }
+            for (var i = 0; i < DatosArboles[posicion].SINTOMA_DM.length; i++) {
+                $("#ckDM" + DatosArboles[posicion].SINTOMA_DM[i]).prop("checked", true)
+            }
+            for (var i = 0; i < DatosArboles[posicion].ENFERMEDAD.length; i++) {
+                $("#ckEF" + DatosArboles[posicion].ENFERMEDAD[i]).prop("checked", true)
+            }
+        }
+    function abrircargarimg(){
+        $("#txtuploda").click()
+    }
+    function GuardarGeneral() {
+        var jsonOficial = JSON.stringify(DatosArboles)
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarGeneral", "Flora")',
+            data: { idVisita: $("#txtVisita").val(), json: jsonOficial },
+            beforeSend: function () { },
+            success: function (response) {
+                alert(response);
+            }
+        });
+    }
+    </script>
+
+    <style>
+        /**carusel*/
+        /* Container */
+        .container-fluid {
+            background: #FFFFFF;
+            margin: 40px auto 10px;
+            padding: 20px 40px 0;
+            max-width: 960px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+
+        /* Page Header */
+        .page-header {
+            background: #f9f9f9;
+            margin: -30px -40px 40px;
+            padding: 20px 40px;
+            border-top: 4px solid #ccc;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+            .page-header h3 {
+                line-height: 0.88rem;
+                color: #000;
+            }
+
+
+
+        /* Thumbnail Box */
+        .caption h4 {
+            font-size: 1rem;
+            color: #444;
+        }
+
+        .caption p {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .btn.btn-mini {
+            font-size: 0.63rem;
+        }
+
+
+        #wrapper {
+            width: 735px;
+            height: 220px;
+            margin: -110px 0 0 -367px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+        }
+
+        #carousel {
+            width: 735px;
+            position: relative;
+            left: 20%;
+        }
+
+            #carousel ul {
+                list-style: none;
+                display: block;
+                margin: 0;
+                padding: 0;
+            }
+
+            #carousel li {
+                background: #fff;
+                box-shadow: 3px 4px 11px -2px #666;
+                font-size: 40px;
+                color: #999;
+                text-align: center;
+                display: block;
+                width: 232px;
+                height: 178px;
+                padding: 0;
+                margin: 6px;
+                float: left;
+                position: relative;
+            }
+
+                #carousel li img {
+                    width: 201px;
+                    height: 127px;
+                    margin-top: 14px;
+                }
+
+                #carousel li .texto {
+                    display: block;
+                    overflow: hidden;
+                    width: 201px;
+                    position: absolute;
+                    z-index: 2;
+                    bottom: 0px;
+                    left: 16px;
+                    font-size: 12px;
+                }
+
+        .clearfix {
+            float: none;
+            clear: both;
+        }
+
+        #carousel .prev, #carousel .next {
+            background: transparent url(img/carousel_control.png) no-repeat 0 0;
+            text-indent: -999px;
+            display: block;
+            overflow: hidden;
+            width: 15px;
+            height: 21px;
+            margin-left: 10px;
+            position: absolute;
+            top: 70px;
+        }
+
+        #carousel .prev {
+            background-position: 0 0;
+            left: -30px;
+        }
+
+            #carousel .prev:hover {
+                left: -31px;
+            }
+
+        #carousel .next {
+            background-position: -18px 0;
+            right: -20px;
+        }
+
+            #carousel .next:hover {
+                right: -21px;
+            }
+
+        #carousel .pager {
+            text-align: center;
+            margin: 0 auto;
+        }
+
+            #carousel .pager a {
+                background: transparent url(img/carousel_control.png) no-repeat -2px -32px;
+                text-decoration: none;
+                text-indent: -999px;
+                display: inline-block;
+                overflow: hidden;
+                width: 8px;
+                height: 8px;
+                margin: 0 5px 0 0;
+            }
+
+                #carousel .pager a.selected {
+                    background: transparent url(img/carousel_control.png) no-repeat -12px -32px;
+                    text-decoration: underline;
+                }
+
+        #source {
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+        }
+
+            #source, #source a {
+                font-size: 12px;
+                color: #999;
+            }
+
+        [aria-describedby=msAlmacenamiento] > .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix {
+            background: #dfdfdf;
+        }
+        /***end carusel*/
+    </style>
+
+    <style type="text/css">
+        .contenedor {
+            width: 350px;
+            float: left;
+        }
+
+        .titulo {
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        #camara, #foto {
+            width: 320px;
+            min-height: 240px;
+            border: 1px solid #008000;
+        }
+
+        fieldset.fielsedAguas {
+            margin-top: 10px;
+        }
+        /*tamaño color titulo*/
+        .ui-dialog {
+            padding: 0px;
+        }
+        /*color titulo*/
+        .ui-widget-header {
+            background: none;
+            background-color: #0094A0;
+        }
+        /*bordes titulo*/
+        .ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+            border-bottom-left-radius: 0px;
+        }
+
+        .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+            border-bottom-right-radius: 0px;
+        }
+        /*color label titulo*/
+        .ui-widget-content {
+            color: #fff;
+        }
+
+        element.style {
+            overflow: hidden;
+            width: auto;
+            min-height: 0px;
+            max-height: none;
+            height: 355.5px;
+        }
+        /*quitar recuadro dentro popup*/
+        .ui-dialog .ui-dialog-content {
+            padding: 0px;
+        }
+
+     
+
+        .container {
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+
+        .container-fluid {
+            max-width: 725px;
+        }
+
+   
+        .caroufredsel_wrapper {
+            width: 100% !important;
+            height: 200px !important;
+        }
+
+        #Carusel1 {
+            width: 100% !important;
+            height: 200px !important;
+        }
+
+        #Estados fieldset {
+            width: 15%;
+            height: 400px;
+            text-align: left;
+            overflow: auto;
+            line-height: 37px;
+            font-size: 12px;
+            padding-top: 0px;
+            display: inline-block;
+            padding-left: 10px;
+        }
+        #Estados legend {
+            width: 97px;
+            text-align: left;
+            font-size: 16px;
+            margin-bottom: -13px;
+        }
+        #Estados fieldset table {
+            height: 400px;
+            overflow: auto;
+        }
+        div#divEstados {
+            position: absolute;
+            top: 0px;
+            background: rgba(102, 102, 102, 0.25);
+            left: 0px;
+            width: 100%;
+            height: 885px;
+        }
+
+        div#divReturn {
+            background: #D9D9D9;
+            border: 1px solid rgba(102, 102, 102, 0.5);
+            position: relative;
+            border-radius: 10px;
+            left: 20%;
+            top: 120px;
+            padding: 13px;
+            padding-left: 57px;
+            height: 649px;
+            text-align: left;
+        }
+        #divReturn ul {
+            height: 577px;
+        }
+        span.navbar-collapse.collapse {
+            top: -55px;
+            position: relative;
+            display: none !important;
+        }
+        .chulito {
+            background: #000;
+        }
+        
+    </style>
+    @Scripts.Render("~/bundles/carouFredSel")
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css")" />
+</head>
+
+<body>
+    <div class="panel panel-default" style="padding-bottom: 10px">
+        <div style="position:absolute;top:0px;z-index:9999;display:none">
+            <input type="text" id="txtCaptacion" value="">
+            <input type="text" id="txtTipoEstado" value="">
+            <input type="text" id="txtVisita" value="">
+            <input type="text" id="txtEstadoBase" value="">
+            <input type="text" id="txtForm" value="">
+            <input type="text" id="idCaptacionEstado" value="">
+
+            <input type="text" id="txturlMapa" value="">
+            <input type="text" id="txttblFotos" value="">
+            <input type="text" id="txtinstalacion" value="">
+            <input type="text" id="txttercero" value="">
+            <input type="text" id="txttblEstados" value="">
+
+        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+
+                <br />
+            </h3>
+            <div style="padding: 15px; margin-top: 32px;">
+              
+                <input type="file" style="display:none" id="txtuploda">
+                <div class="tab-content" id="myTabContent">
+                    <br />
+                    <br />
+                      <button id="btnRectangulo" onclick="pintarRectangulo()" class="btn btn-success">Rectángulo</button>
+                      <button id="btnCirculo" onclick="pintarCirculo()" class="btn btn-success">Círculo</button>
+                      <button id="btnPoligono" onclick="pintarPoligono()" class="btn btn-success">Polígono</button>
+                      <button id="btnLimpiar" onclick="Limpiar()" class="btn btn-success">Limpiar selección</button>
+                       <br />
+                    <br />
+                        <!-------inicio-->
+                        <div class="row col-md-12 informacionUbicacion">
+                            
+                                <iframe id="mapa" style="width: 100%; height: 350px; overflow: hidden; border: none; " src="/MAPGISV5_WEB/tools/AMVA/inicio_flora.htm"></iframe>
+                          
+                        </div>
+
+                        <!-------fin-->
+                    <button id="idEstadosC" onclick="AgregarEstados()" class="btn btn-success">Agregar Estados</button>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                        <div id="GrdFlora" style="height: 200px;">
+
+                        </div>
+                   
+                   <div>
+                       <button id="idEstadosC" onclick="GuardarGeneral()" class="btn btn-success">Guardar</button>
+                   </div>
+
+            <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+                <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+            </div>
+
+            <div id="pantallaEliminarFoto" title="Eliminar Fotografia" style="display: none; overflow: hidden;">
+                <iframe src="" id="frEliminarFoto" width="100%" height="100%"></iframe>
+            </div>
+            <div id="divEstados" style="display:none">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

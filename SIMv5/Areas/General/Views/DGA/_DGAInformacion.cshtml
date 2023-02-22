@@ -1,0 +1,47 @@
+﻿<img src="../../Content/Images/Ayuda.png" id="btnAyudasInformacion" style="float:right" onclick="MostrarAyuda(93, 'DGA-Información');" />
+<div class="dx-fieldset">
+    <div class="row">
+        <div class="col-md-12" style="display:none">
+            <div class="dx-field">
+                    <div class="dx-field-label">
+                        DGA se comparte:
+                        <div dx-radio-group="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Si', value: 'S' }, { text: 'No', value: 'N' } ], layout: 'horizontal',  bindingOptions: { value: 'datosDGA.S_COMPARTEDGA' } }"></div>
+                    </div>
+                <div class="dx-field-value  row-no-padding">
+                    <div ng-show="datosDGA.S_COMPARTEDGA == 'S'">
+                        Cu&aacute;les Empresas ?
+                        <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.S_COMPARTEEMPRESA' }, height: '80px' }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">
+                    Recibe algún tipo de asesoría de Agremiaciones o un Consultor?:
+                    <div dx-radio-group="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") displayExpr: 'text', valueExpr: 'value', dataSource: [ { text: 'Si', value: 'S' }, { text: 'No', value: 'N' } ], layout: 'horizontal',  bindingOptions: { value: 'datosDGA.S_AGREMIACION' } }"></div>
+                </div>
+                <div class="dx-field-value  row-no-padding">
+                    <div ng-show="datosDGA.S_AGREMIACION == 'S'">
+                        Cu&aacute;les ?
+                        <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.S_AGREMIACIONASESORIA' }, height: '80px' }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">
+                    Funciones del DGA:
+                </div>
+                <div class="dx-field-value">
+                    <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.S_FUNCION' }, height: '160px' }"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

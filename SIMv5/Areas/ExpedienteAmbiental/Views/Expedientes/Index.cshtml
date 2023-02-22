@@ -1,0 +1,317 @@
+﻿
+@{
+    ViewBag.Title = "Expedientes Ambientales";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+
+<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/expedienteAmbiental.js?v=2.7")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+
+    .divEncabezado {
+        border: 1px outset blue;
+        background-color: lightblue;
+        text-align: left;
+    }
+
+    .divDetalle {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    #BotonExp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .hidden {
+        visibility: hidden;
+    }
+
+    .info {
+        margin-top: 5px;
+        /*height: 78px;*/
+    }
+
+    .image-container {
+        width: 65px;
+        float: left;
+        margin-right: 20px;
+    }
+
+        .image-container img {
+            display: block;
+            width: 100%;
+        }
+
+/*    .dx-list .dx-scrollable-content {
+        column-count: 4;
+        -moz-column-count: 4;
+    }*/
+
+    .dx-list-item {
+        border-top: none;
+        break-inside: avoid;
+    }
+
+    .indices {
+        text-align: justify;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9pt;
+        width: 100%;
+        word-wrap: break-word;
+        max-width: 450px;
+    }
+
+    .dx-popover-wrapper .dx-popup-content {
+        white-space: normal !important;
+    }
+
+    .title {
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: left;
+    }
+</style>
+
+<h2>Expedientes Ambientales</h2>
+
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Listado de Expedientes Ambientales</label>
+            </h3>
+        </div>
+        <div>
+            <div id="btnNuevoExpediente"></div>
+            <div id="GridListado"></div>
+            <br />
+            <div id="popupNuevoExpediente">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">CM :</div>
+                        <div class="col-sm-9" id="txtCM" style="background-color:burlywood;border-color:brown"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Cédula/Nit (Sin el D.V) :</div>
+                        <div class="col-sm-5" id="txtNit"></div>
+                        <div class="col-sm-3" id="cmdBuscarNit"></div>
+                        <div class="col-sm-1" id="spinLoadBusqueda"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nombre/Razón Social:</div>
+                        <div class="col-sm-9" id="txtRazonSocial"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Instalación:</div>
+                        <div class="col-sm-9" id="cboInstalaciones"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nombre (Etiqueta) :</div>
+                        <div class="col-sm-9" id="txtNombreExpediente"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Descripción :</div>
+                        <div class="col-sm-9" id="txtDescripcionExpediente"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Dirección :</div>
+                        <div class="col-sm-9" id="txtDireccionExpediente"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Municipio :</div>
+                        <div class="col-sm-9" id="cboMunicipio"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Clasificación :</div>
+                        <div class="col-sm-9" id="cboClasificacion"></div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-3" id="btnGuardarExpediente"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="popupTercero">
+            <iframe src="" id="buscarTercero" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+        </div>
+
+        <div id="PopupPuntosControl">
+            <div id="divEncabezado" class="divEncabezado">
+                <div class="row">
+                    <div class="control-label col-sm-1" style="align-content:end">Expediente :</div>
+                    <div class="col-sm-11" id="txtlblNombreExpediente"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-1" style="align-content:end">CM         :</div>
+                    <div class="col-sm-5" id="txtlblCM"></div>
+                    <div class="control-label col-sm-1" style="align-content:end">Cédula/Nit (Sin el D.V) : </div>
+                    <div class="col-sm-5" id="txtlblCedulaNit"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-1" style="align-content:end">Nombre/Razón Social:</div>
+                    <div class="col-sm-11" id="txtlblNombreRazonSocial"></div>
+                </div>
+            </div>
+            <div class="form-horizontal">
+                <div id="asistente">
+                    <h3>Listado de Puntos de Control asociados con el Expediente Ambiental</h3>
+                    <div class="divDetalle">
+                        <div id="btnNuevoPuntoControl"></div>
+                        <div id="GidListadoPuntosControl"></div>
+                        <br />
+                        <div id="popupNuevoPuntoControl">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Nombre:</div>
+                                    <div class="col-sm-9" id="txtNombrePuntoControl"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Tipo de Solicitud:</div>
+                                    <div class="col-sm-9" id="cboTipoSolicitudAmbiental"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Observaciones :</div>
+                                    <div class="col-sm-9" id="txtObservacionPuntoControl"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Conexo :</div>
+                                    <div class="col-sm-9" id="txtConexoPunto"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Fecha Orígen Solicitud :</div>
+                                    <div class="col-sm-9" id="txtFechaOrigen"></div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-sm-3" id="btnGuardarPuntoControl"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="popupVicularExpedienteDocumental">
+                            <iframe src="" id="BuscarExp" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+                        </div>
+                    </div>
+                    <h3>Expediente Documental asociado al Punto de Control</h3>
+                    <div class="divDetalle">
+                        <div id="divEncabezadoEdoc" class="divEncabezado">
+                            <div class="row">
+                                <div class="control-label col-sm-1" style="align-content:end">Punto de Control :</div>
+                                <div class="col-sm-11" id="txtlblNombrePuntoControl"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;" id="lblExpediente"></div>
+                            <div class="col-sm-2" id="btnIndices"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div id="dxTreeView"></div>
+                            </div>
+                            <div id="PanelDer" class="col-sm-9 hidden">
+                                <div class="panel panel-primary" id="main">
+                                    <div class="panelSIM-heading">
+                                        <h3 class="panelSIM-title">
+                                            <label class="header">Documentos del expediente</label>
+                                        </h3>
+                                    </div>
+                                    <div id="ListaDocs"></div>
+                                    <div id="tooltip"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="PopupIndicesExp"></div>
+                        <div id="cmdShowExpedienteFlip"></div>
+                        <div id="popupBuscaExp">
+                            <iframe src="" id="BuscarExp" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+                        </div>
+                    </div>
+                    <h3>Estados del Punto de Control seleccionado</h3>
+                    <div class="divDetalle">
+                        <div id="divEncabezadoEstadoPC" class="divEncabezado">
+                            <div class="row">
+                                <div class="control-label col-sm-1" style="align-content:end">Punto de Control :</div>
+                                <div class="col-sm-11" id="txtlblNombrePuntoControlEstado"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;" id="lblNombreDivPuntoControlEstado"></div>
+                        </div>
+                        <br />
+                        <div id="btnNuevoEstadoPuntoControl"></div>
+                        <div id="GidListadoEstadosPuntosControl"></div>
+                        <br />
+                        <div id="popupEstadoPuntoControl">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Tipo de Estado</div>
+                                    <div class="col-sm-9" id="cboTipoEstado"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Observaciones</div>
+                                    <div class="col-sm-9" id="txtObservacionEstado"></div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-sm-3" id="btnGuardarEstadoPuntoControl"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Notas relacionadas con Punto de Control seleccionado</h3>
+                    <div class="divDetalle">
+                        <div id="divEncabezadoNotas" class="divEncabezado">
+                            <div class="row">
+                                <div class="control-label col-sm-1" style="align-content:end">Punto de Control :</div>
+                                <div class="col-sm-11" id="txtlblNombrePuntoControlNotas"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;" id="lblNombreDivPuntoControlAnotacion"></div>
+                        </div>
+                        <br />
+                        <div id="btnNuevoAnotacionPuntoControl"></div>
+                        <div id="GidListadoAnotacionesPuntosControl"></div>
+                        <br />
+                        <div id="popupAnotacionPuntoControl">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="control-label col-sm-3" style="align-content:end">Observaciones</div>
+                                    <div class="col-sm-9" id="txtObservacionAnotacion"></div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-sm-3" id="btnGuardarAnotacionPuntoControl"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

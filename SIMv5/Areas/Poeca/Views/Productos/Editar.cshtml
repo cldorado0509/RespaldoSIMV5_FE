@@ -1,0 +1,53 @@
+﻿@model SIM.Data.Poeca.DPOEAIR_PRODUCTO
+
+@{
+    ViewBag.Title = "POECA | Editar Producto";
+}
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+        <h2>Editar Producto</h2>
+
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_NOMBRE_PRODUCTO, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_NOMBRE_PRODUCTO, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_NOMBRE_PRODUCTO, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.S_DESCRIPCION, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.S_DESCRIPCION, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.S_DESCRIPCION, "", new { @class = "text-danger" })
+                </div>
+
+                @*<div class="form-group">
+                        @Html.LabelFor(model => model.ID_RESPONSABLE, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.ID_RESPONSABLE, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ID_RESPONSABLE, "", new { @class = "text-danger" })
+                    </div>*@
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-danger" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Guardar" class="btn btn-block btn-default" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundlesv5/jqueryval")
+}

@@ -1,0 +1,42 @@
+﻿@model SIM.Areas.Seguridad.Models.RegisterViewModel
+@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "Recuperar Contraseña";
+}
+
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/Seguridad/Scripts/recuperacionpwd.js")"></script>
+<div ng-app="SIM" data-url="@Url.Content("~")" id="app" class="my-cloak">
+    <div ng-controller="recuperacionController" class="row" style="margin-right: 0px;">
+        <div dx-load-panel="{message: 'Procesando...', showIndicator: true, shading: true, bindingOptions: { visible: 'procesandoVisible' } }"></div>
+        <div class="col-md-6 col-md-offset-3 registrocontenedor" ng-hide="RecuperacionProcesada()">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+            <h4>RECUPERAR CONTRASE&Ntilde;A</h4>
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-4 control-label" })
+                <div class="col-md-8">
+                    <div dx-text-box="{mode: 'email', bindingOptions: { value: 'model.Email' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Correo Electrónico Requerido' }, { type: 'email', message: 'Correo Electrónico Inválido' }] }"></div>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="col-md-offset-4 col-md-4">
+                    <div dx-button="btnRecuperarSettings" id="btnRecuperar" class="btn-lg"></div>
+                </div>
+                <div class="col-md-4">
+                    <div dx-button="btnCancelarSettings" id="btnCancelar" class="btn-lg"></div>
+                </div>
+            </div>
+            <br />
+            }
+        </div>
+        <div class="row" ng-show="RecuperacionProcesada()">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="alert alert-success" role="alert">Proceso Realizado Satisfactoriamente. Pronto recibirá un correo electrónico con el enlace para realizar la asignación de la contraseña.</div>
+            </div>
+        </div>
+    </div>
+</div>

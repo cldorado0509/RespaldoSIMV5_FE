@@ -1,0 +1,140 @@
+﻿@using SIM.Properties
+@{
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-rowsview .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+        /*padding: 7px;*/
+    }
+
+    .dx-popup-content {
+        padding: 0px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        AjustarTamano();
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano() {
+        $("#pnlContenedor").height((window.innerHeight || document.body.clientHeight) - 140);
+        $("#pnlElaboracion").height($("#pnlContenedor").outerHeight() - $("#tabOpciones").outerHeight() - 4);
+        $("#pnlFirmas").height($("#pnlContenedor").outerHeight() - $("#tabOpciones").outerHeight() - 4);
+        $("#pnlDocumentosGenerados").height($("#pnlContenedor").outerHeight() - $("#tabOpciones").outerHeight() - 4);
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/proyecciondocumento.js?v=1.32")"></script>
+
+<div id="pantallaDetalleTramites" title="Detalle Tramite" style="display: none; overflow: hidden;">
+    <iframe src="" id="DetalleTramites" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popAvanzaTareaTramite" style="padding: 0px">
+    <iframe src="" id="frmAvanzaTareaTramite" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popIndicesTramites" style="padding: 0px">
+    <iframe src="" id="frmIndicesTramites" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popDetalleTramite" style="padding: 0px !important">
+    <iframe src="" id="frmDetalleTramite" style="width:100%; height:100%" frameborder="0" scrolling="yes"></iframe>
+</div>
+
+<div id="popDocumento" style="padding: 0px">
+    <iframe src="" id="frmDocumento" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popDocumentoPreview" style="padding: 0px">
+    <iframe src="" id="frmDocumentoPreview" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popFirmaDigital">
+    <div class="row">
+        <div class="col-md-12 login-form-header">
+            <p class="login-form-font-header">Contraseña de la firma digital<p>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12 login-from-row">
+            <!--div id="usuarioFirma"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 login-from-row"-->
+            <div id="passwordFirma"></div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-md-12 login-from-row text-center">
+            <div id="btnAceptaFirma" class="btn btn-info">Aceptar</div>
+        </div>
+    </div>
+</div>
+
+<div id="popComentario" style="padding: 0px">
+    <div id="comentarioContainer" style="width:100%; height:100%">
+        <div id="comentario"></div>
+        <div style="height: 10%; width:100%" class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3">
+                <div id="aceptarComentario" class="col-md-3"></div>
+            </div>
+            <!--div class="col-md-3">
+                <div id="cancelarComentario" class="col-md-3"></div>
+            </div-->
+        </div>
+    </div>
+</div>
+
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" data-codigo="@ViewBag.Codigo" resizable>
+        <div class="panelSIM-default">
+            <div id="loadPanel"></div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+                <div id="tab01" style="display: block">
+                    <div id="pnlElaboracion">
+                        <div class="row" style="width: 100%; height:5%">
+                            <div class="col-md-7"></div>
+                            <div class="col-md-5"><div id="agregarDocumento"></div></div>
+                        </div>
+                        <br />
+                        <div style="height: 95%">
+                            <div id="grdElaboracion"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab02" style="display: none">
+                    <div id="pnlFirmas">
+                        <div style="height: 100%">
+                            <div id="grdFirmas"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab03" style="display: none">
+                    <div id="pnlDocumentosGenerados">
+                        <div style="height: 100%">
+                            <div id="grdDocumentosGenerados"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

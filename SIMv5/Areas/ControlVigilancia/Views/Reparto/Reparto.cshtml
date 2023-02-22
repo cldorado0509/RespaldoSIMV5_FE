@@ -1,0 +1,1138 @@
+﻿@{
+    ViewBag.Title = "Reparto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Reparto.css")" />
+
+
+<style>
+
+</style>
+<script type="text/javascript">
+    var swTramite = false;
+    var swTramiteNo = false;
+    var codigoTarea = "";
+    var nombreTarea = "";
+    var capa = { servicio: { url: "/arcgis/rest/services/control_vigilancia/tramites/MapServer" }, id: "2" };
+    var municipios = ['BARBOSA',
+                        'BELLO',
+                        'CALDAS',
+                        'COPACABANA',
+                        'ENVIGADO',
+                        'GIRARDOTA',
+                        'ITAGUI',
+                        'LA ESTRELLA',
+                        'SABANETA',
+                        'MEDELLIN'];
+
+    var Latinise = {}; Latinise.latin_map = { "Á": "A", "Ă": "A", "Ắ": "A", "Ặ": "A", "Ằ": "A", "Ẳ": "A", "Ẵ": "A", "Ǎ": "A", "Â": "A", "Ấ": "A", "Ậ": "A", "Ầ": "A", "Ẩ": "A", "Ẫ": "A", "Ä": "A", "Ǟ": "A", "Ȧ": "A", "Ǡ": "A", "Ạ": "A", "Ȁ": "A", "À": "A", "Ả": "A", "Ȃ": "A", "Ā": "A", "Ą": "A", "Å": "A", "Ǻ": "A", "Ḁ": "A", "Ⱥ": "A", "Ã": "A", "Ꜳ": "AA", "Æ": "AE", "Ǽ": "AE", "Ǣ": "AE", "Ꜵ": "AO", "Ꜷ": "AU", "Ꜹ": "AV", "Ꜻ": "AV", "Ꜽ": "AY", "Ḃ": "B", "Ḅ": "B", "Ɓ": "B", "Ḇ": "B", "Ƀ": "B", "Ƃ": "B", "Ć": "C", "Č": "C", "Ç": "C", "Ḉ": "C", "Ĉ": "C", "Ċ": "C", "Ƈ": "C", "Ȼ": "C", "Ď": "D", "Ḑ": "D", "Ḓ": "D", "Ḋ": "D", "Ḍ": "D", "Ɗ": "D", "Ḏ": "D", "ǲ": "D", "ǅ": "D", "Đ": "D", "Ƌ": "D", "Ǳ": "DZ", "Ǆ": "DZ", "É": "E", "Ĕ": "E", "Ě": "E", "Ȩ": "E", "Ḝ": "E", "Ê": "E", "Ế": "E", "Ệ": "E", "Ề": "E", "Ể": "E", "Ễ": "E", "Ḙ": "E", "Ë": "E", "Ė": "E", "Ẹ": "E", "Ȅ": "E", "È": "E", "Ẻ": "E", "Ȇ": "E", "Ē": "E", "Ḗ": "E", "Ḕ": "E", "Ę": "E", "Ɇ": "E", "Ẽ": "E", "Ḛ": "E", "Ꝫ": "ET", "Ḟ": "F", "Ƒ": "F", "Ǵ": "G", "Ğ": "G", "Ǧ": "G", "Ģ": "G", "Ĝ": "G", "Ġ": "G", "Ɠ": "G", "Ḡ": "G", "Ǥ": "G", "Ḫ": "H", "Ȟ": "H", "Ḩ": "H", "Ĥ": "H", "Ⱨ": "H", "Ḧ": "H", "Ḣ": "H", "Ḥ": "H", "Ħ": "H", "Í": "I", "Ĭ": "I", "Ǐ": "I", "Î": "I", "Ï": "I", "Ḯ": "I", "İ": "I", "Ị": "I", "Ȉ": "I", "Ì": "I", "Ỉ": "I", "Ȋ": "I", "Ī": "I", "Į": "I", "Ɨ": "I", "Ĩ": "I", "Ḭ": "I", "Ꝺ": "D", "Ꝼ": "F", "Ᵹ": "G", "Ꞃ": "R", "Ꞅ": "S", "Ꞇ": "T", "Ꝭ": "IS", "Ĵ": "J", "Ɉ": "J", "Ḱ": "K", "Ǩ": "K", "Ķ": "K", "Ⱪ": "K", "Ꝃ": "K", "Ḳ": "K", "Ƙ": "K", "Ḵ": "K", "Ꝁ": "K", "Ꝅ": "K", "Ĺ": "L", "Ƚ": "L", "Ľ": "L", "Ļ": "L", "Ḽ": "L", "Ḷ": "L", "Ḹ": "L", "Ⱡ": "L", "Ꝉ": "L", "Ḻ": "L", "Ŀ": "L", "Ɫ": "L", "ǈ": "L", "Ł": "L", "Ǉ": "LJ", "Ḿ": "M", "Ṁ": "M", "Ṃ": "M", "Ɱ": "M", "Ń": "N", "Ň": "N", "Ņ": "N", "Ṋ": "N", "Ṅ": "N", "Ṇ": "N", "Ǹ": "N", "Ɲ": "N", "Ṉ": "N", "Ƞ": "N", "ǋ": "N", "Ñ": "N", "Ǌ": "NJ", "Ó": "O", "Ŏ": "O", "Ǒ": "O", "Ô": "O", "Ố": "O", "Ộ": "O", "Ồ": "O", "Ổ": "O", "Ỗ": "O", "Ö": "O", "Ȫ": "O", "Ȯ": "O", "Ȱ": "O", "Ọ": "O", "Ő": "O", "Ȍ": "O", "Ò": "O", "Ỏ": "O", "Ơ": "O", "Ớ": "O", "Ợ": "O", "Ờ": "O", "Ở": "O", "Ỡ": "O", "Ȏ": "O", "Ꝋ": "O", "Ꝍ": "O", "Ō": "O", "Ṓ": "O", "Ṑ": "O", "Ɵ": "O", "Ǫ": "O", "Ǭ": "O", "Ø": "O", "Ǿ": "O", "Õ": "O", "Ṍ": "O", "Ṏ": "O", "Ȭ": "O", "Ƣ": "OI", "Ꝏ": "OO", "Ɛ": "E", "Ɔ": "O", "Ȣ": "OU", "Ṕ": "P", "Ṗ": "P", "Ꝓ": "P", "Ƥ": "P", "Ꝕ": "P", "Ᵽ": "P", "Ꝑ": "P", "Ꝙ": "Q", "Ꝗ": "Q", "Ŕ": "R", "Ř": "R", "Ŗ": "R", "Ṙ": "R", "Ṛ": "R", "Ṝ": "R", "Ȑ": "R", "Ȓ": "R", "Ṟ": "R", "Ɍ": "R", "Ɽ": "R", "Ꜿ": "C", "Ǝ": "E", "Ś": "S", "Ṥ": "S", "Š": "S", "Ṧ": "S", "Ş": "S", "Ŝ": "S", "Ș": "S", "Ṡ": "S", "Ṣ": "S", "Ṩ": "S", "Ť": "T", "Ţ": "T", "Ṱ": "T", "Ț": "T", "Ⱦ": "T", "Ṫ": "T", "Ṭ": "T", "Ƭ": "T", "Ṯ": "T", "Ʈ": "T", "Ŧ": "T", "Ɐ": "A", "Ꞁ": "L", "Ɯ": "M", "Ʌ": "V", "Ꜩ": "TZ", "Ú": "U", "Ŭ": "U", "Ǔ": "U", "Û": "U", "Ṷ": "U", "Ü": "U", "Ǘ": "U", "Ǚ": "U", "Ǜ": "U", "Ǖ": "U", "Ṳ": "U", "Ụ": "U", "Ű": "U", "Ȕ": "U", "Ù": "U", "Ủ": "U", "Ư": "U", "Ứ": "U", "Ự": "U", "Ừ": "U", "Ử": "U", "Ữ": "U", "Ȗ": "U", "Ū": "U", "Ṻ": "U", "Ų": "U", "Ů": "U", "Ũ": "U", "Ṹ": "U", "Ṵ": "U", "Ꝟ": "V", "Ṿ": "V", "Ʋ": "V", "Ṽ": "V", "Ꝡ": "VY", "Ẃ": "W", "Ŵ": "W", "Ẅ": "W", "Ẇ": "W", "Ẉ": "W", "Ẁ": "W", "Ⱳ": "W", "Ẍ": "X", "Ẋ": "X", "Ý": "Y", "Ŷ": "Y", "Ÿ": "Y", "Ẏ": "Y", "Ỵ": "Y", "Ỳ": "Y", "Ƴ": "Y", "Ỷ": "Y", "Ỿ": "Y", "Ȳ": "Y", "Ɏ": "Y", "Ỹ": "Y", "Ź": "Z", "Ž": "Z", "Ẑ": "Z", "Ⱬ": "Z", "Ż": "Z", "Ẓ": "Z", "Ȥ": "Z", "Ẕ": "Z", "Ƶ": "Z", "Ĳ": "IJ", "Œ": "OE", "ᴀ": "A", "ᴁ": "AE", "ʙ": "B", "ᴃ": "B", "ᴄ": "C", "ᴅ": "D", "ᴇ": "E", "ꜰ": "F", "ɢ": "G", "ʛ": "G", "ʜ": "H", "ɪ": "I", "ʁ": "R", "ᴊ": "J", "ᴋ": "K", "ʟ": "L", "ᴌ": "L", "ᴍ": "M", "ɴ": "N", "ᴏ": "O", "ɶ": "OE", "ᴐ": "O", "ᴕ": "OU", "ᴘ": "P", "ʀ": "R", "ᴎ": "N", "ᴙ": "R", "ꜱ": "S", "ᴛ": "T", "ⱻ": "E", "ᴚ": "R", "ᴜ": "U", "ᴠ": "V", "ᴡ": "W", "ʏ": "Y", "ᴢ": "Z", "á": "a", "ă": "a", "ắ": "a", "ặ": "a", "ằ": "a", "ẳ": "a", "ẵ": "a", "ǎ": "a", "â": "a", "ấ": "a", "ậ": "a", "ầ": "a", "ẩ": "a", "ẫ": "a", "ä": "a", "ǟ": "a", "ȧ": "a", "ǡ": "a", "ạ": "a", "ȁ": "a", "à": "a", "ả": "a", "ȃ": "a", "ā": "a", "ą": "a", "ᶏ": "a", "ẚ": "a", "å": "a", "ǻ": "a", "ḁ": "a", "ⱥ": "a", "ã": "a", "ꜳ": "aa", "æ": "ae", "ǽ": "ae", "ǣ": "ae", "ꜵ": "ao", "ꜷ": "au", "ꜹ": "av", "ꜻ": "av", "ꜽ": "ay", "ḃ": "b", "ḅ": "b", "ɓ": "b", "ḇ": "b", "ᵬ": "b", "ᶀ": "b", "ƀ": "b", "ƃ": "b", "ɵ": "o", "ć": "c", "č": "c", "ç": "c", "ḉ": "c", "ĉ": "c", "ɕ": "c", "ċ": "c", "ƈ": "c", "ȼ": "c", "ď": "d", "ḑ": "d", "ḓ": "d", "ȡ": "d", "ḋ": "d", "ḍ": "d", "ɗ": "d", "ᶑ": "d", "ḏ": "d", "ᵭ": "d", "ᶁ": "d", "đ": "d", "ɖ": "d", "ƌ": "d", "ı": "i", "ȷ": "j", "ɟ": "j", "ʄ": "j", "ǳ": "dz", "ǆ": "dz", "é": "e", "ĕ": "e", "ě": "e", "ȩ": "e", "ḝ": "e", "ê": "e", "ế": "e", "ệ": "e", "ề": "e", "ể": "e", "ễ": "e", "ḙ": "e", "ë": "e", "ė": "e", "ẹ": "e", "ȅ": "e", "è": "e", "ẻ": "e", "ȇ": "e", "ē": "e", "ḗ": "e", "ḕ": "e", "ⱸ": "e", "ę": "e", "ᶒ": "e", "ɇ": "e", "ẽ": "e", "ḛ": "e", "ꝫ": "et", "ḟ": "f", "ƒ": "f", "ᵮ": "f", "ᶂ": "f", "ǵ": "g", "ğ": "g", "ǧ": "g", "ģ": "g", "ĝ": "g", "ġ": "g", "ɠ": "g", "ḡ": "g", "ᶃ": "g", "ǥ": "g", "ḫ": "h", "ȟ": "h", "ḩ": "h", "ĥ": "h", "ⱨ": "h", "ḧ": "h", "ḣ": "h", "ḥ": "h", "ɦ": "h", "ẖ": "h", "ħ": "h", "ƕ": "hv", "í": "i", "ĭ": "i", "ǐ": "i", "î": "i", "ï": "i", "ḯ": "i", "ị": "i", "ȉ": "i", "ì": "i", "ỉ": "i", "ȋ": "i", "ī": "i", "į": "i", "ᶖ": "i", "ɨ": "i", "ĩ": "i", "ḭ": "i", "ꝺ": "d", "ꝼ": "f", "ᵹ": "g", "ꞃ": "r", "ꞅ": "s", "ꞇ": "t", "ꝭ": "is", "ǰ": "j", "ĵ": "j", "ʝ": "j", "ɉ": "j", "ḱ": "k", "ǩ": "k", "ķ": "k", "ⱪ": "k", "ꝃ": "k", "ḳ": "k", "ƙ": "k", "ḵ": "k", "ᶄ": "k", "ꝁ": "k", "ꝅ": "k", "ĺ": "l", "ƚ": "l", "ɬ": "l", "ľ": "l", "ļ": "l", "ḽ": "l", "ȴ": "l", "ḷ": "l", "ḹ": "l", "ⱡ": "l", "ꝉ": "l", "ḻ": "l", "ŀ": "l", "ɫ": "l", "ᶅ": "l", "ɭ": "l", "ł": "l", "ǉ": "lj", "ſ": "s", "ẜ": "s", "ẛ": "s", "ẝ": "s", "ḿ": "m", "ṁ": "m", "ṃ": "m", "ɱ": "m", "ᵯ": "m", "ᶆ": "m", "ń": "n", "ň": "n", "ņ": "n", "ṋ": "n", "ȵ": "n", "ṅ": "n", "ṇ": "n", "ǹ": "n", "ɲ": "n", "ṉ": "n", "ƞ": "n", "ᵰ": "n", "ᶇ": "n", "ɳ": "n", "ñ": "n", "ǌ": "nj", "ó": "o", "ŏ": "o", "ǒ": "o", "ô": "o", "ố": "o", "ộ": "o", "ồ": "o", "ổ": "o", "ỗ": "o", "ö": "o", "ȫ": "o", "ȯ": "o", "ȱ": "o", "ọ": "o", "ő": "o", "ȍ": "o", "ò": "o", "ỏ": "o", "ơ": "o", "ớ": "o", "ợ": "o", "ờ": "o", "ở": "o", "ỡ": "o", "ȏ": "o", "ꝋ": "o", "ꝍ": "o", "ⱺ": "o", "ō": "o", "ṓ": "o", "ṑ": "o", "ǫ": "o", "ǭ": "o", "ø": "o", "ǿ": "o", "õ": "o", "ṍ": "o", "ṏ": "o", "ȭ": "o", "ƣ": "oi", "ꝏ": "oo", "ɛ": "e", "ᶓ": "e", "ɔ": "o", "ᶗ": "o", "ȣ": "ou", "ṕ": "p", "ṗ": "p", "ꝓ": "p", "ƥ": "p", "ᵱ": "p", "ᶈ": "p", "ꝕ": "p", "ᵽ": "p", "ꝑ": "p", "ꝙ": "q", "ʠ": "q", "ɋ": "q", "ꝗ": "q", "ŕ": "r", "ř": "r", "ŗ": "r", "ṙ": "r", "ṛ": "r", "ṝ": "r", "ȑ": "r", "ɾ": "r", "ᵳ": "r", "ȓ": "r", "ṟ": "r", "ɼ": "r", "ᵲ": "r", "ᶉ": "r", "ɍ": "r", "ɽ": "r", "ↄ": "c", "ꜿ": "c", "ɘ": "e", "ɿ": "r", "ś": "s", "ṥ": "s", "š": "s", "ṧ": "s", "ş": "s", "ŝ": "s", "ș": "s", "ṡ": "s", "ṣ": "s", "ṩ": "s", "ʂ": "s", "ᵴ": "s", "ᶊ": "s", "ȿ": "s", "ɡ": "g", "ᴑ": "o", "ᴓ": "o", "ᴝ": "u", "ť": "t", "ţ": "t", "ṱ": "t", "ț": "t", "ȶ": "t", "ẗ": "t", "ⱦ": "t", "ṫ": "t", "ṭ": "t", "ƭ": "t", "ṯ": "t", "ᵵ": "t", "ƫ": "t", "ʈ": "t", "ŧ": "t", "ᵺ": "th", "ɐ": "a", "ᴂ": "ae", "ǝ": "e", "ᵷ": "g", "ɥ": "h", "ʮ": "h", "ʯ": "h", "ᴉ": "i", "ʞ": "k", "ꞁ": "l", "ɯ": "m", "ɰ": "m", "ᴔ": "oe", "ɹ": "r", "ɻ": "r", "ɺ": "r", "ⱹ": "r", "ʇ": "t", "ʌ": "v", "ʍ": "w", "ʎ": "y", "ꜩ": "tz", "ú": "u", "ŭ": "u", "ǔ": "u", "û": "u", "ṷ": "u", "ü": "u", "ǘ": "u", "ǚ": "u", "ǜ": "u", "ǖ": "u", "ṳ": "u", "ụ": "u", "ű": "u", "ȕ": "u", "ù": "u", "ủ": "u", "ư": "u", "ứ": "u", "ự": "u", "ừ": "u", "ử": "u", "ữ": "u", "ȗ": "u", "ū": "u", "ṻ": "u", "ų": "u", "ᶙ": "u", "ů": "u", "ũ": "u", "ṹ": "u", "ṵ": "u", "ᵫ": "ue", "ꝸ": "um", "ⱴ": "v", "ꝟ": "v", "ṿ": "v", "ʋ": "v", "ᶌ": "v", "ⱱ": "v", "ṽ": "v", "ꝡ": "vy", "ẃ": "w", "ŵ": "w", "ẅ": "w", "ẇ": "w", "ẉ": "w", "ẁ": "w", "ⱳ": "w", "ẘ": "w", "ẍ": "x", "ẋ": "x", "ᶍ": "x", "ý": "y", "ŷ": "y", "ÿ": "y", "ẏ": "y", "ỵ": "y", "ỳ": "y", "ƴ": "y", "ỷ": "y", "ỿ": "y", "ȳ": "y", "ẙ": "y", "ɏ": "y", "ỹ": "y", "ź": "z", "ž": "z", "ẑ": "z", "ʑ": "z", "ⱬ": "z", "ż": "z", "ẓ": "z", "ȥ": "z", "ẕ": "z", "ᵶ": "z", "ᶎ": "z", "ʐ": "z", "ƶ": "z", "ɀ": "z", "ﬀ": "ff", "ﬃ": "ffi", "ﬄ": "ffl", "ﬁ": "fi", "ﬂ": "fl", "ĳ": "ij", "œ": "oe", "ﬆ": "st", "ₐ": "a", "ₑ": "e", "ᵢ": "i", "ⱼ": "j", "ₒ": "o", "ᵣ": "r", "ᵤ": "u", "ᵥ": "v", "ₓ": "x" };
+    String.prototype.latinise = function () { return this.replace(/[^A-Za-z0-9\[\] ]/g, function (a) { return Latinise.latin_map[a] || a }) };
+    String.prototype.latinize = String.prototype.latinise;
+    String.prototype.isLatin = function () { return this == this.latinise() }
+
+    $(document).ready(function () {
+
+        $("#Tab4 a").click();
+
+      cargarSoloMapa();
+
+       
+        $(function () {
+            $("#GrdTramitesnoubicados").dxDataGrid({
+                height: '480px',
+                selection: {
+                    mode: 'multiple'
+                },
+                columns: [
+                    { dataField: 'CODTRAMITE', allowGrouping: true, caption: 'Código trámite', width: '18%' },
+                    { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '70%' },
+                    { dataField: 'FECHAINICIOTRAMITE', caption: 'Fecha inicio trámite', allowGrouping: true, width: '26%' },
+                    { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '18%' },
+                        { dataField: 'TAREA', caption: 'TAREA', allowGrouping: true, width: '18%',visible:false },
+                    { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '14%' },
+
+                        {
+                            dataField: 'UBICACION', alignment: 'center', allowGrouping: true, caption: 'Ubicación', width: '16%', cellTemplate: function (container, options) {
+                                container.height(5);
+                                $('<img src="@Url.Content("../../Content/Images/AcercarReparto.png")" style="width:25px;height:25px" class="btnEditar" onclick="validarSesionUbicacion()"/>')
+
+                                        .attr('src', options.value)
+                                        .appendTo(container);
+                            }
+                        },
+                         {
+                             dataField: 'DETALLETRAMITE', allowGrouping: true, alignment: 'center', caption: 'Detalle trámite', width: '20%', cellTemplate: function (container, options) {
+                                 container.height(5);
+                                 $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"   class="btnEditar" onclick="abrirDetalleTramite(' + options.data.CODTRAMITE + ')" />')
+
+                                             .attr('src', options.value)
+                                             .appendTo(container);
+                             }
+                         }
+                ],
+                onSelectionChanged: function (selecteditems) {
+                    try {
+                        codigoTarea = selecteditems.selectedRowsData[0]["CODTAREA"];
+                        nombreTarea = selecteditems.selectedRowsData[0]["TAREA"]; 
+                        VectorcodtramiteNOGEO = [];
+                        VectordireccionNOGEO = [];
+                        VectormunicipioNOGEO = [];
+                        VectortareaNOGEO = [];
+                        VectorcodordenNOGEO = [];
+                        for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+                            VectortramiteubicarNOGEO.push(selecteditems.selectedRowsData[i]["CODTRAMITE"]);
+                            VectorcodtramiteNOGEO.push(selecteditems.selectedRowsData[i]["CODTRAMITE"]);
+                            VectortareaNOGEO.push(selecteditems.selectedRowsData[i]["CODTAREA"]);
+                            VectorcodordenNOGEO.push(selecteditems.selectedRowsData[i]["ORDEN"]);
+                            VectordireccionNOGEO.push(selecteditems.selectedRowsData[i]["DIRECCION"]);
+                            VectormunicipioNOGEO.push(selecteditems.selectedRowsData[i]["MUNICIPIO"]);
+                        }
+                    }
+                    catch (e) {
+                        console.log(e.message);
+                    }
+                },
+                cellClick: function (e) {
+                    var id = e.data.CODTRAMITE;
+                    var tipoBoton = e.columnIndex;
+
+                    switch (tipoBoton) {
+                        case 7: //eliminar
+                            abrirDetalleTramite(id);
+                            break;
+                 
+                    }
+                },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [20, 30, 50]
+                }, filterRow: { visible: true }
+
+            });
+        });
+
+  
+
+        $(function () {
+            $("#GrdTramites").dxDataGrid({
+                height: '480px',
+                selection: {
+                    mode: 'multiple'
+                },
+                columns: [
+
+                    { dataField: 'CODTRAMITE', allowGrouping: true, caption: 'Código trámite', width: '16%' },
+                    { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '70%' },
+                    { dataField: 'FECHAINICIOTRAMITE', caption: 'Fecha inicio trámite', allowGrouping: true, width: '24%' },
+                    { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '18%' },
+                         { dataField: 'CODTAREA', caption: 'CODTAREA', allowGrouping: true, width: '18%', },
+                     { dataField: 'TAREA', caption: 'TAREA', allowGrouping: true, width: '18%', visible: true },
+                    { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '12%' },
+                     {
+                         dataField: 'ACERCAR', allowGrouping: true, alignment: 'center', caption: 'Acercar', width: '10%', cellTemplate: function (container, options) {
+                             container.height(5);
+                             $('<img src="@Url.Content("../../Content/Images/AcercarReparto.png")"   style="width:25px;height:25px"  class="btnEditar" onclick="Acercar()"/>')
+
+                                     .attr('src', options.value)
+                                     .appendTo(container);
+                         }
+                     },
+                     {
+                         dataField: 'DETALLETRAMITE', allowGrouping: true, alignment: 'center', caption: 'Detalle trámite', width: '19%', cellTemplate: function (container, options) {
+                             container.height(5);
+                             $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")"   style="width:25px;height:25px"  class="btnEditar" onclick="abrirDetalleTramite(' + options.data.CODTRAMITE + ')" />')
+
+                           .attr('src', options.value)
+                           .appendTo(container);
+                         }
+                     }
+                ],
+                onSelectionChanged: function (selecteditems) {
+                    try {
+                        VectorcodtramiteGEO = [];
+                        codigoTarea = selecteditems.selectedRowsData[0]["CODTAREA"]
+                        nombreTarea = selecteditems.selectedRowsData[0]["TAREA"]
+                        VectordireccionGEO = [];
+                        VectormunicipioGEO = [];
+                        VectortareaGEO = [];
+                        VectorcodordenGEO = [];
+                        VectorX = [];
+                        VectorY = [];
+                        for (var i = 0; i < selecteditems.selectedRowsData.length; i++) {
+                            VectorcodtramiteGEO.push(selecteditems.selectedRowsData[i]["CODTRAMITE"]);
+                            VectortareaGEO.push(selecteditems.selectedRowsData[i]["CODTAREA"]);
+                            VectorcodordenGEO.push(selecteditems.selectedRowsData[i]["ORDEN"]);
+                            VectordireccionGEO.push(selecteditems.selectedRowsData[i]["DIRECCION"]);
+                            VectormunicipioGEO.push(selecteditems.selectedRowsData[i]["MUNICIPIO"]);
+                            X = selecteditems.selectedRowsData[i]["X"];
+                            Y = selecteditems.selectedRowsData[i]["Y"];
+                            VectorX.push(selecteditems.selectedRowsData[i]["X"]);
+                            VectorY.push(selecteditems.selectedRowsData[i]["Y"]);
+                        }
+                    }
+                    catch (e) {
+                        console.log(e.message);
+                    }
+                },
+                cellClick: function (e) {
+                    var id = e.data.CODTRAMITE;
+                    var tipoBoton = e.columnIndex;
+
+                    switch (tipoBoton) {
+                        case 7: //eliminar
+                            abrirDetalleTramite(id);
+                            break;
+                 
+                    }
+                },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [20, 30, 50]
+                }, filterRow: { visible: true }
+
+            });
+        });
+
+
+    });
+
+    var dirglobal = "";
+    //Vectores georeferenciados.
+    var VectorcodtramiteGEO = [];
+    var VectordireccionGEO = [];
+    var VectormunicipioGEO = [];
+    var VectortareaGEO = [];
+    var VectorcodordenGEO = [];
+    var X = "";
+    var Y = "";
+    var VectorX = [];
+    var VectorY = [];
+
+    //Vectores no georeferenciados.
+    var VectorcodtramiteNOGEO = [];
+    var VectordireccionNOGEO = [];
+    var VectormunicipioNOGEO = [];
+    var VectortareaNOGEO = [];
+    var VectorcodordenNOGEO = [];
+    var VectortramiteubicarNOGEO = [];
+    var VectorXNOGEO = [];
+    var VectorYNOGEO = [];
+
+
+
+    //función que permite pintar un punto en el mapa.
+    function pintarPunto() {
+        conectar();
+        $("#Tab4 a").click();
+        m.drawPoint(function (g, g1) {
+            m.noDraw();
+            //capa = { servicio: { url: "/arcgis/rest/services/Tramites_Ambientales/Tramites_Ambientales/MapServer" }, id: "2" };
+            m.execQuery(capa, "1=1", true,
+              function (resultado) {
+              },
+              function () {
+
+              }, g1);
+        }, 255, 0, 0, "ubica", srid);
+    }
+
+    //función que permite pintar un rectángulo en el mapa.
+    function pintarRectangulo() {
+        conectar();
+        $("#Tab4 a").click();
+        m.drawRectangulo(function (g, g1) {
+            m.noDraw();
+           // capa = { servicio: { url: "/arcgis/rest/services/Tramites_Ambientales/Tramites_Ambientales/MapServer" }, id: "2" };
+            m.execQuery(capa, "1=1", true,
+              function (resultado) {
+                  var ids_tramites = "";
+                  for (var i = 0; i < resultado.features.length; i++) {
+                      ids_tramites += '\"' + resultado.features[i].attributes.CODTRAMITE + '\",';
+                  }
+                  ids_tramites = ids_tramites.substring(0, ids_tramites.length - 1);
+                  pintarFigura(ids_tramites);
+              },
+              function () {
+
+              }, g1);
+        }, 255, 0, 0, "ubica", srid);
+    }
+
+    //función que permite pintar un círculo en el mapa.
+    function pintarCirculo() {
+        conectar();
+        $("#Tab4 a").click();
+        var x = '"';
+        m.drawCircle(function (g, g1) {
+            m.noDraw();
+           // capa = { servicio: { url: "/arcgis/rest/services/control_vigilancia/tramites/MapServer" }, id: "2" };
+            m.execQuery(capa, "1=1", true,
+              function (resultado) {
+                  var ids_tramites = "";
+                  for (var i = 0; i < resultado.features.length; i++) {
+                      ids_tramites += '\"' + resultado.features[i].attributes.CODTRAMITE + '\",';
+                  }
+                  ids_tramites = ids_tramites.substring(0, ids_tramites.length - 1);
+                  pintarFigura(ids_tramites);
+                  $("#Tab2 a").click();
+              },
+              function () {
+
+              }, g1);
+        }, 255, 0, 0, "ubica", srid);
+
+    }
+
+    //función que permite pintar un polígono en el mapa.
+    function pintarPoligono() {
+        conectar();
+        $("#Tab4 a").click();
+        m.drawPolygon(function (g, g1) {
+            m.noDraw();
+           // capa = { servicio: { url: "/arcgis/rest/services/Tramites_Ambientales/Tramites_Ambientales/MapServer" }, id: "2" };
+            m.execQuery(capa, "1=1", true,
+              function (resultado) {
+                  var ids_tramites = "";
+                  for (var i = 0; i < resultado.features.length; i++) {
+                      ids_tramites += '\"' + resultado.features[i].attributes.CODTRAMITE + '\",';
+                  }
+                  ids_tramites = ids_tramites.substring(0, ids_tramites.length - 1);
+                  pintarFigura(ids_tramites);
+              },
+              function () {
+
+              }, g1);
+        }, 255, 0, 0, "ubica", srid);
+    }
+
+    //función que permite cargar en la grid GrdTramites los datos seleccionados en el mapa.
+    function pintarFigura(tramites) {
+        mensajeAlmacenamiento(tramites);
+
+        var CargarDatosTramitesGeoFiltro = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var d = $.Deferred();
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesGeoFiltro")" + "?tramites=" + tramites).done(function (data) {
+                    d.resolve(data, { totalCount: data.length });
+                });
+                return d.promise();
+            }
+        });
+
+        var GrdTramitesGeofiltroConfiguracion = {
+            store: CargarDatosTramitesGeoFiltro
+        };
+
+        $(function () {
+            $("#GrdTramites").dxDataGrid({
+                dataSource: CargarDatosTramitesGeoFiltro
+            });
+        });
+        $("#Tab2 a").click();
+    }
+
+    //función que permite limpiar los datos en las grids GrdTramites y GrdTramitesnoubicados y el mapa.
+    function limpiarSeleccion() {
+
+        Limpiar()
+        try{
+            m.limpiarGraphics();
+        } catch (w) {
+
+        }
+      
+        CargarGrids();
+    }
+
+    //función que ubica un trámite no ubicado en el mapa.
+    function ubicarManualmente() {
+        conectar();
+        if (VectortramiteubicarNOGEO.length > 0) {
+            $("#Tab4 a").click();
+            m.drawPoint(function (g, g1) {
+                var cod_tramite;
+                for (var i = 0; i < VectortramiteubicarNOGEO.length; i++) {
+                    cod_tramite = VectortramiteubicarNOGEO[i];
+                }
+                if (cod_tramite > 0) {
+                    var x = g.x + "";
+                    var y = g.y + "";
+                  
+                    guardarGeoTramite(cod_tramite, x, y, tipoUbicacionM);
+                    m.noDraw();
+
+                    parent.CargarGrids(1);
+                    $("#Tab1 a").click();
+                }
+
+            }, 255, 0, 0, "ubica", srid);
+        }
+        else {
+            mensajeAlmacenamiento("Debe seleccionar un trámite para realizar el proceso de ubicación.");
+        }
+    }
+
+    //función que reubica un trámite ubicado en el mapa.
+    function reubicarManualmente() {
+        conectar();
+        $("#Tab4 a").click();
+        m.drawPoint(function (g, g1) {
+            var cod_tramite;
+            for (var i = 0; i < VectorcodtramiteGEO.length; i++) {
+                cod_tramite = VectorcodtramiteGEO[i];
+            }
+            var x = g.x + "";
+            var y = g.y + "";
+           guardarGeoTramite(cod_tramite, x, y, tipoUbicacionM);
+            m.noDraw();
+            mensajeAlmacenamiento("El proceso de ubicación se ha efectuado con éxito.");
+            CargarGrids(1);
+            $("#Tab2 a").click();
+        }, 255, 0, 0, "ubica", srid);
+    }
+
+    //función que geocodifica un trámite no ubicado.
+    function geocodificarValores() {
+        var datosInvalidos = false;
+
+        var datos = $("#GrdTramitesnoubicados").dxDataGrid('instance')._controllers.data._dataSource._items;
+        if(datos.length>0)
+        {
+            for (var i = 0; i < datos.length; i++) {
+                if (datos[i].MUNICIPIO != null && datos[i].MUNICIPIO.trim() != '') {
+                    if (datos[i].DIRECCION != null) {
+                        //var municipioRegistro = datos[i].MUNICIPIO.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim();
+                        var municipioRegistro = datos[i].MUNICIPIO.latinize().toUpperCase().trim();
+                        var palabrasMunicipio = municipioRegistro.split('-');
+
+                        if (palabrasMunicipio.length > 1)
+                            municipioRegistro = palabrasMunicipio[1].trim();
+
+                        if ($.inArray(municipioRegistro, municipios) >= 0)
+                        {
+                            //$("#Tab4 a").click();
+                            $.ajax({
+                                type: "POST",
+                                async: false,
+                                url: '@Url.Action("geocodificadorPlanas", "Reparto")',
+                                data: { accion: 2, valor: encodeURI(datos[i].DIRECCION + ' ' + municipioRegistro), f: 'json', tramite: datos[i].CODTRAMITE },
+                                beforeSend: function () { },
+                                success: function (response) {
+
+                                }
+                            });
+                        } else {
+                            datosInvalidos = true;
+                        }
+                    }
+                } else {
+                    datosInvalidos = true;
+                }
+            }
+
+            CargarGrids(1);
+            $("#Tab2 a").click();
+            conectar();
+            m.noDraw();
+        }else{
+            alert("Seleccione un trámite");
+        }
+
+        if (datosInvalidos)
+        {
+            MostrarNotificacion('alert', 'error', 'Algunos registros no se pudieron GeoCodificar, revisar y corregir el nombre del municipio de ser necesario.');
+        }
+    }
+
+
+    function Pruebas(cod_tramite, direccion, municipio, NumeroRegistros) {
+
+
+        var i = 0;
+        conectar();
+        m.geocod(direccion, municipio, function (g) {
+            if (g.x != null) {
+                X = g.x;
+                Y = g.y;
+                zoom(X, Y);
+                GuardarGeoTramite(cod_tramite, X, Y);
+                i++;
+                X = "";
+                Y = "";
+                if (NumeroRegistros == i) {
+                    setTimeout('CargarGrids(1)', 3000);
+                }
+            }
+        }, srid);
+
+    }
+    //reubicar
+    function guardarGeoTramite(codigo, cx, cy, tipoUbicacion) {
+        var x = cx + "";
+        var y = cy + "";
+       
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GuardarTramitesGeocodificados", "Reparto")',
+            data: { p_codigo: codigo, p_cx: x, p_cy: y, p_tipoUbicacion: tipoUbicacion },
+            beforeSend: function () { },
+            success: function (response) {
+                var x = "" + cx
+                var y = "" + cy
+               
+                zoom(x * 1, y * 1);
+                conectar();
+                m.noDraw();
+            }
+        });
+    }
+    function guardarGeoTramiteGeoco(codigo, cx, cy, tipoUbicacion) {
+        var x = cx + "";
+        var y = cy + "";
+
+
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: '@Url.Action("GuardarTramitesGeocodificados", "Reparto")',
+            data: { p_codigo: codigo, p_cx: x, p_cy: y, p_tipoUbicacion: tipoUbicacion },
+            beforeSend: function () { },
+            success: function (response) {
+                var x = "" + cx
+                var y = "" + cy
+
+                //zoom(x * 1, y * 1);
+                //conectar();
+                //m.noDraw();
+            }
+        });
+    }
+    function GuardarGeoTramite(cod_tramite, X, Y) {
+
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetGuardarTramitesGeocodificados")",
+            data: {
+                Codtramites: cod_tramite, CoordenadasX: X, CoordenadasY: Y, TipoUbicacion: tipoUbicacionG
+            },
+            beforeSend: function () {
+
+            },
+            success: function (response) {
+
+
+            },
+        });
+
+    }
+
+
+    //función que abre un popup para asignar los tramites seleccionados.
+    function asignarTramites() {
+        var entro = false;
+        if ((valoresGEO != null)) { // || (valores != null)) {
+            if (valoresGEO != null) {
+                if (valoresGEO.length != 0)
+                    entro = true;
+            }
+            /*if (valores != null) {
+                if (valores.length != 0)
+                    entro = true;
+            }*/
+        }
+        if (entro) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Mostrar_Popup_Asignacion_Tramite")",
+                success: function (response) {
+                    $("#container").html(response);
+                    pcModalMode.Show();
+                }
+            });
+        }
+        else
+            mensajeAlmacenamiento("No hay trámites seleccionados para avanzar (Solo se pueden avanzar trámites ubicados).");
+    }
+
+    //función que realiza el zoom a uno o varios trámites seleccionados.
+    function zoomVariosTramitesUbicados() {
+
+        if (VectorcodtramiteGEO.length > 0) {
+            $("#Tab4 a").click();
+            var _xmin = VectorX[0]
+            var _xmax = VectorX[0]
+            var _ymin = VectorY[0]
+            var _ymax = VectorY[0]
+
+
+
+
+            if (VectorcodtramiteGEO != null) {
+                if (VectorcodtramiteGEO.length != 0) {
+                    for (var i = 0; i < VectorcodtramiteGEO.length; i++) {
+
+                        if (VectorX[i] <= _xmin) {
+                            _xmin = VectorX[i];
+                        }
+                        if (VectorX[i] >= _xmax) {
+                            _xmax = VectorX[i];
+                        }
+
+                        if (VectorY[i] <= _ymin) {
+                            _ymin = VectorY[i];
+                        }
+                        if (VectorY[i] >= _ymax) {
+                            _ymax = VectorY[i];
+                        }
+                    }
+                }
+            }
+            conectar();
+            m.zoomCoor(_xmax + 1000, _xmin - 1000, _ymin - 1000, _ymax + 1000, srid);
+        }
+        else {
+            mensajeAlmacenamiento("No hay trámites seleccionados para acercar.");
+        }
+    }
+
+    //llamado a la función CargarGrids
+    CargarGrids();
+
+    function abrirAtiende() {
+        validarEstado();
+ 
+    }
+    
+    //función que realiza la garga de las grids GrdTramites y GrdTramitesnoubicados.
+    function CargarGrids(tipo) {
+     
+       
+        var CargarDatosTramitesnoubicados = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                var take = loadOptions.take;
+                var skip = loadOptions.skip;
+                var d = $.Deferred();
+                if (take == undefined) {
+                    take = 10;
+                    skip = 0;
+                }
+              
+               
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesnoubicados")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                    $("#lblTotalRegNoU").text(data.numRegistros);
+                });
+                return d.promise();
+            }
+        });
+
+        var GrdTramitesnoubicadosConfiguracion = {
+            store: CargarDatosTramitesnoubicados
+        };
+
+        var CargarDatosTramites = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                var take = loadOptions.take;
+                var skip = loadOptions.skip;
+                var d = $.Deferred();
+                if (take == undefined) {
+                    take = 10;
+                    skip = 0;
+                }
+               
+                $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesubicados")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+                    d.resolve(data.datos, { totalCount: data.numRegistros });
+                    $("#lblTotalRegU").text(data.numRegistros);
+                });
+                return d.promise();
+            }
+        });
+
+        var GrdTramitesConfiguracion = {
+            store: CargarDatosTramites
+        };
+
+
+
+        if (tipo == undefined) {
+
+
+        }
+        else {
+            $(function () {
+                $("#GrdTramitesnoubicados").dxDataGrid({
+                    dataSource: GrdTramitesnoubicadosConfiguracion
+                });
+
+                $("div.dx-checkbox").removeClass("dx-checkbox-checked")
+                $("tr.dx-row").removeClass("dx-selection")
+            });
+
+            $(function () {
+                $("#GrdTramites").dxDataGrid({
+                    dataSource: GrdTramitesConfiguracion
+                });
+
+                $("div.dx-checkbox").removeClass("dx-checkbox-checked")
+                $("tr.dx-row").removeClass("dx-selection")
+            });
+        }
+        setTimeout(function () {
+
+            $("div.dx-checkbox").removeClass("dx-checkbox-checked")
+            $("tr.dx-row").removeClass("dx-selection")
+        }, 1000);
+
+
+        Limpiar();
+    }
+
+    //función que realiza el zoom a un trámite seleccionado.
+    function Acercar() {
+        if (VectorcodtramiteGEO.length > 0) {
+            $("#Tab4 a").click();
+            zoom(X, Y);
+        }
+        else {
+            mensajeAlmacenamiento("No hay trámites seleccionados para acercar.");
+        }
+    }
+
+    //función que realiza el zoom a un trámite seleccionado.
+    var contConet = 0;
+    function Conectar() {
+        try {
+            contConet++;
+            var rta = conectar()
+            if (rta == -1) {
+                setTimeout('Conectar()', 3000);
+            }
+        } catch (e) {
+            if (contConet < 20) {
+                setTimeout('Conectar()', 3000);
+            }
+
+        }
+    }
+
+    function Ayudas() {
+
+        var tab4activo = document.getElementById('Tab4');
+        var tab1activo = document.getElementById('Tab1');
+        var tab2activo = document.getElementById('Tab2');
+
+        if (tab4activo.className == 'active') {
+
+            window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 79);
+
+        }
+        else if (tab1activo.className == 'active') {
+            // moverAyudas(1);
+            window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 2);
+        }
+        else if (tab2activo.className == 'active') {
+            // moverAyudas(2);
+            window.open("@Url.Content("~/Ayudas/Ayudas/Ayudas?Id_Ayuda=")" + 3);
+        }
+    }
+
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msText").text(mensaje);
+
+
+        $("#msAlmacenamiento").dialog({
+
+            buttons: [
+      {
+          text: "Aceptar",
+
+          click: function () {
+              $(this).dialog("close");
+
+
+          },
+
+          class: "btn btn-default "
+      },
+            ]
+        });
+
+
+    }
+
+
+    function mensajeSesion(mensaje) {
+        $("#msText2").text(mensaje);
+
+
+        $("#msAdvertencia").dialog({
+
+            buttons: [
+      {
+          text: "Aceptar",
+
+          click: function () {
+              $(this).dialog("close");
+
+              window.open("@Url.Content("~/Seguridad/Account/Login")", "_self");
+          },
+
+          class: "btn btn-default "
+      },
+            ]
+        });
+
+
+    }
+    
+   
+    function validarSesionUbicacion() {
+   
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("validarSesion", "Reparto")',
+          
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "0") {
+                    mensajeSesion("La Sesión a Caducado");
+                   
+                    
+                }else
+                {
+                    ubicarManualmente();
+                }
+
+            }
+        });
+    }
+    function validarSesionLimpiar() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("validarSesion", "Reparto")',
+
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "0") {
+                    mensajeSesion("La Sesión a Caducado");
+
+
+                } else {
+                    CargarGrids(1);
+                }
+
+            }
+        });
+    }
+    function validarEstado() {
+   
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("validarSesion", "Reparto")',
+          
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "0") {
+                    mensajeSesion("La Sesión a Caducado");
+                   
+                    
+                }else
+                {
+                    if (VectorcodtramiteGEO.length > 0) { // || VectorcodordenNOGEO.length > 0) {
+                        $("#pantallaAsignacionTramites").dialog(
+                        {
+                            width: 650,
+                            height: 550,
+                            modal: true
+                        });
+                        $("#AsignacionTramites").attr("src", "@Url.Content("~/ControlVigilancia/Reparto/GridTerceros?id=")" + codigoTarea + "&nombreTarea=" + encodeURI(nombreTarea));
+                    }
+                    else {
+                        mensajeAlmacenamiento("No hay trámites seleccionados para avanzar (Solo se pueden avanzar trámites Ubicados).");
+                    }
+                }
+
+            }
+        });
+    }
+   
+    function abrirDetalleTramite(id)
+    {
+
+        $("#pantallaDetalleTramites").dialog(
+               {
+                   width: 650,
+                   height: 550,
+                   modal: true
+               });
+        $("#DetalleTramites").attr("src", "http://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt="+id);
+    }
+    function validarSesionMapa(id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("validarSesion", "Reparto")',
+
+            beforeSend: function () { },
+            success: function (response) {
+                if (response == "0") {
+                    mensajeSesion("La Sesión a Caducado");
+
+
+                } else {
+                    switch(id) {
+                        case 1://acercar varios tramites
+                            zoomVariosTramitesUbicados();
+                            break;
+                        case 2://poligono
+                            pintarPoligono();
+                            break;
+                        case 3://circulo
+                            pintarCirculo();
+                            break;
+                        case 4://retangulo
+                            pintarRectangulo();
+                            break;
+                    }
+                }
+
+            }
+        });
+    }
+    function redirecionarLogin()
+    {
+        window.open("@Url.Content("~/Seguridad/Account/Login")", "_self");
+    }
+
+    function cargarTamites1() {
+        if (!swTramiteNo) {
+            var CargarDatosTramitesnoubicados = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var take = loadOptions.take;
+                    var skip = loadOptions.skip;
+                    var d = $.Deferred();
+                    if (take == undefined) {
+                        take = 0;
+                        skip = 0;
+                    }
+                    $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesnoubicados")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+                        d.resolve(data.datos, { totalCount: data.numRegistros });
+                        $("#lblTotalRegNoU").text(data.numRegistros);
+                    });
+
+
+                    return d.promise();
+                }
+            });
+
+            var GrdTramitesnoubicadosConfiguracion = {
+                store: CargarDatosTramitesnoubicados
+            };
+
+
+            $(function () {
+                $("#GrdTramitesnoubicados").dxDataGrid({
+                    height: '480px',
+                    dataSource: GrdTramitesnoubicadosConfiguracion
+                });
+            });
+            swTramiteNo = true;
+        }
+    }
+
+    function cargarTamites2() {
+        if (!swTramite) {
+            var CargarDatosTramites = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var take = loadOptions.take;
+                    var skip = loadOptions.skip;
+                    var d = $.Deferred();
+                    if (take == undefined) {
+                        take = 0;
+                        skip = 0;
+                    }
+                    $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesubicados")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
+                        d.resolve(data.datos, { totalCount: data.numRegistros });
+                        $("#lblTotalRegU").text(data.numRegistros);
+                    });
+                    return d.promise();
+                }
+            });
+
+            var GrdTramitesConfiguracion = {
+                store: CargarDatosTramites
+            };
+            $(function () {
+                $("#GrdTramites").dxDataGrid({
+                    height: '480px',
+                    dataSource: GrdTramitesConfiguracion
+                });
+            });
+            swTramite = true;
+        }
+
+    }
+    function cargarSoloMapa() {
+        var rep = conectar();
+
+        if (rep == -1) {
+            setTimeout(cargarSoloMapa, 2000);
+        } else {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarUser", "Reparto")',
+
+                beforeSend: function () { },
+                success: function (response) {
+                    for (servicio in $("#mapa")[0].contentWindow.map._layers) {
+                      
+                        servicio = $("#mapa")[0].contentWindow.map._layers[servicio];
+                        servicio.nombre = servicio.name;
+                        servicio.servicio = servicio.url;
+                        if (servicio.id == "Tramites_en reparto") {
+                            $("#mapa")[0].contentWindow.map.removeLayer(servicio)
+                            servicio.icono = "" + servicio.renderer.symbol.url + "|" + servicio.renderer.symbol.width + "|" + servicio.renderer.symbol.height
+
+                            $("#mapa")[0].contentWindow.FectureLayerOnloadQuery(servicio, "CODFUNCIONARIO=" + response);
+
+                        }
+                    }
+                   
+
+                }
+            });
+           
+        }
+    }
+
+    function MostrarNotificacion(typeDialog, typeMsg, msg) {
+        if (typeDialog === 'alert') {
+            DevExpress.ui.dialog.alert(msg, 'Reparto');
+        } else {
+            DevExpress.ui.notify(msg, typeMsg, 3000);
+        }
+    }
+</script>
+
+<div class="dx-datagrid-bottom-load-panel dx-datagrid-table" style="visibility:hidden"></div>
+<div class="panel panel-default" style="  margin-top: -2px;">
+    <div class="panel-heading">
+        <div class="col-sm-12">
+            <div class="col-sm-10">
+            </div>
+            <div class="col-sm-2">
+                <button id="btnAsignarTramites" class="btn btn-default btn-sm" onclick="abrirAtiende()">Asignar trámites</button>
+            </div>
+        </div>
+
+        <img src="../../Content/Images/Ayuda.png" id="btnAyudas" onclick="Ayudas()"></>
+
+        <ul class="nav nav-tabs">
+            <li id="Tab4" class="active"><a href="#Mapas" data-toggle="tab" onclick="Conectar()">Mapa</a></li>
+            <li id="Tab1"><a href="#home" data-toggle="tab" onclick=" setTimeout('cargarTamites1()' ,0300);">Trámites no ubicados</a></li>
+            <li id="Tab2"><a href="#NuevaVisita" data-toggle="tab" onclick=" setTimeout('cargarTamites2()' ,0300);">Trámites ubicados</a></li>
+            <li id="Tab3" style='display:none'><a href="#profile" data-toggle="tab">Editar Visita</a></li>
+        </ul>
+        <div id="pantallaAsignacionTramites" title="Asignación de trámites" style="display: none; overflow: hidden;">
+            <iframe src="" id="AsignacionTramites" width="100%" height="100%"></iframe>
+        </div>
+        <div id="pantallaDetalleTramites" title="Detalle Tramite" style="display: none; overflow: hidden;">
+            <iframe src="" id="DetalleTramites" width="100%" height="100%"></iframe>
+        </div>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade in" id="home">
+                <div id='MisVisitas'>
+                    <div class="col-sm-12">
+                        <div class="col-sm-10">
+                        </div>
+                        <div class="col-sm-2">
+                            <button id="btnRealizarVisita" class="btn btn-default btn-sm" onclick="geocodificarValores()" style=" margin-bottom: 24px;">Geocodificar</button>
+                        </div>
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Total Registros:</label>
+                                <label id="lblTotalRegNoU"></label>
+                            </td> 
+                        
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="GrdTramitesnoubicados" style="height: 200px; "></div>
+                            </td>
+                        </tr>
+                   
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="NuevaVisita">
+                <div id='Tramites'>
+                    <div class="row" style="   margin-top: 11px;">
+                        <div class="col-sm-12">
+                            <button id="btnRectangulo" onclick="validarSesionMapa(4)" class="btn btn-default btn-sm " style=" margin-bottom: 10px; ">Rectángulo</button>
+                            <button id="btnCirculo" onclick="validarSesionMapa(3)" class="btn btn-default btn-sm">Círculo</button>
+                            <button id="btnPoligono" onclick="validarSesionMapa(2)" class="btn btn-default btn-sm">Polígono</button>
+                            <button id="btnLimpiar" onclick="validarSesionLimpiar()" class="btn btn-default btn-sm">Limpiar selección</button>
+                            <button id="btnAcercarvarios" onclick="validarSesionMapa(1)" class="btn btn-default btn-sm">Acercar varios trámites</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table >
+                                <tr>
+                                    <td>
+                                        <label>Total Registros:</label>
+                                        <label id="lblTotalRegU"> </label>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td >
+                                        <div id="GrdTramites" style="height: 200px;"></div>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="dropdown1">
+                <div data-bind="dxTabs:{dataSource: tabs, onItemClick: tabClicked}"></div>
+                <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</p>
+            </div>
+            <div class="tab-pane fade active in" id="Mapas">
+                <table style="width:100%">
+                    <tr>
+                        <td align="left" style="width:100%;padding:5px;">
+                            <iframe id="mapa" src="/MAPGISV5_WEB/tools/AMVA/inicio.htm" style=" border: none; width: 100%" onload="Conectar()"></iframe>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="msAlmacenamiento" title="Información" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+</div>
+<div id="msAdvertencia" title="Advertencia" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText2"></p>
+</div>

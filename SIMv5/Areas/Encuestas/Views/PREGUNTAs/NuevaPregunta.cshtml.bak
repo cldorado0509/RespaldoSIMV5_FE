@@ -1,0 +1,340 @@
+﻿<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Scripts/General.js"></script>
+@using System.Web.UI.WebControls
+@model SIM.Areas.Encuestas.Models.ENCUESTA
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.6/css/dx.common.css" />
+<link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/14.2.6/css/dx.light.css" />
+<script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.6/js/dx.webappjs.js"></script>
+<script type="text/javascript" src="http://cdn3.devexpress.com/jslib/14.2.6/js/dx.all.js"></script>
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css")" />
+   
+<style>
+    .navbar.navbar-inverse.navbar-fixed-top {
+        display: none;
+    }
+
+    footer {
+        display: none;
+    }
+
+    hr {
+        display: none;
+    }
+
+    html, body {
+        height: 980px;
+        overflow: hidden;
+    }
+
+    .ui-dialog .ui-dialog-content {
+        padding-top: 1px;
+        padding-bottom: 10px;
+    }
+
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+        position: relative;
+        min-height: 1px;
+        padding-right: 0px;
+        padding-left: 0px;
+    }
+
+    .ui-dialog .ui-dialog-content {
+        position: relative;
+        border: 0;
+        padding: .5em 1em;
+        background: none;
+        overflow: hidden;
+    }
+
+    button.btn.btn-default.btn-sm {
+        margin-top: 10px;
+        margin-right: 10px;
+        margin-right: 0px;
+    }
+    .row {
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+    button#Crear {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Guardar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+    button#AgregarRespuesta {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Realizar_Visita_.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+</style>
+
+<div class="col-sm-12">
+    <div class="alert alert-success" role="alert" id="mensaje" style="display:none"></div>
+</div>
+<div id="dialogo"></div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="col-sm-6">
+            <label class="control-label ">Nombre:</label>
+        </div>
+        <div class="col-sm-6">
+            <input type="text" id="S_NOMBRE" name="S_NOMBRE" class="form-control" maxlength="1000" />
+            <input type="text" id="txtIdPregunta" style="display:none" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="col-sm-12">
+            <label class="control-label">Tipo Pregunta:</label>
+        </div>
+        <div class="col-sm-12">
+            <select id="cmbTipoPregunta" class="form-control" ></select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="col-sm-12">
+            <label class="control-label ">Ayuda:</label>
+        </div>
+        <div class="col-sm-12">
+            <textarea id="ayuda" maxlength="250" class="form-control"></textarea>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="divTitleAndButtons">
+            <button id="Crear" class="btn btn-default btn-sm" style="margin-bottom: 10px;">Crear Pregunta</button>
+            <button id="AgregarRespuesta" class="btn btn-default btn-sm"  onclick="abrirNuevaRespuesta()" disabled>Agregar Respuesta</button>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div id="GridPreguntasV" style="height: 150px;" class="archivosDiv"></div>
+</div>
+<div id="pantallaNuevaRespuesta" title="Nueva Respuesta" style="display: none; overflow: auto;">
+    <iframe src="" id="NuevaRespuesta" width="100%" height="100%"></iframe>
+</div>
+<div id="msAlmacenamiento" title="Información" style="display:none">
+<p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+</div>
+
+<script type="text/javascript">
+var Codigo;
+var RutaEncuestas = '@Url.Content("~/Encuestas/")';
+var jsonDatos={};
+
+//permite cargar la información al iniciar la pagina
+$(document).ready(function () {
+    gridPreguntaV(jsonDatos)
+    ConsultarTipoPregunta();
+});
+
+//permite consultar el tipo de pregunta
+function ConsultarTipoPregunta() {
+    $.ajax({
+        type: "POST",
+        url: RutaEncuestas + "preguntas/ConsultarTipoPregunta",
+        beforeSend: function () { },
+        success: function (response) {
+            var datos = response;
+            var comb = document.getElementById("cmbTipoPregunta");
+            $("#cmbTipoPregunta").children().remove();
+            comb.innerHTML += " <option value='0'>--seleccionar--</option>";
+            if (datos.length > 0) {
+                for (var i = 0; i < datos.length; i++) {
+                    comb.innerHTML += "<option value=" + datos[i].ID_TIPOPREGUNTA + ">" + datos[i].S_NOMBRE + "</option>";
+                }
+            }                   
+        }
+    });
+}
+
+//valida los campos obligatorios cuando se crea la pregunta
+$('#Crear').click(function () {
+    $("#mensaje").show(0800);
+    if ($("#S_NOMBRE").val() == "") {
+        $("#mensaje").text("Ingrese el nombre")
+        $("#mensaje").show(0800);
+        return;
+    } else {
+        $("#mensaje").hide();
+    }
+    if ($("#cmbTipoPregunta").val() == "0") {
+        $("#mensaje").text("Seleccione el tipo de pregunta")
+        $("#mensaje").show(0800);
+        return;
+    } else {
+        $("#mensaje").hide();
+    }
+    if ($("#ayuda").val() == "") {
+        $("#mensaje").text("Ingrese el ayuda")
+        $("#mensaje").show(0800);
+        return;
+    } else {
+        $("#mensaje").hide();
+    }
+              
+    CrearPregunta();
+});
+
+$('#VincularPregunta').click(function () {
+                  
+    abrirVicularPregunta();
+});
+
+//esta función permite crear las preguntas           
+function CrearPregunta() {
+var Datos = "";
+$.ajax({
+    dataType: 'json',
+    async: false,
+    type: "POST",
+    url: RutaEncuestas + "preguntas/CreatePregunta?nombre=" + $("#S_NOMBRE").val() + "&tipoPregunta=" + $("#cmbTipoPregunta").val() + "&ayuda=" + $("#ayuda").val(),
+    contentType: "application/json; charset=utf-8",
+    success: function (result) {
+        Datos = result;                         
+        mensajeAlmacenamiento("Almacenamiento exitoso");                         
+        $("#txtIdPregunta").val(result);                          
+            $("#Crear").prop('disabled', true);
+            $("#S_NOMBRE").prop('disabled', true);
+            $("#cmbTipoPregunta").prop('disabled', true);
+            $("#ayuda").prop('disabled', true);
+            if ($("#cmbTipoPregunta").val() == 3 || $("#cmbTipoPregunta").val() == 2) {
+                $("#AgregarRespuesta").prop('disabled', false);
+            } else {
+                parent.$("#pantallaNuevaPregunta").dialog('close');
+            }                     
+    }
+});
+}
+
+//esta función permite abrir el formulario de respuesta
+function abrirNuevaRespuesta() {
+    $("#pantallaNuevaRespuesta").dialog(
+    {
+        width: 400,
+        height: 220,
+        modal: true
+    });
+    $("#NuevaRespuesta").attr("src", "@Url.Content("~/Encuestas/preguntas/crearRespuesta")" + "?id=" + $("#txtIdPregunta").val());
+}
+
+//permite inicializar la grid de preguntas
+function gridPreguntaV(jsonEncuesta) {
+    $("#GridPreguntasV").dxDataGrid({
+        dataSource: jsonEncuesta,
+        selection: {
+        }, filterRow: { visible: false },
+        columns: [
+                            { dataField: 'ID_RESPUESTA', caption: 'Código', allowGrouping: true, width: '20%', dataType: 'string' },
+                            { dataField: 'N_ORDEN', caption: 'Orden', allowGrouping: true, width: '20%', dataType: 'string' },
+                                { dataField: 'S_VALOR', caption: 'Valor', allowGrouping: true, width: '20%', dataType: 'string' },
+                            { dataField: 'S_CODIGO', caption: 'Descripción', allowGrouping: true, width: '20%', dataType: 'string' },
+            {
+                dataField: 'eliminar', allowGrouping: true, caption: 'Eliminar', cellTemplate: function (container, options) {
+                    container.height(5);
+                    $('<img src="@Url.Content("../../Content/Images/delete.png")" style="width:25px;height:25px" class="btnEditar" />')
+                            .attr('src', options.value)
+                            .appendTo(container);
+                }
+            }
+        ],
+        scrolling: { mode: 'infinite' },
+        cellClick: function (e) {
+            var id = e.data.ID_RESPUESTA;
+            var tipoBoton = e.columnIndex;
+            switch (tipoBoton) {
+                case 4: //eliminar
+                    EliminarRespuesta(id);
+                    break;
+            }
+        },
+        columnChooser: { enabled: false },
+        allowColumnReordering: true,
+        sorting: { mode: 'single' },
+        pager: { visible: true },
+        paging: { pageSize: 5 },
+        allowColumnResizing: true
+                    , columnAutoWidth: true, loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    }, onCellHoverChanged: function (hoverCell) {
+                        if (hoverCell.eventType == 'mouseover')
+                            hoverCell.cellElement.addClass("hovered");
+                        else
+                            hoverCell.cellElement.removeClass("hovered");
+                    }
+    });
+}
+
+//esta función permite eliminar las respuestas asociadas a una pregunta
+function EliminarRespuesta(id) {
+    $.ajax({
+        type: "POST",
+        url: RutaEncuestas + "Preguntas/EliminarRespuesta",
+        data: { id: id },
+        beforeSend: function () { },
+        success: function (response) {
+            var datos = response;
+            if (datos == "1") {
+                mensajeAlmacenamiento("Eliminación exitosa");
+                BuscarRespuestas();
+            }
+        }
+    });
+}
+
+//permite consulta las respuestas asociadas a una pregunta
+function BuscarRespuestas() {
+    $.ajax({
+        type: "POST",
+        url: RutaEncuestas + "Preguntas/consultarRespuesta",
+        data: { id: $("#txtIdPregunta").val() },
+        beforeSend: function () { },
+        success: function (response) {
+            gridPreguntaV(response);
+        }
+    });
+}
+
+//componente de mensajes
+function mensajeAlmacenamiento(mensaje) {
+    $("#msText").text(mensaje);
+    $("#msAlmacenamiento").dialog({
+        buttons: [
+    {
+        text: "Aceptar",
+        click: function () { $(this).dialog("close"); },
+        class: "btn btn-default "
+    },
+        ]
+    });
+}
+
+</script>
+
+
+
+

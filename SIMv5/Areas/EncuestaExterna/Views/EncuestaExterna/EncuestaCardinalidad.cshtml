@@ -1,0 +1,859 @@
+﻿@{
+    ViewBag.Title = "Encuesta";
+
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<body>
+    <style>
+        .ui-dialog .ui-dialog-buttonpane button {
+            margin: .5em .4em .5em 0;
+            cursor: pointer;
+            background-color: rgb(165, 200, 62);
+            height: 32px;
+            width: 71px;
+            border-radius: 4px;
+        }
+
+        #loadingImg {
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.17) !important;
+            position: fixed;
+            z-index: 100000;
+            cursor: not-allowed;
+        }
+
+        .dx-row td {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+
+        .loadingImg {
+            position: fixed;
+            z-index: 100000;
+            background: url(/SIM/Content/imagenes/ajax-loader.gif) transparent;
+            height: 50px;
+            width: 50px;
+            background-repeat: no-repeat;
+            left: 50%;
+            background-size: contain;
+            top: 50%;
+            cursor: not-allowed;
+        }
+
+        .btnEditar:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+    </style>
+    <iframe name="fraDescargaPlantilla" style="height: 100px; position: absolute; top: -200px"></iframe>
+
+    <div id="cargando"></div>
+    <div id="popCargaMasiva" style="padding: 0px">
+        <div id="encuestasContainer" style="width:100%; height:100%">
+            <div id="encuestas"></div>
+            <div style="height: 10%; width:100%" class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-3">
+                    <div id="aceptarEncuestas" class="col-md-3"></div>
+                </div>
+                <div class="col-md-3">
+                    <div id="cancelarEncuestas" class="col-md-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popCargaMasivaPlantilla" style="padding: 0px">
+        <div id="cargaArchivoContainer" style="width:100%; height:100%">
+            <h4>CARGAR PLANTILLA DILIGENCIADA</h4>
+            <br />
+            <div>La Plantilla Dilegenciada debe conservar el orden de las columnas y la posición de las filas del encabezado para ser cargadas apropiadamente.</div>
+            <br />
+            <div class="col-md-12">
+                <div class="dx-field">
+                    <input type="file" id="archivoPlantillaDiligenciada">
+                </div>
+            </div>
+            <hr />
+            <div class="col-md-12" style="height: 60%">
+                <div class="dx-field" style="height: 100%">
+                    <div id="resultadoCargaPlantilla"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input id="txtValor" style="display:none" />
+    <div id="loadingImg" style="display:none"><div class="loadingImg"></div></div>
+    <div class="row" style=" padding-left: 20px;padding-right:20px;">
+        @if (ViewBag.archivoVigencia != null && ViewBag.archivoVigencia)
+        {
+            <div class="col-sm-4">
+                <span>Código Encuesta: @ViewBag.vigencia</span>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-default" style="width:100%; height:100%" id="btnNueva" onclick="DescargarPlantillaVigencia(@ViewBag.vigencia,@ViewBag.valor)">Descargar Plantilla</button>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-default" style="width:100%" id="btnNuevaMasivamentePlantilla" onclick="CargaMasivaPlantillaDiligenciada()">Cargar Plantilla</button>
+            </div>
+        }
+        else
+        {
+            <div class="col-sm-8">
+                <span>Código Encuesta: @ViewBag.vigencia</span>
+            </div>
+        }
+        <div class="col-sm-2">
+            <button class="btn btn-default" style="width:100%" id="btnNueva" onclick="crearEstadoNuevoCardinalidad()">Agregar Nueva</button>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-default" style="width:100%" id="btnNuevaMasivamente" onclick="CrearEstadosMasivo()">Agregar Masivamente</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" style=" padding-left: 20px;padding-right:20px;">
+
+            <div id="GrdUserExCardinalidad" style="height:500px; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);">
+            </div>
+
+        </div>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+    <br />
+    @if (!ViewBag.OcultarEnvio) {
+        <div class="row">
+            <button class="btn btn-default" id="btnModificar" onclick="modificar()" style="display:none">Modificar</button>
+            <button class="btn btn-default" id="btnModificar" onclick="validarEnviar()">Enviar</button>
+        </div>
+    }
+    <div id="msConfirmacion" title="Terminos Condiciones" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextConf"></p>
+    </div>
+    <div id="msEliminacion" title="Eliminar Encuesta" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 10px;" id="msTextElim">
+            Si elimina esta encuesta no podr&aacute; consultarla ni editarla posteriormente y el &Aacute;rea Metropolitana del Valle de Aburr&aacute; no la considerar&aacute; diligenciada.<br /><br />Está seguro(a) que desea eliminarla ?<br />
+            <input type="radio" id="respuestaS" name="respuesta" value="S">Sí&nbsp;&nbsp;
+            <input type="radio" id="respuestaN" name="respuesta" value="N" checked>No
+        </p>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+    <script>
+    var idestado = 0;
+
+    var arrEncuestaCard = new Array();
+    var idTercero = 0;
+    var idInstalacion = 0;
+    var idVigencia = 0;
+    var valorTemp = 0;
+
+    var aceptarCargaMasiva = false;
+
+    $(document).ready(function () {
+        $("#cargando").dxLoadPanel({
+            message: 'Cargando...',
+            showIndicator: true,
+            shading: true,
+            visible: false
+        });
+
+        idVigencia =@ViewBag.vigencia;
+        idTercero = @ViewBag.tercero;
+        idInstalacion=@ViewBag.instalacion;
+        $("#txtValor").val(@ViewBag.valor);
+        valorTemp =@ViewBag.valor;
+
+        $("#archivoPlantillaDiligenciada").on("change", function (e) {
+            var fdata = new FormData();
+            files = this.files;
+            fdata.append("file", files[0]);
+            /*fdata.append("FullName", "John Doe");
+            fdata.append("Gender", "Male");
+            fdata.append("Age", "24");*/
+
+            $('#resultadoCargaPlantilla').dxTextArea('instance').option('value', '');
+
+            $("#cargando").dxLoadPanel('instance').show();
+
+            $.ajax({
+                url: '@Url.Action("CargarPlantillaDiligenciada", "EncuestaExterna")?t=' + idTercero + '&i=' + idInstalacion + '&vg=' + idVigencia + '&v=' + valorTemp,
+                type: "post",
+                data: fdata, //add the FormData object to the data parameter
+                processData: false, //tell jquery not to process data
+                contentType: false, //tell jquery not to set content-type
+                success: function (response, status, jqxhr) {
+                    //handle success
+                    $('#resultadoCargaPlantilla').dxTextArea('instance').option('value', response);
+
+                    setTimeout(function () { $("#archivoPlantillaDiligenciada").val(''); }, 200);
+
+                    $("#cargando").dxLoadPanel('instance').hide();
+                },
+                error: function (jqxhr, status, errorMessage) {
+                    $("#cargando").dxLoadPanel('instance').hide();
+                    //handle error
+                    alert('ERROR');
+                }
+            });
+        });
+
+
+        $("#popCargaMasiva").dxPopup({
+            title: "Creación Masiva de Encuestas",
+            fullScreen: false,
+            onHidden: function (e) {
+                if (aceptarCargaMasiva) {
+                    aceptarCargaMasiva = false;
+
+                    onload();
+
+                    $.postJSON('@Url.Action("CargaMasivaEncuestas", "EncuestaExterna")', {
+                        ins: idInstalacion,
+                        ter: idTercero,
+                        vig: idVigencia,
+                        val: $("#txtValor").val(),
+                        datos: $('#encuestas').dxTextArea('instance').option('value')
+                    }).done(function (data) {
+                        offload();
+
+                        var respuesta = data.respuesta.split(':');
+
+                        if (respuesta[0] == 'OK') {
+                            var result = MostrarNotificacion('alert', null, 'Encuestas Creadas Satisfactoriamente (' + respuesta[1] + ').<br>Líneas con Error: ' + respuesta[2]);
+                        } else {
+                            var result = MostrarNotificacion('alert', null, 'ERROR: ' + respuesta[1]);
+                        }
+
+                        consultarEncuestaCardinalidad(1);
+                    }).fail(function (jqxhr, textStatus, error) {
+                        offload();
+                        alert('falla: ' + textStatus + ", " + error);
+                    });
+                }
+
+                $('#encuestas').dxTextArea('instance').option('value', null);
+            }
+        });
+
+        $("#popCargaMasivaPlantilla").dxPopup({
+            title: "Carga Masiva de Encuestas - Plantilla Diligenciada",
+            fullScreen: false,
+            onHidden: function (e) {
+                window.location.reload();
+            }
+        });
+
+        consultarEncuestaCardinalidad();
+    });
+
+    function CrearEstadosMasivo() {
+        aceptarCargaMasiva = false;
+
+        var encuestasPopup = $("#popCargaMasiva").dxPopup("instance");
+        encuestasPopup.show();
+
+        $('#encuestas').dxTextArea({
+            width: '100%',
+            height: '90%',
+            value: null,
+            placeholder: 'Ingresar lista de Encuestas con el siguiente formato por línea [Nombre Encuesta],[Clave]. Por Ejemplo: ramiro.s@empresa.com,98342175',
+            readOnly: false
+        });
+
+        $('#aceptarEncuestas').dxButton(
+            {
+                type: 'success',
+                text: 'Aceptar',
+                width: '100%',
+                height: '100%',
+                onClick: function (params) {
+                    aceptarCargaMasiva = true;
+                    encuestasPopup.hide();
+                }
+            }
+        );
+
+        $('#cancelarEncuestas').dxButton(
+            {
+                type: 'danger',
+                text: 'Cancelar',
+                width: '100%',
+                height: '100%',
+                onClick: function (params) {
+                    aceptarCargaMasiva = false;
+                    encuestasPopup.hide();
+                }
+            }
+        );
+    }
+
+    function DescargarPlantillaVigencia(vigencia, valor) {
+        window.open('@Url.Action("PlantillaCargaMasiva", "EncuestaExterna")' + '?v=' + vigencia + '&valor=' + valor, 'fraDescargaPlantilla');
+    }
+
+    function CrearEstadosMasivo() {
+        aceptarCargaMasiva = false;
+
+        var encuestasPopup = $("#popCargaMasiva").dxPopup("instance");
+        encuestasPopup.show();
+
+        $('#encuestas').dxTextArea({
+            width: '100%',
+            height: '90%',
+            value: null,
+            placeholder: 'Ingresar lista de Encuestas con el siguiente formato por línea [Nombre Encuesta],[Clave]. Por Ejemplo: ramiro.s@empresa.com,98342175',
+            readOnly: false
+        });
+
+        $('#aceptarEncuestas').dxButton(
+            {
+                type: 'success',
+                text: 'Aceptar',
+                width: '100%',
+                height: '100%',
+                onClick: function (params) {
+                    aceptarCargaMasiva = true;
+                    encuestasPopup.hide();
+                }
+            }
+        );
+
+        $('#cancelarEncuestas').dxButton(
+            {
+                type: 'danger',
+                text: 'Cancelar',
+                width: '100%',
+                height: '100%',
+                onClick: function (params) {
+                    aceptarCargaMasiva = false;
+                    encuestasPopup.hide();
+                }
+            }
+        );
+    }
+
+    function CargaMasivaPlantillaDiligenciada() {
+        var encuestasPopup = $("#popCargaMasivaPlantilla").dxPopup("instance");
+        encuestasPopup.show();
+
+        $("#resultadoCargaPlantilla").dxTextArea({
+            width: '100%',
+            height: '100%',
+            value: null,
+            placeholder: 'En este espacio se mostrará el resultado del procesamiento de la carga de la plantilla diligenciada.',
+            readOnly: true
+        });
+
+        $("#archivoPlantillaDiligenciada").value = null;
+
+
+
+        /*
+        $('#archivoPlantillaDiligenciada').dxFileUploader({
+            selectButtonText: 'Seleccionar Documento',
+            labelText: 'Arrastrar Aquí',
+            multiple: false,
+            showFileList: false,
+            uploadMode: 'instantly',
+            accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            uploadedMessage: 'Archivo Cargado',
+            uploadFailedMessage: 'Error Cargando Archivo',
+            uploadUrl: '@Url.Action("CargarPlantillaDiligenciada", "EncuestaExterna")',
+            onValueChanged: function (e) {
+                var url = e.component.option("uploadUrl");
+                url = updateQueryStringParameter(url, "i", @ViewBag.instalacion);
+                url = updateQueryStringParameter(url, "t", @ViewBag.tercero);
+                url = updateQueryStringParameter(url, "vg", @ViewBag.vigencia);
+                url = updateQueryStringParameter(url, "v", @ViewBag.valor);
+                e.component.option("uploadUrl", url);
+
+                var formData = new FormData();
+
+                formData.append("file", file);
+                formData.append("i", idpregunta);
+                formData.append("t", idEE);
+                formData.append("vg", idEE);
+                formData.append("v", idEE);
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("CargarPlantillaDiligenciada", "EncuestaExterna")",
+                    data: formData,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+
+                        $("#" + id.id).val(response.ruta)
+                        $("#dialogArchivo").dialog("close");
+                    },
+                    error: function (error) {
+
+                    }
+                });
+            }
+        });*/
+    }
+
+    function updateQueryStringParameter(uri, key, value) {
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+            return uri.replace(re, '$1' + key + "=" + value + '$2');
+        }
+        else {
+            return uri + separator + key + "=" + value;
+        }
+    }
+
+    function gridUsuarioExternoCardinalidad() {
+
+        $("#GrdUserExCardinalidad").dxDataGrid({
+            dataSource: arrEncuestaCard,
+            selection: {
+                mode: 'single'
+            },
+            filterRow: {
+                visible: true,
+                applyFilter: 'auto'
+            },
+            editing: {
+                mode: 'cell',
+                allowUpdating: true,
+                allowAdding: false,
+                allowDeleting: false,
+                selectTextOnEditStart: true,
+                startEditAction: 'dblClick'
+            },
+            columns: [
+
+
+                { dataField: 'ID_ESTADO', caption: 'ID', allowEditing: false, allowGrouping: true, width: '7%' },
+                {
+                    dataField: 'NOMBRE', allowGrouping: true, caption: 'Encuesta',
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        var div = document.createElement("div");
+                        cellElement.get(0).appendChild(div);
+
+                        $(div).dxTextBox({
+                            value: cellInfo.data.NOMBRE,
+                            width: '100%',
+                            height: '100%',
+                            onValueChanged: function (e) {
+                                cellInfo.setValue(e.value.trim());
+
+                                $.get('@Url.Action("ActualizarNombreEncuesta", "EncuestaExterna")?e=' + cellInfo.data.ID_ESTADO + '&n=' + e.value.trim(), function(resp) {
+
+                                })
+                                .fail(function() {
+                                    mensajeAlmacenamiento("Error Actualizando el Nombre de la Encuesta.");
+                                });
+                            },
+                        });
+                    }
+                },
+                { dataField: 'S_CLAVE', allowGrouping: true, width: '15%', caption: 'Clave', visible: true,
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        var div = document.createElement("div");
+                        cellElement.get(0).appendChild(div);
+
+                        $(div).dxTextBox({
+                            value: cellInfo.data.S_CLAVE,
+                            width: '100%',
+                            height: '100%',
+                            onValueChanged: function (e) {
+                                cellInfo.setValue(e.value.trim());
+
+                                $.get('@Url.Action("ActualizarClaveEncuesta", "EncuestaExterna")?e=' + cellInfo.data.ID_ESTADO + '&c=' + e.value.trim(), function(resp) {
+
+                                })
+                                .fail(function() {
+                                    mensajeAlmacenamiento("Error Actualizando la Clave de la Encuesta.");
+                                });
+                            },
+                        });
+                    }
+                },
+                { dataField: 'D_EDICION', allowEditing: false, allowGrouping: true, width: '15%',caption: 'Fecha Actualización' },
+                    //dataField: 'NOMBRE', allowGrouping: true, width: '50%', caption: 'Encuesta', cellTemplate: function (container, options) {
+                    //    container.height(0);
+                    //    var html = '<input type="text" style="width: 200px;    width: 500px;border-radius: 5px;height: 29px;margin-left: 20px;text-align: center;" value="' + options.data.NOMBRE + '" onChange="guardarJson(1,this,' + options.rowIndex + ')"/>';
+
+                    //    $(html).attr('src', options.value).appendTo(container);
+
+                    //}
+
+                { dataField: 'ID_TERCERO', visible: false },
+                    { dataField: 'ID_INSTALACION', visible: false },
+                    { dataField: 'ID_VIGENCIA', visible: false },
+                    { dataField: 'TIPO_GUARDADO', visible: false },
+
+                    { dataField: 'ESTADO', caption: 'Estado Encuesta', allowEditing: false, allowGrouping: true, width: '10%' },
+                    {
+                        dataField: 'ESTADO', allowFiltering: false, allowEditing: false, allowGrouping: true, caption: 'Diligenciar', width: '12%', cellTemplate: function (container, options) {
+                            container.height(5);
+                            if (options.value == "No Diligenciada" || options.value == "Borrador") {
+                                $(' <button class="btn btn-default" id="btnModificar" style="text-align: center;width: 100%;" onclick="alert("si")">Diligenciar</button>').attr('src', options.value).appendTo(container);
+                            }
+                        }
+                    },
+                    {
+                        dataField: 'ESTADO', allowFiltering: false, allowEditing: false, allowGrouping: true, caption: 'Eliminar', width: '7%', cellTemplate: function (container, options) {
+                            container.height(5);
+                            if (options.value == "No Diligenciada" || options.value == "Borrador") {
+                                $(' <button class="btn btn-danger" id="btnEliminar"  style="text-align: center;width: 100%;"><span class="glyphicon glyphicon-remove"></span></button>').attr('src', options.value).appendTo(container);
+
+                            }
+                        }
+                    },
+                    {
+                        dataField: 'ESTADO', allowFiltering: false, allowEditing: false, allowGrouping: true, caption: 'Habilitar', width: '8%', cellTemplate: function (container, options) {
+                            container.height(5);
+                            if (options.value == "Diligenciada") {
+                                $(' <button class="btn btn-success" id="btnHabilitar"  style="text-align: center;width: 100%;"><span class="glyphicon glyphicon-refresh"></span></button>').attr('src', options.value).appendTo(container);
+                            }
+                        }
+                    }
+            ],
+
+            scrolling: { mode: 'standard' },
+            onSelectionChanged: function (selecteditems) {
+            },
+            onCellClick: function (e) {
+
+                var tipoBoton = e.columnIndex;
+
+                switch (tipoBoton) {
+                    case 5:
+                        if (e.data.ESTADO == "No Diligenciada" || e.data.ESTADO == "Borrador") {
+                            if (e.data.TIPO_GUARDADO == "1")
+                                mensajeAlmacenamiento("La encuesta ya se envio");
+                            else
+                                abrirEncuesta(e.data.ID_ESTADO, e.data.ID_VIGENCIA, e.data.NOMBRE);
+                        }
+                        break;
+                    case 6:
+                        if (e.data.ESTADO == "No Diligenciada" || e.data.ESTADO == "Borrador") {
+                            eliminarEncuesta(e.data.ID_ESTADO);
+                        }
+                        break;
+                    case 7:
+                        if (e.data.TIPO_GUARDADO == "2") {
+                            var result = DevExpress.ui.dialog.confirm('Está Seguro(a) de Habilitar Nuevamente la Encuesta para su Edición ?', 'Confirmación');
+
+                            result.done(function (dialogResult) {
+                                if (dialogResult) {
+                                    $.getJSON('@Url.Action("HabilitarEstado", "EncuestaExterna")', {
+                                        id: e.data.ID_ESTADO
+                                    }).done(function (data) {
+                                        var respuesta = data.respuesta.split(':');
+
+                                        if (respuesta[0] == 'OK') {
+                                            var result = MostrarNotificacion('alert', null, 'Encuesta Habilitada Satisfactoriamente.');
+                                        } else {
+                                            var result = MostrarNotificacion('alert', null, 'ERROR: ' + respuesta[1]);
+                                        }
+                                        consultarEncuestaCardinalidad(1);
+                                    }).fail(function (jqxhr, textStatus, error) {
+                                        alert('falla: ' + textStatus + ", " + error);
+                                    });
+                                }
+                            });
+                        }
+                        break;
+                }
+            },
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+            pager: { visible: false },
+            paging: { enabled: false, pageSize: 50 }
+
+        });
+        offload();
+    }
+    function consultarEncuestaCardinalidad(tipo) {
+        onload();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarEncuestaCardinalidad", "EncuestaExterna")',
+            data: { valor: $("#txtValor").val(), idinstalacion: idInstalacion, vig: idVigencia, t: idTercero },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = eval('(' + response + ')');
+                if(datos=="[]")
+                    datos = "{}";
+                arrEncuestaCard = datos;
+                if (tipo == undefined) {
+                    gridUsuarioExternoCardinalidad();
+                } else {
+                    $("#GrdUserExCardinalidad").dxDataGrid({
+                        dataSource: arrEncuestaCard
+                    });
+                    $("#loadingImg").css({ "display": "none" });
+                }
+
+            }
+        });
+    }
+
+
+
+    function eliminarEncuesta( idestado) {
+        //$("#msTextConf").text("Si elimina esta encuesta no podrá consultarla ni editarla posteriormente y el Área Metropolitana del Valle de Aburrá no la considerará diligenciada. Está seguro(a) que desea eliminarla ?");
+        $("#msEliminacion").dialog({
+            width: 400,
+            height: 280,
+            buttons: {
+                "Aceptar": function () {
+                    if ($('input[name=respuesta]:checked').val() == 'S') {
+                        onload();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("EliminarEncuesta", "EncuestaExterna")',
+                            data: { idestado: idestado },
+                            beforeSend: function () { },
+                            success: function (response) {
+                                mensajeAlmacenamiento("Encuesta Eliminada");
+                                consultarEncuestaCardinalidad(1);
+
+                                //crearVigenciaSolucion(idVigencia, valor, datos);
+                            }
+                        });
+                    }
+
+                    $('#respuestaN').prop("checked", true);
+
+                    $(this).dialog("close");
+                }
+            }, class: "btn btn-default"
+        });
+    }
+
+
+    function mensajeConfirmar(mensaje,idestado) {
+        $("#msTextConf").text(mensaje);
+        $("#msConfirmacion").dialog({
+            width: 350,
+            height: 150,
+            buttons: {
+                "NO": function () {
+                    $(this).dialog("close");
+                },
+                "SI": function () {
+                    onload();
+                    eliminarEcuestaUseExterno(idestado);
+                    $(this).dialog("close");
+                }
+            }, class: "btn btn-default"
+        });
+    }
+
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msTextAlm").text(mensaje);
+        $("#msAlmacenamiento").dialog({
+            buttons: [
+        {
+            text: "Aceptar",
+            click: function () { $(this).dialog("close"); },
+            class: "btn btn-default "
+        },
+            ]
+        });
+    }
+
+    function onload()
+    {
+        $("#loadingImg").css({ "display": "block" });
+    }
+    function offload()
+    {
+        $("#loadingImg").css({ "display": "none" });
+    }
+
+    function abrirEncuesta(idestado,idvigencia,nombre,clave) {
+        //window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaUsuarioExterno?idVigencia=")' + idvigencia + "&tipo=1" + "&estado=" + idestado + "&card=2&no=" + nombre, '_self');
+        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaEstado")?e=' + idestado + '&t=1&cr=2', '_self');
+    }
+    function guardarJson(tipo, obj, index)
+    {
+        arrEncuestaCard[index].NOMBRE = obj.value;
+
+    }
+    function modificar()
+    {
+        if( arrEncuestaCard.length>0)
+        {
+            prenderload();
+            var jsonDatos = JSON.stringify(arrEncuestaCard);
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("modificarEncuestaCardinalidad", "EncuestaExterna")',
+                data: { json: jsonDatos },
+                success: function (response) {
+                    apagarload();
+                    alert("Modificación exitosa");
+                },
+
+            });
+        }
+    }
+    function prenderload() {
+        $("#loadingImg").css({ "display": "block" });
+    }
+    function apagarload() {
+        $("#loadingImg").css({ "display": "none" });
+    }
+    function validarEnviar()
+    {
+        $.get('@Url.Action("ValidarEncuestas", "EncuestaExterna")?instalacion=' + idInstalacion + '&vigencia=' + idVigencia + '&valor=' + $("#txtValor").val(), function(resp) {
+            if (resp == 'SE')
+            {
+                mensajeAlmacenamiento("No Hay Encuestas Asociadas.");
+            } else if (resp == 'NO') {
+                mensajeAlmacenamiento("Debe diligenciar todas las encuestas");
+            } else if (resp = 'SI')
+            {
+                mensajeConfirmar("Esta seguro de enviar la encuesta ya que no podra modificarla");
+            }
+        })
+        .fail(function() {
+            mensajeAlmacenamiento("Error Validando el Estado de las Encuestas.");
+        });
+        /*
+        var cont=0;
+        var arrayEncuesta = $("#GrdUserExCardinalidad").dxDataGrid('instance')._controllers.data._dataSource._items;
+        for(var i=0;i<arrayEncuesta.length;i++)
+        {
+            if(arrayEncuesta[i].ESTADO=="No diligenciada")
+                cont++;
+        }
+        if(cont>0)
+        {
+            mensajeAlmacenamiento("Debe diligenciar todas las encuestas");
+        }else{
+            mensajeConfirmar("Esta seguro de enviar la encuesta ya que no podra modificarla");
+
+        }*/
+    }
+    function enviar() {
+
+		$.get('@Url.Action("EnviarEncuestas", "EncuestaExterna")?instalacion=' + idInstalacion + '&vigencia=' + idVigencia + '&valor=' + $("#txtValor").val(), function(resp) {
+            if (resp == 'Error')
+            {
+                mensajeAlmacenamiento("Error Procesando el Envio de las Encuestas.");
+            }
+            else
+            {
+                alert("Almacenamiento exitoso");
+                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=0")', '_self');
+            }
+        })
+        .fail(function() {
+                mensajeAlmacenamiento("Error Enviando las Encuestas.");
+        });
+        /*if (arrEncuestaCard.length > 0) {
+            for (var i = 0; i < arrEncuestaCard.length; i++) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("enviarEncuesta", "EncuestaExterna")',
+                    data: { idestado: arrEncuestaCard[i].ID_ESTADO },
+                    beforeSend: function () { },
+                    success: function (response) {
+
+                    }
+                });
+            }
+            alert("Almacenamiento exitoso");
+            window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=0")', '_self');
+
+        }*/
+    }
+    function mensajeConfirmar(mensaje,idestado) {
+        $("#msTextConf").text(mensaje);
+        $("#msConfirmacion").dialog({
+            width: 350,
+            height: 250,
+            buttons: {
+                "NO": function () {
+                    $(this).dialog("close");
+                },
+                "SI": function () {
+                    enviar();
+                    $(this).dialog("close");
+                }
+            }, class: "btn btn-default"
+        });
+    }
+    function mensajeAlmacenamiento(mensaje) {
+        $("#msTextAlm").text(mensaje);
+
+
+        $("#msAlmacenamiento").dialog({
+
+            buttons: [
+        {
+            text: "Aceptar",
+
+            click: function () { $(this).dialog("close"); },
+
+            class: "btn btn-default "
+        },
+            ]
+        });
+
+
+    }
+
+    function crearEstadoNuevoCardinalidad() {
+        onload();
+
+        var idtercero_a = @ViewBag.tercero; //arrEncuestaCard[0].ID_TERCERO;
+        var ID_INSTALACION_a = @ViewBag.instalacion; //arrEncuestaCard[0].ID_INSTALACION;
+        var ID_VIGENCIA_a = @ViewBag.vigencia; ////arrEncuestaCard[0].ID_VIGENCIA;
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("crearEstadoCardinalidad", "EncuestaExterna")',
+            data: { idEncu: 0, idtercero: idtercero_a, idInstalacion: ID_INSTALACION_a, card: 1, vigencia: ID_VIGENCIA_a, vige: valorTemp },
+            beforeSend: function () { },
+            success: function (response) {
+                consultarEncuestaCardinalidad(1);
+
+                //crearVigenciaSolucion(idVigencia, valor, datos);
+
+                offload();
+                MostrarNotificacion('alert', null, 'Encuesta Agregada Satisfactoriamente.');
+            }
+        });
+    }
+
+    function MostrarNotificacion(typeDialog, typeMsg, msg) {
+        if (typeDialog === 'alert') {
+            return DevExpress.ui.dialog.alert(msg, 'Encuesta');
+        } else {
+            return DevExpress.ui.notify(msg, typeMsg, 3000);
+        }
+    }
+
+    $.postJSON = function (url, data) {
+        var o = {
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        };
+        if (data !== undefined) {
+            o.data = JSON.stringify(data);
+        }
+        return $.ajax(o);
+    };
+
+    </script>
+</body>

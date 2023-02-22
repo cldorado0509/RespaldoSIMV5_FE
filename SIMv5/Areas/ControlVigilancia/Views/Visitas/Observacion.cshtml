@@ -1,0 +1,105 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "GridAtiende";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <title></title>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        label {
+            margin-top: 15px;
+        }
+        .btnGuardar {
+            position: relative;
+            top: 0px;
+            background-image: url(../../Content/images/Guardar.png);
+            right: 0px;
+            padding-left: 37px;
+            background-repeat: no-repeat;
+            background-size: 17px;
+            background-position: 10px 7px;
+        }
+    </style>
+</head>
+<body style="overflow:hidden;">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <textarea class="form-control col-sm-12" id="txtObservacion" style="height: 97px; margin-left: 6px; width: 277px; margin-top: 11px;" maxlength="3900"></textarea>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+
+                <button class="btn btn-default btnGuardar" id="btnGuardar" style="margin-top: 10px; margin-right: 6px;" onclick="modificarObservacion()">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+            consultarObservacion(parent.$("#IdVisita").val())
+        });
+        function modificarObservacion() {
+            parent.guardarObservacion($("#txtObservacion").val());
+            parent.$("#pantallaObservacion").dialog('close');
+        }
+
+
+        function consultarObservacion(idVisita) {
+
+
+            $.ajax({
+                type: "GET",
+
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetConsultarObservacion")",
+                data: {
+                    id: idVisita
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    $("#txtObservacion").val(response[0].S_OBSERVACION);
+
+                },
+            });
+
+        }
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+<script type="text/javascript">
+
+    SeleccionTercero = function (datosTercero) {
+        alert(JSON.stringify(datosTercero));
+    }
+
+    var myApp = angular.module('SIM', ['dx']);
+    myApp.controller("TerceroIndexController", function ($scope, $location) {
+
+        /*$scope.windowHeight = $window.innerHeight;
+        $scope.windowWidth = $window.innerWidth;
+
+        $scope.hideColumns = function()
+        {
+
+        }*/
+
+        //Globalize.culture("es");
+        //Globalize.locale(navigator.language || navigator.browserLanguage);
+
+        $scope.showTipoTercero = function () {
+            var natural = function () {
+                return "N";
+            };
+            var juridico = function () {
+                return "J";
+            };
+            var cancel = function () {
+                return "C";
+            };
+            var customDialog = DevExpress.ui.dialog.custom({
+                title: "Tipo Tercero",
+                message: "Presione el botón del Tipo de Tercero que desea crear:",
+                buttons: [
+                    { text: "Natural", onClick: natural },
+                    { text: "Jurídico", onClick: juridico },
+                    { text: "Cancelar", onClick: cancel },
+                ]
+            });
+            customDialog.show().done(function (dialogResult) {
+                if (dialogResult != 'C')
+                    window.location = window.location + '/Tercero/?tipoTercero=' + dialogResult;
+                else
+                {
+                    var dataGrid = $('#grid').dxDataGrid('instance');
+                    dataGrid.cancelEditData();
+                }
+            });
+        };
+
+        $scope.grdTercerosSettings = {
+            dataSource: grdTercerosDataSource,
+            allowColumnResizing: true,
+            loadPanel: { text: 'Cargando Datos...' },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true,
+            },
+            groupPanel: {
+                visible: true,
+            },
+            editing: {
+                editMode: 'row',
+                editEnabled: true,
+                removeEnabled: false,
+                insertEnabled: true
+
+            },
+            onInitNewRow: function (rowInfo) {
+                $scope.showTipoTercero();
+                var dataGrid = $('#grid').dxDataGrid('instance');
+                dataGrid.cancelEditData();
+            },
+            onEditingStart: function (rowInfo) {
+                window.location = window.location + '/Tercero/' + rowInfo.data.ID_TERCERO;
+                rowInfo.cancel = true;
+                return;
+                rowInfo.data.ID_TERCERO
+                if (rowInfo.key) {
+                    rowInfo.cancel = true;
+                }
+            },
+            selection: {
+                mode: 'single'
+            },
+            columns: [
+                {
+                    dataField: "ID_TERCERO",
+                    width: '10%',
+                    caption: '@Html.Raw(@ResourcesGeneral.ID_TERCERO)',
+                    dataType: 'number',
+                }, {
+                    dataField: 'S_TIPO_DOCUMENTO',
+                    width: '7%',
+                    caption: 'Tipo',
+                    dataType: 'string',
+                }, {
+                    dataField: 'N_DOCUMENTON',
+                    width: '10%',
+                    caption: '@Html.Raw(ResourcesGeneral.N_DOCUMENTO)',
+                    alignment: 'right',
+                    dataType: 'number',
+                }, {
+                    dataField: 'N_DIGITOVER',
+                    width: '4%',
+                    caption: '@Html.Raw(ResourcesGeneral.N_DIGITOVER)',
+                    alignment: 'right',
+                    dataType: 'number',
+                }, {
+                    dataField: 'S_RSOCIAL',
+                    width: '35%',
+                    caption: '@Html.Raw(ResourcesGeneral.S_RSOCIAL)',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_SIGLA',
+                    width: '10%',
+                    caption: '@Html.Raw(ResourcesGeneral.S_SIGLA)',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_ACTIVIDAD_ECONOMICA',
+                    width: '25%',
+                    caption: '@Html.Raw(ResourcesGeneral.S_ACTIVIDAD_ECONOMICA)',
+                    dataType: 'string',
+                }
+            ]
+        }
+    });
+
+    var grdTercerosDataSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"ID_TERCERO","desc":false}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+            var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+            $.getJSON('@Url.Content("~")General/api/TerceroApi/Terceros', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: true
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+
+    /*
+    myApp.directive('resizable', function ($window) {
+        return function ($scope) {
+            $scope.initializeWindowSize = function () {
+                $scope.windowHeight = $window.innerHeight;
+                $scope.windowWidth = $window.innerWidth;
+            };
+            angular.element($window).bind("resize", function () {
+                alert('a');
+                $scope.initializeWindowSize();
+                $scope.$apply();
+            });
+            $scope.initializeWindowSize();
+        }
+    });*/
+</script>
+<div ng-app="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div ng-controller="TerceroIndexController" class="panelSIM panelSIM-default">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Terceros</label>
+                </h3>
+            </div>
+            <div dx-data-grid="grdTercerosSettings" id="grid"></div>
+        </div>
+    </div>
+</div>

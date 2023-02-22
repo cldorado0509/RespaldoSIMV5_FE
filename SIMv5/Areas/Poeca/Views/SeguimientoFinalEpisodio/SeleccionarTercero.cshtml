@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Seleccionar Tercero";
+}
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+        <h2>Seleccionar Tercero</h2>
+        @Html.DropDownList("TERCEROS", null, new { @class = "form-control" })
+        <br />
+        <button id="btnSeleccionarTercero" type="button" class="btn btn-default">Seleccionar</button>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $("#btnSeleccionarTercero").click(() => {
+                let idTercero = $("#TERCEROS").val();
+                if (idTercero) {
+                    window.location += "?tercero=" + idTercero;
+                }
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundlesv5/jqueryval")
+}

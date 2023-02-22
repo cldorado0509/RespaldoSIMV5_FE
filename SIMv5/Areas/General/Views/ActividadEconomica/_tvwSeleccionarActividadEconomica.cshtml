@@ -1,0 +1,57 @@
+﻿@using SIM.Areas.General.Models
+@using System.Web.UI.WebControls
+
+@{
+    var treeList = Html.DevExpress().TreeList(
+        settings =>
+        {
+            settings.Name = "tvwActividadEconomica";
+            settings.CallbackRouteValues = new { Controller = "ActividadEconomica", Action = "tvwSeleccionarActividadEconomica" };
+            settings.Width = Unit.Percentage(100);
+
+            settings.AutoGenerateColumns = false;
+            settings.KeyFieldName = "ID_ACTIVIDADECONOMICA";
+            settings.ParentFieldName = "ID_ACTIVIDADECONOMICAPADRE";
+            settings.RootValue = 0;
+            settings.SettingsBehavior.AutoExpandAllNodes = false;
+
+            settings.Columns.Add("S_NOMBRE", "Actividad Económica");
+            settings.Columns.Add(
+                column =>
+                {
+                    column.FieldName = "ID_ACTIVIDADECONOMICA";
+                    column.Visible = false;
+                }
+            );
+            settings.Columns.Add(
+                column =>
+                {
+                    column.FieldName = "ID_ACTIVIDADECONOMICAPADRE";
+                    column.Visible = false;
+                }
+            );
+
+            settings.SettingsBehavior.ExpandCollapseAction = TreeListExpandCollapseAction.Button;
+            /*settings.SettingsCookies.StoreExpandedNodes = true;
+
+            settings.ClientLayout = (s, e) =>
+            {
+                if (e.LayoutMode == ClientLayoutMode.Loading)
+                {
+                    if (Session["TreeListState"] != null)
+                        e.LayoutData = (string)Session["TreeListState"];
+                }
+                else
+                    Session["TreeListState"] = e.LayoutData;
+            };
+
+            settings.PreRender = (sender, e) =>
+            {
+                if (Session["TreeListState"] == null)
+                    ((MVCxTreeList)sender).ExpandToLevel(2);
+            };*/
+
+            settings.ClientSideEvents.NodeClick = "SeleccionRegistroTLAE";
+        });
+}
+@treeList.BindToVirtualData(ModelsToListGeneral.VirtualModeCreateChildren, ModelsToListGeneral.VirtualModeNodeCreating).GetHtml()

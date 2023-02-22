@@ -1,0 +1,1271 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Areas.Ayudas.Controllers;
+@*using SIM.Areas.Ayudas.Models;*@
+@{
+    ViewBag.Title = "Residuos";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+
+
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Aguas.css?v=1.01")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
+    <script src="@Url.Content("~/Scripts/mapgis_integracion.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.carouFredSel-6.2.1-packed.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.jquery.mousewheel.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.touchSwipe.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.transit.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="//cdn3.devexpress.com/jslib/14.2.5/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn3.devexpress.com/jslib/14.2.5/css/dx.light.css" />
+    <!-- The line below was commented by the Project Converter, see this link for more info: -->
+    <!--<script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.2.5/js/dx.webappjs.js"></script>-->
+    <script type="text/javascript" src="//cdn3.devexpress.com/jslib/14.2.5/js/dx.all.js"></script>
+    
+
+    <script type="text/javascript">
+
+        var idVisita = "";
+        var Totalimg = new Array();
+        var nombreFoto = "";
+        var idFotografia = "";
+        var etiqueta = "";
+        var IdEliminar = "";
+        var VectorIddocumento = [];
+
+        $(document).ready(function () {
+            /*$("#txtJSON").dxTextArea({
+                height: 200,
+                width: '100%',
+            });*/
+
+            consultarFotos();
+            $("#txtidItem").val("@ViewBag.txtidItem")
+
+            $("#txtidEstadoBase").val("@ViewBag.txtidEstadoBase")
+
+            $("#txturlMapa").val("@ViewBag.txturlMapa")
+            $("#txttblFotos").val("@ViewBag.txttblFotos")
+            $("#txtForm").val("@ViewBag.txtForm")
+            $("#txtidVisita").val("@ViewBag.txtidVisita")
+            $("#txtVisita").val("@ViewBag.txtidVisita")
+            $("#txtinstalacion").val("@ViewBag.txtinstalacion")
+            $("#txttercero").val("@ViewBag.txttercero")
+            $("#txttblEstados").val("@ViewBag.txttblEstados")
+            tipoV = "@ViewBag.txttipoV";
+            consultarFotos();
+            var textoi = $("#texttoempresa").text() + "@ViewBag.textoEmpresa";
+            $("#texttoempresa").text(textoi.replace("&#243;", "ó"));
+
+            if (tipoV == "CAR1") {
+                $("#Tab1").css('display', 'none');
+                $("#tabMapa").removeClass("active");
+                $("#tabMapa").removeClass("in");
+                //$("#Tab3 a").click();
+                //$("#Tab3 a").click();
+                CrearEstadoItemUni();
+
+            } else if (tipoV == "N") {
+                $("#Tab1").css('display', 'none');
+                /*$("#Tab2").css('display', 'none');
+                $("#Tab3").css('display', 'none');
+                $("#Tab4").css('display', 'none');
+                $("#Tab5").css('display', 'none');
+                $("#Tab6").css('display', 'none');
+                $("#Tab7").css('display', 'none');
+                $("#Tab8").css('display', 'none');
+                $("#Tab9").css('display', 'none');*/
+                $("#Tab10").css('display', 'none');
+                //$("#Tab11").css('display', 'none');
+                $("#Tab12").css('display', 'none');
+
+                consultarJsonInfoGeneral();
+                $("#txtNombreOficial").text("Residuo(Nuevo)")//ENVIAR COMO PARAMETRO
+
+
+            } else if (tipoV == "M") {
+
+               
+
+                var dato = $("#txtEstadoBase").val();
+                $("#idCaptacionEstado").val(dato);
+                CargarGrid();
+                consultarJsonDetalleGeneracion(0, "acordionDetalleGeneralGeneracion", 0);
+                //consultarJsonEncuestaSeparacion(10, "acordionDetalleEncuestaSeparacion", 0);//***************
+                consultarJsonInfoGeneral();
+                consultarFotos()
+            }
+            else if (tipoV == "D") {
+                var dato = $("#txtEstadoBase").val()
+                $("#idCaptacionEstado").val(dato);
+                CargarGrid();
+                consultarJsonDetalleGeneracion(0, "acordionDetalleGeneralGeneracion", 0);
+                //consultarJsonEncuestaSeparacion(10, "acordionDetalleEncuestaSeparacion", 0);//**************
+                consultarJsonInfoGeneral();
+                consultarFotos();
+
+                $("#Tab1").css('display', 'none');
+                $("#Tab10").css('display', 'none');
+                $("#Tab12").css('display', 'none');
+            }
+        })
+
+        function consultarJsonInfoGeneral() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonInfoGeneral", "Residuos")',
+                data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    try {
+                        jsonInfoGeneral = eval('(' + response + ')');
+                        $("#txtidItem").val(jsonInfoGeneral.ID);
+                        $("#txtNombreOficial").text(jsonInfoGeneral.NOMBRE);
+                        if (jsonInfoGeneral.X != 0 && jsonInfoGeneral.Y != 0) {
+                            ZoomXYmapa(jsonInfoGeneral.X, jsonInfoGeneral.Y, "tabMapa");
+                        }
+                        $("#txtX").val(jsonInfoGeneral.X);
+                        $("#txtY").val(jsonInfoGeneral.Y);
+                        if (jsonInfoGeneral.NOMBRE == "" && tipoV == "N") {
+                            var textoi = "@ViewBag.txtNombref";
+                            $("#txtNombreOficial").text(textoi + "(Nuevo)")
+                        }
+                    } catch (e) {
+
+                    }
+                }
+            });
+        }
+
+        function CrearEstadoItem() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CrearEstadoItem", "Residuos")',
+                data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val(), idVisita: $("#txtidVisita").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    var dato = eval('(' + response + ')');
+                    $("#txtidEstadoBase").val(dato)
+
+                    if (tipoV != "D") {
+                        CargarGrid();
+                        consultarJsonDetalleGeneracion(0, "acordionDetalleGeneralGeneracion", 0);
+                        //consultarJsonEncuestaSeparacion(10, "acordionDetalleEncuestaSeparacion", 0);//********************
+                        consultarJsonInfoGeneral();
+                        consultarFotos()
+                    } else {
+                        tipoV = 'M';
+                    }
+                }
+            });
+        }
+
+
+
+        function GuardarInformacionItem() {
+
+            jsonInfoGeneral.NOMBRE = $("#txtNombreOficial").text();
+            jsonInfoGeneral.X = $("#txtX").val() * 1;
+            jsonInfoGeneral.Y = $("#txtY").val() * 1;
+            var jsonOficial = JSON.stringify(jsonInfoGeneral)
+            onLoad("tabMapa");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarInformacionItem", "Residuos")',
+                data: { jsonInfo: jsonOficial, idFormulario: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response == "Ok") {
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
+
+                        if ((tipoV == "N" && $("#txtidEstadoBase").val() == "-1") || tipoV == "D") {
+                            $("#Tab1").css('display', 'block');
+                            $("#Tab2").css('display', 'block');
+                            $("#Tab3").css('display', 'block');
+                            $("#Tab4").css('display', 'block');
+                            $("#Tab5").css('display', 'block');
+                            $("#Tab6").css('display', 'block');
+                            $("#Tab7").css('display', 'block');
+                            $("#Tab8").css('display', 'block');
+                            $("#Tab9").css('display', 'block');
+                            $("#Tab10").css('display', 'block');
+                            $("#Tab11").css('display', 'block');
+                            $("#Tab12").css('display', 'block');
+
+                            CrearEstadoItem();
+                        }
+                        offLoad("tabMapa");
+                    } else {
+                        mensajeAlmacenamiento("Error al almacenar la informacion")
+                    }
+                }
+            });
+        }
+
+        function GuardarInformacionCaracteristica(id, tab) {
+            $('#btnGuardar1').attr('disabled', true);
+
+            onLoad(tab);
+            var jsonOficial = guardarDetalle("acordionDetallePrincipal_" + id, id);
+
+            jsonOficial = JSON.stringify(jsonOficial)
+
+            /*var txtJSON = $("#txtJSON").dxTextArea("instance");
+            txtJSON.option("value", jsonOficial);*/
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GuardarInformacionCaracteristicas", "Residuos")',
+                data: { jsonInfo: jsonOficial, idEstado: $("#txtidEstadoBase").val(), tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    //$('#btnGuardar1').attr('disabled', false);
+
+                    if (response == "Ok") {
+                        consultarJsonDetalleGeneracion(0, "acordionDetalleGeneralGeneracion", 0);
+
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
+                        ConsultarInformacionCaracteristica(id, tab);
+
+                        tipoV = 'M';
+                    } else {
+                        mensajeAlmacenamiento("Error al almacenar la informacion")
+                    }
+
+                    setTimeout(function () { $('#btnGuardar1').attr('disabled', false); }, 10000);
+
+                    offLoad(tab);
+                }
+            });
+        }
+
+        function ConsultarInformacionCaracteristica(id, tab)
+        {
+
+        }
+
+        function mensajeAlmacenamiento(mensaje) {
+            $("#msText").text(mensaje);
+
+
+            $("#msAlmacenamiento").dialog({
+
+                buttons: [
+          {
+              text: "Aceptar",
+
+              click: function () { $(this).dialog("close"); },
+
+              class: "btn btn-default "
+          },
+                ]
+            });
+
+
+        }
+        function CrearEstadoItemUni() {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CrearEstadoItem", "Aire")',
+                data: { idItem: $("#txtidItem").val(), idFormulario: $("#txtForm").val(), idVisita: $("#txtidVisita").val(), instalacion: $("#txtinstalacion").val(), tercero: $("#txttercero").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    var dato = eval('(' + response + ')');
+                    $("#txtidEstadoBase").val(dato)
+
+                }
+            });
+        }
+
+        function consultarJsonDetalleGeneracion(grupo, div, id) {
+            onLoad("Generacion");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleGeneracion", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val(), copia: (tipoV == 'D') },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 0, 0, "acordionGeneracionPrincipal");
+                    $("#acordionGeneracionPrincipal").remove();
+                    $("#acordionDetalleGeneralGeneracion").append(html);
+
+                    //consultarJsonDetalleSeparacion(1, "acordionDetalleGeneralSeparacion", 0);//************
+                    offLoad("Generacion");
+
+                }
+            });
+        }
+
+
+        function consultarJsonDetalleSeparacion(grupo, div, id) {
+            onLoad("Separacion");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleSeparacion", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 1);
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralSeparacion").append(html);
+
+                    consultarJsonDetalleAlmacenamiento(2, "acordionDetalleGeneralAlmacenamiento", 0);
+                    offLoad("Separacion");
+                }
+            });
+        }
+
+        function consultarJsonDetalleAlmacenamiento(grupo, div, id) {
+            onLoad("Almacenamiento");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleAlmacenamiento", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 2, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralAlmacenamiento").append(html);
+                    consultarJsonDetalleAprovechamiento(3, "acordionDetalleGeneralAprovechamiento", 0);
+                    offLoad("Almacenamiento");
+
+                }
+            });
+        }
+
+        function consultarJsonDetalleAprovechamiento(grupo, div, id) {
+            onLoad("Aprovechamiento");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleAprovechamiento", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 3, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralAprovechamiento").append(html);
+
+                    consultarJsonDetalleTratamiento(4, "acordionDetalleGeneralTratamiento", 0);
+                    offLoad("Aprovechamiento");
+                }
+            });
+        }
+
+        function consultarJsonDetalleTratamiento(grupo, div, id) {
+            onLoad("Tratamiento");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleTratamiento", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 4, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralTratamiento").append(html);
+                    consultarJsonDetalleDisposicion(5, "acordionDetalleGeneralDisposicion", 0);
+                    offLoad("Tratamiento");
+
+                }
+            });
+        }
+
+        function consultarJsonDetalleDisposicion(grupo, div, id) {
+            onLoad("Disposicion");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleDisposicionFinal", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 5, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralDisposicion").append(html);
+
+                    consultarJsonDetalleSoporte(6, "acordionDetalleGeneralSoporte", 0);
+                    offLoad("Disposicion");
+                }
+            });
+        }
+
+        function consultarJsonDetalleSoporte(grupo, div, id) {
+            onLoad("Soporte");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleSoporte", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 6, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralSoporte").append(html);
+                    consultarJsonDetalleFormularioRH1(10, "acordionDetalleGeneralFormularioRH1", 0);
+                    offLoad("Soporte");
+                }
+            });
+        }
+
+
+        function consultarJsonDetalleFormularioRH1(grupo, div, id) {
+            onLoad("FormularioRH1");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleFormularioRH1", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 10, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralFormularioRH1").append(html);
+                    consultarJsonCertificados(8, "acordionDetalleGeneralCertificados", 0);
+                    offLoad("FormularioRH1");
+                }
+            });
+        }
+
+        function consultarJsonCertificados(grupo, div, id) {
+            onLoad("Generacion");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleCertificados", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 8, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralCertificados").append(html);
+                    consultarJsonFormularioRespelRua(9, "acordionDetalleGeneralFormularioRespelRua", 0);
+                    offLoad("Generacion");
+                }
+            });
+        }
+
+
+        function consultarJsonFormularioRespelRua(grupo, div, id) {
+            onLoad("FormularioRespelRua");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonDetalleFormularioRespelRua", "Residuos")',
+                data: { idItem: $("#txtidEstadoBase").val(), form: $("#txtForm").val(), idgrupo: grupo, tblEstados: $("#txttblEstados").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    jsonDetalle = eval('(' + response + ')');
+                    var html = consultarDetalle(jsonDetalle, 9, 0, "acordionGeneracionPrincipal");
+                    $("#acordionDetallePrincipal").remove();
+                    $("#acordionDetalleGeneralFormularioRespelRua").append(html);
+                    offLoad("FormularioRespelRua");
+                }
+            });
+        }
+
+        function consultarJsonEncuestaSeparacion(grupo, div, id) {
+            onLoad("Separacion");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("consultarJsonEncuestas", "Residuos")',
+                data: { idEstado: $("#txtidEstadoBase").val(), form: $("#txtForm").val() },
+                beforeSend: function () { },
+                success: function (response) {
+                    if (response != "[]") {
+                        jsonEncuestas = eval('(' + response + ')');
+                        var html = consultarEncuestas(jsonEncuestas);
+                        $("#acordionEncuestaPrincipal").remove();
+                        $("#acordionEncuestaGeneralEncuesta").append(html);
+                    } else {
+                        $("#Tab5").css('display', 'none');
+                    }
+                    offLoad("Separacion");
+
+                }
+            });
+        }
+
+        function rtaUbiPoint(rta) {
+
+            objetoMapgis.noDraw();
+            $("#txtX").val(rta.x);
+            $("#txtY").val(rta.y);
+            $("#ubicarpuntobtn")[0].title = "Reubicar punto";
+        }
+
+
+
+        function GuardarUbicacion(num) {
+            if (num == 1) {
+                GuardarInformacionCaracteristica(0, "Generacion");
+            } else if (num == 2) {
+                GuardarInformacionCaracteristica(1, "Separacion");
+            } else if (num == 3) {
+                GuardarInformacionCaracteristica(2, "Almacenamiento");
+            } else if (num == 4) {
+                GuardarInformacionCaracteristica(3, "Aprovechamiento");
+            } else if (num == 5) {
+                GuardarInformacionCaracteristica(4, "Tratamiento");
+            } else if (num == 6) {
+                GuardarInformacionCaracteristica(5, "Disposicion");
+            } else if (num == 7) {
+                GuardarInformacionCaracteristica(6, "Soporte");
+            } else if (num == 8) {
+                GuardarInformacionCaracteristica(10, "FormularioRH1");
+            } else if (num == 11) {
+                GuardarInformacionCaracteristica(9, "FormularioRespelRua");
+            } else if (num == 13) {
+                GuardarInformacionItem()
+            }
+        }
+
+        function CambiarGuardarBoton(id) {
+            $("#btnCargarFoto").css("display", "none")
+            $("#btnCargarDocumento").css("display", "none")
+            for (k = 1; k <= 13; k++) {
+
+                $("#btnGuardar" + k).css("display", "none")
+
+            }
+            if (id == 12) {
+                $("#btnCargarDocumento").css("display", "inline-block")
+            }
+            if (id == 10) {
+                $("#btnCargarFoto").css("display", "inline-block")
+                setTimeout(' consultarFotos()', 2000);
+            }
+
+            $("#btnGuardar" + id).css("display", "inline-block")
+        }
+        function abrirFotos() {
+            $("#pantallaCargarImg").dialog(
+            {
+
+                width: 500,
+                height: 200,
+                modal:true
+            });
+            $("#pantallaCargarImg #fotos").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/cargarImagenForm")");
+
+        }
+        function llenarCarrusel(datos) {
+
+            guardarFotosQuejas(datos);
+        }
+        function llenarCarrusel2(datos) {
+            onLoad("tabFotos");
+            setTimeout(function () {
+                if (Totalimg.length == 0) {
+                    Totalimg = datos;
+                } else {
+                    for (var i = 0; i < datos.length; i++) {
+                        Totalimg.push(datos[i]);
+                    }
+                }
+
+                var html = "";
+                var cantidaDatos = 0;
+                $("#carousel .caroufredsel_wrapper").remove();
+                html += ' <ul id="Carusel1">';
+
+                for (var j = 0; j < Totalimg.length; j++) {
+
+                    html += ' <li ><button class="btnimgedit"  onclick="eliminar(\'' + Totalimg[j].id + '\')"></button><img src="' + Totalimg[j].url + '" alt="' + Totalimg[j].nombre + '" title="' + Totalimg[j].etiqueta + '" id="' + Totalimg[j].id + '" ><label class="texto">' + Totalimg[j].etiqueta + '</label></li>';
+
+                }
+                html += "</ul>";
+                offLoad("tabFotos");
+                $("#carousel").append(html);
+                $('#carousel ul').carouFredSel({
+                    auto: false,
+                    prev: '#prev',
+                    next: '#next',
+                    pagination: "#pager2",
+                    mousewheel: true,
+
+                    swipe: {
+                        onMouse: true,
+                        onTouch: true
+                    }
+                });
+            }, 3000);
+        }
+        function guardarFotos(d) {
+
+        }
+
+        function guardarFotosQuejas(arrfotos) {
+
+
+            var datos = "";
+            for (var i = 0; i < arrfotos.length; i++) {
+                if (arrfotos.length - 1 == i) {
+                    datos += arrfotos[i].id;
+                } else {
+                    datos += arrfotos[i].id + ',';
+                }
+
+            }
+            onLoad("tabFotos");
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetGuardarFotografiasForm")",
+                data: {
+                    captacionestado: $("#txtidEstadoBase").val(), idFotos: datos, tabla: $("#txttblFotos").val(), idForm: $("#txtForm").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    consultarFotos();
+                    offLoad("tabFotos");
+
+                },
+            });
+        }
+        function eliminar(nombre) {
+            datos = $("#" + nombre)[0];
+            nombreFoto = "";
+            idFotografia = "";
+            etiqueta = "";
+            idFotografia = datos.id;
+            nombreFoto = datos.alt;
+            etiqueta = datos.title;
+            abrirEliminarFotos();
+        }
+        function abrirEliminarFotos() {
+            $("#pantallaEliminarFoto").dialog(
+            {
+
+                width: 288,
+                height: 360,
+                modal:true
+            });
+            $("#frEliminarFoto").attr("src", "@Url.Content("~/ControlVigilancia/Visitas/EliminarFoto")");
+        }
+
+        function AgregarEtiqueta(etiq, palabra) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/AgregarEtiqueta")",
+                data: {
+                    p_idFotografia: idFotografia, etiqueta: etiq, palabra: palabra
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    var dato = response;
+                    consultarFotos();
+                },
+            });
+
+        }
+        @*function CargarGrid() {
+
+            var CargarDatosDocumentoAdjunto = new DevExpress.data.CustomStore({
+                load: function (loadOptions) {
+                    var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+                    var d = $.Deferred();
+                    $.getJSON("@Url.Content("~/Documento/api/DocumentoWebAPI/GetConsultarDocumentoAdjunto")" + "?filtro=" + filterOptions + "&idFormulario=" + $("#txtForm").val() + "&idEstado=" + $("#txtidEstadoBase").val()).done(function (data) {
+                        d.resolve(data, { totalCount: data.length }, Global = data);
+                    });
+                    return d.promise();
+                }
+            });
+
+
+            var GrdDocumentoAdjuntoConfiguracion = {
+                store: CargarDatosDocumentoAdjunto
+            };
+
+            $(function () {
+                $("#GrdDocumentoAdjunto").dxDataGrid({
+                    dataSource: GrdDocumentoAdjuntoConfiguracion,
+                    searchPanelPlaceholder: "Buscar",
+                    selection: {
+                        mode: 'single'
+                    },
+                    columns: [
+                           { dataField: 'S_ARCHIVO', caption: 'Archivo', allowGrouping: true, width: '60%', dataType: 'string' },
+                     {
+                         dataField: 'EDITARVISITA', allowGrouping: true, caption: 'Ver Documento', width: '20%', cellTemplate: function (container, options) {
+                             container.height(5);
+                             $('<img src="@Url.Content("../../Content/Images/EditarVisita.png")" style="width:25px;height:25px" />')
+
+                                         .attr('src', options.value)
+                                         .appendTo(container);
+                         }
+                     },
+
+                 {
+                     dataField: 'EliminarDocumento', allowGrouping: true, caption: 'Eliminar Documento', width: '20%', cellTemplate: function (container, options) {
+                         container.height(5);
+                         $('<img src="@Url.Content("../../Content/Images/eliminarGris.png")" style="width:25px;height:25px" />')
+
+                                     .attr('src', options.value)
+                                     .appendTo(container);
+                     }
+                 }
+                    ], cellClick: function (e) {
+                        var id = e.data.ID_DOCUMENTO;
+                        IdEliminar = e.data.ID_DOCUMENTO;
+                        urlDoc = e.data.URL;
+                        var tipoBoton = e.columnIndex;
+
+                        switch (tipoBoton) {
+                            case 1: //ver
+                                VerDocumento();
+                                break;
+                            case 2: //eliminar
+                                EliminarDocumentoBD();
+                                break;
+
+
+                        }
+
+                    },
+                    allowColumnReordering: true,
+                 
+                    loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    },
+                    sorting: { mode: 'multiple' },
+                    groupPanel: { visible: true, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+                    pager: { visible: true },
+                    paging: { pageSize: 7 },
+                    filterRow: {
+                        visible: true,
+                        applyFilter: "auto"
+                    },
+                    searchPanel: { visible: true, placeholder: 'Buscar...' },
+                }).dxDataGrid('instance');
+            });
+
+
+        }*@
+
+        function CargarGrid() {
+        
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/Documento/api/DocumentoWebAPI/GetConsultarDocumentoAdjunto")",
+                data: { idFormulario: $("#txtForm").val(), idEstado: $("#txtidEstadoBase").val() },
+            success: function (result) {
+                var datos = eval(result);
+                gridDocumento(datos);
+         
+            }
+        });
+
+        }
+
+        
+
+         
+        function gridDocumento(datos) {
+            $(function () {
+                $("#GrdDocumentoAdjunto").dxDataGrid({
+                    dataSource: datos,
+                    searchPanelPlaceholder: "Buscar",
+                    selection: {
+                        mode: 'single'
+                    },
+                    columns: [
+                           { dataField: 'S_ARCHIVO', caption: 'Archivo', allowGrouping: true, width: '60%', dataType: 'string' },
+                     {
+                         dataField: 'EDITARVISITA', allowGrouping: true, caption: 'Ver Documento', width: '20%', cellTemplate: function (container, options) {
+                             container.height(5);
+                             $('<img src="@Url.Content("../../Content/Images/EditarVisita.png")" style="width:25px;height:25px" />')
+
+                                         .attr('src', options.value)
+                                         .appendTo(container);
+                         }
+                     },
+
+                 {
+                     dataField: 'EliminarDocumento', allowGrouping: true, caption: 'Eliminar Documento', width: '20%', cellTemplate: function (container, options) {
+                         container.height(5);
+                         $('<img src="@Url.Content("../../Content/Images/delete.png")" style="width:25px;height:25px" />')
+
+                                     .attr('src', options.value)
+                                     .appendTo(container);
+                     }
+                 }
+                    ], onCellClick: function (e) {
+                        var id = e.data.ID_DOCUMENTO;
+                        IdEliminar = e.data.ID_DOCUMENTO;
+                        urlDoc = e.data.URL;
+                        var tipoBoton = e.columnIndex;
+
+                        switch (tipoBoton) {
+                            case 1: //ver
+                                VerDocumento();
+                                break;
+                            case 2: //eliminar
+                                EliminarDocumentoBD();
+                                break;
+
+
+                        }
+
+                    },
+                    allowColumnReordering: true,
+                   
+                    loadPanel: {
+                        height: 100,
+                        width: 100,
+                        text: 'Cargando...'
+                    },
+                    sorting: { mode: 'multiple' },
+                    groupPanel: { visible: false, emptyPanelText: 'Arrastre una columna aquí para agrupar por dicha columna' },
+                    pager: { visible: true },
+                    paging: { pageSize: 7 },
+                    filterRow: {
+                        visible: false,
+                        applyFilter: "auto"
+                    },
+                    searchPanel: { visible: false, placeholder: 'Buscar...' },
+                }).dxDataGrid('instance');
+            });
+
+
+        }
+        function abrirDocumento() {
+            $("#pantallaCargarDocumentoAdjunto").dialog(
+            {
+
+                width: 400,
+                height: 200,
+                modal: true
+            });
+            $("#DocumentoAdjunto").attr("src", "@Url.Content("~/Documento/Documento/CargarDocumentoAdjunto")");
+
+        }
+        function abrirDocumento() {
+            $("#pantallaCargarDocumentoAdjunto").dialog(
+            {
+
+                width: 288,
+                height: 240,
+                modal:true
+            });
+            $("#DocumentoAdjunto").attr("src", "@Url.Content("~/Documento/Documento/CargarDocumentoAdjunto")");
+
+        }
+
+        function EliminarDocumentoBD() {
+            if (confirm("¿Esta seguro en Eliminar el documento?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Content("~/Documento/api/DocumentoWebAPI/EliminarDocumentoAdjunto")",
+                    data: {
+                        id_Doc: IdEliminar, idForm: $("#txtForm").val()
+                    },
+                    beforeSend: function () {
+
+                    },
+                    success: function (response) {
+                        var dato = response;
+                        CargarGrid();
+                    },
+                });
+            } else {
+                return false;
+            }
+
+        }
+        function guardarDocumentoAdjunto(arrDocumentoAdjunto) {
+            var datos = "";
+            for (var i = 0; i < arrDocumentoAdjunto.length; i++) {
+                if (arrDocumentoAdjunto.length - 1 == i) {
+                    datos += arrDocumentoAdjunto[i].id;
+                } else {
+                    datos += arrDocumentoAdjunto[i].id + ',';
+                }
+
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Content("~/Documento/api/DocumentoWebAPI/GetGuardarDocumentoAdjunto")",
+                data: {
+                    idDocumentoAdjunto: datos, idFormulario: $("#txtForm").val(), idEstado: $("#txtidEstadoBase").val()
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    CargarGrid();
+
+   
+
+                },
+
+            });
+
+        }
+
+        function VerDocumento() {
+
+            window.open(urlDoc);
+        }
+        function consultarFotos() {
+            onLoad("tabFotos");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ConsultarFotografiasForm", "Residuos")',
+
+                data: {
+                    idForm: $("#txtForm").val(), tabla: $("#txttblFotos").val(), idEstado: $("#txtidEstadoBase").val()
+                },
+                beforeSend: function () {
+                    offLoad("tabFotos");
+                },
+                success: function (response) {
+                    var dato = eval('(' + response + ')');
+
+                    Totalimg = [];
+                    if (dato.length > 0) {
+                        var objDatos = new Object();
+                        for (var i = 0; i < dato.length; i++) {
+                            objDatos = new Object();
+                            //objDatos['url'] = dato[i].URL;
+                            objDatos['url'] = '@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/ObtenerFotografia")/' + dato[i].ID_FOTOGRAFIA;
+                            objDatos['etiqueta'] = dato[i].S_ETIQUETA;
+                            objDatos['id'] = dato[i].ID_FOTOGRAFIA;
+                            objDatos['nombre'] = dato[i].S_ARCHIVO;
+
+                            Totalimg.push(objDatos);
+                        }
+
+
+                        offLoad("tabFotos");
+
+                    }
+                    offLoad("tabFotos");
+                    llenarCarrusel2('')
+                },
+            });
+
+        }
+        function EliminarFotoVisitaBD() {
+            if (confirm("¿Esta seguro en Eliminar la foto?")) {
+                onLoad("tabFotos");
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("eliminarFotoForm", "Residuos")',
+                    data: {
+                        idfoto: idFotografia, tabla: $("#txttblFotos").val()
+                    },
+                    beforeSend: function () {
+
+                    },
+                    success: function (response) {
+                        var dato = response;
+                        var arrFotos = [];
+                        var objDato = new Object();
+                        for (var i = 0; i < Totalimg.length; i++) {
+                            objDato = new Object();
+                            if (Totalimg[i].id != idFotografia) {
+                                objDato['url'] = Totalimg[i].url;
+                                objDato['etiqueta'] = Totalimg[i].etiqueta;
+                                objDato['id'] = Totalimg[i].id;
+                                arrFotos.push(objDato);
+                                offLoad("tabFotos");
+                            }
+                        }
+                        Totalimg = arrFotos;
+                 
+                        consultarFotos();
+
+
+                    },
+                });
+            } else {
+                return;
+            }
+
+        }
+    </script>
+    <style>
+        .labelUnico {
+            margin-bottom: 17px;
+            width: 0px;
+            text-align: center;
+            font-size: 13px;
+            position: relative;
+            left: 14px;
+        }
+
+        .informacionUbicacion button {
+            top: 0px;
+            left: 0px;
+            margin-top: 0px;
+            float: left;
+        }
+    </style>
+
+    <div id="divNombreCaptacion">
+        <div id="div_tipofor">@ViewBag.txtNombref</div>
+        <div id="div_nom_1" class="nombretitle">
+            <label id="txtNombreOficial"></label><button type="button" class="btn btn-default" aria-label="Left Align" onclick="nombreOpcion(1)">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div id="div_nom_2" class="nombretitle" style="display:none">
+            <input type="text" id="txtNombreTemp" style="width: 220px !important;"/><button type="button" class="btn btn-default " onclick="nombreOpcion(2)">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            </button>
+        </div>
+        <label id="texttoempresa"> Instalación: <br /></label>
+    </div>
+    <div class="container contenedorcentro ">
+        <div style="position:absolute;top:0px;z-index:9999;display:none">
+            <input type="text" id="txtidItem" value="">
+            <input type="text" id="txtidEstadoBase" value="">
+            <input type="text" id="txturlMapa" value="">
+            <input type="text" id="txttblFotos" value="">
+            <input type="text" id="txtForm" value="">
+            <input type="text" id="txtidVisita" value="">
+            <input type="text" id="txtVisita" value="">
+            <input type="text" id="txtinstalacion" value="">
+            <input type="text" id="txttercero" value="">
+            <input type="text" id="txttblEstados" value="">
+        </div>
+        <!--dialog -->
+        <div id="pantallaCargarImg" title="Cargar imagen" style="display: none;">
+            <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+        </div>
+        <!--Dialog informacion ubicacion-->
+        <div id="dialogAyuda" title="Ayuda" style="display:none">
+            <div class="col-md-12 " id="ContenidoAyuda">
+            </div>
+        </div>
+        <!--dialog de observacion-->
+        <div id="dialogObservacion" title="Observacion" style="display:none">
+            <div class="col-md-12 " id="ContenidoObservacion">
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-top: 39px; margin-bottom: -6px;">
+            <!--<div id="txtJSON"></div>-->
+            <div class="panel panel-default" style="padding-bottom: 0px">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                    <div class="subContenedor">
+                        <!--contenedor tab-->
+                        <div style="padding: 15px">
+                            <ul class="nav nav-tabs">
+                                <li id="Tab13" class="active"><a href="#tabMapa" onclick="CambiarGuardarBoton(13)" data-toggle="tab">Mapa</a></li>
+                                <li id="Tab1"><a href="#Generacion" onclick="CambiarGuardarBoton(1)" data-toggle="tab">Detalle</a></li>
+                                <!--<li id="Tab2"><a href="#Separacion" onclick="CambiarGuardarBoton(2)" data-toggle="tab">Separación</a></li>
+                                <li id="Tab3"><a href="#Almacenamiento" onclick="CambiarGuardarBoton(3)" data-toggle="tab">Almacenamiento</a></li>
+                                <li id="Tab4"><a href="#Aprovechamiento" onclick="CambiarGuardarBoton(4)" data-toggle="tab">Aprovechamiento</a></li>
+                                <li id="Tab5"><a href="#Tratamiento" onclick="CambiarGuardarBoton(5)" data-toggle="tab">Tratamiento</a></li>
+                                <li id="Tab6"><a href="#Disposicion" onclick="CambiarGuardarBoton(6)" data-toggle="tab">Disposición final</a></li>
+                                <li id="Tab7"><a href="#Soporte" onclick="CambiarGuardarBoton(7)" data-toggle="tab">Soporte</a></li>
+                                <li id="Tab11"><a href="#FormularioRespelRua" onclick="CambiarGuardarBoton(11)" data-toggle="tab">Formulario respel o rua</a></li>
+                                <li id="Tab8"><a href="#FormularioRH1" onclick="CambiarGuardarBoton(8)" data-toggle="tab">Formulario RH1</a></li>-->
+                                <li id="Tab10"><a href="#Fotos" onclick="CambiarGuardarBoton(10)" data-toggle="tab">Fotografías</a></li>
+                                <li id="Tab12"><a href="#Archivos" onclick="CambiarGuardarBoton(12)" data-toggle="tab">Archivos</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade" id="Generacion">
+                                <br />
+                                <div class="col-md-12" id="acordionDetalleGeneralGeneracion">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Separacion">
+                                <div class="col-md-12" id="acordionDetalleGeneralSeparacion">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Almacenamiento">
+                                <div class="col-md-12" id="acordionDetalleGeneralAlmacenamiento">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Aprovechamiento">
+                                <div class="col-md-12" id="acordionDetalleGeneralAprovechamiento">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Tratamiento">
+                                <div class="col-md-12" id="acordionDetalleGeneralTratamiento">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Disposicion">
+                                <div class="col-md-12" id="acordionDetalleGeneralDisposicion">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="Soporte">
+                                <div class="col-md-12" id="acordionDetalleGeneralSoporte">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                                <div class="col-md-12" id="acordionDetalleGeneralCertificados">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="FormularioRespelRua">
+                                <div class="col-md-12" id="acordionDetalleGeneralFormularioRespelRua">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="FormularioRH1">
+                                <div class="col-md-12" id="acordionDetalleGeneralFormularioRH1">
+                                    <!--Nivel1-->
+                                    <div class="panel-group acordeonVerde " id="acordionDetallePrincipal">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Archivos">
+                            
+                                <div id="GrdDocumentoAdjunto" class="archivosDiv"></div>
+                            </div>
+                            <div class="tab-pane fade" id="Fotos">
+                                <div id="" class="col-sm-12">
+                                    <label class="TextoDescriptivoF">
+                                        Para agregar imagenes  en esta pestaña, selecciona el botón cargar fotos.
+                                    </label>
+                                    <div id="carousel" style="height:190px;">
+
+                                        <div class="clearfix"></div>
+                                        <a id="prev" class="prev" href="#">&lt;</a>
+                                        <a id="next" class="next" href="#">&gt;</a>
+                                        <div id="pager" class="pager"></div>
+                                    </div><!-- /#myCarousel -->
+
+                                </div>
+
+
+
+                            </div>
+
+                            @*TabMapa*@
+                            <div class="tab-pane fade active in" id="tabMapa">
+
+
+                                <div class="col-md-12 mapacont1">
+                                    <table class="informacionUbicacion">
+
+                                        <tr>
+                                            <td>
+                                                <label class="labelUnico">x:</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="txtX" />
+                                            </td>
+                                            <td>
+                                                <label class="labelUnico">y:</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="txtY" />
+                                            </td>
+                                            <td>
+
+                                                <button title="Ubicar punto mapa" class="form-control glyphicon-mapaP" id="ubicarpuntobtn" onclick="UbicarPunto()"></button>
+
+                                            </td>
+
+                                        </tr>
+
+
+                                    </table>
+
+                                    <iframe id="mapa" style="width: 100%; height: 350px; overflow: hidden; border: none; " src="/MAPGISV5_WEB/tools/AMVA/inicio_reciduos_peligrosos.htm"></iframe>
+                                </div>
+
+
+                            </div>
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div id="pantallaEliminarFoto" title="Detalle Fotografía" style="display: none; overflow: hidden;">
+                    <iframe src="" id="frEliminarFoto" width="100%" height="100%"></iframe>
+
+
+                </div>
+                <div class="actionBar">
+                    <button type="button" id="btnCerra" class="btn btn-default btn-sm" onclick="cerrarPestala()">Cerrar</button>
+
+                    <button type="button" id="btnGuardar13" class="btn btn-default btn-sm" onclick="GuardarUbicacion(13)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar1" class="btn btn-default btn-sm" onclick="GuardarUbicacion(1)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar2" class="btn btn-default btn-sm" onclick="GuardarUbicacion(2)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar3" class="btn btn-default btn-sm" onclick="GuardarUbicacion(3)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar4" class="btn btn-default btn-sm" onclick="GuardarUbicacion(4)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar5" class="btn btn-default btn-sm" onclick="GuardarUbicacion(5)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar6" class="btn btn-default btn-sm" onclick="GuardarUbicacion(6)">Guardar</button>
+                    <button class="btn btn-default btn-sm" style="display:none" onclick="abrirFotos()" id="btnCargarFoto">Cargar Fotos</button>
+                    <button class="btn btn-default" style="display:none" onclick="abrirDocumento()" id="btnCargarDocumento">Cargar Documento</button>
+                    <button type="button" style="display:none" id="btnGuardar7" class="btn btn-default btn-sm" onclick="GuardarUbicacion(7)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar8" class="btn btn-default btn-sm" onclick="GuardarUbicacion(8)">Guardar</button>
+                    <button type="button" style="display:none" id="btnGuardar11" class="btn btn-default btn-sm" onclick="GuardarUbicacion(11)">Guardar</button>
+               
+
+                </div>
+            </div>
+        </div>
+        <!--Fin TabUbicacion-->
+    </div>
+    <!--fin contenedor tab-->
+    <!----------------------------->
+    <!------------------------->
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="pantallaCargarDocumentoAdjunto" title="Cargar Documento" style="display: none;">
+        <iframe src="" id="DocumentoAdjunto" width="100%" height="100%"></iframe>
+    </div>
+
+    <div id="pantallaEliminarDocumento" title="Eliminar Documento" style="display: none; overflow: hidden;">
+        <iframe src="" id="frEliminarDocumento" width="100%" height="100%"></iframe>
+    </div>
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+    </div>
+

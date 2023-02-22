@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Seleccionar Episodio";
+}
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+        <h2>Seleccionar Episodio</h2>
+        @Html.DropDownList("EPISODIOS", null, new { @class = "form-control" })
+        <br />
+        <button id="btnSeleccionarEpisodio" type="button" class="btn btn-default">Seleccionar</button>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $("#btnSeleccionarEpisodio").click(() => {
+                let idEpisodio = $("#EPISODIOS").val();
+                if (idEpisodio) {
+                    window.location = "@Url.Action("Index")/Index/" + idEpisodio;
+                }
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundlesv5/jqueryval")
+}

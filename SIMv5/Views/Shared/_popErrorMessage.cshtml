@@ -1,0 +1,32 @@
+﻿@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popErrorMessage";
+    if (ViewData["ErrorMessage"] != null && ViewData["ErrorMessage"] != "")
+        settings.ShowOnPageLoad = true;
+    settings.Width = 500;
+    settings.AllowDragging = true;
+    settings.CloseAction = CloseAction.CloseButton;
+    settings.PopupAnimationType = AnimationType.None;
+    settings.HeaderText = "Error";
+    settings.Modal = true;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+    settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+    settings.SetContent(() =>
+    {
+        if (ViewData["ErrorMessage"] != null && ViewData["ErrorMessage"] != "")
+        {
+            ViewContext.Writer.Write("<div>");
+            ViewContext.Writer.Write(ViewData["ErrorMessage"]);
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("<br/>");
+            ViewContext.Writer.Write("<div>");
+            Html.DevExpress().Button(buttonsettings =>
+            {
+                buttonsettings.Name = "btnErrorClose";
+                buttonsettings.Text = "Aceptar";
+                buttonsettings.ClientSideEvents.Click = "function(s, e) { popErrorMessage.Hide(); }";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+        }
+    });
+}).GetHtml()

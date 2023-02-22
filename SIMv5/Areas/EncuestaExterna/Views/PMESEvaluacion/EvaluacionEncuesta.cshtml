@@ -1,0 +1,153 @@
+﻿@using SIM.Properties
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+    }
+
+    .dx-datagrid-rowsview .dx-row.dx-group-row {
+        color: black;
+    }
+
+    .dx-list-item-content, .dx-list .dx-empty-message {
+        padding: 5px 5px;
+    }
+
+    .dx-list-item, .dx-list .dx-empty-message {
+        border-top: unset;
+    }
+</style>
+
+<!--
+<script>
+    $(document).ready(function () {
+        AjustarTamano();
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano()
+    {
+        $("#pnlContenedor").height((window.innerHeight || document.body.clientHeight) - 150);
+        $("#pnlGridPreguntasEvaluacion").height($("#pnlContenedor").outerHeight() - $("#pnlContenedorTitulo").outerHeight() - 4);
+    }
+</script>
+-->
+
+<script type="text/javascript" src="@Url.Content("~/Areas/EncuestaExterna/Scripts/PMESEvaluacion/evaluacionencuesta.js?v=1.01")"></script>
+
+<div id="popDetallePregunta" style="padding: 0px">
+    <div style="height: calc(100% - 50px); ">
+        <div id="lstDetallePregunta" style="height: unset; margin-bottom: 20px"></div>
+        <div id="txtTextoComplementarioPregunta" style="height: 100px"></div>
+    </div>
+    <div style="height: 50px; text-align: center">
+        <div id="btnAceptarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+        <div id="btnCancelarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+    </div>
+</div>
+
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" data-ee="@ViewBag.IdEvaluacionEncuesta" data-t="@(ViewBag.Tercero) - @(ViewBag.ValorVigencia) - @(ViewBag.Instalacion)" data-r="@ViewBag.Resultado" data-ro="@(ViewBag.SoloLectura)" resizable>
+        <div class="panelSIM-default">
+            <div id="loadPanel"></div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+                <div id="tab01" style="display: block">
+                    <div id="pnlGridPreguntasEvaluacion">
+                        <div>
+                            <div id="grdPreguntasEvaluacion"></div>
+                        </div>
+                        <div style="height: 40px; margin-top: 15px; margin-bottom: 15px">
+                            <table class="dx-datagrid-table dx-datagrid-table-fixed" role="grid">
+                                <colgroup><col style="width: 30px;"><col style="width: 70%;"><col style="width: 10%;"><col style="width: 20%;"></colgroup>
+                                <tbody>
+                                    <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px">
+                                        <td role="gridcell" class="dx-datagrid-group-space" style="text-align: left;"></td>
+                                        <td role="gridcell" style="text-align: right; font-weight: bold; padding-right: 80px;">CUMPLIMIENTO DE CONTENIDO</td>
+                                        <td role="gridcell">
+                                            @if (ViewBag.SoloLectura == "N")
+                                            {
+                                            <div id="btnCalcularCumplimiento"></div>
+                                            }
+                                        </td>
+                                        <td role="gridcell" style="text-align: center; font-weight: bold; background-color: gray; color: white" id="cumplimientoCell"><span id="cumplimiento">PENDIENTE</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="height: 80px; margin-bottom: 80px">
+                            <div style="width: 100%; border-top-width: 3px !important;" class="dx-datagrid-headers">
+                                <div class="dx-datagrid-text-content" style="padding-left:30px">OBSERVACIONES</div>
+                            </div>
+                            <div id="txtObservaciones" style="float: left"></div>
+                            @if (ViewBag.SoloLectura == "N")
+                            {
+                            <div style="width: 15%; height: 100%; float: left; padding: 15px"><div id="btnGuardarObservaciones"></div></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div id="tab02" style="display: none">
+                    <div style="padding:25px">
+                        <div>
+                            <div id="btnActualizarDatos" style="float: right; margin-bottom: 20px;"></div>
+                        </div>
+                        <table class="dx-datagrid-table dx-datagrid-table-fixed" role="grid">
+                            <colgroup><col style="width: 50%;"><col style="width: 50%;"></colgroup>
+                            <tbody>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left:20px">MEDIO DE ENTREGA</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="medioEntrega">@ViewBag.MedioEntrega</span></td>
+                                </tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left: 20px">RADICADO No.</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="radicado">@ViewBag.Radicado</span></td>
+                                </tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left: 20px">FECHA DE ENTREGA DD/MM/AAAA</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="fechaEntrega">@ViewBag.FechaEntrega</span></td>
+                                </tr>
+                                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left:20px">COORDENADA</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="coordenada">@ViewBag.Coordenada</span></td>
+                                </tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left: 20px">DIRECCION</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="direccion">@ViewBag.Direccion</span></td>
+                                </tr>
+                                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left:20px">TON CO2/DIA ACTUALMENTE EMITIDO</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="TonEmitido">@ViewBag.TonEmitido</span></td>
+                                </tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left: 20px">Kg CO2/DIA POR TRABAJADOR</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="kgEmitido">@ViewBag.KgEmitido</span></td>
+                                </tr>
+                                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left:20px">Gramos PM2.5/DIA ACTUALMENTE EMITIDO</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="pm25Emitido">@ViewBag.PM25PEmitido</span></td>
+                                </tr>
+                                <tr class="dx-row dx-data-row dx-column-lines" role="row" aria-selected="false" style="height: 40px; border: solid; border-color: lightgray; border-width: 1px;">
+                                    <td role="gridcell" class="dx-datagrid-headers" style="text-align: left; font-weight: bold; padding-left: 20px">Gramos PM2.5/DIA POR TRABAJADOR</td>
+                                    <td role="gridcell" style="text-align: center; font-weight: bold;"><span id="pm25IEmitido">@ViewBag.PM25IEmitido</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

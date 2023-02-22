@@ -1,0 +1,1128 @@
+﻿@using SIM.Data.Tramites
+@{
+    ViewBag.Title = "informeVisita";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+<style>
+    .dx-datagrid-header-panel .dx-button.dx-button-has-icon:not(.dx-button-has-text) {
+        padding: 6px;
+        display: none;
+    }
+
+
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+        float: left;
+        margin-left: -8px;
+    }
+
+    .btn-default[disabled], fieldset[disabled] .btn-default, .btn-default.disabled:hover, .btn-default[disabled]:hover, fieldset[disabled] .btn-default:hover, .btn-default.disabled:focus, .btn-default[disabled]:focus, fieldset[disabled] .btn-default:focus, .btn-default.disabled:active, .btn-default[disabled]:active, fieldset[disabled] .btn-default:active, .btn-default.disabled.active, .btn-default[disabled].active, fieldset[disabled] .btn-default.active {
+        background-color: #a5cd39;
+        border-color: #cccccc;
+    }
+
+    .ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable {
+        border: none;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        box-shadow: 1px 3px 12px 1px rgba(0, 0, 0, 0.5);
+        padding: 0px;
+    }
+
+    .ui-widget-header {
+        border: none;
+        background: #00acc4;
+        color: #FFF;
+        font-weight: normal;
+    }
+
+    #dialogUbicacion label {
+        width: 107px;
+    }
+
+    .ui-dialog .ui-dialog-content {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .btnEditar:hover {
+        opacity: 0.7;
+        cursor: pointer;
+    }
+
+    button#btnAsociar {
+        position: relative;
+        background-image: url(../../Content/images/Asignar_Tramites.png);
+        right: -28px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+
+    button#btnLimpiar {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Limpiar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+
+    button#btnGuardar {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Guardar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    button#btnContrato {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Cargar_fotos.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    button#btnCargarArbol {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Cargar_fotos.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    .grides {
+        height: 400px !important;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .Red {
+        background-color: red;
+    }
+
+    .Pink {
+        background-color: pink;
+    }
+
+    button:hover {
+        background: #3071A9;
+    }
+
+    .buttonUrl {
+        border: none;
+        color: #fff;
+        background-color: #b4cd5f;
+        border-color: #b4cd5f;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        width: 91px;
+        border-radius: 4px;
+        height: 30px;
+        margin-top: 5px;
+    }
+
+        .buttonUrl:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+    .btnGuardar {
+        opacity: 0.7;
+    }
+    .dx-datagrid-header-panel {
+        display: none;
+    }
+
+    .odd {
+        background-color: whitesmoke;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-style: solid;
+        border-width: thin;
+        border-color: lightgray;
+        border-collapse: collapse;
+    }
+
+    .even {
+        background-color: white;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-style: solid;
+        border-width: thin;
+        border-color: lightgray;
+        border-collapse:collapse;
+    }
+
+    .dx-checkbox {
+        float: none !important;
+    }
+
+    .dx-checkbox-icon {
+        border: 1px solid #aaa !important;
+    }
+
+    .dx-texteditor {
+        border: 1px solid #aaa !important;
+    }
+</style>
+
+<div id="popAvanzaTareaTramite">
+    <iframe src="" id="frmAvanzaTareaTramite" style="width:100%; height:100%"></iframe>
+</div>
+
+<div id="popAprobacion">
+    <div id="tabAprobacion"></div>
+    <div id="divDocumento" style="width:100%; height:85%; padding:0px">
+        <iframe src="" id="frmDocumentoAprobacion" style="width:100%; height:100%;"></iframe>
+    </div>
+    <div id="divIndices" style="width: 100%; height: 85%; padding: 2%; border: solid; border-color: lightgray; border-width: thin; overflow: auto; display: none">
+        @{
+            int i = 1;
+            foreach (TBINDICESERIE indice in ViewBag.Indices)
+            {
+                @:<div class="row" style="margin-left: 0px; margin-right: 0px; padding: 2px">
+                if (i % 2 == 0) // Par
+                {
+                    @:<div class="dx-field even">
+                }
+                else
+                {
+                    @:<div class="dx-field odd">
+                }
+                <div class="dx-field-label" style="font-weight: bold">@indice.INDICE</div>
+                <div class="dx-field-value" style="padding:0px">
+                    @{var nombreIndice = "ind" + (indice.TIPO == 4 ? "chk" : "txt") + indice.CODINDICE.ToString(); }
+                    <div id="@{@nombreIndice}"></div>
+                </div>
+                @:</div>
+                @:</div>
+
+                i++;
+            }
+        }
+    </div>
+    <div style="width: 100%; height: 10%; text-align: center; margin-top: 1%">
+        <div id="aprobarInforme"></div>
+        <div id="cancelar"></div>
+    </div>
+</div>
+<div id="panelProcesando"></div>
+
+<div class="row">
+    <div id="tabInformes"></div>
+    <div id="divPendientesAprobar" class="col-sm-12">
+        <div id="GrdInfTecnico" style="height: 400px; padding-left: 0px; padding-right: 0px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding-left: 0px; padding-right: 0px; ">
+        </div>
+    </div>
+    <div id="divAprobados" class="col-sm-12" style="display: none">
+        <div id="GrdInfTecnicoAprobados" style="height: 400px; padding-left: 0px; padding-right: 0px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding-left: 0px; padding-right: 0px; ">
+        </div>
+    </div>
+</div>
+
+<div class="row" style="  margin-top: 10px;">
+    <div class="col-sm-12">
+        <div id="GrdDetalleTramitesVisitas" style="height: 300px; padding-left: 0px; padding-right: 0px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding-left: 0px; padding-right: 0px; ">
+        </div>
+    </div>
+</div>
+<div id="pantallaCargar" title="Cargar Archivo" style="display: none;">
+    <iframe src="" id="archivo" width="100%" height="100%"></iframe>
+</div>
+
+<div id="msAlmacenamiento" title="Información" style="display:none">
+    <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msText"></p>
+</div>
+<div id="pantallaNuevoInfo" title="Nuevo Informe Tecnico" style="display: none; overflow: hidden;">
+    <iframe src="" id="NuevoInf" width="100%" height="100%"></iframe>
+
+
+</div>
+<div id="pantallaTramites" title="Asignar Tramite" style="display: none; overflow: hidden;">
+    <iframe src="" id="tramite" width="100%" height="100%"></iframe>
+
+
+</div>
+<div id="pantallaResponsable" title="Asignar Responsable" style="display: none; overflow: hidden;">
+    <iframe src="" id="responsable" width="100%" height="100%"></iframe>
+
+    <div id="pantallaCargarImg" title="Cargar Doc" style="display: none;">
+        <iframe src="" id="fotos" width="100%" height="100%"></iframe>
+    </div>
+</div>
+<div id="pantallaDetalleTramites" title="Detalle Tramite" style="display: none; overflow: hidden;">
+    <iframe src="" id="DetalleTramites" width="100%" height="100%"></iframe>
+</div>
+<script type="text/javascript">
+    var idVisitaPendientes = 0;
+    var idVisitaAprobados = 0;
+    var idVisita = 0;
+    var codigoTareaSig = 0;
+    var codigoTarea = 0;
+
+    var indices = [];
+
+    $(document).ready(function () {
+        // Inicio Avanza Tarea
+        $("#popAvanzaTramite").dxPopup({
+            title: "Avanza Tarea",
+            fullScreen: true,
+        });
+        // Fin Avanza Tarea
+
+        $("#popAprobacion").dxPopup({
+            title: "Aprobar Informe Técnico",
+            fullScreen: true,
+        });
+
+        $('#tabInformes').dxTabs({
+            items: [
+                  { text: 'Pendientes Aprobación' },
+                  { text: 'Aprobados' }
+            ],
+            selectedIndex: 0,
+            onItemClick: function(e) {
+                if (e.itemIndex == 0)
+                {
+                    $('#divPendientesAprobar').show();
+                    $('#divAprobados').hide();
+
+                    cargarDetalleTramite(idVisitaPendientes);
+
+                    $("#GrdInfTecnico").dxDataGrid("instance").refresh();
+                } else {
+                    $('#divAprobados').show();
+                    $('#divPendientesAprobar').hide();
+
+                    cargarDetalleTramite(idVisitaAprobados);
+
+                    $("#GrdInfTecnicoAprobados").dxDataGrid("instance").refresh();
+                }
+            }
+        });
+
+        $("#panelProcesando").dxLoadPanel({
+            message: 'Procesando...',
+            visible: false,
+            showIndicator: true,
+            showPane: true,
+            shading: true,
+            closeOnOutsideClick: false,
+        });
+
+        //cargarDetalleTramite();
+        consutarInfTecnico();
+        gridTramites({});
+
+    });
+
+    function gridInformeTecnico(jsonInformeTecn) {
+
+        $("#GrdInfTecnico").dxDataGrid({
+            dataSource: jsonInformeTecn,
+            selection: {
+                mode: 'single'
+            }, filterRow: { visible: false },
+            columns: [
+                { dataField: 'ID_VISITA', allowGrouping: true, caption: 'Actuación', width: '8%', allowFiltering: true, dataType: 'number', allowEditing: false },
+                { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '30%', dataType: 'string', allowEditing: false },
+                { dataField: 'OBSERVACION', caption: 'Observación', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false },
+                { dataField: 'FUNCIONARIO', caption: 'FUNCIONARIO', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'FUNCIONARIOACT', caption: 'FUNCIONARIOACT', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'NOMBRE', caption: 'Estado', allowGrouping: true, width: '10%', dataType: 'string', allowEditing: false },
+                { dataField: 'URL2', caption: 'URL2', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'URL', caption: 'URL', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'ID_ESTADOINF', caption: 'ID_ESTADOINF', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                {
+                    dataField: 'pdfActuacion', alignment: 'center', allowGrouping: true, caption: 'PDF Actuación', width: '13%', allowEditing: false, cellTemplate: function (container, options) {
+                        $('<img src="@Url.Content("../../Content/Images/Ver_Doc.png")" style="width:25px;height:25px" class="btnGuardar"/>')
+                                                   .attr('src', options.value)
+                                                   .appendTo(container);
+                    }
+                },
+                { dataField: 'verDoc', alignment: 'center', allowGrouping: true, caption: 'Ver Doc', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
+                    $('<img src="@Url.Content("../../Content/Images/Ver_Doc.png")" style="width:25px;height:25px" class="btnGuardar" onclick="EditarVisitas()" />')
+                             .attr('src', options.value)
+                             .appendTo(container);
+                }
+                },
+                {
+                    dataField: 'cargar', alignment: 'center', allowGrouping: true, caption: 'Cargar Doc', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
+                        $('<img src="@Url.Content("../../Content/Images/EditarVisita.png")" style="width:25px;height:25px" class="btnGuardar"/>')
+                                         .attr('src', options.value)
+                                         .appendTo(container);
+                    }
+                },
+                {
+                    dataField: 'devolver', alignment: 'center', allowGrouping: true, caption: 'Devolver', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
+
+                        $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px" class="btnGuardar" onclick="EditarVisitas()" />')
+
+                                    .attr('src', options.value)
+                                    .appendTo(container);
+                    }
+                },
+             {
+                 dataField: 'aprobar', alignment: 'center', allowGrouping: true, caption: 'Aprobar', width: '15%', allowEditing: false, cellTemplate: function (container, options) {
+
+                     $('<img src="@Url.Content("../../Content/Images/Enviar_Doc.png")" style="width:25px;height:25px" class="btnGuardar"/>')
+
+                                 .attr('src', options.value)
+                                 .appendTo(container);
+                 }
+             },
+ /*                {
+                     dataField: 'Doc', alignment: 'center', allowGrouping: true, caption: 'Documento', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
+
+                         $('<img src="@Url.Content("../../Content/Images/Ver_Doc.png")" style="width:25px;height:25px" class="btnGuardar"  />')
+
+                                     .attr('src', options.value)
+                                     .appendTo(container);
+    }
+    },*/
+    ],
+    editing: {
+            editMode: 'batch',
+            editEnabled: true,
+            insertEnabled: true
+    },
+    onCellClick: function (e) {
+        var id = e.data.ID_VISITA;
+        idVisita = id;
+        idVisitaPendientes = id;
+        var antf = e.data.FUNCIONARIOACT;
+        var responsAnt = e.data.FUNCIONARIO;
+        consultarTareaSiguiente(id);
+        var tipoBoton = e.columnIndex;
+        var columna = e.column.dataField;
+        cargarDetalleTramite(id);
+        //switch (tipoBoton) {
+        switch (columna) {
+            case 'pdfActuacion': //4: //pdf Actuación
+                pdfActuacion(id);
+                break;
+            case 'verDoc': //5: //ver doc
+                if (e.data.URL) {
+                    window.open('DocumentoActuacion/' + id);
+                }
+                //if (e.data.ID_ESTADOINF == 2) {
+                //    window.open(e.data.URL2);
+                //}
+
+                break;
+            case 'cargar': //6: //Cargar Doc
+                if (e.data.ID_ESTADOINF == 2) {
+                    SubirDoC();
+                }
+                break;
+            case 'devolver': //7: //devolver
+                if (e.data.ID_ESTADOINF == 2) {
+                    consultarTramitesVisita(id, responsAnt, antf);
+                    gridTramites({});
+                }
+                break;
+            case 'aprobar': //8: //aprobar
+                if (e.data.ID_ESTADOINF == 2) {
+                    var aprobacionInstance = $("#popAprobacion").dxPopup("instance");
+                    aprobacionInstance.show();
+
+                    @{
+                                foreach (TBINDICESERIE indice in ViewBag.Indices)
+                                {
+                                    switch (indice.TIPO)
+                                    {
+                                        case 4: // Boolean
+                                            <text>
+                    $('#indchk@{@indice.CODINDICE}').dxCheckBox({
+                        value: false,
+                    });
+                    </text>
+                                            break;
+                                        default:
+                                            <text>
+                    {
+                        var txtIndice = $('#indtxt@{@indice.CODINDICE}').dxTextBox();
+                        </text>
+                                            if (indice.OBLIGA == 1)
+                                            {
+                                                <text>
+                        txtIndice.dxValidator({
+                            validationRules: [
+                                { type: 'required', message: 'Indice [@{@indice.INDICE}] Requerido' }
+                            ],
+                        });
+                        </text>
+                                            }
+                                            <text>
+                        var txtIndiceControl = $('#indtxt@{@indice.CODINDICE}').dxTextBox('instance');
+                        txtIndiceControl.option('value', '');
+                    }
+                    </text>
+                                            break;
+                                    }
+                                }
+                            }
+
+                    $.ajax({
+                        type: "GET",
+
+                        url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/IndicesDocumentoActuacion")",
+                        data: { idVisita: idVisita },
+                        success: function (indicesDocumento) {
+                            if (indicesDocumento != null && indicesDocumento.length > 0)
+                            {
+                                for (contIndice = 0; contIndice < indicesDocumento.length; contIndice++)
+                                {
+                                    var txtIndice = $('#indtxt' + indicesDocumento[contIndice].CODINDICE).dxTextBox('instance');
+                                    txtIndice.option('value', indicesDocumento[contIndice].VALOR);
+                                }
+                            }
+                        }
+                    });
+
+                    $('#tabAprobacion').dxTabs({
+                        items: [
+                              { text: 'Documento' },
+                              { text: 'Indices' }
+                        ],
+                        selectedIndex: 0,
+                        onItemClick: function(e) {
+                            if (e.itemIndex == 0)
+                            {
+                                $('#divDocumento').show();
+                                $('#divIndices').hide();
+                            } else {
+                                $('#divIndices').show();
+                                $('#divDocumento').hide();
+                            }
+                        }
+                    });
+
+                    $('#frmDocumentoAprobacion').attr('src', '@Url.Content("~/ControlVigilancia/Visitas/GenerarDocumentoRadicadoPreview?idVisita=")' + idVisita + '&c=@DateTime.Now.ToString("HHmmss")');
+
+                    $('#aprobarInforme').dxButton({
+                        text: 'Radicar Informe',
+                        width: '20%',
+                        type: 'success',
+                        onClick: function (e) {
+                            var result = e.validationGroup.validate();
+                            if (result.isValid) {
+                                $('#frmDocumentoAprobacion').attr('src', '');
+                                aprobacionInstance.hide();
+
+                                $("#panelProcesando").dxLoadPanel("show");
+                                //consultarRadicador(id, e.data.URL);
+
+                                indices = [];
+
+                                $('div[id^="indtxt"]').each(function (i, e) {
+                                    var textBoxIndice = $('#' + e.id).dxTextBox('instance');
+
+                                    indices.push({ CODINDICE: e.id.substr(6), VALOR: textBoxIndice.option('value')});
+                                });
+
+                                $('div[id^="indchk"]').each(function (i, e) {
+                                    var checkBoxIndice = $('#' + e.id).dxCheckBox('instance');
+
+                                    indices.push({ CODINDICE: e.id.substr(6), VALOR: (checkBoxIndice.option('value') ? "S" : "N")});
+                                });
+
+                                GenerarDocumentoRadicado(id);
+                                gridTramites({});
+                            } else {
+                                alert('Información Requerida en los Indices');
+
+                                var tabInstance = $("#tabAprobacion").dxTabs("instance");
+                                tabInstance.option('selectedIndex', 1);
+
+                                $('#divIndices').show();
+                                $('#divDocumento').hide();
+
+                                e.validationGroup.validate();
+                            }
+                        }
+                    });
+
+                    $('#cancelar').dxButton({
+                        text: 'Cancelar',
+                        width: '20%',
+                        type: 'danger',
+                        onClick: function (e) {
+                            $('#frmDocumentoAprobacion').attr('src', '');
+                            aprobacionInstance.hide();
+                        }
+                    });
+
+                    /*
+                    $("#panelProcesando").dxLoadPanel("show");
+                    //consultarRadicador(id, e.data.URL);
+                    GenerarDocumentoRadicado(id);
+                    gridTramites({});*/
+                }
+                /* RETOMAR CUANDO SE ACTIVE LA OPCION DE AVANZAR
+                else if (e.data.ID_ESTADOINF == 3)
+                {
+                    $("#popUpAvanzaTramites").dialog(
+                    {
+                        width: 650,
+                        height: 550,
+                        modal: true
+                    });
+                    $("#frmAvanzaTramites").attr("src", "@Url.Content("~/Tramites/Tramites/AvanzaTramites?id=")" + codigoTarea);
+        }*/
+        break;
+        /*case 'Doc': //9: //ver pdf
+
+if (e.data.ID_ESTADOINF == 3) {
+//window.open(e.data.URL2);
+ConsultarInformeTecnico(id);
+}
+
+break;*/
+    }
+
+    },
+    scrolling: { mode: 'infinite' },
+
+    columnChooser: { enabled: false },
+    allowColumnReordering: true,
+        sorting: { mode: 'single' },
+    pager: { visible: true },
+    paging: { pageSize: 7 },
+    filterRow: { visible: false }, onCellPrepared: function (cellInfo) {
+        if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'pdfActuacion') {
+            cellInfo.cellElement.addClass('btnEditar');
+            cellInfo.column.allowEditing = false;
+        }
+
+        if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'Doc') {
+            if (cellInfo.row.key.ID_ESTADOINF == "3") {
+                cellInfo.cellElement.addClass('btnEditar');
+                cellInfo.column.allowEditing = false;
+            } else {
+                cellInfo.cellElement.addClass('btnGuardar');
+            }
+        }
+
+        if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'aprobar') {
+            if (cellInfo.row.key.ID_ESTADOINF == "2") {
+                cellInfo.cellElement.addClass('btnEditar');
+                cellInfo.column.allowEditing = false;
+            } else {
+                cellInfo.cellElement.addClass('btnGuardar');
+            }
+        }
+
+        if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'devolver') {
+            if (cellInfo.row.key.ID_ESTADOINF == "2") {
+                cellInfo.cellElement.addClass('btnEditar');
+                cellInfo.column.allowEditing = false;
+            } else {
+                cellInfo.cellElement.addClass('btnGuardar');
+            }
+        }
+        /*if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'verDoc') {
+            if (cellInfo.row.key.ID_ESTADOINF == "2") {
+                cellInfo.cellElement.addClass('btnEditar');
+                cellInfo.column.allowEditing = false;
+            } else {
+                cellInfo.cellElement.addClass('btnGuardar');
+            }
+        }*/
+    }
+    });
+    }
+
+    function gridInformeTecnicoAprobados(jsonInformeTecn) {
+
+        $("#GrdInfTecnicoAprobados").dxDataGrid({
+            dataSource: jsonInformeTecn,
+            selection: {
+                mode: 'single'
+            }, filterRow: { visible: false },
+            columns: [
+                { dataField: 'ID_VISITA', allowGrouping: true, caption: 'Actuación', width: '8%', allowFiltering: true, dataType: 'number', allowEditing: false },
+                { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '45%', dataType: 'string', allowEditing: false },
+                { dataField: 'OBSERVACION', caption: 'Observación', allowGrouping: true, width: '25%', dataType: 'string', allowEditing: false },
+                { dataField: 'FUNCIONARIO', caption: 'FUNCIONARIO', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'FUNCIONARIOACT', caption: 'FUNCIONARIOACT', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'NOMBRE', caption: 'Estado', allowGrouping: true, width: '10%', dataType: 'string', allowEditing: false },
+                { dataField: 'URL2', caption: 'URL2', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'URL', caption: 'URL', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                { dataField: 'ID_ESTADOINF', caption: 'ID_ESTADOINF', allowGrouping: true, width: '20%', dataType: 'string', allowEditing: false, visible: false },
+                {
+                    dataField: 'Doc', alignment: 'center', allowGrouping: true, caption: 'Documento', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
+
+                        $('<img src="@Url.Content("../../Content/Images/Ver_Doc.png")" style="width:25px;height:25px" class="btnGuardar"  />')
+
+                                    .attr('src', options.value)
+                                    .appendTo(container);
+                    }
+                },
+            ],
+            editing: {
+                editMode: 'batch',
+                editEnabled: true,
+                insertEnabled: true
+            },
+            onCellClick: function (e) {
+                var id = e.data.ID_VISITA;
+                idVisita = id;
+                idVisitaAprobados = id;
+                var antf = e.data.FUNCIONARIOACT;
+                var responsAnt = e.data.FUNCIONARIO;
+                consultarTareaSiguiente(id);
+                var tipoBoton = e.columnIndex;
+                var columna = e.column.dataField;
+                cargarDetalleTramite(id);
+                //switch (tipoBoton) {
+                switch (columna) {
+                    case 'pdfActuacion': //4: //pdf Actuación
+                        pdfActuacion(id);
+                        break;
+
+                    case 'Doc': //9: //ver pdf
+                        if (e.data.ID_ESTADOINF == 3) {
+                            //window.open(e.data.URL2);
+                            ConsultarInformeTecnico(id);
+                        }
+
+                        break;
+                }
+            },
+            scrolling: { mode: 'infinite' },
+
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+            pager: { visible: true },
+            paging: { pageSize: 7 },
+            filterRow: { visible: false },
+            onCellPrepared: function (cellInfo) {
+                if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'pdfActuacion') {
+                    cellInfo.cellElement.addClass('btnEditar');
+                    cellInfo.column.allowEditing = false;
+                }
+
+                if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'Doc') {
+                    if (cellInfo.row.key.ID_ESTADOINF == "3") {
+                        cellInfo.cellElement.addClass('btnEditar');
+                        cellInfo.column.allowEditing = false;
+                    } else {
+                        cellInfo.cellElement.addClass('btnGuardar');
+                    }
+                }
+            }
+        });
+    }
+
+    function consultarRadicador(id, ruta) {
+
+        var unidadDocumental = 22;
+
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/GestionDocumental/api/RadicadorApi/Radicar")",
+            data: { idUnidadDocumental: unidadDocumental, tipoRetorno: 'key' },
+
+            success: function (response) {
+
+                var dato = response;
+                convertirDoc(id, dato.id, ruta);
+
+            },
+        });
+    }
+    function convertirDoc(id, idRadicador, ruta) {
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/InformeVisita/converRTFaPDF")",
+            data: { url: ruta, id: id, idRadicado: idRadicador },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = response;
+                consultarTramitesVisitaAprob(id);
+            }
+        });
+    }
+
+    function GenerarDocumentoRadicado(idVisita) {
+        var unidadDocumental = 62;
+        $.ajax({
+            type: "GET",
+            //url: "@Url.Content("~/Tramites/api/RadicadorUDApi/Radicar")",
+            url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/RadicarInformeTecnico")",
+            //data: { idUnidadDocumental: unidadDocumental, tipoRetorno: 'key' },
+            data: { idVisita: idVisita },
+            success: function (response) {
+                var dato = response;
+                GenerarDocumento(idVisita, dato.IdRadicado);
+            },
+        });
+    }
+
+    function GenerarDocumento(idVisita, idRadicado) {
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GenerarDocumentoRadicado")",
+            data: JSON.stringify({ idVisita: idVisita, idRadicado: idRadicado, indicesDocumento: indices }),
+            contentType: 'application/json; charset=UTF-8',
+            success: function (response) {
+                $("#panelProcesando").dxLoadPanel("hide");
+                consutarInfTecnico();
+                alert('Documento Generado y Radicado');
+                ConsultarInformeTecnico(idVisita);
+            }
+        });
+    }
+
+    function ConsultarInformeTecnico(idVisita)
+    {
+        window.open("@Url.Content("~/ControlVigilancia/InformeVisita/ConsultarInformeTecnicoRadicado?idVisita=")" + idVisita);
+    }
+
+    function consutarInfTecnico() {
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/InformeVisita/consultarInformeTecnicoRevision")",
+
+            beforeSend: function () { },
+            success: function (response) {
+
+                var obj = eval("(" + response + ')');
+                gridInformeTecnico(obj);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/InformeVisita/consultarInformeTecnicoRevisionAprobados")",
+
+            beforeSend: function () { },
+            success: function (response) {
+                var obj = eval("(" + response + ')');
+                gridInformeTecnicoAprobados(obj);
+            }
+        });
+    }
+    function gridTramites(json) {
+        $("#GrdDetalleTramitesVisitas").dxDataGrid({
+            dataSource: json,
+            selection: {
+                mode: 'none'
+            },
+            columns: [
+            { dataField: 'ID_TRAMITE', caption: 'Código trámite', allowGrouping: true, width: '10%' },
+            { dataField: 'ASUNTO', caption: 'Asunto', allowGrouping: true, width: '65%' },
+            { dataField: 'FECHAINI', caption: 'Fecha inicio trámite', allowGrouping: true, width: '15%', dataType: 'string' },
+            { dataField: 'DIRECCION', caption: 'Dirección', allowGrouping: true, width: '12%' },
+            { dataField: 'MUNICIPIO', caption: 'Municipio', allowGrouping: true, width: '12%' },
+             {
+                 dataField: 'DETALLETRAMITE', allowGrouping: true, alignment: 'center', caption: 'Detalle trámite', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
+                     container.height(5);
+                     $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px"   class="btnEditar" onclick="abrirDetalleTramite(' + options.data.CODTRAMITE + ')" />')
+
+                                 .attr('src', options.value)
+                                 .appendTo(container);
+                 }
+             }
+            ], onCellClick: function (e) {
+                var id = e.data.ID_TRAMITE;
+                var tipoBoton = e.columnIndex;
+
+                switch (tipoBoton) {
+
+                    case 5: //detalle
+                        abrirDetalleTramite(id)
+                        break;
+
+
+                }
+
+            },
+            allowColumnReordering: true,
+            sorting: { mode: 'multiple' },
+            paging: {
+                pageSize: 5
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20]
+            }
+        });
+
+    }
+    function cargarDetalleTramite(visita) {
+        if (visita > 0)
+        {
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/Visitas/DetalleTramitesVisitas")",
+                data: { id_visita: visita },
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval(response);
+                    gridTramites(datos);
+
+                }
+            });
+        } else {
+            gridTramites({});
+        }
+    }
+    function abrirDetalleTramite(id) {
+
+        $("#pantallaDetalleTramites").dialog(
+               {
+                   width: 650,
+                   height: 550,
+                   modal: true
+               });
+        $("#DetalleTramites").attr("src", "http://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=" + id);
+    }
+
+    function consultarTareaSiguiente(id) {
+        codigoTareaSig = "";
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/InformeVisita/ConsultarTareaSiguiente")",
+            data: { idVisita: parent.idVisita },
+            beforeSend: function () { },
+            success: function (response) {
+
+                var datos = eval("(" + response + ')');
+
+                codigoTareaSig = datos.CODTAREASIGUIENTE;
+                codigoTarea = datos.CODTAREA;
+
+            }
+        });
+
+
+    }
+
+    function pdfActuacion(id) {
+        window.open("@Url.Content("~/ControlVigilancia/Visitas/GenerarPDFActuacion?idActuacion=")" + id);
+    }
+
+    function consultarTramitesVisitaAprob(id) {
+
+        var tramites = "";
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/InformeVisita/consultarTramitesVisita")",
+            data: { idVisita: id },
+            beforeSend: function () { },
+            success: function (response) {
+
+                var obj = eval("(" + response + ')');
+                for (var i = 0; i < obj.length; i++) {
+                    tramites += obj[i].ID_TRAMITE + ",";
+                }
+                tramites = tramites.substring(0, tramites.length - 1);
+
+
+                consultarResponsableAvanzaTareaAprob(tramites, id);
+            }
+        });
+    }
+    function consultarTramitesVisita(id, responsAnt, antf) {
+
+        var tramites = "";
+        $.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/InformeVisita/consultarTramitesVisita")",
+            data: { idVisita: id },
+            beforeSend: function () { },
+            success: function (response) {
+
+                var obj = eval("(" + response + ')');
+                for (var i = 0; i < obj.length; i++) {
+                    tramites += obj[i].ID_TRAMITE + ",";
+                }
+                tramites = tramites.substring(0, tramites.length - 1);
+
+
+                consultarResponsableAvanzaTarea(tramites, responsAnt, id, antf);
+            }
+        });
+    }
+    function consultarResponsableAvanzaTareaAprob(tramiteCod, id) {
+
+        var copias = "";
+        /*$.ajax({
+            type: "POST",
+
+            url: "@Url.Content("~/ControlVigilancia/Visitas/consultarResponsableVisita")",
+        data: { tramite: tramiteCod },
+        beforeSend: function () { },
+        success: function (response) {
+
+            var obj = eval("(" + response + ')');
+            for (var i = 0; i < obj.length; i++) {
+                copias += obj[i].CODFUNCIONARIO + ",";
+            }
+            copias = copias.substring(0, copias.length - 1);*/
+            copias = '0';
+            consultarTareaAnteriorAprob(tramiteCod, copias, id);
+
+            /*}
+        });*/
+        }
+
+        function consultarResponsableAvanzaTarea(tramiteCod, responsAnt, id, antf) {
+
+            var copias = "";
+            /*$.ajax({
+                type: "POST",
+
+                url: "@Url.Content("~/ControlVigilancia/Visitas/consultarResponsableVisita")",
+            data: { tramite: tramiteCod },
+            beforeSend: function () { },
+            success: function (response) {
+
+                var obj = eval("(" + response + ')');
+                for (var i = 0; i < obj.length; i++) {
+                    copias += obj[i].CODFUNCIONARIO + ",";
+                }
+                copias = copias.substring(0, copias.length - 1);*/
+                copias = '0';
+                consultarTareaAnterior(tramiteCod, copias, responsAnt, id, antf);
+                /*
+            }
+        });*/
+            }
+            function consultarTareaAnteriorAprob(p_cod_tramite, copias, id) {
+                $.ajax({
+                    type: "POST",
+
+                    url: "@Url.Content("~/ControlVigilancia/Visitas/consultarTareaAnt")",
+                    data: { idTramite: p_cod_tramite },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var obj = eval("(" + response + ')');
+
+                        Aprobar(p_cod_tramite, copias, obj[0].CODTAREA, id);
+
+                    }
+                });
+            }
+            function consultarTareaAnterior(p_cod_tramite, copias, responsAnt, id, antf) {
+                $.ajax({
+                    type: "POST",
+
+                    url: "@Url.Content("~/ControlVigilancia/Visitas/consultarTareaAnt")",
+                    data: { idTramite: p_cod_tramite },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var obj = eval("(" + response + ')');
+
+                        devolverRevision(p_cod_tramite, copias, responsAnt, obj[0].CODTAREA, obj[0].CODTAREA_ANTERIOR, id, antf);
+
+                    }
+                });
+            }
+            function Aprobar(p_cod_tramite, copias, codtarea, idVisita) {
+                $.ajax({
+                    type: "POST",
+
+                    url: "@Url.Content("~/ControlVigilancia/Visitas/aprobarTramite")",
+                    data: { idTramites: p_cod_tramite, arrCopias: copias, codTarea: codtarea, idVisita: idVisita },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var datos = response;
+                        consutarInfTecnico();
+                        gridTramites({});
+                        mensajeAlmacenamiento("El tramite fue aprobado exitosamente");
+
+                    }
+                });
+
+            }
+            function devolverRevision(p_cod_tramite, copias, responsAnt, codtarea, tareAnt, idVisita, antf) {
+                $.ajax({
+                    type: "POST",
+
+                    url: "@Url.Content("~/ControlVigilancia/Visitas/desasociarTramiteAprobacion")",
+                    data: { idTramites: p_cod_tramite, arrCopias: copias, CodResponsable: responsAnt, codTarea: codtarea, tareaSig: tareAnt, idVisita: idVisita, funAnt: antf },
+                    beforeSend: function () { },
+                    success: function (response) {
+                        var datos = response;
+                        consutarInfTecnico();
+                        cargarDetalleTramite({});
+                        mensajeAlmacenamiento("El tramite fue devuelto a revisión  exitosamente");
+
+                    }
+                });
+
+            }
+            function mensajeAlmacenamiento(mensaje) {
+                $("#msText").text(mensaje);
+
+
+                $("#msAlmacenamiento").dialog({
+
+                    buttons: [
+              {
+                  text: "Aceptar",
+
+                  click: function () { $(this).dialog("close"); },
+
+                  class: "btn btn-default glyphicon  glyphicon-ok-circle"
+              },
+                    ]
+                });
+
+
+            }
+
+            function SubirDoC() {
+                $("#pantallaCargarImg").dialog(
+                {
+                    width: 500,
+                    height: 200,
+                    modal: true
+                });
+                $("#fotos").attr("src", "@Url.Content("~/ControlVigilancia/InformeVisita/cargarDoc")");
+
+            }
+</script>
+

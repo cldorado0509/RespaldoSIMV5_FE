@@ -1,0 +1,85 @@
+﻿@using SIM.Areas.General.Models
+@using System.Web.UI.WebControls
+
+
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvwTerceros";
+        settings.CallbackRouteValues = new { Controller = "Tercero", Action = "gvwSeleccionarTercero" };
+        settings.Width = Unit.Percentage(100);
+
+        settings.CommandColumn.Visible = false;
+
+        settings.KeyFieldName = "ID_TERCERO";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = false;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+        settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_TERCERO";
+            column.Caption = "C&oacute;digo";
+            column.Width = 80;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ID_TIPODOCUMENTO";
+            column.Caption = "Tipo Doc.";
+            column.Width = 60;
+
+            column.ColumnType = MVCxGridViewColumnType.ComboBox;
+            var comboBoxProperties = column.PropertiesEdit as ComboBoxProperties;
+            comboBoxProperties.DataSource = ModelsToListGeneral.GetTiposDocumento();
+            comboBoxProperties.TextField = "S_ABREVIATURA";
+            comboBoxProperties.ValueField = "ID_TIPODOCUMENTO";
+            comboBoxProperties.ValueType = typeof(int);
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "N_DOCUMENTON";
+            column.Caption = "Identificaci&oacute;n";
+            column.Width = 100;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "N_DIGITOVER";
+            column.Caption = "DV";
+            column.Width = 30;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "S_RSOCIAL";
+            column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            column.UnboundExpression = "Iif(ID_TIPODOCUMENTO == 2, JURIDICA.S_RSOCIAL, TERCERO.S_RSOCIAL)";
+            column.Caption = "Nombre";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "JURIDICA.S_SIGLA";
+            column.Caption = "Sigla";
+            column.Width = 100;
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+
+        settings.ClientSideEvents.SelectionChanged = "SeleccionRegistroTercero";
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.BindToLINQ(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "ID_TERCERO";
+}).GetHtml()

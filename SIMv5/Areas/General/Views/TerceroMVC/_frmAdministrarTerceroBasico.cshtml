@@ -1,0 +1,284 @@
+@model NATURAL
+@using SIM.Data.General
+@using System.Web.UI.WebControls
+
+<div id="TerceroContainer">
+    @{
+        <script type="text/javascript">
+        function AlmacenarOnClick(s, e) {
+            ProcessPanel.Show();
+
+            var formData = new FormData(document.getElementById("CamposTerceroForm"))
+
+            $.ajax({
+                type: 'POST',
+                //cache: false,
+                //contentType: false,
+                //processData: false,
+                contentType: 'multipart/form-data',
+                url: '@Url.Action("TerceroAddNew", "Tercero")',
+                data: formData,
+                processData: false,
+                success: function (response) {
+                    ReloadTercero();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    ProcessPanel.Hide();
+                    alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                }
+            });
+        }
+        /*
+        function OnTextChangedDoc(s, e) {
+            cambioDoc = true;
+        }
+
+        function OnKeyDownDoc(s, e) {
+            if (e.htmlEvent.keyCode == 13) {
+                ReloadRepLegal();
+            }
+        }
+
+        function OnLostFocusDoc(s, e) {
+            if (cambioDoc)
+                ReloadRepLegal();
+        }
+
+        function ReloadRepLegal() {
+            var repLegalTipoDoc = ASPxClientControl.GetControlCollection().GetByName("TERCERO.ID_TIPODOCUMENTO");
+            var repLegalDoc = ASPxClientControl.GetControlCollection().GetByName("TERCERO.N_DOCUMENTON");
+
+            if (repLegalDoc != '' && repLegalDoc.GetIsValid()) {
+                ProcessPanel.Show();
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("frmAdministrarTerceroBasico", "Tercero")',
+                    data: { tipodoc: repLegalTipoDoc.GetValue(), documento: repLegalDoc.GetText(), ok: "El Representante Legal se encuentra registrado en el Sistema.", alerta: "El Representante Legal NO existe,al guardar se creara uno con los nuevos datos." },
+                    success: function (response) {
+                        $("#TerceroContainer").html(response);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        ProcessPanel.Hide();
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                    }
+                });
+            }
+            cambioDoc = false;
+        }*/
+        </script>
+        // Primera línea de Representante Legal
+
+        Html.DevExpress().LoadingPanel(settings =>
+        {
+            settings.Name = "ProcessPanel";
+            settings.Modal = true;
+            settings.Text = "Procesando Documento";
+    //settings.ContainerElementID = "gvwFacturas";
+}).GetHtml();
+
+        if ((bool)ViewBag.PermiteGuardar)
+        {
+            Html.BeginForm("TerceroAddNew", "Tercero", FormMethod.Post, new { name = "CamposTerceroForm", id = "CamposTerceroForm" });
+        }
+        Html.DevExpress().TextBox(settings =>
+        {
+            settings.Name = "txtTerceroCargado";
+            settings.ClientVisible = false;
+            settings.Text = ((bool)ViewBag.Existe ? "1" : "0");
+        }).GetHtml();
+
+        Html.DevExpress().TextBoxFor(model => Model.ID_TERCERO, settings =>
+        {
+            settings.Name = "RepLegal.ID_TERCERO";
+            settings.ClientVisible = false;
+        }).GetHtml();
+
+        if (ViewBag.Mensaje != null)
+        {
+            ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+            ViewContext.Writer.Write("<div class=\"col-md-12\">");
+            Html.DevExpress().Label(settings =>
+            {
+                settings.Text = ViewBag.Mensaje;
+                if (ViewBag.TipoMensaje == "OK")
+                    settings.Style.Add("color", "green");
+                else
+                    settings.Style.Add("color", "red");
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+        }
+
+        ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+        ViewContext.Writer.Write("<div class=\"col-md-1\">");
+        Html.DevExpress().Label(settings =>
+        {
+            settings.EncodeHtml = false;
+            settings.Text = "Identificaci&oacute;n:";
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+
+        ViewContext.Writer.Write("<div class=\"col-md-3\">");
+        ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+        Html.DevExpress().ComboBoxFor(model => Model.TERCERO.ID_TIPODOCUMENTO, settings =>
+        {
+            settings.Width = 60;
+            settings.Properties.DropDownWidth = 290;
+            settings.Properties.DropDownStyle = DropDownStyle.DropDownList;
+            settings.Properties.TextFormatString = "{0}";
+            settings.Properties.ValueField = "ID_TIPODOCUMENTO";
+                    //settings.Properties.TextField = "S_ABREVIATURA";
+                    settings.Properties.ValueType = typeof(int);
+
+            if ((bool)ViewBag.PermiteGuardar)
+            {
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                settings.Properties.ValidationSettings.RequiredField.ErrorText = "Tipo de Documento es Requerido";
+            }
+
+                    //settings.Properties.Columns.Add("ID_TIPODOCUMENTO", "ID", 20);
+                    settings.Properties.Columns.Add("S_ABREVIATURA", "Abr", 50);
+            settings.Properties.Columns.Add("S_NOMBRE", "Descripci&oacute;n", 240);
+        }).BindList(ModelsToListGeneral.GetTiposDocumentoNatural()).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div style=\"width:55%; float:left; padding-left:3%\">");
+        Html.DevExpress().TextBoxFor(model => Model.TERCERO.N_DOCUMENTON, settings =>
+        {
+            settings.Properties.ValidationSettings.RegularExpression.ValidationExpression = "\\d+";
+            settings.Properties.ValidationSettings.RegularExpression.ErrorText = "Documento Inválido";
+            if ((bool)ViewBag.PermiteGuardar)
+            {
+                settings.Properties.ValidationSettings.RequiredField.IsRequired = true;
+                settings.Properties.ValidationSettings.RequiredField.ErrorText = "Documento es Requerido";
+            }
+            settings.Width = Unit.Percentage(100);//150;
+                    settings.Properties.ClientSideEvents.TextChanged = "OnTextChangedDoc";
+            settings.Properties.ClientSideEvents.KeyDown = "OnKeyDownDoc";
+            settings.Properties.ClientSideEvents.LostFocus = "OnLostFocusDoc";
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+        Html.DevExpress().Label(settings =>
+        {
+            settings.Text = "DV:";
+            settings.Width = Unit.Percentage(100); //30;
+                    settings.Style.Add("padding", "3px 3px 2px 3px");
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div style=\"width:10%; float:left\">");
+        Html.DevExpress().TextBoxFor(model => Model.TERCERO.N_DIGITOVER, settings =>
+        {
+            settings.Width = Unit.Percentage(100); //30;
+                    settings.ReadOnly = true;
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("</div>");
+
+        ViewContext.Writer.Write("<div class=\"col-md-1\">");
+        Html.DevExpress().Label(settings =>
+        {
+            settings.EncodeHtml = false;
+            settings.Text = "Nombres:";
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div class=\"col-md-3\">");
+        Html.DevExpress().TextBox(settings =>
+        {
+            settings.Name = "txtNombres";
+            settings.Width = Unit.Percentage(100);
+            if (Model != null)
+                settings.Text = (Model.S_NOMBRE1 == null ? "" : " " + Model.S_NOMBRE1.Trim()) + (Model.S_NOMBRE2 == null ? "" : " " + Model.S_NOMBRE2.Trim());
+            settings.ReadOnly = ViewBag.Existe;
+        }).GetHtml();
+        Html.DevExpress().TextBoxFor(model => Model.S_NOMBRE1, settings =>
+        {
+            settings.ClientVisible = false;
+        }).GetHtml();
+        Html.DevExpress().TextBoxFor(model => Model.S_NOMBRE2, settings =>
+        {
+            settings.ClientVisible = false;
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div class=\"col-md-1\">");
+        Html.DevExpress().Label(settings =>
+        {
+            settings.EncodeHtml = false;
+            settings.Text = "Apellidos:";
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div class=\"col-md-3\">");
+        Html.DevExpress().TextBox(settings =>
+        {
+            settings.Name = "txtApellidos";
+            settings.Width = Unit.Percentage(100);
+            if (Model != null)
+                settings.Text = (Model.S_APELLIDO1 == null ? "" : " " + Model.S_APELLIDO1.Trim()) + (Model.S_APELLIDO2 == null ? "" : " " + Model.S_APELLIDO2.Trim());
+            settings.ReadOnly = ViewBag.Existe;
+        }).GetHtml();
+        Html.DevExpress().TextBoxFor(model => Model.S_APELLIDO1, settings =>
+        {
+            settings.ClientVisible = false;
+        }).GetHtml();
+        Html.DevExpress().TextBoxFor(model => Model.S_APELLIDO2, settings =>
+        {
+            settings.ClientVisible = false;
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("</div>");
+
+        // Segunda línea de Representante Legal
+        ViewContext.Writer.Write("<div class=\"row\" style=\"padding:5px\">");
+        ViewContext.Writer.Write("<div class=\"col-md-4\">");
+        ViewContext.Writer.Write("<div style=\"width:35%; float:left\">");
+        Html.DevExpress().Label(settings =>
+        {
+            settings.EncodeHtml = false;
+            settings.Text = "Correo Electr&oacute;nico:";
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div style=\"width:65%; float:left\">");
+        Html.DevExpress().TextBoxFor(model => Model.TERCERO.S_CORREO, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.ReadOnly = ViewBag.Existe;
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div class=\"col-md-4\">");
+        ViewContext.Writer.Write("<div style=\"width:25%; float:left\">");
+        Html.DevExpress().Label(settings =>
+        {
+            settings.EncodeHtml = false;
+            settings.Text = "P&aacute;gina Web:";
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("<div style=\"width:75%; float:left\">");
+        Html.DevExpress().TextBoxFor(model => Model.TERCERO.S_WEB, settings =>
+        {
+            settings.Width = Unit.Percentage(100);
+            settings.ReadOnly = ViewBag.Existe;
+        }).GetHtml();
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("</div>");
+
+        if (ViewBag.PermiteGuardar)
+        {
+            ViewContext.Writer.Write("<div class=\"col-md-4\">");
+            ViewContext.Writer.Write("<div style=\"width:25%; float:right\">");
+            Html.DevExpress().Button(settings =>
+            {
+                settings.Name = "btnAlmacenar";
+                settings.Text = "Almacenar";
+                settings.ClientSideEvents.Click = "AlmacenarOnClick";
+            }).GetHtml();
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+        }
+        ViewContext.Writer.Write("</div>");
+        if ((bool)ViewBag.PermiteGuardar)
+        {
+            Html.EndForm();
+        }
+    }
+</div>

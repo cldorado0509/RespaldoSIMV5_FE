@@ -1,0 +1,499 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-CO">
+  <Title Text="PMES" />
+  <DataSources>
+    <DataSource ComponentName="dataSource1" Name="PMES" />
+  </DataSources>
+  <Items>
+    <Pie ComponentName="pieDashboardItem1" Name="SEXO Y EDAD" DataSource="dataSource1" FilterString="[DataItem1] Is Not Null And [DataItem0] Is Not Null" ContentArrangementMode="FixedColumnCount" ContentLineCount="2">
+      <DataItems>
+        <Dimension DataMember="SEXO" UniqueName="DataItem0" />
+        <Dimension DataMember="EDAD" UniqueName="DataItem1" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem2">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension UniqueName="DataItem0" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument UniqueName="DataItem1" />
+      </Arguments>
+      <Values>
+        <Value UniqueName="DataItem2" />
+      </Values>
+    </Pie>
+    <Pie ComponentName="pieDashboardItem2" Name="ESTRATO" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" LabelContentType="ArgumentValueAndPercent" ShowPieCaptions="false">
+      <DataItems>
+        <Dimension DataMember="ESTRATO" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Values>
+        <Value UniqueName="DataItem1" />
+      </Values>
+    </Pie>
+    <Chart ComponentName="chartDashboardItem4" Name="HORARIO DE ENTRADA" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+      <DataItems>
+        <Dimension DataMember="N_HORAINGRESO" ColoringMode="Hue" UniqueName="DataItem0">
+          <NumericFormat FormatType="General" />
+        </Dimension>
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple SeriesType="Line">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem5" Name="HORARIO DE SALIDA" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+      <DataItems>
+        <Dimension DataMember="N_HORASALIDA" ColoringMode="Hue" UniqueName="DataItem0">
+          <NumericFormat FormatType="General" />
+        </Dimension>
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple SeriesType="Line">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem7" Name="TELETRABAJO" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+      <DataItems>
+        <Dimension DataMember="TELETRABAJO" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="ID_ESTADO" Name="Cantidad" SummaryType="Count" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple Name="Cantidad">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem8" Name="DÍAS TELETRABAJO" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="TT_LUNES" Name="Lunes" UniqueName="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="TT_MARTES" Name="Martes" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="TT_MIERCOLES" Name="Miércoles" UniqueName="DataItem2">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="TT_JUEVES" Name="Jueves" UniqueName="DataItem3">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="TT_VIERNES" Name="Viernes" UniqueName="DataItem4">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="TT_SABADO" Name="Sábado" UniqueName="DataItem5">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="TT_DOMINGO" Name="Domingo" UniqueName="DataItem6">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple Name="Lunes">
+              <Value UniqueName="DataItem0" />
+            </Simple>
+            <Simple Name="Martes">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+            <Simple Name="Miércoles">
+              <Value UniqueName="DataItem2" />
+            </Simple>
+            <Simple Name="Jueves">
+              <Value UniqueName="DataItem3" />
+            </Simple>
+            <Simple Name="Viernes">
+              <Value UniqueName="DataItem4" />
+            </Simple>
+            <Simple Name="Sábado">
+              <Value UniqueName="DataItem5" />
+            </Simple>
+            <Simple Name="Domingo">
+              <Value UniqueName="DataItem6" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem9" Name="TIPO TRABAJADOR" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="TIPOTRABAJADOR" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple Name="Cantidad">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem10" Name="DISTRIBUCIÓN MODAL" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="MODOP" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem11" Name="TIEMPO DE VIAJE POR MODO" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOP" Name="MODO" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_TIEMPOVM" Name="Tiempo Promedio (min)" SummaryType="Average" UniqueName="DataItem1" />
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem1" Name="ÁREAS" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="AREA" ColoringMode="Hue" TopNEnabled="true" TopNCount="12" TopNMeasure="DataItem1" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Card ComponentName="cardDashboardItem1" Name="DISTANCIA" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" ContentArrangementMode="FixedColumnCount" ContentLineCount="2">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="S_DISTANCIA" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension UniqueName="DataItem0" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue UniqueName="DataItem1" />
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem2" Name="CELDAS DE PARQUEO" DataSource="dataSource1">
+      <ColoringOptions MeasuresColoringMode="Hue" />
+      <DataItems>
+        <Measure DataMember="N_CARRO" Name="CARRO" SummaryType="Max" UniqueName="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="N_MOTO" Name="MOTO" SummaryType="Max" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="N_BICICLETA" Name="BICICLETA" SummaryType="Max" UniqueName="DataItem2">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem0" />
+            </Simple>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+            <Simple>
+              <Value UniqueName="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem3" Name="DISTRIBUCIÓN MODAL VIAJES LABORALES" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOL" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="VIAJES_LABORALES" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem6" Name="DISPOSICIÓN AL CAMBIO MODAL" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOCAMBIO" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem12" Name="EMISIONES DE CO2 POR MODO" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOP" Name="MODO" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_CO2P" Name="CO2" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem13" Name="EMISIONES DE CO2 POR ÁREA" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="AREA" Name="ÁREA" SortOrder="Descending" ColoringMode="Hue" TopNEnabled="true" TopNCount="10" TopNMeasure="DataItem1" UniqueName="DataItem0" />
+        <Measure DataMember="N_CO2P" Name="CO2" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Card ComponentName="cardDashboardItem3" Name="CONTADORES" DataSource="dataSource1" ContentArrangementMode="FixedColumnCount">
+      <DataItems>
+        <Measure DataMember="N_CO2P" Name="Ton. de CO2/día" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+        <Measure DataMember="N_PM25P" Name="Gramos PM2,5/día" UniqueName="DataItem2">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+        <Measure DataMember="N_CANTIDADP" Name="Población" UniqueName="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <Card ShowStartEndValues="false">
+        <ActualValue UniqueName="DataItem0" />
+      </Card>
+      <Card ShowStartEndValues="false">
+        <ActualValue UniqueName="DataItem1" />
+      </Card>
+      <Card ShowStartEndValues="false">
+        <ActualValue UniqueName="DataItem2" />
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem14" Name="SEDES" DataSource="dataSource1">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="INSTALACION" ColoringMode="Hue" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="Cantidad">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Pie ComponentName="pieDashboardItem3" Name="SEXO" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" ShowPieCaptions="false">
+      <DataItems>
+        <Dimension DataMember="SEXO" Name="SEXO" UniqueName="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Values>
+        <Value UniqueName="DataItem1" />
+      </Values>
+    </Pie>
+    <Card ComponentName="cardDashboardItem2" Name="NÚMERO DE DUCHAS" ShowCaption="false" DataSource="dataSource1" ContentArrangementMode="FixedRowCount" ContentLineCount="2">
+      <DataItems>
+        <Measure DataMember="N_DUCHAS" Name="DUCHAS" SummaryType="Max" UniqueName="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="VIAJES_LABORALES" Name="VIAJES LABORALES" UniqueName="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Card>
+        <ActualValue UniqueName="DataItem0" />
+      </Card>
+      <Card>
+        <ActualValue UniqueName="DataItem1" />
+      </Card>
+    </Card>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical">
+      <LayoutItem DashboardItem="cardDashboardItem3" Weight="7.13375796178344" />
+      <LayoutGroup Weight="9.2993630573248414">
+        <LayoutItem DashboardItem="chartDashboardItem14" Weight="64.782096584216731" />
+        <LayoutItem DashboardItem="pieDashboardItem2" Weight="35.217903415783276" />
+      </LayoutGroup>
+      <LayoutGroup Weight="10.955414012738853">
+        <LayoutItem DashboardItem="pieDashboardItem3" Weight="28.268551236749115" />
+        <LayoutItem DashboardItem="pieDashboardItem1" Weight="71.731448763250881" />
+      </LayoutGroup>
+      <LayoutGroup Weight="20" Orientation="Vertical">
+        <LayoutGroup Weight="57.324840764331213">
+          <LayoutItem DashboardItem="chartDashboardItem10" Weight="48.409893992932865" />
+          <LayoutItem DashboardItem="chartDashboardItem1" Weight="51.590106007067135" />
+        </LayoutGroup>
+        <LayoutGroup Weight="42.675159235668787">
+          <LayoutItem DashboardItem="chartDashboardItem4" Weight="48.409893992932865" />
+          <LayoutItem DashboardItem="chartDashboardItem5" Weight="51.590106007067135" />
+        </LayoutGroup>
+      </LayoutGroup>
+      <LayoutGroup Weight="7.3885350318471339">
+        <LayoutItem DashboardItem="chartDashboardItem9" Weight="28.268551236749115" />
+        <LayoutItem DashboardItem="chartDashboardItem7" Weight="19.316843345111895" />
+        <LayoutItem DashboardItem="chartDashboardItem8" Weight="52.41460541813899" />
+      </LayoutGroup>
+      <LayoutGroup Weight="23.821656050955415" Orientation="Vertical">
+        <LayoutGroup Weight="50.267379679144383">
+          <LayoutItem DashboardItem="cardDashboardItem1" Weight="48.409893992932865" />
+          <LayoutItem DashboardItem="chartDashboardItem11" Weight="51.590106007067135" />
+        </LayoutGroup>
+        <LayoutGroup Weight="49.732620320855617">
+          <LayoutItem DashboardItem="chartDashboardItem3" Weight="48.292108362779743" />
+          <LayoutItem DashboardItem="chartDashboardItem6" Weight="51.707891637220257" />
+        </LayoutGroup>
+      </LayoutGroup>
+      <LayoutGroup Weight="11.847133757961784">
+        <LayoutItem DashboardItem="chartDashboardItem12" Weight="48.409893992932865" />
+        <LayoutItem DashboardItem="chartDashboardItem13" Weight="51.590106007067135" />
+      </LayoutGroup>
+      <LayoutGroup Weight="9.5541401273885356">
+        <LayoutItem DashboardItem="chartDashboardItem2" Weight="48.409893992932865" />
+        <LayoutItem DashboardItem="cardDashboardItem2" Weight="51.590106007067135" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

@@ -1,0 +1,97 @@
+﻿@using System.Web.UI.WebControls
+
+<script type="text/javascript">
+    function OnInit(s, e) {
+        AdjustSize();
+        ASPxClientUtils.AttachEventToElement(window, "resize", function (evt) {
+            AdjustSize();
+        });
+    }
+    function OnEndCallback(s, e) {
+        AdjustSize();
+    }
+
+    function AdjustSize() {
+        var height = document.documentElement.clientHeight;
+        gvwDGA.SetHeight(height - 180);
+    }
+
+    function OnCustomButtonClick(s, e, t, url) {
+        window.location.href = url;
+    }
+
+    function PrintDGA(id) {
+        popDGA.SetContentUrl('@Url.Action("PrintDGA", "DGA")/' + id);
+        popDGA.Show();
+    }
+
+    function SendDGA(id) {
+        popDGA.SetContentUrl('@Url.Action("SendDGA", "DGA")/' + id);
+        popDGA.Show();
+        setInterval(function () { gvwDGA.Refresh(); }, 2000);
+    }
+
+    function AnularDGA(id) {
+        popDGA.SetContentUrl('@Url.Action("AnularDGA", "DGA")/' + id);
+        popDGA.Show();
+        setInterval(function () { gvwDGA.Refresh(); }, 2000);
+    }
+
+    function CopiarDGA(id)
+    {
+        ProcessPanel.Show();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CopiarDGA", "DGA")',
+            data: { id: id },
+            success: function (response) {
+                ProcessPanel.Hide();
+                gvwDGA.Refresh();
+                if (response == "OK") {
+                    gvwDGA.Refresh();
+                    alert('DGA Copiado Satisfactoriamente');
+                } else {
+                    alert(response);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                ProcessPanel.Hide();
+                gvwDGA.Refresh();
+                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+            }
+        });
+    }
+</script>
+@Html.DevExpress().LoadingPanel(settings =>
+{
+    settings.Name = "ProcessPanel";
+    settings.Modal = true;
+    settings.Text = "Procesando...";
+}).GetHtml()
+@Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popDGA";
+    settings.ShowHeader = true;
+    settings.HeaderText = "DGA";
+    settings.AllowDragging = true;
+    settings.AllowResize = true;
+    settings.Width = 800;// Unit.Percentage(60);
+    settings.Height = 600;// Unit.Percentage(60);
+    settings.PopupVerticalAlign = PopupVerticalAlign.Middle;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.Center;
+}).GetHtml()
+<br />
+<br />
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <label>Informe del cumplimiento del decreto 1299 de 2008 - para la conformaci&#243;n del Departamento de Gesti&#243;n Ambiental - DGA</label>
+        </h3>
+    </div>
+
+    <div style="padding: 10px">
+        @Html.Action("gvwAdministrarDGA")
+    </div>
+</div>

@@ -1,0 +1,39 @@
+﻿@using System.Web.UI.WebControls
+@using SIM.Data.General
+@model DGA
+
+@using (Html.BeginForm("upcOrganigramaForm", "UploadControl", FormMethod.Post))
+{
+    if (!ViewBag.ReadOnly)
+    {
+        <div class="row" style="padding:5px">
+            <div class="col-md-5">
+                @Html.DevExpress().UploadControl(settings =>
+            {
+                settings.Name = "upcOrganigrama";
+                settings.Width = Unit.Percentage(100);
+                settings.CallbackRouteValues = new { Controller = "DGA", Action = "upcOrganigramaUpload", idDGA = Model.ID_DGA };
+
+                settings.ShowProgressPanel = true;
+
+                //settings.ValidationSettings.Assign(SIM.Areas.General.Controllers.DGAControllerupcOrganigramaSettings.ValidationSettings);
+
+                settings.ClientSideEvents.FileUploadComplete = "function(s,e){ if(e.callbackData != '') { $('#imgOrganigrama').attr('src', e.callbackData + '&' + Math.floor((Math.random() * 10000) + 1)); S_ORGANIGRAMA.SetText('1'); } }";
+            }).GetHtml()
+            </div>
+            <div class="col-md-7">
+                <div>
+                    <input type="button" value="Cargar Imagen" onclick="upcOrganigrama.Upload()" />
+                </div>
+            </div>
+        </div>
+    }
+}
+<div style="width:100%; padding: 10px">
+    <img alt="Debe seleccionar una imagen y subirla al servidor" id="imgOrganigrama" style="width:100%" src="@Url.Action("LoadOrganigrama", "DGA", new { id = Model.ID_DGA })" />
+</div>
+
+@Html.DevExpress().TextBoxFor(model => Model.S_ORGANIGRAMA, settings =>
+{
+    settings.ClientVisible = false;
+}).GetHtml()

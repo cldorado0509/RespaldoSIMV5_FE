@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "Informacion Estados";
+    Layout = "~/Areas/TalaPoda/Views/Shared/MovilSimple.cshtml";
+}
+
+<br />
+
+<table style="width:100%">
+    <tr>
+        <td>
+            <label>Riesgo</label>
+            <div style="width:100%;height:200px;overflow:auto">
+                <table class="table table-striped table-condensed">
+                    @{
+                        foreach (SIM.Areas.TalaPoda.Models.FLR_RIESGO RiesgoTmp in ViewBag.Riesgos)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.Raw(RiesgoTmp.S_RIESGO.Trim())
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <input type="checkbox" class="checkbox" id="R_@RiesgoTmp.ID_RIESGO" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </td>
+        <td>
+            <label>Riesgo Extincion</label>
+            <div style="width:100%;height:200px;overflow:auto">
+                <table class="table table-striped table-condensed">
+                    @{
+                        foreach (SIM.Areas.TalaPoda.Models.FLR_RIESGO_EXTINCION RiesgoTmp in ViewBag.RiesgosExtincion)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.Raw(RiesgoTmp.S_RIESGO_EXTINCION.Trim())
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <input type="checkbox" class="checkbox" id="R_@RiesgoTmp.ID_RIESGO_EXTINCION" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">&nbsp;</td>
+    </tr>
+    <tr>
+        <td>
+            <label>Sintomas EF</label>
+            <div style="width:100%;height:200px;overflow:auto">
+                <table class="table table-striped table-condensed">
+                    @{
+                        foreach (SIM.Areas.TalaPoda.Models.FLR_SINTOMA_EF RiesgoTmp in ViewBag.SintomaEF)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.Raw(RiesgoTmp.S_SINTOMA_EF.Trim())
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <input type="checkbox" class="checkbox" id="R_@RiesgoTmp.ID_SINTOMA_EF" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </td>
+        <td>
+            <label>Sintomas DM</label>
+            <div style="width:100%;height:200px;overflow:auto">
+                <table class="table table-striped table-condensed">
+                    @{
+                        foreach (SIM.Areas.TalaPoda.Models.FLR_SINTOMA_DM RiesgoTmp in ViewBag.SintomaDM)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.Raw(RiesgoTmp.S_SINTOMA_DM.Trim())
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <input type="checkbox" class="checkbox" id="R_@RiesgoTmp.ID_SINTOMA_DM" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+

@@ -1,0 +1,217 @@
+﻿@using SIM.Properties
+@{
+        Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+}
+
+<style>
+    .dx-accordion-item-title {
+        background-color: #94C840;
+        color: white;
+    }
+
+    .dx-accordion-item-opened > .dx-accordion-item-title {
+        background-color: #94C840;
+        color: white;
+    }
+
+    .dx-accordion-item.dx-state-hover > .dx-accordion-item-title {
+        background-color: #76B705;
+        color: white;
+    }
+
+    .dx-accordion-item-opened.dx-state-hover > .dx-accordion-item-title {
+        background-color: #76B705;
+        color: white;
+    }
+
+    .ui-accordion .ui-accordion-content {
+        overflow: hidden;
+    }
+
+    #txtFuncionario .dx-texteditor-container .dx-texteditor-input {
+        float: left;
+        width: 100%;
+    }
+
+    .dx-fileuploader-input-wrapper {
+        padding: 0px;
+        border: 3px dashed transparent;
+    }
+
+    .dx-fileuploader-input-wrapper {
+        padding: 0px;
+        border: 0px;
+    }
+
+    .dx-fileuploader-wrapper {
+        padding: 0px;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td {
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano() {
+        $("#panelTarea").height(document.body.clientHeight - ($('#app').data('type') == 'f' ? 350 : 200));
+        $("#observacionesSolicitudContainer").height($("#panelTarea").outerHeight() - 50);
+        $("#observacionesJustificacionContainer").height($("#panelTarea").outerHeight() - 100);
+        $("#observacionesAutorizacionContainer").height($("#panelTarea").outerHeight() - 100);
+        $("#observacionesATUContainer").height($("#panelTarea").outerHeight() - 100);
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/anulacion.js?v=1.29")"></script>
+
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" data-id="@ViewBag.id" data-idp="@ViewBag.idP" data-t="@ViewBag.Tipo" data-type="@(ViewBag.Popup??false ? "p" : "f")" data-ro="@ViewBag.SoloLectura" class="my-cloak" resizable>
+        <div id="loadPanel"></div>
+        <div id="grid-container"></div>
+        <div class="panelSIM-default">
+            <div class="row" style="height: 50px; padding: 5px;">
+                <div class="col-md-12">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Motivo Anulaci&oacute;n</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div id="motivoAnulacion"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="asistente">
+                <h3>1. Solicitud</h3>
+                <div>
+                    <div id="panelTarea" style="overflow: unset">
+                        <div class="row" style="height: 50px">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Funcionario</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="nombreFuncionarioSolicitud"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 80%">
+                            <div class="col-md-12" style="height: 100%">
+                                <div class="dx-field" style="height: 100%">
+                                    <span style="font-weight: bold">Observaciones</span>
+                                    <div id="observacionesSolicitudContainer" style="width:100%; height:100%">
+                                        <div id="observacionesSolicitud"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (ViewBag.Tipo >= 2)
+                {
+                    <h3>2. Justificaci&oacute;n</h3>
+                    <div>
+                        <div class="row" style="height: 50px">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Funcionario</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="nombreFuncionarioJustificacion"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 60%">
+                            <div class="col-md-12" style="height: 100%">
+                                <div class="dx-field" style="height: 100%">
+                                    <span style="font-weight: bold">Observaciones</span>
+                                    <div id="observacionesJustificacionContainer" style="width:100%; height:100%">
+                                        <div id="observacionesJustificacion"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 50px">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Funcionario Autorizaci&oacute;n</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="funcionarioAutorizacion"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (ViewBag.Tipo >= 3)
+                {
+                    <h3>3. Autorizaci&oacute;n</h3>
+                    <div>
+                        <div class="row" style="height: 50px">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Funcionario</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="nombreFuncionarioAutorizacion"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 60%">
+                            <div class="col-md-12" style="height: 100%">
+                                <div class="dx-field" style="height: 100%">
+                                    <span style="font-weight: bold">Observaciones</span>
+                                    <div id="observacionesAutorizacionContainer" style="width:100%; height:100%">
+                                        <div id="observacionesAutorizacion"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 50px">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Funcionario Aprobaci&oacute;n ATU</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="funcionarioATU"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (ViewBag.Tipo >= 4)
+                {
+                    <h3>4. Aprobaci&oacute;n ATU</h3>
+                    <div>
+                        <div class="row" style="height: 50px">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Funcionario</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="nombreFuncionarioATU"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 60%">
+                            <div class="col-md-12" style="height: 100%">
+                                <div class="dx-field" style="height: 100%">
+                                    <span style="font-weight: bold">Observaciones</span>
+                                    <div id="observacionesATUContainer" style="width:100%; height:100%">
+                                        <div id="observacionesATU"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <br />
+            <div stye="height: 50px; buttom: 0;">
+                <div id="almacenar"></div>
+            </div>
+        </div>
+    </div>
+</div>

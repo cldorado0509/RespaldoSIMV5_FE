@@ -1,0 +1,129 @@
+﻿
+<link rel="stylesheet" type="text/css" href="~/Content/dx.common.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/dx.light.css" />
+
+@*<script src="~/Scripts/jquery-1.11.0.js"></script>*@
+<script src="~/Scripts/jquery.globalize/globalize.js"></script>
+<script src="~/Scripts/dx.webappjs.js"></script>
+
+@{
+    ViewBag.Title = "Tala y Poda";
+    Layout = "~/Areas/TalaPoda/Views/Shared/Movil.cshtml";
+}
+
+<script id="gridAccion" type="text/html">   
+        <table>
+            <tr>
+                <td><input type="button" value="Replicar"  /> </td>
+                <td><input type="button" value="Editar"/> </td>
+            </tr>
+        </table>
+</script>
+
+<script id="gridMultimedia" type="text/html">
+    
+        <input type="button" value="Ver" />
+    
+</script>
+
+<div id="gridContainer" style="height:420px; max-width:750px; margin: 0 auto"></div>
+
+
+<script type="text/javascript">
+    function Editar(Codigo)
+    {
+        //document.location.href = '/talapoda/utilidades/editarindividuodisperso?Codigo=' + Codigo;
+        document.location.href = '/talapoda/INV_INDIVIDUO_DISPERSO/Edit/' + Codigo;
+    }
+
+    function Replicar(Codigo) {
+        //document.location.href = '/talapoda/utilidades/ReplicarIndividuoDisperso?Codigo=' + Codigo;
+        document.location.href = '/talapoda/INV_INDIVIDUO_DISPERSO/Replica/' + Codigo;
+        
+    }
+
+    function Eliminar(Codigo) {
+        document.location.href = '/talapoda/INV_INDIVIDUO_DISPERSO/Delete/' + Codigo;
+
+    }
+
+    var customStore = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+            $.getJSON('/talapoda/utilidades/obtenerindividuosdispersos').done(function (data) {
+                d.resolve(data, { totalCount: data.length });
+            });
+            return d.promise();
+        }
+    });
+
+    var gridDataSourceConfiguration = { store: customStore };
+
+    var Contador = 0;
+
+    $(document).ready(function () {
+        $("#gridContainer").dxDataGrid({
+            dataSource: gridDataSourceConfiguration,
+            columns: [
+            {
+                dataField: 'Consecutivo', width: 125,
+                cellTemplate: function (container, options) {
+                    Contador++;
+                    $('<label />')
+                        .width(50)
+                        .text(Contador)
+                        .appendTo(container);
+                }
+            },
+            { dataField: 'IdIndividuo', allowGrouping: true },
+			{ dataField: 'Especie',  sortIndex: 0, allowGrouping: false },
+			{ dataField: 'Estado', visible: true },
+            {
+                dataField: 'Multimedia', visible: true,
+                cellTemplate: function (container, options)
+                {
+                    $('<button />')
+                        .text('Ver')
+                        .attr("disabled", "disabled")
+                        .attr('id', 'rep_' + options.value)
+                        .appendTo(container);
+                }
+            },
+			{
+			    dataField: 'Accion', width: 120, visible: true, allowGrouping: false, allowFiltering: false,
+			    cellTemplate: function (container, options) {
+			        $('<button />')
+                        .text('Replicar')
+                        .click(function(){
+                            Replicar(options.value);
+                        })
+                        .attr('id', 'rep_' + options.value)
+                        .appendTo(container);
+			        $('<button />')
+                        .text('Editar')
+                        .click(function () {
+                            Editar(options.value);
+                        })
+                        .appendTo(container);
+			    }
+			},
+			{
+			    dataField: 'Excluir', width: 65, allowGrouping: false,
+			    cellTemplate: function (container, options)
+                {
+                    $('<button />')
+                        .text('Remover')                        
+                        .attr('id', 'btneliminar_' + options.value)
+                        .click(function () { Eliminar(options.value); }
+                        )
+                        .appendTo(container);
+                }
+			}
+            ],
+            columnChooser: { enabled: true },
+            pager: { visible: true },
+            paging: { pageSize: 7 }
+        });
+    });
+
+</script>

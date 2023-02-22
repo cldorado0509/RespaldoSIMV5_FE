@@ -1,0 +1,19 @@
+19:21:29 - An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-06550: línea 4, columna 206:
+PL/SQL: ORA-00972: el identificador es demasiado largo
+ORA-06550: línea 4, columna 1:
+PL/SQL: SQL Statement ignored
+20:37:27 - An error occurred while updating the entries. See the inner exception for details.
+
+An error occurred while updating the entries. See the inner exception for details.
+
+ORA-06550: línea 4, columna 181:
+PL/SQL: ORA-00972: el identificador es demasiado largo
+ORA-06550: línea 4, columna 1:
+PL/SQL: SQL Statement ignored
+23:04:37 - An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-00904: "Extent1"."TBSERIE_CODSERIE": identificador no válido

@@ -1,0 +1,123 @@
+﻿@{
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery_form.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery.uploadfile.js")></script>
+    <link href="@Url.Content("~/Scripts/uploadfile.css")" rel="stylesheet" type="text/css" />
+
+    @*<script src="~/Areas/Tramites/Scripts/jquery.carouFredSel-6.2.1-packed.js"></script>
+    <script src="~/Areas/Tramites/Scripts/jquery.carouFredSel-6.2.1.js"></script>
+    <link href="~/Areas/Tramites/Scripts/accordion.css" rel="stylesheet" />
+    <script src="~/Areas/Tramites/Scripts/FcomponentesGenerales.js?v=2.09"></script>*@
+   @* <script type="text/javascript" src="@Url.Content("~/Areas/Tramites/NuevoTramite/Index")"></script>*@
+    <script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/RecargarGrid.js")"></script>
+
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+
+        .ajax-file-upload input[type='file'] {
+        }
+
+        .ajax-file-upload {
+            width: 50% !important;
+        }
+
+        .body-content {
+            margin-top: 0px !important;
+        }
+    </style>
+
+</head>
+<body>
+    <div ng-app="SIM" ng-controller="TramiteController" id="app">
+        <div id="mulitplefileuploader">Subir Documento</div>
+        <div id="status"></div>
+        <button onclick="llenarCarrusel()" style="display:none">cargar</button>
+    </div>
+
+        <script type="text/javascript">
+            var arrayFotos = new Array();
+            $(document).ready(function () {
+                var f = new Date();
+                var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear() + "-" + f.getHours() + "-" + f.getMinutes() + "-" + f.getSeconds();
+                arrayFotos = new Array();
+                var idTra = @ViewBag.idTramite;
+                var idReq = @ViewBag.idRequisito;
+                var idTerc = @ViewBag.idTercero;
+                var idInsta = @ViewBag.idInstalacion;
+
+                var settings = {
+                    url: "../NuevoTramite/guardarUrl",
+                    method: "POST",
+                    formData: { idTramite: idTra, idRequisito: idReq, idTercero: idTerc, idInstalacion: idInsta, fecha: fecha },
+                    allowedTypes: "rtf,doc,docx,pdf",
+                    fileName: "myfile",
+                    multiple: false,
+                    autoUpload: true,
+                    doneStr: "Listo",
+                    cancelStr: "Cancelar",
+                    abortStr: "Cancelar",
+
+                    elements: {
+                        active: { show: '.js-upload', show: '.js-webcam' },
+                        preview: {
+                            el: '.js-preview',
+                            width: 200,
+                            height: 200
+                        },
+                        progress: '.js-progress'
+                    },
+                    onSuccess: function (files, data, xhr) {
+
+                        parent.$("#pantallaCargarImg").dialog('close');
+                        parent.$("#cargaDocu"+idReq).attr('src','/SIM/Content/Images/aprobado.png')
+                        mostrarRequisitosCargados(idTra, idInsta, idReq);
+                        //mostrarRequisitos(idTra, idInsta, idReq);
+                        //$.ajax({
+                        //    type: "POST",
+                        //    url: '../NuevoTramite/GetRequisitosXTramite',
+                        //    data: { id:idTra, idInstalacion: idInsta, idRequisito: idReq },
+
+                        //    success: function (response) {
+                        //        var obj = JSON.parse(response);
+                        //        gridRequisitos(obj);
+                        //    }
+                        //});
+                        //
+
+                    },
+                    onError: function (files, status, errMsg) {
+                        $("#status").html("<font color='red'>Error al subir documento</font>");
+                    }
+                }
+                $("#mulitplefileuploader").uploadFile(settings);
+
+
+            });
+
+
+        </script>
+   
+</body>
+</html>

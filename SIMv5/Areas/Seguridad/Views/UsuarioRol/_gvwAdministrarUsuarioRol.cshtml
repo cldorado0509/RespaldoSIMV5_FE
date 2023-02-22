@@ -1,0 +1,76 @@
+@using System.Security.Claims
+@using System.Web
+@using SIM.Areas.Seguridad.Models
+@using System.Web.UI.WebControls
+
+@{
+    ClaimsPrincipal claimppal = ((ClaimsPrincipal)HttpContext.Current.User);
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "gvUsuarioRol";
+        settings.Caption = "Usuarios - roles";
+        settings.CallbackRouteValues = new { Controller = "UsuarioRol", Action = "gvwAdministrarUsuarioRol" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "UsuarioRol", Action = "gvwAdministrarUsuarioRolCrear" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "UsuarioRol", Action = "gvwAdministrarUsuarioRolActualizar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "UsuarioRol", Action = "gvwAdministrarUsuarioRolEliminar" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.PopupEditForm;
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.Width = Unit.Percentage(100);
+        
+        settings.SettingsPager.FirstPageButton.Visible = true;
+        settings.SettingsPager.LastPageButton.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.Items = new string[] { "10", "20", "50" };
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsPager.PageSizeItemSettings.Position = PagerPageSizePosition.Right;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButtonInHeader = false;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowDeleteButton = claimppal.IsInRole("EUSUARIOROL");
+        settings.CommandColumn.ShowEditButton = false;
+
+        settings.KeyFieldName = "ID_USUARIO_ROL";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = true;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "USUARIO.S_LOGIN";
+            column.Caption = "Login";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "USUARIO.S_NOMBRES";
+            column.Caption = "Nombres";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "USUARIO.S_APELLIDOS";
+            column.Caption = "Apellidos";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        }); 
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "ROL.S_NOMBRE";
+            column.Caption = "Rol";
+            column.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+            column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+        });
+
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

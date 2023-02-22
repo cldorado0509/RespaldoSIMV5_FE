@@ -1,0 +1,67 @@
+﻿@using SIM.Areas.Poeca.Models
+@model SIM.Data.Poeca.DPOEAIR_ACCION
+
+@{
+    ViewBag.Title = "POECA | Detalle de Acción";
+
+    List<DxListItem> medidasSeleccionadas = ViewData["medidasSeleccionadas"] as List<DxListItem>;
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>Detalle de Acción o Medio seleccionado</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+
+                    @Html.DisplayNameFor(model => model.S_NOMBRE_ACCION):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_NOMBRE_ACCION)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_DESCRIPCION):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_DESCRIPCION)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TPOEAIR_MEDIDA_ACCION):
+                </dt>
+
+                <dd>
+                    @*<div class="selection-list-box">*@
+                        @(
+                            Html.DevExtreme().List()
+                                .ID("dx-list-medidas-sectores")
+                                .DataSource(medidasSeleccionadas)
+                                .SelectionMode(ListSelectionMode.None)
+                                .Height(250)
+                                .ScrollingEnabled(true)
+                                .UseNativeScrolling(true)
+                                .SearchEnabled(true)
+                                .SearchExpr("text")
+                        )
+                    @*</div>*@
+                </dd>
+            </dl>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-xs-6">
+                    @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-block btn-primary" })
+                </div>
+
+                <div class="col-xs-6">
+                    @Html.ActionLink("Editar", "Editar", new { id = Model.ID }, new { @class = "btn btn-block btn-default" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

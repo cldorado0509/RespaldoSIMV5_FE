@@ -1,0 +1,196 @@
+﻿@using SIM.Properties
+
+<div class="panel panel-default" style="width: 100%;">
+    <div class="col-md-12" >
+        <div class="row" style="overflow-y:scroll">
+            <div id="GrdRequisitos" style=" height: 100%; padding-left: 0px; padding-right: 0px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding-left: 0px; padding-right: 0px; ">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="pantallaCargarImg" title="Cargar Documento" style="display: none;">
+    <iframe src="" id="fotos" width="100%" height="100%" idtramite=""></iframe>
+</div>
+
+<div id="CargarVistaReporte" title="Validar" style="display: none;">
+    <iframe src="" id="vistareporte" width="100%" height="100%"></iframe>
+    <div class="col-sm-12" style="margin-top:-50px">
+        <div class="col-sm-1"></div>
+        <div dx-button="btnValidaryEnviar" id="btnEnviarT" class="col-sm-6" style="width: 130px; height: 30px; margin-left:-5px"></div>
+        <div class="col-sm-12"></div>
+        <div dx-button="btnCancelarValidar" id="btnCancelarT" class="col-sm-6" style="  width: 130px; height: 30px; margin-left:10px"></div>
+    </div>
+</div>
+
+@*<div id="Cargando" title="Cargando" style="display: none;">
+    <div id="progressbar"><div class="progress-label"></div></div>
+</div>*@
+
+
+<style>
+    .dx-datagrid-header-panel .dx-button.dx-button-has-icon:not(.dx-button-has-text) {
+        padding: 6px;
+        display: none;
+    }
+
+
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+        float: left;
+        margin-left: -8px;
+    }
+
+    .btn-default[disabled], fieldset[disabled] .btn-default, .btn-default.disabled:hover, .btn-default[disabled]:hover, fieldset[disabled] .btn-default:hover, .btn-default.disabled:focus, .btn-default[disabled]:focus, fieldset[disabled] .btn-default:focus, .btn-default.disabled:active, .btn-default[disabled]:active, fieldset[disabled] .btn-default:active, .btn-default.disabled.active, .btn-default[disabled].active, fieldset[disabled] .btn-default.active {
+        background-color: #a5cd39;
+        border-color: #cccccc;
+    }
+
+    .ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable {
+        border: none;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        box-shadow: 1px 3px 12px 1px rgba(0, 0, 0, 0.5);
+        padding: 0px;
+    }
+
+    .ui-widget-header {
+        border: none;
+        background: #00acc4;
+        color: #FFF;
+        font-weight: normal;
+    }
+
+    #dialogUbicacion label {
+        width: 107px;
+    }
+
+    .ui-dialog .ui-dialog-content {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .btnEditar:hover {
+        opacity: 0.7;
+        cursor: pointer;
+    }
+
+    button#btnAsociar {
+        position: relative;
+        background-image: url(../../Content/images/Asignar_Tramites.png);
+        right: -28px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+
+    button#btnLimpiar {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Limpiar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+        background-position: 8px 5px;
+    }
+
+    button#btnGuardar {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Guardar.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    button#btnContrato {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Cargar_fotos.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    button#btnCargarArbol {
+        position: relative;
+        top: 0px;
+        background-image: url(../../Content/images/Cargar_fotos.png);
+        right: 0px;
+        padding-left: 37px;
+        background-repeat: no-repeat;
+        background-size: 17px;
+        background-position: 10px 7px;
+    }
+
+    .grides {
+        height: 400px !important;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .Red {
+        background-color: red;
+    }
+
+    .Pink {
+        background-color: pink;
+    }
+
+    button:hover {
+        background: #3071A9;
+    }
+
+    .buttonUrl {
+        border: none;
+        color: #fff;
+        background-color: #b4cd5f;
+        border-color: #b4cd5f;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        width: 91px;
+        border-radius: 4px;
+        height: 30px;
+        margin-top: 5px;
+    }
+
+        .buttonUrl:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+    .btnGuardar {
+        opacity: 0.7;
+    }
+
+    .dx-datagrid-header-panel {
+        display: none;
+    }
+
+    .ui-progressbar {
+        position: relative;
+    }
+
+    .progress-label {
+        position: absolute;
+        left: 50%;
+        top: 4px;
+        font-weight: bold;
+        text-shadow: 1px 1px 0 #fff;
+    }
+</style>

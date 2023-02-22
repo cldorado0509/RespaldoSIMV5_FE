@@ -1,0 +1,24 @@
+﻿   @{
+       if (ViewBag.Tipo == "Error")
+       {
+           ViewContext.Writer.Write("<div class=\"mensajeerror\">");
+           ViewContext.Writer.Write(ViewBag.TextoError);
+       }
+       else
+       {
+            ViewContext.Writer.Write("<div class=\"mensaje\">");
+            ViewContext.Writer.Write(ViewBag.Texto);
+        }
+    }
+    </div>
+<br/>
+<div style="width:100%; text-align:center">
+    <div class="button-wrapper">
+        <div class="a-btn-4small" onclick="DevolucionOnClick();">
+            <span class="a-btn-4small-text">SI</span>
+        </div>
+        <div class="a-btn-4small" onclick="popMensaje.Hide();">
+            <span class="a-btn-4small-text">NO</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1 @@
+17:48:04 - ProyeccionDocumento [PostAvanzarDocumento - 261 ] : LINQ to Entities does not recognize the method 'Int32 ToInt32(System.Decimal)' method, and this method cannot be translated into a store expression.

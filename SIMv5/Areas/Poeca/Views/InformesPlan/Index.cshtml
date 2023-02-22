@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "POECA | Informes";
+}
+
+<div class="container-fluid">
+    <div class="col-xs-12 text-center">
+        <h2>Gráfica de cumplimiento por sector</h2>
+        @(Html.DevExtreme().Chart()
+            .ID("chart")
+            .Series(s => s
+                .Add()
+                .ArgumentField("sector")
+                .ValueField("porcentajeCumplimiento")
+                .Name("Cumplimiento por sector")
+                .Type(SeriesType.Bar)
+                .Color("#00acc4")
+            )
+            .ArgumentAxis(ax => ax
+                .Label(l => l
+                    .OverlappingBehavior(OverlappingBehavior.Rotate)
+                    .RotationAngle(-90)
+                )
+            )
+            .DataSource(ViewBag.seguimientos)
+        )
+    </div>
+</div>

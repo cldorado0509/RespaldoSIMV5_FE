@@ -1,0 +1,137 @@
+﻿@model IEnumerable<SIM.Areas.TalaPoda.Models.INV_INDIVIDUO_DISPERSO>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OBJECTID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_PU_INVEN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_LOCALIZACION_ARBOL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_EDAD_SIEMBRA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_PROCEDENCIA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_UBICACION)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.COD_INDIVIDUO_DISPERSO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.L_SETO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.N_INDIVIDUOS_SETO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.N_LADO_MANZANA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.N_ORDEN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.D_INGRESO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.D_ACTUALIZACION)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_TIPO_ARBOL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FLR_ESPECIE.S_GENERO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.INV_ESTADO_INDIVIDUO.S_ESTADO)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OBJECTID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_PU_INVEN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_LOCALIZACION_ARBOL)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_EDAD_SIEMBRA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_PROCEDENCIA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_UBICACION)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.COD_INDIVIDUO_DISPERSO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.L_SETO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.N_INDIVIDUOS_SETO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.N_LADO_MANZANA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.N_ORDEN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_INDIVIDUO_DISPERSO_ORIGEN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.D_INGRESO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.D_ACTUALIZACION)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_TIPO_ARBOL)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FLR_ESPECIE.S_GENERO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.INV_ESTADO_INDIVIDUO.S_ESTADO)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ID_INDIVIDUO_DISPERSO }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ID_INDIVIDUO_DISPERSO }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ID_INDIVIDUO_DISPERSO })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

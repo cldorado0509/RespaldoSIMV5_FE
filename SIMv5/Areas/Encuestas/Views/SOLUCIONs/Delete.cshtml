@@ -1,0 +1,96 @@
+﻿@model SIM.Areas.Encuestas.Models.SOLUCION
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>SOLUCION</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.S_TIPOTEXTO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_TIPOTEXTO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.N_TIPONUMERO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.N_TIPONUMERO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_TIPOFECHA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_TIPOFECHA)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_OBSERVACION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_OBSERVACION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_SOLUCION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_SOLUCION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ENCUESTA.S_NOMBRE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ENCUESTA.S_NOMBRE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OBJETO_CONTROL.S_NOMBRETABLA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OBJETO_CONTROL.S_NOMBRETABLA)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PREGUNTA.S_NOMBRE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PREGUNTA.S_NOMBRE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RESPUESTA.S_VALOR)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RESPUESTA.S_VALOR)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

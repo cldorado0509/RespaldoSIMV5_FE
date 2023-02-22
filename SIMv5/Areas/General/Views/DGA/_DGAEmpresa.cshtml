@@ -1,0 +1,91 @@
+﻿@using SIM.Data.General
+@using SIM.Areas.General.Models
+@using SIM.Properties
+<script type="text/javascript">
+    var anosDataSource = @Html.Raw(ViewBag.AnosDGA);
+</script>
+<img src="../../Content/Images/Ayuda.png" id="btnAyudasEmpresa" style="float:right" onclick="MostrarAyuda(91, 'DGA-Empresa');" />
+<div class="dx-fieldset" dx-validation-group="{}" id="empresaGroupValidator">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-8 col-sm-6 col-sm-offset-6">
+            <div class="dx-field">
+                <div class="dx-field-label">Fecha de Versi&oacute;n:</div>
+                <div class="dx-field-value">
+                    @if (!ViewBag.ReadOnly)
+                    {
+                        <div dx-select-box="AnoSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Año Requerido' }] }" id="ano"></div>
+                        <div dx-text-box="{ readOnly: true, bindingOptions: { value: 'datosDGA.N_ANO', visible: 'datosDGA.ID_DGA != 0' }}"></div>
+                    }
+                    else
+                    {
+                        <div dx-text-box="{ readOnly: true, bindingOptions: { value: 'datosDGA.N_ANO' } }"></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                @if (ViewBag.Version == 1)
+                {
+                    <div class="dx-field-label">Activos (Balance Año Anterior en Pesos $):</div>
+                    <div class="dx-field-value row-no-padding">
+                        <div class="col-md-4 row-no-padding">
+                            <div dx-number-box="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.N_ACTIVO' } }" dx-validator="{ validationRules: [{ type: 'required', message: 'Campo Activos Requerido' }] }"></div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="dx-field-label">Valor Ingresos por Actividades Ordinarias Anuales:</div>
+                    <div class="dx-field-value row-no-padding">
+                        <div class="col-md-4 row-no-padding">
+                            <div dx-number-box="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.N_INGRESOS' } }" dx-validator="{ validationRules: [{ type: 'required', message: 'Campo Ingresos Requerido' }] }"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">Número de Empleados:</div>
+                <div class="dx-field-value row-no-padding">
+                    <div class="col-md-4 row-no-padding">
+                        <div dx-number-box="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.N_EMPLEADOS' }}" dx-validator="{ validationRules: [{ type: 'required', message: 'Campo Número de Empleados Requerido' }] }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">Posee otras plantas, filiales y/o sucursales en Colombia:</div>
+                <div class="dx-field-value">
+                    <div dx-text-area="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") bindingOptions: { value: 'datosDGA.S_FILIAL' }, height: '80px' }"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dx-field">
+                <div class="dx-field-label">Permisos ambientales con que cuenta la Empresa:</div>
+                <div class="dx-field-value">
+                    @{
+                        foreach (PERMISO_AMBIENTAL permisoAmbiental in ModelsToListGeneral.GetPermisosAmbientales())
+                        {
+                            <div>
+                                <span style="display:none" id="paId_@permisoAmbiental.ID_PERMISOAMBIENTAL.ToString()">chkpa_@permisoAmbiental.ID_PERMISOAMBIENTAL.ToString()</span>
+                                <div dx-check-box="{ @(ViewBag.ReadOnly ? "readOnly: true, " : "") value: false, text: '@permisoAmbiental.S_DESCRIPCION' }" id="chkpa_@permisoAmbiental.ID_PERMISOAMBIENTAL.ToString()"></div><br />
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

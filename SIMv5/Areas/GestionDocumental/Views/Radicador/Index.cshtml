@@ -1,0 +1,322 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/radicador.js?v=1.02")"></script>
+
+@*Html.DevExpress().PopupControl(settings =>
+{
+    settings.Name = "popRadicado";
+    settings.ShowHeader = true;
+    settings.HeaderText = "Radicado";
+    settings.AllowDragging = true;
+    settings.AllowResize = true;
+    settings.Width = 600;// Unit.Percentage(60);
+    settings.Height = 400;// Unit.Percentage(60);
+    settings.PopupVerticalAlign = PopupVerticalAlign.Middle;
+    settings.PopupHorizontalAlign = PopupHorizontalAlign.Center;
+}).GetHtml()*@
+<script type="text/javascript">
+    var tipoAnexoDataSource = @Html.Raw(ViewBag.tiposAnexo);
+</script>
+<div ng-app="SIM" data-url="@Url.Content("~")" data-tipo="@ViewBag.TipoRadicador" id="app" class="my-cloak">
+    <div ng-controller="RadicadorController" class="panelSIM panelSIM-default">
+        <div dx-popup="popRadicadoSettings" id="popRadicado">
+            <iframe src="" id="frmRadicado" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+        </div>
+        <div dx-load-panel="{message: 'Cargando...', showIndicator: true, shading: true, bindingOptions: { visible: 'cargandoVisible' } }"></div>
+        <div dx-popup="popDocumentoAsociadoSettings" id="popDocumentoAsociado">
+            <div id="grdDocumentoAsociado"></div>
+        </div>
+        <div dx-popup="popDocumentoAsociadoRRSettings" id="popDocumentoAsociadoRR">
+            <div id="grdDocumentoAsociadoRR"></div>
+        </div>
+        <div dx-tabs="tabsOptions" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div ng-show="isActive(0)" dx-validation-group="{}" class="panelSIM-heading">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">
+                        @if (ViewBag.TipoRadicador == 1)
+                        {
+                            <text>Radicación de Unidades Documentales Simples</text>
+                        }
+                        else
+                        {
+                            /*<text>Etiquetado de Unidades Documentales Complejas</text>*/
+                            <text>Etiquetado de Tomos y Anexos</text>
+                        }
+                    </label>
+                </h3>
+            </div>
+            <div class="dx-fieldset">
+                <!--div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow">C&oacute;digo de Barras</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-text-box="{ placeholder: '[Código de Barras]', bindingOptions: { value: 'radicador.CB' } }" id="codigoBarrasRadicador"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow">Serie</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-select-box="SerieSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Serie Requerida' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow">Sub-Serie</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-select-box="SubSerieSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Sub-Serie Requerida' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow">Unidad Documental</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-select-box="UnidadDocumentalSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Unidad Documental Requerida' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div-->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Tipo Expediente</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="TipoExpedienteSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Expediente Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="documentoAsociadoLookup">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">{{documentoAsociadoTitulo}}</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-lookup="{bindingOptions: { value: 'radicador.documentoAsociado' }}" id="lupDocumentoAsociado"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="documentoAsociadoPopupGrid">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">{{documentoAsociadoTitulo}}</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="documentoAsociadoPopupGridSettings" id="cboDocumentoAsociado"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="documentoAsociadoText">
+                    <div class="col-md-8" ng-repeat="campo in documentoAsociadoTextos">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">{{campo.Titulo}}</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-text-box="{ placeholder: campo.PlaceHolder, maxLength: campo.CaracteresMax, bindingOptions: { value: 'radicador.documentoAsociadoTextos[{{$index}}].texto' }, onKeyDown: SoloNumeros }" id="campo{{$index}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Tipo de Etiqueta</div>
+                            <div class="dx-field-value" style="float: left; width: 200px">
+                                <div dx-radio-group="tipoEtiquetaSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Etiqueta Requerida' }] }" id="tipoEtiqueta"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="radicador.tipoEtiqueta == 'A'">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Tipo de Anexo</div>
+                            <div class="dx-field-value" style="float: left; width: 200px">
+                                <div dx-select-box="TipoAnexoSettings" dx-validator="{ validationRules: [{ type: 'custom', validationCallback: ValidarTipoAnexoEtiqueta, message: 'Tipo de Anexo Requerido', reevaluate: true }] }" id="tipoAnexo"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Consecutivo</div>
+                            <div class="dx-field-value" style="float: left; width: 300px">
+                                <div dx-number-box="ConsecutivoSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Consecutivo Requerido' }] }" id="txtConsecutivo"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Ubicaci&oacute;n</div>
+                            <div class="dx-field-value" style="float: left; width: 300px">
+                                <div dx-text-box="UbicacionSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Ubicación Requerida' }] }" id="txtUbicacion"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="panelSIM-body clearfix">
+                <div dx-button="btnGenerarRadicadoSettings" id="btnGenerarRadicado"></div>
+            </div>
+        </div>
+        <div ng-show="isActive(1)" dx-validation-group="{}" class="panelSIM-heading">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Etiquetado de Tomos</label>
+                </h3>
+            </div>
+            <div class="dx-fieldset">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Código Barras</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-text-box="{ placeholder: '[Código de Barras]', bindingOptions: { value: 'tomo.CB' } }" dx-validator="{ validationRules: [{ type: 'required', message: 'Código de Barras Requerido' }] }" id="codigoBarras"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="panelSIM-body clearfix">
+                <div dx-button="btnGenerarTomoSettings" id="btnGenerarTomo"></div>
+            </div>
+        </div>
+        <div ng-show="isActive(2)" dx-validation-group="{}" class="panelSIM-heading">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Etiquetado de Anexos</label>
+                </h3>
+            </div>
+            <div class="dx-fieldset">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Tipo de Anexo</div>
+                            <div class="dx-field-value" style="float: left; width: 200px">
+                                <div dx-select-box="TipoAnexoSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Anexo Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Código Barras</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-text-box="{ placeholder: '[Código de Barras]', bindingOptions: { value: 'anexo.CB' } }" dx-validator="{ validationRules: [{ type: 'required', message: 'Código de Barras Requerido' }] }" id="codigoBarras"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="panelSIM-body clearfix">
+                <div dx-button="btnGenerarAnexoSettings" id="btnGenerarAnexo"></div>
+            </div>
+        </div>
+        <div ng-show="isActive(3)" dx-validation-group="{}" class="panelSIM-heading" id="recuperacionEtiquetasGroup">
+            <div class="dx-fieldset">
+                <!--<div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow">Serie</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-select-box="SerieRRSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Serie Requerida' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow">Sub-Serie</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-select-box="SubSerieRRSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Sub-Serie Requerida' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dx-field">
+                        <div class="dx-field-label labelfullrow">Unidad Documental</div>
+                        <div class="dx-field-value valuefullrow">
+                            <div dx-select-box="UnidadDocumentalRRSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Unidad Documental Requerida' }] }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">Tipo Expediente</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="TipoExpedienteRRSettings" dx-validator="{ validationRules: [{ type: 'required', message: 'Tipo de Expediente Requerido' }] }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="documentoAsociadoLookupRR">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">{{documentoAsociadoTituloRR}}</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-lookup="{bindingOptions: { value: 'recuperadorRadicado.documentoAsociado' }}" id="lupDocumentoAsociadoRR"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="documentoAsociadoRRPopupGrid">
+                    <div class="col-md-8">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">{{documentoAsociadoTituloRR}}</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-select-box="documentoAsociadoRRPopupGridSettings" id="cboDocumentoAsociadoRR"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="documentoAsociadoText">
+                    <div class="col-md-8" ng-repeat="campo in documentoAsociadoTextos">
+                        <div class="dx-field">
+                            <div class="dx-field-label labelfullrow">{{campo.Titulo}}</div>
+                            <div class="dx-field-value valuefullrow">
+                                <div dx-text-box="{ placeholder: campo.PlaceHolder, maxLength: campo.CaracteresMax, bindingOptions: { value: 'recuperadorRadicado.documentoAsociadoTextos[{{$index}}].texto' }, onKeyDown: SoloNumeros }" id="campo{{$index}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    Registros Relacionados
+                </h3>
+            </div>
+            <div dx-data-grid="grdRegistrosRelacionadosSettings" id="grdRegistrosRelacionados"></div>
+            <hr />
+            <div class="panelSIM-body clearfix">
+                <div dx-button="btnRecuperarRadicadoSettings" id="btnRecuperarRadicado"></div>
+            </div>
+        </div>
+    </div>
+</div>

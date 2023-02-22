@@ -1,0 +1,53 @@
+﻿.btn-default {
+    color: #fff;
+    background-color: #007096;
+    border-color: #005EB8;
+}
+
+.btn-default:hover{
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+.ui-widget button {
+    line-height: 15px !important;
+}
+
+.ui-draggable .ui-dialog-titlebar {
+    height: 25px !important;
+}
+
+div#msAlmacenamiento > p {    
+    font-weight: normal !important;
+}
+
+.ui-dialog .ui-dialog-buttonpane {    
+    margin-top: 0px !important;    
+}
+
+span#ui-id-1 {
+    left: 5px;
+    position: relative;
+    top: 5px;
+}
+
+.menuInferior{
+    height: 60px !important;
+    padding: 10px !important;
+    margin-bottom: 0px !important;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+    position: absolute;
+    right: .3em;
+    top: 2%;
+    width: 20px;
+    margin: -10px 0 0 0;
+    padding: 1px;
+    height: 20px;
+}
+
+button.ui-dialog-titlebar-close {
+    height: 20px !important;
+    width: 20px !important;
+}

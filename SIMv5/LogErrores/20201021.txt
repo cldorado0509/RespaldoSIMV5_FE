@@ -1,0 +1,12 @@
+10:20:14 - Errores (AvanzaTareaTramiteFormulario):
+[1026581,0,0,4005,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+10:20:20 - Errores (AvanzaTareaTramiteFormulario):
+[1026581,0,0,420,21] -> Error:100 - ORA-01403: No se ha encontrado ningún dato
+
+10:21:43 - RegistrarDocumento [GenerarIndicesFullTextDocumento(1026581, 1)]An error occurred while executing the command definition. See the inner exception for details.
+
+ORA-06550: línea 1, columna 8:
+PLS-00201: identifier 'TRAMITES.SP_CREAR_INDICE_FULLTEXT' must be declared
+ORA-06550: línea 1, columna 8:
+PL/SQL: Statement ignored

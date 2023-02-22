@@ -1,0 +1,58 @@
+﻿@model SIM.Areas.Encuestas.Models.ENCUESTA
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ENCUESTA</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.S_NOMBRE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_NOMBRE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_DESCRIPCION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_DESCRIPCION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_CREACION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_CREACION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ID_USUARIO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ID_USUARIO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.S_TIPO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.S_TIPO)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID_ENCUESTA }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

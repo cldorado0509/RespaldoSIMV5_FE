@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SIM.Data.Poeca.DPOEAIR_SECTOR>
+
+@{
+    ViewBag.Title = "POECA | Lista de Sectores";
+}
+<div class="container-fluid">
+    <div class="col-xs-12">
+
+        <h2>Lista de Sectores</h2>
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="actionButtons">
+                    @Html.ActionLink("Crear Nuevo", "Crear", null, new { @class = "btn btn-default" })
+                </div>
+
+                <table class="table table-striped">
+
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_NOMBRE)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_DESCRIPCION)
+                        </th>
+                        @*<th>
+                            @Html.DisplayNameFor(model => model.ID_RESPONSABLE)
+                        </th>*@
+                        <th>Acciones</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_NOMBRE)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_DESCRIPCION)
+                            </td>
+                            @*<td>
+                                @Html.DisplayFor(modelItem => item.ID_RESPONSABLE)
+                            </td>*@
+                            <td>
+                                <div class="btn-group btn-group-xs">
+                                    @Html.ActionLink("📄", "Detalles", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Detalles" })
+                                    @Html.ActionLink("✏️", "Editar", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Editar" })
+                                    @Html.ActionLink("🗑️", "Eliminar", new { id = item.ID }, new { @class = "btn btn-danger", @title = "Eliminar" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

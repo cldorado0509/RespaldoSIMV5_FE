@@ -1,0 +1,48 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+<script type="text/javascript">
+    var municipiosDataSource = @Html.Raw(ViewBag.municipios);
+    var tiposViaDataSource = @Html.Raw(ViewBag.tiposVia);
+    var letrasViaDataSource = @Html.Raw(ViewBag.letrasVia);
+    var sentidosViaDataSource = [{ ID_SENTIDO: 'E', S_NOMBRE: 'Este' }, { ID_SENTIDO: 'N', S_NOMBRE: 'Norte' }, { ID_SENTIDO: 'S', S_NOMBRE: 'Sur'}];
+    var tiposInstalacionesDataSource = @Html.Raw(ViewBag.tiposInstalaciones);
+    //var tiposDeclaracionesDataSource = Html.Raw(ViewBag.tiposDeclaraciones);
+    //var estadosDataSource = Html.Raw(ViewBag.estados);
+</script>
+<script type="text/javascript" src="@Url.Content("~/Areas/General/Scripts/instalacion.js?v=1.01")"></script>
+<div ng-app="SIM" data-url="@Url.Content("~")" data-idtercero="@(ViewBag.idTercero == null ? "0" : ViewBag.idTercero) " data-idinstalacion="@(ViewBag.idInstalacion == null ? "0" : ViewBag.idInstalacion)" data-t="@(ViewBag.T == null ? "0" : ViewBag.T)" data-i="@(ViewBag.I == null ? "0" : ViewBag.I)" id="app" class="my-cloak">
+    <div ng-controller=" InstalacionController" class="panelSIM panelSIM-default" dx-validation-group="{}" id="instalacionGroupValidator">
+        <div id="divUbicacionUrbana" title="Ubicación Urbana/Rural" style="display: none; overflow: hidden; padding: 0px">
+            <iframe src="" id="frm_UbicacionUrbana" name="frm_UbicacionUrbana" width="100%" height="100%"></iframe>
+        </div>
+        <div dx-tabs="dxTabsOptions" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div id="Instalacion0" ng-show="isActive(0)" class="panelSIM-heading">
+            @Html.Partial("_InstalacionInformacionBasica")
+        </div>
+        <div id="Instalacion1" ng-show="isActive(1)" class="panelSIM-heading">
+            @Html.Partial("_InstalacionInformacionTecnica")
+        </div>
+        <div id="Instalacion2" ng-show="isActive(2)" class="panelSIM-heading">
+            @Html.Partial("_InstalacionInformacionTipo")
+        </div>
+        <!--div id="Instalacion3" ng-show="isActive(3)" class="panelSIM-heading">
+        @*Html.Partial("_InstalacionInformacionLocalizacion")*@
+    </div-->
+        <div class="panelSIM-body clearfix">
+            <div dx-validation-summary="{  }"></div>
+            <div class="col-lg-7 col-md-5 col-sm-3 col-xs-3 error-validacion">
+
+                {{mensajeValidacion}}
+            </div>
+            <div class="col-lg-5 col-md-7 col-sm-9 col-xs-9">
+                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                <div dx-button="btnAlmacenarSettings" id="btnAlmacenar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5"></div>
+                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                <div dx-button="btnCancelarSettings" id="btnCancelar" class="col-xs-5 col-sm-5 col-md-5 col-lg-5"></div>
+            </div>
+        </div>
+    </div>
+</div>

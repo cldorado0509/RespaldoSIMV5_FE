@@ -1,0 +1,89 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Mvc
+@using SIM.Areas.ControlVigilancia.Controllers;
+@using SIM.Areas.ControlVigilancia.Models;
+@model SIM.Data.Control.TIPO_VISITA
+@{
+    ViewBag.Title = "RealizarVisita";
+    Layout = "~/Areas/ControlVigilancia/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.common.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/dx.light.css")" rel="stylesheet" type="text/css" />
+    <script src=@Url.Content("~/Scripts/jquery-1.10.2.js")></script>
+    <script src=@Url.Content("~/Scripts/jquery-ui.js")></script>
+    <script src=@Url.Content("~/Scripts/globalize.min.js")></script>
+    <script src=@Url.Content("~/Scripts/dx.webappjs.js")></script>
+    <style>
+        .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        hr {
+            display: none;
+        }
+        .btn {
+           
+            padding: 5px 10px;
+       
+        }
+        .ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable {
+            border: none;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+            box-shadow: 1px 3px 12px 1px rgba(0, 0, 0, 0.5);
+            padding: 0px;
+        }
+
+        .ui-widget-header {
+            border: none;
+            background: #00acc4;
+            color: #FFF;
+            font-weight: normal;
+        }
+
+        #dialogUbicacion label {
+            width: 107px;
+        }
+
+        .ui-dialog .ui-dialog-content {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+
+</head>
+<body>
+    <table style="width:100%">
+        <tr>
+            <td><button class="btn btn-default" onclick="seleccionar()">Seleccionar 1</button></td>
+            <td><button class="btn btn-default">Seleccionar 2</button></td>
+           
+        </tr>
+        <tr>
+            <td><label id="lblAltura1"></label></td>
+            <td><label id="lblAltura2"></label></td>
+        </tr>
+     
+    </table>
+    <script>
+    function seleccionar() {
+        parent.seleccionarArbol1();
+
+    }
+
+
+    </script>
+</body>
+</html>
+

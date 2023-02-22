@@ -1,0 +1,49 @@
+﻿@using SIM.Properties
+
+<script type="text/javascript" src="@Url.Content("~/Resources/dynamsoft.webtwain.initiate.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Resources/dynamsoft.webtwain.config.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Correspondencia/Scripts/Prueba.js")"></script>
+
+<div class="row">
+    <div class="col-md-4">
+        <label for="source">
+            Esc&aacute;ner:
+            <select size="1" id="source" style="width: 220px;">
+                <option value=""></option>
+            </select>
+        </label>
+    </div>
+    <div class="col-md-1">
+        <img src="@Url.Content("~")/Content/Images/Scan.png" onclick="AcquireImage();" title="Obtener desde el escaner seleccionado" style="cursor: pointer;" />
+        <img src="@Url.Content("~")/Content/Images/upload.png" onclick="LoadImage();" title="Obtener desde una carpeta local" style="cursor: pointer;" />
+    </div>
+    <div class="col-md-4">
+        <input onclick="btnFirstImage_onclick()" type="button" value=" |< " />
+        <input onclick="btnPreImage_onclick()" type="button" value=" < " />
+        <input type="text" size="2" id="DW_CurrentImage" readonly="readonly" value="0" />
+        /
+        <input type="text" size="2" id="DW_TotalImage" readonly="readonly" value="0" />
+        <input onclick="btnNextImage_onclick()" type="button" value=" > " />
+        <input onclick="btnLastImage_onclick()" type="button" value=" >| " />
+    </div>
+    <div class="col-md-2">
+        <img id='DW_btnRemoveAllImages' src="@Url.Content("~")/Content/Images/DeleteAll.png" onclick="btnRemoveAllImages_onclick();" title="Eliminar Todas las Im&aacute;genes" style="cursor: pointer;" />
+        <img id='DW_btnRemoveCurrentImage' src="@Url.Content("~")/Content/Images/DeleteImg.png" onclick="btnRemoveCurrentImage_onclick();" title="Eliminar Imágen Seleccionada" style="cursor: pointer;" />
+    </div>
+    <div class="col-md-1"></div>
+</div>
+<div style="display:none;" id="pNoScanner">
+    <a href="javascript: void(0)" class="ShowtblLoadImage" style="font-size: 11px; background-color:#f0f0f0; position:relative" id="aNoScanner">
+        <b>Qué pasa si no tengo un escáner/webcam conectado?</b>
+    </a>
+</div>
+<div id="container" class="body_Broad_width" style="margin:0 auto;width:1000px">
+    <div id="DWTcontainer" class="body_Broad_width" style="background-color:#ffffff; height:510px; border:0;">
+        <div id="dwtcontrolContainer"> </div>
+        <br />
+        <div id="DWTNonInstallContainerID" style="width:580px"></div>
+        <div id="DWTemessageContainer" style="width:100%">
+
+        </div>
+    </div>
+</div>

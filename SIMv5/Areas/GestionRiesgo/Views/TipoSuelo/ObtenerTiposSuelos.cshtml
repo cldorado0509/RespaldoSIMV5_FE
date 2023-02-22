@@ -1,0 +1,53 @@
+﻿@using SIM.Properties
+@{
+    ViewBag.Title = "Tipos de Eventos en la Gestión del Riesgo ";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionRiesgo/Scripts/tipoSuelo.js?v=1.00")"></script>
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Listado</label>
+            </h3>
+        </div>
+        <div>
+            <div id="GidListado"></div>
+            <br />
+            <div id="btnNuevo"></div>
+            <div id="PopupNuevo">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nombre :</div>
+                        <div class="col-sm-9" id="txtNombre"></div>
+                    </div>
+
+                    <br />
+                    <div id="BotonNew">
+                        <div id="btnGuarda"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

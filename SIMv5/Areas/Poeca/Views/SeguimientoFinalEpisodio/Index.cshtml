@@ -1,0 +1,82 @@
+﻿@model IEnumerable<SIM.Data.Poeca.TPOEAIR_SEGUIMIENTO_GLOBAL>
+
+@{
+    ViewBag.Title = "POECA | Lista de Episodios radicados por plan";
+}
+<div class="container-fluid">
+    <div class="col-xs-12">
+
+        <h2>Lista de Episodios radicados por plan</h2>
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                <div class="actionButtons">
+                    @Html.ActionLink("Volver a seguimientos", "Index", "SeguimientoPlan", null, new { @class = "btn btn-default" })
+                </div>
+
+                <table class="table table-striped">
+
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DPOEAIR_EPISODIO.N_ANIO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DPOEAIR_EPISODIO.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.N_RADICADO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_OBSERVACIONES)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_REMITENTE)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.S_CARGO_REMITENTE)
+                        </th>
+                        <th>Acciones</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DPOEAIR_EPISODIO.N_ANIO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DPOEAIR_EPISODIO.DPOEAIR_PERIODO_IMPLEMENTACION.NombrePeriodo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.N_RADICADO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_OBSERVACIONES)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_REMITENTE)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.S_CARGO_REMITENTE)
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-xs">
+                                    @Html.ActionLink("📄", "Detalles", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Detalles" })
+                                    @{
+                                        if (!String.IsNullOrEmpty(item.S_URL_EVIDENCIA))
+                                        {
+                                            <a class="btn btn-primary btn-descarga" href="@Url.Action("DescargarAnexo", new { id = item.ID })" title="Descargar Evidencias">
+                                                <i class='glyphicon glyphicon-download-alt'></i>
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

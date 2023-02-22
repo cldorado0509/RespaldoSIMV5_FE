@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Tercero Intervencion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="" onchange="validarConsulta()" id="chkvalidar">
+                    ver ejecutadas
+                </label>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-sm-12" style=" padding-left: 20px;padding-right:20px;">
+
+                <div id="GrdUserEx" style="height:400px; margin: 0 auto;color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.5);">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</br>
+@Scripts.Render("~/bundles/carouFredSel")
+    <script>
+    $(document).ready(function () {
+        consultargrid(0);
+
+    });
+    function validarConsulta(id)
+
+    {
+        if ($("#chkvalidar").is(':checked')) 
+            consultargrid(1);
+        else 
+            consultargrid(0);
+       
+    }
+    function gridTercero(arrTercero) {
+
+        $("#GrdUserEx").dxDataGrid({
+
+            dataSource: arrTercero,
+            selection: {
+                mode: 'single'
+            },
+            columns: [
+
+
+                { dataField: 'ID_INDIVIDUO', caption: 'id_arbol', allowGrouping: true, width: '30%' },
+                { dataField: 'S_INTERVENCION', caption: 'intervencion Recomendada', allowGrouping: true, width: '15%' },
+                { dataField: 'FECHAIN', caption: 'fecha', allowGrouping: true, width: '15%' },
+                { dataField: 'CODTRAMITE', caption: 'codtramite', allowGrouping: true, width: '25%' },
+                 { dataField: 'ESTADO', caption: 'estado', allowGrouping: true, width: '25%' },
+                { dataField: 'ID_INTERVENCION', visible: false },
+                 { dataField: 'ID_TIPO', visible: false },
+                 { dataField: 'TIPO', visible: false },
+                   { dataField: 'ID_TERCERO_INT', visible: false },
+
+                {
+                    dataField: 'detalle', allowGrouping: true, caption: 'Detalle', width: '7%', cellTemplate: function (container, options) {
+                        container.height(5);
+                        $('<img src="@Url.Content("../../Content/imagenes/ver.jpg")" style="width:25px;height:25px" class="btnEditar"/>').attr('src', options.value).appendTo(container);
+                    }
+                }
+
+
+            ],
+
+            scrolling: { mode: 'infinite' },
+            onSelectionChanged: function (selecteditems) {
+            },
+            onCellClick: function (e) {
+
+                var tipoBoton = e.columnIndex;
+
+                if(tipoBoton==5)
+                {
+                    abrirDetalle(e.data.ID_TERCERO_INT, e.data.TIPO);
+                }
+            },
+            columnChooser: { enabled: false },
+            allowColumnReordering: true,
+            sorting: { mode: 'single' },
+            pager: { visible: true },
+            paging: { pageSize: 5 }
+
+        });
+
+    }
+    function consultargrid(tipo) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("consultarTerceroIntervencion", "Tala")',
+            data:{tipo:tipo},
+                beforeSend: function () { },
+                success: function (response) {
+                    var datos = eval('(' + response + ')');
+                    if (datos == "[]")
+                        datos = "{}";
+                    gridTercero(datos);
+                }
+            });
+        }
+        function abrirDetalle(id,tipo)
+        {
+            window.open("@Url.Content("~/tala/tala/FotoIntervencion?id=")" + id + "&tipo=" + tipo, "_self");
+        }
+       
+    </script>

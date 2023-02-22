@@ -1,0 +1,63 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Propuestas a Procesos de Contratación";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Contratos/Scripts/Propuestas.js")"></script>
+<style>
+    #Botones {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+
+    .dx-datagrid-export-button .dx-icon-export-excel-button {
+        height: 30px;
+        width: 30px;
+    }
+
+        .dx-datagrid-export-button .dx-icon-export-excel-button:before {
+            content: url('../Content/Images/ExporExcel.png');
+        }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Propuestas a Procesos de Contratación</label>
+            </h3>
+        </div>
+        <div class="row">
+            <div class="control-label col-md-1">Proceso :</div>
+            <div class="col-md-4" id="cbProcesos"></div>
+            <div class="col-md-7" id="lblObjeto"></div>
+        </div>
+        <div id="GridPropuestas"></div>
+        <br />
+        <div id="Botones">
+            <div id="btnDownProp"></div>
+            <div id="btnDownEco"></div>
+        </div>
+        <div id="popupPpta"></div>
+        <div id="popDocumento"></div>
+        <div id="LoadingPanel"></div>
+    </div>
+</div>
+

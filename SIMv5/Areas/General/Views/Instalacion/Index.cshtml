@@ -1,0 +1,117 @@
+﻿@using SIM.Properties
+
+@{
+    //Layout = "~/Views/Shared/_LayoutMovil.cshtml";
+}
+<script type="text/javascript">
+    var myApp = angular.module('SIM', ['dx']);
+    myApp.controller("InstalacionesController", function ($scope, $location) {
+        //Globalize.culture("es");
+        //Globalize.locale(navigator.language || navigator.browserLanguage);
+
+        $scope.grdInstalacionesSettings = {
+            dataSource: grdInstalacionesDataSource,
+            allowColumnResizing: true,
+            loadPanel: { text: 'Cargando Datos...' },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20, 50]
+            },
+            filterRow: {
+                visible: true,
+            },
+            groupPanel: {
+                visible: true,
+            },
+            editing: {
+                editMode: 'row',
+                editEnabled: true,
+                removeEnabled: false,
+                insertEnabled: true
+
+            },
+            onInitNewRow: function (rowInfo) {
+                rowInfo.cancel = true;
+                window.location = window.location + '/Instalacion?i=1';
+            },
+            onEditingStart: function (rowInfo) {
+                window.location = window.location + '/Instalacion/' + rowInfo.data.ID_INSTALACION + '?i=1';
+                rowInfo.cancel = true;
+            },
+            selection: {
+                mode: 'single'
+            },
+            columns: [
+                {
+                    dataField: "ID_INSTALACION",
+                    width: '10%',
+                    caption: 'Código',
+                    dataType: 'number',
+                }, {
+                    dataField: 'S_NOMBRE',
+                    width: '25%',
+                    caption: 'Nombre',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_MUNICIPIO',
+                    width: '20%',
+                    caption: 'Municipio',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_DIRECCION',
+                    width: '35%',
+                    caption: 'Dirección',
+                    dataType: 'string',
+                }, {
+                    dataField: 'S_ESTADO',
+                    width: '10%',
+                    caption: 'Estado',
+                    dataType: 'string',
+                }
+            ],
+        }
+    });
+
+    var grdInstalacionesDataSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+
+            var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+            var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"ID_INSTALACION","desc":false}]';
+            var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+
+            var skip = loadOptions.skip;
+            var take = loadOptions.take;
+            $.getJSON('@Url.Content("~")General/api/InstalacionApi/Instalaciones', {
+                filter: filterOptions,
+                sort: sortOptions,
+                group: groupOptions,
+                skip: skip,
+                take: take,
+                searchValue: '',
+                searchExpr: '',
+                comparation: '',
+                tipoData: 'f',
+                noFilterNoRecords: true
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        }
+    });
+</script>
+<div ng-app="SIM" resizable>
+    <div class="panelSIM panelSIM-default" style="padding-bottom: 10px">
+        <div ng-controller="InstalacionesController" class="panelSIM panelSIM-default">
+            <div class="panelSIM-heading">
+                <h3 class="panelSIM-title">
+                    <label class="header">Establecimientos / Instalaciones</label>
+                </h3>
+            </div>
+            <div dx-data-grid="grdInstalacionesSettings" id="grid"></div>
+        </div>
+    </div>
+</div>

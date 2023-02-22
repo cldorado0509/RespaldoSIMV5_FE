@@ -1,0 +1,9 @@
+﻿@model DevExpress.DashboardWeb.Mvc.DashboardSourceModel
+@Html.DevExpress().DashboardViewer(settings =>
+{
+    settings.Name = "PMESViewer";
+    settings.CallbackRouteValues = new { Controller = "PMES", Action = "PMESDashboardSPartial", Area = "Dashboard", v = ViewBag.Vigencia, vbase = ViewBag.VigenciaBase, e = ViewBag.Encuesta, t = ViewBag.IdTercero };
+    settings.ExportRouteValues = new { Controller = "PMES", Action = "PMESDashboardSPartialExport", Area = "Dashboard", v = ViewBag.Vigencia, vbase = ViewBag.VigenciaBase, e = ViewBag.Encuesta, t = ViewBag.IdTercero };
+    settings.FullscreenMode = true;
+    settings.AllowExportDashboard = true;
+}).BindToSource(Model).GetHtml()

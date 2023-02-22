@@ -1,0 +1,299 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_PLAN
+
+@{
+    ViewBag.Title = "POECA | Acciones de plan";
+}
+<div class="container-fluid">
+    <div class="col-xs-12">
+
+        <h2>Plan de acción del @Html.DisplayFor(model => model.N_ANIO)</h2>
+
+        @{
+            if (!String.IsNullOrEmpty((string)ViewBag.MensajeError))
+            {
+                <div class="alert alert-danger" style="white-space: pre-line">@ViewBag.MensajeError</div>
+            }
+        }
+        @{
+            if (Model.N_RADICADO == null && Model.N_RADICADO_ANIO == null && !User.IsInRole("CEPISODIOS"))
+            {
+                <div class="clearfix">
+                    <div>
+                        <strong>NOTA:</strong> cuando un plan se radica, ya no se puede eliminar o modificar.
+                    </div>
+                </div>
+                <div class="clearfix">
+                    @Html.ActionLink("Completar y radicar plan", "Radicar", "Planes", new { id = Model.ID }, new { @class = "btn btn-default" })
+                </div>
+            }
+            else if (Model.N_RADICADO != null && Model.N_RADICADO_ANIO != null)
+            {
+
+            }
+        }
+        <div class="actionButtons">
+            <button id="exportarPdfBtn" class="btn btn-primary">PDF de Acciones</button>
+            <button id="exportarExcelBtn" class="btn btn-primary">Excel de Acciones</button>
+        </div>
+
+        <div class="plan-details">
+            <div class="col-xs-12">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <dl class="dl-horizontal details">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.N_ANIO):
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.N_ANIO)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.S_OBSERVACIONES):
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.S_OBSERVACIONES)
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-sm-4">
+                        <dl class="dl-horizontal details">
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.S_REMITENTE):
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.S_REMITENTE)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.S_CARGO_REMITENTE):
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.S_CARGO_REMITENTE)
+                            </dd>
+
+                            @*<dt>
+                                    @Html.DisplayNameFor(model => model.S_URL_ANEXO)
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.S_URL_ANEXO)
+                                </dd>*@
+                        </dl>
+
+                    </div>
+
+                    <div class="col-sm-4">
+                        <dl class="dl-horizontal details">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.S_RADICADO):
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.S_RADICADO)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.N_RADICADO_ANIO):
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.N_RADICADO_ANIO)
+                            </dd>
+
+
+                        </dl>
+                    </div>
+                    @{
+                        if (Model.N_RADICADO == null && Model.N_RADICADO_ANIO == null && !User.IsInRole("CEPISODIOS"))
+                        {
+                            @Html.ActionLink("Editar esta información", "Editar", "Planes", new { id = Model.ID }, new { @class = "btn btn-primary btn-sm pull-right" })
+                        }
+                    }
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-xs-12">
+                <h3>Acciones:</h3>
+
+                <div class="actionButtons">
+                    @{
+                        if (Model.N_RADICADO == null && Model.N_RADICADO_ANIO == null && !User.IsInRole("CEPISODIOS"))
+                        {
+                            @Html.ActionLink("Crear Nueva acción", "Crear", new { plan = Model.ID }, new { @class = "btn btn-default" })
+                        }
+                    }
+                </div>
+                <div class="table-responsive">
+                    <table id="tablaAcciones" class="table table-striped">
+                        <tr>
+                            <th>
+                                Sector
+                            </th>
+                            <th>
+                                Medida
+                            </th>
+                            <th>
+                                Accion
+                            </th>
+                            <th>
+                                Nivel de aplicación
+                            </th>
+                            <th>
+                                Producto
+                            </th>
+                            <th>
+                                Meta
+                            </th>
+                            <th>
+                                Periodicidad
+                            </th>
+                            <th>
+                                Radicado
+                            </th>
+                            <th>
+                                Responsable
+                            </th>
+                            <th>
+                                Valoración
+                            </th>
+                            <th>
+                                Otros recursos
+                            </th>
+                            <th>
+                                Observaciones
+                            </th>
+                            @{
+                                if (Model.N_RADICADO == null && Model.N_RADICADO_ANIO == null && !User.IsInRole("CEPISODIOS"))
+                                {
+                                    <th class="no-export">Acciones</th>
+                                }
+                            }
+                        </tr>
+
+                        @foreach (var item in Model.TPOEAIR_ACCIONES_PLAN)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.DPOEAIR_SECTOR.S_NOMBRE)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.DPOEAIR_MEDIDA.S_NOMBRE_MEDIDA)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TPOEAIR_MEDIDA_ACCION.DPOEAIR_ACCION.S_NOMBRE_ACCION)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DPOEAIR_NIVEL.S_NOMBRE_NIVEL)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DPOEAIR_PRODUCTO.S_NOMBRE_PRODUCTO)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.N_META_PROPUESTA)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TPOEAIR_PERIODICIDAD.S_NOMBRE)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TPOEAIR_PLAN.N_RADICADO)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.S_RESPONSABLE)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.N_VALORACION_ECONOMICA)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.S_RECURSOS)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.S_OBSERVACIONES)
+                                </td>
+                                @{
+                                    if (Model.N_RADICADO == null && Model.N_RADICADO_ANIO == null && !User.IsInRole("CEPISODIOS"))
+                                    {
+                                        <td class="no-export">
+                                            <div class="btn-group btn-group-xs">
+
+                                                @*@Html.ActionLink("📄", "Detalles", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Detalles" })*@
+                                                @Html.ActionLink("✏️", "Editar", new { id = item.ID }, new { @class = "btn btn-primary", @title = "Editar" })
+                                                @Html.ActionLink("🗑️", "Eliminar", new { id = item.ID }, new { @class = "btn btn-danger", @title = "Eliminar" })
+
+                                            </div>
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    </table>
+                </div>
+                @{
+                    if (Model.N_RADICADO == null && Model.N_RADICADO_ANIO == null && !User.IsInRole("CEPISODIOS"))
+                    {
+                        <div class="clearfix">
+                            <div class="pull-right">
+                                <strong>NOTA:</strong> cuando un plan se radica, ya no se puede eliminar o modificar.
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            @Html.ActionLink("Completar y radicar plan", "Radicar", "Planes", new { id = Model.ID }, new { @class = "btn btn-default pull-right" })
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Poeca/Scripts/Vendor/jspdf.min.js"></script>
+    <script src="~/Areas/Poeca/Scripts/Vendor/jspdf.plugin.autotable.js"></script>
+    <script src="~/Areas/Poeca/Scripts/Vendor/shim.min.js"></script>
+    <script src="~/Areas/Poeca/Scripts/Vendor/xlsx.mini.min.js"></script>
+
+    <script>
+        $(function () {
+            let exportarPdfBtn = $('#exportarPdfBtn');
+            let exportarExcelBtn = $('#exportarExcelBtn');
+
+            if (exportarPdfBtn) {
+                exportarPdfBtn.click(function (event) {
+                    let filename = 'Plan @Model.N_ANIO Exportado.pdf';
+                    let pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'px',
+                        format: [1080, 1660]
+                    });
+
+                    let source = $('#tablaAcciones').clone();
+                    source.find('.no-export').remove();
+
+                    pdf.autoTable({ html: source[0] });
+                    pdf.save(filename);
+                });
+            }
+
+            if (exportarExcelBtn) {
+                exportarExcelBtn.click(function (event) {
+                    let filename = 'Plan @Model.N_ANIO Exportado.xlsx';
+                    let source = $('#tablaAcciones').clone();
+                    source.find('.no-export').remove();
+
+                    var workBook = XLSX.utils.table_to_book(source[0], { sheet: "Acciones @Model.N_ANIO" });
+                    return XLSX.writeFile(workBook, filename);
+                });
+            }
+        });
+    </script>
+}

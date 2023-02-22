@@ -1,0 +1,122 @@
+﻿@model SIM.Data.Poeca.TPOEAIR_ACCIONES_PLAN
+
+@{
+    ViewBag.Title = "POECA | Confirmar Eliminación";
+}
+
+<div class="container-fluid maxed">
+    <div class="col-xs-12 text-center">
+
+        <h3>¿Estás seguro/a de eliminar esta Acción del plan?</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal details">
+                <dt>
+                    @Html.DisplayNameFor(model => model.TPOEAIR_MEDIDA_ACCION.DPOEAIR_ACCION.S_NOMBRE_ACCION):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TPOEAIR_MEDIDA_ACCION.DPOEAIR_ACCION.S_NOMBRE_ACCION)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.DPOEAIR_MEDIDA.S_NOMBRE_MEDIDA):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.DPOEAIR_MEDIDA.S_NOMBRE_MEDIDA)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.DPOEAIR_SECTOR.S_NOMBRE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TPOEAIR_MEDIDA_ACCION.TPOEAIR_SECTOR_MEDIDA.DPOEAIR_SECTOR.S_NOMBRE)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DPOEAIR_NIVEL.S_NOMBRE_NIVEL):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DPOEAIR_NIVEL.S_NOMBRE_NIVEL)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DPOEAIR_PRODUCTO.S_NOMBRE_PRODUCTO):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DPOEAIR_PRODUCTO.S_NOMBRE_PRODUCTO)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TPOEAIR_PERIODICIDAD.S_NOMBRE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TPOEAIR_PERIODICIDAD.S_NOMBRE)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.N_META_PROPUESTA):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.N_META_PROPUESTA)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_RESPONSABLE):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_RESPONSABLE)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_RECURSOS):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_RECURSOS)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.N_VALORACION_ECONOMICA):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.N_VALORACION_ECONOMICA)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.S_OBSERVACIONES):
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.S_OBSERVACIONES)
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-block btn-primary" })
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="submit" value="Eliminar" class="btn btn-block btn-danger" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,195 @@
+﻿@model SIM.Areas.TalaPoda.Models.INV_INDIVIDUO_DISPERSO
+
+@{
+    ViewBag.Title = "Informacion Individuo Disperso";
+    Layout = "~/Areas/TalaPoda/Views/Shared/MovilSimple.cshtml";
+}
+
+<table style="width:100%">
+    <tr>
+        <td style="width:50%" valign="top">
+            <table style="width:100%">
+                <tr>
+                    <td colspan="2">
+                        <table style="width:90%">
+                            <tr>
+                                <td>X</td>
+                                <td>
+                                    <input type="number" readonly="readonly" class="form-control" id="PuntoX" style="width:150px" />
+                                </td>
+                                <td>Y</td>
+                                <td>
+                                    <input type="number" readonly="readonly" class="form-control" id="PuntoY" style="width:150px" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <iframe id="mapa" style="width:90%;height:350px;overflow:hidden" seamless="seamless" frameborder="0" src="/MAPGISV5_WEB/tools/AMVA/inicio_aguas.htm"></iframe>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%">
+                        <button class="btn btn-primary" id="Nuevo" style="width:80%">Nuevo</button>
+                    </td>
+                    <td style="width:50%">
+                        <button class="btn btn-info" id="Consultar" style="width:80%">Consultar</button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="width:50%" valign="top">
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_INDIVIDUO_DISPERSO, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_INDIVIDUO_DISPERSO)
+                @Html.ValidationMessageFor(model => model.ID_INDIVIDUO_DISPERSO)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_PU_INVEN, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_PU_INVEN)
+                @Html.ValidationMessageFor(model => model.ID_PU_INVEN)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_ESPECIE, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_ESPECIE)
+                @Html.ValidationMessageFor(model => model.ID_ESPECIE)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_LOCALIZACION_ARBOL, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_LOCALIZACION_ARBOL)
+                @Html.ValidationMessageFor(model => model.ID_LOCALIZACION_ARBOL)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_EDAD_SIEMBRA, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_EDAD_SIEMBRA)
+                @Html.ValidationMessageFor(model => model.ID_EDAD_SIEMBRA)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_ESTADO, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_ESTADO)
+                @Html.ValidationMessageFor(model => model.ID_ESTADO)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_PROCEDENCIA, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_PROCEDENCIA)
+                @Html.ValidationMessageFor(model => model.ID_PROCEDENCIA)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_UBICACION, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_UBICACION)
+                @Html.ValidationMessageFor(model => model.ID_UBICACION)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.COD_INDIVIDUO_DISPERSO, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.COD_INDIVIDUO_DISPERSO)
+                @Html.ValidationMessageFor(model => model.COD_INDIVIDUO_DISPERSO)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.L_SETO, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.L_SETO)
+                @Html.ValidationMessageFor(model => model.L_SETO)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.N_INDIVIDUOS_SETO, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.N_INDIVIDUOS_SETO)
+                @Html.ValidationMessageFor(model => model.N_INDIVIDUOS_SETO)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.N_LADO_MANZANA, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.N_LADO_MANZANA)
+                @Html.ValidationMessageFor(model => model.N_LADO_MANZANA)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.N_ORDEN, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.N_ORDEN)
+                @Html.ValidationMessageFor(model => model.N_ORDEN)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN)
+                @Html.ValidationMessageFor(model => model.ID_INDIVIDUO_DISPERSO_ORIGEN)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.D_INGRESO, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.D_INGRESO)
+                @Html.ValidationMessageFor(model => model.D_INGRESO)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.D_ACTUALIZACION, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.D_ACTUALIZACION)
+                @Html.ValidationMessageFor(model => model.D_ACTUALIZACION)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ID_TIPO_ARBOL, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ID_TIPO_ARBOL)
+                @Html.ValidationMessageFor(model => model.ID_TIPO_ARBOL)
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>*@
+    </div>
+}            
+        </td>
+    </tr>
+</table>

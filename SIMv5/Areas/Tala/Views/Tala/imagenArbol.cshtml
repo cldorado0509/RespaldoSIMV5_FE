@@ -1,0 +1,191 @@
+﻿@{
+    ViewBag.Title = "Tala";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style>
+        .caroufredsel_wrapper {
+            width: 100% !important;
+            height: 80px !important;
+          
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        #myCarousel {
+            width: 100% !important;
+            position: relative;
+            left: 20%;
+            height: 190px;
+            left: 0px !important;
+        }
+
+            #myCarousel ul {
+                list-style: none;
+                display: block;
+                padding: 0;
+                width: 100% !important;
+                align-content: center;
+            }
+
+            #myCarousel li {
+                background: #fff;
+               
+                font-size: 12px;
+                color: #999;
+                text-align: center;
+                display: block;
+                width: 150px;
+                height: 150px;
+                margin: 4px;
+                float: left;
+                position: relative;
+                padding: 10px;
+                display: inline-block;
+            }
+
+                #myCarousel li img {
+                    width: 100%;
+                    height: 75%;
+                    margin-bottom: 10px;
+                    cursor: pointer;
+                }
+
+        .highlightRow {
+            background-color: #ffff00;
+        }
+
+            .highlightRow > table > tbody > tr {
+                background: none !important;
+            }
+
+        .LabelNota {
+            color: red;
+        }
+
+        .LabelCabezaGrid {
+            font-size: 10px;
+            color: #F4F3F3;
+            text-align: left;
+            margin-left: 5px;
+        }
+
+        .caroufredsel_documentos {
+            width: 100% !important;
+            height: 190px !important;
+        }
+
+        .iconCarousel {
+            width: 25px;
+            display: inline-block;
+            border: none;
+            box-shadow: none;
+            position: absolute;
+            cursor: pointer;
+            outline: 0;
+            z-index: 0;
+            padding: 0px;
+            height: 25px;
+            right: 10px;
+            bottom: 20px;
+        }
+
+        .iconVer {
+            background: url(/docs/img/iconos/Ver.png) no-repeat;
+            background-size: 20px;
+        }
+
+            .iconVer:hover {
+             
+                opacity: 0.8;
+            }
+                 .container {
+            margin-top:0px !important;
+        }
+           .navbar.navbar-inverse.navbar-fixed-top {
+            display: none;
+        }
+
+             footer {
+            display:none;
+        }
+    </style>
+</head>
+<body>
+ 
+    <script>
+    var idArbol;
+    $(document).ready(function () {
+        $("#txtidArbol").val(@ViewBag.idArbol);
+        cargarCarousel();
+    });
+
+    var id_origen_adjuntar = "";
+    var origen_adjuntar = "";
+    var id_adjuntar = "";
+    var rutaArchivoVisualizacion = "";
+    var archivos_carga = null;
+    var bolVerMultimedia = false;
+    var carousel = "";
+
+    function cargarCarousel() {
+
+
+
+        carousel = "#myCarousel";
+
+        $(carousel + " .caroufredsel_wrapper").remove();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("../../Tala/Tala/consultarImagSau")',
+            data: { id:  $("#txtidArbol").val() },
+            beforeSend: function () { },
+            success: function (response) {
+                var datos = JSON.parse(response);
+
+                var archivos = datos.imagenes; 
+                archivos_carga = archivos;
+                var html = "";
+                $(carousel).html(html);
+                if (archivos.length > 0) {
+                    html += ' <ul id="Carusel1">';
+                    for (var j = 0; j < archivos.length; j++) {
+                        html += ' <li ><img src="' + datos.imagenes[j].foto + '" ></li>';
+                    }
+                    html += "</ul>";
+                    $(carousel).html(html);
+                    var Div = document.getElementById("Carusel1");
+                    Div = Div.getBoundingClientRect();
+                    var item = 1;
+
+                    $(carousel + " ul").carouFredSel({
+                        items: item,
+                        width: '100%',
+                        height: 'auto',
+                        scroll: 1
+                    });
+
+                    $(carousel + " >div").addClass("caroufredsel_documentos");
+                }
+
+            }
+        });
+    }
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
