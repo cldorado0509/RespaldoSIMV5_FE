@@ -1119,14 +1119,19 @@
     <Compile Include="Areas\ExpedienteAmbiental\Clases\General.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Controllers\ExpedientesAmbApiController.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Controllers\ExpedientesController.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Controllers\VitalApiController.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Controllers\VitalController.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\ExpedienteAmbientaAreaRegistration.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\AnotacionPuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ClasificacionExpedienteDTO.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Models\DocumentoAportadoDTO.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Models\DocumentosRequeridosTramitesDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\EstadoPuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ExpedienteAmbientalDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ListadoInstalacionesDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\PuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\PuntoControlExpedienteDocumentalDTO.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Models\SolicitudVITALDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\TerceroInstalacionDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\TercerosDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\TipoEstadoPuntoControlDTO.cs" />
@@ -2353,6 +2358,7 @@
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\turn.min.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\zoom.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\zoom.min.js" />
+    <Content Include="Areas\ExpedienteAmbiental\Scripts\vital.js" />
     <Content Include="Areas\ExpedienteAmbiental\Views\Expedientes\FlipExpediente.cshtml" />
     <Content Include="Areas\ExpedienteAmbiental\Views\Expedientes\Index.cshtml" />
     <Content Include="Areas\Facturacion\Scripts\Facturacion.js" />
@@ -3038,6 +3044,7 @@
     <Content Include="Areas\Pqrsd\Views\web.config" />
     <Content Include="Areas\Pqrsd\Views\IngresoPqrsd\Index.cshtml" />
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
+    <Content Include="Areas\ExpedienteAmbiental\Views\Vital\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
