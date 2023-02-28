@@ -74,6 +74,8 @@ var IdExpDoc = -1;
 
 var CodFunEstado = -1;
 
+var CodTramiteBuscar = -1;
+
 $(document).ready(function () {
     
     //txt
@@ -194,6 +196,11 @@ $(document).ready(function () {
         width: 150,
         disabled: true,
     }).dxTextBox("instance");
+
+    var txtBuscarTramite = $("#txtBuscarTramite").dxNumberBox({
+        width: 150,
+        value:""
+    }).dxNumberBox("instance");
 
     //popup de terceros opcion natural
 
@@ -1613,10 +1620,31 @@ $(document).ready(function () {
         type: "success",
         width: 80,
         height: 36,
-        icon: 'add',
+        icon: 'find',
         onClick: function () {
 
             popupNuevoTramite.show();
+            txtBuscarTramite.reset();
+            CodTramiteBuscar = -1;
+            GidGuardarTramite.dxDataGrid("instance").option("dataSource", BuscartramitePorIdDataSource);
+        }
+
+
+
+    }).dxButton("instance");
+
+    var btnBuscarTramitePorId = $("#btnBuscarTramitePorId").dxButton({
+        hint: "Buscar Tramite",
+        stylingMode: "contained",
+        text: "",
+        type: "success",
+        width: 80,
+        height: 36,
+        icon: 'add',
+        onClick: function () {
+
+            CodTramiteBuscar = txtBuscarTramite.option("value");
+            GidGuardarTramite.dxDataGrid("instance").option("dataSource", BuscartramitePorIdDataSource);
 
         }
 
@@ -3736,7 +3764,7 @@ $(document).ready(function () {
     var GidGuardarTramite = $("#GidGuardarTramite").dxDataGrid(
         {
             visible: true,
-            dataSource: BuscartramitesDataSource,
+            dataSource: BuscartramitePorIdDataSource,
             allowColumnResizing: true,
             loadPanel: { enabled: true, text: 'Cargando Datos...' },
             noDataText: "Sin datos para mostrar",
@@ -5412,6 +5440,38 @@ var BuscartramitesDataSource = new DevExpress.data.CustomStore({
             comparation: '',
             tipoData: 'f',
             noFilterNoRecords: true
+        }).done(function (data) {
+            d.resolve(data.datos, { totalCount: data.numRegistros });
+
+        }).fail(function (jqxhr, textStatus, error) {
+            alert('Error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+        });
+        return d.promise();
+    }
+});
+
+var BuscartramitePorIdDataSource = new DevExpress.data.CustomStore({
+    load: function (loadOptions) {
+        var d = $.Deferred();
+        var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
+        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"codTramite","desc":true}]';
+        var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
+        var skip = (typeof loadOptions.skip !== 'undefined' && loadOptions.skip !== null ? loadOptions.skip : 0);
+        var take = (typeof loadOptions.take !== 'undefined' && loadOptions.take !== null ? loadOptions.take : 0);
+
+
+        $.getJSON($('#SIM').data('url') + 'QuejasAmbientales/api/QuejasApi/BuscarTramitePorId', {
+            filter: loadOptions.filter ? JSON.stringify(filterOptions) : '',
+            sort: sortOptions,
+            group: JSON.stringify(groupOptions),
+            skip: skip,
+            take: take,
+            searchValue: '',
+            searchExpr: '',
+            comparation: '',
+            tipoData: 'f',
+            noFilterNoRecords: true,
+            cod: CodTramiteBuscar
         }).done(function (data) {
             d.resolve(data.datos, { totalCount: data.numRegistros });
 
