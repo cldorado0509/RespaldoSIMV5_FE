@@ -2171,5 +2171,41 @@
         }
 
 
+        [HttpGet, ActionName("BuscarTramitePorId")]
+        public async Task<datosConsulta> BuscarTramitePorId(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords, decimal cod)
+        {
+            dynamic model = null;
+            dynamic modelData;
+            ApiService apiService = new ApiService();
+            datosConsulta datosConsulta = new datosConsulta
+            {
+                datos = null,
+                numRegistros = 0,
+            };
+
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+
+            Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "federico.martinez@metropol.gov.co", RememberMe = true });
+            if (!response.IsSuccess) return datosConsulta;
+            var tokenG = (TokenResponse)response.Result;
+            if (tokenG == null) return datosConsulta;
+
+            response = await apiService.GetListAsync<ListadoTramitesQuejaDTO>(urlApiQuejasAmbientales, "api/", "Quejas/BuscarTramite?cod=" + cod, tokenG.Token);
+            if (!response.IsSuccess) return datosConsulta;
+            var list = (List<ListadoTramitesQuejaDTO>)response.Result;
+            if (list == null || list.Count == 0) return datosConsulta;
+
+            model = list.AsQueryable();
+            modelData = model;
+
+            IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
+
+            datosConsulta.numRegistros = modelFiltered.Count();
+            if (take == 0) datosConsulta.datos = modelFiltered.ToList();
+            else datosConsulta.datos = modelFiltered.Skip(skip).Take(take).ToList();
+
+            return datosConsulta;
+        }
+
     }
 }
