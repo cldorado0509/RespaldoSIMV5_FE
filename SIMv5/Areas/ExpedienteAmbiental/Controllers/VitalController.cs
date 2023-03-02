@@ -8,11 +8,17 @@
     using System.Web;
     using System.Web.Mvc;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class VitalController : Controller
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
 
-        // GET: ExpedienteAmbiental/Vital
+        /// <summary>
+        ///  GET: ExpedienteAmbiental/Vital
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             System.Web.HttpContext context = System.Web.HttpContext.Current;
