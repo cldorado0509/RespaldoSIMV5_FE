@@ -17,6 +17,7 @@
         }
     });
 
+
     $("#btnLimpiar").dxButton({
         icon: "clearsquare",
         text: 'Limpiar filtros',
