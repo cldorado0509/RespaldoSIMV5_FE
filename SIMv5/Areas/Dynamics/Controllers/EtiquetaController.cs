@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using AreaMetro.Seguridad;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -12,10 +13,15 @@ using O2S.Components.PDF4NET.Graphics.Fonts;
 using O2S.Components.PDF4NET.Graphics.Shapes;
 using SIM.Areas.Dynamics.Data;
 using SIM.Areas.Facturacion.Models;
+=======
+﻿using DocumentFormat.OpenXml.Drawing.ChartDrawing;
+using SIM.Areas.Dynamics.Data;
+>>>>>>> Marzo 10 Dynamics
 using SIM.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+<<<<<<< HEAD
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -25,6 +31,11 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames;
+=======
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+>>>>>>> Marzo 10 Dynamics
 
 namespace SIM.Areas.Dynamics.Controllers
 {
@@ -44,6 +55,7 @@ namespace SIM.Areas.Dynamics.Controllers
             return View();
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// 
         /// </summary>
@@ -146,5 +158,8 @@ namespace SIM.Areas.Dynamics.Controllers
             var Archivo = oStream.ToArray();
             return File(Archivo, "application/pdf");
         }
+=======
+
+>>>>>>> Marzo 10 Dynamics
     }
 }

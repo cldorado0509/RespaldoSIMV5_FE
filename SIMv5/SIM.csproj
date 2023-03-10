@@ -1114,8 +1114,11 @@
     <Compile Include="Areas\Dynamics\Data\DIRPERSONNAME.cs" />
     <Compile Include="Areas\Dynamics\Data\Dynamics.Context.cs" />
     <Compile Include="Areas\Dynamics\Data\HCMWORKER.cs" />
+<<<<<<< HEAD
     <Compile Include="Areas\Dynamics\Data\PrefijoModel.cs" />
     <Compile Include="Areas\Dynamics\Data\ResponsableModel.cs" />
+=======
+>>>>>>> Marzo 10 Dynamics
     <Compile Include="Areas\Dynamics\DynamicsAreaRegistration.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionApiController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionController.cs" />
@@ -2329,7 +2332,6 @@
     <Content Include="Areas\Contratos\Scripts\Procesos.js" />
     <Content Include="Areas\Contratos\Scripts\Propuestas.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\DerechosPeticion.js" />
-    <Content Include="Areas\ControlVigilancia\Scripts\facturacion.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\radicarinformetecnico.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\reposiciones.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\sincronizacion.js" />
@@ -3056,7 +3058,10 @@
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
     <Content Include="Areas\Dynamics\Views\web.config" />
     <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
+<<<<<<< HEAD
     <Content Include="Areas\ControlVigilancia\Views\Facturacion\Index.cshtml" />
+=======
+>>>>>>> Marzo 10 Dynamics
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />

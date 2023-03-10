@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 ﻿var filtros = "";
 
 $(document).ready(function () {
+=======
+﻿$(document).ready(function () {
+>>>>>>> Marzo 10 Dynamics
     var Codigo = $("#txtCodigo").dxTextBox({
         placeholder: "Ingrese el código del bien",
         value: ""
     }).dxTextBox("instance");
 
     var Responsable = $("#cboResponsable").dxSelectBox({
+<<<<<<< HEAD
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
                 key: "ORDEN",
@@ -21,6 +26,9 @@ $(document).ready(function () {
         searchEnabled: true,
         noDataText: "No hay datos para mostrar",
         placeholder: "Seleccione",
+=======
+        placeholder: 'Seleccione el responsable',
+>>>>>>> Marzo 10 Dynamics
         showClearButton: true
     }).dxSelectBox("instance");
 
@@ -28,6 +36,7 @@ $(document).ready(function () {
         icon: "filter",
         text: 'Buscar',
         onClick: function () {
+<<<<<<< HEAD
             if (Responsable.option("value") >= 1) {
                 filtros = "R:" + Responsable.option("text");
             } else if (Codigo.option("value") != "") {
@@ -44,10 +53,17 @@ $(document).ready(function () {
     });
 
 
+=======
+
+        }
+    });
+
+>>>>>>> Marzo 10 Dynamics
     $("#btnLimpiar").dxButton({
         icon: "clearsquare",
         text: 'Limpiar filtros',
         onClick: function () {
+<<<<<<< HEAD
             filtros = "";
             Responsable.option("value", null);
             Prefijo.option("value", null);
@@ -55,10 +71,14 @@ $(document).ready(function () {
             Maximo.option("value", "");
             Codigo.option("value", "");
             $("#gridEtiquetas").dxDataGrid("instance").refresh();
+=======
+
+>>>>>>> Marzo 10 Dynamics
         }
     });
 
     var Prefijo = $("#cboPrefijo").dxSelectBox({
+<<<<<<< HEAD
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
                 key: "ORDEN",
@@ -87,12 +107,30 @@ $(document).ready(function () {
     }).dxNumberBox("instance");
 
     $("#gridEtiquetas").dxDataGrid({
+=======
+        placeholder: 'Seleccione el prefijo',
+        showClearButton: true
+    }).dxSelectBox("instance");
+
+    var Minimo = $("#numMin").dxTextBox({
+        placeholder: "Ingrese el código del bien",
+        value: ""
+    }).dxTextBox("instance");
+
+    var Maximo = $("#numMax").dxTextBox({
+        placeholder: "Ingrese el código del bien",
+        value: ""
+    }).dxTextBox("instance");
+
+    var gridEtiquetas = $("#gridEtiquetas").dxDataGrid({
+>>>>>>> Marzo 10 Dynamics
         dataSource: grdEtiquetas,
         allowColumnResizing: true,
         loadPanel: { enabled: true, text: 'Cargando Datos...' },
         noDataText: "Sin datos para mostrar",
         showBorders: true,
         paging: {
+<<<<<<< HEAD
             pageSize: 5, pageIndex: 1
         },
         pager: {
@@ -103,6 +141,12 @@ $(document).ready(function () {
             mode: 'multiple',
             allowSelectAll: true,
             showCheckBoxesMode: 'always'
+=======
+            enabled: false
+        },
+        selection: {
+            mode: 'none'
+>>>>>>> Marzo 10 Dynamics
         },
         remoteOperations: true,
         hoverStateEnabled: true,
@@ -111,20 +155,31 @@ $(document).ready(function () {
             { dataField: 'NOMBREBIEN', width: '25%', caption: 'Nombre del bien', dataType: 'string' },
             { dataField: 'ESTADOBIEN', width: '15%', caption: 'Estado', dataType: 'string' },
             { dataField: 'PERSONABIEN', width: '30%', caption: 'Responsable', dataType: 'string' },
+<<<<<<< HEAD
+=======
+
+>>>>>>> Marzo 10 Dynamics
             {
                 caption: 'Etiquetas',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'print',
+<<<<<<< HEAD
                         hint: 'Imprimir etiqueta ' + options.data.CODIGO,
                         onClick: function (e) {
                             window.open($('#Etiquetas').data('url') + "Dynamics/Etiqueta/ImprimirEti?Bien=" + options.data.CODIGO, "Etiqueta " + options.data.CODIGO, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
+=======
+                        hint: 'Imprimir etiqueta ' + options.data.Codigo,
+                        onClick: function (e) {
+
+>>>>>>> Marzo 10 Dynamics
                         }
                     }).appendTo(container);
                 }
             }
         ]
+<<<<<<< HEAD
     });
 
     $("#btnImprimeSel").dxButton({
@@ -142,6 +197,9 @@ $(document).ready(function () {
         }
 
     });
+=======
+    }).dxDataGrid("instance");
+>>>>>>> Marzo 10 Dynamics
 });
 
 var grdEtiquetas = new DevExpress.data.CustomStore({
@@ -151,8 +209,13 @@ var grdEtiquetas = new DevExpress.data.CustomStore({
         var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"CODIGO","desc":false}]';
         var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
 
+<<<<<<< HEAD
         var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 10);
         var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 10);
+=======
+        var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+        var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+>>>>>>> Marzo 10 Dynamics
         $.getJSON($('#Etiquetas').data('url') + 'Dynamics/api/EtiquetaApi/ConsultaBienes', {
             filter: filterOptions,
             sort: sortOptions,
@@ -162,7 +225,11 @@ var grdEtiquetas = new DevExpress.data.CustomStore({
             searchValue: '',
             searchExpr: '',
             comparation: '',
+<<<<<<< HEAD
             customFilters: filtros
+=======
+            noFilterNoRecords: true
+>>>>>>> Marzo 10 Dynamics
         }).done(function (data) {
             d.resolve(data.datos, { totalCount: data.numRegistros });
         }).fail(function (jqxhr, textStatus, error) {
