@@ -1,0 +1,105 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/Content/Images/favico-area.ico?v=1.01")" />
+    <title>Imprimir etiquetas bienes dynamics</title>
+    <link href="@Url.Content("~/Content/ContentV5/bootstrap.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/ScriptsV5/modernizr-2.8.3.js")"></script>
+    <link href="@Url.Content("~/Scripts/ScriptsV5/jquery-ui-1.12.1/themes-1.12.1/themes/sim/jquery-ui.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/ContentV5/dx.common.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/ContentV5/dx.light.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/ScriptsV5/jquery-3.4.1.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/jquery-ui-1.12.1/jquery-ui.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr/event.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr/unresolved.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/jszip.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/dx.all.debug.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/aspnet/dx.aspnet.data.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/aspnet/dx.aspnet.mvc.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/dx.messages.es.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr/supplemental.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/message.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/number.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/currency.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/date.js")"></script>
+    <style>
+        .label {
+            float: left;
+            width: 40%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #333;
+            cursor: default;
+            padding: 8px 14px 9px 5px;
+            font-weight: 400;
+            font-size: 14px;
+            font-family: "Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
+            line-height: 1.35715;
+        }
+    </style>
+
+    <script type="text/javascript" src="@Url.Content("~/Areas/Dynamics/Scripts/Etiquetas.js?v=0.2")"></script>
+</head>
+<body>
+    <div data-url="@Url.Content("~")" ID="Etiquetas" resizable>
+        <table border="1" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div class="label">Código</div>
+                </td>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div id="txtCodigo"></div>
+                </td>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div class="label">Responsable</div>
+                </td>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div id="cboResponsable"></div>
+                </td>
+                <td width="15%"></td>
+                <td width="15%"></td>
+                <td class="border d-flex align-items-center" width="15%" align="center">
+                    <div id="btnInforme"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border d-flex align-items-center">
+                    <div class="label">Prefijo</div>
+                </td>
+                <td class="border d-flex align-items-center">
+                    <div id="cboPrefijo"></div>
+                </td>
+                <td class="border d-flex align-items-center">
+                    <div class="label">Mínimo</div>
+                </td>
+                <td class="border d-flex align-items-center">
+                    <div id="numMin"></div>
+                </td>
+                <td class="border d-flex align-items-center">
+                    <div class="label">Máximo</div>
+                </td>
+                <td class="border d-flex align-items-center">
+                    <div id="numMax"></div>
+                </td>
+                <td class="border d-flex align-items-center" width="15%" align="center">
+                    <div id="btnLimpiar"></div>
+                </td>
+
+            </tr>
+        </table>
+        <br />
+        <div id="gridEtiquetas"></div>
+    </div>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/bootstrap.js")"></script>
+</body>
+</html>

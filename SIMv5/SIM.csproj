@@ -1103,6 +1103,15 @@
     <Compile Include="Areas\DesarrolloEconomico\Models\Empresa.cs" />
     <Compile Include="Areas\DesarrolloEconomico\Models\Producto.cs" />
     <Compile Include="Areas\DesarrolloEconomico\Models\UnidadMedida.cs" />
+    <Compile Include="Areas\Dynamics\Controllers\EtiquetaApiController.cs" />
+    <Compile Include="Areas\Dynamics\Controllers\EtiquetaController.cs" />
+    <Compile Include="Areas\Dynamics\Data\ASSETBOOK.cs" />
+    <Compile Include="Areas\Dynamics\Data\ASSETTABLE.cs" />
+    <Compile Include="Areas\Dynamics\Data\BienModel.cs" />
+    <Compile Include="Areas\Dynamics\Data\DIRPERSONNAME.cs" />
+    <Compile Include="Areas\Dynamics\Data\Dynamics.Context.cs" />
+    <Compile Include="Areas\Dynamics\Data\HCMWORKER.cs" />
+    <Compile Include="Areas\Dynamics\DynamicsAreaRegistration.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionApiController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\EncuestaExternaController.cs">
@@ -2333,6 +2342,7 @@
     <Content Include="Areas\DesarrolloEconomico\Scripts\Categoria.js" />
     <Content Include="Areas\DesarrolloEconomico\Scripts\Empresa.js" />
     <Content Include="Areas\DesarrolloEconomico\Scripts\UnidadMedida.js" />
+    <Content Include="Areas\Dynamics\Scripts\Etiquetas.js" />
     <Content Include="Areas\EnCicla\Scripts\testexterno.js" />
     <Content Include="Areas\EtiquetasAmbientales\Scripts\Monitoreo.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\expedienteAmbiental.js" />
@@ -3038,6 +3048,8 @@
     <Content Include="Areas\Pqrsd\Views\web.config" />
     <Content Include="Areas\Pqrsd\Views\IngresoPqrsd\Index.cshtml" />
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
+    <Content Include="Areas\Dynamics\Views\web.config" />
+    <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -4210,6 +4222,7 @@
     <Folder Include="Scripts\dashboard\" />
     <Folder Include="Scripts\Fotos\" />
     <Folder Include="Scripts\images\" />
+    <Folder Include="Views\Dynamics\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
