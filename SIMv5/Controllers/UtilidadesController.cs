@@ -109,6 +109,27 @@
                                     CodFuncionario = funcionario,
                                     Propietario = UltFun == funcionario ? true : false
                                 }).FirstOrDefault();
+            if (TramiteTarea == null) 
+            {
+                TramiteTarea = (from TR in dbSIM.TBTRAMITE
+                                join PRO in dbSIM.TBPROCESO on TR.CODPROCESO equals PRO.CODPROCESO
+                                where TR.CODTRAMITE == CodTramite 
+                                select new SIM.Models.TramiteTarea
+                                {
+                                    CodTramite = (int)TR.CODTRAMITE,
+                                    FechaIncioTramite = TR.FECHAINI,
+                                    Proceso = PRO.NOMBRE,
+                                    Tarea = "Sin tarea asociada",
+                                    FechaIniciaTarea = TR.FECHAINI.Value,
+                                    TipoTarea = "Sin tarea asociada",
+                                    Funcionario =  "Sin fumcionario asignado",
+                                    QueDeboHacer = "Sin tarea asociada",
+                                    Vital = TR.NUMERO_VITAL,
+                                    Orden = 1,
+                                    CodFuncionario = funcionario,
+                                    Propietario = false
+                                }).FirstOrDefault(); 
+            }
             TramiteTarea.Vital = TramiteTarea.Vital != null ? TramiteTarea.Vital : "-1";
             return View(TramiteTarea);
         }
