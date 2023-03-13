@@ -1,4 +1,6 @@
-﻿$(document).ready(function () {
+﻿var filtros = "";
+
+$(document).ready(function () {
     var Codigo = $("#txtCodigo").dxTextBox({
         placeholder: "Ingrese el código del bien",
         value: ""
@@ -13,7 +15,14 @@
         icon: "filter",
         text: 'Buscar',
         onClick: function () {
-
+            if (Responsable.option("value") != "") {
+                filtros = "R:" + Responsable.option("value");
+            } else if (Codigo.option("value") != "") {
+                filtros = "C:" + Codigo.option("value");
+            } else if (Prefijo.option("value") != "" && Minimo.option("value") != "" && Maximo.option("value") != "") {
+                filtros = "P:" + Prefijo.option("value") + ";" + Minimo.option("value") + ";" + Maximo.option("value");
+            } else DevExpress.ui.dialog.alert('No se ha ingresado un dato para buscar', 'Buscar bienes');
+            gridEtiquetas.refresh();
         }
     });
 
@@ -22,7 +31,8 @@
         icon: "clearsquare",
         text: 'Limpiar filtros',
         onClick: function () {
-
+            filtros = "";
+            gridEtiquetas.refresh();
         }
     });
 
@@ -96,6 +106,7 @@ var grdEtiquetas = new DevExpress.data.CustomStore({
             searchValue: '',
             searchExpr: '',
             comparation: '',
+            customFilters: filtros,
             noFilterNoRecords: true
         }).done(function (data) {
             d.resolve(data.datos, { totalCount: data.numRegistros });
