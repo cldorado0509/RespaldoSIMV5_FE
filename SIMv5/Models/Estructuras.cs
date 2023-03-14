@@ -16,7 +16,7 @@ namespace SIM.Areas.Models
         public string TELEFONO_INSTALACION { get; set; }
         public string CM { get; set; }
         public string REPRESENTANTE_LEGAL { get; set; }
-        public long? NRO_DOCUMENTO { get; set; }
+        public string NRO_DOCUMENTO { get; set; }
         public int? ID_TERCERO { get; set; }
         public int? ID_INSTALACION { get; set; }
         public string QUEJA { get; set; }

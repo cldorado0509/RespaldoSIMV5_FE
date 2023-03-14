@@ -154,6 +154,7 @@
     .btnGuardar {
         opacity: 0.7;
     }
+
     .dx-datagrid-header-panel {
         display: none;
     }
@@ -179,7 +180,7 @@
         border-style: solid;
         border-width: thin;
         border-color: lightgray;
-        border-collapse:collapse;
+        border-collapse: collapse;
     }
 
     .dx-checkbox {
@@ -195,6 +196,7 @@
     }
 </style>
 
+<iframe name="fraInformeTecnico" style="display:none"></iframe>
 <div id="popAvanzaTareaTramite" style="padding: 0px">
     <iframe src="" id="frmAvanzaTareaTramite" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
 </div>
@@ -210,24 +212,25 @@
             foreach (TBINDICESERIE indice in ViewBag.Indices)
             {
                 @:<div class="row" style="margin-left: 0px; margin-right: 0px; padding: 2px">
-                if (i % 2 == 0) // Par
-                {
-                    @:<div class="dx-field even">
-                }
-                else
-                {
-                    @:<div class="dx-field odd">
-                }
-                <div class="dx-field-label" style="font-weight: bold">@indice.INDICE</div>
-                <div class="dx-field-value" style="padding:0px">
-                    @{var nombreIndice = "ind" + (indice.TIPO == 4 ? "chk" : "txt") + indice.CODINDICE.ToString(); }
-                    <div id="@{@nombreIndice}"></div>
-                </div>
-                @:</div>
-                @:</div>
+                    if (i % 2 == 0) // Par
+                    {
+                        @:<div class="dx-field even">
+                        }
+                        else
+                        {
+                            @:<div class="dx-field odd">
+                            }
+                            <div class="dx-field-label" style="font-weight: bold">@indice.INDICE</div>
+                            <div class="dx-field-value" style="padding:0px">
+                                @{var nombreIndice = "ind" + (indice.TIPO == 4 ? "chk" : "txt") + indice.CODINDICE.ToString(); }
+                                <div id="@{@nombreIndice}"></div>
+                            </div>
+                        @:</div>
+                    @:</div>
 
-                i++;
-            }
+
+                    i++;
+                }
         }
     </div>
     <div style="width: 100%; height: 10%; text-align: center; margin-top: 1%">
@@ -239,7 +242,7 @@
 
 <div class="row">
     <div id="tabInformes"></div>
-    <div id="divPendientesAprobar" class="col-sm-12" >
+    <div id="divPendientesAprobar" class="col-sm-12">
         <div id="GrdInfTecnico" style="height: 400px; padding-left: 0px; padding-right: 0px; width: 100%; margin: 0 auto; color: #333333; background-color: #f5f5f5; border-color: #dddddd; background-color: rgb(234, 234, 234); -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding-left: 0px; padding-right: 0px; ">
         </div>
     </div>
@@ -381,7 +384,7 @@
                     }
                 },
                 { dataField: 'verDoc', alignment: 'center', allowGrouping: true, caption: 'Ver Doc', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
-                    $('<img src="@Url.Content("../../Content/Images/Ver_Doc.png")" style="width:25px;height:25px" class="btnGuardar" onclick="EditarVisitas()" />')
+                    $('<img src="@Url.Content("../../Content/Images/Ver_Doc.png")" style="width:25px;height:25px" class="btnGuardar" />')
                              .attr('src', options.value)
                              .appendTo(container);
                 }
@@ -396,7 +399,7 @@
                 {
                     dataField: 'avanzar', alignment: 'center', allowGrouping: true, caption: 'Avanzar', width: '10%', allowEditing: false, cellTemplate: function (container, options) {
 
-                        $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px" class="btnGuardar" onclick="EditarVisitas()" />')
+                        $('<img src="@Url.Content("../../Content/Images/VerDetalle.png")" style="width:25px;height:25px" class="btnGuardar" />')
 
                                     .attr('src', options.value)
                                     .appendTo(container);
@@ -443,7 +446,7 @@
                         break;
                     case 'verDoc': //5: //ver doc
                         if (e.data.URL) {
-                            window.open('DocumentoActuacion/' + id);
+                            window.open('@Url.Content("~/ControlVigilancia/InformeVisita")/DocumentoActuacion/' + id, 'fraInformeTecnico');
                         }
                         //if (e.data.ID_ESTADOINF == 2) {
                         //    window.open(e.data.URL2);
@@ -483,7 +486,7 @@
                                 },
                                 error: function(xhr, textStatus, errorThrown){
                                     alert('Error Consultando los Trámites -> ' + textStatus);
-                                }             
+                                }
                             });
                         }
                         break;
@@ -552,8 +555,17 @@
                                     {
                                         for (contIndice = 0; contIndice < indicesDocumento.length; contIndice++)
                                         {
-                                            var txtIndice = $('#indtxt' + indicesDocumento[contIndice].CODINDICE).dxTextBox('instance');
-                                            txtIndice.option('value', indicesDocumento[contIndice].VALOR);
+                                            if (indicesDocumento[contIndice].TIPO == 0) {
+                                                var txtIndice = $('#indtxt' + indicesDocumento[contIndice].CODINDICE).dxTextBox('instance');
+
+                                                if (txtIndice != null && txtIndice != undefined)
+                                                    txtIndice.option('value', indicesDocumento[contIndice].VALOR);
+                                            } else {
+                                                var chkIndice = $('#indchk' + indicesDocumento[contIndice].CODINDICE).dxCheckBox('instance');
+
+                                                if (chkIndice != null && chkIndice != undefined)
+                                                    chkIndice.option('value', (indicesDocumento[contIndice].VALOR == 'S'));
+                                            }
                                         }
                                     }
                                 }
@@ -800,7 +812,7 @@
                             },
                             error: function(xhr, textStatus, errorThrown){
                                 alert('Error Consultando los Trámites -> ' + textStatus);
-                            }             
+                            }
                         });
                         break;
                 }
