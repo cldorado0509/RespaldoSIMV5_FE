@@ -6,7 +6,8 @@
 
 
 <script>
-      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var CodigoUnidadDocumental = @(ViewBag.CodigoUnidadDocumental);
 </script>
 <br />
 
@@ -203,6 +204,11 @@
                                 <div class="row">
                                     <div class="control-label col-sm-3" style="align-content:end">Fecha Orígen Solicitud :</div>
                                     <div class="col-sm-9" id="txtFechaOrigen"></div>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <div class="col-sm-1"></div>
+                                    <div class="col-md-11" id="GridIndices"></div>
                                 </div>
                                 <br />
                                 <div class="row">

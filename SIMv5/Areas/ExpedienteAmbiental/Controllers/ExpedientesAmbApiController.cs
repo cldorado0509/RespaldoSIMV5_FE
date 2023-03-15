@@ -18,6 +18,9 @@ using SIM.Services;
 
 namespace SIM.Areas.ExpedienteAmbiental.Controllers
 {
+    /// <summary>
+    /// Controlador Expedientes Ambientales APIs
+    /// </summary>
     [Route("api/[controller]", Name = "ExpedientesApi")]
     public class ExpedientesAmbApiController : ApiController
     {
@@ -489,23 +492,64 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 objData.FechaRegistro = DateTime.Now;
                 objData.Conexo = ".";
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
-                if (!response.IsSuccess) return null;
-                var tokenG = (TokenResponse)response.Result;
-                if (tokenG == null) return null;
 
-                decimal Id = 0;
-                Id = objData.IdPuntoControl;
-                if (Id > 0)
+                objData.IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>();
+
+                if (objData.Indices != null)
                 {
-                    resposeF = await apiService.PutAsync<PuntoControlDTO>(urlApiExpedienteAmbiental, "api/", "PuntoControl/ActualizarPuntoControl", objData, tokenG.Token);
-                    if (!resposeF.IsSuccess) return resposeF;
+                    foreach (Indice indice in objData.Indices)
+                    {
+                        if (indice.OBLIGA == 1 && (indice.VALOR == null || indice.VALOR == ""))
+                        {
+                            return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
+                        }
+                        var indiceS = new IndiceSerieDocumentalDTO
+                        {
+                            IndiceSerieDocumentaId = indice.CODINDICE,
+                            ValorString = indice.VALOR,
+                        };
+
+                        switch (indice.TIPO)
+                        {
+                            case 0: //Texto
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 8:
+                                indiceS.ValorString = indice.VALOR ?? "";
+                                break;
+                            case 1: //Numero
+                            case 6:
+                            case 7:
+                                indiceS.ValorNumerico = decimal.Parse(indice.VALOR);
+                                break;
+                            case 2: //Fecha
+                                indiceS.ValorFecha = DateTime.Parse(indice.VALOR);
+                                break;
+                        }
+
+                        objData.IndicesSerieDocumentalDTO.Add(indiceS);
+                    }
+
+                    Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+                    if (!response.IsSuccess) return null;
+                    var tokenG = (TokenResponse)response.Result;
+                    if (tokenG == null) return null;
+
+                    decimal Id = 0;
+                    Id = objData.IdPuntoControl;
+                    if (Id > 0)
+                    {
+                        resposeF = await apiService.PutAsync<PuntoControlDTO>(urlApiExpedienteAmbiental, "api/", "PuntoControl/ActualizarPuntoControl", objData, tokenG.Token);
+                        if (!resposeF.IsSuccess) return resposeF;
+                    }
+                    else if (Id <= 0)
+                    {
+                        resposeF = await apiService.PostAsync<PuntoControlDTO>(urlApiExpedienteAmbiental, "api/", "PuntoControl/GuardarPuntoControl", objData, tokenG.Token);
+                        if (!resposeF.IsSuccess) return resposeF;
+                    }
                 }
-                else if (Id <= 0)
-                {
-                    resposeF = await apiService.PostAsync<PuntoControlDTO>(urlApiExpedienteAmbiental, "api/", "PuntoControl/GuardarPuntoControl", objData, tokenG.Token);
-                    if (!resposeF.IsSuccess) return resposeF;
-                }
+
             }
             catch (Exception e)
             {
@@ -601,7 +645,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             try
             {
                 ApiService apiService = new ApiService();
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -686,7 +730,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 EstadoPuntoControlDTO estadoPuntoControl = new EstadoPuntoControlDTO();
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return JObject.FromObject(estadoPuntoControl, Js);
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return JObject.FromObject(estadoPuntoControl, Js);
@@ -763,7 +807,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 objData.FechaEstado = DateTime.Now;
                 objData.FuncionarioId = codFuncionario;
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -811,7 +855,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 };
 
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;

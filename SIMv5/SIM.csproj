@@ -1126,6 +1126,7 @@
     <Compile Include="Areas\ExpedienteAmbiental\Models\ClasificacionExpedienteDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\EstadoPuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ExpedienteAmbientalDTO.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Models\IndiceSerieDocumentalDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ListadoInstalacionesDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\PuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\PuntoControlExpedienteDocumentalDTO.cs" />

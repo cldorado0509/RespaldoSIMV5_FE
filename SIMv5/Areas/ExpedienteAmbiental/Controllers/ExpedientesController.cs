@@ -32,6 +32,7 @@
                                               select f.CODFUNCIONARIO).FirstOrDefault());
 
             ViewBag.CodFuncionario = codFuncionario;
+            ViewBag.CodigoUnidadDocumental = SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString();
 
             return View();
         }
