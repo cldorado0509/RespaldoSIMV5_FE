@@ -528,6 +528,8 @@
     <Compile Include="Areas\ControlVigilancia\Controllers\coordenadas.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\DerechoPeticionApiController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\DerechoPeticionController.cs" />
+    <Compile Include="Areas\ControlVigilancia\Controllers\FacturacionApiController.cs" />
+    <Compile Include="Areas\ControlVigilancia\Controllers\FacturacionController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\InformeVisitaController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\RealizarVisitaController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\RepartoController.cs" />
@@ -2315,6 +2317,7 @@
     <Content Include="Areas\Contratos\Scripts\Procesos.js" />
     <Content Include="Areas\Contratos\Scripts\Propuestas.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\DerechosPeticion.js" />
+    <Content Include="Areas\ControlVigilancia\Scripts\facturacion.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\radicarinformetecnico.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\reposiciones.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\sincronizacion.js" />
@@ -3038,6 +3041,7 @@
     <Content Include="Areas\Pqrsd\Views\web.config" />
     <Content Include="Areas\Pqrsd\Views\IngresoPqrsd\Index.cshtml" />
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
+    <Content Include="Areas\ControlVigilancia\Views\Facturacion\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
