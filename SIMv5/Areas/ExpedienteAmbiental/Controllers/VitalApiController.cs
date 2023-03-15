@@ -1,10 +1,15 @@
 ﻿namespace SIM.Areas.ExpedienteAmbiental.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
+    using DevExpress.Skins;
+    using DevExpress.Utils.Extensions;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using SIM.Areas.ExpedienteAmbiental.Clases;
     using SIM.Areas.ExpedienteAmbiental.Models;
     using SIM.Areas.ExpedienteAmbiental.Models.DTO;
@@ -193,7 +198,7 @@
         /// <returns></returns>
         [HttpGet, ActionName("GetDocumentoAsync")]
         public async Task<byte[]> GetDocumentoAsync(string nombreDocumento, string radicado)
-            {
+        {
             ApiService apiService = new ApiService();
             datosConsulta datosConsulta = new datosConsulta
             {
@@ -219,6 +224,112 @@
             
         }
 
+        [HttpGet, ActionName("GetActividades")]
+        public async Task<JArray> GetActividades(string NumeroVITAL)
+        {
+            dynamic model = null;
+            ApiService apiService = new ApiService();
+            datosConsulta datosConsulta = new datosConsulta
+            {
+                datos = null,
+                numRegistros = 0,
+            };
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+
+            Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+            if (!response.IsSuccess) return null;
+            var tokenG = (TokenResponse)response.Result;
+            if (tokenG == null) return null;
+
+
+            response = await apiService.GetListAsync<TareaSIMDTO>(urlApiExpedienteAmbiental, "api/", "SolicitudVITAL/ObtenerTareasSIM?NumeroVITAL=" + NumeroVITAL, tokenG.Token);
+            if (!response.IsSuccess) return null;
+            var list = (List<TareaSIMDTO>)response.Result;
+            if (list == null || list.Count == 0) return null;
+
+            model = list.AsQueryable().OrderBy(o => o.Nombre);
+           
+            return JArray.FromObject(model, Js);
+            
+
+        }
+
+        /// <summary>
+        /// Retorna el listado de responsables de una actividad
+        /// </summary>
+        /// <param name="tareaId">Identifica la tarea</param>
+        /// <returns></returns>
+        [HttpGet, ActionName("GetResponsables")]
+        public async Task<JArray> GetResponsables(string tareaId)
+        {
+            dynamic model = null;
+            ApiService apiService = new ApiService();
+            datosConsulta datosConsulta = new datosConsulta
+            {
+                datos = null,
+                numRegistros = 0,
+            };
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+
+            Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+            if (!response.IsSuccess) return null;
+            var tokenG = (TokenResponse)response.Result;
+            if (tokenG == null) return null;
+
+
+            response = await apiService.GetListAsync<ResponsableTareaDTO>(urlApiExpedienteAmbiental, "api/", "SolicitudVITAL/ObtenerResponsablesTareaSIM?TareaId=" + tareaId, tokenG.Token);
+            if (!response.IsSuccess) return null;
+            var list = (List<ResponsableTareaDTO>)response.Result;
+            if (list == null || list.Count == 0) return null;
+
+            model = list.AsQueryable().OrderBy(o => o.Funcionario);
+
+            return JArray.FromObject(model, Js);
+
+
+        }
+
+
+        /// <summary>
+        /// Avanza una solicitud de VITAL al SIM
+        /// </summary>
+        /// <param name="tramiteDTO">Información del Trámite</param>
+        /// <returns></returns>
+        [HttpPost, ActionName("AvanzarEnSIMAsync")]
+        public async Task<object> AvanzarEnSIMAsync(TramiteDTO tramiteDTO)
+        {
+            Response resposeF = new Response();
+            try
+            {
+                ApiService apiService = new ApiService();
+
+                tramiteDTO.FechaIni = DateTime.Now;
+
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+                if (!response.IsSuccess) return null;
+                var tokenG = (TokenResponse)response.Result;
+                if (tokenG == null) return null;
+
+                resposeF = await apiService.PutAsync<TramiteDTO>(urlApiExpedienteAmbiental, "api/", "SolicitudVital/IniciarTramiteAmbientalSIM", tramiteDTO, tokenG.Token);
+
+                 if (!resposeF.IsSuccess) return resposeF;
+                
+            }
+            catch (Exception e)
+            {
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+            }
+
+            return resposeF;
+        }
 
 
     }

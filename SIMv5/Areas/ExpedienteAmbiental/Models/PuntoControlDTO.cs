@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     public class PuntoControlDTO
     {
@@ -16,6 +17,18 @@
         /// </summary>
         [JsonProperty("expedienteAmbientalId")]
         public int ExpedienteAmbientalId { get; set; }
+
+        /// <summary>
+        /// Identifica la Unidad Documental
+        /// </summary>
+        [JsonProperty("unidadDocumentalId")]
+        public int UnidadDocumentalId { get; set; }
+
+        /// <summary>
+        /// Identifica el Funcionario que crea el Expediente
+        /// </summary>
+        [JsonProperty("funcionarioId")]
+        public int FuncionarioId { get; set; }
 
         /// <summary>
         /// Identifica el Expediente Documental asociado al Expediente Ambiental
@@ -80,5 +93,9 @@
         [JsonProperty("fechaRegistro")]
         public DateTime? FechaRegistro { get; set; }
 
+        /// <summary>
+        /// Indices de la serie Documental
+        /// </summary>
+        public IEnumerable<IndiceSerieDocumentalDTO> IndicesSerieDocumentalDTO { get; set; }
     }
 }
