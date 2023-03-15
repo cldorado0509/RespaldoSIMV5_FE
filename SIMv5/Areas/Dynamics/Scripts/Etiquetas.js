@@ -7,7 +7,20 @@ $(document).ready(function () {
     }).dxTextBox("instance");
 
     var Responsable = $("#cboResponsable").dxSelectBox({
-        placeholder: 'Seleccione el responsable',
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "ORDEN",
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON($("#Etiquetas").data("url") + "Dynamics/api/EtiquetaApi/Responsables");
+                }
+            })
+        }),
+        displayExpr: "RESPONSABLE",
+        valueExpr: "ORDEN",
+        searchEnabled: true,
+        noDataText: "No hay datos para mostrar",
+        placeholder: "Seleccione",
         showClearButton: true
     }).dxSelectBox("instance");
 
@@ -15,14 +28,18 @@ $(document).ready(function () {
         icon: "filter",
         text: 'Buscar',
         onClick: function () {
-            if (Responsable.option("value") != "") {
-                filtros = "R:" + Responsable.option("value");
+            if (Responsable.option("value") >= 1) {
+                filtros = "R:" + Responsable.option("text");
             } else if (Codigo.option("value") != "") {
                 filtros = "C:" + Codigo.option("value");
-            } else if (Prefijo.option("value") != "" && Minimo.option("value") != "" && Maximo.option("value") != "") {
-                filtros = "P:" + Prefijo.option("value") + ";" + Minimo.option("value") + ";" + Maximo.option("value");
+            } else if (Prefijo.option("value") >= 1 && Minimo.option("value") != "" && Maximo.option("value") != "") {
+                var min = Minimo.option("value");
+                var max = Maximo.option("value")
+                if (min > max) {
+                    DevExpress.ui.dialog.alert('Rango de etiquetas mal extablecido', 'Buscar bienes');
+                }else filtros = "P:" + Prefijo.option("text") + ";" + Minimo.option("value") + ";" + Maximo.option("value");
             } else DevExpress.ui.dialog.alert('No se ha ingresado un dato para buscar', 'Buscar bienes');
-            gridEtiquetas.refresh();
+            $("#gridEtiquetas").dxDataGrid("instance").refresh();
         }
     });
 
@@ -32,36 +49,60 @@ $(document).ready(function () {
         text: 'Limpiar filtros',
         onClick: function () {
             filtros = "";
-            gridEtiquetas.refresh();
+            Responsable.option("value", null);
+            Prefijo.option("value", null);
+            Minimo.option("value", "");
+            Maximo.option("value", "");
+            Codigo.option("value", "");
+            $("#gridEtiquetas").dxDataGrid("instance").refresh();
         }
     });
 
     var Prefijo = $("#cboPrefijo").dxSelectBox({
-        placeholder: 'Seleccione el prefijo',
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "ORDEN",
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON($("#Etiquetas").data("url") + "Dynamics/api/EtiquetaApi/Prefijos");
+                }
+            })
+        }),
+        displayExpr: "PREFIJO",
+        valueExpr: "ORDEN",
+        searchEnabled: true,
+        noDataText: "No hay datos para mostrar",
+        placeholder: "Seleccione",
         showClearButton: true
     }).dxSelectBox("instance");
 
-    var Minimo = $("#numMin").dxTextBox({
-        placeholder: "Ingrese el código del bien",
+    var Minimo = $("#numMin").dxNumberBox({
+        showSpinButtons: true,
         value: ""
-    }).dxTextBox("instance");
+    }).dxNumberBox("instance");
 
-    var Maximo = $("#numMax").dxTextBox({
-        placeholder: "Ingrese el código del bien",
+    var Maximo = $("#numMax").dxNumberBox({
+        showSpinButtons: true,
         value: ""
-    }).dxTextBox("instance");
+    }).dxNumberBox("instance");
 
-    var gridEtiquetas = $("#gridEtiquetas").dxDataGrid({
+    $("#gridEtiquetas").dxDataGrid({
         dataSource: grdEtiquetas,
         allowColumnResizing: true,
         loadPanel: { enabled: true, text: 'Cargando Datos...' },
         noDataText: "Sin datos para mostrar",
         showBorders: true,
         paging: {
-            enabled: false
+            pageSize: 5, pageIndex: 1
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20, 50]
         },
         selection: {
-            mode: 'none'
+            mode: 'multiple',
+            allowSelectAll: true,
+            showCheckBoxesMode: 'always'
         },
         remoteOperations: true,
         hoverStateEnabled: true,
@@ -70,22 +111,37 @@ $(document).ready(function () {
             { dataField: 'NOMBREBIEN', width: '25%', caption: 'Nombre del bien', dataType: 'string' },
             { dataField: 'ESTADOBIEN', width: '15%', caption: 'Estado', dataType: 'string' },
             { dataField: 'PERSONABIEN', width: '30%', caption: 'Responsable', dataType: 'string' },
-
             {
                 caption: 'Etiquetas',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'print',
-                        hint: 'Imprimir etiqueta ' + options.data.Codigo,
+                        hint: 'Imprimir etiqueta ' + options.data.CODIGO,
                         onClick: function (e) {
-
+                            window.open($('#Etiquetas').data('url') + "Dynamics/Etiqueta/ImprimirEti?Bien=" + options.data.CODIGO, "Etiqueta " + options.data.CODIGO, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
                         }
                     }).appendTo(container);
                 }
             }
         ]
-    }).dxDataGrid("instance");
+    });
+
+    $("#btnImprimeSel").dxButton({
+        icon: 'print',
+        hint: 'Imprimir etiqueta bienes seleccionados',
+        onClick: function (e) {
+            var grid = $('#gridEtiquetas').dxDataGrid('instance');
+            var DatosGridEti = grid.getSelectedRowsData();
+            var Etiquetas = [];
+            for (i = 0; i < DatosGridEti.length; i++) {
+                Etiquetas.push(DatosGridEti[i].CODIGO);
+            }
+            var ArrlistOfEti = JSON.stringify(Etiquetas);
+            window.open($('#Etiquetas').data('url') + "Dynamics/Etiqueta/ImprimirEtiSel?ListaEti=" + ArrlistOfEti, "Etiquetas Seleccionadas", "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
+        }
+
+    });
 });
 
 var grdEtiquetas = new DevExpress.data.CustomStore({
@@ -95,8 +151,8 @@ var grdEtiquetas = new DevExpress.data.CustomStore({
         var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"CODIGO","desc":false}]';
         var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
 
-        var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
-        var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+        var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 10);
+        var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 10);
         $.getJSON($('#Etiquetas').data('url') + 'Dynamics/api/EtiquetaApi/ConsultaBienes', {
             filter: filterOptions,
             sort: sortOptions,
@@ -106,8 +162,7 @@ var grdEtiquetas = new DevExpress.data.CustomStore({
             searchValue: '',
             searchExpr: '',
             comparation: '',
-            customFilters: filtros,
-            noFilterNoRecords: true
+            customFilters: filtros
         }).done(function (data) {
             d.resolve(data.datos, { totalCount: data.numRegistros });
         }).fail(function (jqxhr, textStatus, error) {

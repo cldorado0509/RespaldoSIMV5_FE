@@ -74,6 +74,7 @@
     <Reference Include="DevExpress.TreeMap.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
+    <Reference Include="DevExpress.XtraEditors.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeMap.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
@@ -1111,6 +1112,8 @@
     <Compile Include="Areas\Dynamics\Data\DIRPERSONNAME.cs" />
     <Compile Include="Areas\Dynamics\Data\Dynamics.Context.cs" />
     <Compile Include="Areas\Dynamics\Data\HCMWORKER.cs" />
+    <Compile Include="Areas\Dynamics\Data\PrefijoModel.cs" />
+    <Compile Include="Areas\Dynamics\Data\ResponsableModel.cs" />
     <Compile Include="Areas\Dynamics\DynamicsAreaRegistration.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionApiController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionController.cs" />
