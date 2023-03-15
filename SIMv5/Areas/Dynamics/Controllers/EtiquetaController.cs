@@ -105,7 +105,7 @@ namespace SIM.Areas.Dynamics.Controllers
                     PDFCode128Barcode dm = new PDFCode128Barcode();
                     dm.Data = _IzqEti;
                     dm.YDimension = 20;
-                    dm.XDimension = 0.7;
+                    dm.XDimension = 0.5;
                     dm.Font = _Arial;
                     dm.Left = 2;
                     PDFPage Pagina = _Doc.AddPage();                    
@@ -122,7 +122,7 @@ namespace SIM.Areas.Dynamics.Controllers
                         dm = new PDFCode128Barcode();
                         dm.Data = _DerEti;
                         dm.YDimension = 20;
-                        dm.XDimension = 0.7;
+                        dm.XDimension = 0.5;
                         dm.Font = _Arial;
                         dm.Left = 2;
                        
