@@ -635,7 +635,7 @@ $(document).ready(function () {
             $.getJSON(_Ruta)
                 .done(function (data) {
                     if (data.returnvalue) {
-                        var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/EditarIndicesTramite";
+                        var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/EditarIndicesDocumento";
                         $.getJSON(_Ruta, { IdDocumento: IdDocumento })
                             .done(function (data) {
                                 if (data != null) {
