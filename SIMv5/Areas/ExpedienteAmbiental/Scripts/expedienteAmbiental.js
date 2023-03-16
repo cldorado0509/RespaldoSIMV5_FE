@@ -8,6 +8,7 @@ var idAnotacionPuntoControl = 0;
 var NomExpediente = "";
 var IdIUnidadDoc = 0;
 var IdTomo = 0;
+var editar = false;
 
 $(document).ready(function () {
 
@@ -206,6 +207,7 @@ $(document).ready(function () {
                                                             Id: options.data.idPuntoControl
                                                         }).done(function (data) {
                                                             if (data !== null) {
+                                                                editar = true;
                                                                 txtNombrePuntoControl.option("value", data.nombre);
                                                                 txtObservacionPuntoControl.option("value", data.observacion);
                                                                 cboTipoSolicitudAmbiental.option("value", data.tipoSolicitudAmbientalId);
@@ -534,7 +536,6 @@ $(document).ready(function () {
             }
         }
     });
-
 
     var popupTercero = $("#popupTercero").dxPopup({
         width: 1400,
@@ -993,12 +994,15 @@ $(document).ready(function () {
             message: "Debe seleccionar la clasificación asociada al Expediente Ambiental!"
         }]
     }).dxSelectBox("instance");
-        
+
+    
+
     $("#btnGuardarExpediente").dxButton({
         text: "Guardar",
         type: "default",
         height: 30,
         onClick: function () {
+
             DevExpress.validationEngine.validateGroup("ProcesoGroup");
             var id = idExpediente;
 
@@ -1024,7 +1028,7 @@ $(document).ready(function () {
                 crossDomain: true,
                 headers: { 'Access-Control-Allow-Origin': '*' },
                 success: function (data) {
-                    if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
+                    if (data.Result.Response === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                     else {
                         DevExpress.ui.dialog.alert('Expediente Ambiental Creado correctamente con el CM:' + data.Result.IdGenerated, 'Guardar Datos');
                         $('#GidListado').dxDataGrid({ dataSource: ExpedientesDataSource });
@@ -1090,6 +1094,7 @@ $(document).ready(function () {
         width: 100,
         icon: 'add',
         onClick: function () {
+            editar = false;
             idPuntoControl = 0;
             txtNombrePuntoControl.reset();
             txtObservacionPuntoControl.reset();
@@ -1189,8 +1194,9 @@ $(document).ready(function () {
             if (nombreG === "") return;
             var item = cboTipoSolicitudAmbiental.option("selectedItem");
             var tipoSolicitudAmbientalId = item.idTipoSolicitudAmbiental;
+            var Indices = indicesSerieDocumentalStore._array;
             var params = {
-                idPuntoControl: id, expedienteAmbientalId: idExpedienteA, TipoSolicitudAmbientalId: tipoSolicitudAmbientalId, nombre: nombreG, conexo: conexoG, observacion: observacionG, fechaOrigen: fechaOrigenG
+                idPuntoControl: id, expedienteAmbientalId: idExpedienteA, TipoSolicitudAmbientalId: tipoSolicitudAmbientalId, nombre: nombreG, conexo: conexoG, observacion: observacionG, fechaOrigen: fechaOrigenG, Indices: Indices
             };
 
             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/GuardarPuntoControllAsync";
@@ -1205,7 +1211,7 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
                     else {
-                        DevExpress.ui.dialog.alert('Punto de Control Creado/Actualizado correctamente con el Id:' + data.Result.IdGenerated, 'Guardar Datos');
+                        DevExpress.ui.dialog.alert('Punto de Control Creado/Actualizado correctamente!', 'Guardar Datos');
                         $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
                         popupNuevoPuntoControl.hide();
                     }
@@ -1224,7 +1230,18 @@ $(document).ready(function () {
         dragEnabled: true,
         resizeEnabled: true,
         hoverStateEnabled: true,
-        title: "Creación/Edición de un Punto de Control"
+        title: "Creación/Edición de un Punto de Control",
+        onShown: function () {
+            if (!editar) {
+                indicesSerieDocumentalStore = null;
+                //CargarGridIndices();
+                CargarIndices();
+                //    gridInstance = $("#GridIndices").dxDataGrid('instance');
+                //    gridInstance.option("dataSource", indicesSerieDocumentalStore);
+            } else {
+                CargarGridIndices();
+            }
+        }  
     }).dxPopup("instance");
 
     var popupVicularExpedienteDocumental = $("#popupVicularExpedienteDocumental").dxPopup({
@@ -1262,8 +1279,6 @@ $(document).ready(function () {
         title: "Buscar Expediente"
     });
 
-      
-
     $("#cmdShowExpedienteFlip").dxButton({
         text: "Ver Expediente ...",
         icon: "fields",
@@ -1273,6 +1288,7 @@ $(document).ready(function () {
             verExpediente($('#SIM').data('url') + 'ExpedienteAmbiental/Expedientes/FlipExpediente?id=' + idExpedienteDoc);
         }
     });
+
 
     var popupInd = null;
 
@@ -1305,6 +1321,287 @@ $(document).ready(function () {
             );
         }
     };    
+
+    function CargarGridIndices() {
+        $("#GridIndices").dxDataGrid({
+            dataSource: indicesSerieDocumentalStore,
+            allowColumnResizing: true,
+            allowSorting: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            height: '100%',
+            loadPanel: { text: 'Cargando Datos...' },
+            paging: {
+                pageSize: 0,
+            },
+            pager: {
+                showPageSizeSelector: false,
+            },
+            filterRow: {
+                visible: false,
+            },
+            groupPanel: {
+                visible: false,
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: true,
+                allowAdding: false,
+                allowDeleting: false
+
+            },
+            selection: {
+                mode: 'single'
+            },
+            scrolling: {
+                showScrollbar: 'always',
+            },
+            wordWrapEnabled: true,
+            columns: [
+                {
+                    dataField: "CODINDICE",
+                    dataType: 'number',
+                    visible: false,
+                }, {
+                    dataField: "INDICE",
+                    caption: 'INDICE',
+                    dataType: 'string',
+                    width: '40%',
+                    visible: true,
+                    allowEditing: false
+                }, {
+                    dataField: 'VALOR',
+                    caption: 'VALOR',
+                    dataType: 'string',
+                    allowEditing: true,
+                    cellTemplate: function (cellElement, cellInfo) {
+                        switch (cellInfo.data.TIPO) {
+                            case 0: // TEXTO
+                            case 1: // NUMERO
+                            case 3: // HORA
+                            case 8: // DIRECCION
+                                if (cellInfo.data.VALOR != null) {
+                                    cellElement.html(cellInfo.data.VALOR);
+                                }
+                                break;
+                            case 2: // FECHA
+                                if (cellInfo.data.VALOR != null) {
+                                    //cellElement.html(cellInfo.data.VALOR.getDate() + '/' + (cellInfo.data.VALOR.getMonth() + 1) + '/' + cellInfo.data.VALOR.getFullYear());
+                                    cellElement.html(cellInfo.data.VALOR);
+                                }
+                                break;
+                            case 4: // BOOLEAN
+                                if (cellInfo.data.VALOR != null)
+                                    cellElement.html(cellInfo.data.VALOR == 'S' ? 'SI' : 'NO');
+                                break;
+                            default: // OTRO
+                                if (cellInfo.data.VALOR != null)
+                                    cellElement.html(cellInfo.data.VALOR);
+                                break;
+                        }
+                    },
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        switch (cellInfo.data.TIPO) {
+                            case 1: // NUMERO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+                                if (cellInfo.data.MINIMO.length && cellInfo.data.MAXIMO.length > 0) {
+                                    $(div).dxNumberBox({
+                                        value: cellInfo.data.VALOR,
+                                        width: '100%',
+                                        min: cellInfo.data.MINIMO,
+                                        max: cellInfo.data.MAXIMO,
+                                        showSpinButtons: false,
+                                        onValueChanged: function (e) {
+                                            cellInfo.setValue(e.value);
+                                        },
+                                    });
+                                } else {
+                                    $(div).dxNumberBox({
+                                        value: cellInfo.data.VALOR,
+                                        width: '100%',
+                                        showSpinButtons: false,
+                                        onValueChanged: function (e) {
+                                            cellInfo.setValue(e.value);
+                                        },
+                                    });
+                                }
+                                break;
+                            case 0: // TEXTO
+                            case 3: // HORA
+                            case 8: // DIRECCION
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxTextBox({
+                                    value: cellInfo.data.VALOR,
+                                    width: '100%',
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                            case 2: // FECHA
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                var fecha = null;
+                                if (cellInfo.data.VALOR != null && cellInfo.data.VALOR.trim() != '') {
+                                    var partesFecha = cellInfo.data.VALOR.split('/');
+                                    fecha = new Date(parseInt(partesFecha[2]), parseInt(partesFecha[1]) - 1, parseInt(partesFecha[0]));
+
+                                    $(div).dxDateBox({
+                                        type: 'date',
+                                        width: '100%',
+                                        displayFormat: 'dd/MM/yyyy',
+                                        value: fecha,
+                                        onValueChanged: function (e) {
+                                            //cellInfo.setValue(e.value);
+                                            cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
+                                        },
+                                    });
+                                } else {
+                                    $(div).dxDateBox({
+                                        type: 'date',
+                                        width: '100%',
+                                        displayFormat: 'dd/MM/yyyy',
+                                        onValueChanged: function (e) {
+                                            //cellInfo.setValue(e.value);
+                                            cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
+                                        },
+                                    });
+                                }
+
+                                break;
+                            case 4: // SI/NO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxSelectBox({
+                                    dataSource: siNoOpciones,
+                                    width: '100%',
+                                    displayExpr: "Nombre",
+                                    valueExpr: "ID",
+                                    placeholder: "[SI/NO]",
+                                    value: cellInfo.data.VALOR,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                        $("#grdIndices").dxDataGrid("saveEditData");
+                                    },
+                                });
+                                break;
+                            case 5: // Lista
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                if (cellInfo.data.ID_LISTA != null) {
+                                    $(div).dxSelectBox({
+                                        //dataSource: opcionesLista[cellInfo.data.CODINDICE],
+                                        items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                        width: '100%',
+                                        //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
+                                        //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
+                                        placeholder: "[SELECCIONAR OPCION]",
+                                        value: cellInfo.data.VALOR,
+                                        searchEnabled: true,
+                                        onValueChanged: function (e) {
+                                            cellInfo.setValue(e.value);
+                                            $("#grdIndices").dxDataGrid("saveEditData");
+                                        },
+                                    });
+                                } else {
+                                    $(div).dxTextBox({
+                                        value: cellInfo.data.VALOR,
+                                        width: '100%',
+                                        onValueChanged: function (e) {
+                                            cellInfo.setValue(e.value);
+                                        },
+                                    });
+                                }
+                                break;
+                            default: // Otro
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxTextBox({
+                                    value: cellInfo.data.VALOR,
+                                    width: '100%',
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                        }
+                    }
+                }, {
+                    dataField: "OBLIGA",
+                    caption: 'R',
+                    width: '40px',
+                    dataType: 'string',
+                    visible: true,
+                    allowEditing: false,
+                    cellTemplate: function (cellElement, cellInfo) {
+                        cellElement.css('text-align', 'center');
+                        cellElement.css('color', 'red');
+                        if (cellInfo.data.OBLIGA == 1)
+                            cellElement.html('*');
+
+                    }
+                }
+            ]
+        });
+    }
+
+    function AsignarIndices(indices) {
+        opcionesLista = [];
+
+        indicesSerieDocumentalStore = new DevExpress.data.LocalStore({
+            key: 'CODINDICE',
+            data: indices,
+            name: 'indicesSerieDocumental'
+        });
+
+        indices.forEach(function (valor, indice, array) {
+            if (valor.TIPO == 5 && valor.ID_LISTA != null) {
+
+                if (opcionesLista.findIndex(ol => ol.idLista == valor.ID_LISTA) == -1) {
+                    opcionesLista.push({ idLista: valor.ID_LISTA, datos: null, cargado: false });
+                }
+            }
+        });
+
+        if (opcionesLista.length == 0) {
+            CargarGridIndices();
+        } else {
+            opcionesLista.forEach(function (valor, indice, array) {
+                $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerIndiceValoresLista?id=' + valor.idLista).done(function (data) {
+                    var index = opcionesLista.findIndex(ol => ol.idLista == valor.idLista);
+                    opcionesLista[index].datos = data;
+                    opcionesLista[index].cargado = true;
+
+                    var finalizado = true;
+
+                    opcionesLista.forEach(function (v, i, a) {
+                        finalizado = finalizado && v.cargado;
+                    });
+
+                    if (finalizado) {
+                        CargarGridIndices();
+                    }
+                });
+            });
+        }
+    }
+
+    function CargarIndices() {
+        var URL = $('#SIM').data('url') + 'GestionDocumental/api/ExpedientesApi/ObtenerIndicesSerieDocumental';
+        $.getJSON(URL, {
+            codSerie: CodigoUnidadDocumental,
+        }).done(function (data) {
+            AsignarIndices(data);
+        });
+    }
 
    });
 

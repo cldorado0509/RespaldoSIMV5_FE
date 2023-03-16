@@ -1426,8 +1426,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                              MAXIMO = i.VALORMAXIMO.Length > 0 ? i.VALORMAXIMO : "",
                                              MINIMO = i.VALORMINIMO.Length > 0 ? i.VALORMINIMO : ""
                                          };
-
-            return indicesSerieDocumental.ToList();
+            var listaInd = indicesSerieDocumental.ToList();
+            return listaInd;
         }
 
         [Authorize]
