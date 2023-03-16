@@ -3,6 +3,7 @@ using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraPrinting.BarCode;
 using DocumentFormat.OpenXml.Drawing.ChartDrawing;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Independentsoft.Office.Word.Fields;
 using O2S.Components.PDF4NET;
 using O2S.Components.PDF4NET.Graphics;
@@ -59,20 +60,23 @@ namespace SIM.Areas.Dynamics.Controllers
                 TrueTypeFont _Arial = new TrueTypeFont(HostingEnvironment.MapPath(@"~/fonts/arialbd.ttf"), 7, true, true);
                 PDFBrush brush = new PDFBrush(new PDFRgbColor(Color.Black));
                 PDFImage _imgLogo = new PDFImage(Server.MapPath(@"~/Content/Images/Logo_AreaRad.png"));
+                string _mesAgno = DateTime.Now.ToString("MMMM DE yyyy", CultureInfo.GetCultureInfo("es-CO")).ToUpper();
                 PDFCode128Barcode dm = new PDFCode128Barcode();
                 dm.Data = Bien;
                 dm.YDimension = 20;
-                dm.XDimension = 0.8;
+                dm.XDimension = 0.6;
                 dm.Font = _Arial;
+                dm.Left = 2;
+                double _widthdm = dm.Width;
+                double _widthMes = _mesAgno.Length * 4;
                 PDFPage Pagina = _Doc.AddPage();
                 Pagina.Width = 288;
                 Pagina.Height = 72;
                 Pagina.Canvas.DrawText("ÁREA METROPOLITANA", _Arial, null, brush, 10, 12);
                 Pagina.Canvas.DrawText("DEL VALLE DE ABURRÁ", _Arial, null, brush, 10, 20);
                 Pagina.Canvas.DrawImage(_imgLogo, 110, 5, 25, 25, 0, PDFKeepAspectRatio.KeepNone);
-                Pagina.Canvas.DrawBarcode(dm, 0, 30);
-                string _mesAgno = DateTime.Now.ToString("MMMM DE yyyy", CultureInfo.GetCultureInfo("es-CO")).ToUpper();
-                Pagina.Canvas.DrawText(_mesAgno, _Arial, null, brush, 40, 60);
+                Pagina.Canvas.DrawBarcode(dm, (72 - (_widthdm / 2)), 30);
+                Pagina.Canvas.DrawText(_mesAgno, _Arial, null, brush, (72 - (_widthMes / 2)), 60);
                 _Doc.Save(oStream);
             }
             oStream.Position = 0;
@@ -98,6 +102,7 @@ namespace SIM.Areas.Dynamics.Controllers
                 PDFBrush brush = new PDFBrush(new PDFRgbColor(Color.Black));
                 MemoryStream _ImgCode = new MemoryStream();
                 PDFImage _imgLogo = new PDFImage(Server.MapPath(@"~/Content/Images/Logo_AreaRad.png"));
+                string _mesAgno = DateTime.Now.ToString("MMMM DE yyyy", CultureInfo.GetCultureInfo("es-CO")).ToUpper();
                 for (var i=0; i < arrEtiquetas.Count; i = i + 2) {
                     string _IzqEti = arrEtiquetas[i];
                     string _DerEti = "";
@@ -105,32 +110,33 @@ namespace SIM.Areas.Dynamics.Controllers
                     PDFCode128Barcode dm = new PDFCode128Barcode();
                     dm.Data = _IzqEti;
                     dm.YDimension = 20;
-                    dm.XDimension = 0.5;
+                    dm.XDimension = 0.6;
                     dm.Font = _Arial;
                     dm.Left = 2;
+                    double _widthdm = dm.Width;
+                    double _widthMes = _mesAgno.Length * 4;
                     PDFPage Pagina = _Doc.AddPage();                    
                     Pagina.Width = 288;
                     Pagina.Height = 72;
+                    
                     Pagina.Canvas.DrawText("ÁREA METROPOLITANA", _Arial, null, brush, 10, 12);
                     Pagina.Canvas.DrawText("DEL VALLE DE ABURRÁ", _Arial, null, brush, 10, 20);
                     Pagina.Canvas.DrawImage(_imgLogo, 110, 5, 25, 25, 0, PDFKeepAspectRatio.KeepNone);
-                    Pagina.Canvas.DrawBarcode(dm, 0, 30);
-                    string _mesAgno = DateTime.Now.ToString("MMMM DE yyyy", CultureInfo.GetCultureInfo("es-CO")).ToUpper();
-                    Pagina.Canvas.DrawText(_mesAgno, _Arial, null, brush, 40, 60);
+                    Pagina.Canvas.DrawBarcode(dm, (72 - (_widthdm/2)), 30);
+                    Pagina.Canvas.DrawText(_mesAgno, _Arial, null, brush, (72 - (_widthMes / 2)), 60);
                     if (_DerEti != "")
                     {
                         dm = new PDFCode128Barcode();
                         dm.Data = _DerEti;
                         dm.YDimension = 20;
-                        dm.XDimension = 0.5;
+                        dm.XDimension = 0.6;
                         dm.Font = _Arial;
-                        dm.Left = 2;
-                       
+                        dm.Left = 2;                       
                         Pagina.Canvas.DrawText("ÁREA METROPOLITANA", _Arial, null, brush, 160, 12);
                         Pagina.Canvas.DrawText("DEL VALLE DE ABURRÁ", _Arial, null, brush, 160, 20);
                         Pagina.Canvas.DrawImage(_imgLogo, 260, 5, 25, 25, 0, PDFKeepAspectRatio.KeepNone);
-                        Pagina.Canvas.DrawBarcode(dm, 150, 30);
-                        Pagina.Canvas.DrawText(_mesAgno, _Arial, null, brush, 190, 60);
+                        Pagina.Canvas.DrawBarcode(dm, 144 + (72 - (_widthdm / 2)), 30);
+                        Pagina.Canvas.DrawText(_mesAgno, _Arial, null, brush, 144 + (72 - (_widthMes / 2)), 60);
                     }
                 }
                 _Doc.Save(oStream);
