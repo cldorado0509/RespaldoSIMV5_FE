@@ -35,6 +35,8 @@ namespace SIM.Data.Tramites
         [StringLength(1)]
         public string RADICADO { get; set; }
         public string S_DEFINEEXPEDIENTE { get; set; }
+        [StringLength(1)]
+        public string S_ADMINMODULO { get; set; }
 
         public virtual ICollection<RADICADO_DOCUMENTO> RADICADO_DOCUMENTO { get; set; }
 
