@@ -251,6 +251,7 @@
             }
         }
 
+             
         public async Task<Response> PostAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
         {
             try
@@ -278,10 +279,10 @@
                 var item = JsonConvert.DeserializeObject<OperationResponse>(result);
                 return new Response
                 {
-                   IsSuccess = true,
-                   Result = item
+                    IsSuccess = true,
+                    Result = item
                 };
-                
+
             }
             catch (Exception ex)
             {
@@ -292,6 +293,7 @@
                 };
             }
         }
+
 
         public async Task<Response> PostFileAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
         {

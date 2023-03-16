@@ -994,12 +994,21 @@ $(document).ready(function () {
             message: "Debe seleccionar la clasificación asociada al Expediente Ambiental!"
         }]
     }).dxSelectBox("instance");
-        
+
+    $("#loadPanel").dxLoadPanel({
+        message: 'Procesando...',
+        showIndicator: true,
+        shading: true,
+        shadingColor: "rgba(0,0,0,0.4)",
+    });
+
     $("#btnGuardarExpediente").dxButton({
         text: "Guardar",
         type: "default",
         height: 30,
         onClick: function () {
+
+            $("#loadPanel").dxLoadPanel('instance').show();
             DevExpress.validationEngine.validateGroup("ProcesoGroup");
             var id = idExpediente;
 
@@ -1025,8 +1034,9 @@ $(document).ready(function () {
                 crossDomain: true,
                 headers: { 'Access-Control-Allow-Origin': '*' },
                 success: function (data) {
-                    if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
+                    if (data.Result.Response === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                     else {
+                        $("#loadPanel").dxLoadPanel('instance').hide();
                         DevExpress.ui.dialog.alert('Expediente Ambiental Creado correctamente con el CM:' + data.Result.IdGenerated, 'Guardar Datos');
                         $('#GidListado').dxDataGrid({ dataSource: ExpedientesDataSource });
                         $('#popupNuevoExpediente').dxPopup("instance").hide();
