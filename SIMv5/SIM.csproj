@@ -529,6 +529,8 @@
     <Compile Include="Areas\ControlVigilancia\Controllers\coordenadas.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\DerechoPeticionApiController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\DerechoPeticionController.cs" />
+    <Compile Include="Areas\ControlVigilancia\Controllers\FacturacionApiController.cs" />
+    <Compile Include="Areas\ControlVigilancia\Controllers\FacturacionController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\InformeVisitaController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\RealizarVisitaController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\RepartoController.cs" />
