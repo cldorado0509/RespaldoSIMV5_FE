@@ -1160,6 +1160,31 @@
             }
             return new { resp = "OK", mensaje = "Indices ingresados correctamente" };
         }
+
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("EditarIndicesDocumento")]
+        public dynamic GetEditarIndicesDocumento(int IdDocumento)
+        {
+            var Indices = (from Ind in dbSIM.TBINDICETRAMITE
+                           join Ise in dbSIM.TBINDICEPROCESO on Ind.CODINDICE equals Ise.CODINDICE
+                           join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                           from pdis in l.DefaultIfEmpty()
+                           where Ind.CODTRAMITE == CodTramite
+                           orderby Ise.ORDEN
+                           select new Indice
+                           {
+                               CODINDICE = (int)Ind.CODINDICE,
+                               INDICE = Ise.INDICE,
+                               TIPO = (byte)Ise.TIPO,
+                               LONGITUD = (long)Ise.LONGITUD,
+                               OBLIGA = (int)Ise.OBLIGA,
+                               VALORDEFECTO = Ise.VALORDEFECTO,
+                               VALOR = Ind.VALOR,
+                               ID_LISTA = (int)Ise.CODIGO_SUBSERIE,
+                               TIPO_LISTA = pdis.TIPO,
+                               CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
+                           }).ToList();
+            return Indices.ToList();
+        }
     }
 
 

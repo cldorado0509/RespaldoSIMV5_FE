@@ -204,7 +204,7 @@ $(document).ready(function () {
                                     if (data.length > 0) {
                                         $("#PanelIndicesTra").hide();
                                         $("#PanelEditIndicesTra").show();
-                                        AsignarIndices(data);
+                                        AsignarIndicesTra(data);
                                     } else {
                                         DevExpress.ui.dialog.alert('El proceso no posee indices para el trámite!', 'Detalle del trámite');
                                     }
@@ -624,6 +624,115 @@ $(document).ready(function () {
         ]
     });
 
+    //Inicio Editar indices documento
+
+    $("#btnEditIndicesDoc").dxButton({
+        icon: 'edit',
+        hint: 'modificar indices del documento',
+        onClick: function (e) {
+
+            var _Ruta = $("#SIM").data("url") + 'Utilidades/PuedeEditarIndicesDoc?IdDoc=' + IdDocumento;
+            $.getJSON(_Ruta)
+                .done(function (data) {
+                    if (data.returnvalue) {
+                        var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/EditarIndicesTramite";
+                        $.getJSON(_Ruta, { IdDocumento: IdDocumento })
+                            .done(function (data) {
+                                if (data != null) {
+                                    if (data.length > 0) {
+                                        $("#PanelIndicesDoc").hide();
+                                        $("#PanelEditIndicesDoc").show();
+                                        AsignarIndicesDoc(data);
+                                    } else {
+                                        DevExpress.ui.dialog.alert('La unidad documnetal no posee indices para el documento!', 'Detalle del trámite');
+                                    }
+                                }
+                            }).fail(function (jqxhr, textStatus, error) {
+                                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
+                            });
+                    } else {
+                        DevExpress.ui.dialog.alert('Usted no posee permisos para modificar índices del documento!', 'Detalle del trámite');
+                    }
+                }).fail(function (jqxhr, textStatus, error) {
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
+                });
+        }
+    });
+
+    $("#btnEditIndicesDoc").dxButton({
+        icon: 'edit',
+        hint: 'modificar indices del tramite',
+        onClick: function (e) {
+            var _Ruta = $("#SIM").data("url") + 'Utilidades/PuedeEditarIndicesTra';
+            $.getJSON(_Ruta)
+                .done(function (data) {
+                    if (data.returnvalue) {
+                        var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/EditarIndicesTramite";
+                        $.getJSON(_Ruta, { CodTramite: CodTramite })
+                            .done(function (data) {
+                                if (data != null) {
+                                    if (data.length > 0) {
+                                        $("#PanelIndicesTra").hide();
+                                        $("#PanelEditIndicesTra").show();
+                                        AsignarIndicesTra(data);
+                                    } else {
+                                        DevExpress.ui.dialog.alert('El proceso no posee indices para el trámite!', 'Detalle del trámite');
+                                    }
+                                }
+                            }).fail(function (jqxhr, textStatus, error) {
+                                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Eliminar proceso');
+                            });
+                    } else {
+                        DevExpress.ui.dialog.alert('Usted no posee permisos para modificar índices de trámite!', 'Detalle del trámite');
+                    }
+                }).fail(function (jqxhr, textStatus, error) {
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
+                });
+        }
+    });
+
+    $("#btnGuardaIndicesDoc").dxButton({
+        icon: 'save',
+        hint: 'Guardar indices del documento',
+        onClick: function (e) {
+            var Indices = indicesSerieDocumentalStore._array;
+            var params = { IdDocumento: CodTramite, Indices: Indices };
+            var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/GuardaindicesDocumento";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                beforeSend: function () { },
+                success: function (data) {
+                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Detalle del trámite');
+                    else {
+                        DevExpress.ui.dialog.alert('Indices Guardados correctamente', 'Detalle del trámite');
+                        $('#grdIndicesTra').dxDataGrid("instance").refresh();
+                        $("#PanelIndicesTra").show();
+                        $("#PanelEditIndicesTra").hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Detalle del trámite');
+                }
+            });
+        }
+    });
+
+    $("#btnCancelIndDoc").dxButton({
+        icon: 'revert',
+        hint: 'Cancelar modificar indices del documento',
+        onClick: function (e) {
+            $("#PanelIndicesTra").show();
+            $("#PanelEditIndicesTra").hide();
+        }
+    });
+
+    //Fin Editar indices documento
+
+
     $("#grdRutaTra").dxDataGrid({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -871,7 +980,7 @@ $(document).ready(function () {
         dragEnabled: true,
     }).dxPopup("instance");
 
-    function AsignarIndices(indices) {
+    function AsignarIndicesTra(indices) {
         opcionesLista = [];
 
         indicesSerieDocumentalStore = new DevExpress.data.LocalStore({
@@ -890,7 +999,7 @@ $(document).ready(function () {
         });
 
         if (opcionesLista.length == 0) {
-            CargarGridIndices();
+            CargarGridIndicesTra();
             //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore); 
         } else {
             opcionesLista.forEach(function (valor, indice, array) {
@@ -906,7 +1015,7 @@ $(document).ready(function () {
                     });
 
                     if (finalizado) {
-                        CargarGridIndices();
+                        CargarGridIndicesTra();
                         //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore);
                     }
                 });
@@ -914,7 +1023,7 @@ $(document).ready(function () {
         }
     }
 
-    function CargarGridIndices() {
+    function CargarGridIndicesTra() {
         $("#grdEditIndicesTra").dxDataGrid({
             dataSource: indicesSerieDocumentalStore,
             allowColumnResizing: true,

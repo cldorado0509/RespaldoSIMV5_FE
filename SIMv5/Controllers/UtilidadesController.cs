@@ -263,6 +263,37 @@
             return Json(new { returnvalue = _resp }, JsonRequestBehavior.AllowGet);
         }
 
+        [ActionName("PuedeEditarIndicesDoc")]
+        [Authorize]
+        public ActionResult GetPuedeEditarIndicesDoc(decimal IdDoc)
+        {
+            int idUsuario = 0;
+            bool _resp = false;
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+            }
+            if (idUsuario > 0 && IdDoc > 0)
+            {
+                var UniDoc = (from D in dbSIM.TBTRAMITEDOCUMENTO
+                              where D.ID_DOCUMENTO == IdDoc
+                              select D.CODSERIE).FirstOrDefault();
+                if (UniDoc > 0)
+                {
+                    var Permiso = (from U in dbSIM.USUARIO
+                                   join UF in dbSIM.USUARIO_FUNCIONARIO on U.ID_USUARIO equals UF.ID_USUARIO
+                                   join FUD in dbSIM.PERMISOSSERIE on UF.CODFUNCIONARIO equals FUD.CODFUNCIONARIO
+                                   where U.ID_USUARIO == idUsuario && FUD.PM == "1" && FUD.CODSERIE == UniDoc
+                                   select U).FirstOrDefault();
+                    if (Permiso != null) _resp = true;
+                }
+            }
+            return Json(new { returnvalue = _resp }, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// Obtiene un documento desde Vital
         /// </summary>
