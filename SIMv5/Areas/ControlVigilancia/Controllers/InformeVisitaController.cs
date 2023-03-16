@@ -47,7 +47,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         public ActionResult RevisarInfTecnico()
         {
             var indicesSerieDocumental = from i in db.TBINDICESERIE
-                                         where i.CODSERIE == 62 && i.MOSTRAR == "1" && i.CODINDICE != 381 && i.CODINDICE != 382
+                                         where i.CODSERIE == 62 && i.MOSTRAR == "1" && i.CODINDICE != 381 && i.CODINDICE != 382 && i.CODINDICE != 2740
                                          orderby i.ORDEN
                                          select i;
 
@@ -62,16 +62,16 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         {
             return View();
         }
-           public ActionResult InformeTecnico()
+        public ActionResult InformeTecnico()
         {
             return View();
         }
-           public ActionResult NuevoInformeTec()
+        public ActionResult NuevoInformeTec()
         {
             return View();
         }
 
-           public ActionResult AsignarTramite()
+        public ActionResult AsignarTramite()
         {
             return View();
         }
@@ -157,7 +157,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
-            
+
 
         }
         public ActionResult consultarInformeTecnico()
@@ -198,10 +198,10 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             }
             //String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT FROM control.INFORME_TECNICO INNER JOIN control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF where INFORME_TECNICO.ID_ESTADOINF in(2,3) and INFORME_TECNICO.FUNCIONARIO=" + codFuncionario + "";
             //String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT, INFORME_TECNICO.ID_RADICADO FROM control.INFORME_TECNICO INNER JOIN control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF where INFORME_TECNICO.ID_ESTADOINF = 2 and INFORME_TECNICO.FUNCIONARIOACT=" + codFuncionario + "";
-            String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT, INFORME_TECNICO.ID_RADICADO, MAX(TBTRAMITETAREA.FECHAINI) AS FECHA_REVISION " + 
-                "FROM control.INFORME_TECNICO INNER JOIN " + 
-                "control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF LEFT OUTER JOIN " + 
-                "control.TRAMITE_VISITA ON INFORME_TECNICO.ID_VISITA = TRAMITE_VISITA.ID_VISITA LEFT OUTER JOIN " + 
+            String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT, INFORME_TECNICO.ID_RADICADO, MAX(TBTRAMITETAREA.FECHAINI) AS FECHA_REVISION " +
+                "FROM control.INFORME_TECNICO INNER JOIN " +
+                "control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF LEFT OUTER JOIN " +
+                "control.TRAMITE_VISITA ON INFORME_TECNICO.ID_VISITA = TRAMITE_VISITA.ID_VISITA LEFT OUTER JOIN " +
                 "tramites.TBTRAMITETAREA ON TRAMITE_VISITA.ID_TRAMITE = TBTRAMITETAREA.CODTRAMITE AND TBTRAMITETAREA.ESTADO = 0 " +
                 "where INFORME_TECNICO.ID_ESTADOINF = 2 and INFORME_TECNICO.FUNCIONARIOACT=" + codFuncionario + " " +
                 "GROUP BY INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT, INFORME_TECNICO.ID_RADICADO " +
@@ -223,7 +223,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                 codFuncionario = clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario);
             }
             //String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT FROM control.INFORME_TECNICO INNER JOIN control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF where INFORME_TECNICO.ID_ESTADOINF in(2,3) and INFORME_TECNICO.FUNCIONARIO=" + codFuncionario + "";
-            String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT, INFORME_TECNICO.ID_RADICADO, NVL(INFORME_TECNICO.TRAMITE_AVANZADO, 'N') AS TRAMITE_AVANZADO FROM control.INFORME_TECNICO INNER JOIN control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF where INFORME_TECNICO.ID_ESTADOINF = 3 and INFORME_TECNICO.FUNCIONARIOACT=" + codFuncionario + " ORDER BY NVL(INFORME_TECNICO.TRAMITE_AVANZADO, 'N')";
+            String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2,INFORME_TECNICO.FUNCIONARIOACT, INFORME_TECNICO.ID_RADICADO, NVL(INFORME_TECNICO.TRAMITE_AVANZADO, 'N') AS TRAMITE_AVANZADO FROM control.INFORME_TECNICO INNER JOIN control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF where INFORME_TECNICO.ID_ESTADOINF = 3 and INFORME_TECNICO.FUNCIONARIOACT=" + codFuncionario + " ORDER BY NVL(INFORME_TECNICO.TRAMITE_AVANZADO, 'N'), INFORME_TECNICO.ID_INF DESC";
 
             //String sql = "SELECT INFORME_TECNICO.ID_INF,INFORME_TECNICO.ASUNTO,INFORME_TECNICO.OBSERVACION,INFORME_TECNICO.ID_ESTADOINF,INFORME_TECNICO.ID_VISITA,INFORME_TECNICO.FUNCIONARIO,INFORME_TECNICO.URL,INFESTADO.NOMBRE,INFORME_TECNICO.URL2 FROM control.INFORME_TECNICO INNER JOIN control.INFESTADO ON INFESTADO.ID_ESTADO = INFORME_TECNICO.ID_ESTADOINF where INFORME_TECNICO.ID_ESTADOINF in(2,3) and INFORME_TECNICO.FUNCIONARIOACT=" + codFuncionario + "";
             ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
@@ -241,8 +241,8 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             try
             {
                 var rutaInforme = (from informeTecnico in db.INFORME_TECNICO
-                                  where informeTecnico.ID_VISITA == idVisita
-                                  select informeTecnico.URL).FirstOrDefault();
+                                   where informeTecnico.ID_VISITA == idVisita
+                                   select informeTecnico.URL).FirstOrDefault();
 
                 if (rutaInforme != null && rutaInforme.Trim() != "")
                 {
@@ -253,8 +253,8 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                     }
                 }
 
-                dbControl.SP_ADD_TRAMITE_INFORME(idTramite, codFuncionario, copia, CodResponsable, codTarea,0);
-                dbControl.SP_MODIFICAR_INFTECNICO(idVisita, CodResponsable,2);
+                dbControl.SP_ADD_TRAMITE_INFORME(idTramite, codFuncionario, copia, CodResponsable, codTarea, 0);
+                dbControl.SP_MODIFICAR_INFTECNICO(idVisita, CodResponsable, 2);
             }
             catch (Exception e)
             {
@@ -271,26 +271,29 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             string sql = "SELECT distinct VWR_DETALLEINFTECNICO.IDTRAMITE, VWR_DETALLEINFTECNICO.IDVISITA, VWR_DETALLEINFTECNICO.EMPRESA, VWR_DETALLEINFTECNICO.DIRECCION, VWR_DETALLEINFTECNICO.MUNICIPIO, VWR_DETALLEINFTECNICO.NOMBRE_INSTALACION, VWR_DETALLEINFTECNICO.TELEFONO_INSTALACION, VWR_DETALLEINFTECNICO.CM, VWR_DETALLEINFTECNICO.REPRESENTANTE_LEGAL, VWR_DETALLEINFTECNICO.NRO_DOCUMENTO, VWR_DETALLEINFTECNICO.ID_TERCERO, VWR_DETALLEINFTECNICO.ID_INSTALACION, VWR_DETALLEINFTECNICO.QUEJA, VWR_DETALLEINFTECNICO.ANO, VWR_DETALLEINFTECNICO.ABOGADO FROM control.VWR_DETALLEINFTECNICO WHERE VWR_DETALLEINFTECNICO.IDVISITA = " + id.ToString();
 
             DatosVisita consulta = ((DbContext)db).Database.SqlQuery<DatosVisita>(sql).FirstOrDefault();
-            
+
+            if (consulta == null)
+                consulta = new DatosVisita();
+
             DocX document = DocX.Load(HostingEnvironment.MapPath(@"~/App_Data/Plantillas/InformeTecnico.docx"));
 
-            document.ReplaceText("{INSTALACION}", consulta.NOMBRE_INSTALACION??"");
-            document.ReplaceText("{EMPRESA}", consulta.EMPRESA??"");
-            document.ReplaceText("{REPRESENTANTE_LEGAL}", consulta.REPRESENTANTE_LEGAL??"");
+            document.ReplaceText("{INSTALACION}", consulta.NOMBRE_INSTALACION ?? "");
+            document.ReplaceText("{EMPRESA}", consulta.EMPRESA ?? "");
+            document.ReplaceText("{REPRESENTANTE_LEGAL}", consulta.REPRESENTANTE_LEGAL ?? "");
             document.ReplaceText("{NIT}", consulta.NRO_DOCUMENTO == null ? "" : consulta.NRO_DOCUMENTO.ToString());
-            document.ReplaceText("{DIRECCION}", consulta.DIRECCION??"");
-            document.ReplaceText("{TELEFONO}", consulta.TELEFONO_INSTALACION??"");
-            document.ReplaceText("{MUNICIPIO}", consulta.MUNICIPIO??"");
-            document.ReplaceText("{CM}", consulta.CM??"");
-            document.ReplaceText("{QUEJA}", consulta.QUEJA??"");
+            document.ReplaceText("{DIRECCION}", consulta.DIRECCION ?? "");
+            document.ReplaceText("{TELEFONO}", consulta.TELEFONO_INSTALACION ?? "");
+            document.ReplaceText("{MUNICIPIO}", consulta.MUNICIPIO ?? "");
+            document.ReplaceText("{CM}", consulta.CM ?? "");
+            document.ReplaceText("{QUEJA}", consulta.QUEJA ?? "");
             document.ReplaceText("{ANO}", consulta.ANO == null ? "" : consulta.ANO.ToString());
-            document.ReplaceText("{ABOGADO}", consulta.ABOGADO??"");
+            document.ReplaceText("{ABOGADO}", consulta.ABOGADO ?? "");
             document.ReplaceText("{TRAMITE}", consulta.IDTRAMITE.ToString());
 
             document.SaveAs(stream);
 
 
-            
+
 
             /*var report10 = new SIM.Areas.ControlVigilancia.reportInfoTec.infTecnico();
             DevExpress.XtraReports.Parameters.Parameter idVisita = report10.Parameters["prm_idVisita"];
@@ -346,9 +349,9 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                 filename = Path.GetFileName(Request.Files[upload].FileName);
 
                 if (!Directory.Exists(rutaLeer + "\\" + idVisita))
-                        {
-                           Directory.CreateDirectory(rutaLeer + "\\" + idVisita);
-                     }
+                {
+                    Directory.CreateDirectory(rutaLeer + "\\" + idVisita);
+                }
 
                 Request.Files[upload].SaveAs(Path.Combine(rutaLeer + "\\" + idVisita, idVisita + "-" + fecha + "Radicado" + Path.GetExtension(filename)));
             }
@@ -375,15 +378,15 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             //{
             //    return new HttpStatusCodeResult(404,ex.Message);
             //}
-           
+
             return Content("1");
         }
 
-        public ActionResult converRTFaPDF(string idRadicado,string url,decimal id)
+        public ActionResult converRTFaPDF(string idRadicado, string url, decimal id)
         {
 
             WebClient carpeta = new WebClient();
-       
+
             string rutaLeer = ConfigurationManager.AppSettings["dir_doc_inf_leer"];
             WebClient webClient = new WebClient();
             string path = ConfigurationManager.AppSettings["url_radicador"];
@@ -392,10 +395,10 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             string url2 = url.Replace(".rtf", ".pdf");
             String urlRad = path + idRadicado + "&formatoRetorno=png";
             RichEditDocumentServer server = new RichEditDocumentServer();
-       
+
             server.LoadDocument(@url, DevExpress.XtraRichEdit.DocumentFormat.Rtf);
             carpeta.DownloadFile(urlRad, path2 + "\\" + id + "\\" + id + "radicado.png");
-          
+
             FileStream fsOut = System.IO.File.Open(@url2, FileMode.Create);
             server.ExportToPdf(fsOut);
             server.Dispose();
@@ -465,7 +468,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             }
             return Content("1");
         }
-   
+
         public ActionResult ConsultarTareaSiguiente(decimal idVisita)
         {
             ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
