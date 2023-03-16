@@ -485,10 +485,56 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             Response resposeF = new Response();
             try
             {
+                int idUsuario = 0;
+                int funcionario = 0;
+                System.Web.HttpContext context = System.Web.HttpContext.Current;
+                ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+                if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                    funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
+                                                   join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                                   where uf.ID_USUARIO == idUsuario
+                                                   select f.CODFUNCIONARIO).FirstOrDefault());
+                }
+
                 ApiService apiService = new ApiService();
 
+                objData.IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>();
+                objData.UnidadDocumentalId =  int.Parse(SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString());
+                foreach (var item in objData.Indices)
+                {
+
+                    var indE = new IndiceSerieDocumentalDTO();
+                    indE.IndiceSerieDocumentaId = item.CODINDICE;
+                    indE.ValorString = item.VALOR;
+                    switch (item.TIPO)
+                    {
+                        case 0: //Texto
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 8:
+                            indE.ValorString = item.VALOR ?? "";
+                            break;
+                        case 1: //Numero
+                        case 6:
+                        case 7:
+                            indE.ValorNumerico = decimal.Parse(item.VALOR);
+                            break;
+                        case 2: //Fecha
+                            indE.ValorFecha = DateTime.Parse(item.VALOR);
+                            break;
+                    }
+
+                    objData.IndicesSerieDocumentalDTO.Add(indE);
+                };
                 objData.FechaRegistro = DateTime.Now;
                 objData.Conexo = ".";
+                objData.FuncionarioId = funcionario;
+
                 Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
