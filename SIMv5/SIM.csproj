@@ -41,7 +41,6 @@
     <PublishDatabases>true</PublishDatabases>
     <IncludeIisSettings>true</IncludeIisSettings>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\SIM.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -74,7 +73,6 @@
     <Reference Include="DevExpress.TreeMap.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
-    <Reference Include="DevExpress.XtraEditors.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeMap.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
@@ -1114,11 +1112,8 @@
     <Compile Include="Areas\Dynamics\Data\DIRPERSONNAME.cs" />
     <Compile Include="Areas\Dynamics\Data\Dynamics.Context.cs" />
     <Compile Include="Areas\Dynamics\Data\HCMWORKER.cs" />
-<<<<<<< HEAD
     <Compile Include="Areas\Dynamics\Data\PrefijoModel.cs" />
     <Compile Include="Areas\Dynamics\Data\ResponsableModel.cs" />
-=======
->>>>>>> Marzo 10 Dynamics
     <Compile Include="Areas\Dynamics\DynamicsAreaRegistration.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionApiController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionController.cs" />
@@ -3056,12 +3051,8 @@
     <Content Include="Areas\Pqrsd\Views\web.config" />
     <Content Include="Areas\Pqrsd\Views\IngresoPqrsd\Index.cshtml" />
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
-    <Content Include="Areas\Dynamics\Views\web.config" />
     <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Areas\ControlVigilancia\Views\Facturacion\Index.cshtml" />
-=======
->>>>>>> Marzo 10 Dynamics
+    <Content Include="Areas\Dynamics\Views\web.config" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -4234,7 +4225,6 @@
     <Folder Include="Scripts\dashboard\" />
     <Folder Include="Scripts\Fotos\" />
     <Folder Include="Scripts\images\" />
-    <Folder Include="Views\Dynamics\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
@@ -4774,7 +4764,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)bin"</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)x64\* $(ProjectDir)$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
