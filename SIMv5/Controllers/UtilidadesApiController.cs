@@ -1110,7 +1110,7 @@
         [System.Web.Http.HttpPost, System.Web.Http.ActionName("GuardaindicesTramite")]
         public object PostGuardaindicesTramite(IndicesTramite objData)
         {
-            if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Error Almacenando el expediente" };
+            if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Error Almacenando los indices del trámite" };
             try
             {
                 if (objData.Indices != null)
@@ -1161,14 +1161,19 @@
             return new { resp = "OK", mensaje = "Indices ingresados correctamente" };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdDocumento"></param>
+        /// <returns></returns>
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("EditarIndicesDocumento")]
         public dynamic GetEditarIndicesDocumento(int IdDocumento)
         {
-            var Indices = (from Ind in dbSIM.TBINDICETRAMITE
-                           join Ise in dbSIM.TBINDICEPROCESO on Ind.CODINDICE equals Ise.CODINDICE
+            var Indices = (from Ind in dbSIM.TBINDICEDOCUMENTO
+                           join Ise in dbSIM.TBINDICESERIE on Ind.CODINDICE equals Ise.CODINDICE
                            join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
                            from pdis in l.DefaultIfEmpty()
-                           where Ind.CODTRAMITE == CodTramite
+                           where Ind.ID_DOCUMENTO == IdDocumento
                            orderby Ise.ORDEN
                            select new Indice
                            {
@@ -1185,6 +1190,60 @@
                            }).ToList();
             return Indices.ToList();
         }
+
+        public object PostGuardaindicesDocumento(IndicesDocumento objData)
+        {
+            if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Error Almacenando los indices del documento" };
+            try
+            {
+                if (objData.Indices != null)
+                {
+                    foreach (Indice indice in objData.Indices)
+                    {
+                        if (indice.OBLIGA == 1 && (indice.VALOR == null || indice.VALOR == ""))
+                        {
+                            return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
+                        }
+                        if (objData.IdDocumento > 1)
+                        {
+                            TBINDICEDOCUMENTO indiceDoc = dbSIM.TBINDICEDOCUMENTO.Where(i => i.ID_DOCUMENTO == objData.IdDocumento && i.CODINDICE == indice.CODINDICE).FirstOrDefault();
+                            if (indiceDoc != null)
+                            {
+                                indiceDoc.VALOR = indice.VALOR ?? "";
+                                dbSIM.Entry(indiceDoc).State = System.Data.Entity.EntityState.Modified;
+                            }
+                            else
+                            {
+                                indiceDoc = new TBINDICEDOCUMENTO();
+
+                                indiceDoc.ID_DOCUMENTO = objData.IdDocumento;
+                                indiceDoc.CODINDICE = indice.CODINDICE;
+                                indiceDoc.VALOR = indice.VALOR ?? "";
+                                dbSIM.Entry(indiceDoc).State = System.Data.Entity.EntityState.Added;
+                            }
+                            dbSIM.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    var UniDoc = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.ID_DOCUMENTO == objData.IdDocumento).Select(s => s.CODSERIE).FirstOrDefault();
+                    var indiceObliga = (from ind in dbSIM.TBINDICESERIE
+                                        where ind.CODSERIE == UniDoc && ind.OBLIGA == 1
+                                        select ind).FirstOrDefault();
+                    if (indiceObliga != null)
+                    {
+                        return new { resp = "Error", mensaje = "No se han ingresado indices y el tipo de procreso tiene indices obligatorios!!" };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return new { resp = "Error", mensaje = "Error Almacenando los indices: " + e.Message };
+            }
+            return new { resp = "OK", mensaje = "Indices ingresados correctamente" };
+        }
+
     }
 
 
@@ -1279,6 +1338,12 @@
         public string ESTADO { get; set; }
         public string ADJUNTO { get; set; }
         public decimal CODTRAMITE { get; set; }
+    }
+
+    public class IndicesDocumento
+    {
+        public int IdDocumento { get; set; }
+        public List<Indice> Indices { get; set; }
     }
 
     public class DatosTramites
