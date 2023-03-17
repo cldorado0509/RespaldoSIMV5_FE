@@ -1,6 +1,5 @@
 ﻿namespace SIM.Areas.Dynamics.Controllers
 {
-<<<<<<< HEAD
     using DevExpress.CodeParser;
     using DocumentFormat.OpenXml.Drawing.Charts;
     using Newtonsoft.Json;
@@ -13,12 +12,6 @@
     using System.Linq;
     using System.Web.Http;
     using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-=======
-    using SIM.Areas.Dynamics.Data;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web.Http;
->>>>>>> Marzo 10 Dynamics
 
     public class EtiquetaApiController : ApiController
     {
@@ -41,28 +34,16 @@
         /// <param name="searchValue"></param>
         /// <param name="searchExpr"></param>
         /// <param name="comparation"></param>
-<<<<<<< HEAD
         /// <param name="customFilters"></param>
-=======
-        /// <param name="tipoData"></param>
->>>>>>> Marzo 10 Dynamics
         /// <param name="noFilterNoRecords"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("ConsultaBienes")]
-<<<<<<< HEAD
         public datosConsulta GetBienes(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string customFilters)
         {
             datosConsulta resultado = new datosConsulta();
             //dynamic modelData;
             if (customFilters == "" || customFilters == null)
-=======
-        public datosConsulta GetBienes(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, bool noFilterNoRecords)
-        {
-            datosConsulta resultado = new datosConsulta();
-            dynamic modelData;
-            if (((filter == null || filter == "") && (searchValue == "" || searchValue == null) && noFilterNoRecords))
->>>>>>> Marzo 10 Dynamics
             {
                 resultado.numRegistros = 0;
                 resultado.datos = null;
@@ -71,7 +52,6 @@
             }
             else
             {
-<<<<<<< HEAD
                 //var model;
                 if (customFilters != "")
                 {
@@ -184,39 +164,5 @@
                 throw exp;
             }
         }
-=======
-                var model = (from eti in dbDynamics.AssetTable
-                             join bo in dbDynamics.AssetBook on eti.AssetId equals bo.AssetId into books
-                             from beti in books.DefaultIfEmpty()
-                             join worAsset in dbDynamics.HcmWorker on eti.WorkerResponsible equals worAsset.RECID into workers
-                             from trabajador in workers.DefaultIfEmpty()
-                             join worTrabaja in dbDynamics.DirPersonName on trabajador.Person equals worTrabaja.Person into personas
-                             from persona in personas.DefaultIfEmpty()
-                             select new BienModel
-                             {
-                                 Codigo = eti.AssetId,
-                                 NombreBien = eti.Name,
-                                 EstadoBien = beti.Status == 0 ? "NO ADQUIRIDO" :
-                                              beti.Status == 1 ? "ABIERTO" :
-                                              beti.Status == 2 ? "SUSPENDIDO" :
-                                              beti.Status == 3 ? "CERRADO" :
-                                              beti.Status == 4 ? "VENDIDO" :
-                                              beti.Status == 5 ? "DADO DE BAJA" :
-                                              beti.Status == 6 ? "TRANSFERIDO A ACTIVOS DE VALOR DEDUCIDO" : "OTRO",
-                                 PersonaBien = (persona.FirstName + ' ' + persona.MiddleName + ' ' + persona.LastName + ' ' + persona.AP_CO_SecondLastName)
-                             }
-                          );
-                modelData = model;
-                IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
-                resultado.numRegistros = modelFiltered.Count();
-                resultado.datos = modelFiltered.Skip(skip).Take(take).ToList();
-
-                return resultado;
-
-            }
-
-        }
-
->>>>>>> Marzo 10 Dynamics
     }
 }
