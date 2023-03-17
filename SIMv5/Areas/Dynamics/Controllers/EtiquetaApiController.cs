@@ -16,7 +16,6 @@
     public class EtiquetaApiController : ApiController
     {
         DynamicsContext dbDynamics = new DynamicsContext();
-
         public struct datosConsulta
         {
             public int numRegistros;
