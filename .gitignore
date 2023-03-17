@@ -251,8 +251,6 @@ UpgradeLog*.htm
 ServiceFabricBackup/
 *.rptproj.bak
 
-
-
 # SQL Server files
 *.mdf
 *.ldf
@@ -351,11 +349,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /bin
-
-
-# Images
-*.jpg
-*.jpeg
-*.png
-*.tif
-*.bmp
+/SIMv5/Web.config
