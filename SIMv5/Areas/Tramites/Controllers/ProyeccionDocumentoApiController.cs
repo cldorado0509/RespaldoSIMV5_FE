@@ -861,6 +861,10 @@ namespace SIM.Areas.Tramites.Controllers
             return "OK:" + idProyeccionDocumento.ToString() + ":" + respuestaAdicional;
         }
 
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [HttpGet, ActionName("ObtenerSeriesDocumentales")]
         public dynamic GetObtenerSeriesDocumentales()
