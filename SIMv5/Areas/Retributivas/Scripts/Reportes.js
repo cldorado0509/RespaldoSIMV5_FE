@@ -1,6 +1,7 @@
 ﻿var IdTercero = 4542;
 var urrl = $("#SIM").data("url") + "Retributivas/api/ReportesApi";
 var _option
+var _apodoReport = "";
 const now = new Date();
 
     // ******************************************
@@ -470,6 +471,7 @@ $(document).ready(function () {
             {
                 alignment: 'center', caption: 'Funciones',
                 cellTemplate: function (container, options) {
+
                     $('<div/>').dxButton({
                         icon: 'edit',
                         hint: 'Editar Regsitro de Producción',
@@ -528,7 +530,13 @@ $(document).ready(function () {
 
             }
 
-        ]
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            if (data) {
+                _apodoReport = data.Nick;
+            }
+        }
     });
 
     var popupShedding = $("#popupShedding").dxPopup({
@@ -1099,14 +1107,17 @@ $(document).ready(function () {
             ReportId = null;
             cmbTributaryname.option("value", null);
             monthReport.option("value", null);
+            monthReport.option("disabled", false);
             yearReport.option("value", null);
-            //cmbDownloadType.option("value", null);
-            //sheddingAmount.option("value", null);
+            yearReport.option("disabled", false);
             flowAverage.option("value", null);
             sheddingHours.option("value", null);
             sheddingDays.option("value", null);
             dboReport.option("value", null);
+            
             sstReport.option("value", null);
+            apodoReport.option("value",_apodoReport); 
+           
             //option = true;
             popupReports.show();
         }
@@ -1180,7 +1191,6 @@ $(document).ready(function () {
             { dataField: 'Vertimiento', width: '10%', caption: 'Corriente de Agua', alignment: 'center' },
             { dataField: 'Agno', width: '4%', caption: 'Año', alignment: 'center' },
             { dataField: 'Mes', width: '4%', caption: 'Mes', visible: true, alignment: 'center' },
-            //{ dataField: 'Tipo_Descarga', width: '8%', caption: 'Tipo de Descarga', alignment: 'center' },
             { dataField: 'Tipo_Agua_Residual', width: '8%', caption: 'Agua Residual', alignment: 'center' },
             { dataField: 'Caudal', width: '8%', caption: 'Caudal (Q) L/S', alignment: 'center' },
             { dataField: 'Horas_Descargas_Dia', width: '8%', caption: 'No. Horas/Día', dataType: 'horas', visible: true, alignment: 'center' },
@@ -1193,10 +1203,14 @@ $(document).ready(function () {
             {
                 alignment: 'center', caption: 'Funciones',
                 cellTemplate: function (container, options) {
+                    let estadoRep = false;
+                    if (options.data.Estado_Reporte !== 'Incompleto') estadoRep = true;
                     $('<div/>').dxButton({
                         icon: 'edit',
                         hint: 'Editar Registro de Producción',
+                        disabled: estadoRep,
                         onClick: function (e) {
+                          
                             var _Ruta = $('#SIM').data('url') + "Retributivas/api/ReportesApi/loadReport";
                             $.getJSON(_Ruta,
                                 {
@@ -1206,14 +1220,16 @@ $(document).ready(function () {
                                         ReportId = parseInt(data.Id_Reporte);
                                         cmbTributaryname.option("value", data.Vertimiento_Id);
                                         monthReport.option("value", data.Mes_Id);
+                                        monthReport.option("disabled", true);
                                         yearReport.option("value", data.Agno);
-                                        cmbDownloadType.option("value", data.Tipo_Descarga_Id);
-                                        //sheddingAmount.option("value", data.No_Descargas_Dia);
+                                        yearReport.option("disabled", true);
+                                        cmbDownloadTypeShedding.option("value", data.Tipo_Descarga_Id);
                                         flowAverage.option("value", data.Caudal);
                                         sheddingHours.option("value", data.Horas_Descargas_Dia);
                                         sheddingDays.option("value", data.Dias_Descargas_Mes);
                                         dboReport.option("value", data.dbo);
                                         sstReport.option("value", data.sst);
+                                        apodoReport.option("value", data.nick);
                                         //option = false;
                                         popupReports.show();
                                     }
@@ -1223,7 +1239,31 @@ $(document).ready(function () {
                                 });
                         }
                     }).appendTo(container);
+                    $('<div/>').dxButton({
+                        icon: 'exportselected',
+                        hint: 'Enviar declaración a la entidad!',
+                        onClick: function (e) {
+                            var result = DevExpress.ui.dialog.confirm('Desea enviar el reporte a la Entidad?, Una ves enviado no podrá modificar la declaración', 'Confirmación');
+                            result.done(function (dialogResult) {
+                                if (dialogResult) {
+                                    var _Ruta = $('#SIM').data('url') + "Retributivas/api/ReportesApi/SendReport";
+                                    $.getJSON(_Ruta,
+                                        {
+                                            Id: options.data.Id_Reporte
+                                        }).done(function (data) {
+                                            if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Enviar reporte');
+                                            else {
+                                                $('#grdReports').dxDataGrid({ dataSource: myReports });
+                                                //    $('#grdReports').dxDataGrid.refresh();
+                                            }
+                                        }).fail(function (jqxhr, textStatus, error) {
+                                            DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Eliminar la Empresa');
+                                        });
+                                }
+                            });
+                        }
 
+                    }).appendTo(container);
                     $('<div/>').dxButton({
                         icon: 'remove',
                         onClick: function (e) {

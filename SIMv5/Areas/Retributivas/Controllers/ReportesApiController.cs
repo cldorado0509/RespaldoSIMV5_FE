@@ -836,7 +836,8 @@ namespace SIM.Areas.Retributivas.Controllers
                                  DBO = R.REPORTE_DBO,
                                  SST = R.REPORTE_SST,
                                  CAUDAL = R.CAUDAL_PROMEDIO,
-                                 RADICADO = R.CODTRAMITE
+                                 RADICADO = R.CODTRAMITE,
+                                 NICK = C.NICK
                              }).FirstOrDefault();
 
                 return JObject.FromObject(modelData, Js);
@@ -859,13 +860,19 @@ namespace SIM.Areas.Retributivas.Controllers
                     Id = objData.ID_REPORTE;
                     var _Id_Tercero = get_Id_Tercero();
 
+                    int estadoReporteIncompleto = 4;
+                    int.TryParse(Utilidades.Data.ObtenerValorParametro("TasaRetributivaEstadoReporteIncompleto"),out estadoReporteIncompleto);
+
+                    int tipoReporteCalculado = 1;
+                    int.TryParse(Utilidades.Data.ObtenerValorParametro("TasaRetributivaTipoReporteCalculado"), out tipoReporteCalculado);
+
                     var cuenca_tercero = (from C in dbSIM.TSIMTASA_CUENCAS_TERCERO
                                           where C.ID_TERCERO == _Id_Tercero & C.TSIMTASA_CUENCAS_ID1 == objData.VERTIMIENTO_ID
                                           select new { C.ID }
                         ).FirstOrDefault();
 
                     var contadorReportes = (from R in dbSIM.TSIMTASA_REPORTES
-                                            where R.TSIMTASA_CUENCAS_TERCERO_ID == _Id_Tercero
+                                            where R.TSIMTASA_CUENCAS_TERCERO_ID == cuenca_tercero.ID
                                             && R.MES == objData.MES_ID
                                             && R.ANO == objData.AGNO
                                             select new
@@ -877,7 +884,7 @@ namespace SIM.Areas.Retributivas.Controllers
 
 
                     var contadorCuencas = (from R in dbSIM.TSIMTASA_REPORTES
-                                           where R.TSIMTASA_CUENCAS_TERCERO_ID == _Id_Tercero
+                                           where R.TSIMTASA_CUENCAS_TERCERO_ID == cuenca_tercero.ID
                                            select new { R.ID }
                           );
 
@@ -903,7 +910,8 @@ namespace SIM.Areas.Retributivas.Controllers
                             dbSIM.SaveChanges();
                         }
                     }
-                    else if (Id <= 0  && contadorReportes.Count() < contadorCuencas.Count())
+                    //else if (Id <= 0  && contadorReportes.Count() < contadorCuencas.Count())   /no entiendo esta validación
+                    else if (Id <= 0  && contadorReportes.Count() == 0)
                     {
 
                         TSIMTASA_REPORTES _newTurn = new TSIMTASA_REPORTES
@@ -917,8 +925,8 @@ namespace SIM.Areas.Retributivas.Controllers
                             REPORTE_SST = objData.SST,
                             REPORTE_DBO = objData.DBO,
                             TSIMTASA_CUENCAS_TERCERO_ID = cuenca_tercero.ID,
-                            TSIMTASA_ESTADO_REPORTE_ID = 4,
-                            TSIMTASA_TIPO_REPORTE_ID = 1,
+                            TSIMTASA_ESTADO_REPORTE_ID = estadoReporteIncompleto,
+                            TSIMTASA_TIPO_REPORTE_ID = tipoReporteCalculado,
                         };
                         dbSIM.TSIMTASA_REPORTES.Add(_newTurn);
                         dbSIM.SaveChanges();
@@ -939,7 +947,7 @@ namespace SIM.Areas.Retributivas.Controllers
                     }
                     else
                     {
-                        return new { resp = "Error", mensaje = "Ha superado el numero de reportes para este mes" };
+                        return new { resp = "Error", mensaje = "Ha superado el numero de reportes para este mes!" };
 
                     }
                 }
