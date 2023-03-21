@@ -472,7 +472,7 @@ $(document).ready(function () {
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'edit',
-                        hint: 'Editar Regsitro de Producción',
+                        hint: 'Editar Registro de Producción',
                         onClick: function (e) {
                             var _Ruta = $('#SIM').data('url') + "Retributivas/api/ReportesApi/loadShedding";
                             $.getJSON(_Ruta,
@@ -925,19 +925,6 @@ $(document).ready(function () {
         value: "Nick",
         readOnly: true,
         hoverStateEnabled: false,
-
-        //dataSource: new DevExpress.data.DataSource({
-        //    store: new DevExpress.data.CustomStore({
-        //        key: "Vertimiento_Id",
-        //        loadMode: "raw",
-        //        load: function () {
-        //            var _Ruta = $('#SIM').data('url') + "Retributivas/api/ReportesApi/LoadTributaryFactoryId";
-        //            return $.getJSON(_Ruta, { IdTributaryFactory });
-        //        },
-
-
-        //    })
-        //}),
     }).dxTextBox("instance");
 
     var monthReport = $("#monthReport").dxSelectBox({
