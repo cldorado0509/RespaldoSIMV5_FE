@@ -4,6 +4,7 @@
     using DevExpress.DataProcessing.InMemoryDataProcessor;
     using DevExpress.Office.Utils;
     using DevExpress.Web;
+    using DevExpress.Xpo;
     using DocumentFormat.OpenXml.Drawing.Charts;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -1082,6 +1083,11 @@
             return new { resp = "OK", mensaje = "Documento temporal creado correctamente" };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CodTramite"></param>
+        /// <returns></returns>
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("EditarIndicesTramite")]
         public dynamic GetEditarIndicesTramite(int CodTramite)
         {
@@ -1191,6 +1197,7 @@
             return Indices.ToList();
         }
 
+        [System.Web.Http.HttpPost, System.Web.Http.ActionName("GuardaindicesDocumento")]
         public object PostGuardaindicesDocumento(IndicesDocumento objData)
         {
             if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Error Almacenando los indices del documento" };
@@ -1217,6 +1224,7 @@
                                 indiceDoc = new TBINDICEDOCUMENTO();
 
                                 indiceDoc.ID_DOCUMENTO = objData.IdDocumento;
+                                indiceDoc.CODTRAMITE = 
                                 indiceDoc.CODINDICE = indice.CODINDICE;
                                 indiceDoc.VALOR = indice.VALOR ?? "";
                                 dbSIM.Entry(indiceDoc).State = System.Data.Entity.EntityState.Added;

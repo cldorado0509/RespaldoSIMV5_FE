@@ -663,7 +663,7 @@ $(document).ready(function () {
         hint: 'Guardar indices del documento',
         onClick: function (e) {
             var Indices = indicesSerieDocumentalStore._array;
-            var params = { IdDocumento: CodTramite, Indices: Indices };
+            var params = { IdDocumento: IdDocumento, Indices: Indices };
             var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/GuardaindicesDocumento";
             $.ajax({
                 type: "POST",
