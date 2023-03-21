@@ -34,6 +34,7 @@ namespace SIM.Utilidades
     {
         public int CODINDICE { get; set; }
         public string VALOR { get; set; }
+        public int TIPO { get; set; }
     }
 
     public class Data
@@ -489,8 +490,10 @@ namespace SIM.Utilidades
 
                 if (tecnico != null)
                 {
-                    indices.Add(new INDICE { CODINDICE = 680, VALOR = tecnico });
+                    indices.Add(new INDICE { CODINDICE = 680, VALOR = tecnico, TIPO = 0 });
                 }
+
+                indices.Add(new INDICE { CODINDICE = 400, VALOR = "NA", TIPO = 0 });
 
                 DocX document = DocX.Load(informeTecnico.URL);
                 //DocX document = DocX.Load(@"C:\Temp\InformeTecnico2.docx");
@@ -504,63 +507,187 @@ namespace SIM.Utilidades
                     lineaTexto = Data.EliminarEspaciosExtras(lineaTextoCompleta);
                     var palabras = lineaTexto.Split(' ', ':', '\t');
 
-                    indices.Add(new INDICE { CODINDICE = 400, VALOR = "NA" });
-
                     if (palabras.Length > 0)
                     {
+                        if (palabras.Length > 3 && palabras[0].ToUpper().Trim() == "CONTROL" && palabras[1].ToUpper().Trim() == "Y" && palabras[2].ToUpper().Trim() == "SEGUIMIENTO")
+                        {
+                            int posActual = 0;
+                            if (palabras.Contains("permiso"))
+                            {
+                                string valor = "";
+
+                                for (int i = 16; i < palabras.Length; i++)
+                                {
+                                    if (palabras[i].Contains("Número"))
+                                    {
+                                        posActual = i;
+                                        valor += " " + palabras[i].Replace("Número", "");
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        valor += " " + palabras[i];
+                                    }
+                                }
+
+                                indices.Add(new INDICE { CODINDICE = 3920, VALOR = valor.Trim(), TIPO = 0 });
+                            }
+
+                            if (palabras.Contains("anual") && posActual > 0)
+                            {
+                                string valor = "";
+
+                                for (int i = posActual + 5; i < palabras.Length; i++)
+                                {
+                                    if (palabras[i].Contains("Se"))
+                                    {
+                                        posActual = i;
+                                        valor += " " + palabras[i].Replace("Se", "");
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        valor += " " + palabras[i];
+                                    }
+                                }
+
+                                indices.Add(new INDICE { CODINDICE = 3921, VALOR = valor.Trim(), TIPO = 0 });
+                            }
+
+                            if (lineaTexto.ToUpper().IndexOf("X") > lineaTexto.ToUpper().IndexOf("SI") && lineaTexto.ToUpper().IndexOf("X") < lineaTexto.ToUpper().IndexOf("NO"))
+                            {
+                                indices.Add(new INDICE { CODINDICE = 3922, VALOR = "S", TIPO = 4 });
+                            }
+                            else
+                            {
+                                indices.Add(new INDICE { CODINDICE = 3922, VALOR = "N", TIPO = 4 });
+                            }
+
+                            continue;
+                        }
+
                         if (palabras[0].Length > 0 && palabras[0][0].ToString().ToUpper() == "X")
                         {
                             if (!paraAsignado)
                             {
                                 // Para
-                                indices.Add(new INDICE { CODINDICE = 320, VALOR = string.Join(" ", palabras, 0, palabras.Length).Substring(1) });
+                                indices.Add(new INDICE { CODINDICE = 320, VALOR = string.Join(" ", palabras, 0, palabras.Length).Substring(1).Trim(), TIPO = 0 });
 
                                 paraAsignado = true;
                             }
                             else if (!asuntoAsignado)
                             {
-                                // Asunto
-                                indices.Add(new INDICE { CODINDICE = 321, VALOR = string.Join(" ", palabras, 0, palabras.Length).Substring(1) });
+                                string asunto = string.Join(" ", palabras, 0, palabras.Length).Substring(1).Trim();
 
+                                // Asunto
+                                indices.Add(new INDICE { CODINDICE = 321, VALOR = asunto, TIPO = 0 });
                                 asuntoAsignado = true;
+
+                                switch (asunto.ToUpper().Substring(0, 3))
+                                {
+                                    case "EVA":
+                                        indices.Add(new INDICE { CODINDICE = 2500, VALOR = "S", TIPO = 4 });
+                                        break;
+                                    case "CON":
+                                        if (asunto.ToUpper().Substring(0, 11) == "CONTROL Y S")
+                                            indices.Add(new INDICE { CODINDICE = 2501, VALOR = "S", TIPO = 4 });
+                                        else if (asunto.ToUpper().Substring(0, 11) == "CONTROL Y V")
+                                            indices.Add(new INDICE { CODINDICE = 2502, VALOR = "S", TIPO = 4 });
+                                        break;
+                                    case "PRA":
+                                        indices.Add(new INDICE { CODINDICE = 2503, VALOR = "S", TIPO = 4 });
+                                        break;
+                                    case "TAS":
+                                        indices.Add(new INDICE { CODINDICE = 2504, VALOR = "S", TIPO = 4 });
+                                        break;
+                                }
+                            }
+                            else if (palabras.Length > 1 && palabras[1].ToUpper() == "APROVECHAMIENTO")
+                            {
+                                indices.Add(new INDICE { CODINDICE = 3940, VALOR = string.Join(" ", palabras, 0, palabras.Length).Substring(1).Trim(), TIPO = 0 });
+                            }
+                            else if (palabras.Length > 1 && palabras[1].ToUpper() == "PRIMER")
+                            {
+                                indices.Add(new INDICE { CODINDICE = 3925, VALOR = "S", TIPO = 4 });
+                            }
+                            else if (palabras.Length > 1 && palabras[1].ToUpper() == "SEGUNDO")
+                            {
+                                indices.Add(new INDICE { CODINDICE = 3926, VALOR = "S", TIPO = 4 });
                             }
                         }
                         else
                         {
                             switch (palabras[0].ToUpper())
                             {
+                                case "COMPLEMENTO":
+                                    indices.Add(new INDICE { CODINDICE = 2520, VALOR = string.Join(" ", palabras, 4, palabras.Length - 4).Trim(), TIPO = 0 });
+                                    break;
                                 case "INFORME":
                                     if (palabras.Length > 1 && palabras[1].Length > 10 && palabras[1].Substring(0, 7) == "TÉCNICO")
                                     {
                                         var posFinal = palabras[1].IndexOf('-');
                                         if (posFinal > 0)
-                                            indices.Add(new INDICE { CODINDICE = 380, VALOR = palabras[1].Substring(7, posFinal - 7) });
+                                            indices.Add(new INDICE { CODINDICE = 380, VALOR = palabras[1].Substring(7, posFinal - 7).Trim(), TIPO = 0 });
                                     }
                                     break;
                                 case "DE":
-                                    indices.Add(new INDICE { CODINDICE = 340, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
+                                    indices.Add(new INDICE { CODINDICE = 340, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Trim(), TIPO = 0 });
                                     break;
                                 case "PARA":
                                     if (palabras[1].Length > 0 && palabras[1][0].ToString().ToUpper() == "X")
                                     {
                                         // Para
-                                        indices.Add(new INDICE { CODINDICE = 320, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Substring(1) });
+                                        indices.Add(new INDICE { CODINDICE = 320, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Substring(1).Trim(), TIPO = 0 });
                                         paraAsignado = true;
                                     }
                                     else if (palabras[2].Length > 0 && palabras[2][0].ToString().ToUpper() == "X")
                                     {
                                         // Para
-                                        indices.Add(new INDICE { CODINDICE = 320, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2).Substring(1) });
+                                        indices.Add(new INDICE { CODINDICE = 320, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2).Substring(1).Trim(), TIPO = 0 });
                                         paraAsignado = true;
                                     }
                                     //indices.Add(new INDICE { CODINDICE = 320, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
                                     break;
+                                case "":
                                 case "ASUNTO":
-                                    if (palabras[1].Length > 0 && palabras[1][0].ToString().ToUpper() == "X")
+                                    if (palabras.Length > 2 && ((palabras[1].Length > 0 && palabras[1][0].ToString().ToUpper() == "X") || (palabras[2].Length > 0 && palabras[2][0].ToString().ToUpper() == "X")))
                                     {
+                                        int posIni;
+
+                                        if (palabras[1].Length > 0 && palabras[1][0].ToString().ToUpper() == "X")
+                                        {
+                                            posIni = 1;
+                                        }
+                                        else
+                                        {
+                                            posIni = 3;
+                                        }
+
+                                        string asunto = string.Join(" ", palabras, posIni, palabras.Length - posIni).Trim();
+
                                         // Asunto
-                                        indices.Add(new INDICE { CODINDICE = 321, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Substring(1) });
+                                        indices.Add(new INDICE { CODINDICE = 321, VALOR = asunto, TIPO = 0 });
                                         asuntoAsignado = true;
+
+                                        switch (asunto.ToUpper().Substring(0, 3))
+                                        {
+                                            case "EVA":
+                                                indices.Add(new INDICE { CODINDICE = 2500, VALOR = "S", TIPO = 4 });
+                                                break;
+                                            case "CON":
+                                                if (asunto.ToUpper().Substring(0, 11) == "CONTROL Y S")
+                                                    indices.Add(new INDICE { CODINDICE = 2501, VALOR = "S", TIPO = 4 });
+                                                else if (asunto.ToUpper().Substring(0, 11) == "CONTROL Y V")
+                                                    indices.Add(new INDICE { CODINDICE = 2502, VALOR = "S", TIPO = 4 });
+                                                break;
+                                            case "PRA":
+                                            case "PRÁ":
+                                                indices.Add(new INDICE { CODINDICE = 2503, VALOR = "S", TIPO = 4 });
+                                                break;
+                                            case "TAS":
+                                                indices.Add(new INDICE { CODINDICE = 2504, VALOR = "S", TIPO = 4 });
+                                                break;
+                                        }
                                     }
                                     //indices.Add(new INDICE { CODINDICE = 321, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
                                     break;
@@ -580,30 +707,43 @@ namespace SIM.Utilidades
                                             posInicial = (palabras[0].ToUpper() == "PROYECTO" ? 1 : (palabras[1].ToUpper() == "PROYECTO" ? 2 : 3));
                                         }
 
-                                        indices.Add(new INDICE { CODINDICE = 341, VALOR = string.Join(" ", palabras, posInicial, palabras.Length - posInicial) });
+                                        indices.Add(new INDICE { CODINDICE = 341, VALOR = string.Join(" ", palabras, posInicial, palabras.Length - posInicial).Trim(), TIPO = 0 });
                                     }
                                     break;
                                 case "REPRESENTANTE":
-                                    indices.Add(new INDICE { CODINDICE = 322, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2) });
+                                    indices.Add(new INDICE { CODINDICE = 322, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2).Trim(), TIPO = 0 });
                                     break;
                                 case "NIT":
                                 case "CEDULA":
                                 case "CÉDULA":
                                     {
                                         var posInicial = (palabras[1].ToUpper() == "O" || palabras[1].ToUpper() == "Ó" ? 3 : 1);
-                                        indices.Add(new INDICE { CODINDICE = 323, VALOR = string.Join(" ", palabras, posInicial, palabras.Length - posInicial) });
+                                        indices.Add(new INDICE { CODINDICE = 323, VALOR = string.Join(" ", palabras, posInicial, palabras.Length - posInicial).Trim(), TIPO = 0 });
                                     }
                                     break;
                                 case "DIRECCION":
                                 case "DIRECCIÓN":
-                                    indices.Add(new INDICE { CODINDICE = 324, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
+                                    if (palabras[1].ToUpper() == "DEL")
+                                    {
+                                        if (palabras[4].ToUpper() == "RURAL")
+                                            indices.Add(new INDICE { CODINDICE = 324, VALOR = string.Join(" ", palabras, 5, palabras.Length - 5).Trim(), TIPO = 0 });
+                                        else
+                                            indices.Add(new INDICE { CODINDICE = 324, VALOR = string.Join(" ", palabras, 4, palabras.Length - 4).Trim(), TIPO = 0 });
+                                    }
+                                    if (palabras[1].ToUpper() == "DE")
+                                    {
+                                        indices.Add(new INDICE { CODINDICE = 3923, VALOR = string.Join(" ", palabras, 7, palabras.Length - 7).Trim(), TIPO = 0 });
+                                    }
                                     break;
                                 case "TELEFONO":
                                 case "TELÉFONO":
-                                    indices.Add(new INDICE { CODINDICE = 325, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
+                                    indices.Add(new INDICE { CODINDICE = 325, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Trim(), TIPO = 0 });
                                     break;
                                 case "MUNICIPIO":
-                                    indices.Add(new INDICE { CODINDICE = 326, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
+                                    indices.Add(new INDICE { CODINDICE = 326, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Trim(), TIPO = 0 });
+                                    break;
+                                case "CORREO":
+                                    indices.Add(new INDICE { CODINDICE = 3924, VALOR = string.Join(" ", palabras, 8, palabras.Length - 8).Trim(), TIPO = 0 });
                                     break;
                                 case "NO":
                                 case "NO.":
@@ -612,31 +752,31 @@ namespace SIM.Utilidades
                                     {
                                         if (palabras[0].ToUpper() == "CM")
                                         {
-                                            indices.Add(new INDICE { CODINDICE = 327, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
+                                            indices.Add(new INDICE { CODINDICE = 327, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Trim(), TIPO = 0 });
                                         }
                                         else if (palabras[0].ToUpper() == "QUEJA")
                                         {
-                                            indices.Add(new INDICE { CODINDICE = 360, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1) });
+                                            indices.Add(new INDICE { CODINDICE = 360, VALOR = string.Join(" ", palabras, 1, palabras.Length - 1).Trim(), TIPO = 0 });
                                         }
                                         else
                                         {
                                             if (palabras[1].ToUpper() == "CM")
                                             {
-                                                indices.Add(new INDICE { CODINDICE = 327, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2) });
+                                                indices.Add(new INDICE { CODINDICE = 327, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2).Trim(), TIPO = 0 });
                                             }
                                             else if (palabras[1].ToUpper() == "QUEJA")
                                             {
-                                                indices.Add(new INDICE { CODINDICE = 360, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2) });
+                                                indices.Add(new INDICE { CODINDICE = 360, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2).Trim(), TIPO = 0 });
                                             }
                                             else
                                             {
                                                 if (palabras[2].ToUpper() == "CM")
                                                 {
-                                                    indices.Add(new INDICE { CODINDICE = 327, VALOR = string.Join(" ", palabras, 3, palabras.Length - 3) });
+                                                    indices.Add(new INDICE { CODINDICE = 327, VALOR = string.Join(" ", palabras, 3, palabras.Length - 3).Trim(), TIPO = 0 });
                                                 }
                                                 else if (palabras[2].ToUpper() == "QUEJA")
                                                 {
-                                                    indices.Add(new INDICE { CODINDICE = 360, VALOR = string.Join(" ", palabras, 3, palabras.Length - 3) });
+                                                    indices.Add(new INDICE { CODINDICE = 360, VALOR = string.Join(" ", palabras, 3, palabras.Length - 3).Trim(), TIPO = 0 });
                                                 }
                                             }
                                         }
@@ -645,7 +785,7 @@ namespace SIM.Utilidades
                                 case "AÑO":
                                     {
                                         var posInicial = (palabras[1].ToUpper() == "QUEJA" ? 2 : (palabras[1].ToUpper() == "QUEJA" ? 3 : 4));
-                                        indices.Add(new INDICE { CODINDICE = 328, VALOR = string.Join(" ", palabras, posInicial, palabras.Length - posInicial) });
+                                        indices.Add(new INDICE { CODINDICE = 328, VALOR = string.Join(" ", palabras, posInicial, palabras.Length - posInicial).Trim(), TIPO = 0 });
                                     }
                                     break;
                                 case "ABOGADO":
@@ -663,11 +803,11 @@ namespace SIM.Utilidades
                                                 }
                                             }
 
-                                            indices.Add(new INDICE { CODINDICE = 342, VALOR = string.Join(" ", palabras, 2, posFinal - 1) });
+                                            indices.Add(new INDICE { CODINDICE = 342, VALOR = string.Join(" ", palabras, 2, posFinal - 1).Trim(), TIPO = 0 });
                                         }
                                         else
                                         {
-                                            indices.Add(new INDICE { CODINDICE = 342, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2) });
+                                            indices.Add(new INDICE { CODINDICE = 342, VALOR = string.Join(" ", palabras, 2, palabras.Length - 2).Trim(), TIPO = 0 });
                                         }
 
                                         finIndices = true;

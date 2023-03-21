@@ -13,7 +13,6 @@
 
     public partial class EntitiesSIMOracle : DbContext
     {
-
         public virtual DbSet<TSIMTASA_PRODUCTO> TSIMTASA_PRODUCTO { get; set; }
         public virtual DbSet<TSIMTASA_CUENCAS> TSIMTASA_CUENCAS { get; set; }
         public virtual DbSet<TSIMTASA_CUENCAS_TERCERO> TSIMTASA_CUENCAS_TERCERO { get; set; }
