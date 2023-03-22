@@ -1284,7 +1284,6 @@
     <Compile Include="Areas\Retributivas\Controllers\EmpresasApiController.cs" />
     <Compile Include="Areas\Retributivas\Controllers\EmpresasController.cs" />
     <Compile Include="Areas\Retributivas\Controllers\ReportesApiController.cs" />
-    <Compile Include="Areas\Retributivas\Controllers\ReportesApiControllerOld.cs" />
     <Compile Include="Areas\Retributivas\Controllers\ReportesController.cs" />
     <Compile Include="Areas\Retributivas\Models\Class1.cs" />
     <Compile Include="Areas\Retributivas\Models\modelBasinFactory.cs" />
@@ -2417,6 +2416,7 @@
     <Content Include="Areas\Retributivas\Scripts\Empresas.js" />
     <Content Include="Areas\Retributivas\Scripts\Reportes.css" />
     <Content Include="Areas\Retributivas\Scripts\Reportes.js" />
+    <Content Include="Areas\Retributivas\Views\Reportes\ComunicacionOficialRecibida.html" />
     <Content Include="Areas\Seguridad\Scripts\activarUsuarios.js" />
     <Content Include="Areas\Tramites\Css\programadoractuaciones.css" />
     <Content Include="Areas\Tramites\Scripts\anulacion.js" />

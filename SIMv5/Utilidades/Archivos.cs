@@ -586,7 +586,7 @@ namespace SIM.Utilidades
         /// <param name="_Archivo"></param>
         /// <param name="_Extension"></param>
         /// <param name="IdTramite"></param>
-        /// <param name="CodProceso"></param>
+        /// <param name="_CodProceso"></param>
         /// <returns></returns>
         public static string SubirDocumentoServidorSinCifrar(MemoryStream _Archivo, string _Extension, string IdTramite, long _CodProceso, int CodDoc)
         {

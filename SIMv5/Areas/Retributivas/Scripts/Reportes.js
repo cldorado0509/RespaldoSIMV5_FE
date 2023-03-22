@@ -1253,8 +1253,9 @@ $(document).ready(function () {
                                         }).done(function (data) {
                                             if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Enviar reporte');
                                             else {
+                                                DevExpress.ui.dialog.alert(data.mensaje, 'Enviar reporte');
                                                 $('#grdReports').dxDataGrid({ dataSource: myReports });
-                                                //    $('#grdReports').dxDataGrid.refresh();
+                                              
                                             }
                                         }).fail(function (jqxhr, textStatus, error) {
                                             DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Eliminar la Empresa');
