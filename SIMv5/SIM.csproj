@@ -1169,6 +1169,7 @@
     <Compile Include="Areas\GestionDocumental\Controllers\ExpedientesController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosController.cs" />
+    <Compile Include="Areas\GestionDocumental\Controllers\DocumentosController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosApiController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\NivelesRiesgoApiController.cs" />
@@ -3054,6 +3055,7 @@
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
     <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
     <Content Include="Areas\Dynamics\Views\web.config" />
+    <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
