@@ -12,32 +12,32 @@ const now = new Date();
 $(document).ready(function () {
 
     var codigoTributary = $("#codigoTributary").dxTextBox({
-        placeholder: "Ingrese aqui la cantidad del caudal del afluente en metros cúbicos.",
+        placeholder: "Ingrese aquí la cantidad del caudal del afluente en metros cúbicos.",
         value: ""
     }).dxTextBox("instance");
 
     var txtNameTributary = $("#txtNameTributary").dxTextBox({
-        placeholder: "Ingrese aqui el nombre del afluente...",
+        placeholder: "Ingrese aquí el nombre del afluente...",
         value: ""
     }).dxTextBox("instance");
 
     var numberCaudal = $("#numberCaudal").dxTextBox({
-        placeholder: "Ingrese aqui la cantidad del caudal del afluente en metros cúbicos.",
+        placeholder: "Ingrese aquí la cantidad del caudal del afluente en metros cúbicos.",
         value: ""
     }).dxTextBox("instance");
 
     var numberArea = $("#numberArea").dxTextBox({
-        placeholder: "Ingrese aqui el area del afluente en metros cuadrados.",
+        placeholder: "Ingrese aquí el area del afluente en metros cuadrados.",
         value: ""
     }).dxTextBox("instance");
 
     var numberlongitud = $("#numberlongitud").dxTextBox({
-        placeholder: "Ingrese aqui la longitud...",
+        placeholder: "Ingrese aquí la longitud...",
         value: ""
     }).dxTextBox("instance");
 
     var cmbTipoCuenca = $("#cmbTipoCuenca").dxTextBox({
-        placeholder: "seleccione aqui el tipo de cuenca.",
+        placeholder: "seleccione aquí el tipo de cuenca.",
         value: ""
     }).dxTextBox("instance");
 
@@ -62,7 +62,7 @@ $(document).ready(function () {
         type: "default",
         width: 120,
         onClick: function () {
-            DevExpress.ui.notify("The Contained button was clicked");
+            DevExpress.ui.notify("Inicia proceso de autodeclaración");
             var id = tributaryId;
             var codigo = codigoTributary.option("value");
             var name = txtNameTributary.option("value");
@@ -103,6 +103,8 @@ $(document).ready(function () {
             });
         }
     });
+
+   
 
     var btnAddATributary = $("#btnAddATributary").dxButton({
         icon: 'plus',
@@ -159,7 +161,7 @@ $(document).ready(function () {
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'edit',
-                        hint: 'Editar Regsitro de Producción',
+                        hint: 'Editar Registro de Producción',
                         onClick: function (e) {
                             var _Ruta = $('#SIM').data('url') + "Retributivas/api/ReportesApi/loadTributary";
                             $.getJSON(_Ruta,
@@ -180,7 +182,6 @@ $(document).ready(function () {
                                     }
                                 }).fail(function (jqxhr, textStatus, error) {
                                     DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Eliminar proceso');
-
                                 });
                         }
                     }).appendTo(container);
@@ -1296,6 +1297,17 @@ $(document).ready(function () {
         ],
        
     });
+
+
+    var btnSendReports = $("btnSendReports").dxButton(
+        {
+            icon: 'plus',
+            text: "Enviar",
+            hint: 'Enviar Declaraciones del período',
+            onClick: function () {
+                DevExpress.ui.notify("Inicia proceso de enviar reporte a la entidad!");
+            }
+        }).dxButton("instance");
 
     var popupReports = $("#popupReports").dxPopup({
         width: 900,
