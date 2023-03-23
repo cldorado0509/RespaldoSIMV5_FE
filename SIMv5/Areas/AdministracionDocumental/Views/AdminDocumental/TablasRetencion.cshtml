@@ -1,0 +1,71 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Clasificación Documental";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/AdministracionDocumental/Scripts/TablasRetencion.js?v=1.00")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Historial de Tablas de Retención Documental</label>
+            </h3>
+        </div>
+        <div id="asistente">
+            <h3>1. Tablas de Retención Documental</h3>
+            <div>
+                <div id="GidListadoTRD"></div>
+                <br />
+                <div id="btnNuevaTRD"></div>
+                <div id="PopupNuevaTablaRet">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="control-label col-sm-2">Nombre :</div>
+                            <div class="col-sm-9" id="txtNombre"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-2">Descripción :</div>
+                            <div class="col-sm-9" id="txtDescripcion"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-2">Vigente desde :</div>
+                            <div class="col-md-3" id="dpVigenteDesde"></div>
+                        </div>
+                        <br />
+                        <div id="BotonNuevaTRD">
+                            <div id="btnGuardarTRD"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>2. Unidades Documentales asociadas a la Tabla de Retención Documental : <label id="lblTRD" /></h3>
+            <div>
+                <div id="GidListadoUnidadesTRD" style="height:350px"></div>
+                <br />
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+

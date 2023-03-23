@@ -1478,6 +1478,31 @@ namespace SIM.Areas.Retributivas.Controllers
             }
         }
 
+
+        [HttpGet, ActionName("loadQuinquenios")]
+        public JArray loadQuinquenios()
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                string metropol = "S";
+                var model = (from M in dbSIM.TSIMTASA_QUINQUENO
+                             orderby M.INICIO
+                             select new
+                             {
+                                 M.ID,
+                                 M.DESCRIPCION,
+                             });
+                return JArray.FromObject(model, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+
         /// <summary>
         /// Consulta de los años habililtados para el reporte
         /// </summary>

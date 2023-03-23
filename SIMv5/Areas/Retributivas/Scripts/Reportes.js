@@ -108,7 +108,7 @@ $(document).ready(function () {
 
     var btnAddATributary = $("#btnAddATributary").dxButton({
         icon: 'plus',
-        hint: 'ingresar Regsitro de Producción',
+        hint: 'ingresar Registro de Producción',
         onClick: function (e) {
             tributaryId = null;
             codigoTributary.option("value", null);
@@ -887,21 +887,6 @@ $(document).ready(function () {
     }).dxPopup("instance");
 
 
-    // ************************************************
-    //   
-    //  Reports not connected to the public sewer. - RNCPS
-    //
-    // ***********************************************
-
-    //var cmbTributaryname = $("#cmbTributaryname").dxSelectBox({
-    //    dataSource: myTributaryFactory,
-    //    displayExpr: "NOMBRE",
-    //    valueExpr: "ID",
-    //    searchEnabled: true
-    //}).dxSelectBox("instance");
-
-
-
     var cmbTributaryname = $("#cmbTributaryname").dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -934,19 +919,6 @@ $(document).ready(function () {
         value: "Nick",
         readOnly: true,
         hoverStateEnabled: false,
-
-        //dataSource: new DevExpress.data.DataSource({
-        //    store: new DevExpress.data.CustomStore({
-        //        key: "Vertimiento_Id",
-        //        loadMode: "raw",
-        //        load: function () {
-        //            var _Ruta = $('#SIM').data('url') + "Retributivas/api/ReportesApi/LoadTributaryFactoryId";
-        //            return $.getJSON(_Ruta, { IdTributaryFactory });
-        //        },
-
-
-        //    })
-        //}),
     }).dxTextBox("instance");
 
     var monthReport = $("#monthReport").dxSelectBox({
@@ -979,21 +951,6 @@ $(document).ready(function () {
         searchEnabled: true
     }).dxSelectBox("instance");
 
-
-    //var cmbDownloadType = $("#cmbDownloadType").dxSelectBox({
-    //    dataSource: new DevExpress.data.DataSource({
-    //        store: new DevExpress.data.CustomStore({
-    //            key: "Tipo_Descarga_Id",
-    //            loadMode: "raw",
-    //            load: function () {
-    //                return $.getJSON($("#SIM").data("url") + "Retributivas/api/ReportesApi/GetDownloadType");
-    //            }
-    //        })
-    //    }),
-    //    displayExpr: "Tipo_Descarga",
-    //    valueExpr: "Tipo_Descarga_Id",
-    //    searchEnabled: true
-    //}).dxSelectBox("instance");
 
     var flowAverage = $("#flowAverage").dxNumberBox({
         placeholder: "Regsitre el flujo promedio del vertimiento",
@@ -1053,17 +1010,12 @@ $(document).ready(function () {
                 var year = yearReport.option("value");
                 option = null;
 
-
-
-            //var month = monthReport.option("value").Id;
-            //var year = new Date(yearReport.option("value")).getFullYear();
             
             var average = flowAverage.option("value");
             var hours = sheddingHours.option("value");
             var days = sheddingDays.option("value");
             var dbo = dboReport.option("value");
             var sst = sstReport.option("value");
-            //var tipo = cmbDownloadType.option("value");
             
             var params = {
                 ID_REPORTE: _id,
@@ -1099,6 +1051,36 @@ $(document).ready(function () {
             });
         }
     });
+
+    var cboQuinquenio = $("#cboQuinquenio").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "ID",
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON($("#SIM").data("url") + "Retributivas/api/ReportesApi/loadQuinquenios");
+                }
+            })
+        }),
+        displayExpr: "DESCRIPCION",
+        valueExpr: "ID",
+        searchEnabled: true
+    }).dxSelectBox("instance");
+
+    //var cboPeriodo = $("#cboPeriodo").dxSelectBox({
+    //    dataSource: new DevExpress.data.DataSource({
+    //        store: new DevExpress.data.CustomStore({
+    //            key: "ID_MUNI",
+    //            loadMode: "raw",
+    //            load: function () {
+    //                return $.getJSON($("#SIM").data("url") + "Retributivas/api/ReportesApi/loadCounty");
+    //            }
+    //        })
+    //    }),
+    //    displayExpr: "NOMBRE",
+    //    valueExpr: "ID_MUNI",
+    //    searchEnabled: true
+    //}).dxSelectBox("instance");
 
     var btnAddReports = $("#btnAddReports").dxButton({
         icon: 'plus',
@@ -1298,16 +1280,15 @@ $(document).ready(function () {
        
     });
 
-
-    var btnSendReports = $("btnSendReports").dxButton(
+    var btnSendReports = $("#btnSendReports").dxButton(
         {
-            icon: 'plus',
+            icon: 'exportselected',
             text: "Enviar",
             hint: 'Enviar Declaraciones del período',
-            onClick: function () {
+            onClick: function (e) {
                 DevExpress.ui.notify("Inicia proceso de enviar reporte a la entidad!");
             }
-        }).dxButton("instance");
+        });
 
     var popupReports = $("#popupReports").dxPopup({
         width: 900,
@@ -1475,7 +1456,6 @@ var myReports = new DevExpress.data.CustomStore({
     },
 });
 
-
 var myTributaryFactory = new DevExpress.data.CustomStore({
     load: function (loadOptions) {
         var Id_Tercero = IdTercero;
@@ -1507,7 +1487,6 @@ var myTributaryFactory = new DevExpress.data.CustomStore({
     },
 });
 
-
 var myMonths = new DevExpress.data.CustomStore({
     load: function (loadOptions) {
         var d = $.Deferred();
@@ -1535,8 +1514,6 @@ var myMonths = new DevExpress.data.CustomStore({
         return d.promise();
     },
 });
-
-
 
 var myAgnosReports = new DevExpress.data.CustomStore({
     load: function (loadOptions) {

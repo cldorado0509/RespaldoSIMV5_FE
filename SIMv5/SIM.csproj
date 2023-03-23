@@ -458,6 +458,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\AdministracionDocumental\AdminDocumentalAreaRegistration.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Controllers\AdminDocumentalAPIController.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Controllers\AdminDocumentalController.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\Metadato.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\SerieDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\SubSerieDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\TablaRetencionDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\UnidadDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\UnidadTablaRetencion.cs" />
     <Compile Include="Areas\App_Start\BundleConfig.cs" />
     <Compile Include="Areas\App_Start\DevExtremeBundleConfig.cs" />
     <Compile Include="Areas\App_Start\FilterConfig.cs" />
@@ -2314,6 +2323,8 @@
     <Compile Include="Utilidades\Tramites.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\AdministracionDocumental\Scripts\ClasificacionDoc.js" />
+    <Content Include="Areas\AdministracionDocumental\Scripts\TablasRetencion.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\Atenciones.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\valorauto.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\VisitaTercero.js" />
@@ -3049,6 +3060,9 @@
     <Content Include="Areas\Pqrsd\Views\IngresoPqrsd\Index.cshtml" />
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
     <Content Include="Areas\ExpedienteAmbiental\Views\Vital\Index.cshtml" />
+    <Content Include="Areas\AdministracionDocumental\Views\AdminDocumental\ClasificacionDoc.cshtml" />
+    <Content Include="Areas\AdministracionDocumental\Views\AdminDocumental\TablasRetencion.cshtml" />
+    <Content Include="Areas\AdministracionDocumental\Views\web.config" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -4166,6 +4180,7 @@
   <ItemGroup>
     <Folder Include="App_Data\Temporal\" />
     <Folder Include="App_Data\Uploads\" />
+    <Folder Include="Areas\AdministracionDocumental\Data\" />
     <Folder Include="Areas\Aire\Models\" />
     <Folder Include="Areas\AtencionUsuarios\Views\Shared\" />
     <Folder Include="Areas\Ayudas\Models\" />
