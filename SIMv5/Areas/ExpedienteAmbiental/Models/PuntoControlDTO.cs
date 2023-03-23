@@ -38,11 +38,11 @@
         /// </summary>
         [JsonProperty("expedienteDocumentalId")]
         public int? ExpedienteDocumentalId { get; set; }
-                  
+
 
         [JsonProperty("expedienteDocumentalLabel")]
         public string ExpedienteDocumentalLabel { get; set; }
-             
+
 
 
         [JsonProperty("expedienteDocumentalCodigo")]

@@ -12,11 +12,17 @@
     using DevExpress.Pdf;
     using System.Drawing;
 
+    /// <summary>
+    ///Controller Expedientes
+    /// </summary>
     public class ExpedientesController : Controller
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
 
-        // GET: ExpedienteAmbiental/Expedientes
+        /// <summary>
+        /// GET: ExpedienteAmbiental/Expedientes
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             System.Web.HttpContext context = System.Web.HttpContext.Current;
@@ -37,7 +43,11 @@
             return View();
         }
 
-        // GET: ExpedienteAmbiental/Expedientes
+        /// <summary>
+        /// GET: ExpedienteAmbiental/Expedientes
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult FlipExpediente(string id)
         {
             List<string> listadoSal = new List<string>();
@@ -161,6 +171,12 @@
             return View(listadoSal);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="relativeUrl"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string ResolveUrl(string relativeUrl)
         {
             if (relativeUrl == null) throw new ArgumentNullException("relativeUrl");
@@ -216,6 +232,12 @@
             return sbUrl.ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="byteArray"></param>
+        /// <returns></returns>
         private bool ByteArrayToFile(string fileName, byte[] byteArray)
         {
             try
