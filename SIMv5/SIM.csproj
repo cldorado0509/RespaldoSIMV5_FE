@@ -2377,6 +2377,7 @@
     <Content Include="Areas\EncuestaExterna\Scripts\PMESEvaluacion\evaluaciontercero.js" />
     <Content Include="Areas\Facturacion\Scripts\Seguimiento.js" />
     <Content Include="Areas\GestionDocumental\Scripts\BuscaExpediente.js" />
+    <Content Include="Areas\GestionDocumental\Scripts\BuscarDocumentos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\consultaprestamos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Expedientes.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Memorandos.js" />
