@@ -4171,6 +4171,7 @@
   <ItemGroup>
     <Folder Include="App_Data\Temporal\" />
     <Folder Include="App_Data\Uploads\" />
+    <Folder Include="Areas\AdministracionDocumental\Data\" />
     <Folder Include="Areas\Aire\Models\" />
     <Folder Include="Areas\AtencionUsuarios\Views\Shared\" />
     <Folder Include="Areas\Ayudas\Models\" />
