@@ -18,6 +18,9 @@ using SIM.Services;
 
 namespace SIM.Areas.ExpedienteAmbiental.Controllers
 {
+    /// <summary>
+    /// Controlador
+    /// </summary>
     [Route("api/[controller]", Name = "ExpedientesApi")]
     public class ExpedientesAmbApiController : ApiController
     {
