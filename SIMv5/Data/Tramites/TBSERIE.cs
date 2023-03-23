@@ -47,6 +47,8 @@ namespace SIM.Data.Tramites
         public decimal? CODSUBSERIE_DOCUMENTAL { get; set; }
 
         public string S_DEFINEEXPEDIENTE { get; set; }
+        [StringLength(1)]
+        public string S_ADMINMODULO { get; set; }
 
         [StringLength(1)]
         public string RADICADO { get; set; }
