@@ -10,9 +10,6 @@
 
 <link rel="stylesheet" type="text/css" href="~/Areas/Retributivas/Scripts/Reportes.css">
 
-
-
-
 <script>
     $(function () {
         $("#tabs").tabs();
@@ -23,13 +20,13 @@
     <div class="panelSIM panelSIM-default">
         <div class="panelSIM-heading">
             <h3 class="panelSIM-title">
-                <label class="header">Sistema de Autoreportes de Vertimientos Puntulaes</label>
+                <label class="header">Sistema de Autoreportes de Vertimientos Puntuales</label>
             </h3>
 
         </div>
 
         <div id="reportedevertimientos">
-            <p>Sistema de información para el registro de los autoreportes de vertimientos realizados por su empresa a los caudales de aguas del Area Metropolitana del Valle de Aburra. por medio del presente se podrá realizar el registro mensual de vertimientos de la Demanda Bioquímica de Oxigeno -DBO y los Sólidos Suspendidos Totales - SST, en los afluentes de agua.</p>
+            <p>Sistema de información para el registro de los autoreportes de vertimientos realizados por su empresa a los caudales de aguas del Area Metropolitana del Valle de Aburrá. por medio del presente se podrá realizar el registro mensual de vertimientos de la Demanda Bioquímica de Oxigeno -DBO y los Sólidos Suspendidos Totales - SST, en los afluentes de agua.</p>
         </div>
         <br />
 
@@ -42,16 +39,19 @@
             </ul>
 
             <div id="tabs-2">
-                <div class="dx-fieldset-header"> Reportes Sector no Conectado al Alcantarillado Publico</div>
-                <p>Realice el reportes mes a mes de los vertimientos realizados por su empresa a las afluentes de agua autorizadas.</p> <br />
+                <div class="dx-fieldset-header"> Reportes Sector no Conectado al Alcantarillado Público</div>
+                <p>Realice el reporte mes a mes de los vertimientos realizados por su empresa a las afluentes de agua autorizadas.</p> <br />
 
                 <br />
+                <div id="cboQuinquenio"></div>
+                <div id="cboPeriodo"></div>
                 <div id="btnAddReports"></div>
+                <div id="btnSendReports"></div>
                 <div id="grdReports"></div>
 
+                <div id="btnViewCOR"></div>
+
                 <div id="popupReports">
-
-
                     <div class="dx-field">
                         <div class="dx-field-label">Identificación del Vertimiento</div>
                         <div class="dx-field-value">
@@ -87,13 +87,6 @@
                         </div>
                     </div>
 
-                    @*<div class="dx-field">
-            <div class="dx-field-label">Tipo de Descargas</div>
-            <div class="dx-field-value">
-                <div id="cmbDownloadType"></div>
-            </div>
-        </div>*@
-
                     <div class="dx-field">
                         <div class="dx-field-label">Horas de Descarga al Día</div>
                         <div class="dx-field-value">
@@ -127,7 +120,6 @@
                 </div>
 
             </div>
-
 
             <div id="tabs-1">
                 <div class="dx-fieldset-header">Registro de Puntos de Vertimientos</div>
@@ -214,9 +206,6 @@
                 </div>
 
             </div>
-
-
-
 
         </div>
 

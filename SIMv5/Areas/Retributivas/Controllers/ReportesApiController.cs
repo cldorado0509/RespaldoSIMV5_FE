@@ -5,7 +5,8 @@ namespace SIM.Areas.Retributivas.Controllers
     using Newtonsoft.Json.Linq;
     using SIM.Areas.Retributivas.Models;
     using System.Security.Claims;
-
+    using DevExpress.XtraRichEdit;
+    using DevExpress.XtraPrinting;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -17,7 +18,14 @@ namespace SIM.Areas.Retributivas.Controllers
     using SIM.Data;
     using DevExpress.UnitConversion;
     using SIM.Models;
-
+    using System.Globalization;
+    using System.IO;
+    using System.Web.Hosting;
+    using SIM.Data.Tramites;
+    using DevExpress.Utils.Filtering;
+    using SIM.Utilidades;
+    using SIM.Areas.ControlVigilancia.Models;
+    using System.Text;
 
     public class ReportesApiController : ApiController
     {
@@ -520,7 +528,7 @@ namespace SIM.Areas.Retributivas.Controllers
                     var turn = dbSIM.TSIMTASA_CUENCAS_TERCERO.Where(pd => pd.ID == Id).FirstOrDefault();
                     this.dbSIM.TSIMTASA_CUENCAS_TERCERO.Remove(turn);
                     this.dbSIM.SaveChanges();
-                    return new { response = "OK", mensaje = "Hecho: Materialo Eliminado satisfactoriomente." };
+                    return new { response = "OK", mensaje = "Hecho: Registro Eliminado satisfactoriomente." };
                 }
                 else
                 {
@@ -581,6 +589,167 @@ namespace SIM.Areas.Retributivas.Controllers
         }
 
 
+        /// <summary>
+        /// Envía Reoprte del Usuario al Sistema SIM
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("SendReport")]
+        public object SendReport(int Id)
+        {
+            try
+            {
+
+                if (Id > 0)
+                {
+                    TextInfo texto = new CultureInfo("es-CO", false).TextInfo;
+                    string body = string.Empty;
+                    MemoryStream _msPdf = new MemoryStream();
+
+                    using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath(@"~/Areas/Retributivas/Views/Reportes/ComunicacionOficialRecibida.html")))
+                    {
+                        body = reader.ReadToEnd();
+                    }
+                    if (body.Length > 0)
+                    {
+                        body = body.Replace("[Fecha]", DateTime.Now.Date.ToString("dd 'de ' MMMM ' de' yyyy"));
+                        body = body.Replace("[Para]", "Interesados Declaración de Vertimientos Tasas Retributivas");
+                        body = body.Replace("[Asunto]", "Autodeclaración de vertimientos para el cálculo de la Tasa Retributiva por Vertimientos");
+                        body = body.Replace("[Contenido]", "Envió formulario diligenciando los valores declarados de vertimientos por medio la plataforma SIM");
+
+                        RichEditDocumentServer server = new RichEditDocumentServer();
+
+                        byte[] byteArray = Encoding.ASCII.GetBytes(body);
+                        MemoryStream stream = new MemoryStream(byteArray);
+
+
+                        server.LoadDocument(stream);
+
+                        MemoryStream corPDF = new MemoryStream();
+
+                        #region Genera el radicado para la Comunicación Oficial Recibida
+                        Radicador radicador = new Radicador();
+                        var radicado = radicador.GenerarRadicado(this.dbSIM, 10,421,DateTime.Now);
+                        var radicadoReport = new Radicado01Report();
+                        var etiquetaradicado = radicadoReport.GenerarEtiqueta(radicado.IdRadicado, "PNG");
+
+                     
+                        #endregion
+
+                        server.ExportToPdf(corPDF);
+
+                        #region Insertar Etiqueta
+
+                        #endregion
+
+
+                        var fecha = DateTime.Now;
+
+                        var r = Utilidades.Archivos.SubirDocumentoServidorSinCifrar(corPDF, ".pdf", "1026775", 2701, fecha.Minute);
+
+
+                        #region Crea el trámite en el SIM
+
+
+                        var codmaxDoc = this.dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == 1026775).Max(f => f.CODDOCUMENTO) + 1;
+
+                        TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
+                        {
+                            CODTRAMITE =  1026775,
+                            CODDOCUMENTO = codmaxDoc,
+                            TIPODOCUMENTO = 2,
+                            FECHACREACION = DateTime.Now,
+                            CODFUNCIONARIO = 420,
+                            NOMBRE = "00000001",
+                            CIFRADO = "0",
+                            RUTA = r,
+                            MAPAARCHIVO = "M",
+                            CODSERIE = 10
+                        };
+
+                        this.dbSIM.TBTRAMITEDOCUMENTO.Add(tBTRAMITEDOCUMENTO);
+                        this.dbSIM.SaveChanges();
+
+                        var tramiteDocu = this.dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == 1026775 && f.CODDOCUMENTO == codmaxDoc).FirstOrDefault();
+
+
+                        string IdIndiceRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicionRecibidaRadicado");
+                        string IdIndiceAsunto = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidadAsunto");
+                        string IdIndiceFechaRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaFechaRadicado");
+                        string IdIndiceHoraRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaHoraRadicado");
+                        string IdIndiceRemitente = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaRemitente");
+                        string IdIndiceEmailSolicitante = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaEmailSolicitante");
+
+                        TBINDICEDOCUMENTO tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                        {
+                            CODTRAMITE = 1026775,
+                            CODINDICE = int.Parse(IdIndiceRadicado),
+                            CODDOCUMENTO =codmaxDoc,
+                            VALOR = radicado.Radicado
+                        };
+
+                        this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                        this.dbSIM.SaveChanges();
+
+                        tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                        {
+                            CODTRAMITE = 1026775,
+                            CODINDICE = int.Parse(IdIndiceAsunto),
+                            CODDOCUMENTO = codmaxDoc,
+                            VALOR = "Autodeclaración de Vertimientos de Tasas Retributivas"
+                        };
+
+                        this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                        this.dbSIM.SaveChanges();
+
+                        tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                        {
+                            CODTRAMITE = 1026775,
+                            CODINDICE = int.Parse(IdIndiceFechaRadicado),
+                            CODDOCUMENTO = codmaxDoc,
+                            VALOR = radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy")
+                        };
+
+                        this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                        this.dbSIM.SaveChanges();
+
+                        tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                        {
+                            CODTRAMITE = 1026775,
+                            CODINDICE = int.Parse(IdIndiceRemitente),
+                            CODDOCUMENTO = codmaxDoc,
+                            VALOR = "Remite XXX"
+                        };
+
+                        this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                        this.dbSIM.SaveChanges();
+
+                        var reporte = this.dbSIM.TSIMTASA_REPORTES.Where(f => f.ID == Id).FirstOrDefault();
+                        reporte.TSIMTASA_ESTADO_REPORTE_ID = 4;
+                        this.dbSIM.SaveChanges();
+
+
+                        #endregion
+
+
+
+
+                    }
+                    return new { response = "OK", mensaje = "Se recibió su declaración y se generó una Comunicación Oficial Recibida con el Radicado 1234 de 2023." };
+                }
+                else
+                {
+                    return new { response = "ERROR", mensaje = "Procedimiento Inválido." };
+                }
+            }
+            catch (Exception e)
+            {
+                var p = new { resp = "Error", mensaje = ": Esta Corriente Esta Relacionada en un Reporte y no podrá ser Eliminada " };
+
+                Console.WriteLine(e.InnerException.Message);
+                return p;
+            }
+        }
 
         public int get_Id_Tercero()
         {
@@ -836,7 +1005,8 @@ namespace SIM.Areas.Retributivas.Controllers
                                  DBO = R.REPORTE_DBO,
                                  SST = R.REPORTE_SST,
                                  CAUDAL = R.CAUDAL_PROMEDIO,
-                                 RADICADO = R.CODTRAMITE
+                                 RADICADO = R.CODTRAMITE,
+                                 NICK = C.NICK
                              }).FirstOrDefault();
 
                 return JObject.FromObject(modelData, Js);
@@ -859,13 +1029,19 @@ namespace SIM.Areas.Retributivas.Controllers
                     Id = objData.ID_REPORTE;
                     var _Id_Tercero = get_Id_Tercero();
 
+                    int estadoReporteIncompleto = 4;
+                    int.TryParse(Utilidades.Data.ObtenerValorParametro("TasaRetributivaEstadoReporteIncompleto"),out estadoReporteIncompleto);
+
+                    int tipoReporteCalculado = 1;
+                    int.TryParse(Utilidades.Data.ObtenerValorParametro("TasaRetributivaTipoReporteCalculado"), out tipoReporteCalculado);
+
                     var cuenca_tercero = (from C in dbSIM.TSIMTASA_CUENCAS_TERCERO
                                           where C.ID_TERCERO == _Id_Tercero & C.TSIMTASA_CUENCAS_ID1 == objData.VERTIMIENTO_ID
                                           select new { C.ID }
                         ).FirstOrDefault();
 
                     var contadorReportes = (from R in dbSIM.TSIMTASA_REPORTES
-                                            where R.TSIMTASA_CUENCAS_TERCERO_ID == _Id_Tercero
+                                            where R.TSIMTASA_CUENCAS_TERCERO_ID == cuenca_tercero.ID
                                             && R.MES == objData.MES_ID
                                             && R.ANO == objData.AGNO
                                             select new
@@ -877,7 +1053,7 @@ namespace SIM.Areas.Retributivas.Controllers
 
 
                     var contadorCuencas = (from R in dbSIM.TSIMTASA_REPORTES
-                                           where R.TSIMTASA_CUENCAS_TERCERO_ID == _Id_Tercero
+                                           where R.TSIMTASA_CUENCAS_TERCERO_ID == cuenca_tercero.ID
                                            select new { R.ID }
                           );
 
@@ -903,7 +1079,8 @@ namespace SIM.Areas.Retributivas.Controllers
                             dbSIM.SaveChanges();
                         }
                     }
-                    else if (Id <= 0  && contadorReportes.Count() < contadorCuencas.Count())
+                    //else if (Id <= 0  && contadorReportes.Count() < contadorCuencas.Count())   /no entiendo esta validación
+                    else if (Id <= 0  && contadorReportes.Count() == 0)
                     {
 
                         TSIMTASA_REPORTES _newTurn = new TSIMTASA_REPORTES
@@ -917,8 +1094,8 @@ namespace SIM.Areas.Retributivas.Controllers
                             REPORTE_SST = objData.SST,
                             REPORTE_DBO = objData.DBO,
                             TSIMTASA_CUENCAS_TERCERO_ID = cuenca_tercero.ID,
-                            TSIMTASA_ESTADO_REPORTE_ID = 4,
-                            TSIMTASA_TIPO_REPORTE_ID = 1,
+                            TSIMTASA_ESTADO_REPORTE_ID = estadoReporteIncompleto,
+                            TSIMTASA_TIPO_REPORTE_ID = tipoReporteCalculado,
                         };
                         dbSIM.TSIMTASA_REPORTES.Add(_newTurn);
                         dbSIM.SaveChanges();
@@ -939,7 +1116,7 @@ namespace SIM.Areas.Retributivas.Controllers
                     }
                     else
                     {
-                        return new { resp = "Error", mensaje = "Ha superado el numero de reportes para este mes" };
+                        return new { resp = "Error", mensaje = "Ha superado el numero de reportes para este mes!" };
 
                     }
                 }
@@ -1300,6 +1477,31 @@ namespace SIM.Areas.Retributivas.Controllers
                 throw exp;
             }
         }
+
+
+        [HttpGet, ActionName("loadQuinquenios")]
+        public JArray loadQuinquenios()
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                string metropol = "S";
+                var model = (from M in dbSIM.TSIMTASA_QUINQUENO
+                             orderby M.INICIO
+                             select new
+                             {
+                                 M.ID,
+                                 M.DESCRIPCION,
+                             });
+                return JArray.FromObject(model, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
 
         /// <summary>
         /// Consulta de los años habililtados para el reporte

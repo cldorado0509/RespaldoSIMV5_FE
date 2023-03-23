@@ -21,7 +21,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
     [Route("api/[controller]", Name = "ExpedientesApi")]
     public class ExpedientesAmbApiController : ApiController
     {
-      
+
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
         //private string urlApiSecurity = "https://amaplicacion02/seguridad/";
         private string urlApiExpedienteAmbiental = "https://amaplicacion02/expedientesambientales/";
@@ -87,6 +87,51 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             return datosConsulta;
         }
 
+        /// <summary>
+        /// Almacena la Información de un Expediente Ambiental
+        /// </summary>
+        /// <param name="objData"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("GuardarExpedienteAmbientalAsync")]
+        public async Task<object> GuardarExpedienteAmbientalAsync(ExpedienteAmbientalDTO objData)
+        {
+            Response resposeF = new Response();
+
+            try
+            {
+                ApiService apiService = new ApiService();
+
+                objData.FechaRegistro = DateTime.Now;
+
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+                if (!response.IsSuccess) return null;
+                var tokenG = (TokenResponse)response.Result;
+                if (tokenG == null) return null;
+                decimal Id = 0;
+
+                if (objData.idExpediente == -1) objData.idExpediente = 0;
+
+                Id = objData.idExpediente;
+                if (Id > 0)
+                {
+                    resposeF = await apiService.PutAsync<ExpedienteAmbientalDTO>(urlApiExpedienteAmbiental, "api/", "ExpedienteAmbiental/ActualizarExpedienteAmbiental", objData, tokenG.Token);
+                    if (!resposeF.IsSuccess) return resposeF;
+                }
+                else if (Id <= 0)
+                {
+                    objData.proyectoId = 0;
+                    resposeF = await apiService.PostAsync<ExpedienteAmbientalDTO>(urlApiExpedienteAmbiental, "api/", "ExpedienteAmbiental/GuardarExpedienteAmbiental", objData, tokenG.Token);
+                    if (!resposeF.IsSuccess) return resposeF.Result;
+                }
+            }
+            catch (Exception e)
+            {
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+            }
+
+            return resposeF;
+        }
+
 
         /// <summary>
         /// Retorna la información de un Expediente Ambiental
@@ -107,7 +152,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 ExpedienteAmbientalDTO expedienteAmbiental = new ExpedienteAmbientalDTO();
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return JObject.FromObject(expedienteAmbiental, Js);
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return JObject.FromObject(expedienteAmbiental, Js);
@@ -154,7 +199,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                     TerceroId = 1,
                 };
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -193,7 +238,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 TercerosDTO terceroExpedienteAmbiental = new TercerosDTO();
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return JObject.FromObject(terceroExpedienteAmbiental, Js);
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return JObject.FromObject(terceroExpedienteAmbiental, Js);
@@ -258,51 +303,6 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
 
         /// <summary>
-        /// Almacena la Información de un Expediente Ambiental
-        /// </summary>
-        /// <param name="objData"></param>
-        /// <returns></returns>
-        [HttpPost, ActionName("GuardarExpedienteAmbientalAsync")]
-        public async Task<object> GuardarExpedienteAmbientalAsync(ExpedienteAmbientalDTO objData)
-        {
-            Response resposeF = new Response();
-            try
-            {
-                ApiService apiService = new ApiService();
-
-                objData.FechaRegistro = DateTime.Now;
-
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
-                if (!response.IsSuccess) return null;
-                var tokenG = (TokenResponse)response.Result;
-                if (tokenG == null) return null;
-                decimal Id = 0;
-
-                if (objData.idExpediente == -1) objData.idExpediente = 0;
-               
-                Id = objData.idExpediente;
-                if (Id > 0)
-                {
-                    resposeF = await apiService.PutAsync<ExpedienteAmbientalDTO>(urlApiExpedienteAmbiental, "api/", "ExpedienteAmbiental/ActualizarExpedienteAmbiental", objData, tokenG.Token);
-                    if (!resposeF.IsSuccess) return resposeF;
-                }
-                else if (Id <= 0)
-                {
-                    objData.proyectoId = 0;
-                    resposeF = await apiService.PostAsync<ExpedienteAmbientalDTO>(urlApiExpedienteAmbiental, "api/", "ExpedienteAmbiental/GuardarExpedienteAmbiental", objData, tokenG.Token);
-                    if (!resposeF.IsSuccess) return resposeF;
-                }
-            }
-            catch (Exception e)
-            {
-                return new Response{  IsSuccess = false,  Result  = "", Message = "Error Almacenando el registro : " + e.Message };
-            }
-
-            return resposeF;
-        }
-
-
-        /// <summary>
         /// Retorna el listado de los tipos de Clasificación de los Expedientes Ambientales
         /// </summary>
         /// <returns></returns>
@@ -322,9 +322,9 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 response = await apiService.GetListAsync<ClasificacionExpedienteDTO>(urlApiExpedienteAmbiental, "api/", $"ClasificacionExpediente/ObtenerClasificacionesExpedientesAmbientales", tokenG.Token);
                 if (!response.IsSuccess) return null;
                 var list = (List<ClasificacionExpedienteDTO>)response.Result;
-              
 
-                var ja =  JArray.FromObject(list, Js);
+
+                var ja = JArray.FromObject(list, Js);
                 return ja;
             }
             catch (Exception exp)
@@ -473,7 +473,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 throw exp;
             }
         }
-        
+
         /// <summary>
         /// Almacena la Información de un Punto de Control asociado a un Expediente Ambiental
         /// </summary>
@@ -485,11 +485,57 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             Response resposeF = new Response();
             try
             {
+                int idUsuario = 0;
+                int funcionario = 0;
+                System.Web.HttpContext context = System.Web.HttpContext.Current;
+                ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+                if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                    funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
+                                                   join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                                   where uf.ID_USUARIO == idUsuario
+                                                   select f.CODFUNCIONARIO).FirstOrDefault());
+                }
+
                 ApiService apiService = new ApiService();
 
+                objData.IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>();
+                objData.UnidadDocumentalId =  int.Parse(SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString());
+                foreach (var item in objData.Indices)
+                {
+
+                    var indE = new IndiceSerieDocumentalDTO();
+                    indE.IndiceSerieDocumentaId = item.CODINDICE;
+                    indE.ValorString = item.VALOR;
+                    switch (item.TIPO)
+                    {
+                        case 0: //Texto
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 8:
+                            indE.ValorString = item.VALOR ?? "";
+                            break;
+                        case 1: //Numero
+                        case 6:
+                        case 7:
+                            indE.ValorNumerico = decimal.Parse(item.VALOR);
+                            break;
+                        case 2: //Fecha
+                            indE.ValorFecha = DateTime.Parse(item.VALOR);
+                            break;
+                    }
+
+                    objData.IndicesSerieDocumentalDTO.Add(indE);
+                };
                 objData.FechaRegistro = DateTime.Now;
                 objData.Conexo = ".";
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                objData.FuncionarioId = funcionario;
+
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -509,7 +555,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             }
             catch (Exception e)
             {
-                return new Response{ IsSuccess= false, Message = "Error Almacenando el registro : " + e.Message , Result = ""};
+                return new Response { IsSuccess= false, Message = "Error Almacenando el registro : " + e.Message, Result = "" };
             }
 
             return resposeF;
@@ -534,7 +580,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 PuntoControlDTO puntoControl = new PuntoControlDTO();
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return JObject.FromObject(puntoControl, Js);
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return JObject.FromObject(puntoControl, Js);
@@ -573,7 +619,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 };
 
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -601,16 +647,16 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             try
             {
                 ApiService apiService = new ApiService();
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
-                    resposeF = await apiService.PutAsync<PuntoControlExpedienteDocumentalDTO>(urlApiExpedienteAmbiental, "api/", "PuntoControl/VincularExpedienteDocumentalAPuntoControl", objData, tokenG.Token);
-                    if (!resposeF.IsSuccess) return new Response { IsSuccess= false, Message = "Error Vinculando el Expediente!"}; 
+                resposeF = await apiService.PutAsync<PuntoControlExpedienteDocumentalDTO>(urlApiExpedienteAmbiental, "api/", "PuntoControl/VincularExpedienteDocumentalAPuntoControl", objData, tokenG.Token);
+                if (!resposeF.IsSuccess) return new Response { IsSuccess= false, Message = "Error Vinculando el Expediente!" };
             }
             catch (Exception e)
             {
-                return new Response{  IsSuccess= false, Message = "Error Vinculando el Expediente: " + e.Message };
+                return new Response { IsSuccess= false, Message = "Error Vinculando el Expediente: " + e.Message };
             }
 
             return resposeF;
@@ -686,7 +732,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 EstadoPuntoControlDTO estadoPuntoControl = new EstadoPuntoControlDTO();
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return JObject.FromObject(estadoPuntoControl, Js);
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return JObject.FromObject(estadoPuntoControl, Js);
@@ -725,7 +771,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 var list = (List<TipoEstadoPuntoControlDTO>)response.Result;
 
 
-           
+
                 return JArray.FromObject(list, Js);
             }
             catch (Exception exp)
@@ -763,7 +809,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 objData.FechaEstado = DateTime.Now;
                 objData.FuncionarioId = codFuncionario;
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -807,11 +853,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 EstadoPuntoControlDTO puntoControl = new EstadoPuntoControlDTO
                 {
                     IdEstadoPuntoControl = _id,
-                     Observacion = "",
+                    Observacion = "",
                 };
 
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -877,7 +923,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             }
         }
 
-        
+
         /// <summary>
         /// Retorna la información de una Anotación asociada a un Punto de Control 
         /// 
@@ -897,7 +943,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 AnotacionPuntoControlDTO anotacionPuntoControl = new AnotacionPuntoControlDTO();
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return JObject.FromObject(anotacionPuntoControl, Js);
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return JObject.FromObject(anotacionPuntoControl, Js);
@@ -941,10 +987,10 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 ApiService apiService = new ApiService();
 
                 objData.FechaRegistro = DateTime.Now;
-                objData.Funcionario = "."; 
+                objData.Funcionario = ".";
                 objData.FuncionarioId = codFuncionario;
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return null;
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return null;
@@ -970,7 +1016,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             return resposeF;
         }
 
-        
+
         /// <summary>
         /// Elimina una Anotación de un Punto de Control
         /// </summary>
@@ -996,7 +1042,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 };
 
 
-                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "jorge.estrada@metropol.gov.co", RememberMe = true });
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
                 if (!response.IsSuccess) return new { resp = "Error", mensaje = "No es posible autenticar la aplicación" };
                 var tokenG = (TokenResponse)response.Result;
                 if (tokenG == null) return new { resp = "Error", mensaje = "No es posible autenticar la aplicación" };

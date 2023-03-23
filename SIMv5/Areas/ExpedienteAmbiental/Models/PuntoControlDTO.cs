@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     public class PuntoControlDTO
     {
@@ -17,14 +18,31 @@
         [JsonProperty("expedienteAmbientalId")]
         public int ExpedienteAmbientalId { get; set; }
 
+
+        /// <summary>
+        /// Identifica la Unidad Documental
+        /// </summary>
+        [JsonProperty("unidadDocumentalId")]
+        public int UnidadDocumentalId { get; set; }
+
+
+        /// <summary>
+        /// Identifica el Funcionario que crea el Expediente
+        /// </summary>
+        [JsonProperty("funcionarioId")]
+        public int FuncionarioId { get; set; }
+
+
         /// <summary>
         /// Identifica el Expediente Documental asociado al Expediente Ambiental
         /// </summary>
         [JsonProperty("expedienteDocumentalId")]
         public int? ExpedienteDocumentalId { get; set; }
 
+
         [JsonProperty("expedienteDocumentalLabel")]
         public string ExpedienteDocumentalLabel { get; set; }
+
 
 
         [JsonProperty("expedienteDocumentalCodigo")]
@@ -80,5 +98,24 @@
         [JsonProperty("fechaRegistro")]
         public DateTime? FechaRegistro { get; set; }
 
+        public List<Indice> Indices { get; set; }
+
+        public List<IndiceSerieDocumentalDTO> IndicesSerieDocumentalDTO { get; set; }
+
+    }
+    public class Indice
+    {
+        public int CODINDICE { get; set; }
+        public string INDICE { get; set; }
+        public byte TIPO { get; set; }
+        public long LONGITUD { get; set; }
+        public int OBLIGA { get; set; }
+        public string VALORDEFECTO { get; set; }
+        public string VALOR { get; set; }
+        public Nullable<int> ID_LISTA { get; set; }
+        public Nullable<int> TIPO_LISTA { get; set; }
+        public string CAMPO_NOMBRE { get; set; }
+        public string MAXIMO { get; set; }
+        public string MINIMO { get; set; }
     }
 }

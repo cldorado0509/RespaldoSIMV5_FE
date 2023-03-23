@@ -14,6 +14,8 @@ namespace SIM.Models
 
         public int ErrorCode { get; set; }
 
+        public long? IdGenerated { get; set; }
+
         public bool ErrorOcurred { get { return ExceptionsList.Any(); } }
 
         public List<String> ExceptionsList { get; set; }

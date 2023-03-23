@@ -204,7 +204,7 @@ $(document).ready(function () {
                                     if (data.length > 0) {
                                         $("#PanelIndicesTra").hide();
                                         $("#PanelEditIndicesTra").show();
-                                        AsignarIndices(data);
+                                        AsignarIndicesTra(data);
                                     } else {
                                         DevExpress.ui.dialog.alert('El proceso no posee indices para el trámite!', 'Detalle del trámite');
                                     }
@@ -225,7 +225,7 @@ $(document).ready(function () {
         icon: 'save',
         hint: 'Guardar indices del trámite',
         onClick: function (e) {
-            var Indices = indicesSerieDocumentalStore._array;
+            var Indices = indicesTramiteStore._array;
             var params = { CodTramite: CodTramite, Indices: Indices };
             var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/GuardaindicesTramite";
             $.ajax({
@@ -624,6 +624,332 @@ $(document).ready(function () {
         ]
     });
 
+    //Inicio Editar indices documento
+
+    $("#btnEditIndicesDoc").dxButton({
+        icon: 'edit',
+        hint: 'modificar indices del documento',
+        onClick: function (e) {
+            var _Ruta = $("#SIM").data("url") + 'Utilidades/PuedeEditarIndicesDoc?IdDoc=' + IdDocumento;
+            $.getJSON(_Ruta)
+                .done(function (data) {
+                    if (data.returnvalue) {
+                        var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/EditarIndicesDocumento";
+                        $.getJSON(_Ruta, { IdDocumento: IdDocumento })
+                            .done(function (data) {
+                                if (data != null) {
+                                    if (data.length > 0) {
+                                        $("#PanelIndicesDoc").hide();
+                                        $("#PanelEditIndicesDoc").show();
+                                        AsignarIndicesDoc(data);
+                                    } else {
+                                        DevExpress.ui.dialog.alert('La unidad documnental no posee indices para el documento!', 'Detalle del trámite');
+                                    }
+                                }
+                            }).fail(function (jqxhr, textStatus, error) {
+                                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
+                            });
+                    } else {
+                        DevExpress.ui.dialog.alert('Usted no posee permisos para modificar índices del documento!', 'Detalle del trámite');
+                    }
+                }).fail(function (jqxhr, textStatus, error) {
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
+                });
+        }
+    });
+
+    $("#btnGuardaIndicesDoc").dxButton({
+        icon: 'save',
+        hint: 'Guardar indices del documento',
+        onClick: function (e) {
+            var Indices = indicesSerieDocumentalStore._array;
+            var params = { IdDocumento: IdDocumento, Indices: Indices };
+            var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/GuardaindicesDocumento";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                beforeSend: function () { },
+                success: function (data) {
+                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Detalle del trámite');
+                    else {
+                        DevExpress.ui.dialog.alert('Indices Guardados correctamente', 'Detalle del trámite');
+                        $('#grdIndicesDoc').dxDataGrid("instance").refresh();
+                        $("#PanelIndicesDoc").show();
+                        $("#PanelEditIndicesDoc").hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Detalle del trámite');
+                }
+            });
+        }
+    });
+
+    $("#btnCancelIndDoc").dxButton({
+        icon: 'revert',
+        hint: 'Cancelar modificar indices del documento',
+        onClick: function (e) {
+            $("#PanelIndicesDoc").show();
+            $("#PanelEditIndicesDoc").hide();
+        }
+    });
+
+    function AsignarIndicesDoc(indices) {
+        opcionesLista = [];
+
+        indicesSerieDocumentalStore = new DevExpress.data.LocalStore({
+            key: 'CODINDICE',
+            data: indices,
+            name: 'indicesSerieDocumental'
+        });
+
+        indices.forEach(function (valor, indice, array) {
+            if (valor.TIPO == 5 && valor.ID_LISTA != null) {
+
+                if (opcionesLista.findIndex(ol => ol.idLista == valor.ID_LISTA) == -1) {
+                    opcionesLista.push({ idLista: valor.ID_LISTA, datos: null, cargado: false });
+                }
+            }
+        });
+
+        if (opcionesLista.length == 0) {
+            CargarGridIndicesTra();
+            //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore); 
+        } else {
+            opcionesLista.forEach(function (valor, indice, array) {
+                $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerIndiceValoresLista?id=' + valor.idLista).done(function (data) {
+                    var index = opcionesLista.findIndex(ol => ol.idLista == valor.idLista);
+                    opcionesLista[index].datos = data;
+                    opcionesLista[index].cargado = true;
+
+                    var finalizado = true;
+
+                    opcionesLista.forEach(function (v, i, a) {
+                        finalizado = finalizado && v.cargado;
+                    });
+
+                    if (finalizado) {
+                        CargarGridIndicesDoc();
+                        //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore);
+                    }
+                });
+            });
+        }
+    }
+
+    function CargarGridIndicesDoc() {
+        $("#grdEditIndicesDoc").dxDataGrid({
+            dataSource: indicesSerieDocumentalStore,
+            allowColumnResizing: true,
+            allowSorting: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            height: '100%',
+            loadPanel: { text: 'Cargando Datos...' },
+            paging: {
+                pageSize: 0,
+            },
+            pager: {
+                showPageSizeSelector: false,
+            },
+            filterRow: {
+                visible: false,
+            },
+            groupPanel: {
+                visible: false,
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: true,
+                allowAdding: false,
+                allowDeleting: false
+
+            },
+            selection: {
+                mode: 'single'
+            },
+            scrolling: {
+                showScrollbar: 'always',
+            },
+            wordWrapEnabled: true,
+            columns: [
+                { dataField: "CODINDICE", dataType: 'number', visible: false, },
+                { dataField: "INDICE", caption: 'INDICE', dataType: 'string', width: '40%', visible: true, allowEditing: false },
+                {
+                    dataField: 'VALOR', caption: 'VALOR', dataType: 'string', allowEditing: true,
+                    cellTemplate: function (cellElement, cellInfo) {
+                        switch (cellInfo.data.TIPO) {
+                            case 0: // TEXTO
+                            case 1: // NUMERO
+                            case 3: // HORA
+                            case 8: // DIRECCION
+                                if (cellInfo.data.VALOR != null) {
+                                    cellElement.html(cellInfo.data.VALOR);
+                                }
+                                break;
+                            case 2: // FECHA
+                                if (cellInfo.data.VALOR != null) {
+                                    cellElement.html(cellInfo.data.VALOR);
+                                }
+                                break;
+                            case 4: // BOOLEAN
+                                if (cellInfo.data.VALOR != null)
+                                    cellElement.html(cellInfo.data.VALOR == 'S' ? 'SI' : 'NO');
+                                break;
+                            default: // OTRO
+                                if (cellInfo.data.VALOR != null)
+                                    cellElement.html(cellInfo.data.VALOR);
+                                break;
+                        }
+                    },
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        switch (cellInfo.data.TIPO) {
+                            case 1: // NUMERO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxNumberBox({
+                                    value: cellInfo.data.VALOR,
+                                    width: '100%',
+                                    showSpinButtons: false,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                            case 0: // TEXTO
+                            case 3: // HORA
+                            case 8: // DIRECCION
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxTextBox({
+                                    value: cellInfo.data.VALOR,
+                                    width: '100%',
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                            case 2: // FECHA
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                var fecha = null;
+                                if (cellInfo.data.VALOR != null && cellInfo.data.VALOR.trim() != '') {
+                                    var partesFecha = cellInfo.data.VALOR.split('/');
+                                    fecha = new Date(parseInt(partesFecha[2]), parseInt(partesFecha[1]) - 1, parseInt(partesFecha[0]));
+
+                                    $(div).dxDateBox({
+                                        type: 'date',
+                                        width: '100%',
+                                        displayFormat: 'dd/MM/yyyy',
+                                        value: fecha,
+                                        onValueChanged: function (e) {
+                                            //cellInfo.setValue(e.value);
+                                            cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
+                                        },
+                                    });
+                                } else {
+                                    $(div).dxDateBox({
+                                        type: 'date',
+                                        width: '100%',
+                                        displayFormat: 'dd/MM/yyyy',
+                                        onValueChanged: function (e) {
+                                            //cellInfo.setValue(e.value);
+                                            cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
+                                        },
+                                    });
+                                }
+
+                                break;
+                            case 4: // SI/NO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxSelectBox({
+                                    dataSource: siNoOpciones,
+                                    width: '100%',
+                                    displayExpr: "Nombre",
+                                    valueExpr: "ID",
+                                    placeholder: "[SI/NO]",
+                                    value: cellInfo.data.VALOR,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                        $("#grdIndices").dxDataGrid("saveEditData");
+                                    },
+                                });
+                                break;
+                            case 5: // Lista
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                if (cellInfo.data.ID_LISTA != null) {
+                                    $(div).dxSelectBox({
+                                        //dataSource: opcionesLista[cellInfo.data.CODINDICE],
+                                        items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                        width: '100%',
+                                        //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
+                                        //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
+                                        placeholder: "[SELECCIONAR OPCION]",
+                                        value: cellInfo.data.VALOR,
+                                        searchEnabled: true,
+                                        onValueChanged: function (e) {
+                                            cellInfo.setValue(e.value);
+                                            $("#grdIndices").dxDataGrid("saveEditData");
+                                        },
+                                    });
+                                } else {
+                                    $(div).dxTextBox({
+                                        value: cellInfo.data.VALOR,
+                                        width: '100%',
+                                        onValueChanged: function (e) {
+                                            cellInfo.setValue(e.value);
+                                        },
+                                    });
+                                }
+                                break;
+                            default: // Otro
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxTextBox({
+                                    value: cellInfo.data.VALOR,
+                                    width: '100%',
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                        }
+                    }
+                }, {
+                    dataField: "OBLIGA",
+                    caption: 'R',
+                    width: '40px',
+                    dataType: 'string',
+                    visible: true,
+                    allowEditing: false,
+                    cellTemplate: function (cellElement, cellInfo) {
+                        cellElement.css('text-align', 'center');
+                        cellElement.css('color', 'red');
+                        if (cellInfo.data.OBLIGA == 1)
+                            cellElement.html('*');
+
+                    }
+                }
+            ]
+        });
+    }
+
+
+    //Fin Editar indices documento
+
+
     $("#grdRutaTra").dxDataGrid({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -871,13 +1197,13 @@ $(document).ready(function () {
         dragEnabled: true,
     }).dxPopup("instance");
 
-    function AsignarIndices(indices) {
+    function AsignarIndicesTra(indices) {
         opcionesLista = [];
 
-        indicesSerieDocumentalStore = new DevExpress.data.LocalStore({
+        indicesTramiteStore = new DevExpress.data.LocalStore({
             key: 'CODINDICE',
             data: indices,
-            name: 'indicesSerieDocumental'
+            name: 'indicesTramite'
         });
 
         indices.forEach(function (valor, indice, array) {
@@ -890,7 +1216,7 @@ $(document).ready(function () {
         });
 
         if (opcionesLista.length == 0) {
-            CargarGridIndices();
+            CargarGridIndicesTra();
             //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore); 
         } else {
             opcionesLista.forEach(function (valor, indice, array) {
@@ -906,7 +1232,7 @@ $(document).ready(function () {
                     });
 
                     if (finalizado) {
-                        CargarGridIndices();
+                        CargarGridIndicesTra();
                         //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore);
                     }
                 });
@@ -914,9 +1240,9 @@ $(document).ready(function () {
         }
     }
 
-    function CargarGridIndices() {
+    function CargarGridIndicesTra() {
         $("#grdEditIndicesTra").dxDataGrid({
-            dataSource: indicesSerieDocumentalStore,
+            dataSource: indicesTramiteStore,
             allowColumnResizing: true,
             allowSorting: false,
             showRowLines: true,

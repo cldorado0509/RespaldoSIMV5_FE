@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "Expedientes Ambientales";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+
+
+<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/vital.js?v=1.8")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+
+    .divEncabezado {
+        border: 1px outset blue;
+        background-color: lightblue;
+        text-align: left;
+    }
+
+    .divDetalle {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    #BotonExp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .hidden {
+        visibility: hidden;
+    }
+
+    .info {
+        margin-top: 5px;
+        /*height: 78px;*/
+    }
+
+    .image-container {
+        width: 65px;
+        float: left;
+        margin-right: 20px;
+    }
+
+        .image-container img {
+            display: block;
+            width: 100%;
+        }
+
+    /*    .dx-list .dx-scrollable-content {
+        column-count: 4;
+        -moz-column-count: 4;
+    }*/
+
+    .dx-list-item {
+        border-top: none;
+        break-inside: avoid;
+    }
+
+    .indices {
+        text-align: justify;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9pt;
+        width: 100%;
+        word-wrap: break-word;
+        max-width: 450px;
+    }
+
+    .dx-popover-wrapper .dx-popup-content {
+        white-space: normal !important;
+    }
+
+    .title {
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: left;
+    }
+</style>
+
+<h2>Solicitudes Ambientales VITAL</h2>
+
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Listado de Solicitudes Ambientales que ingresan por VITAL</label>
+            </h3>
+        </div>
+        <div>
+            <div id="GridListado"></div>
+            <br />
+            <div class="form-horizontal">
+                <div id="asistente">
+                    <h3>Listado de documentos requeridos por el AMVA Y aportados por el usuario</h3>
+                    <div class="divDetalle">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="panelSIM-title">
+                                    <label class="header">Listado de documentos requeridos por la entidad</label>
+                                </h3>
+                                <div id="GridListadoDocumentosRequeridos"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="panelSIM-title">
+                                    <label class="header">Listado de documentos aportados por el usuario</label>
+                                </h3>
+                                <div id="GridListadoDocumentosAportados"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Iniciar o avanzar el trámite</h3>
+                    <div class="divTramite">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="control-label col-md-2">Actividad:</div>
+                                <div class="col-md-4" id="cboActividad"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="control-label col-md-2">Responsable:</div>
+                                <div class="col-md-4" id="cboResponsable"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-md-10">Comentario</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10" id="txtComentario"></div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-3" id="btnIniciarTramite"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
