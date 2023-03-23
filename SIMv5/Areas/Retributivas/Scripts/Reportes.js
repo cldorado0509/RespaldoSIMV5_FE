@@ -475,7 +475,7 @@ $(document).ready(function () {
 
                     $('<div/>').dxButton({
                         icon: 'edit',
-                        hint: 'Editar Regsitro de Producción',
+                        hint: 'Editar Registro de Producción',
                         onClick: function (e) {
                             var _Ruta = $('#SIM').data('url') + "Retributivas/api/ReportesApi/loadShedding";
                             $.getJSON(_Ruta,

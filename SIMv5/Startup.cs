@@ -5,7 +5,8 @@ using Owin;
 namespace SIM
 {
     public partial class Startup
-    {//Version 14
+    {
+        //Cambios de prueba Git
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
