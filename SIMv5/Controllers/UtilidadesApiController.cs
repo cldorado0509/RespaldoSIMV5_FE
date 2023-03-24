@@ -1197,6 +1197,11 @@
             return Indices.ToList();
         }
 
+        /// <summary>
+        /// Guarad los indices del documento.
+        /// </summary>
+        /// <param name="objData"></param>
+        /// <returns></returns>
         [System.Web.Http.HttpPost, System.Web.Http.ActionName("GuardaindicesDocumento")]
         public object PostGuardaindicesDocumento(IndicesDocumento objData)
         {
@@ -1205,6 +1210,13 @@
             {
                 if (objData.Indices != null)
                 {
+                    var TraDoc = (from D in dbSIM.TBTRAMITEDOCUMENTO
+                                  where D.ID_DOCUMENTO == objData.IdDocumento
+                                  select new
+                                  {
+                                      D.CODTRAMITE,
+                                      D.CODDOCUMENTO
+                                  }).FirstOrDefault();
                     foreach (Indice indice in objData.Indices)
                     {
                         if (indice.OBLIGA == 1 && (indice.VALOR == null || indice.VALOR == ""))
@@ -1213,7 +1225,7 @@
                         }
                         if (objData.IdDocumento > 1)
                         {
-                            TBINDICEDOCUMENTO indiceDoc = dbSIM.TBINDICEDOCUMENTO.Where(i => i.ID_DOCUMENTO == objData.IdDocumento && i.CODINDICE == indice.CODINDICE).FirstOrDefault();
+                            TBINDICEDOCUMENTO indiceDoc = dbSIM.TBINDICEDOCUMENTO.Where(i => i.CODTRAMITE == TraDoc.CODTRAMITE && i.CODDOCUMENTO == TraDoc.CODDOCUMENTO && i.CODINDICE == indice.CODINDICE).FirstOrDefault();
                             if (indiceDoc != null)
                             {
                                 indiceDoc.VALOR = indice.VALOR ?? "";
