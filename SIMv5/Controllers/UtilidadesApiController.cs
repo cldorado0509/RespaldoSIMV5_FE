@@ -1198,7 +1198,7 @@
         }
 
         /// <summary>
-        /// Guarad los indivces del documento.
+        /// Guarad los indices del documento.
         /// </summary>
         /// <param name="objData"></param>
         /// <returns></returns>
