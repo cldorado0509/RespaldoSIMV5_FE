@@ -543,10 +543,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             {
                 idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
 
-                funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
-                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                               where uf.ID_USUARIO == idUsuario
-                                               select f.CODFUNCIONARIO).FirstOrDefault());
+                funcionario = SIM.Utilidades.Security.Obtener_Codigo_Funcionario(idUsuario);
             }
             var TipoEst = dbSIM.EXP_TIPOESTADO.Where(w => w.ID_ESTADO == Estado.IdEstado).FirstOrDefault();
 

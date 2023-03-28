@@ -1205,6 +1205,7 @@
             {
                 if (objData.Indices != null)
                 {
+
                     foreach (Indice indice in objData.Indices)
                     {
                         if (indice.OBLIGA == 1 && (indice.VALOR == null || indice.VALOR == ""))

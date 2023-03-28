@@ -3,6 +3,10 @@
     ViewBag.Title = "BuscarDocumentos";
     Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var EditarDoc = '@(ViewBag.Edit)'
+</script>
 
 <script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/BuscarDocumentos.js?V=0.1")"></script>
 <div data-url="@Url.Content("~")" ID="SIM" resizable>
@@ -18,10 +22,27 @@
         <div id="grdDocs"></div>
         <div id="loadPanel"></div>
         <br />
-        <div id="popupBuscaTra">
-            <iframe src="" id="BuscarTra" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+        <div id="popupBuscaDoc">
+            <iframe src="" id="BuscarDoc" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
         </div>
         <div id="popDetalleTramite"></div>
+        <div id="popAdjuntosDocumento" style="padding: 0px !important">
+            <iframe src="" id="frmAdjuntoDocumento" style="width:100%; height:100%" frameborder="0" scrolling="yes"></iframe>
+        </div>
+        <div id="PopupAnula"></div>
+        <div id="PopupVerIndicesDoc"></div>
+    </div>
+    <div id="popUpEditIndicesDoc">
+        <div class="row">
+            <div class="control-label">INDICES DEL DOCUMENTO</div>
+        </div>
+        <div class="row">
+            <div id="grdEditIndicesDoc"></div>
+        </div>
+        <div class="row">
+            <div id="btnGuardaIndicesDoc"></div>
+            <div id="btnCancelIndDoc"></div>
+        </div>
     </div>
 </div>
 
