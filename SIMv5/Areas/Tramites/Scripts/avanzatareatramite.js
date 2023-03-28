@@ -58,7 +58,7 @@ SIMApp.controller("AvanzaTareaTramiteController", function ($scope, $location, $
             var itemsCopias = copiasDataSource.items();
             var copiasSel = '';
 
-            for (i = 0; i < itemsCopias.length ; i++) {
+            for (i = 0; i < itemsCopias.length; i++) {
                 if (copiasSel == '')
                     copiasSel += itemsCopias[i]['CODFUNCIONARIO'];
                 else
@@ -144,7 +144,7 @@ SIMApp.controller("AvanzaTareaTramiteController", function ($scope, $location, $
             if ($scope.itemSeleccionado != null) {
                 var itemsCopias = copiasDataSource.items();
 
-                for (i = 0; i < itemsCopias.length ; i++) {
+                for (i = 0; i < itemsCopias.length; i++) {
                     if (itemsCopias[i]['CODFUNCIONARIO'] == $scope.itemSeleccionado.CODFUNCIONARIO) {
                         MostrarNotificacion('notify', 'error', 'El funcionario ya se encuentra seleccionado.')
 

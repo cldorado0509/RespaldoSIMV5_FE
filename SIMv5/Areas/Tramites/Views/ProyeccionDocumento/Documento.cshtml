@@ -1,6 +1,6 @@
 ﻿@using SIM.Properties
 @{
-    if (ViewBag.Popup??false)
+    if (ViewBag.Popup ?? false)
     {
         Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
     }
@@ -69,10 +69,10 @@
     }
 </script>
 
-<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/documento.js?v=1.82")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/documento.js?v=1.97")"></script>
 
 <div style="padding: 0px;">
-    <div data-url="@Url.Content("~")" id="app" data-id="@ViewBag.id" data-time="@ViewBag.time" data-type="@(ViewBag.Popup??false ? "p" : "f")" data-ro="@ViewBag.SoloLectura" resizable>
+    <div data-url="@Url.Content("~")" id="app" data-id="@ViewBag.id" data-time="@ViewBag.time" data-type="@(ViewBag.Popup??false ? "p" : "f")" data-ro="@ViewBag.SoloLectura" data-ipg="@ViewBag.IndicesProyeccionGrupos" resizable>
         <div id="loadPanel"></div>
         <div id="grid-container"></div>
         <div class="panelSIM-default">
@@ -183,16 +183,16 @@
                         <div class="row" style="height: 35px">
                             <div class="col-md-4">
                                 <div class="dx-field">
-                                    <div class="dx-field-label labelfullrowm" style="font-weight: bold">Tipo</div>
-                                    <div class="dx-field-value valuefullrowm">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Tipo</div>
+                                    <div class="dx-field-value valuefullrow">
                                         <div id="tipoArchivo"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-5">
                                 <div class="dx-field">
-                                    <div class="dx-field-label labelfullrowm" style="font-weight: bold">Descripci&oacute;n</div>
-                                    <div class="dx-field-value valuefullrowm">
+                                    <div class="dx-field-label labelfullrow" style="font-weight: bold">Descripci&oacute;n</div>
+                                    <div class="dx-field-value valuefullrow">
                                         <div id="descripcionArchivo"></div>
                                     </div>
                                 </div>
