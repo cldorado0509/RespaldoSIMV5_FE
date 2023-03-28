@@ -215,7 +215,7 @@ $(document).ready(function () {
                 cellTemplate: function (container, options) {
                     if (options.data.EDIT_INDICES) {
                         $('<div/>').dxButton({
-                            icon: 'increaseindent',
+                            icon: 'comment',
                             hint: 'Editar indices documento',
                             onClick: function (e) {
                                 var _Ruta = $("#SIM").data("url") + 'Utilidades/PuedeEditarIndicesDoc?IdDoc=' + options.data.ID_DOCUMENTO;
@@ -227,8 +227,8 @@ $(document).ready(function () {
                                                 .done(function (data) {
                                                     if (data != null) {
                                                         if (data.length > 0) {
-                                                            popupInd = $("#popUpEditIndicesDoc").dxPopup("instance");
-                                                            popupInd.show();
+                                                            popupEditInd = $("#popUpEditIndicesDoc").dxPopup("instance");
+                                                            popupEditInd.show();
                                                             AsignarIndicesDoc(data);
                                                         } else {
                                                             DevExpress.ui.dialog.alert('La unidad documnental no posee indices para el documento!', 'Detalle del trámite');
@@ -324,8 +324,8 @@ $(document).ready(function () {
                     if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Detalle del trámite');
                     else {
                         DevExpress.ui.dialog.alert('Indices Guardados correctamente', 'Detalle del trámite');
-                        popupInd = $("#popUpEditIndicesDoc").dxPopup("instance");
-                        popupInd.hide();
+                        popupEditInd = $("#popUpEditIndicesDoc").dxPopup("instance");
+                        popupEditInd.hide();
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
@@ -339,8 +339,8 @@ $(document).ready(function () {
         icon: 'revert',
         hint: 'Cancelar modificar indices del documento',
         onClick: function (e) {
-            popupInd = $("#popUpEditIndices").dxPopup("instance");
-            popupInd.hide();
+            popupEditInd = $("#popUpEditIndicesDoc").dxPopup("instance");
+            popupEditInd.hide();
         }
     });
 
