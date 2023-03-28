@@ -66,9 +66,10 @@ namespace SIM.Areas.Tramites.Controllers
         public ActionResult ConsultarDocumentoTemporal(int idDocumento)
         {
             string extension;
-            SIM.Data.Tramites.DOCUMENTO_TEMPORAL documento = dbSIM.Database.SqlQuery<SIM.Data.Tramites.DOCUMENTO_TEMPORAL>("SELECT S_RUTA "
+            /*SIM.Data.Tramites.DOCUMENTO_TEMPORAL documento = dbSIM.Database.SqlQuery<SIM.Data.Tramites.DOCUMENTO_TEMPORAL>("SELECT S_RUTA "
                 + "FROM TRAMITES.DOCUMENTO_TEMPORAL "
-                + "WHERE ID_DOCUMENTO = " + idDocumento.ToString()).FirstOrDefault();
+                + "WHERE ID_DOCUMENTO = " + idDocumento.ToString()).FirstOrDefault();*/
+            var documento = dbSIM.DOCUMENTO_TEMPORAL.Where(dt => dt.ID_DOCUMENTO == idDocumento).FirstOrDefault();
 
             if (documento != null)
             {

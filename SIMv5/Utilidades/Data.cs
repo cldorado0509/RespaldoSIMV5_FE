@@ -545,6 +545,12 @@ namespace SIM.Utilidades
                                         valor += " " + palabras[i].Replace("Se", "");
                                         break;
                                     }
+                                    else if (palabras[i - 1].Contains("Se"))
+                                    {
+                                        posActual = i - 1;
+                                        valor += " " + palabras[i - 1].Replace("Se", "");
+                                        break;
+                                    }
                                     else
                                     {
                                         valor += " " + palabras[i];
