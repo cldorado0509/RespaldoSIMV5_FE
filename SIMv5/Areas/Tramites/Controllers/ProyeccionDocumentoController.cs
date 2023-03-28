@@ -13,6 +13,7 @@ using BaxterSoft.Graphics;
 using System.Security.Claims;
 using SIM.Data;
 using SIM.Data.Tramites;
+using System.Configuration;
 
 namespace SIM.Areas.Tramites.Controllers
 {
@@ -50,6 +51,10 @@ namespace SIM.Areas.Tramites.Controllers
             ViewBag.time = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             ViewBag.SoloLectura = (soloLectura ? "S" : "N");
             ViewBag.Popup = true;
+
+            string indicesSeleccionGrupo = ConfigurationManager.AppSettings["IndicesProyeccionGrupos"] ?? "";
+
+            ViewBag.IndicesProyeccionGrupos = indicesSeleccionGrupo;
 
             return View();
         }

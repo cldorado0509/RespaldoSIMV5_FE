@@ -23,6 +23,7 @@ var idArchivo = 0;
 var archivoActualizar = null;
 var opcionesLista = [];
 var cargando = false;
+var indiceGrupos = [];
 
 var listoMostrar = false;
 
@@ -51,6 +52,8 @@ $(document).ready(function () {
         showClearButton: false,
         readOnly: ($('#app').data('ro') == 'S')
     });
+
+    indiceGrupos = $('#app').data('ipg').split(',');
 
     $.getJSON($('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerSeriesDocumentales').done(function (data) {
         $('#serieDocumental').dxSelectBox({
@@ -191,7 +194,7 @@ $(document).ready(function () {
         width: '100%',
         placeholder: ' -- NINGUNO -- ',
         showClearButton: false,
-        readOnly: ($('#app').data('ro') == 'S')
+        readOnly: ($('#app').data('ro') == 'S'),
     });
 
     $.getJSON($('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerGrupos').done(function (data) {
@@ -203,12 +206,34 @@ $(document).ready(function () {
             showClearButton: false,
             onValueChanged: function (data) {
                 idGrupo = data.value;
+
+                if (idGrupo > 0) {
+                    $.getJSON($('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerPrimerRegistro?idGrupo=' + idGrupo).done(function (data) {
+                        if (data != null) {
+                            indicesDocumento = indicesSerieDocumentalStore._array;
+
+                            for (let i = 0; i < indicesDocumento.length; i++) {
+                                for (let j = 0; j < indiceGrupos.length; j++) {
+                                    if (indicesDocumento[i].CODINDICE == indiceGrupos[j]) {
+                                        indicesDocumento[i].VALOR = data.NOMBRE;
+                                        indicesDocumento[i].ID_VALOR = data.ID;
+                                    }
+                                }
+
+                                if (i == (indicesDocumento.length - 1)) {
+                                    $('#grdIndices').dxDataGrid('instance').option('dataSource', indicesSerieDocumentalStore);
+                                    $('#grdIndices').dxDataGrid('instance').refresh();
+                                }
+                            }
+                        }
+                    });
+                }
             }
         });
     }).fail(function (jqxhr, textStatus, error) {
         alert('error cargando datos: ' + textStatus + ", " + error);
     });
-    
+
     if ($('#app').data('ro') == 'N') {
         $("#grdTramites").dxDataGrid({
             dataSource: grdTramitesDataSource,
@@ -617,7 +642,7 @@ $(document).ready(function () {
 
                                 var fileUploader = $('#fileDocumento').dxFileUploader('instance');
                                 fileUploader._isCustomClickEvent = true;
-                                fileUploader._$fileInput.click(); 
+                                fileUploader._$fileInput.click();
                             }
                         });
                     }
@@ -943,17 +968,17 @@ $(document).ready(function () {
 
                         $.postJSON(
                             $('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/AlmacenarDatosProyeccionDocumento', {
-                                id: $('#app').data('id'),
-                                TipoSeleccionTramites: $('#tipoTramites').dxRadioGroup('instance').option('value'),
-                                CentroCostos: $('#centroCostos').dxTextBox('instance').option('value'),
-                                Descripcion: $('#descripcion').dxTextBox('instance').option('value'),
-                                SerieDocumental: $('#serieDocumental').dxSelectBox('instance').option('value'),
-                                Grupo: $('#grupo').dxSelectBox('instance').option('value'),
-                                NoAvanzaTramites: $('#noAvanzaTramites').dxCheckBox('instance').option('value'),
-                                TramitesSeleccionados: tramitesSeleccionadosDataSource.items(),
-                                Indices: indicesSerieDocumentalStore._array,
-                                Archivos: archivosDocumento,
-                                Firmas: firmasDocumento
+                            id: $('#app').data('id'),
+                            TipoSeleccionTramites: $('#tipoTramites').dxRadioGroup('instance').option('value'),
+                            CentroCostos: $('#centroCostos').dxTextBox('instance').option('value'),
+                            Descripcion: $('#descripcion').dxTextBox('instance').option('value'),
+                            SerieDocumental: $('#serieDocumental').dxSelectBox('instance').option('value'),
+                            Grupo: $('#grupo').dxSelectBox('instance').option('value'),
+                            NoAvanzaTramites: $('#noAvanzaTramites').dxCheckBox('instance').option('value'),
+                            TramitesSeleccionados: tramitesSeleccionadosDataSource.items(),
+                            Indices: indicesSerieDocumentalStore._array,
+                            Archivos: archivosDocumento,
+                            Firmas: firmasDocumento
                         }
                         ).done(function (data) {
                             $("#loadPanel").dxLoadPanel('instance').hide();
@@ -989,8 +1014,7 @@ $(document).ready(function () {
     }
 });
 
-function ValidarDatosMinimos()
-{
+function ValidarDatosMinimos() {
     if (tramitesSeleccionadosDataSource.items().length == 0 && $('#tipoTramites').dxRadioGroup('instance').option('value') == 1) {
         MostrarNotificacion('alert', null, 'Debe seleccionarse por lo menos una Tarea.');
         return false;
@@ -1056,8 +1080,7 @@ function CargarIndices() {
     cargando = false;
 }
 
-function AsignarIndices(indices)
-{
+function AsignarIndices(indices) {
     opcionesLista = [];
 
     indicesSerieDocumentalStore = new DevExpress.data.LocalStore({
@@ -1068,7 +1091,7 @@ function AsignarIndices(indices)
 
     indices.forEach(function (valor, indice, array) {
         if (valor.TIPO == 5 && valor.ID_LISTA != null) {
-            
+
             if (opcionesLista.findIndex(ol => ol.idLista == valor.ID_LISTA) == -1) {
                 opcionesLista.push({ idLista: valor.ID_LISTA, datos: null, cargado: false });
             }
@@ -1100,8 +1123,7 @@ function AsignarIndices(indices)
     cargando = false;
 }
 
-function CargarGridIndices()
-{
+function CargarGridIndices() {
     $("#grdIndices").dxDataGrid({
         dataSource: indicesSerieDocumentalStore,
         allowColumnResizing: true,
@@ -1277,18 +1299,20 @@ function CargarGridIndices()
                             var div = document.createElement("div");
                             cellElement.get(0).appendChild(div);
 
+                            let itemsLista = opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos;
+
                             if (cellInfo.data.ID_LISTA != null) {
                                 $(div).dxSelectBox({
-                                    //dataSource: opcionesLista[cellInfo.data.CODINDICE],
-                                    items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                    items: itemsLista,
                                     width: '100%',
-                                    //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
-                                    //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
+                                    displayExpr: 'NOMBRE',
+                                    valueExpr: 'ID',
                                     placeholder: "[SELECCIONAR OPCION]",
-                                    value: cellInfo.data.VALOR,
+                                    value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
                                     searchEnabled: true,
                                     onValueChanged: function (e) {
-                                        cellInfo.setValue(e.value);
+                                        cellInfo.data.ID_VALOR = e.value;
+                                        cellInfo.setValue(itemsLista[itemsLista.findIndex(ls => ls.ID == e.value)].NOMBRE);
                                         $("#grdIndices").dxDataGrid("saveEditData");
                                     },
                                 });
@@ -1316,6 +1340,11 @@ function CargarGridIndices()
                             break;
                     }
                 }
+            }, {
+                dataField: "ID_VALOR",
+                caption: 'ID_VALOR',
+                dataType: 'int',
+                visible: false,
             }, {
                 dataField: "OBLIGA",
                 caption: 'R',

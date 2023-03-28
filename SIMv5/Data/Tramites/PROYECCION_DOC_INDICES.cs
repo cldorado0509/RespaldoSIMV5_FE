@@ -20,6 +20,8 @@ namespace SIM.Data.Tramites
 
         public int? ID_PROYECCION_DOC { get; set; }
 
+        public int? ID_VALOR { get; set; }
+
         [ForeignKey("ID_PROYECCION_DOC")]
         public virtual PROYECCION_DOC PROYECCION_DOC { get; set; }
     }
