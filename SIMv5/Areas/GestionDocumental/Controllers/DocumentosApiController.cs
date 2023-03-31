@@ -1,13 +1,22 @@
-﻿using Newtonsoft.Json;
+﻿using DevExpress.Web;
+using Independentsoft.Office.Odf.Fields;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using O2S.Components.PDF4NET;
+using O2S.Components.PDF4NET.PDFFile;
+using SIM.Areas.Pqrsd.Models;
 using SIM.Data;
+using SIM.Data.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace SIM.Areas.GestionDocumental.Controllers
@@ -84,9 +93,106 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 throw exp;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost, ActionName("RecibeArch")]
+        public string RecibeArchAsync()
+        {
+            string _resp = "";
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            PDFFile oSrcPDF = null;
+            var httpRequest = context.Request;
+            string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
+            string _Ruta = _RutaBase + @"\" + DateTime.Now.ToString("yyyyMM");
+            if (!Directory.Exists(_Ruta)) Directory.CreateDirectory(_Ruta);
+            var File = httpRequest.Files[0];
+            if (File != null && File.ContentLength > 0)
+            {
+                string[] fileExtensions = { ".pdf" };
+                var fileName = File.FileName.ToLower();
+                var isValidExtenstion = fileExtensions.Any(ext =>
+                {
+                    return fileName.LastIndexOf(ext) > -1;
+                });
+                if (isValidExtenstion) {
+                    string filePath = _Ruta + @"\" + fileName;
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);    
+                    }
+                    File.SaveAs(filePath);
+                    try
+                    {
+                        oSrcPDF = PDFFile.FromFile(filePath);
+                        _resp = "Ok;" + fileName;
+                    }
+                    catch (Exception ex)
+                    {
+                        _resp = "Error;" + ex.Message;
+                    }
+                    oSrcPDF.Dispose();
+                }
+                else
+                {
+                    _resp = "Error;Tipo de documento no permitido";
+                }
+            }
+            return _resp;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdDocumento"></param>
+        /// <param name="Doc"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("ReemplazaDoc")]
+        public object PostReemplazaDoc(decimal IdDocumento, string Doc)
+        {
+            PDFFile oSrcPDF = null;
+            if (IdDocumento <= 0) return new { resp = "Error", mensaje = "No se ha ingresado un identificador de documento" };
+            if (Doc == null || Doc.Length == 0) return new { resp = "Error", mensaje = "No se ha ingresado un documento de reemplazo" };
+            string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
+            string _Ruta = _RutaBase + @"\" + DateTime.Now.ToString("yyyyMM");
+            string filePath = _Ruta + @"\" + Doc;
+            FileInfo DocNuevo = new FileInfo(filePath);   
+            if (!DocNuevo.Exists) return new { resp = "Error", mensaje = "No se ha podido encontrar el documento subido al sistema" };
+            var Docu = (from D in dbSIM.TBTRAMITEDOCUMENTO
+                        where D.ID_DOCUMENTO == IdDocumento
+                        select D).FirstOrDefault();
+            if (Docu == null || Docu.RUTA.Length == 0) return new { resp = "Error", mensaje = "Hay un problema con el documento destino, no se encontró la ruta" };
+            FileInfo DocAnte = new FileInfo(Docu.RUTA);
+            if (!DocAnte.Exists) return new { resp = "Error", mensaje = "No se ha podido encontrar el documento cod identificador " + IdDocumento };
+            try
+            {
+                oSrcPDF = PDFFile.FromFile(DocNuevo.FullName);
+                var _bkFile = DocAnte.DirectoryName + Path.GetFileNameWithoutExtension(DocAnte.FullName) + "_old" + DocAnte.Extension;
+                DocAnte.CopyTo(_bkFile);
+                if (DocAnte.Extension.ToLower() != DocNuevo.Extension.ToLower()) {
+                    DocAnte.Delete();
+                    Docu.RUTA = DocAnte.DirectoryName + Path.GetFileNameWithoutExtension(DocAnte.FullName) + DocNuevo.Extension;
+                }
+                
+                DocNuevo.CopyTo(Docu.RUTA);
+                int _Pag = oSrcPDF.PagesCount;
+                oSrcPDF.Dispose();
+                Docu.PAGINAS = _Pag;
+                Docu.CIFRADO = "0";
+                dbSIM.Entry(Docu).State = System.Data.Entity.EntityState.Modified;
+                dbSIM.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return new { resp = "Error", mensaje = ex.Message };
+            }
+            return new { resp = "Ok", mensaje = "Documento reemplazado correctamente" };
+        }
     }
 
-    public class Documento
+        public class Documento
     {
         public decimal ID_DOCUMENTO { get; set; }
         public decimal CODDOC { get; set; }

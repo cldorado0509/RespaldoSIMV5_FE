@@ -1,5 +1,4 @@
 ﻿var IdDocumento = -1;
-var Parametro = -1;
 
 
 $(document).ready(function () {
@@ -175,7 +174,7 @@ $(document).ready(function () {
                             $.getJSON(_Ruta, { IdDocumento: options.data.ID_DOCUMENTO })
                                 .done(function (data) {
                                     if (data != null) {
-                                        NroDocumento = options.data.ORDEN;
+                                        IdDocumento = options.data.ID_DOCUMENTO;
                                         showIndices(data);
                                     }
                                 }).fail(function (jqxhr, textStatus, error) {
@@ -248,12 +247,11 @@ $(document).ready(function () {
                 }
             },
             {
-                with: '12%',
+                width: '12%',
                 alignment: 'center',
-                caption: 'Detalle trámite',
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
-                        icon: 'fields',
+                        icon: 'rowfield',
                         text: options.data.CODTRAMITE,
                         hint: 'Detalle trámite',
                         onClick: function (e) {
@@ -275,26 +273,20 @@ $(document).ready(function () {
                         }
                     }).appendTo(container);
                 }
-
             },
             {
                 width: '12%',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if (options.data.EDIT_INDICES) {
+                    if (EditarDoc == 'Y') {
                         $('<div/>').dxButton({
-                            icon: 'doc',
-                            hint: 'Editar indices documento',
+                            icon: 'unselectall',
+                            hint: 'Reemplazar documento del SIM',
                             onClick: function (e) {
-                                var _Ruta = $('#SIM').data('url') + "Utilidades/FuncionarioPoseePermiso?IdDocumento=" + options.data.ID_DOCUMENTO;
-                                $.getJSON(_Ruta, function (result, status) {
-                                    if (status === "success") {
-                                        if (result.returnvalue) {
-                                            window.open($('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + options.data.ID_DOCUMENTO, "Documento " + options.data.ID_DOCUMENTO, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
-                                        }
-                                        else {
-                                            DevExpress.ui.notify("No posee permiso para ver este tipo de documento");
-                                        }
+                                var result = DevExpress.ui.dialog.confirm('Realmente desea reemplazar el documento? esta acción es irreversible!! tiene copia del documento anterior?', 'Confirmación');
+                                result.done(function (dialogResult) {
+                                    if (dialogResult) {
+                                        $("#popUpReempDoc").dxPopup("instance").show();
                                     }
                                 });
                             }
@@ -303,6 +295,80 @@ $(document).ready(function () {
                 }
             }
         ]
+    });
+
+    $("#ufDocumento").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo',
+        invalidFileExtensionMessage: "El tipo de archivo no esta permitido",
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        showFileList: false,
+        uploadUrl: $('#SIM').data('url') + 'GestionDocumental/Api/DocumentosApi/RecibeArch',
+        onUploaded: function (e) {
+            $("#loadPanel").dxLoadPanel('instance').hide();
+            var obj = JSON.parse(e.request.responseText);
+            const resp = obj.split(';');
+            if (resp[0] == "Ok") {
+                $("#lblArchivo").text(resp[1]);
+            } else {
+                DevExpress.ui.dialog.alert(resp[1], 'Reemplazar documento');
+                $("#lblArchivo").text(resp[1]);
+            }
+        },
+        onUploadStarted: function (e) {
+            $("#loadPanel").dxLoadPanel('instance').show();
+        },
+        onUploadError: function (e) {
+            $("#loadPanel").dxLoadPanel('instance').hide();
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Reemplazar documento');
+        }
+    });
+
+    $("#btnGuardaDoc").dxButton({
+        stylingMode: "contained",
+        text: "Guarda documento temporal",
+        icon: 'save',
+        onClick: function () {
+            var Documento = $("#lblArchivo").text();
+            var Sel = $("#grdDocs").dxDataGrid("instance").getSelectedRowsData()[0];
+            var params = { IdDocumento: Sel.ID_DOCUMENTO, Doc: Documento };
+            var _Ruta = $('#SIM').data('url') + "GestionDocumental/Api/DocumentosApi/ReemplazaDoc";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                beforeSend: function () { },
+                success: function (data) {
+                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Reemplazar documento');
+                    else {
+                        DevExpress.ui.dialog.alert('Documento reemplazado correctamente', 'Reemplazar documento');
+                        $('#grdDocs').dxDataGrid("instance").refresh();
+                        $("#popUpReempDoc").dxPopup("instance").hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Reemplazar documento');
+                }
+            });
+        }
+    });
+
+    $("#loadPanel").dxLoadPanel({
+        message: 'Procesando...',
+        showIndicator: true,
+        shading: true,
+        shadingColor: "rgba(0,0,0,0.4)",
+    });
+
+    $("#popUpReempDoc").dxPopup({
+        width: 700,
+        height: 500,
+        showTitle: true,
+        title: "Reemplazar documento del SIM"
     });
 
     $("#btnGuardaIndicesDoc").dxButton({
@@ -369,7 +435,7 @@ $(document).ready(function () {
                 Content += "<p>" + value.INDICE + " : <span><b>" + value.VALOR + "</b></span></p>";
             });
             return $("<div />").append(
-                $("<p><b>Indices del documento " + NroDocumento + "</b></p>"),
+                $("<p><b>Indices del documento " + IdDocumento + "</b></p>"),
                 $("<br />"),
                 Content
             );

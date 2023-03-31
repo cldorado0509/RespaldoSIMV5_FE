@@ -8,7 +8,7 @@
     var EditarDoc = '@(ViewBag.Edit)'
 </script>
 
-<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/BuscarDocumentos.js?V=0.1")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/BuscarDocumentos.js?V=0.2")"></script>
 <div data-url="@Url.Content("~")" ID="SIM" resizable>
     <div class="panelSIM panelSIM-default" id="pnlContenedor">
         <div class="panelSIM-heading">
@@ -29,9 +29,10 @@
         <div id="popAdjuntosDocumento" style="padding: 0px !important">
             <iframe src="" id="frmAdjuntoDocumento" style="width:100%; height:100%" frameborder="0" scrolling="yes"></iframe>
         </div>
-        <div id="PopupAnula"></div>
-        <div id="PopupVerIndicesDoc"></div>
     </div>
+    <div id="PopupAnula"></div>
+    <div id="PopupVerIndicesDoc"></div>
+    <div id="loadPanel"></div>
     <div id="popUpEditIndicesDoc">
         <div class="row">
             <div class="control-label">INDICES DEL DOCUMENTO</div>
@@ -43,6 +44,21 @@
             <div id="btnGuardaIndicesDoc"></div>
             <div id="btnCancelIndDoc"></div>
         </div>
+    </div>
+    <div id="popUpReempDoc">
+        <div class="row">
+            <div class="control-label">REEMPLAZAR ARCHIVO DEL DOCUMENTO</div>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="ufDocumento">Seleccione Documento (pdf) :</label>
+            <div id="ufDocumento"></div>
+        </div>
+        <div class="col-md-6" id="lblArchivo"></div>
+        <br />
+        <br />
+        <br />
+        <div id="btnGuardaDoc" class="col-sm-12 btn-default" style="align-content: flex-end"></div>
+        <br />
     </div>
 </div>
 

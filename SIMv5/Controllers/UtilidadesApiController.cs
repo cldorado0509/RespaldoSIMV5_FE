@@ -26,7 +26,8 @@
     using System.Web.Http;
     using System.Web.Mvc;
 
-    
+
+    [System.Web.Http.Authorize]
     public class UtilidadesApiController : ApiController
     {
         public struct datosConsulta
