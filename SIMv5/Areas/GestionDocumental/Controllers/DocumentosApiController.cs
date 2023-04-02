@@ -169,11 +169,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
             try
             {
                 oSrcPDF = PDFFile.FromFile(DocNuevo.FullName);
-                var _bkFile = DocAnte.DirectoryName + Path.GetFileNameWithoutExtension(DocAnte.FullName) + "_old" + DocAnte.Extension;
+                var _bkFile = DocAnte.DirectoryName + @"\"+ Path.GetFileNameWithoutExtension(DocAnte.FullName) + "_old" + DocAnte.Extension;
                 DocAnte.CopyTo(_bkFile);
                 if (DocAnte.Extension.ToLower() != DocNuevo.Extension.ToLower()) {
                     DocAnte.Delete();
-                    Docu.RUTA = DocAnte.DirectoryName + Path.GetFileNameWithoutExtension(DocAnte.FullName) + DocNuevo.Extension;
+                    Docu.RUTA = DocAnte.DirectoryName + @"\" + Path.GetFileNameWithoutExtension(DocAnte.FullName) + DocNuevo.Extension;
                 }
                 
                 DocNuevo.CopyTo(Docu.RUTA);

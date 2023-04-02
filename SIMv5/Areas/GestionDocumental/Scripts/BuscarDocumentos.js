@@ -333,13 +333,13 @@ $(document).ready(function () {
         onClick: function () {
             var Documento = $("#lblArchivo").text();
             var Sel = $("#grdDocs").dxDataGrid("instance").getSelectedRowsData()[0];
-            var params = { IdDocumento: Sel.ID_DOCUMENTO, Doc: Documento };
-            var _Ruta = $('#SIM').data('url') + "GestionDocumental/Api/DocumentosApi/ReemplazaDoc";
+            //var params = { IdDocumento: Sel.ID_DOCUMENTO, Doc: Documento };
+            var _Ruta = $('#SIM').data('url') + 'GestionDocumental/Api/DocumentosApi/ReemplazaDoc?IdDocumento=' + Sel.ID_DOCUMENTO + '&Doc=' + Documento;
             $.ajax({
                 type: "POST",
                 dataType: 'json',
                 url: _Ruta,
-                data: JSON.stringify(params),
+                //data: JSON.stringify(params),
                 contentType: "application/json",
                 beforeSend: function () { },
                 success: function (data) {
