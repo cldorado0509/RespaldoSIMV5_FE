@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Calculo del valor del trmite";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/AtencionUsuarios/Scripts/ValorTramite.js?V=0.1")"></script>
+<style>
+    #BotonExp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Soportes de pagos registrados (Valor trámites - Evaluación)</label>
+            </h3>
+        </div>
+        <div id="grdListaSoprtesPago"></div>
+        <br />
+        <div id="BotonExp">
+            <div id="btnNuevoCalculo"></div>
+        </div>
+        <br />
+    </div>
+    <div id="PopupParametros"></div>
+</div>

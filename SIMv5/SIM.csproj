@@ -485,6 +485,8 @@
     <Compile Include="Areas\AtencionUsuarios\Controllers\AtencionesController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\ValorAutoApiController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\ValorAutoController.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Controllers\ValorTramiteApiController.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Controllers\ValorTramiteController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\VisitaTerceroApiController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\VisitaTerceroController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\AtencionDocumentoDTO.cs" />
@@ -507,6 +509,7 @@
     <Compile Include="Areas\AtencionUsuarios\Models\ListadoTramitesDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\ListadoVisitasDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\MotivoVisitaDTO.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\ParametrosCalculo.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\PersonaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\QuejaAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\RegistroSalidaDTO.cs" />
@@ -2338,6 +2341,7 @@
     <Content Include="Areas\AdministracionDocumental\Scripts\TablasRetencion.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\Atenciones.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\valorauto.js" />
+    <Content Include="Areas\AtencionUsuarios\Scripts\ValorTramite.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\VisitaTercero.js" />
     <Content Include="Areas\BPMN\Scripts\MaestroProcesos.js" />
     <Content Include="Areas\BPMN\Scripts\ModeladorBPMNProceso.js" />
@@ -3077,6 +3081,7 @@
     <Content Include="Areas\AdministracionDocumental\Views\web.config" />
     <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
     <Content Include="Areas\Dynamics\Views\web.config" />
+    <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
