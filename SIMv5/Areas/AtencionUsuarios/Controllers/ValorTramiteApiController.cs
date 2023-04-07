@@ -6,6 +6,7 @@ using SIM.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -112,5 +113,106 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdCalculo"></param>
+        /// <returns></returns>
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("ExisteSoporte")]
+        public object GetExisteSoporte(decimal IdCalculo)
+        {
+            if (IdCalculo <= 0) return new { resp = "Error", mensaje = "No se ha ingresado un identificador de para ubicar el soporte" };
+            try
+            {
+                var _Elaboracion = dbSIM.TBTARIFAS_CALCULO.Where(w => w.ID_CALCULO == IdCalculo).Select(s => s.FECHA).FirstOrDefault();
+                if (_Elaboracion != null)
+                {
+                    string _RutaArchSopValorAuto = SIM.Utilidades.Data.ObtenerValorParametro("ArchivosValorAuto").ToString();
+                    FileInfo _Soporte = new FileInfo(_RutaArchSopValorAuto + _Elaboracion.ToString("MMyyyy") + @"\" + IdCalculo.ToString() + ".pdf");
+                    if (_Soporte.Exists) return new { resp = "Ok", mensaje = "" };
+                    else return new { resp = "Error", mensaje = "No se encontro el documento del soporte generado" };
+                }
+            }catch (Exception ex)
+            {
+                return new { resp = "Error", mensaje = "Ocurrio el error : " + ex.Message };
+            }
+            return new { resp = "Error", mensaje = "No se encontro el documento del soporte generado" };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdTramite"></param>
+        /// <returns></returns>
+        [HttpGet, ActionName("ParametrosEvaluacion")]
+        public JObject ObtieneValoresEvaluacion(decimal IdTramite)
+        {
+            JObject resp = null;
+            var Parametro = (from tar in dbSIM.TBTARIFAS_TRAMITE
+                             where tar.CODIGO_TRAMITE == IdTramite && tar.TIPO_ACTUACION == "E"
+                             select new ParametrosEvaluacion
+                             {
+                                 DuracionVisita = tar.VISITA.Value,
+                                 HorasInforme = tar.INFORME.Value,
+                                 NumeroVisitas = tar.N_VISITAS.Value,
+                                 NumeroProfesionales = tar.TECNICOS.Value,
+                                 Unidad = tar.S_UNIDAD == "N/A" ? "Items :" : tar.S_UNIDAD + " :"
+                             }).FirstOrDefault();
+            if (Parametro != null)
+            {
+                resp = (JObject)JToken.FromObject(Parametro);
+            }
+            return resp;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, ActionName("TiposTramiteEvaluacion")]
+        public JArray ObtieneTiposTramiteEvaluacion()
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                var TipoTramite = (from Ttr in dbSIM.TBTARIFAS_TRAMITE
+                                   where Ttr.TIPO_ACTUACION == "E" && Ttr.N_VISIBLE == 1
+                                   orderby Ttr.NOMBRE
+                                   select new
+                                   {
+                                       Ttr.CODIGO_TRAMITE,
+                                       Ttr.NOMBRE
+                                   }).ToList();
+                return JArray.FromObject(TipoTramite, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+        /// <summary>
+        /// Retorna el nombre de un tercero a partir de su documento de indetificacion sin digito de verificacion
+        /// </summary>
+        /// <param name="Documento">Numero de documento sin digito de verificacion</param>
+        /// <returns></returns>
+        [HttpGet, ActionName("NombreTercero")]
+        public string ObtenerNombreTerceroDoc(decimal Documento)
+        {
+            string _resp = "Tercero no encontrado en nuestra base de datos";
+            var Tercero = (from Ter in dbSIM.QRY_TERCERO
+                           where Ter.DOCUMENTO == Documento
+                           select Ter).FirstOrDefault();
+            if (Tercero != null)
+            {
+                _resp = Tercero.TERCERO.ToUpper().Trim();
+                if (Tercero.DIGITO <= 0) _resp += ";No se encontró el digito de verificación del documento y esto puede generar error!!";
+                if (Tercero.DIRECCION == null || Tercero.DIRECCION.Length == 0) _resp += ";No se encontró la dirección de la instalación y esto puede generar error!!";
+                if (Tercero.ID_MUNICIPIO == null) _resp += ";No se encontró el municipio de la instalación y esto puede generar error!!";
+                if (Tercero.ID_DEPARTAMENTO == null) _resp += ";No se encontró el departamento de la instalación y esto puede generar error!!";
+            }
+            return _resp;
+        }
     }
 }

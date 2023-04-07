@@ -510,6 +510,7 @@
     <Compile Include="Areas\AtencionUsuarios\Models\ListadoVisitasDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\MotivoVisitaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\ParametrosCalculo.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\ParametrosEvaluacion.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\PersonaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\QuejaAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\RegistroSalidaDTO.cs" />
@@ -1529,6 +1530,7 @@
     <Compile Include="Data\General\EVENTO_PARTICIPANTE.cs" />
     <Compile Include="Data\Tramites\BUSQUEDA_DOCUMENTO.cs" />
     <Compile Include="Data\Tramites\EXP_BUSQUEDA.cs" />
+    <Compile Include="Data\Tramites\QRY_TERCERO.cs" />
     <Compile Include="Data\Tramites\QRY_INFORMESTECNICOS.cs" />
     <Compile Include="Data\Tramites\QRY_MEMORANDOS.cs" />
     <Compile Include="Data\Tramites\QRY_RESOLUCIONES.cs" />
