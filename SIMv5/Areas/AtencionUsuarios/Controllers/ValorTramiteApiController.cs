@@ -242,8 +242,11 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
         {
             var Valida = Validar(datosTramite);
             if (Valida.Length > 0) return Valida;
+            var PropTramite = (from Prop in dbSIM.TBTARIFAS_TRAMITE
+                              where Prop.CODIGO_TRAMITE == decimal.Parse(datosTramite.TipoTramite) && Prop.TIPO_ACTUACION == "E"
+                              select Prop).FirstOrDefault();
             decimal Salario = ObtenerHonorarios(datosTramite.Agno);
-            if (Salario <= 0) return ""
+            if (Salario <= 0) return "No se ha ingresado un salario mensual para este año para el personal que participara en el trámite";
         }
 
         private decimal ObtenerHonorarios(decimal Agno)
