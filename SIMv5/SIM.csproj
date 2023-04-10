@@ -497,6 +497,7 @@
     <Compile Include="Areas\AtencionUsuarios\Models\ChequeoDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\ClaseAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\CompromisoDTO.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\DatosValorTramite.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\DependenciaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\FormaAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\FuncionarioDTO.cs" />

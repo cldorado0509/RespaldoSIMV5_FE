@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.XtraReports.Native;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SIM.Areas.AtencionUsuarios.Models;
 using SIM.Areas.GestionDocumental.Controllers;
 using SIM.Data;
+using SIM.Data.Tramites;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -102,7 +105,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     parametrosCalculo.Admin = Calculo.COSTOS_D;
                     parametrosCalculo.Costo = parametrosCalculo.Sueldos + parametrosCalculo.Sueldos + parametrosCalculo.Viajes + parametrosCalculo.Otros + parametrosCalculo.Admin;
                     parametrosCalculo.Topes = Calculo.TOPES;
-                    parametrosCalculo.Valor = Calculo.VALOR;   
+                    parametrosCalculo.Valor = Calculo.VALOR;
                     parametrosCalculo.Publicacion = Calculo.PUBLICACION.Value;
                 }
                 return JObject.FromObject(parametrosCalculo, Js);
@@ -132,7 +135,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     if (_Soporte.Exists) return new { resp = "Ok", mensaje = "" };
                     else return new { resp = "Error", mensaje = "No se encontro el documento del soporte generado" };
                 }
-            }catch (Exception ex)
+            } catch (Exception ex)
             {
                 return new { resp = "Error", mensaje = "Ocurrio el error : " + ex.Message };
             }
@@ -214,5 +217,55 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             }
             return _resp;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DatosTramite"></param>
+        /// <returns></returns>
+        [ActionName("CalcularValorTramite")]
+        public JObject PostCalculaTramite(DatosValorTramite DatosTramite)
+        {
+            var _resp = new ParametrosEvaluacion();
+            try
+            {
+                _resp = CalculaTotalesValorTramite(DatosTramite);
+            } catch (Exception ex)
+            {
+
+            }
+            return (JObject)JToken.FromObject(_resp);
+        }
+
+        #region Metodos privados de la clase
+        private string CalculaTotalesValorTramite(DatosValorTramite datosTramite)
+        {
+            var Valida = Validar(datosTramite);
+            if (Valida.Length > 0) return Valida;
+            decimal Salario = ObtenerHonorarios(datosTramite.Agno);
+            if (Salario <= 0) return ""
+        }
+
+        private decimal ObtenerHonorarios(decimal Agno)
+        {
+            var Sal = dbSIM.TBTARIFAS_PARAMETRO.Where(w => w.NOMBRE == "SALARIO" && w.ACTIVO == "1" && w.ANO == Agno.ToString()).Select(s => s.VALOR).FirstOrDefault();
+            return Sal;  
+        }
+        private string Validar(DatosValorTramite datosTramite)
+        {
+            if (datosTramite.NIT == "") return  "Debe ingresar el NIT de la empresa";
+            if (datosTramite.Tercero == "") return "Debe ingresar el tercero";
+            if (datosTramite.TipoTramite == "") return  "Debe seleccionar un tipo de trámite";
+            if (datosTramite.NumeroProfesionales <= 0) return "Debe ingresar la cantidad de profesionales técnicos que participaran en el tramite";
+            if (datosTramite.ValorProyecto <= 0) return  "Debe ingresar el valor del proyecto";
+            if (long.Parse(datosTramite.TipoTramite) == 26)
+            {
+                if (datosTramite.CantNormas == 0) return "Debe ingresar la cantidad de Normas";
+                if (datosTramite.CantLineas == 0) return "Debe ingresar la cantidad de Líneas";
+            }
+            return "" ;
+        }
+
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
-
+    var TipoTramite = -1;
+    var Calculado = false;
     var Agnos = generarArrayDeAnos();
 
     function generarArrayDeAnos() {
@@ -261,21 +262,30 @@
     }).dxNumberBox("instance");
 
     var ValProy = $("#ValProy").dxNumberBox({
+        format: '$ #,##0.##',
         value: 0
     }).dxNumberBox("instance");
 
     var ValPublica = $("#ValPublica").dxNumberBox({
+        format: '$ #,##0.##',
         value: 0
     }).dxNumberBox("instance");
 
     var CantTram = $("#CantTram").dxNumberBox({
-        value: 0
+        value: 1,
+        min: 1,
+        max: 10
     }).dxNumberBox("instance");
 
     var CheckSoportes = $("#chkSoportes").dxCheckBox({
         value: undefined
     }).dxCheckBox("instance");
 
+    var Descrip = $("#txtDescripcion").dxTextArea({
+        value: '',
+        height: 90,
+        autoResizeEnabled: true
+    }).dxTextArea('instance');
 
     $("#btnNuevoCalculo").dxButton({
         text: "Nuevo Cálculo Valor Trámite",
@@ -291,9 +301,10 @@
             $("#NombreTercero").text("");
             ValProy.option("value", 0);
             ValPublica.option("value", 0);
-            CantTram.option("value", 0);
+            CantTram.option("value", 1);
             CheckSoportes.option("value", false);
             DocTercero.option("value", "");
+            Calculado = false;
             PopCalcular.show();
         }
     });
@@ -311,66 +322,110 @@
                 type: 'default',
                 onClick: function (e) {
                     var sigue = true;
+                    Calculado = false;
                     var Documento = DocTercero.option("value");
+                    if (Documento == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Debe ingresar el documento del tercero', 'Calcular Valor Trámite');
+                    }
                     var NomTerc = $("#NombreTercero").text();
-                    if (NomTerc != "") {
-                        if (TipoTramite > 0 && Documento > 0) {
-                            if (TipoTramite == 26) {
-                                var CantNor = CantNormas.option("value");
-                                var CantLin = CantLineas.option("value");
-                                if (CantNor == 0 || CantLin == 0) {
-                                    sigue = false;
-                                    DevExpress.ui.dialog.alert('Debe ingresar la cantidad de Normas y Líneas', 'Calcular Seguimento');
-                                }
+                    if (NomTerc == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Falta validar el nombre del tercero para el calculo del Trámite', 'Calcular Valor Trámite');
+                    }
+                    if (TipoTramite > 0) {
+                        if (TipoTramite == 26) {
+                            var CantNor = CantNormas.option("value");
+                            var CantLin = CantLineas.option("value");
+                            if (CantNor == 0 || CantLin == 0) {
+                                sigue = false;
+                                DevExpress.ui.dialog.alert('Debe ingresar la cantidad de Normas y Líneas', 'Calcular Valor Trámite');
                             }
-                            var cm = CM.option("value");
-                            cm = cm == null ? "" : cm;
-                            var datosSeg = {
-                                TipoTramite: TipoTramite,
-                                DuracionVisita: DuracionVisita.option("value"),
-                                HorasInforme: CantHorInf.option("value"),
-                                NumeroVisitas: CantVisitas.option("value"),
-                                TramitesSINA: 1,
-                                NumeroProfesionales: CantProf.option("value"),
-                                CM: cm,
-                                Observaciones: "",
-                                Items: CantItem.option("value"),
-                                Reliquidacion: 0,
-                                NIT: Documento,
-                                Tercero: NomTerc,
-                                CodTramite: CodTramite,
-                                CodDocumento: CodDocumento,
-                                ConSoportes: 0,
-                                CantNormas: CantNor,
-                                CantLineas: CantLin,
-                                Agno: cmbAno.option("value")
-                            };
-                        } else {
-                            sigue = false;
-                            DevExpress.ui.dialog.alert('Faltan datos para el calculo del seguimiento', 'Calcular Seguimento');
                         }
                     } else {
                         sigue = false;
-                        DevExpress.ui.dialog.alert('Falta validar el nombre del tercero para el calculo del seguimiento', 'Calcular Seguimento');
+                        DevExpress.ui.dialog.alert('Debe seleccionar el tipo de Trámite', 'Calcular Valor Trámite');
                     }
+                    if (CantProf.option("value") == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Debe ingresar la cantidad de profesionales técnicos que participaran en el trámite', 'Calcular Valor Trámite');
+                    }
+                    if (ValProy.option("value") == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Debe ingresar el valor del proyecto', 'Calcular Valor Trámite');
+                    }
+                    if (DuracionVisita.option("value") == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Debe ingresar el valor de duración de visita', 'Calcular Valor Trámite');
+                    }
+                    if (CantVisitas.option("value") == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Debe ingresar el valor de cantidad de visitas', 'Calcular Valor Trámite');
+                    }
+                    if (CantHorInf.option("value") == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Debe ingresar el valor de cantidad de horas por informe', 'Calcular Valor Trámite');
+                    }
+                    if (CantTram.option("value") == "") {
+                        sigue = false;
+                        DevExpress.ui.dialog.alert('Debe ingresar la cantidad de trámites SINA', 'Calcular Valor Trámite');
+                    }
+                    var cm = CM.option("value");
+                    cm = cm == null ? "" : cm;
+                    var chkSop = CheckSoportes.option("value") ? 1 : 0;
+
                     if (sigue) {
-                        var URL = $("#SIM").data("url") + 'Facturacion/Seguimiento/CalcularSeguimiento';
+                        var datosEvaluacion = {
+                            TipoTramite: TipoTramite,
+                            DuracionVisita: DuracionVisita.option("value"),
+                            HorasInforme: CantHorInf.option("value"),
+                            NumeroVisitas: CantVisitas.option("value"),
+                            TramitesSINA: CantTram.option("value"),
+                            NumeroProfesionales: CantProf.option("value"),
+                            CM: cm,
+                            Observaciones: Descrip.option("value"),
+                            Items: CantItem.option("value"),
+                            Reliquidacion: 0,
+                            NIT: Documento,
+                            Tercero: NomTerc,
+                            ConSoportes: chkSop,
+                            CantNormas: CantNor,
+                            CantLineas: CantLin,
+                            Agno: cmbAno.option("value")
+                        };
+
+                        var URL = $("#SIM").data("url") + 'AtencionUsuarios/api/ValorTramiteApi/CalcularValorTramite';
                         $.ajax({
                             type: "POST",
                             dataType: 'json',
                             url: URL,
-                            data: JSON.stringify(datosSeg),
+                            data: JSON.stringify(datosEvaluacion),
                             contentType: "application/json",
                             beforeSend: function () { },
                             success: function (data) {
-                                $("#lblValorFactura").text("Valor a Facturar : " + data.TotalPagar);
-                                dataPdf = 'data:application/pdf;base64,' + data.Soporte;
-                                $("#DocumentoInforme").attr("src", dataPdf);
+                                if (data != null) {
+                                    showParametros(data);
+                                    Calculado = true;
+                                }
                             },
                             error: function (xhr, textStatus, errorThrown) {
                                 DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Calcular Seguimento');
                             }
                         });
+                    }
+                }
+            }
+        }, {
+            widget: 'dxButton',
+            toolbar: 'bottom',
+            location: 'center',
+            options: {
+                text: 'Generar Soporte Pago',
+                elementAttr: { class: 'dx-popup-content-bottom' },
+                type: 'default',
+                onClick: function (e) {
+                    if (!Calculado) {
+                        DevExpress.ui.dialog.alert('Ocurrió un problema : Aún no se ha realizado el cálculo del valor del trámite!', 'Calcular Seguimento');
                     }
                 }
             }
