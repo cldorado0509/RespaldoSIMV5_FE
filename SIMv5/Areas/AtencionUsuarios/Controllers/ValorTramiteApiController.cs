@@ -95,7 +95,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Obtiene los parametros del calculo almacenado en el sistema
         /// </summary>
         /// <param name="IdCalculo"></param>
         /// <returns></returns>
