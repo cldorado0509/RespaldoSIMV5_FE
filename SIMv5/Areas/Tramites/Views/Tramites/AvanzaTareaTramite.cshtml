@@ -33,20 +33,20 @@
             <div id="tabTareaSiguiente" ng-show="isActive(0)" style="height: 100%">
                 @if (ViewBag.MultiTramites == 1)
                 {
-                <div class="row">
-                    <div class="col-md-8" style="height: 230px">
-                        <div style="height: 30px">Tr&aacute;mites</div>
-                        <div style="height: 200px">
-                            <div dx-data-grid="grdTramitesSettings" id="grdTramites"></div>
+                    <div class="row">
+                        <div class="col-md-8" style="height: 230px">
+                            <div style="height: 30px">Tr&aacute;mites</div>
+                            <div style="height: 200px">
+                                <div dx-data-grid="grdTramitesSettings" id="grdTramites"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="height: 230px">
+                            <div style="height: 30px">Tareas</div>
+                            <div style="height: 200px">
+                                <div dx-data-grid="grdTareasSettings" id="grdTareas"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4" style="height: 230px">
-                        <div style="height: 30px">Tareas</div>
-                        <div style="height: 200px">
-                            <div dx-data-grid="grdTareasSettings" id="grdTareas"></div>
-                        </div>
-                    </div>
-                </div>
                 }
                 else
                 {

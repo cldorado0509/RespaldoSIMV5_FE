@@ -464,8 +464,8 @@ namespace SIM.Areas.Seguridad.Controllers
             if ((u != null && u.S_PASSWORD == pwd) || (urpmes != null  && passwordHash == "9631")) *///&&&*** INGRESO SIN CLAVE UNICAMENTE PARA USUARIOS CON PERFIL DE PMES
             // Valida que el usuario exista y la contraseña sea válida
             //if (dbUser.Count() == 1 && usr.ToUpper().Trim() == "ANDRES.ROMERO") // INGRESO SOLAMENTE PARA EL USUARIO DE ANDRES
-            //if (dbUser.Count() == 1) //&&&*** INGRESO SIN CONTRASEÑA
-            if (u != null && u.S_PASSWORD == pwd)
+            if (dbUser.Count() == 1) //&&&*** INGRESO SIN CONTRASEÑA
+            //if (u != null && u.S_PASSWORD == pwd)
             {
                 // se valida que el usuario este activo
                 if (u.D_VENCE < System.DateTime.Now)

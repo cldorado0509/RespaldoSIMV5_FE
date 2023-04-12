@@ -1,0 +1,181 @@
+﻿@using SIM.Properties
+
+@{
+    ViewBag.Title = "Clasificación Documental";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+
+}
+
+<script>
+      var CodigoFuncionario = @(ViewBag.CodFuncionario);
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/AdministracionDocumental/Scripts/ClasificacionDoc.js?v=1.00")"></script>
+
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Clasificación Documental</label>
+            </h3>
+        </div>
+        <div id="asistente">
+            <h3>1. Series Documentales</h3>
+            <div>
+                <div id="GidListado"></div>
+                <br />
+                <div id="btnNuevo"></div>
+                <div id="PopupNuevaSerie">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="control-label col-sm-2">Código Interno :</div>
+                            <div class="col-sm-9" id="txtCodInterno"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-2">Nombre :</div>
+                            <div class="col-sm-9" id="txtNombre"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-2">Descripción :</div>
+                            <div class="col-sm-9" id="txtDescripcion"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-2">Habilitado :</div>
+                            <div class="col-md-3" id="chkActivo"></div>
+                        </div>
+                        <br />
+                        <div id="BotonNewSerie">
+                            <div id="btnGuarda"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>2. SubSeries Documentales asociadas a la Serie Documental : <label id="lblserie"/></h3>
+            <div>
+                <div id="GidListadoSubSeries"></div>
+                <br />
+                <div id="btnNuevaSubSerie"></div>
+                <div id="PopupNuevaSubSerie">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="control-label col-sm-2">Nombre :</div>
+                            <div class="col-sm-9" id="txtSubSerie"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-2">Descripción :</div>
+                            <div class="col-sm-9" id="txtDescripcionSubSerie"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-md-3">Habilitado :</div>
+                            <div class="col-md-3" id="chkEstadoSubSerie"></div>
+                        </div>
+                        <hr />
+                        <div id="BotonNuevaSubSerie">
+                            <div id="btnGuardarSubSerie"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>3. Unidades Documentales asociadas a la SubSerie Documental : <label id="lblsubserie" /></h3>
+            <div>
+                <div id="GidListadoUnidades"></div>
+                <br />
+                <div id="btnNuevaUnidad"></div>
+                <div id="PopupNuevaUnidad">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="control-label col-sm-3">Nombre :</div>
+                            <div class="col-sm-9" id="txtUnidad"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Descripción :</div>
+                            <div class="col-sm-9" id="txtDescripcionUnidad"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Tiempo(M) Archivo Gestión:</div>
+                            <div class="col-sm-9" id="txtGestion"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Tiempo(M) Archivo Central:</div>
+                            <div class="col-sm-9" id="txtCentral"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Tiempo(M) Archivo Histórico:</div>
+                            <div class="col-sm-9" id="txtHistorico"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Ruta de los Documentos:</div>
+                            <div class="col-sm-9" id="txtRutaDocumentos"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-md-3">Habilitado :</div>
+                            <div class="col-md-3" id="chkEstadoUnidad"></div>
+                            <div class="control-label col-md-3">Radicado :</div>
+                            <div class="col-md-3" id="chkRadicado"></div>
+                        </div>
+                        <hr />
+                        <div id="BotonNuevaUnidad">
+                            <div id="btnGuardarUnidad"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>4. Metadatos Descriptivos asociados a la Unidad Documental : <label id="lblunidad" /></h3>
+            <div>
+                <div id="GidListadoMetadatos"></div>
+                <br />
+                <div id="btnNuevoMetadato"></div>
+                <div id="PopupNuevoMetadato">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="control-label col-sm-3">Nombre :</div>
+                            <div class="col-sm-9" id="txtMetadato"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Tipo :</div>
+                            <div class="col-sm-3" id="cboTipoDato"></div>
+                            <div class="control-label col-sm-3">Longitud:</div>
+                            <div class="col-sm-3" id="txtLongitud"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Valor por Defecto:</div>
+                            <div class="col-sm-3" id="txtValorDefecto"></div>
+                            <div class="control-label col-sm-3">Listado:</div>
+                            <div class="col-sm-3" id="cboListados"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-sm-3">Orden:</div>
+                            <div class="col-sm-9" id="txtOrden"></div>
+                        </div>
+                        <div class="row">
+                            <div class="control-label col-md-3">Obligatorio :</div>
+                            <div class="col-md-3" id="chkObligatorio"></div>
+                            <div class="control-label col-md-2">Mostrar :</div>
+                            <div class="col-md-2" id="chkMostrar"></div>
+                            <div class="control-label col-md-2">Mostrar en Grid:</div>
+                            <div class="col-md-2" id="chkMostrarGrid"></div>
+                        </div>
+                        <hr />
+                        <div id="BotonNuevoMetadato">
+                          <div id="btnGuardarMetadato"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -245,7 +245,7 @@ namespace SIM.Areas.Tramites
 
                 //var firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id && pf.S_ESTADO == "S");
                 var firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id);
-                if (radicado) firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id && pf.S_TIPO=="Firma");
+                if (radicado) firmas = dbSIM.PROYECCION_DOC_FIRMAS.Where(pf => pf.ID_PROYECCION_DOC == id && pf.S_TIPO == "Firma");
 
                 if (archivoPrincipal != null)
                 {
@@ -329,10 +329,10 @@ namespace SIM.Areas.Tramites
                                 }*/
 
 
-                                XGraphics graphics = XGraphics.FromPdfPage(documento.Pages[ubicacionFirma.PageNumber-1]);
-                                graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionFirma.Rectangles[0].Left), Convert.ToInt32(topPagina - (float)ubicacionFirma.Rectangles[0].Top)-2, Convert.ToInt32(ubicacionFirma.Rectangles[0].Width), Convert.ToInt32(ubicacionFirma.Rectangles[0].Height)+2));
+                                XGraphics graphics = XGraphics.FromPdfPage(documento.Pages[ubicacionFirma.PageNumber - 1]);
+                                graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionFirma.Rectangles[0].Left), Convert.ToInt32(topPagina - (float)ubicacionFirma.Rectangles[0].Top) - 2, Convert.ToInt32(ubicacionFirma.Rectangles[0].Width), Convert.ToInt32(ubicacionFirma.Rectangles[0].Height) + 2));
                                 //DrawImage(graphics, imagenFirma, Convert.ToInt32(ubicacionFirma.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionFirma.Rectangles[0].Top), 240, 78);
-                                DrawImage(graphics, imagenFirma, Convert.ToInt32(ubicacionFirma.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionFirma.Rectangles[0].Top), Convert.ToInt32(imagenFirma.Width*(240/Convert.ToDecimal(imagenFirma.Width))), Convert.ToInt32(imagenFirma.Height*(240/ Convert.ToDecimal(imagenFirma.Width))));
+                                DrawImage(graphics, imagenFirma, Convert.ToInt32(ubicacionFirma.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionFirma.Rectangles[0].Top), Convert.ToInt32(imagenFirma.Width * (240 / Convert.ToDecimal(imagenFirma.Width))), Convert.ToInt32(imagenFirma.Height * (240 / Convert.ToDecimal(imagenFirma.Width))));
                                 graphics.Dispose();
                             }
                         }
@@ -347,7 +347,7 @@ namespace SIM.Areas.Tramites
                         float topPagina = (float)ubicacionProyecta.Page.CropBox.Top;
 
                         XGraphics graphics = XGraphics.FromPdfPage(documento.Pages[ubicacionProyecta.PageNumber - 1]);
-                        graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionProyecta.Rectangles[0].Left-5), Convert.ToInt32(topPagina - (float)ubicacionProyecta.Rectangles[0].Top) - 2, Convert.ToInt32(ubicacionProyecta.Rectangles[0].Width+5), Convert.ToInt32(ubicacionProyecta.Rectangles[0].Height) + 2));
+                        graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionProyecta.Rectangles[0].Left - 5), Convert.ToInt32(topPagina - (float)ubicacionProyecta.Rectangles[0].Top) - 2, Convert.ToInt32(ubicacionProyecta.Rectangles[0].Width + 5), Convert.ToInt32(ubicacionProyecta.Rectangles[0].Height) + 2));
                         //graphics.DrawRectangle(Brushes.White, new Rectangle(Convert.ToInt32(ubicacionProyecta.Rectangles[0].Left - 5), Convert.ToInt32(topPagina - (float)ubicacionProyecta.Rectangles[0].Top) - 2, 450, 30));
                         //DrawImage(graphics, imagenProyecta, Convert.ToInt32(ubicacionProyecta.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionProyecta.Rectangles[0].Top), 450, 30);
                         DrawImage(graphics, imagenProyecta, Convert.ToInt32(ubicacionProyecta.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionProyecta.Rectangles[0].Top), Convert.ToInt32(imagenProyecta.Width * (340 / Convert.ToDecimal(imagenProyecta.Width))), Convert.ToInt32(imagenProyecta.Height * (340 / Convert.ToDecimal(imagenProyecta.Width))));
@@ -420,7 +420,7 @@ namespace SIM.Areas.Tramites
                         int cont = 0;
                         foreach (string linea in lineas)
                         {
-                            var layoutRectangle = new XRect(Convert.ToInt32(ubicacionTramites.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionTramites.Rectangles[0].Top) + cont*10, 450, 10);
+                            var layoutRectangle = new XRect(Convert.ToInt32(ubicacionTramites.Rectangles[0].Left), Convert.ToInt32(topPagina - ubicacionTramites.Rectangles[0].Top) + cont * 10, 450, 10);
 
                             formatter.DrawString(linea, font, XBrushes.Black, layoutRectangle, XStringFormats.TopLeft);
                             cont++;
@@ -972,10 +972,10 @@ namespace SIM.Areas.Tramites
 
             //width = (fontSize * textLength) - ((textLength * fontSize) / 3);
             width = (fontSize * letrasLinea) - ((letrasLinea * fontSize) / 3);
-            height = (fontSize + 2)*lineas.Count;
+            height = (fontSize + 2) * lineas.Count;
 
             // Initialize graphics
-            RectangleF rectF = new RectangleF(-1, -1, width+1, height+1);
+            RectangleF rectF = new RectangleF(-1, -1, width + 1, height + 1);
             Bitmap pic = new Bitmap(width, height, PixelFormat.Format64bppArgb);
             Graphics g = Graphics.FromImage(pic);
             g.SmoothingMode = SmoothingMode.HighQuality;
@@ -1000,7 +1000,7 @@ namespace SIM.Areas.Tramites
             int cont = 0;
             foreach (string lineaTexto in lineas)
             {
-                RectangleF rectFLinea = new RectangleF(0, cont*(fontSize + 2), width, (fontSize + 2));
+                RectangleF rectFLinea = new RectangleF(0, cont * (fontSize + 2), width, (fontSize + 2));
 
                 g.DrawString(lineaTexto, font, fgBrush, rectFLinea, StringFormat.GenericDefault);
                 cont++;
@@ -1272,7 +1272,8 @@ namespace SIM.Areas.Tramites
                     // Draw the string.
                     gfx.DrawString(text, font, brush, new XPoint((page.Width - size.Width) / 2, (page.Height - size.Height) / 2), format);
                 }
-            } catch (Exception error)
+            }
+            catch (Exception error)
             {
                 string e = error.Message;
             }

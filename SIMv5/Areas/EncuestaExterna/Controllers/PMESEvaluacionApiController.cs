@@ -154,7 +154,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         [Authorize(Roles = "VPMESEVALUACION")]
         [HttpGet]
         [ActionName("EvaluacionTerceros")]
-        public DATOSCONSULTA GetEvaluacionTerceros(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords, string version, int ?tipo, int? copia)
+        public DATOSCONSULTA GetEvaluacionTerceros(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords, string version, int? tipo, int? copia)
         {
             int idUsuario;
             System.Web.HttpContext context = System.Web.HttpContext.Current;
@@ -715,7 +715,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                                                       where ee.ID == idee
                                                       select ee).FirstOrDefault();
 
-            if (evaluacionEncuesta != null)
+            if (evaluacionEncuesta != null && resultado != "P")
             {
                 evaluacionEncuesta.S_RESULTADO = resultado;
                 evaluacionEncuesta.S_ESTADO = "G";
@@ -730,6 +730,13 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             }
             else
             {
+                evaluacionEncuesta.S_RESULTADO = resultado;
+                evaluacionEncuesta.S_ESTADO = "R";
+
+                dbSIM.Entry(evaluacionEncuesta).State = EntityState.Modified;
+
+                dbSIM.SaveChanges();
+
                 return "P";
             }
         }
@@ -1167,8 +1174,8 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                                                          };
 
                     var grupoPreguntaInstalacion = (from pg in dbSIM.EVALUACION_PREGUNTA_GRUPO
-                                                   where pg.ID == 13
-                                                   select pg).FirstOrDefault();
+                                                    where pg.ID == 13
+                                                    select pg).FirstOrDefault();
 
                     var resultadoEvaluacionInstalacion = from ee in dbSIM.EVALUACION_ENCUESTA
                                                          join i in dbSIM.INSTALACION on ee.ID_INSTALACION equals i.ID_INSTALACION
@@ -1398,7 +1405,8 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 dbSIM.Entry(ee).State = EntityState.Added;
 
                 dbSIM.SaveChanges();
-            } catch (Exception error)
+            }
+            catch (Exception error)
             {
                 SIM.Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Evaluación PMES [PostInsertarEstrategiaEvaluacion] : " + SIM.Utilidades.LogErrores.ObtenerError(error));
             }
@@ -1411,9 +1419,9 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         {
             try
             {
-                    dbSIM.Entry(ee).State = EntityState.Modified;
+                dbSIM.Entry(ee).State = EntityState.Modified;
 
-                    dbSIM.SaveChanges();
+                dbSIM.SaveChanges();
             }
             catch (Exception error)
             {
@@ -1504,8 +1512,8 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         public string PostObservacionesEvaluacionActualizarT(DATOSOBSERVACIONES observaciones)
         {
             EVALUACION_ENCUESTA_TERCERO evaluacionEncuestaT = (from eet in dbSIM.EVALUACION_ENCUESTA_TERCERO
-                                                              where eet.ID == observaciones.idEncuestaEvaluacion
-                                                      select eet).FirstOrDefault();
+                                                               where eet.ID == observaciones.idEncuestaEvaluacion
+                                                               select eet).FirstOrDefault();
 
             if (evaluacionEncuestaT == null)
             {
@@ -1554,8 +1562,8 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         public string GetObservacionesEvaluacionT(int ideet)
         {
             EVALUACION_ENCUESTA_TERCERO evaluacionEncuestaT = (from ee in dbSIM.EVALUACION_ENCUESTA_TERCERO
-                                                      where ee.ID == ideet
-                                                      select ee).FirstOrDefault();
+                                                               where ee.ID == ideet
+                                                               select ee).FirstOrDefault();
 
             if (evaluacionEncuestaT == null)
             {
@@ -2356,12 +2364,12 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             if (evaluacionRespuesta.ID_PREGUNTA == 1000)
             {
                 var evaluacionRespuestaPorc = (from er in dbSIM.EVALUACION_RESPUESTA
-                                          where er.ID_EVALUACION_ENCUESTA_TERCERO == respuestaEvaluacion.idEncuestaEvaluacion && er.ID_PREGUNTA == 1005
-                                          select er).FirstOrDefault();
+                                               where er.ID_EVALUACION_ENCUESTA_TERCERO == respuestaEvaluacion.idEncuestaEvaluacion && er.ID_PREGUNTA == 1005
+                                               select er).FirstOrDefault();
 
                 var evaluacionRespuestaCumpPorc = (from er in dbSIM.EVALUACION_RESPUESTA
-                                               where er.ID_EVALUACION_ENCUESTA_TERCERO == respuestaEvaluacion.idEncuestaEvaluacion && er.ID_PREGUNTA == 1006
-                                               select er).FirstOrDefault();
+                                                   where er.ID_EVALUACION_ENCUESTA_TERCERO == respuestaEvaluacion.idEncuestaEvaluacion && er.ID_PREGUNTA == 1006
+                                                   select er).FirstOrDefault();
 
                 var porc = (evaluacionRespuesta.N_RESPUESTA == 2 ? -20 : -10);
 

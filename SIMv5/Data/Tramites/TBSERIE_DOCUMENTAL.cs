@@ -34,6 +34,11 @@ namespace SIM.Data.Tramites
         [StringLength(1)]
         public string RADICADO { get; set; }
 
+        public decimal VERSION { get; set; }
+
+        public string COD_INTERNO { get; set; }
+
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TBSUBSERIE_DOCUMENTAL> TBSUBSERIE_DOCUMENTAL { get; set; }
     }

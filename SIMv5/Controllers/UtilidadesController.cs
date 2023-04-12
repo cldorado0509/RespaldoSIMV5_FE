@@ -464,7 +464,8 @@
                              {
                                  Motivo = Mot.S_DESCRIPCION,
                                  Causa = Anu.S_SOLICITUD,
-                                 Fecha = Anu.D_FECHA_APROBACION
+                                 Fecha = Anu.D_FECHA_APROBACION,
+                                 TraAnula = Anu.CODTRAMITE_ANULACION
                              }).FirstOrDefault();
                 return JObject.FromObject(model, Js);
             }
