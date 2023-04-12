@@ -53,7 +53,7 @@ $(document).ready(function () {
         readOnly: ($('#app').data('ro') == 'S')
     });
 
-    indiceGrupos = $('#app').data('ipg').split(',');
+    indiceGrupos = $('#app').data('ipg').toString().split(',');
 
     $.getJSON($('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerSeriesDocumentales').done(function (data) {
         $('#serieDocumental').dxSelectBox({
