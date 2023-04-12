@@ -1186,10 +1186,12 @@
     </Compile>
     <Compile Include="Areas\Facturacion\Models\ParametrosCalculo.cs" />
     <Compile Include="Areas\Facturacion\Models\Seguimiento.cs" />
+    <Compile Include="Areas\GestionDocumental\Controllers\DocumentosApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\ExpedientesApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\ExpedientesController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosController.cs" />
+    <Compile Include="Areas\GestionDocumental\Controllers\DocumentosController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosApiController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\NivelesRiesgoApiController.cs" />
@@ -2401,6 +2403,7 @@
     <Content Include="Areas\EncuestaExterna\Scripts\PMESEvaluacion\evaluaciontercero.js" />
     <Content Include="Areas\Facturacion\Scripts\Seguimiento.js" />
     <Content Include="Areas\GestionDocumental\Scripts\BuscaExpediente.js" />
+    <Content Include="Areas\GestionDocumental\Scripts\BuscarDocumentos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\consultaprestamos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Expedientes.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Memorandos.js" />
@@ -3084,7 +3087,11 @@
     <Content Include="Areas\AdministracionDocumental\Views\web.config" />
     <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
     <Content Include="Areas\Dynamics\Views\web.config" />
+<<<<<<< HEAD
     <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
+=======
+    <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
+>>>>>>> main
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
