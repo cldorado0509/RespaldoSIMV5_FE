@@ -360,7 +360,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 }
                 var model = (from Uni in dbSIM.TBSERIE
                              join Vud in dbSIM.TBUNIDADESDOC_VIGENCIATRD on Uni.CODSERIE equals Vud.CODUNIDAD_DOCUMENTAL
-                             where Uni.CODSUBSERIE_DOCUMENTAL == CodSubSerie && Uni.S_DEFINEEXPEDIENTE == "1" && Uni.ACTIVO == "1" && Vud.CODVIGENCIA_TRD == vigencia
+                             where Uni.CODSUBSERIE_DOCUMENTAL == CodSubSerie && Uni.S_DEFINEEXPEDIENTE == "1" && Uni.ACTIVO == "1" && Vud.CODVIGENCIA_TRD == vigencia && Uni.S_ADMINMODULO == "0"
                              orderby Uni.NOMBRE
                              select new
                              {
@@ -1426,8 +1426,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                              MAXIMO = i.VALORMAXIMO.Length > 0 ? i.VALORMAXIMO : "",
                                              MINIMO = i.VALORMINIMO.Length > 0 ? i.VALORMINIMO : ""
                                          };
-
-            return indicesSerieDocumental.ToList();
+            var listaInd = indicesSerieDocumental.ToList();
+            return listaInd;
         }
 
         [Authorize]
