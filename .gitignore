@@ -348,3 +348,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/SIMv5/Web(Pdcion).config
+/SIMv5/Web(Pruebas).config
