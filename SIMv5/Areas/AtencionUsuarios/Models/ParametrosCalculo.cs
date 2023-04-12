@@ -26,5 +26,10 @@ namespace SIM.Areas.AtencionUsuarios.Models
         public decimal Valor { get; set; }
         [JsonProperty("Publicacion")]
         public decimal Publicacion { get; set; }
+        [JsonProperty("Calculado")]
+        public bool Calculado { get; set; }
+        [JsonProperty("Mensaje")]
+        public string Mensaje { get; set; }
+
     }
 }

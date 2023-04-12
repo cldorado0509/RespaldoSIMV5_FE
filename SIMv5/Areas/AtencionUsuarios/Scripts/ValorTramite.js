@@ -123,19 +123,28 @@
         contentTemplate: function () {
             const formatter = new Intl.NumberFormat('sp-CO', {
                 style: 'currency', currency: 'COP',
-                minimumFractionDigits: 0 });
-            return $("<div />").append(
-                $("<div class='row col-md-12'><p style='text-align: center'><b>CÁLCULO DEL VALOR DE LA EVALUACIÓN</b></p></div><br />"),
-                $("<div class='row'><div class='col-md-8'><p><b>ITEM</b></p></div><div class='col-md-4'><p><b>VALOR</b></p></div></div>"),
-                $("<div class='row'><div class='col-md-8'><p>GASTOS POR SUELDOS Y HONORARIOS (A):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Sueldos) + "</p></div>"),
-                $("<div class='row'><div class='col-md-8'><p>GASTOS DE VIAJE (B):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Viajes) + "</p></div>"),
-                $("<div class='row'><div class='col-md-8'><p>GASTOS ANÁLISIS DE LABORATORIO Y OTROS TRABAJOS TÉCNICOS (C):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Otros) + "</p></div>"),
-                $("<div class='row'><div class='col-md-8'><p>GASTOS DE ADMINISTRACIÓN 25% (D):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Admin) + "</p></div><br />"),
-                $("<div class='row'><div class='col-md-8'><b><p>COSTO TOTAL DE LA TARIFA :</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Costo) + "</p></b></div>"),
-                $("<div class='row'><div class='col-md-8'><p>DETERMINACIÓN DE LOS TOPES DE LAS TARIFAS (To):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Topes) + "</p></div>"),
-                $("<div class='row'><div class='col-md-8'><p><b>VALOR A CANCELAR POR TRÁMITE:</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Valor) + "</p></b></div>"),
-                $("<div class='row'><div class='col-md-8'><p><b>VALOR A CANCELAR POR PUBLICACIÓN:</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Publicacion) + "</p></b></div>")
-            );
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+            if (Parametro.Calculado == true) {
+                return $("<div />").append(
+                    $("<div class='row col-md-12'><p style='text-align: center'><b>CÁLCULO DEL VALOR DE LA EVALUACIÓN</b></p></div><br />"),
+                    $("<div class='row'><div class='col-md-8'><p><b>ITEM</b></p></div><div class='col-md-4'><p><b>VALOR</b></p></div></div>"),
+                    $("<div class='row'><div class='col-md-8'><p>GASTOS POR SUELDOS Y HONORARIOS (A):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Sueldos) + "</p></div>"),
+                    $("<div class='row'><div class='col-md-8'><p>GASTOS DE VIAJE (B):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Viajes) + "</p></div>"),
+                    $("<div class='row'><div class='col-md-8'><p>GASTOS ANÁLISIS DE LABORATORIO Y OTROS TRABAJOS TÉCNICOS (C):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Otros) + "</p></div>"),
+                    $("<div class='row'><div class='col-md-8'><p>GASTOS DE ADMINISTRACIÓN 25% (D):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Admin) + "</p></div><br />"),
+                    $("<div class='row'><div class='col-md-8'><b><p>COSTO TOTAL DE LA TARIFA :</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Costo) + "</p></b></div>"),
+                    $("<div class='row'><div class='col-md-8'><p>DETERMINACIÓN DE LOS TOPES DE LAS TARIFAS (To):</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Topes) + "</p></div>"),
+                    $("<div class='row'><div class='col-md-8'><p><b>VALOR A CANCELAR POR TRÁMITE:</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Valor) + "</p></b></div>"),
+                    $("<div class='row'><div class='col-md-8'><p><b>VALOR A CANCELAR POR PUBLICACIÓN:</p></div><div class='col-md-4'><p>" + formatter.format(Parametro.Publicacion) + "</p></b></div>")
+                );
+            } else {
+                return $("<div />").append(
+                    $("<div class='row col-md-12'><p style='text-align: center'><b>CÁLCULO DEL VALOR DE LA EVALUACIÓN</b></p></div><br />"),
+                    $("<div class='row'><div class='col-md-12'><p>" + Parametro.Mensaje + "</p></div>")             
+                );
+            }
         }
     };
 
@@ -196,6 +205,7 @@
         onSelectionChanged: function (e) {
             var item = e.component.option('selectedItem');
             TipoTramite = item.CODIGO_TRAMITE;
+            Calculado = false;
             if (TipoTramite == 26) {
                 CantNormas.option("visible", true);
                 CantLineas.option("visible", true);
@@ -223,19 +233,31 @@
     }).dxSelectBox("instance");
 
     var CantProf = $("#CantProf").dxNumberBox({
-        value: 0
+        value: 0,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var CantVisitas = $("#CantVisitas").dxNumberBox({
-        value: 0
+        value: 0,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var CantHorInf = $("#CantHorInf").dxNumberBox({
-        value: 0
+        value: 0,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var DuracionVisita = $("#DuracionVisita").dxNumberBox({
-        value: 0
+        value: 0,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var CM = $("#CM").dxTextBox({
@@ -248,22 +270,47 @@
     }).dxSelectBox("instance");
 
     var CantItem = $("#CantItem").dxNumberBox({
-        value: 1
+        value: 1,
+        onValueChanged(data) {
+            var TipoTra = TipoTra.option("value");
+            Calculado = false;
+            if (TipoTra == 26) {
+                var Normas = CantNormas.option("value");
+                var Lineas = CantLineas.option("value");
+                var horasinfE = (2 * (data.value + (5 * (Normas))));
+                var duracionVE = (2 * data.value) + (2 * Normas);
+                if (Lineas > 2) {
+                    horasinfE += (Lineas - 2);
+                    duracionVE += (Lineas - 2);
+                }
+                CantHorInf.option("value", Math.ceil(horasinfE));
+                DuracionVisita.option("value", Math.ceil(duracionVE));
+            } 
+        }
     }).dxNumberBox("instance");
 
     var CantNormas = $("#CantNormas").dxNumberBox({
         value: 0,
-        visible: false
+        visible: false,
+        onValueChanged() {
+           Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var CantLineas = $("#CantLineas").dxNumberBox({
         value: 0,
-        visible: false
+        visible: false,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var ValProy = $("#ValProy").dxNumberBox({
         format: '$ #,##0.##',
-        value: 0
+        value: 0,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var ValPublica = $("#ValPublica").dxNumberBox({
@@ -274,11 +321,17 @@
     var CantTram = $("#CantTram").dxNumberBox({
         value: 1,
         min: 1,
-        max: 10
+        max: 10,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxNumberBox("instance");
 
     var CheckSoportes = $("#chkSoportes").dxCheckBox({
-        value: undefined
+        value: undefined,
+        onValueChanged() {
+            Calculado = false;
+        }
     }).dxCheckBox("instance");
 
     var Descrip = $("#txtDescripcion").dxTextArea({
@@ -391,7 +444,9 @@
                             ConSoportes: chkSop,
                             CantNormas: CantNor,
                             CantLineas: CantLin,
-                            Agno: cmbAno.option("value")
+                            Agno: cmbAno.option("value"),
+                            ValorProyecto: ValProy.option("value"),
+                            ValorPublicacion: ValPublica.option("value")
                         };
 
                         var URL = $("#SIM").data("url") + 'AtencionUsuarios/api/ValorTramiteApi/CalcularValorTramite';
@@ -409,7 +464,7 @@
                                 }
                             },
                             error: function (xhr, textStatus, errorThrown) {
-                                DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Calcular Seguimento');
+                                DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Calcular Valor Trámite');
                             }
                         });
                     }
@@ -425,7 +480,111 @@
                 type: 'default',
                 onClick: function (e) {
                     if (!Calculado) {
-                        DevExpress.ui.dialog.alert('Ocurrió un problema : Aún no se ha realizado el cálculo del valor del trámite!', 'Calcular Seguimento');
+                        DevExpress.ui.dialog.alert('Ocurrió un problema : Aún no se ha realizado el cálculo del valor del trámite!', 'Calcular Valor Trámite');
+                    } else {
+                        var sigue = true;
+                        Calculado = false;
+                        var Documento = DocTercero.option("value");
+                        if (Documento == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe ingresar el documento del tercero', 'Calcular Valor Trámite');
+                        }
+                        var NomTerc = $("#NombreTercero").text();
+                        if (NomTerc == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Falta validar el nombre del tercero para el calculo del Trámite', 'Calcular Valor Trámite');
+                        }
+                        if (TipoTramite > 0) {
+                            if (TipoTramite == 26) {
+                                var CantNor = CantNormas.option("value");
+                                var CantLin = CantLineas.option("value");
+                                if (CantNor == 0 || CantLin == 0) {
+                                    sigue = false;
+                                    DevExpress.ui.dialog.alert('Debe ingresar la cantidad de Normas y Líneas', 'Calcular Valor Trámite');
+                                }
+                            }
+                        } else {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe seleccionar el tipo de Trámite', 'Calcular Valor Trámite');
+                        }
+                        if (CantProf.option("value") == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe ingresar la cantidad de profesionales técnicos que participaran en el trámite', 'Calcular Valor Trámite');
+                        }
+                        if (ValProy.option("value") == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe ingresar el valor del proyecto', 'Calcular Valor Trámite');
+                        }
+                        if (DuracionVisita.option("value") == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe ingresar el valor de duración de visita', 'Calcular Valor Trámite');
+                        }
+                        if (CantVisitas.option("value") == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe ingresar el valor de cantidad de visitas', 'Calcular Valor Trámite');
+                        }
+                        if (CantHorInf.option("value") == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe ingresar el valor de cantidad de horas por informe', 'Calcular Valor Trámite');
+                        }
+                        if (CantTram.option("value") == "") {
+                            sigue = false;
+                            DevExpress.ui.dialog.alert('Debe ingresar la cantidad de trámites SINA', 'Calcular Valor Trámite');
+                        }
+                        var cm = CM.option("value");
+                        cm = cm == null ? "" : cm;
+                        var chkSop = CheckSoportes.option("value") ? 1 : 0;
+
+                        if (sigue) {
+                            var datosEvaluacion = {
+                                TipoTramite: TipoTramite,
+                                DuracionVisita: DuracionVisita.option("value"),
+                                HorasInforme: CantHorInf.option("value"),
+                                NumeroVisitas: CantVisitas.option("value"),
+                                TramitesSINA: CantTram.option("value"),
+                                NumeroProfesionales: CantProf.option("value"),
+                                CM: cm,
+                                Observaciones: Descrip.option("value"),
+                                Items: CantItem.option("value"),
+                                Reliquidacion: 0,
+                                NIT: Documento,
+                                Tercero: NomTerc,
+                                ConSoportes: chkSop,
+                                CantNormas: CantNor,
+                                CantLineas: CantLin,
+                                Agno: cmbAno.option("value"),
+                                ValorProyecto: ValProy.option("value"),
+                                ValorPublicacion: ValPublica.option("value")
+                            };
+
+                            var URL = $("#SIM").data("url") + 'AtencionUsuarios/api/ValorTramiteApi/ImprimeCalculoTramite';
+                            $.ajax({
+                                type: "POST",
+                                dataType: 'json',
+                                url: URL,
+                                data: JSON.stringify(datosEvaluacion),
+                                contentType: "application/json",
+                                beforeSend: function () { },
+                                success: function (data) {
+                                    if (data != null) {
+                                        if (data.Mensaje != "") {
+                                            showParametros(data);
+                                        } else {
+                                            PopCalcular.hide();
+                                            $('#grdListaSoprtesPago').dxDataGrid("instance").getDataSource().load();
+
+                                            if (data.IdCalculo > 0) {
+                                                popSoporte.show();
+                                                $("#DocSoporte").attr("src", $('#SIM').data('url') + 'AtencionUsuarios/ValorTramite/ObtieneSoporte?IdCalculo=' + data.IdCalculo);
+                                            }
+                                        }
+                                    }
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Calcular Seguimento');
+                                }
+                            });
+                        }
                     }
                 }
             }

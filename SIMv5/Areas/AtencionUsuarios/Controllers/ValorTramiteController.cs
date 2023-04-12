@@ -10,6 +10,10 @@ using System.Web.Mvc;
 
 namespace SIM.Areas.AtencionUsuarios.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    [Authorize]
     public class ValorTramiteController : Controller
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
