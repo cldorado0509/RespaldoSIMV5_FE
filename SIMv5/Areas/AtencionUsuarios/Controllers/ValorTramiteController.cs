@@ -26,7 +26,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Obtiene los soportes existentes en el sistema
         /// </summary>
         /// <param name="IdCalculo"></param>
         /// <returns></returns>
