@@ -39,11 +39,11 @@
             return View();
         }
 
-        public ActionResult BuscarDocumento(bool popup, string Parametro)
+        public ActionResult BuscarDocumento(bool popup)
         {
             if (popup) ViewBag.Popup = true;
             else ViewBag.Popup = false;
-            ViewBag.Parametro = Parametro != null ? Parametro.Length > 0 ? Parametro :"" : "";
+            //ViewBag.Parametro = Parametro != null ? Parametro.Length > 0 ? Parametro :"" : "";
             return View();
         }
 

@@ -438,5 +438,20 @@ namespace SIM.Utilidades
             bd.SP_OBTENER_CODFUNCIONARIO(idUsuario, OutCodFuncionario);
             return long.Parse(OutCodFuncionario.Value.ToString());
         }
+
+        /// <summary>
+        /// Recupera el codigo del funcionario a partir de su codigo de usuario
+        /// </summary>
+        /// <param name="idUsuario">Idenbntificador del usuario</param>
+        /// <returns></returns>
+        public static long Obtener_Codigo_Funcionario(long idUsuario)
+        {
+            EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+            var funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
+                                           join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                           where uf.ID_USUARIO == idUsuario
+                                           select f.CODFUNCIONARIO).FirstOrDefault());
+            return funcionario; 
+        }
     }
 }
