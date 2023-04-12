@@ -394,7 +394,7 @@ namespace SIM.Utilidades
         /// </summary>
         /// <param name="num">El valor a convertir</param>
         /// <returns></returns>
-        public string enletras(string num)
+        public static string enletras(string num)
         {
             string res, dec = "";
             Int64 entero;
@@ -419,7 +419,7 @@ namespace SIM.Utilidades
         /// </summary>
         /// <param name="value">Valor ingresado</param>
         /// <returns></returns>
-        private string toText(double value)
+        private static string toText(double value)
         {
             string Num2Text = "";
             value = Math.Truncate(value);

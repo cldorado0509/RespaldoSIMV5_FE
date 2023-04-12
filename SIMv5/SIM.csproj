@@ -485,6 +485,8 @@
     <Compile Include="Areas\AtencionUsuarios\Controllers\AtencionesController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\ValorAutoApiController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\ValorAutoController.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Controllers\ValorTramiteApiController.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Controllers\ValorTramiteController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\VisitaTerceroApiController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\VisitaTerceroController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\AtencionDocumentoDTO.cs" />
@@ -495,6 +497,7 @@
     <Compile Include="Areas\AtencionUsuarios\Models\ChequeoDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\ClaseAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\CompromisoDTO.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\DatosValorTramite.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\DependenciaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\FormaAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\FuncionarioDTO.cs" />
@@ -507,6 +510,8 @@
     <Compile Include="Areas\AtencionUsuarios\Models\ListadoTramitesDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\ListadoVisitasDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\MotivoVisitaDTO.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\ParametrosCalculo.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\ParametrosEvaluacion.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\PersonaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\QuejaAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\RegistroSalidaDTO.cs" />
@@ -1528,6 +1533,7 @@
     <Compile Include="Data\General\EVENTO_PARTICIPANTE.cs" />
     <Compile Include="Data\Tramites\BUSQUEDA_DOCUMENTO.cs" />
     <Compile Include="Data\Tramites\EXP_BUSQUEDA.cs" />
+    <Compile Include="Data\Tramites\QRY_TERCERO.cs" />
     <Compile Include="Data\Tramites\QRY_INFORMESTECNICOS.cs" />
     <Compile Include="Data\Tramites\QRY_MEMORANDOS.cs" />
     <Compile Include="Data\Tramites\QRY_RESOLUCIONES.cs" />
@@ -2340,6 +2346,7 @@
     <Content Include="Areas\AdministracionDocumental\Scripts\TablasRetencion.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\Atenciones.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\valorauto.js" />
+    <Content Include="Areas\AtencionUsuarios\Scripts\ValorTramite.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\VisitaTercero.js" />
     <Content Include="Areas\BPMN\Scripts\MaestroProcesos.js" />
     <Content Include="Areas\BPMN\Scripts\ModeladorBPMNProceso.js" />
@@ -3080,7 +3087,11 @@
     <Content Include="Areas\AdministracionDocumental\Views\web.config" />
     <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
     <Content Include="Areas\Dynamics\Views\web.config" />
+<<<<<<< HEAD
+    <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
+=======
     <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
+>>>>>>> main
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />

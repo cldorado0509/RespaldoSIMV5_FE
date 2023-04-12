@@ -10,6 +10,7 @@ namespace SIM.Data.Tramites
     public partial class TBTARIFAS_CALCULO
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public decimal ID_CALCULO { get; set; }
 
         [Required]
@@ -138,5 +139,7 @@ namespace SIM.Data.Tramites
         public decimal? CODTRAMITE { get; set; }
 
         public decimal? CODDOCUMENTO { get; set; }
+        public decimal? NRO_LINEAS { get; set; }
+        public decimal? NRO_NORMAS { get; set; }
     }
 }
