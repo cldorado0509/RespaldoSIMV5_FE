@@ -21,6 +21,7 @@ using System.Web.Http;
 
 namespace SIM.Areas.GestionDocumental.Controllers
 {
+    [Authorize]
     public class DocumentosApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();

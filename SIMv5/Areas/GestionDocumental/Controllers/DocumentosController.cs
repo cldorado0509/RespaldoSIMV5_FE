@@ -10,6 +10,7 @@ using System.IO;
 
 namespace SIM.Areas.GestionDocumental.Controllers
 {
+    [Authorize]
     public class DocumentosController : Controller
     {
         // GET: GestionDocumental/Documentos
