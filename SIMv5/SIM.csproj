@@ -457,6 +457,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\AdministracionDocumental\AdminDocumentalAreaRegistration.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Controllers\AdminDocumentalAPIController.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Controllers\AdminDocumentalController.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\Metadato.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\SerieDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\SubSerieDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\TablaRetencionDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\UnidadDocumental.cs" />
+    <Compile Include="Areas\AdministracionDocumental\Models\UnidadTablaRetencion.cs" />
     <Compile Include="Areas\App_Start\BundleConfig.cs" />
     <Compile Include="Areas\App_Start\DevExtremeBundleConfig.cs" />
     <Compile Include="Areas\App_Start\FilterConfig.cs" />
@@ -475,6 +484,8 @@
     <Compile Include="Areas\AtencionUsuarios\Controllers\AtencionesController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\ValorAutoApiController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\ValorAutoController.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Controllers\ValorTramiteApiController.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Controllers\ValorTramiteController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\VisitaTerceroApiController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Controllers\VisitaTerceroController.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\AtencionDocumentoDTO.cs" />
@@ -485,6 +496,7 @@
     <Compile Include="Areas\AtencionUsuarios\Models\ChequeoDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\ClaseAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\CompromisoDTO.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\DatosValorTramite.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\DependenciaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\FormaAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\FuncionarioDTO.cs" />
@@ -497,6 +509,8 @@
     <Compile Include="Areas\AtencionUsuarios\Models\ListadoTramitesDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\ListadoVisitasDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\MotivoVisitaDTO.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\ParametrosCalculo.cs" />
+    <Compile Include="Areas\AtencionUsuarios\Models\ParametrosEvaluacion.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\PersonaDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\QuejaAtencionDTO.cs" />
     <Compile Include="Areas\AtencionUsuarios\Models\RegistroSalidaDTO.cs" />
@@ -2321,8 +2335,11 @@
     <Compile Include="Utilidades\Tramites.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\AdministracionDocumental\Scripts\ClasificacionDoc.js" />
+    <Content Include="Areas\AdministracionDocumental\Scripts\TablasRetencion.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\Atenciones.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\valorauto.js" />
+    <Content Include="Areas\AtencionUsuarios\Scripts\ValorTramite.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\VisitaTercero.js" />
     <Content Include="Areas\BPMN\Scripts\MaestroProcesos.js" />
     <Content Include="Areas\BPMN\Scripts\ModeladorBPMNProceso.js" />
@@ -3058,6 +3075,10 @@
     <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
     <Content Include="Areas\Dynamics\Views\web.config" />
     <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
+    <Content Include="Areas\AdministracionDocumental\Views\AdminDocumental\ClasificacionDoc.cshtml" />
+    <Content Include="Areas\AdministracionDocumental\Views\AdminDocumental\TablasRetencion.cshtml" />
+    <Content Include="Areas\AdministracionDocumental\Views\web.config" />
+    <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
