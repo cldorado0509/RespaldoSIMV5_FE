@@ -310,11 +310,13 @@ $(document).ready(function () {
                                             height: 300,
                                             contentTemplate: function () {
                                                 return $("<div>").append(
-                                                    $("<p>Motivo de la devolución:  <strong>" + data.Motivo + "</strong></p>"),
+                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>"),
+                                                    $("<br />"),
+                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
@@ -345,11 +347,13 @@ $(document).ready(function () {
                                             height: 300,
                                             contentTemplate: function () {
                                                 return $("<div>").append(
-                                                    $("<p>Motivo de la devolución:  <strong>" + data.Motivo + "</strong></p>"),
+                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>"),
+                                                    $("<br />"),
+                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
