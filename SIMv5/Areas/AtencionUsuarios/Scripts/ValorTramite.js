@@ -357,6 +357,7 @@
             CantTram.option("value", 1);
             CheckSoportes.option("value", false);
             DocTercero.option("value", "");
+            Descrip.option("value", "");
             Calculado = false;
             PopCalcular.show();
         }
