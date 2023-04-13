@@ -114,7 +114,7 @@
     };
 
     var popupOptions = {
-        width: 700,
+        width: 800,
         height: "auto",
         hoverStateEnabled: true,
         title: "Parámetros del cálculo del valor del trámite",

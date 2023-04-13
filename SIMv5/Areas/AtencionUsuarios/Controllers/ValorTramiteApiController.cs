@@ -120,7 +120,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     parametrosCalculo.Costo = parametrosCalculo.Sueldos + parametrosCalculo.Sueldos + parametrosCalculo.Viajes + parametrosCalculo.Otros + parametrosCalculo.Admin;
                     parametrosCalculo.Topes = Calculo.TOPES;
                     parametrosCalculo.Valor = Calculo.VALOR;
-                    parametrosCalculo.Publicacion = Calculo.PUBLICACION.Value;
+                    parametrosCalculo.Publicacion = Calculo.PUBLICACION != null ? Calculo.PUBLICACION.Value : 0;
                     parametrosCalculo.Calculado = true;
                 }
                 return JObject.FromObject(parametrosCalculo, Js);
