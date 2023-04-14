@@ -315,7 +315,9 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-Co', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>"),
+                                                    $("<br />"),
+                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
@@ -350,7 +352,9 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>"),
+                                                    $("<br />"),
+                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
