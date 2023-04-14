@@ -120,7 +120,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     parametrosCalculo.Costo = parametrosCalculo.Sueldos + parametrosCalculo.Sueldos + parametrosCalculo.Viajes + parametrosCalculo.Otros + parametrosCalculo.Admin;
                     parametrosCalculo.Topes = Calculo.TOPES;
                     parametrosCalculo.Valor = Calculo.VALOR;
-                    parametrosCalculo.Publicacion = Calculo.PUBLICACION.Value;
+                    parametrosCalculo.Publicacion = Calculo.PUBLICACION != null ? Calculo.PUBLICACION.Value : 0;
                     parametrosCalculo.Calculado = true;
                 }
                 return JObject.FromObject(parametrosCalculo, Js);
@@ -416,7 +416,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             double TotalHAbogadoE = (double)PropTramite.AUTO_INICIO + (double)PropTramite.RESOLUCION;
             ValorSalariosE = ((double)Salario / 240) * (TotalHTecnicoE + TotalHAbogadoE);
             ValorSalariosEE = ((double)Salario / 240) * (TotalHTecnicoE);
-            ValorSalariosE = ValorSalariosE * (double)datosTramite.Items;
+            ValorSalariosE = ValorSalariosE * (double)datosTramite.TramitesSINA;
             resp.Sueldos = (decimal)ValorSalariosE;
             decimal Transporte = ObtenerPasaje(datosTramite.Agno);
             if (Transporte <= 0) resp.Mensaje = "No se ha ingresado un valor de transporte para este año para el personal que participara en el trámite";

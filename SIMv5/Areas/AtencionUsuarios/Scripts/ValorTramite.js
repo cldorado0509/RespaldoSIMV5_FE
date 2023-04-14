@@ -114,7 +114,7 @@
     };
 
     var popupOptions = {
-        width: 700,
+        width: 800,
         height: "auto",
         hoverStateEnabled: true,
         title: "Parámetros del cálculo del valor del trámite",
@@ -357,6 +357,7 @@
             CantTram.option("value", 1);
             CheckSoportes.option("value", false);
             DocTercero.option("value", "");
+            Descrip.option("value", "");
             Calculado = false;
             PopCalcular.show();
         }
