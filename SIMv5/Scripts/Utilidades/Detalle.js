@@ -30,6 +30,7 @@
         icon: 'fieldchooser'
     }
 ];
+
 const impprtancia = ['Normal', 'Media', 'Alta'];
 const fechas = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 function updateQueryStringParameter(uri, key, value) {
@@ -314,7 +315,7 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-Co', fechas) + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
@@ -349,7 +350,7 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
