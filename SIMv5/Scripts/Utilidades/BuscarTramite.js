@@ -193,6 +193,10 @@ $(document).ready(function () {
         selection: {
             mode: 'single'
         },
+        'export': {
+            enabled: true,
+            fileName: 'Tramites'
+        },
         hoverStateEnabled: true,
         remoteOperations: true,
         columns: [

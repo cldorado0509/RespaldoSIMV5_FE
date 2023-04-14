@@ -26,7 +26,8 @@
     using System.Web.Http;
     using System.Web.Mvc;
 
-    
+
+    [System.Web.Http.Authorize]
     public class UtilidadesApiController : ApiController
     {
         public struct datosConsulta
@@ -1234,9 +1235,12 @@
                             else
                             {
                                 indiceDoc = new TBINDICEDOCUMENTO();
-
+                                if (TraDoc != null)
+                                {
+                                    indiceDoc.CODTRAMITE = TraDoc.CODTRAMITE;
+                                    indiceDoc.CODDOCUMENTO = TraDoc.CODDOCUMENTO;   
+                                }
                                 indiceDoc.ID_DOCUMENTO = objData.IdDocumento;
-                                indiceDoc.CODTRAMITE = 
                                 indiceDoc.CODINDICE = indice.CODINDICE;
                                 indiceDoc.VALOR = indice.VALOR ?? "";
                                 dbSIM.Entry(indiceDoc).State = System.Data.Entity.EntityState.Added;

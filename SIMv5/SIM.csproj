@@ -41,7 +41,6 @@
     <PublishDatabases>true</PublishDatabases>
     <IncludeIisSettings>true</IncludeIisSettings>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\SIM.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -542,6 +541,8 @@
     <Compile Include="Areas\ControlVigilancia\Controllers\coordenadas.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\DerechoPeticionApiController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\DerechoPeticionController.cs" />
+    <Compile Include="Areas\ControlVigilancia\Controllers\FacturacionApiController.cs" />
+    <Compile Include="Areas\ControlVigilancia\Controllers\FacturacionController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\InformeVisitaController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\RealizarVisitaController.cs" />
     <Compile Include="Areas\ControlVigilancia\Controllers\RepartoController.cs" />
@@ -1144,27 +1145,19 @@
     <Compile Include="Areas\ExpedienteAmbiental\Clases\General.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Controllers\ExpedientesAmbApiController.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Controllers\ExpedientesController.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Controllers\VitalApiController.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Controllers\VitalController.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\ExpedienteAmbientaAreaRegistration.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\AnotacionPuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ClasificacionExpedienteDTO.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Models\DocumentoAportadoDTO.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Models\DocumentosRequeridosTramitesDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\EstadoPuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ExpedienteAmbientalDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\IndiceSerieDocumentalDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ListadoInstalacionesDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\PuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\PuntoControlExpedienteDocumentalDTO.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Models\ResponsableTareaDTO.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Models\SolicitudVITALDTO.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Models\TareaSIMDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\TerceroInstalacionDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\TercerosDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\TipoEstadoPuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\TipoSolicitudAmbientalDTO.cs" />
-    <Compile Include="Areas\ExpedienteAmbiental\Models\TramiteDTO.cs" />
     <Compile Include="Areas\Facturacion\Controllers\FacturApiController.cs" />
     <Compile Include="Areas\Facturacion\Controllers\PendientesController.cs" />
     <Compile Include="Areas\Facturacion\Controllers\SeguimientoController.cs" />
@@ -1186,10 +1179,12 @@
     </Compile>
     <Compile Include="Areas\Facturacion\Models\ParametrosCalculo.cs" />
     <Compile Include="Areas\Facturacion\Models\Seguimiento.cs" />
+    <Compile Include="Areas\GestionDocumental\Controllers\DocumentosApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\ExpedientesApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\ExpedientesController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosController.cs" />
+    <Compile Include="Areas\GestionDocumental\Controllers\DocumentosController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosApiController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\NivelesRiesgoApiController.cs" />
@@ -1531,10 +1526,10 @@
     <Compile Include="Data\General\EVENTO_PARTICIPANTE.cs" />
     <Compile Include="Data\Tramites\BUSQUEDA_DOCUMENTO.cs" />
     <Compile Include="Data\Tramites\EXP_BUSQUEDA.cs" />
-    <Compile Include="Data\Tramites\QRY_TERCERO.cs" />
     <Compile Include="Data\Tramites\QRY_INFORMESTECNICOS.cs" />
     <Compile Include="Data\Tramites\QRY_MEMORANDOS.cs" />
     <Compile Include="Data\Tramites\QRY_RESOLUCIONES.cs" />
+    <Compile Include="Data\Tramites\QRY_TERCERO.cs" />
     <Compile Include="Data\Tramites\TBACTIVIDADES_VITAL.cs" />
     <Compile Include="Data\Tramites\TBCARGO.cs" />
     <Compile Include="Data\Tramites\TBPERMISOS_SERIE.cs" />
@@ -2391,7 +2386,6 @@
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\turn.min.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\zoom.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\zoom.min.js" />
-    <Content Include="Areas\ExpedienteAmbiental\Scripts\vital.js" />
     <Content Include="Areas\ExpedienteAmbiental\Views\Expedientes\FlipExpediente.cshtml" />
     <Content Include="Areas\ExpedienteAmbiental\Views\Expedientes\Index.cshtml" />
     <Content Include="Areas\Facturacion\Scripts\Facturacion.js" />
@@ -2401,6 +2395,7 @@
     <Content Include="Areas\EncuestaExterna\Scripts\PMESEvaluacion\evaluaciontercero.js" />
     <Content Include="Areas\Facturacion\Scripts\Seguimiento.js" />
     <Content Include="Areas\GestionDocumental\Scripts\BuscaExpediente.js" />
+    <Content Include="Areas\GestionDocumental\Scripts\BuscarDocumentos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\consultaprestamos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Expedientes.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Memorandos.js" />
@@ -2446,7 +2441,6 @@
     <Content Include="Areas\Retributivas\Scripts\Empresas.js" />
     <Content Include="Areas\Retributivas\Scripts\Reportes.css" />
     <Content Include="Areas\Retributivas\Scripts\Reportes.js" />
-    <Content Include="Areas\Retributivas\Views\Reportes\ComunicacionOficialRecibida.html" />
     <Content Include="Areas\Seguridad\Scripts\activarUsuarios.js" />
     <Content Include="Areas\Tramites\Css\programadoractuaciones.css" />
     <Content Include="Areas\Tramites\Scripts\anulacion.js" />
@@ -3078,12 +3072,12 @@
     <Content Include="Areas\Pqrsd\Views\web.config" />
     <Content Include="Areas\Pqrsd\Views\IngresoPqrsd\Index.cshtml" />
     <Content Include="Areas\Tramites\Views\Tramites\BuscarTramites.cshtml" />
-    <Content Include="Areas\ExpedienteAmbiental\Views\Vital\Index.cshtml" />
+    <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
+    <Content Include="Areas\Dynamics\Views\web.config" />
+    <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
     <Content Include="Areas\AdministracionDocumental\Views\AdminDocumental\ClasificacionDoc.cshtml" />
     <Content Include="Areas\AdministracionDocumental\Views\AdminDocumental\TablasRetencion.cshtml" />
     <Content Include="Areas\AdministracionDocumental\Views\web.config" />
-    <Content Include="Areas\Dynamics\Views\Etiqueta\Index.cshtml" />
-    <Content Include="Areas\Dynamics\Views\web.config" />
     <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
@@ -4202,7 +4196,6 @@
   <ItemGroup>
     <Folder Include="App_Data\Temporal\" />
     <Folder Include="App_Data\Uploads\" />
-    <Folder Include="Areas\AdministracionDocumental\Data\" />
     <Folder Include="Areas\Aire\Models\" />
     <Folder Include="Areas\AtencionUsuarios\Views\Shared\" />
     <Folder Include="Areas\Ayudas\Models\" />
@@ -4797,7 +4790,8 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)bin"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -210,7 +210,7 @@ $(document).ready(function () {
                         icon: 'export',
                         hint: 'Seleccionar documento',
                         onClick: function (e) {
-                            parent.AsociaDocumento(options.data.ID_DOCUMENTO, Parametro);
+                            parent.SeleccionaDocumento(options.data.ID_DOCUMENTO);
                         }
                     }).appendTo(container);
                 }

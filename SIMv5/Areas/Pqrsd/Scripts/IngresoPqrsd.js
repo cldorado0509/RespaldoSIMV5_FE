@@ -277,7 +277,7 @@ $(document).ready(function () {
                 gridAnexos.option("dataSource", ArchivosSubidos);
             } else {
                 DevExpress.ui.dialog.alert(obj.MensajeError, 'Anexos Pqrsd');
-                e.component.abortUpload();
+                e.component.reset();
             }
         },
         onUploadStarted: function (e) {

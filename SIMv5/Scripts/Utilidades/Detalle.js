@@ -314,9 +314,8 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")                                                );
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                );
                                             },
                                             showTitle: true,
                                             title: "Motivo de la anulación",
@@ -350,9 +349,8 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")                                                );
+                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                );
                                             },
                                             showTitle: true,
                                             title: "Motivo de la anulación",

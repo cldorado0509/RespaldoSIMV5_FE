@@ -108,7 +108,7 @@ $(document).ready(function () {
                             if (options.data.ABIERTO == "Si") {
                                 var _popup = $("#popupBuscaDoc").dxPopup("instance");
                                 _popup.show();
-                                $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true&Parametro=' + options.data.ID_TOMO);
+                                $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true');
                             } else {
                                 DevExpress.ui.dialog.alert('Ocurrió un error No se pueden asociar documentos a carpetas cerradas', 'Asociar Documentos');
                             }
@@ -697,12 +697,13 @@ var DocumentosDataSource = new DevExpress.data.CustomStore({
     }
 });
 
-function AsociaDocumento(Documento, Tomo) {
+function SeleccionaDocumento(Documento) {
     var _popup = $("#popupBuscaDoc").dxPopup("instance");
     _popup.hide();
-    if (Documento != "" && Tomo != "") {
+    var Sel = $("#grdListaTomos").dxDataGrid("instance").getSelectedRowsData()[0];
+    if (Documento != "" && Sel.ID_TOMO != "") {
         var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/AsociaDocumento";
-        $.getJSON(_Ruta, { IdDocumento: Documento, IdTomo: Tomo })
+        $.getJSON(_Ruta, { IdDocumento: Documento, IdTomo: Sel.ID_TOMO })
             .done(function (data) {
                 if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Asociar documento');
                 else {

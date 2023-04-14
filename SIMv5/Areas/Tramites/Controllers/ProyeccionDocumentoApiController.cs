@@ -747,6 +747,7 @@ namespace SIM.Areas.Tramites.Controllers
                         if (indiceProyeccion != null)
                         {
                             indiceProyeccion.S_VALOR = indice.VALOR ?? "";
+                            indiceProyeccion.ID_VALOR = indice.ID_VALOR;
                             dbSIM.Entry(indiceProyeccion).State = EntityState.Modified;
                         }
                         else
@@ -756,6 +757,7 @@ namespace SIM.Areas.Tramites.Controllers
                             indiceProyeccion.ID_PROYECCION_DOC = proyeccionDocumento.ID_PROYECCION_DOC;
                             indiceProyeccion.CODINDICE = indice.CODINDICE;
                             indiceProyeccion.S_VALOR = indice.VALOR ?? "";
+                            indiceProyeccion.ID_VALOR = indice.ID_VALOR;
 
                             dbSIM.Entry(indiceProyeccion).State = EntityState.Added;
                         }
@@ -1433,11 +1435,28 @@ namespace SIM.Areas.Tramites.Controllers
                                         {
                                             RegistrarDocumento(documento.ID_PROYECCION_DOC, documentoRadicado.documentoBinario, documentoRadicado.numPaginas);
 
-                                            if (documento.ID_GRUPO != null)
+                                            var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
+                                            var codSeriesGrupos = seriesGrupos.Split(',').Select(s => int.Parse(s));
+                                            var indicesPara = ConfigurationManager.AppSettings["IndicesProyeccionGrupos"];
+                                            var codindicesPara = indicesPara.Split(',').Select(s => int.Parse(s));
+                                            var indicesAsunto = ConfigurationManager.AppSettings["IndiceProyeccionGruposAsunto"];
+                                            var codindicesAsunto = indicesAsunto.Split(',').Select(s => int.Parse(s));
+
+                                            PROYECCION_DOC_INDICES paraProyeccion = dbSIM.PROYECCION_DOC_INDICES.Where(p => p.ID_PROYECCION_DOC == documento.ID_PROYECCION_DOC && codindicesPara.Contains(p.CODINDICE)).FirstOrDefault();
+                                            PROYECCION_DOC_INDICES asuntoProyeccion = dbSIM.PROYECCION_DOC_INDICES.Where(p => p.ID_PROYECCION_DOC == documento.ID_PROYECCION_DOC && codindicesAsunto.Contains(p.CODINDICE)).FirstOrDefault();
+
+                                            if (codSeriesGrupos.Contains(documento.CODSERIE))
                                             {
                                                 var serieDocumental = dbSIM.TBSERIE.FirstOrDefault(s => s.CODSERIE == documento.CODSERIE).NOMBRE;
 
-                                                EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_GRUPO, radicado.IdRadicado, documento.S_DESCRIPCION);
+                                                if (documento.ID_GRUPO != null)
+                                                {
+                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_GRUPO, null, radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
+                                                }
+                                                else
+                                                {
+                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, null, (paraProyeccion != null ? paraProyeccion.ID_VALOR : null) , radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
+                                                }
                                             }
 
                                             if (documento.S_TRAMITE_NUEVO != "S")
@@ -1642,68 +1661,85 @@ namespace SIM.Areas.Tramites.Controllers
             }
         }
 
-        private bool EnviarEmailGrupo(string serieDocumental, int codFuncionario, int? idGrupo, int idRadicado, string descripcion)
+        private bool EnviarEmailGrupo(string serieDocumental, int codFuncionario, int? idGrupo, int? codFuncionarioPara, int idRadicado, string asunto)
         {
             string emailFrom;
             string emailSMTPServer;
             string emailSMTPUser;
             string emailSMTPPwd;
+            string emailPara;
             StringBuilder emailHtml;
             TBFUNCIONARIO funcionarioProyecta;
             string funcionariosGrupo = "";
-            string asunto = serieDocumental + " Radicado No. " + idRadicado.ToString() + " - " + descripcion;
+            string funcionarioPara = "";
+            //string asunto = serieDocumental + " Radicado No. " + idRadicado.ToString() + " - " + descripcion;
 
-            emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
-            emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
-            emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
-            emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
-
-            try
+            if (idGrupo != null || codFuncionarioPara != null)
             {
-                funcionarioProyecta = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO == codFuncionario).FirstOrDefault();
+                emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+                emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
+                emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
+                emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
 
-                if (idGrupo != null && idGrupo != -1)
+                try
                 {
-                    var sqlFuncionariosGrupo = "SELECT f.EMAIL " +
-                            "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf INNER JOIN " +
-                            "   TRAMITES.TBFUNCIONARIO f ON mf.CODFUNCIONARIO = f.CODFUNCIONARIO " +
-                            "WHERE ID_GRUPOMEMO = " + idGrupo.ToString();
+                    funcionarioProyecta = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO == codFuncionario).FirstOrDefault();
 
-                    funcionariosGrupo = String.Join(";", dbSIM.Database.SqlQuery<string>(sqlFuncionariosGrupo).ToList());
+                    if (idGrupo != null && idGrupo != -1)
+                    {
+                        var sqlFuncionariosGrupo = "SELECT f.EMAIL " +
+                                "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf INNER JOIN " +
+                                "   TRAMITES.TBFUNCIONARIO f ON mf.CODFUNCIONARIO = f.CODFUNCIONARIO " +
+                                "WHERE ID_GRUPOMEMO = " + idGrupo.ToString();
 
-                    if (funcionariosGrupo.Trim() == ";")
-                        funcionariosGrupo = "";
+                        funcionariosGrupo = String.Join(";", dbSIM.Database.SqlQuery<string>(sqlFuncionariosGrupo).ToList());
+
+                        if (funcionariosGrupo.Trim() == ";")
+                            funcionariosGrupo = "";
+
+                        emailPara = funcionariosGrupo;
+                    }
+                    else
+                    {
+                        var sqlFuncionarioPara = "SELECT f.EMAIL " +
+                                "FROM TRAMITES.TBFUNCIONARIO f " +
+                                "WHERE CODFUNCIONARIO = " + codFuncionarioPara.ToString();
+
+                        funcionarioPara = dbSIM.Database.SqlQuery<string>(sqlFuncionarioPara).FirstOrDefault();
+
+                        emailPara = funcionarioPara;
+                    }
+
+                    var radicado = dbSIM.RADICADO_DOCUMENTO.Where(rd => rd.ID_RADICADODOC == idRadicado).Select(rd => rd.S_RADICADO).FirstOrDefault();
+
+                    string saludo = "";
+
+                    if (DateTime.Now.Hour < 12) saludo = "Buenos D&iacute;as";
+                    else if (DateTime.Now.Hour < 18) saludo = "Buenas Tardes";
+                    else if (DateTime.Now.Hour < 24) saludo = "Buenas Noches";
+
+                    emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaNotificacionProyeccion.html")));
+                    emailHtml.Replace("[Tipo Proyeccion]", serieDocumental);
+                    emailHtml.Replace("[Radicado]", (radicado ?? ""));
+                    emailHtml.Replace("[Saludo]", saludo);
+                    emailHtml.Replace("[De]", funcionarioProyecta.NOMBRES + " " + funcionarioProyecta.APELLIDOS);
+                    emailHtml.Replace("[Asunto]", asunto);
+                }
+                catch (Exception error)
+                {
+                    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
+                    return false;
                 }
 
-                var radicado = dbSIM.RADICADO_DOCUMENTO.Where(rd => rd.ID_RADICADODOC == idRadicado).Select(rd => rd.S_RADICADO).FirstOrDefault();
-
-                string saludo = "";
-
-                if (DateTime.Now.Hour < 12) saludo = "Buenos D&iacute;as";
-                else if (DateTime.Now.Hour < 18) saludo = "Buenas Tardes";
-                else if (DateTime.Now.Hour < 24) saludo = "Buenas Noches";
-
-                emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaNotificacionProyeccion.html")));
-                emailHtml.Replace("[Tipo Proyeccion]", serieDocumental);
-                emailHtml.Replace("[Radicado]", (radicado ?? ""));
-                emailHtml.Replace("[Saludo]", saludo);
-                emailHtml.Replace("[De]", funcionarioProyecta.NOMBRES + " " + funcionarioProyecta.APELLIDOS);
-                emailHtml.Replace("[Asunto]", asunto);
-            }
-            catch (Exception error)
-            {
-                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
-                return false;
-            }
-
-            try
-            {
-                Utilidades.Email.EnviarEmail(emailFrom, funcionarioProyecta.EMAIL, funcionariosGrupo, "", asunto, emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
-            }
-            catch (Exception error)
-            {
-                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
-                return false;
+                try
+                {
+                    Utilidades.Email.EnviarEmail(emailFrom, funcionarioProyecta.EMAIL, emailPara, "", asunto, emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
+                }
+                catch (Exception error)
+                {
+                    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
+                    return false;
+                }
             }
 
             return true;
