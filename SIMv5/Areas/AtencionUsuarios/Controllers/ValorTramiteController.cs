@@ -53,7 +53,6 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                             var Archivo = _Ms.GetBuffer();
                             return File(Archivo, "application/pdf");
                         }
-
                     }
                 }
             }
