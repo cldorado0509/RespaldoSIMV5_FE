@@ -9,6 +9,9 @@ var NomExpediente = "";
 var IdIUnidadDoc = 0;
 var IdTomo = 0;
 var editar = false;
+var cm = "";
+var direccion = "";
+var municipio = "";
 
 $(document).ready(function () {
 
@@ -1234,10 +1237,7 @@ $(document).ready(function () {
         onShown: function () {
             if (!editar) {
                 indicesSerieDocumentalStore = null;
-                //CargarGridIndices();
                 CargarIndices();
-                //    gridInstance = $("#GridIndices").dxDataGrid('instance');
-                //    gridInstance.option("dataSource", indicesSerieDocumentalStore);
             } else {
                 CargarGridIndices();
             }
@@ -1323,6 +1323,24 @@ $(document).ready(function () {
     };    
 
     function CargarGridIndices() {
+
+
+        var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerExpedienteAsync";
+        $.getJSON(_Ruta,
+            {
+                Id: idExpediente
+            }).done(function (data) {
+                if (data !== null) {
+                    cm = data.cm;
+                    direccion = data.direccion;
+                    municipio = data.municipio;
+                }
+            }).fail(function (jqxhr, textStatus, error) {
+                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
+            });
+
+
+
         $("#GridIndices").dxDataGrid({
             dataSource: indicesSerieDocumentalStore,
             allowColumnResizing: true,
@@ -1378,8 +1396,27 @@ $(document).ready(function () {
                     cellTemplate: function (cellElement, cellInfo) {
                         switch (cellInfo.data.TIPO) {
                             case 0: // TEXTO
+                                if (cellInfo.data.INDICE == "CM") {
+                                    cellElement.html(cm);
+                                }
+                                if (cellInfo.data.INDICE == "DIRECCIÓN") {
+                                    cellElement.html(direccion);
+                                }
+                                if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
+                                    cellElement.html('10602');
+                                }
+                                break;
                             case 1: // NUMERO
+                                if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
+                                    cellElement.html('10602');
+                                }
+                                break;
                             case 3: // HORA
+                            case 5: //LISTA
+                                if (cellInfo.data.INDICE == "MUNICIPIO") {
+                                    cellElement.html(municipio);
+                                }
+                                break;
                             case 8: // DIRECCION
                                 if (cellInfo.data.VALOR != null) {
                                     cellElement.html(cellInfo.data.VALOR);
