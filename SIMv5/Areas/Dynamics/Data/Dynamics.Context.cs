@@ -17,10 +17,10 @@
     /// </summary>
     public class DynamicsContext : DbContext
     {
-        //public virtual DbSet<AssetTable> AssetTable { get; set; }
-        //public virtual DbSet<AssetBook> AssetBook { get; set; }
-        //public virtual DbSet<HcmWorker> HcmWorker { get; set; }
-        //public virtual DbSet<DirPersonName> DirPersonName { get; set; }
+        public virtual DbSet<AssetTable> AssetTable { get; set; }
+        public virtual DbSet<AssetBook> AssetBook { get; set; }
+        public virtual DbSet<HcmWorker> HcmWorker { get; set; }
+        public virtual DbSet<DirPersonName> DirPersonName { get; set; }
 
         /// <summary>
         /// 

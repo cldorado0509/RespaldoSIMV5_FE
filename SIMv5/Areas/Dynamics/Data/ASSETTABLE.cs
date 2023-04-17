@@ -14,11 +14,12 @@
     [Table("ASSETTABLE")]
     public class AssetTable
     {
-
-        public long RECID { get; set; } 
         [Key]
+        public long RECID { get; set; } 
         public string AssetId { get; set; } 
         public string Name { get; set; } 
-        public long WorkerResponsible { get; set; } 
+        public long WorkerResponsible { get; set; }
+        public string LocationMemo { get; set; }
+        public string Barcode { get; set; }
     }
 }

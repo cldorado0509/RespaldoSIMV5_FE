@@ -12,12 +12,14 @@ namespace SIM.Areas.Dynamics.Data
     public class BienModel
     {
         [JsonProperty("CODIGO")]
-        public string AssetId { get; set; }
+        public string ASSETID { get; set; }
         [JsonProperty("NOMBREBIEN")]
         public string ASSETNAME { get; set; }
         [JsonProperty("ESTADOBIEN")]
         public string ESTADO { get; set; }
         [JsonProperty("PERSONABIEN")]
         public string RESPONSIBLE { get; set; }
+        public string UBICACION { get; set; }
+        public string SICOF { get; set; }
     }
 }

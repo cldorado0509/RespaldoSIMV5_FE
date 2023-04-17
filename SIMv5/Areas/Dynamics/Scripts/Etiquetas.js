@@ -29,7 +29,7 @@ $(document).ready(function () {
         text: 'Buscar',
         onClick: function () {
             if (Responsable.option("value") >= 1) {
-                filtros = "R:" + Responsable.option("text");
+                filtros = "R:" + Responsable.option("value");
             } else if (Codigo.option("value") != "") {
                 filtros = "C:" + Codigo.option("value");
             } else if (Prefijo.option("value") >= 1 && Minimo.option("value") != "" && Maximo.option("value") != "") {
@@ -93,24 +93,30 @@ $(document).ready(function () {
         noDataText: "Sin datos para mostrar",
         showBorders: true,
         paging: {
-            pageSize: 5, pageIndex: 1
+            pageSize: 10
         },
         pager: {
             showPageSizeSelector: true,
             allowedPageSizes: [5, 10, 20, 50]
         },
+        //filterRow: {
+        //    visible: true,
+        //    emptyPanelText: 'Arrastre una columna para agrupar'
+        //},
         selection: {
             mode: 'multiple',
-            allowSelectAll: true,
+            allowSelectAll: false,
             showCheckBoxesMode: 'always'
         },
         remoteOperations: true,
         hoverStateEnabled: true,
         columns: [
-            { dataField: 'CODIGO', width: '15%', caption: 'Código', dataType: 'string' },
-            { dataField: 'NOMBREBIEN', width: '25%', caption: 'Nombre del bien', dataType: 'string' },
-            { dataField: 'ESTADOBIEN', width: '15%', caption: 'Estado', dataType: 'string' },
-            { dataField: 'PERSONABIEN', width: '30%', caption: 'Responsable', dataType: 'string' },
+            { dataField: 'CODIGO', width: '10%', caption: 'Código', dataType: 'string' },
+            { dataField: 'SICOF', width: '10%', caption: 'Código SICOF', dataType: 'string' },
+            { dataField: 'NOMBREBIEN', width: '20%', caption: 'Nombre del bien', dataType: 'string' },
+            { dataField: 'ESTADOBIEN', width: '12%', caption: 'Estado', dataType: 'string' },
+            { dataField: 'PERSONABIEN', width: '20%', caption: 'Responsable', dataType: 'string' },
+            { dataField: 'UBICACION', width: '18%', caption: 'Ubicación', dataType: 'string' },
             {
                 caption: 'Etiquetas',
                 alignment: 'center',
@@ -148,7 +154,7 @@ var grdEtiquetas = new DevExpress.data.CustomStore({
     load: function (loadOptions) {
         var d = $.Deferred();
         var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
-        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"CODIGO","desc":false}]';
+        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"AssetId","desc":false}]';
         var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
 
         var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 10);

@@ -13,8 +13,8 @@
     [Table("ASSETBOOK")]
     public class AssetBook
     {
-        public long RECID { get; set; }
         [Key]
+        public long RECID { get; set; }
         public string AssetId { get; set; } 
         public int Status { get; set; } 
     }
