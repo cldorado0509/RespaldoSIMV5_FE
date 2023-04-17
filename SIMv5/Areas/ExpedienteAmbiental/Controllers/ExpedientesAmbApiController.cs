@@ -26,13 +26,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
     {
 
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
-        //private string urlApiSecurity = "https://amaplicacion02/seguridad/";
-        private string urlApiExpedienteAmbiental = "https://amaplicacion02/expedientesambientales/";
-        private string urlApiTerceros = " https://sim.metropol.gov.co/tercerosp/";
 
-        private string urlApiSecurity = "https://amaplicacion02/seguridad/";
-        //private string urlApiExpedienteAmbiental = " https://localhost:7012/";
-
+        private string urlApiExpedienteAmbiental = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioExpedienteAmbiental").ToString();
+        private string urlApiTerceros = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioTerceros").ToString();
+        private string urlApiSecurity = SIM.Utilidades.Data.ObtenerValorParametro("urlApiSecurity").ToString();
+      
         public static bool AcceptAllCertifications(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
         {
             return true;
