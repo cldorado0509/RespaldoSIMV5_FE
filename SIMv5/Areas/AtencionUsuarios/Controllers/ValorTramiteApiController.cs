@@ -83,7 +83,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                                  Sop.NIT,
                                  TERCERO = Sop.S_TERCERO,
                                  Sop.FECHA,
-                                 CONSECUTIVO = Sop.N_CONSECUTIVO
+                                 CONSECUTIVO = Sop.N_CONSECUTIVO.Value
                              });
                 modelData = model;
                 IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
