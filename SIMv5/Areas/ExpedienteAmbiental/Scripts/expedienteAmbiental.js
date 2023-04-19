@@ -1396,25 +1396,37 @@ $(document).ready(function () {
                     cellTemplate: function (cellElement, cellInfo) {
                         switch (cellInfo.data.TIPO) {
                             case 0: // TEXTO
-                                if (cellInfo.data.INDICE == "CM") {
-                                    cellElement.html(cm);
-                                }
-                                if (cellInfo.data.INDICE == "DIRECCIÓN") {
-                                    cellElement.html(direccion);
-                                }
-                                if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
-                                    cellElement.html('10602');
+                                if (cellInfo.data.VALOR != null) {
+                                    cellElement.html(cellInfo.data.VALOR);
+                                } else {
+                                    if (cellInfo.data.INDICE == "CM") {
+                                        cellElement.html(cm);
+                                    }
+                                    if (cellInfo.data.INDICE == "DIRECCIÓN") {
+                                        cellElement.html(direccion);
+                                    }
+                                    if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
+                                        cellElement.html('10602');
+                                    }
                                 }
                                 break;
                             case 1: // NUMERO
-                                if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
-                                    cellElement.html('10602');
+                                if (cellInfo.data.VALOR != null) {
+                                    cellElement.html(cellInfo.data.VALOR);
+                                } else {
+                                    if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
+                                        cellElement.html('10602');
+                                    }
                                 }
                                 break;
                             case 3: // HORA
                             case 5: //LISTA
-                                if (cellInfo.data.INDICE == "MUNICIPIO") {
-                                    cellElement.html(municipio);
+                                if (cellInfo.data.VALOR != null) {
+                                    cellElement.html(cellInfo.data.VALOR);
+                                } else {
+                                    if (cellInfo.data.INDICE == "MUNICIPIO") {
+                                        cellElement.html(municipio);
+                                    }
                                 }
                                 break;
                             case 8: // DIRECCION
@@ -1532,18 +1544,20 @@ $(document).ready(function () {
                                 var div = document.createElement("div");
                                 cellElement.get(0).appendChild(div);
 
+                                let itemsLista = opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos;
+
                                 if (cellInfo.data.ID_LISTA != null) {
                                     $(div).dxSelectBox({
-                                        //dataSource: opcionesLista[cellInfo.data.CODINDICE],
-                                        items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                        items: itemsLista,
                                         width: '100%',
-                                        //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
-                                        //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: cellInfo.data.VALOR,
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
+                                        displayExpr: 'NOMBRE',
+                                        valueExpr: 'ID',
                                         searchEnabled: true,
                                         onValueChanged: function (e) {
-                                            cellInfo.setValue(e.value);
+                                            cellInfo.data.ID_VALOR = e.value;
+                                            cellInfo.setValue(itemsLista[itemsLista.findIndex(ls => ls.ID == e.value)].NOMBRE);
                                             $("#grdIndices").dxDataGrid("saveEditData");
                                         },
                                     });
@@ -1556,18 +1570,6 @@ $(document).ready(function () {
                                         },
                                     });
                                 }
-                                break;
-                            default: // Otro
-                                var div = document.createElement("div");
-                                cellElement.get(0).appendChild(div);
-
-                                $(div).dxTextBox({
-                                    value: cellInfo.data.VALOR,
-                                    width: '100%',
-                                    onValueChanged: function (e) {
-                                        cellInfo.setValue(e.value);
-                                    },
-                                });
                                 break;
                         }
                     }

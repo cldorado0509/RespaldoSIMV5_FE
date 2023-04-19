@@ -508,12 +508,10 @@ $(document).ready(function () {
                             case 2: // FECHA
                                 var div = document.createElement("div");
                                 cellElement.get(0).appendChild(div);
-
                                 var fecha = null;
                                 if (cellInfo.data.VALOR != null && cellInfo.data.VALOR.trim() != '') {
                                     var partesFecha = cellInfo.data.VALOR.split('/');
                                     fecha = new Date(parseInt(partesFecha[2]), parseInt(partesFecha[1]) - 1, parseInt(partesFecha[0]));
-
                                     $(div).dxDateBox({
                                         type: 'date',
                                         width: '100%',
@@ -535,7 +533,6 @@ $(document).ready(function () {
                                         },
                                     });
                                 }
-
                                 break;
                             case 4: // SI/NO
                                 var div = document.createElement("div");
@@ -558,18 +555,20 @@ $(document).ready(function () {
                                 var div = document.createElement("div");
                                 cellElement.get(0).appendChild(div);
 
+                                let itemsLista = opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos;
+
                                 if (cellInfo.data.ID_LISTA != null) {
                                     $(div).dxSelectBox({
-                                        //dataSource: opcionesLista[cellInfo.data.CODINDICE],
-                                        items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                        items: itemsLista,
                                         width: '100%',
-                                        //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
-                                        //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: cellInfo.data.VALOR,
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
+                                        displayExpr: 'NOMBRE',
+                                        valueExpr: 'ID',
                                         searchEnabled: true,
                                         onValueChanged: function (e) {
-                                            cellInfo.setValue(e.value);
+                                            cellInfo.data.ID_VALOR = e.value;
+                                            cellInfo.setValue(itemsLista[itemsLista.findIndex(ls => ls.ID == e.value)].NOMBRE);
                                             $("#grdIndices").dxDataGrid("saveEditData");
                                         },
                                     });
