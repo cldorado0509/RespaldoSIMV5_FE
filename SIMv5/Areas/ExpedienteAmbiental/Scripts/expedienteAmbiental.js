@@ -736,7 +736,7 @@ $(document).ready(function () {
                         txtRazonSocial.option("value", "");
                         loadIndicator.option("visible", false);
                         popupTercero.show();
-                        $('#buscarTercero').attr('src', $('#SIM').data('url') + 'General/Tercero/Index?popup=true');
+                        $('#buscarTercero').attr('src', $('#SIM').data('url') + 'General/Tercero');
                     }
                     else {
                         txtRazonSocial.option("value", data.rSocial);

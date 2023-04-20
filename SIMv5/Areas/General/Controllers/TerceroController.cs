@@ -34,10 +34,11 @@ namespace SIM.Areas.General.Controllers
         /// </summary>
         /// <returns>Vista de Consulta de Terceros</returns>
         [Authorize(Roles = "VTERCERO")]
-        public ActionResult Index()
+        public ActionResult Index(bool? popup)
         {
             //Utilidades.Email.EnviarEmail("trabajoprueba1208@gmail.com", "renemeneses1208@hotmail.com", "Validación de usuario registrados en el SIM", "Prueba Correo", "smtp.gmail.com", true, "trabajoprueba1208@gmail.com", "renemeneses");
-
+            ViewBag.popup = false;
+            if (popup != null) { ViewBag.popup = popup; }
             return View();
         }
 
