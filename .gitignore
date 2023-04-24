@@ -351,3 +351,4 @@ MigrationBackup/
 /bin
 /SIMv5/Web.config
 *.config
+/SIMv5/Web.config
