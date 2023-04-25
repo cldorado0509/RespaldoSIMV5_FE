@@ -467,6 +467,11 @@
                                  Fecha = Anu.D_FECHA_APROBACION,
                                  TraAnula = Anu.CODTRAMITE_ANULACION
                              }).FirstOrDefault();
+                if (model == null)
+                {
+                    var Error = new { Motivo = "Problemas con la proyección del documento", Causa = "No se encontró una proyeccion para esta anulación", Fecha = "N", TraAnula = 0 };
+                    return JObject.FromObject(Error, Js);
+                }
                 return JObject.FromObject(model, Js);
             }
             catch (Exception exp)

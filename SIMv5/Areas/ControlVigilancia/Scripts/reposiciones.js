@@ -52,29 +52,38 @@ $(document).ready(function () {
             { dataField: 'FECHA_ACTO', width: '10%', caption: 'Fecha Radicado', dataType:'date', visible: false },
             { dataField: 'ANIO_ACTO', width: '10%', caption: 'Año Radicado', visible: false },
             { dataField: 'ASUNTO', width: '20%', caption: 'Asunto - (Permiso)' },
-            { dataField: 'CODIGO_TRAMITE', width: '10%', caption: 'Cod Tarea Informe Técnico'},
+            {dataField: 'ASUNTO', width: '20%', caption: 'Acto Administrativo', visible: true, customizeText: function (cellInfo) {
+
+                let dato = cellInfo.value.split(':')[1];
+                if (dato) {
+                    return dato.split('-')[0];
+                } else {
+                    return '';
+                }
+            }
+            },
+            {
+                dataField: 'ASUNTO', width: '20%', caption: 'F.Acto Administrativo', visible: true, customizeText: function (cellInfo) {
+                    let dato = cellInfo.value.split(':')[2];
+                    if (dato) {
+                        return dato.split('-')[0] + '-' + dato.split('-')[1] + '-'+ dato.split('-')[2];
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                dataField: 'ASUNTO', width: '20%', caption: 'Año Act Admin', visible: true, customizeText: function (cellInfo) {
+                    let dato = cellInfo.value.split(':')[2];
+                    if (dato) {
+                        return dato.split('-')[2];
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            { dataField: 'CODIGO_TRAMITE', width: '10%', caption: 'Cod Tarea Informe Técnico' },
             { dataField: 'OBSERVACIONES', width: '35%', caption: 'Observaciones', dataType: 'string' },
-            { dataField: 'TALA_AUTORIZADO', caption: 'Tala Autorizada', dataType: 'number', visible: false },
-            { dataField: 'TALA_EJECUTADA', caption: 'Tala Ejecutada', dataType: 'number', visible: false },
-            { dataField: 'DAP_MEN_10_AUTORIZADO', caption: 'Dap<10 Autorizado', dataType: 'number', visible: false },
-            { dataField: 'DAP_MEN_10_EJECUTADA', caption: 'Dap<10 Ejecutado', dataType: 'number', visible: false },
-            { dataField: 'VOLUMEN_AUTORIZADO', caption: 'Volumen Autorizado Tala',visible: false },
-            { dataField: 'VOLUMEN_EJECUTADO', caption: 'Volumen Ejecutado Tala', visible: false },
-            { dataField: 'TRASPLANTE_SOLICITADO', caption: 'Transplante Solicitado', visible: false },
-            { dataField: 'TRASPLANTE_EJECUTADO', caption: 'Transplante Ejecutado', visible: false },
-            { dataField: 'PODA_AUTORIZADO', caption: 'Poda Autorizada', visible: false },
-            { dataField: 'PODA_EJECUTADA', caption: 'Pada Ejecutada', visible: false },
-            { dataField: 'CONSERVACION_AUTORIZADO', caption: 'Conservación Autorizada', visible: false },
-            { dataField: 'CONSERVACION_EJECUTADA', caption: 'Conservación Ejecutada', visible: false },
-            { dataField: 'REPOSICION_AUTORIZADO', caption: 'Reposición Autorizada', visible: false },
-            { dataField: 'REPOSICION_EJECUTADA', caption: 'Reposición Ejecutada', visible: false },
-            { dataField: 'TIPOMEDIDAADICIONAL', caption: 'Tipo Medida Adicional', visible: false },
-            { dataField: 'MEDIDA_ADICIONAL_EJECUTADA', caption: 'Medida Adicional Ejecutada', visible: false },
-            { dataField: 'AUTORIZADO', caption: 'Autorizado', visible: false },
-            { dataField: 'OBSERVACIONES', caption: 'Observaciones', visible: false },
-            { dataField: 'FECHAVISITA',  caption: 'Fecha Visita', dataType: 'date', visible: false },
-            { dataField: 'FECHA_RADICADO_VISITA',caption: 'Fecha Radicado Visita', dataType: 'date', visible: false },
-            { dataField: 'DIRECCION', caption: 'Fecha Radicado Visita', dataType: 'date', visible: false },
             { dataField: 'ENTIDAD_PUBLICA', caption: 'Es Entidad Pública', visible: false },
             {
                 visible: canEdit,
@@ -562,66 +571,6 @@ $(document).ready(function () {
                 }
             }
         ],
-        onExporting: function (e) {
-            e.component.beginUpdate();
-            e.component.columnOption('COORDENADAX', 'visible', true);
-            e.component.columnOption('COORDENADAY', 'visible', true);
-            e.component.columnOption('NUMERO_ACTO', 'visible', true);
-            e.component.columnOption('FECHA_ACTO', 'visible', true);
-            e.component.columnOption('ANIO_ACTO', 'visible', true);
-            e.component.columnOption('TALA_AUTORIZADO', 'visible', true);
-            e.component.columnOption('TALA_EJECUTADA', 'visible', true);
-            e.component.columnOption('DAP_MEN_10_AUTORIZADO', 'visible', true);
-            e.component.columnOption('DAP_MEN_10_EJECUTADA', 'visible', true);
-            e.component.columnOption('VOLUMEN_AUTORIZADO', 'visible', true);
-            e.component.columnOption('VOLUMEN_EJECUTADO', 'visible', true);
-            e.component.columnOption('TRASPLANTE_SOLICITADO', 'visible', true);
-            e.component.columnOption('TRASPLANTE_EJECUTADO', 'visible', true);
-            e.component.columnOption('PODA_AUTORIZADO', 'visible', true);
-            e.component.columnOption('PODA_EJECUTADA', 'visible', true);
-            e.component.columnOption('CONSERVACION_AUTORIZADO', 'visible', true);
-            e.component.columnOption('CONSERVACION_EJECUTADA', 'visible', true);
-            e.component.columnOption('REPOSICION_AUTORIZADO', 'visible', true);
-            e.component.columnOption('REPOSICION_EJECUTADA', 'visible', true);
-            e.component.columnOption('TIPOMEDIDAADICIONAL', 'visible', true);
-            e.component.columnOption('MEDIDA_ADICIONAL_EJECUTADA', 'visible', true);
-            e.component.columnOption('AUTORIZADO', 'visible', true);
-            e.component.columnOption('OBSERVACIONES', 'visible', true);
-            e.component.columnOption('FECHAVISITA', 'visible', true);
-            e.component.columnOption('FECHA_RADICADO_VISITA', 'visible', true);
-            e.component.columnOption('DIRECCION', 'visible', true);
-            e.component.columnOption('ENTIDAD_PUBLICA', 'visible', true);
-        },
-        onExported: function (e) {
-            e.component.columnOption('COORDENADAX', 'visible', false);
-            e.component.columnOption('COORDENADAY', 'visible', false);
-            e.component.columnOption('NUMERO_ACTO', 'visible', false);
-            e.component.columnOption('FECHA_ACTO', 'visible', false);
-            e.component.columnOption('ANIO_ACTO', 'visible', false);
-            e.component.columnOption('TALA_AUTORIZADO', 'visible', false);
-            e.component.columnOption('TALA_EJECUTADA', 'visible', false);
-            e.component.columnOption('DAP_MEN_10_AUTORIZADO', 'visible', false);
-            e.component.columnOption('DAP_MEN_10_EJECUTADA', 'visible', false);
-            e.component.columnOption('VOLUMEN_AUTORIZADO', 'visible', false);
-            e.component.columnOption('VOLUMEN_EJECUTADO', 'visible', false);
-            e.component.columnOption('TRASPLANTE_SOLICITADO', 'visible', false);
-            e.component.columnOption('TRASPLANTE_EJECUTADO', 'visible', false);
-            e.component.columnOption('PODA_AUTORIZADO', 'visible', false);
-            e.component.columnOption('PODA_EJECUTADA', 'visible', false);
-            e.component.columnOption('CONSERVACION_AUTORIZADO', 'visible', false);
-            e.component.columnOption('CONSERVACION_EJECUTADA', 'visible', false);
-            e.component.columnOption('REPOSICION_AUTORIZADO', 'visible', false);
-            e.component.columnOption('REPOSICION_EJECUTADA', 'visible', false);
-            e.component.columnOption('TIPOMEDIDAADICIONAL', 'visible', false);
-            e.component.columnOption('MEDIDA_ADICIONAL_EJECUTADA', 'visible', false);
-            e.component.columnOption('AUTORIZADO', 'visible', false);
-            e.component.columnOption('OBSERVACIONES', 'visible', false);
-            e.component.columnOption('FECHAVISITA', 'visible', false);
-            e.component.columnOption('FECHA_RADICADO_VISITA', 'visible', false);
-            e.component.columnOption('DIRECCION', 'visible', false);
-            e.component.columnOption('ENTIDAD_PUBLICA', 'visible', false);
-            e.component.endUpdate();
-        },  
         onSelectionChanged: function (selectedItems) {
             var data = selectedItems.selectedRowsData[0];
             if (data) {
@@ -831,13 +780,19 @@ $(document).ready(function () {
         readOnly: true
     }).dxTextBox("instance");
 
-    var txtCoordenadaX = $("#txtCoordenadaX").dxTextBox({
-        value: "",
-    }).dxTextBox("instance");
+    var txtCoordenadaX = $("#txtCoordenadaX").dxNumberBox({
+        format :'#,##0.###### Coordenada X',
+        value: -75.000000,
+        min: -76,
+        max:-75
+    }).dxNumberBox("instance");
 
-    var txtCoordenadaY = $("#txtCoordenadaY").dxTextBox({
-        value: "",
-    }).dxTextBox("instance");
+    var txtCoordenadaY = $("#txtCoordenadaY").dxNumberBox({
+        format: '#,##0.###### Coordenada Y',
+        value: 6.000000,
+        min: 6,
+        max: 7,
+    }).dxNumberBox("instance");
 
     const dataini = [{
         id: 0,
@@ -900,6 +855,7 @@ $(document).ready(function () {
 
     var txtFechaRadicadoVisita = $("#txtFechaRadicadoVisita").dxDateBox({
         type: "date",
+        displayFormat: "MM/dd/yyyy",
         value: new Date()
     }).dxValidator({
         validationGroup: "ProcesoGroup",
@@ -920,7 +876,8 @@ $(document).ready(function () {
         onClick: function () {
 
             let radi = txtRadicadoVisita.option("value");
-            let aniorad = txtFechaRadicadoVisita.option("value").getFullYear();
+            let fecharad = new Date(txtFechaRadicadoVisita.option("value")); 
+            let aniorad = fecharad.getFullYear();
 
             var _Ruta = $('#SIM').data('url') + "ControlVigilancia/api/ReposicionesApi/ObtenerInformeTecnico";
 
@@ -1082,7 +1039,7 @@ $(document).ready(function () {
                 volumenAutorizado: volumenAutorizado, transplanteAutorizado: transplanteAutorizado, 
                 podaAutorizada: podaAutorizada, conservacionAutorizada: conservacionAutorizada,
                 reposicionAutorizada: reposicionAutorizada, autorizado: autorizado,
-                observaciones: observaciones, coordenadaX: coordenadaX, coordenadaY: coordenadaY, nombreProyecto: nombreProyecto, codigoTramite: codTramite
+                observaciones: observaciones, coordenadaX: numx, coordenadaY: numy, nombreProyecto: nombreProyecto, codigoTramite: codTramite
             };
             var _Ruta = $('#SIM').data('url') + "ControlVigilancia/api/ReposicionesApi/GuardarReposicion";
             $.ajax({
@@ -1118,7 +1075,7 @@ $(document).ready(function () {
             var documentoId = idDocActo;
             var numeroActo = 1;
             var fechaActo = txtFechaControl.option("value");;
-            var anioActo = txtFechaRadicadoVisita.option("value").getFullYear();
+            var anioActo = txtFechaRadicadoVisita.option("value");
             var talaEjecutada = txtTalaEje.option("value");
             var dapMen10Ejecutada = txtdAPMen10Ejecutada.option("value");
             var volumenEjecutado = txtvolumenEjecutado.option("value");
@@ -1305,6 +1262,27 @@ $(document).ready(function () {
         title: "Información del CM"
     }).dxPopup("instance");
 
+
+    $("#btnReporte").dxButton({
+        text: "Reporte",
+        stylingMode: "contained",
+        type: "default",
+        height: 30,
+        onClick: function () {
+            popupReporte.show();
+            let url = $('#SIM').data('url') + 'ControlVigilancia/Reposiciones/GetReporte';
+            $('#iframeReporte').attr('src', url);
+        }
+    });
+
+
+    var popupReporte = $("#popupReporte").dxPopup({
+        width: 1200,
+        height: 600,
+        hoverStateEnabled: true,
+        title: "Reporte"
+    }).dxPopup("instance");
+
 });
 
 
@@ -1313,7 +1291,7 @@ var ReposicionesDataSource = new DevExpress.data.CustomStore({
     load: function (loadOptions) {
         var d = $.Deferred();
         var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
-        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"CODIGO_SOLICITUD","desc":false}]';
+        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"ID","desc":false}]';
         var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
 
         var skip = (typeof loadOptions.skip !== 'undefined' && loadOptions.skip !== null ? loadOptions.skip : 0);

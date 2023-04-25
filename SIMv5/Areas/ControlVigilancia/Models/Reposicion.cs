@@ -81,10 +81,10 @@
         public string Asunto { get; set; }
 
         [JsonProperty("coordenadaX")]
-        public decimal? CoordenadaX { get; set; }
+        public float? CoordenadaX { get; set; }
 
         [JsonProperty("coordenadaY")]
-        public decimal? CoordenadaY { get; set; }
+        public float? CoordenadaY { get; set; }
 
         [JsonProperty("nroLeniosSolicitados")]
         public decimal? NroLeniosSolicitados { get; set; }

@@ -391,7 +391,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             if (PropTramite == null) resp.Mensaje = "Existe problema consultando los datos del tipo de trámite";
             decimal Salario = ObtenerHonorarios(datosTramite.Agno);
             if (Salario <= 0) resp.Mensaje = "No se ha ingresado un salario mensual para este año para el personal que participara en el trámite";
-            if (PropTramite.N_RELACION.Value > 0)
+            if (PropTramite.N_RELACION != null && PropTramite.N_RELACION.Value > 0)
             {
                 if (datosTramite.Items > 50)
                 {

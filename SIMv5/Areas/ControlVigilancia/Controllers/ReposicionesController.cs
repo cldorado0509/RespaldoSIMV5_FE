@@ -39,6 +39,32 @@
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        // GET: ControlVigilancia/GetReporte
+        public ActionResult GetReporte()
+        {
+
+            PermisosRolModel permisosRolModel = new PermisosRolModel { CanDelete=false, CanInsert=false, CanPrint=false, CanRead= false, CanUpdate = false, IdRol = 0 };
+
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            decimal codFuncionario = -1;
+            if (((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                int idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                codFuncionario = clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario);
+
+                Permisos permisos = new Permisos();
+                permisosRolModel = permisos.ObtenerPermisosRolForma(10564, idUsuario);
+
+            }
+
+            ViewBag.CodFuncionario = codFuncionario;
+            return View(permisosRolModel);
+        }
+
+        /// <summary>
         /// Consulta un archivo del sistema y lo retorna en arreglo de bytes
         /// </summary>
         /// <param name="CodTramite">Codigo del trámite en el sistema</param>

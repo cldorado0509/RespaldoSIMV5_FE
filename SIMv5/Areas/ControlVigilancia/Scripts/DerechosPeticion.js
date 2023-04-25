@@ -129,6 +129,37 @@ $(document).ready(function () {
                 }
             },
         ],
+        onExporting: function (e) {
+            e.component.beginUpdate();
+            e.component.columnOption('ID', 'visible', false);
+            e.component.columnOption('CODTRAMITE', 'visible', true);
+            e.component.columnOption('CODDOCUMENTO', 'visible', true);
+            e.component.columnOption('RADICADO', 'visible', true);
+            e.component.columnOption('ANIO', 'visible', true);
+            e.component.columnOption('CM', 'visible', true);
+            e.component.columnOption('PROYECTO', 'visible', false);
+            e.component.columnOption('SOLICITUD', 'visible', false);
+            e.component.columnOption('SOLICITANTE', 'visible', true);
+            e.component.columnOption('TECNICO', 'visible', true);
+            e.component.columnOption('APOYO', 'visible', true);
+            e.component.columnOption('RADICADO_SALIDA', 'visible', true);
+        },
+        onExported: function (e) {
+            e.component.beginUpdate();
+            e.component.columnOption('ID', 'visible', true);
+            e.component.columnOption('CODTRAMITE', 'visible', true);
+            e.component.columnOption('CODDOCUMENTO', 'visible', true);
+            e.component.columnOption('RADICADO', 'visible', true);
+            e.component.columnOption('ANIO', 'visible', true);
+            e.component.columnOption('CM', 'visible', true);
+            e.component.columnOption('PROYECTO', 'visible', false);
+            e.component.columnOption('SOLICITUD', 'visible', false);
+            e.component.columnOption('SOLICITANTE', 'visible', true);
+            e.component.columnOption('TECNICO', 'visible', true);
+            e.component.columnOption('APOYO', 'visible', true);
+            e.component.columnOption('RADICADO_SALIDA', 'visible', true);
+            e.component.endUpdate();
+        },
         onSelectionChanged: function (selectedItems) {
             var data = selectedItems.selectedRowsData[0];
             if (data) {

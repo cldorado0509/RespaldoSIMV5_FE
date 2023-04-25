@@ -71,11 +71,13 @@ $(document).ready(function () {
                                             height: 300,
                                             contentTemplate: function () {
                                                 return $("<div>").append(
-                                                    $("<p>Motivo de la devolución:  <strong>" + data.Motivo + "</strong></p>"),
+                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
+                                                    $("<br />"),
+                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
@@ -106,11 +108,13 @@ $(document).ready(function () {
                                             height: 300,
                                             contentTemplate: function () {
                                                 return $("<div>").append(
-                                                    $("<p>Motivo de la devolución:  <strong>" + data.Motivo + "</strong></p>"),
+                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('sp-co', fechas) + "</strong></p>")
+                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
+                                                    $("<br />"),
+                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
                                             },
                                             showTitle: true,
@@ -503,7 +507,7 @@ $(document).ready(function () {
             height: '100%',
             loadPanel: { text: 'Cargando Datos...' },
             paging: {
-                pageSize: 0,
+                pageSize: 0
             },
             pager: {
                 showPageSizeSelector: false,
@@ -526,6 +530,15 @@ $(document).ready(function () {
             },
             scrolling: {
                 showScrollbar: 'always',
+                columnRenderingMode: "standard",
+                mode: "standard",
+                preloadEnabled: false,
+                renderAsync: undefined,
+                rowRenderingMode: "standard",
+                scrollByContent: true,
+                scrollByThumb: false,
+                showScrollbar: "always",
+                useNative: "auto"
             },
             wordWrapEnabled: true,
             columns: [
@@ -593,7 +606,9 @@ $(document).ready(function () {
 
                                 var fecha = null;
                                 if (cellInfo.data.VALOR != null && cellInfo.data.VALOR.trim() != '') {
-                                    var partesFecha = cellInfo.data.VALOR.split('/');
+                                    var partesFecha;
+                                    if (cellInfo.data.VALOR.includes('/')) partesFecha = cellInfo.data.VALOR.split('/');
+                                    else partesFecha = cellInfo.data.VALOR.split('-');
                                     fecha = new Date(parseInt(partesFecha[2]), parseInt(partesFecha[1]) - 1, parseInt(partesFecha[0]));
 
                                     $(div).dxDateBox({
@@ -640,18 +655,20 @@ $(document).ready(function () {
                                 var div = document.createElement("div");
                                 cellElement.get(0).appendChild(div);
 
+                                let itemsLista = opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos;
+
                                 if (cellInfo.data.ID_LISTA != null) {
                                     $(div).dxSelectBox({
-                                        //dataSource: opcionesLista[cellInfo.data.CODINDICE],
-                                        items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                        items: itemsLista,
                                         width: '100%',
-                                        //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
-                                        //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: cellInfo.data.VALOR,
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
+                                        displayExpr: 'NOMBRE',
+                                        valueExpr: 'ID',
                                         searchEnabled: true,
                                         onValueChanged: function (e) {
-                                            cellInfo.setValue(e.value);
+                                            cellInfo.data.ID_VALOR = e.value;
+                                            cellInfo.setValue(itemsLista[itemsLista.findIndex(ls => ls.ID == e.value)].NOMBRE);
                                             $("#grdIndices").dxDataGrid("saveEditData");
                                         },
                                     });

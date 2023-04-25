@@ -315,7 +315,7 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>"),
+                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
                                                     $("<br />"),
                                                     $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
@@ -352,7 +352,7 @@ $(document).ready(function () {
                                                     $("<br />"),
                                                     $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
                                                     $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + new Date(data.Fecha).toLocaleDateString('es-CO', fechas) + "</strong></p>"),
+                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
                                                     $("<br />"),
                                                     $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
                                                 );
@@ -721,8 +721,7 @@ $(document).ready(function () {
         });
 
         if (opcionesLista.length == 0) {
-            CargarGridIndicesTra();
-            //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore); 
+            CargarGridIndicesDoc();
         } else {
             opcionesLista.forEach(function (valor, indice, array) {
                 $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerIndiceValoresLista?id=' + valor.idLista).done(function (data) {
@@ -738,7 +737,6 @@ $(document).ready(function () {
 
                     if (finalizado) {
                         CargarGridIndicesDoc();
-                        //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore);
                     }
                 });
             });
@@ -846,9 +844,10 @@ $(document).ready(function () {
 
                                 var fecha = null;
                                 if (cellInfo.data.VALOR != null && cellInfo.data.VALOR.trim() != '') {
-                                    var partesFecha = cellInfo.data.VALOR.split('/');
+                                    var partesFecha;
+                                    if (cellInfo.data.VALOR.includes('/')) partesFecha = cellInfo.data.VALOR.split('/');
+                                    else partesFecha = cellInfo.data.VALOR.split('-');
                                     fecha = new Date(parseInt(partesFecha[2]), parseInt(partesFecha[1]) - 1, parseInt(partesFecha[0]));
-
                                     $(div).dxDateBox({
                                         type: 'date',
                                         width: '100%',
@@ -893,18 +892,20 @@ $(document).ready(function () {
                                 var div = document.createElement("div");
                                 cellElement.get(0).appendChild(div);
 
+                                let itemsLista = opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos;
+
                                 if (cellInfo.data.ID_LISTA != null) {
                                     $(div).dxSelectBox({
-                                        //dataSource: opcionesLista[cellInfo.data.CODINDICE],
-                                        items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                        items: itemsLista,
                                         width: '100%',
-                                        //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
-                                        //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: cellInfo.data.VALOR,
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
+                                        displayExpr: 'NOMBRE',
+                                        valueExpr: 'ID',
                                         searchEnabled: true,
                                         onValueChanged: function (e) {
-                                            cellInfo.setValue(e.value);
+                                            cellInfo.data.ID_VALOR = e.value;
+                                            cellInfo.setValue(itemsLista[itemsLista.findIndex(ls => ls.ID == e.value)].NOMBRE);
                                             $("#grdIndices").dxDataGrid("saveEditData");
                                         },
                                     });
@@ -1222,7 +1223,6 @@ $(document).ready(function () {
 
         if (opcionesLista.length == 0) {
             CargarGridIndicesTra();
-            //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore); 
         } else {
             opcionesLista.forEach(function (valor, indice, array) {
                 $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerIndiceValoresLista?id=' + valor.idLista).done(function (data) {
@@ -1238,7 +1238,6 @@ $(document).ready(function () {
 
                     if (finalizado) {
                         CargarGridIndicesTra();
-                        //$("#GridIndices").dxDataGrid("instance").option("dataSource", indicesSerieDocumentalStore);
                     }
                 });
             });
@@ -1392,18 +1391,20 @@ $(document).ready(function () {
                                 var div = document.createElement("div");
                                 cellElement.get(0).appendChild(div);
 
+                                let itemsLista = opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos;
+
                                 if (cellInfo.data.ID_LISTA != null) {
                                     $(div).dxSelectBox({
-                                        //dataSource: opcionesLista[cellInfo.data.CODINDICE],
-                                        items: opcionesLista[opcionesLista.findIndex(ol => ol.idLista == cellInfo.data.ID_LISTA)].datos,
+                                        items: itemsLista,
                                         width: '100%',
-                                        //displayExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
-                                        //valueExpr: (cellInfo.TIPO_LISTA == 0 ? 'NOMBRE' : cellInfo.CAMPO_NOMBRE),
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: cellInfo.data.VALOR,
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
+                                        displayExpr: 'NOMBRE',
+                                        valueExpr: 'ID',
                                         searchEnabled: true,
                                         onValueChanged: function (e) {
-                                            cellInfo.setValue(e.value);
+                                            cellInfo.data.ID_VALOR = e.value;
+                                            cellInfo.setValue(itemsLista[itemsLista.findIndex(ls => ls.ID == e.value)].NOMBRE);
                                             $("#grdIndices").dxDataGrid("saveEditData");
                                         },
                                     });

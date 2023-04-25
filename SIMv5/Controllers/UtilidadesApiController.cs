@@ -21,6 +21,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Reflection;
     using System.Security.Claims;
     using System.Web;
     using System.Web.Http;
@@ -68,13 +69,13 @@
                             case "T":
                                 _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,(SELECT BUS.S_INDICE FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS WHERE BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO) AS INDICES,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODTRAMITE= " + _Buscar[1].ToString().Trim() + " ORDER BY DOC.ID_DOCUMENTO DESC";
                                 var TraDocs = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
-                                if (skip > 0 && take > 0) resultado.datos = TraDocs.Skip(skip).Take(take).ToList();
+                                if (skip > 0 || take > 0) resultado.datos = TraDocs.Skip(skip).Take(take).ToList();
                                 else resultado.datos = TraDocs.ToList();
                                 resultado.numRegistros = resultado.datos.Count();
                                 break;
                             case "F":
-                                var _condicion = _Buscar[1].ToString().Replace("\r\n", string.Empty); //.Replace(" ", String.Empty);
-                                _condicion = _condicion.Replace("\\", "").Replace("\"", "");
+                                var _condicion = _Buscar[1].ToString().Replace("\r\n", string.Empty).Replace(" ", String.Empty);
+                                //_condicion = _condicion.Replace("\\", "").Replace("\"", "");
                                 _condicion = _condicion.Replace("[", "").Replace("]", "");
                                 if (_condicion != null)
                                 {
@@ -84,7 +85,7 @@
                                     {
                                         _Sql = ObtenerSqlDocOracle(IdUnidadDoc, _condicion);
                                         var SqlDocs = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
-                                        if (skip > 0 && take > 0) resultado.datos = SqlDocs.Skip(skip).Take(take).ToList();
+                                        if (skip > 0 || take > 0) resultado.datos = SqlDocs.Skip(skip).Take(take).ToList();
                                         else resultado.datos = SqlDocs.ToList();
                                         resultado.numRegistros = resultado.datos.Count();
                                     }
@@ -98,7 +99,7 @@
                             case "B":
                                 _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,BUS.S_INDICE AS INDICES,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.ID_DOCUMENTO DESC";
                                 var BusDocs = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
-                                if (skip > 0 && take > 0) resultado.datos = BusDocs.Skip(skip).Take(take).ToList();
+                                if (skip > 0 || take > 0) resultado.datos = BusDocs.Skip(skip).Take(take).ToList();
                                 else resultado.datos = BusDocs.ToList();
                                 resultado.numRegistros = resultado.datos.Count();
                                 break;
@@ -171,7 +172,7 @@
                                     {
                                         _Sql = ObtenerSqlExpOracle(IdUnidadDoc, _condicion);
                                         var SqlDocs = dbSIM.Database.SqlQuery<DatosExps>(_Sql);
-                                        if (skip > 0 && take > 0) resultado.datos = SqlDocs.Skip(skip).Take(take).ToList();
+                                        if (skip > 0 || take > 0) resultado.datos = SqlDocs.Skip(skip).Take(take).ToList();
                                         else resultado.datos = SqlDocs.ToList();
                                         resultado.numRegistros = resultado.datos.Count();
                                     }
@@ -770,7 +771,7 @@
                         case "<=":
                         case ">":
                         case ">=":
-                            condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") " + filtros[contFiltro + 1] + " @" + filtros[contFiltro + 2].Trim().ToLower());
+                            condicion.Add("TO_NUMBER(LOWER(\"" + filtros[contFiltro] + "\")) " + filtros[contFiltro + 1] + " " + filtros[contFiltro + 2].Trim().ToLower());
                             break;
                     }
                 }
@@ -806,11 +807,13 @@
                                         }).ToList();
                     if (IndicesSerie != null)
                     {
+                        string _Indice = "";
                         foreach (var fila in IndicesSerie)
                         {
-                            if (_criterio.Contains(fila.INDICE.ToUpper()))
+                            _Indice = fila.INDICE.ToUpper().Replace(" ", "");
+                            if (_criterio.Contains(_Indice))
                             {
-                                _aux += "(SELECT TID.VALOR FROM TRAMITES.TBINDICEDOCUMENTO TID WHERE TID.CODTRAMITE = IND.CODTRAMITE AND TID.CODDOCUMENTO=IND.CODDOCUMENTO AND TID.CODINDICE=" + fila.CODINDICE.ToString() + ") AS \"" + fila.INDICE.ToString().ToUpper() + "\",";
+                                _aux += "(SELECT TID.VALOR FROM TRAMITES.TBINDICEDOCUMENTO TID WHERE TID.CODTRAMITE = IND.CODTRAMITE AND TID.CODDOCUMENTO=IND.CODDOCUMENTO AND TID.CODINDICE=" + fila.CODINDICE.ToString() + ") AS \"" + _Indice + "\",";
                                 _codindices += fila.CODINDICE.ToString().Trim() + ",";
                             }
                         }
@@ -1176,26 +1179,37 @@
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("EditarIndicesDocumento")]
         public dynamic GetEditarIndicesDocumento(int IdDocumento)
         {
-            var Indices = (from Ind in dbSIM.TBINDICEDOCUMENTO
-                           join Ise in dbSIM.TBINDICESERIE on Ind.CODINDICE equals Ise.CODINDICE
-                           join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
-                           from pdis in l.DefaultIfEmpty()
-                           where Ind.ID_DOCUMENTO == IdDocumento
-                           orderby Ise.ORDEN
-                           select new Indice
-                           {
-                               CODINDICE = (int)Ind.CODINDICE,
-                               INDICE = Ise.INDICE,
-                               TIPO = (byte)Ise.TIPO,
-                               LONGITUD = (long)Ise.LONGITUD,
-                               OBLIGA = (int)Ise.OBLIGA,
-                               VALORDEFECTO = Ise.VALORDEFECTO,
-                               VALOR = Ind.VALOR,
-                               ID_LISTA = (int)Ise.CODIGO_SUBSERIE,
-                               TIPO_LISTA = pdis.TIPO,
-                               CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
-                           }).ToList();
-            return Indices.ToList();
+            var Tramite = (from Doc in dbSIM.TBTRAMITEDOCUMENTO
+                          where Doc.ID_DOCUMENTO == IdDocumento
+                          select new
+                          {
+                              CodTramite = Doc.CODTRAMITE,
+                              CodDocumento = Doc.CODDOCUMENTO
+                          }).FirstOrDefault();
+            if (Tramite != null)
+            {
+                var Indices = (from Ind in dbSIM.TBINDICEDOCUMENTO
+                               join Ise in dbSIM.TBINDICESERIE on Ind.CODINDICE equals Ise.CODINDICE
+                               join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                               from pdis in l.DefaultIfEmpty()
+                               where Ind.CODTRAMITE == Tramite.CodTramite && Ind.CODDOCUMENTO == Tramite.CodDocumento
+                               orderby Ise.ORDEN
+                               select new Indice
+                               {
+                                   CODINDICE = (int)Ind.CODINDICE,
+                                   INDICE = Ise.INDICE,
+                                   TIPO = (byte)Ise.TIPO,
+                                   LONGITUD = (long)Ise.LONGITUD,
+                                   OBLIGA = (int)Ise.OBLIGA,
+                                   VALORDEFECTO = Ise.VALORDEFECTO,
+                                   VALOR = Ind.VALOR,
+                                   ID_LISTA = (int)Ise.CODIGO_SUBSERIE,
+                                   TIPO_LISTA = pdis.TIPO,
+                                   CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
+                               }).ToList();
+                return Indices.ToList();
+            }
+            else return null;
         }
 
         /// <summary>
@@ -1227,6 +1241,32 @@
                         if (objData.IdDocumento > 1)
                         {
                             TBINDICEDOCUMENTO indiceDoc = dbSIM.TBINDICEDOCUMENTO.Where(i => i.CODTRAMITE == TraDoc.CODTRAMITE && i.CODDOCUMENTO == TraDoc.CODDOCUMENTO && i.CODINDICE == indice.CODINDICE).FirstOrDefault();
+                            var DefIndice = dbSIM.TBINDICESERIE.Where(w => w.CODINDICE == indice.CODINDICE).FirstOrDefault();
+                            if (DefIndice != null)
+                            {
+                                if (DefIndice.INDICE_RADICADO == "R" )
+                                {
+                                    if (indice.VALOR != "")
+                                    {
+                                        var RadAnt = dbSIM.RADICADO_DOCUMENTO.Where(w => w.CODTRAMITE == TraDoc.CODTRAMITE && w.CODDOCUMENTO == TraDoc.CODDOCUMENTO).FirstOrDefault();
+                                        if (RadAnt != null && (RadAnt.S_RADICADO != indice.VALOR))
+                                        {
+                                            RadAnt.CODTRAMITE = null;
+                                            RadAnt.CODDOCUMENTO = null;
+                                            var NuevoRad = dbSIM.RADICADO_DOCUMENTO.Where(w => w.S_RADICADO == indice.VALOR && w.CODSERIE == RadAnt.CODSERIE && w.D_RADICADO.Year == RadAnt.D_RADICADO.Year).FirstOrDefault();
+                                            if (NuevoRad == null)
+                                            {
+                                                return new { resp = "Error", mensaje = "El radicado " + indice.VALOR + " no ha sido generado en el sistema!!" };
+                                            }else
+                                            {
+                                                NuevoRad.CODTRAMITE = TraDoc.CODTRAMITE;
+                                                NuevoRad.CODDOCUMENTO = TraDoc.CODDOCUMENTO;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             if (indiceDoc != null)
                             {
                                 indiceDoc.VALOR = indice.VALOR ?? "";
@@ -1245,9 +1285,9 @@
                                 indiceDoc.VALOR = indice.VALOR ?? "";
                                 dbSIM.Entry(indiceDoc).State = System.Data.Entity.EntityState.Added;
                             }
-                            dbSIM.SaveChanges();
                         }
                     }
+                    dbSIM.SaveChanges();
                 }
                 else
                 {

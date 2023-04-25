@@ -1,11 +1,5 @@
 ﻿namespace SIM.Areas.ControlVigilancia.Controllers
 {
-    using DevExpress.Skins;
-    using DevExpress.Utils.Extensions;
-    using DevExtreme.AspNet.Data;
-    using DevExtreme.AspNet.Mvc;
-    using DocumentFormat.OpenXml.EMMA;
-    using DocumentFormat.OpenXml.Office2010.Excel;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SIM.Areas.ControlVigilancia.Models;
@@ -15,16 +9,18 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
     using System.Web.Http;
 
+    /// <summary>
+    /// 
+    /// </summary>
     [Route("api/[controller]", Name = "ReposicionesApi")]
     public class ReposicionesApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
 
         /// <summary>
-        /// Retorna el Listado de las Series Documentales
+        /// Retorna el Listado de las Reposiciones
         /// </summary>
         /// <param name="filter">Criterio de Búsqueda dado por el usaurio</param>
         /// <param name="sort"></param>
@@ -44,7 +40,7 @@
             dynamic modelData;
             datosConsulta resultado = new datosConsulta();
 
-            model = dbSIM.V_REPOCISIONES.Where(f => f.ES_TRAMITE_NUEVO != "1").OrderBy(f => f.CODIGO_SOLICITUD);
+            model = dbSIM.TBREPOSICION.Where(f => f.ES_TRAMITE_NUEVO != "1").OrderBy(f => f.CODIGO_SOLICITUD);
             modelData = model;
             IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
 
@@ -56,7 +52,41 @@
 
             return resultado;
         }
-                
+
+        /// <summary>
+        /// Retorna el Listado de las Reposiciones
+        /// </summary>
+        /// <param name="filter">Criterio de Búsqueda dado por el usaurio</param>
+        /// <param name="sort"></param>
+        /// <param name="group"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="searchExpr"></param>
+        /// <param name="comparation"></param>
+        /// <param name="tipoData"></param>
+        /// <param name="noFilterNoRecords"></param>
+        /// <returns></returns>
+        [HttpGet, ActionName("GetReposicionesReporte")]
+        public datosConsulta GetReposicionesReporte(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords)
+        {
+          
+            datosConsulta resultado = new datosConsulta();
+            var model = dbSIM.Database.SqlQuery<V_REPOCISIONES>(@"SELECT r.id,r.codigo_solicitud,r.codigo_actoadministrativo,r.tala_autorizado,r.dap_men_10_autorizado,r.volumen_autorizado,r.trasplante_autorizado,r.poda_autorizado,r.conservacion_autorizado,r.reposicion_autorizado,r.tipo_medidaid,r.autorizado,r.observaciones,r.cm,r.asunto,r.coordenadax,r.coordenaday,r.tipo_medidaadicional_id,tma.nombre As TipoMedidaAdicional,r.medida_adicional_asignada,r.proyecto,r.nro_lenios_solicitados,r.valoracion_inventario_forestal,r.valoracion_tala,r.inversion_reposicion_minima,r.inversion_medidas_adicionales,r.inversion_medida_adicional_siembra,r.cantidad_mantenimiento,r.inversion_medida_adicional_mantenimiento,r.cantidad_destoconado,r.inversion_medida_adicional_destoconado,r.cantidad_levantamiento_piso,r.inversion_medida_adicional_levantamiento_piso,r.pago_fondo_verde_metropolitano,r.es_tramite_nuevo,r.reposicion_propuesta,r.reposicion_minima_obligatoria,r.nro_lenios_autorizados,r.tala_solicitada,r.dap_men_10_solicitado,r.trasplante_solicitado,r.poda_solicitado,r.conservacion_solicitado,r.nombre_proyecto,dr.tipo_documento,dr.numero_acto,dr.fecha_acto,EXTRACT(year FROM dr.fecha_acto)anio_acto,dr.tala_ejecutada,dr.id iddetail,dr.dap_men_10_ejecutada,dr.volumen_ejecutado,dr.trasplante_ejecutado,dr.poda_ejecutada,dr.conservacion_ejecutada,dr.reposicion_ejecutada,dr.medida_adicional_ejecutada,dr.fecha_control,dr.id_usuariovisita,dr.observaciones_visita as ObservacionVisita,dr.fecha_visita as  FechaVisita,dr.radicado_visita as RadicadoVisita,dr.fecha_radicado_visita ,proy.direccion,proy.nombre as NombreProyecto,proy.entidad_publica,mun.Nombre as Municipio,r.codigo_tramite,f.Nombres || ' ' || f.Apellidos as Tecnico FROM  control.tbreposicion r LEFT JOIN control.tipo_medidaadicional  tma ON tma.id = r.tipo_medidaadicional_id LEFT JOIN control.tbdetalle_reposicion  dr ON dr.reposicion_id = r.id LEFT JOIN tramites.tbproyecto proy ON r.cm = proy.cm LEFT JOIN tramites.tbmunicipio           mun ON mun.codigo_municipio = proy.codigo_municipio LEFT JOIN tramites.tbfuncionario  f ON f.codfuncionario = dr.id_usuariovisita WHERE r.es_tramite_nuevo != '1'");
+            
+            resultado.numRegistros = model.Count();
+            if (skip == 0 && take == 0) resultado.datos = model.ToList();
+            else resultado.datos = model.Skip(skip).Take(take).ToList();
+
+            return resultado;
+
+        }
+
+        /// <summary>
+        /// Obtiene una Reposición
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerReposicion")]
         public JObject ObtenerReposicion(string Id)
         {
@@ -207,6 +237,7 @@
                 return JObject.FromObject(proyectoCM, Js);
             }
         }
+   
         public List<Asunto> ObtenerActosCM(string radicado, string anio, string cm)
         {
             List<Asunto> actosAsunto = new List<Asunto>();
@@ -561,10 +592,11 @@
                     var controles = this.dbSIM.TBDETALLE_REPOSICION.Where(f => f.REPOSICION_ID == _Id).ToList();
                     if (controles != null)
                     {
-                         foreach (TBDETALLE_REPOSICION visita in controles)
+                        foreach (TBDETALLE_REPOSICION visita in controles)
                         {
+                            var anio = new DateTime(visita.ANIO_ACTO, 1, 1);
                             controlesList.Add(new DetalleReposicion { Id= visita.ID, TecnicoId= visita.ID_USUARIOVISITA, FechaRadicadoVisita= visita.FECHA_RADICADO_VISITA, AnioRadicadoVisita= visita.FECHA_RADICADO_VISITA.Value.Year, FechaVisita= visita.FECHA_VISITA, ObservacionVisita= visita.OBSERVACIONES_VISITA, 
-                                RadicadoVisita= visita.RADICADO_VISITA, AnioActo = visita.ANIO_ACTO, ConservacionEjecutada = visita.CONSERVACION_EJECUTADA, DAPMen10Ejecutada = visita.DAP_MEN_10_EJECUTADA,
+                                RadicadoVisita= visita.RADICADO_VISITA, AnioActo = anio, ConservacionEjecutada = visita.CONSERVACION_EJECUTADA, DAPMen10Ejecutada = visita.DAP_MEN_10_EJECUTADA,
                                 DocumentoId = visita.DOCUMENTO_ID, TramiteId= visita.CODIGO_TRAMITE, FechaActo= visita.FECHA_ACTO, FechaControl = visita.FECHA_CONTROL, MedidaAdicionalEjecutada = visita.MEDIDA_ADICIONAL_EJECUTADA, NumeroActo = visita.NUMERO_ACTO, 
                                 PodaEjecutada = visita .PODA_EJECUTADA, ReposicionEjecutada = visita .REPOSICION_EJECUTADA, ReposicionId = visita .REPOSICION_ID, TalaEjecutada= visita .TALA_EJECUTADA, TransplanteEjecutado= visita .TRASPLANTE_EJECUTADO, 
                                 VolumenEjecutado = visita .VOLUMEN_EJECUTADO});
@@ -685,13 +717,13 @@
                 decimal Id =0;
                 Id = objData.Id;
 
-                var datosTramiteIforme = ObtenerDatosIformeTecnico(objData.RadicadoVisita, objData.AnioActo);
+                var datosTramiteIforme = ObtenerDatosIformeTecnico(objData.RadicadoVisita, objData.AnioActo.Year);
                 if (Id > 0)
                 {
                     var _detalleReposicion = dbSIM.TBDETALLE_REPOSICION.Where(f => f.ID == Id).FirstOrDefault();
                     if (_detalleReposicion != null)
                     {
-                        _detalleReposicion.ANIO_ACTO = objData.AnioActo;
+                        _detalleReposicion.ANIO_ACTO = objData.AnioActo.Year;
                         _detalleReposicion.CONSERVACION_EJECUTADA = objData.ConservacionEjecutada;
                         _detalleReposicion.DAP_MEN_10_EJECUTADA = objData.DAPMen10Ejecutada;
                         _detalleReposicion.DOCUMENTO_ID = objData.DocumentoId;
@@ -709,7 +741,7 @@
                         _detalleReposicion.VOLUMEN_EJECUTADO = objData.VolumenEjecutado;
                         _detalleReposicion.ID_USUARIOVISITA = objData.TecnicoId;
                         _detalleReposicion.OBSERVACIONES_VISITA = objData.ObservacionVisita;
-                        _detalleReposicion.FECHA_VISITA = objData.FechaVisita;
+                        _detalleReposicion.FECHA_VISITA = objData.FechaVisita.Value;
                         _detalleReposicion.RADICADO_VISITA = objData.RadicadoVisita;
                         _detalleReposicion.FECHA_RADICADO_VISITA = objData.FechaRadicadoVisita;
                         _detalleReposicion.CODIGO_TRAMITE = datosTramiteIforme.IdTramite.ToString();
@@ -719,7 +751,7 @@
                 else if (Id <= 0)
                 {
                     TBDETALLE_REPOSICION _detalleReposicion = new TBDETALLE_REPOSICION();
-                    _detalleReposicion.ANIO_ACTO = objData.AnioActo;
+                    _detalleReposicion.ANIO_ACTO = objData.AnioActo.Year;
                     _detalleReposicion.CONSERVACION_EJECUTADA = objData.ConservacionEjecutada;
                     _detalleReposicion.DAP_MEN_10_EJECUTADA = objData.DAPMen10Ejecutada;
                     _detalleReposicion.DOCUMENTO_ID = objData.DocumentoId;
@@ -768,9 +800,10 @@
                 int tipoDoc = 0;
                 int.TryParse(dr.TIPO_DOCUMENTO, out tipoDoc);
 
+                var AnioActo = new DateTime(dr.ANIO_ACTO, 1, 1);
                 DetalleReposicion detalleReposicion = new DetalleReposicion
                 {
-                    AnioActo = dr.ANIO_ACTO,
+                   
                     ConservacionEjecutada = dr.CONSERVACION_EJECUTADA,
                     DAPMen10Ejecutada = dr.DAP_MEN_10_EJECUTADA,
                     DocumentoId = dr.DOCUMENTO_ID,

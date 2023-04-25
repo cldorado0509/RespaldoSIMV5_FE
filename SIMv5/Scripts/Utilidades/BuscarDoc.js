@@ -169,15 +169,12 @@ $(document).ready(function () {
         noDataText: "Sin datos para mostrar",
         showBorders: true,
         paging: {
-            pageSize: 10
+            pageSize: 7,
+            enabled: true
         },
         pager: {
             showPageSizeSelector: true,
-            allowedPageSizes: [5, 10, 20, 50]
-        },
-        filterRow: {
-            visible: true,
-            emptyPanelText: 'Arrastre una columna para agrupar'
+            allowedPageSizes: [7, 10, 20, 50]
         },
         selection: {
             mode: 'single'

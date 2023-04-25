@@ -30,7 +30,7 @@
         public DateTime FechaActo { get; set; }
 
         [JsonProperty("anioActo")]
-        public int AnioActo { get; set; }
+        public DateTime AnioActo { get; set; }
 
         [JsonProperty("talaEjecutada", Required = Required.Always)]
         [Required]

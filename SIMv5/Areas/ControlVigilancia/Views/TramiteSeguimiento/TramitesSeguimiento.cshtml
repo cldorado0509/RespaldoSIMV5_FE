@@ -21,7 +21,7 @@
 </script>
 <br />
 
-<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/tramiteseguimiento.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/tramiteseguimiento.js?v=1.6")"></script>
 <style>
     .dx-button .dx-icon {
         font-size: 8px;
@@ -43,14 +43,24 @@
         </div>
         <div>
             <div id="popExportar"></div>
-            <div id="GidListado"></div>
-            <br />
+
             @{
                 if (Model.CanInsert)
                 {
                     <div id="btnNuevo"></div>
                 }
+                if (Model.CanRead)
+                {
+                    <div id="btnReporte"></div>
+                }
             }
+            <div id="GidListado"></div>
+            <br />
+
+            <div id="popupReporte">
+                <iframe src="" id="iframeReporte" style="width:98%;height:100%;border:none;padding:0px;" frameborder="0" scrolling="no"></iframe>
+            </div>
+
             <div id="PopupNuevaRepo">
                 <div class="form-horizontal">
                     <div class="row">

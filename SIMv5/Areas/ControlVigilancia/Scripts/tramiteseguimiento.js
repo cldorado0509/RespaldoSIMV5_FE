@@ -269,7 +269,7 @@ $(document).ready(function () {
                                                         }).done(function (data) {
                                                             if (data !== null) {
                                                                 txtRadicadoSTN.option("value", data.radicado);
-                                                              /*  txtTalaEje.option("value", data.talaEjecutada);*/
+                                                                /*  txtTalaEje.option("value", data.talaEjecutada);*/
 
                                                                 popupNewControl.show();
                                                             }
@@ -365,7 +365,7 @@ $(document).ready(function () {
                                     cboEstadoSTN.reset();
                                     txtRadicadoSTN.reset();
                                     txtTramiteSTN.reset();
-                               
+
                                     popupNewControl.show();
                                 }
                             });
@@ -579,7 +579,7 @@ $(document).ready(function () {
             e.component.columnOption('DIRECCION', 'visible', false);
             e.component.columnOption('ENTIDAD_PUBLICA', 'visible', false);
             e.component.endUpdate();
-        },  
+        },
         onSelectionChanged: function (selectedItems) {
             var data = selectedItems.selectedRowsData[0];
             if (data) {
@@ -587,7 +587,7 @@ $(document).ready(function () {
             }
         }
     });
-   
+
     $("#popDocumento").dxPopup({
         width: 900,
         height: 800,
@@ -609,7 +609,7 @@ $(document).ready(function () {
             message: "El CM es requerido!"
         }]
     }).dxTextBox("instance");
-    
+
     var txtTramiteSTN = $("#txtTramiteSTN").dxTextBox({
         placeholder: "Ingrese el número del trámite SIM...",
         value: "",
@@ -651,7 +651,7 @@ $(document).ready(function () {
         }
     }).dxPopup("instance");
 
-   
+
 
 
     var cboTecnico = $("#cboTecnico").dxSelectBox({
@@ -820,7 +820,7 @@ $(document).ready(function () {
     }).dxTextBox("instance");
 
     var txtAnioRadicado = $("#txtAnioRadicado").dxNumberBox({
-        readOnly : false,
+        readOnly: false,
         value: "0",
         format: "###0",
     }).dxNumberBox("instance");
@@ -837,7 +837,7 @@ $(document).ready(function () {
     }).dxNumberBox("instance");
 
 
-   
+
     var txtdAPMen10Autorizada = $("#txtdAPMen10Autorizada").dxNumberBox({
         value: "0",
         format: "#,##0",
@@ -1196,7 +1196,7 @@ $(document).ready(function () {
                 }).fail(function (jqxhr, textStatus, error) {
                     DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
                 });
-            
+
 
         }
     });
@@ -1249,7 +1249,7 @@ $(document).ready(function () {
 
             var coordenadaX = txtCoordenadaX.option("value");
             var coordenadaY = txtCoordenadaY.option("value");
-          
+
             var params = {
                 id: id, cm: cm, asunto: asunto, proyecto: proyecto, codigoSolicitud: codigoSolicitud, codigoActoAdministrativo: codigoActoAdministrativo,
                 talaAutorizada: talaAutorizada, talaSolicitada: talaSolicitada, dAPMen10Solicitada: dAPMen10Solicitada, dAPMen10Autorizada: dAPMen10Autorizada,
@@ -1264,7 +1264,7 @@ $(document).ready(function () {
                 inversionMedidaAdicionalMantenimiento: inversionMedidaAdicionalMantenimiento, cantidadDestoconado: cantidadDestoconado,
                 inversionMedidaAdicionalDestoconado: inversionMedidaAdicionalDestoconado, cantidadLevantamientoPiso: cantidadLevantamientoPiso,
                 inversionMedidaAdicionalLevantamientoPiso: inversionMedidaAdicionalLevantamientoPiso, pagoFondoVerdeMetropolitano: pagoFondoVerdeMetropolitano,
-                nombreProyecto: nombreProyecto 
+                nombreProyecto: nombreProyecto
             };
 
             var _Ruta = $('#SIM').data('url') + "ControlVigilancia/api/TramitesNuevosApi/GuardarReposicion";
@@ -1328,7 +1328,7 @@ $(document).ready(function () {
             });
         }
     });
-  
+
     $("#btnVerActoPpal").dxButton({
         icon: 'exportpdf',
         hint: 'Ver documento ...',
@@ -1449,7 +1449,7 @@ $(document).ready(function () {
     });
 
     cboAsuntos._options.value
-    
+
     var pupupCM = $("#PupupCM").dxPopup({
         width: 1300,
         height: "auto",
@@ -1457,6 +1457,25 @@ $(document).ready(function () {
         title: "Información del CM"
     }).dxPopup("instance");
 
+
+    $("#btnReporte").dxButton({
+        text: "Reporte",
+        stylingMode: "contained",
+        type: "default",
+        height: 30,
+        onClick: function () {
+            popupReporte.show();
+            let url = $('#SIM').data('url') + 'ControlVigilancia/TramiteSeguimiento/GetReporte';
+            $('#iframeReporte').attr('src', url);
+        }
+    });
+
+    var popupReporte = $("#popupReporte").dxPopup({
+        width: 1200,
+        height: 600,
+        hoverStateEnabled: true,
+        title: "Reporte"
+    }).dxPopup("instance");
 
     var PupupDocumentosTramite = $("#PupupDocumentosTramite").dxPopup({
         width: 1000,
@@ -1525,4 +1544,3 @@ var ControlDataSource = new DevExpress.data.CustomStore({
         return d.promise();
     }
 });
-

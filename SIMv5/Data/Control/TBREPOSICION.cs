@@ -77,10 +77,10 @@
         public string PROYECTO { get; set; }
 
         [Column("COORDENADAX")]
-        public decimal COORDENADAX { get; set; }
+        public float COORDENADAX { get; set; }
 
         [Column("COORDENADAY")]
-        public decimal COORDENADAY { get; set; }
+        public float COORDENADAY { get; set; }
 
         [Column("TIPO_MEDIDAADICIONAL_ID")]
         public decimal? TIPO_MEDIDAADICIONAL_ID { get; set; }

@@ -1,6 +1,5 @@
 ﻿namespace SIM.Areas.ControlVigilancia.Controllers
 {
-    using DevExpress.Web.ASPxHtmlEditor.Internal;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SIM.Areas.ControlVigilancia.Models;
@@ -12,6 +11,9 @@
     using System.Linq;
     using System.Web.Http;
 
+    /// <summary>
+    /// Apis' Control de Seguimiento a Trámites Nuevos
+    /// </summary>
     [Route("api/[controller]", Name = "TramitesNuevosApi")]
     public class TramitesNuevosApiController : ApiController
     {
@@ -38,7 +40,7 @@
             dynamic modelData;
             datosConsulta resultado = new datosConsulta();
 
-            model = dbSIM.V_SEGUIMIENTO_TRAMITES_NUEVOS.Where(f => f.ES_TRAMITE_NUEVO == "1").OrderBy(f => f.CODIGO_SOLICITUD);
+            model = dbSIM.TBREPOSICION.Where(f => f.ES_TRAMITE_NUEVO == "1").OrderBy(f => f.CODIGO_SOLICITUD);
             modelData = model;
             IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
 
@@ -51,6 +53,11 @@
             return resultado;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerReposicion")]
         public JObject ObtenerReposicion(string Id)
         {
@@ -117,6 +124,43 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="sort"></param>
+        /// <param name="group"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="searchExpr"></param>
+        /// <param name="comparation"></param>
+        /// <param name="tipoData"></param>
+        /// <param name="noFilterNoRecords"></param>
+        /// <returns></returns>
+        public datosConsulta GetReposicionesReporte(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords)
+        {
+
+            datosConsulta resultado = new datosConsulta();
+            var model = dbSIM.Database.SqlQuery<V_REPOCISIONES>(@"SELECT r.id,r.codigo_solicitud,r.codigo_actoadministrativo,r.tala_autorizado,r.dap_men_10_autorizado,r.volumen_autorizado,r.trasplante_autorizado,r.poda_autorizado,r.conservacion_autorizado,r.reposicion_autorizado,r.tipo_medidaid,r.autorizado,r.observaciones,r.cm,r.asunto,r.coordenadax,r.coordenaday,r.tipo_medidaadicional_id,tma.nombre As TipoMedidaAdicional,r.medida_adicional_asignada,r.proyecto,r.nro_lenios_solicitados,r.valoracion_inventario_forestal,r.valoracion_tala,r.inversion_reposicion_minima,r.inversion_medidas_adicionales,r.inversion_medida_adicional_siembra,r.cantidad_mantenimiento,r.inversion_medida_adicional_mantenimiento,r.cantidad_destoconado,r.inversion_medida_adicional_destoconado,r.cantidad_levantamiento_piso,r.inversion_medida_adicional_levantamiento_piso,r.pago_fondo_verde_metropolitano,r.es_tramite_nuevo,r.reposicion_propuesta,r.reposicion_minima_obligatoria,r.nro_lenios_autorizados,r.tala_solicitada,r.dap_men_10_solicitado,r.trasplante_solicitado,r.poda_solicitado,r.conservacion_solicitado,r.nombre_proyecto,dr.tipo_documento,dr.numero_acto,dr.fecha_acto,EXTRACT(year FROM dr.fecha_acto)anio_acto,dr.tala_ejecutada,dr.id iddetail,dr.dap_men_10_ejecutada,dr.volumen_ejecutado,dr.trasplante_ejecutado,dr.poda_ejecutada,dr.conservacion_ejecutada,dr.reposicion_ejecutada,dr.medida_adicional_ejecutada,dr.fecha_control,dr.id_usuariovisita,dr.observaciones_visita as ObservacionVisita,dr.fecha_visita as  FechaVisita,dr.radicado_visita as RadicadoVisita,dr.fecha_radicado_visita ,proy.direccion,proy.nombre as NombreProyecto,proy.entidad_publica,mun.Nombre as Municipio,r.codigo_tramite,f.Nombres || ' ' || f.Apellidos as Tecnico FROM  control.tbreposicion r LEFT JOIN control.tipo_medidaadicional  tma ON tma.id = r.tipo_medidaadicional_id LEFT JOIN control.tbdetalle_reposicion  dr ON dr.reposicion_id = r.id LEFT JOIN tramites.tbproyecto proy ON r.cm = proy.cm LEFT JOIN tramites.tbmunicipio           mun ON mun.codigo_municipio = proy.codigo_municipio LEFT JOIN tramites.tbfuncionario  f ON f.codfuncionario = dr.id_usuariovisita WHERE r.es_tramite_nuevo = '1'");
+         
+
+            resultado.numRegistros = model.Count();
+            if (skip == 0 && take == 0) resultado.datos = model.ToList();
+            else resultado.datos = model.Skip(skip).Take(take).ToList();
+
+            return resultado;
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="radicado"></param>
+        /// <param name="anio"></param>
+        /// <param name="cm"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerActuacionesCM")]
         public JObject ObtenerActuacionesCM(string radicado, string anio, string cm)
         {
@@ -157,6 +201,13 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="radicado"></param>
+        /// <param name="anio"></param>
+        /// <param name="cm"></param>
+        /// <returns></returns>
         public List<Asunto> ObtenerActosCM(string radicado, string anio, string cm)
         {
             List<Asunto> actosAsunto = new List<Asunto>();
@@ -300,6 +351,11 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cm"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerCM")]
         public JObject ObtenerCM(string cm)
         {
@@ -341,6 +397,12 @@
 
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tramite"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerInformeTecnico")]
         public JArray ObtenerInformeTecnico(int tramite)
         {
@@ -360,7 +422,7 @@
                     foreach (TBINDICEDOCUMENTO tBINDICEDOCUMENTO in indDocTram)
                     {
                         var indDocSel = this.dbSIM.TBINDICEDOCUMENTO.Where(f => f.CODDOCUMENTO == tBINDICEDOCUMENTO.CODDOCUMENTO && f.CODTRAMITE == tBINDICEDOCUMENTO.CODTRAMITE).ToList();
-                        asunto.Id = tBINDICEDOCUMENTO.CODDOCUMENTO;
+                        asunto.Id = tBINDICEDOCUMENTO.ID_INDICE_DOCUMENTO;
                         asunto.TramiteId = tBINDICEDOCUMENTO.CODTRAMITE.Value;
                         asunto.DocumentoId = tBINDICEDOCUMENTO.CODDOCUMENTO;
                         asunto.FechaRegistro = tBINDICEDOCUMENTO.FECHAREGISTRO;
@@ -403,6 +465,11 @@
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerActos")]
         public datosConsulta ObtenerActos(string Id)
         {
@@ -430,6 +497,12 @@
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CM"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerListadoActos")]
         public datosConsulta ObtenerListadoActos(string CM)
         {
@@ -452,6 +525,11 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CM"></param>
+        /// <returns></returns>
         public List<Asunto> ObtenerActosCM(string CM)
         {
             List<Asunto> actosAsunto = new List<Asunto>();
@@ -502,6 +580,12 @@
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerControles")]
         public datosConsulta ObtenerControles(string Id)
         {
@@ -541,6 +625,11 @@
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet, ActionName("GetTiposMedidaAdicional")]
         public JArray GetTiposMedidaAdicional()
         {
@@ -563,6 +652,11 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objData"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GuardarReposicion")]
         public object GuardarReposicion(Reposicion objData)
         {
@@ -674,6 +768,11 @@
             return new { resp = "OK", mensaje = "Registro almacenado correctamente!" };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objData"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("GuardarControl")]
         public object GuardarControl(SeguimientoTramiteNuevo objData)
         {
@@ -722,6 +821,11 @@
             return new { resp = "OK", mensaje = "Registro almacenado correctamente!" };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerRegistroControl")]
         public JObject ObtenerRegistroControl(string Id)
         {
@@ -757,6 +861,12 @@
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("EliminarReposicion")]
         public object EliminarReposicion(string id)
         {
@@ -788,6 +898,10 @@
             public IEnumerable<dynamic> datos;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet, ActionName("GetTecnicos")]
         public JArray GetTecnicos()
         {
@@ -811,6 +925,11 @@
             }
         }
         
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet, ActionName("GetEstados")]
         public JArray GetEstados()
         {
@@ -829,6 +948,12 @@
             }
         }
        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerTramiteDocumento")]
         public JObject ObtenerTramiteDocumento(string id)
         {
@@ -858,7 +983,13 @@
                 throw exp;
             }
         }
-                        
+          
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet, ActionName("EliminarSeguimiento")]
         public object EliminarSeguimiento(string id)
         {

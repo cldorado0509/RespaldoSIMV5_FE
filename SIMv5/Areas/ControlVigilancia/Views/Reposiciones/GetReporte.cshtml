@@ -1,0 +1,48 @@
+﻿@using SIM.Properties
+@{
+    ViewBag.Title = "Seguimiento y Control Reposiciones";
+    Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+}
+
+@model SIM.Areas.Seguridad.Models.PermisosRolModel
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+
+</script>
+<br />
+<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/reposicionesReporte.js?v=2.2")"></script>
+<style>
+    .dx-button .dx-icon {
+        font-size: 8px;
+        margin-right: 0px;
+        padding: 0px;
+    }
+
+    .dx-button-has-icon .dx-button-content {
+        padding: 0px;
+    }
+</style>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h2 class="panelSIM-title">
+                <label class="header">Listado de Seguimiento Reposiciones</label>
+            </h2>
+        </div>
+        <div>
+          <div id="GidListado"></div>
+         <br />
+       </div>
+        </div>
+</div>

@@ -22,8 +22,9 @@
         public int? PODA_AUTORIZADO { get; set; }
         public int? CONSERVACION_AUTORIZADO { get; set; }
         public int? REPOSICION_AUTORIZADO { get; set; }
-        public int? TIPO_MEDIDAID { get; set; }
+        public int? TIPO_MEDIDAID { get; set; } 
         public int? AUTORIZADO { get; set; }
+        public int? IDDETAIL     { get; set; }
         public string OBSERVACIONES { get; set; }
         public string CM { get; set; }
         public string ASUNTO { get; set; }
@@ -78,6 +79,9 @@
         public string NOMBREPROYECTO { get; set; }
         public string ENTIDAD_PUBLICA { get; set; }
         public string CODIGO_TRAMITE { get; set; }
+        public string MUNICIPIO { get; set; }
+        public string TECNICO { get; set; }
+      
 
     }
 }
