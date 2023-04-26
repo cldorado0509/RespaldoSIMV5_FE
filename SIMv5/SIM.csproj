@@ -3749,13 +3749,7 @@
     <Content Include="herramientas.html" />
     <Content Include="Scripts\Utilidades\BuscarTramite.js" />
     <Content Include="Scripts\Utilidades\Detalle.js" />
-    <Content Include="Web%28Pruebas%29.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="Properties\PublishProfiles\Test.pubxml" />
-    <Content Include="Web%28Pdcion%29.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Views\Shared\_LayoutPopup.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Shared\_LayoutDashboard.cshtml" />
