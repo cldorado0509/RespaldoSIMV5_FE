@@ -781,14 +781,14 @@ $(document).ready(function () {
     }).dxTextBox("instance");
 
     var txtCoordenadaX = $("#txtCoordenadaX").dxNumberBox({
-        format :'#,##0.###### Coordenada X',
+        format :'##.###### Coordenada X',
         value: -75.000000,
         min: -76,
         max:-75
     }).dxNumberBox("instance");
 
     var txtCoordenadaY = $("#txtCoordenadaY").dxNumberBox({
-        format: '#,##0.###### Coordenada Y',
+        format: '#.###### Coordenada Y',
         value: 6.000000,
         min: 6,
         max: 7,

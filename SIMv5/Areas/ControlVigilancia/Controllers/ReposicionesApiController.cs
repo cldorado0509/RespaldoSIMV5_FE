@@ -8,6 +8,7 @@
     using SIM.Data.Tramites;
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Web.Http;
 
@@ -666,8 +667,8 @@
                         _Reposicion.TALA_AUTORIZADO = objData.TalaAutorizada;
                         _Reposicion.TRASPLANTE_AUTORIZADO = objData.TransplanteAutorizado;
                         _Reposicion.VOLUMEN_AUTORIZADO = objData.VolumenAutorizado;
-                        _Reposicion.COORDENADAX = objData.CoordenadaX != null? objData.CoordenadaX.Value:0;
-                        _Reposicion.COORDENADAY = objData.CoordenadaY != null? objData.CoordenadaY.Value:0;
+                        _Reposicion.COORDENADAX = objData.CoordenadaX != null? objData.CoordenadaX.Value :0;
+                        _Reposicion.COORDENADAY = objData.CoordenadaY != null? objData.CoordenadaY.Value : 0;
                         _Reposicion.TIPO_MEDIDAADICIONAL_ID = objData.TipoMedidaId;
                         _Reposicion.ES_TRAMITE_NUEVO = "0";
                         _Reposicion.NOMBRE_PROYECTO = objData.NombreProyecto;

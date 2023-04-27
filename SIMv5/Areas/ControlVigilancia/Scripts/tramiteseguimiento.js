@@ -953,12 +953,22 @@ $(document).ready(function () {
         format: "#,##0",
 
     }).dxNumberBox("instance");
+
     var txtCoordenadaX = $("#txtCoordenadaX").dxNumberBox({
-        value: "",
+        format: '##.###### Coordenada X',
+        value: -75.000000,
+        min: -76,
+        max: -75
     }).dxNumberBox("instance");
+
     var txtCoordenadaY = $("#txtCoordenadaY").dxNumberBox({
-        value: "",
+        format: '#.###### Coordenada Y',
+        value: 6.000000,
+        min: 6,
+        max: 7,
     }).dxNumberBox("instance");
+
+    
     const dataini = [{
         id: 0,
         nombre: '...'
