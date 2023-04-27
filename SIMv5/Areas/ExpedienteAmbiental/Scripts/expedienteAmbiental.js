@@ -1,4 +1,5 @@
 ﻿var idExpediente;
+var idExpedienteAmb = 0;
 var idTercero;
 var idInstalacion;
 var idPuntoControl=0;
@@ -62,6 +63,7 @@ $(document).ready(function () {
             { dataField: 'direccion', width: '15%', caption: 'Dirección', alignment: 'center' },
             { dataField: 'clasificacionExpediente', width: '15%', caption: 'Clasificación', alignment: 'center' },
             {
+                visible: canEdit,
                 width: 40,
                 alignment: 'center',
                 cellTemplate: function (container, options) {
@@ -77,6 +79,7 @@ $(document).ready(function () {
                                     Id: options.data.idExpediente
                                 }).done(function (data) {
                                     if (data !== null) {
+                                        idExpedienteAmb = data.idExpediente;
                                         txtCM.option("value", data.cm);
                                         txtNombreExpediente.option("value", data.nombre);
                                         txtDescripcionExpediente.option("value", data.descripcion);
@@ -93,6 +96,7 @@ $(document).ready(function () {
                 }
             },
             {
+                visible: canDelete,
                 width: '5%',
                 caption: "Eliminar",
                 alignment: 'center',
@@ -194,6 +198,7 @@ $(document).ready(function () {
                                     { dataField: 'expedienteDocumentalLabel', width: '35%', caption: 'Expediente Documental', dataType: 'string' },
                                     { dataField: 'expedienteDocumentalId', width: '5%', caption: 'IdEdoc', dataType: 'string', visible:false },
                                     {
+                                        visible: canEdit,
                                         width: 40,
                                         alignment: 'center',
                                         cellTemplate: function (container, options) {
@@ -228,6 +233,7 @@ $(document).ready(function () {
                                         }
                                     },
                                     {
+                                        visible: canDelete,
                                         width: '5%',
                                         caption: "Eliminar",
                                         alignment: 'center',
@@ -264,6 +270,7 @@ $(document).ready(function () {
                                         }
                                     },
                                     {
+                                        visible: canEdit,
                                         width: '5%',
                                         caption: "Vincular Expediente Documental",
                                         alignment: 'center',
@@ -325,6 +332,7 @@ $(document).ready(function () {
                                                 { dataField: 'tipoEstadoPuntoControl', width: '25%', caption: 'Nombre', dataType: 'string' },
                                                 { dataField: 'observacion', width: '55%', caption: 'Observación', dataType: 'string' },
                                                 {
+                                                    visible: canEdit,
                                                     width: 40,
                                                     caption: "Editar",
                                                     alignment: 'center',
@@ -356,6 +364,7 @@ $(document).ready(function () {
                                                     }
                                                 },
                                                 {
+                                                    visible: canDelete,
                                                     width: 40,
                                                     caption: "Eliminar",
                                                     alignment: 'center',
@@ -432,6 +441,7 @@ $(document).ready(function () {
                                                 { dataField: 'fechaRegistro', width: '10%', caption: 'Fecha Registro', dataType: 'date' },
                                                 { dataField: 'funcionario', width: '15%', caption: 'Funcionario', dataType: 'string' },
                                                 {
+                                                    visible: canEdit,
                                                     width: 60,
                                                     caption: "Editar",
                                                     alignment: 'center',
@@ -462,6 +472,7 @@ $(document).ready(function () {
                                                     }
                                                 },
                                                 {
+                                                    visible: canDelete,
                                                     width: 60,
                                                     caption: "Eliminar",
                                                     alignment: 'center',
@@ -536,6 +547,7 @@ $(document).ready(function () {
             $('#asistente').css('visibility', 'hidden');
             if (data) {
                 idExpediente = data.idExpediente;
+                idExpedienteAmb = data.idExpediente; 
             }
         }
     });
@@ -1007,7 +1019,7 @@ $(document).ready(function () {
         onClick: function () {
 
             DevExpress.validationEngine.validateGroup("ProcesoGroup");
-            var id = idExpediente;
+            var id = idExpedienteAmb;
 
             var nombre = txtNombreExpediente.option("value");
             if (nombre === "") return;
@@ -1016,7 +1028,7 @@ $(document).ready(function () {
             var direccion = txtDireccionExpediente.option("value");
             var municipioId = cboMunicipio.option("value").Id;
             var clasificacionId = cboClasificacion.option("value").idClasificacionExpediente;
-            var cm = '';
+            var cm = txtCM.option("value");
             var params = {
                 idExpediente: id, nombre: nombre, cm: cm, descripcion: descripcion, clasificacionExpedienteId: clasificacionId, municipioId: municipioId, direccion: direccion, terceroId: idTercero, instalacionId : idInstalacion 
             };

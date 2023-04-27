@@ -23,7 +23,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
 
-        [Authorize]
+        [Authorize(Roles = "VFACTURACION")]
         public ActionResult Index()
         {
             return View();

@@ -509,7 +509,12 @@ namespace SIM.Utilidades
 
                     if (palabras.Length > 0)
                     {
-                        if (palabras.Length > 3 && palabras[0].ToUpper().Trim() == "CONTROL" && palabras[1].ToUpper().Trim() == "Y" && palabras[2].ToUpper().Trim() == "SEGUIMIENTO")
+                        if (palabras.Length > 3 && 
+                                (
+                                    (palabras[0].ToUpper().Trim() == "XCONTROL" && palabras[1].ToUpper().Trim() == "Y" && palabras[2].ToUpper().Trim() == "SEGUIMIENTO") ||
+                                    (palabras[1].ToUpper().Trim() == "CONTROL" && palabras[2].ToUpper().Trim() == "Y" && palabras[3].ToUpper().Trim() == "SEGUIMIENTO")
+                                )
+                            )
                         {
                             int posActual = 0;
                             if (palabras.Contains("permiso"))
@@ -526,7 +531,8 @@ namespace SIM.Utilidades
                                     }
                                     else
                                     {
-                                        valor += " " + palabras[i];
+                                        if (palabras[i] != "")
+                                            valor += " " + palabras[i];
                                     }
                                 }
 
@@ -560,7 +566,7 @@ namespace SIM.Utilidades
                                 indices.Add(new INDICE { CODINDICE = 3921, VALOR = valor.Trim(), TIPO = 0 });
                             }
 
-                            if (lineaTexto.ToUpper().IndexOf("X") > lineaTexto.ToUpper().IndexOf("SI") && lineaTexto.ToUpper().IndexOf("X") < lineaTexto.ToUpper().IndexOf("NO"))
+                            if ((lineaTexto.Substring(3).ToUpper().IndexOf("X") > lineaTexto.Substring(3).ToUpper().IndexOf("SI") || lineaTexto.Substring(3).ToUpper().IndexOf("X") > lineaTexto.Substring(3).ToUpper().IndexOf("SÍ")) && lineaTexto.Substring(3).ToUpper().IndexOf("X") < lineaTexto.Substring(3).ToUpper().IndexOf("NO"))
                             {
                                 indices.Add(new INDICE { CODINDICE = 3922, VALOR = "S", TIPO = 4 });
                             }
@@ -583,7 +589,14 @@ namespace SIM.Utilidades
                             }
                             else if (!asuntoAsignado)
                             {
-                                string asunto = string.Join(" ", palabras, 0, palabras.Length).Substring(1).Trim();
+                                string asunto;
+
+                                if (palabras[1].ToUpper() == "CONTROL")
+                                {
+                                    asunto = string.Join(" ", palabras, 0, 7).Substring(1).Trim().Replace("Número", "");
+                                }
+                                else
+                                    asunto = string.Join(" ", palabras, 0, palabras.Length).Substring(1).Trim();
 
                                 // Asunto
                                 indices.Add(new INDICE { CODINDICE = 321, VALOR = asunto, TIPO = 0 });

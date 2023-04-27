@@ -11,6 +11,8 @@
     using System.Text;
     using DevExpress.Pdf;
     using System.Drawing;
+    using SIM.Areas.Seguridad.Models;
+    using SIM.Areas.Seguridad.Class;
 
     /// <summary>
     ///Controller Expedientes
@@ -40,7 +42,18 @@
             ViewBag.CodFuncionario = codFuncionario;
             ViewBag.CodigoUnidadDocumental = SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString();
 
-            return View();
+            var idForma = 0;
+            int.TryParse(SIM.Utilidades.Data.ObtenerValorParametro("IdFormaExpedientesAmbientales").ToString(), out idForma);
+            
+            
+            PermisosRolModel permisosRolModel = new PermisosRolModel { CanDelete=false, CanInsert=false, CanPrint=false, CanRead= false, CanUpdate = false, IdRol = 0 };
+
+            Permisos permisos = new Permisos();
+            permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, idUsuario);
+           
+            ViewBag.CodFuncionario = codFuncionario;
+            return View(permisosRolModel);
+
         }
 
         /// <summary>

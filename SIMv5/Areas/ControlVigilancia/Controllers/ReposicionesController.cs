@@ -29,8 +29,12 @@
                 int idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
                 codFuncionario = clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario);
 
+                var idForma = 0;
+                int.TryParse(SIM.Utilidades.Data.ObtenerValorParametro("IdFormaReposiciones").ToString(), out idForma);
+
+
                 Permisos permisos = new Permisos();
-                permisosRolModel = permisos.ObtenerPermisosRolForma(10564, idUsuario);
+                permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, idUsuario);
              
             }
 

@@ -8,6 +8,10 @@
     using System;
     using System.Security.Claims;
     using System.Web.Mvc;
+
+    /// <summary>
+    /// Derechos de Petición Controller
+    /// </summary>
     public class DerechoPeticionController : Controller
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
@@ -25,8 +29,12 @@
                 int idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
                 codFuncionario = clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario);
 
+                var idForma = 0;
+                int.TryParse(SIM.Utilidades.Data.ObtenerValorParametro("IdFormaDerechoPeticion").ToString(), out idForma);
+
+
                 Permisos permisos = new Permisos();
-                permisosRolModel = permisos.ObtenerPermisosRolForma(10565, idUsuario);
+                permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, idUsuario);
             }
 
             ViewBag.CodFuncionario = codFuncionario;

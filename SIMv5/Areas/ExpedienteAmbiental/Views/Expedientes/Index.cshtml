@@ -1,9 +1,24 @@
-﻿
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
 @{
     ViewBag.Title = "Expedientes Ambientales";
     Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
 
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+
+</script>
 
 <script>
     var CodigoFuncionario = @(ViewBag.CodFuncionario);
@@ -11,7 +26,7 @@
 </script>
 <br />
 
-<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/expedienteAmbiental.js?v=3.7")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/expedienteAmbiental.js?v=3.9")"></script>
 
 <style>
     .dx-button .dx-icon {
@@ -63,7 +78,7 @@
             width: 100%;
         }
 
-/*    .dx-list .dx-scrollable-content {
+    /*    .dx-list .dx-scrollable-content {
         column-count: 4;
         -moz-column-count: 4;
     }*/
@@ -103,7 +118,13 @@
             </h3>
         </div>
         <div>
-            <div id="btnNuevoExpediente"></div>
+            @{
+                if (Model.CanInsert)
+                {
+                    <div id="btnNuevoExpediente"></div>
+                }
+            }
+
             <div id="GridListado"></div>
             <br />
             <div id="popupNuevoExpediente">
@@ -179,7 +200,12 @@
                 <div id="asistente">
                     <h3>Listado de Puntos de Control asociados con el Expediente Ambiental</h3>
                     <div class="divDetalle">
-                        <div id="btnNuevoPuntoControl"></div>
+                        @{
+                            if (Model.CanInsert)
+                            {
+                                <div id="btnNuevoPuntoControl"></div>
+                            }
+                        }
                         <div id="GidListadoPuntosControl"></div>
                         <br />
                         <div id="popupNuevoPuntoControl">
@@ -265,7 +291,13 @@
                             <div class="col-sm-10" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;" id="lblNombreDivPuntoControlEstado"></div>
                         </div>
                         <br />
-                        <div id="btnNuevoEstadoPuntoControl"></div>
+                        @{
+                            if (Model.CanInsert)
+                            {
+                                <div id="btnNuevoEstadoPuntoControl"></div>
+                            }
+                        }
+                        
                         <div id="GidListadoEstadosPuntosControl"></div>
                         <br />
                         <div id="popupEstadoPuntoControl">
@@ -297,7 +329,12 @@
                             <div class="col-sm-10" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;" id="lblNombreDivPuntoControlAnotacion"></div>
                         </div>
                         <br />
-                        <div id="btnNuevoAnotacionPuntoControl"></div>
+                        @{
+                            if (Model.CanInsert)
+                            {
+                               <div id="btnNuevoAnotacionPuntoControl"></div>
+                            }
+                        }
                         <div id="GidListadoAnotacionesPuntosControl"></div>
                         <br />
                         <div id="popupAnotacionPuntoControl">

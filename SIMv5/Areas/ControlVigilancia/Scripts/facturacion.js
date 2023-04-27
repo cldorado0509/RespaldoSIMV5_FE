@@ -85,7 +85,7 @@ $(document).ready(function () {
             enabled: false,
         },
         filterRow: {
-            visible: false,
+            visible: true,
         },
         groupPanel: {
             visible: false,
@@ -112,13 +112,7 @@ $(document).ready(function () {
                 caption: 'DOC.',
                 dataType: 'number',
             }, {
-                dataField: 'PARA',
-                width: '12%',
-                caption: 'PARA',
-                dataType: 'string',
-            }, {
                 dataField: 'ASUNTO',
-                width: '15%',
                 caption: 'ASUNTO',
                 dataType: 'string',
             }, {
@@ -143,8 +137,14 @@ $(document).ready(function () {
                 caption: 'CM',
                 dataType: 'string',
             }, {
+                dataField: 'FECHARADICADO',
+                width: '10%',
+                caption: 'FECHA RADICADO',
+                dataType: 'date',
+                format: 'dd/MM/yyyy'
+            }, {
                 dataField: 'RADICADO',
-                width: '5%',
+                width: '8%',
                 caption: 'RADICADO',
                 dataType: 'string',
             }, {
@@ -154,7 +154,7 @@ $(document).ready(function () {
                 dataType: 'string',
             }, {
                 caption: '',
-                width: '6%',
+                width: '4%',
                 alignment: 'center',
                 cellTemplate: function (cellElement, cellInfo) {
                     $('<div />').dxButton(
