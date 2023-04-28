@@ -591,7 +591,7 @@ namespace SIM.Utilidades
                             {
                                 string asunto;
 
-                                if (palabras[1].ToUpper() == "CONTROL")
+                                if (palabras[1].ToUpper() == "CONTROL" && palabras.Length > 6)
                                 {
                                     asunto = string.Join(" ", palabras, 0, 7).Substring(1).Trim().Replace("Número", "");
                                 }

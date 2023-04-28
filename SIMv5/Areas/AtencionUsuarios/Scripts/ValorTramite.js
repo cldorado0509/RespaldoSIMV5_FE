@@ -272,13 +272,13 @@
     var CantItem = $("#CantItem").dxNumberBox({
         value: 1,
         onValueChanged(data) {
-            var TipoTra = TipoTra.option("value");
+            var TipoTra = TipoTramite;
             Calculado = false;
             if (TipoTra == 26) {
                 var Normas = CantNormas.option("value");
                 var Lineas = CantLineas.option("value");
-                var horasinfE = (2 * (data.value + (5 * (Normas))));
-                var duracionVE = (2 * data.value) + (2 * Normas);
+                var horasinfE = (2 * Items) + (5 * Normas);
+                var duracionVE = (2 * Items) + (2 * Normas);
                 if (Lineas > 2) {
                     horasinfE += (Lineas - 2);
                     duracionVE += (Lineas - 2);
@@ -292,16 +292,46 @@
     var CantNormas = $("#CantNormas").dxNumberBox({
         value: 0,
         visible: false,
-        onValueChanged() {
-           Calculado = false;
+        onValueChanged(data) {
+            Calculado = false;
+            var TipoTra = TipoTramite;
+            Calculado = false;
+            if (TipoTra == 26) {
+                var Normas = data.value;
+                var Lineas = CantLineas.option("value");
+                var Items = CantItem.option("value");
+                var horasinfE = (2 * Items) + (5 * Normas);
+                var duracionVE = (2 * Items) + (2 * Normas);
+                if (Lineas > 2) {
+                    horasinfE += (Lineas - 2);
+                    duracionVE += (Lineas - 2);
+                }
+                CantHorInf.option("value", Math.ceil(horasinfE));
+                DuracionVisita.option("value", Math.ceil(duracionVE));
+            }
         }
     }).dxNumberBox("instance");
 
     var CantLineas = $("#CantLineas").dxNumberBox({
         value: 0,
         visible: false,
-        onValueChanged() {
+        onValueChanged(data) {
             Calculado = false;
+            var TipoTra = TipoTramite;
+            Calculado = false;
+            if (TipoTra == 26) {
+                var Normas = CantNormas.option("value");
+                var Lineas = data.value;
+                var Items = CantItem.option("value");
+                var horasinfE = (2 * Items) + (5 * Normas);
+                var duracionVE = (2 * Items) + (2 * Normas);
+                if (Lineas > 2) {
+                    horasinfE += (Lineas - 2);
+                    duracionVE += (Lineas - 2);
+                }
+                CantHorInf.option("value", Math.ceil(horasinfE));
+                DuracionVisita.option("value", Math.ceil(duracionVE));
+            }
         }
     }).dxNumberBox("instance");
 

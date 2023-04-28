@@ -2348,6 +2348,7 @@
     <Content Include="Areas\AdministracionDocumental\Scripts\TablasRetencion.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\Atenciones.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\valorauto.js" />
+    <Content Include="Areas\AtencionUsuarios\Scripts\ValorTramite.js" />
     <Content Include="Areas\AtencionUsuarios\Scripts\VisitaTercero.js" />
     <Content Include="Areas\BPMN\Scripts\MaestroProcesos.js" />
     <Content Include="Areas\BPMN\Scripts\ModeladorBPMNProceso.js" />
@@ -3095,6 +3096,7 @@
     <Content Include="Areas\ControlVigilancia\Views\TramiteSeguimiento\GetReporte.cshtml" />
     <Content Include="Areas\ControlVigilancia\Views\Facturacion\Index.cshtml" />
     <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
+    <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
