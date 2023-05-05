@@ -586,7 +586,6 @@ $(document).ready(function () {
         readOnly: true
     }).dxTextBox("instance");
 
-
     var txtlblNombrePuntoControl = $("#txtlblNombrePuntoControl").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
@@ -598,7 +597,6 @@ $(document).ready(function () {
     var txtlblNombrePuntoControlNotas = $("#txtlblNombrePuntoControlNotas").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
-
 
     var txtlblCM = $("#txtlblCM").dxTextBox({
         readOnly: true
@@ -829,6 +827,19 @@ $(document).ready(function () {
                     loadIndicator.option("visible", false);
                     DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
                 });
+        }
+    }).dxButton("instance");
+
+
+    $("#cmdEditarNit").dxButton({
+        text: "Editar ...",
+        type: 'success',
+        height: 35,
+        onClick: function () {
+            txtRazonSocial.option("value", "");
+            loadIndicator.option("visible", false);
+            popupTercero.show();
+            $('#buscarTercero').attr('src', $('#SIM').data('url') + 'General/Tercero');
         }
     }).dxButton("instance");
 
@@ -1076,7 +1087,7 @@ $(document).ready(function () {
     }).dxButton("instance");
 
     var popupNuevoExpediente = $("#popupNuevoExpediente").dxPopup({
-        width: 800,
+        width: 900,
         height: "auto",
         dragEnabled: true,
         resizeEnabled: true,
