@@ -234,6 +234,7 @@
 
     var CantProf = $("#CantProf").dxNumberBox({
         value: 0,
+        readOnly: true,
         onValueChanged() {
             Calculado = false;
         }
@@ -241,6 +242,7 @@
 
     var CantVisitas = $("#CantVisitas").dxNumberBox({
         value: 0,
+        readOnly: true,
         onValueChanged() {
             Calculado = false;
         }
@@ -248,6 +250,7 @@
 
     var CantHorInf = $("#CantHorInf").dxNumberBox({
         value: 0,
+        readOnly: true,
         onValueChanged() {
             Calculado = false;
         }
@@ -255,6 +258,7 @@
 
     var DuracionVisita = $("#DuracionVisita").dxNumberBox({
         value: 0,
+        readOnly: true,
         onValueChanged() {
             Calculado = false;
         }
@@ -277,6 +281,7 @@
             if (TipoTra == 26) {
                 var Normas = CantNormas.option("value");
                 var Lineas = CantLineas.option("value");
+                var Items = data.value;
                 var horasinfE = (2 * Items) + (5 * Normas);
                 var duracionVE = (2 * Items) + (2 * Normas);
                 if (Lineas > 2) {

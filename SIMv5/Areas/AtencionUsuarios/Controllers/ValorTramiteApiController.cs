@@ -9,6 +9,7 @@ using O2S.Components.PDF4NET;
 using O2S.Components.PDF4NET.Graphics;
 using O2S.Components.PDF4NET.Graphics.Fonts;
 using O2S.Components.PDF4NET.Graphics.Shapes;
+using PdfSharp.Drawing;
 using SIM.Areas.AtencionUsuarios.Models;
 using SIM.Areas.GestionDocumental.Controllers;
 using SIM.Areas.Tala.Controllers;
@@ -26,6 +27,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Http;
+using static SIM.Areas.EncuestaExterna.Controllers.EncuestaExternaController;
 using static SIM.Areas.Tramites.Controllers.ProyeccionDocumentoApiController;
 
 namespace SIM.Areas.AtencionUsuarios.Controllers
@@ -531,6 +533,100 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             return "" ;
         }
 
+
+        private MemoryStream GeneraHojaParametros(ParametrosCalculo parametrosCalculo, DatosValorTramite Datos, decimal funcionario, PDFDocument _docSop)
+        {
+            MemoryStream Resp = new MemoryStream();
+            PDFPage Pagina = _docSop.AddPage();
+            PDFPen _Pen = new PDFPen(new PDFRgbColor(Color.Black), 5);
+            Pagina.Width = 2550;
+            Pagina.Height = 3300;
+            PDFImage _img = new PDFImage(System.Web.Hosting.HostingEnvironment.MapPath(@"~/Content/Images/Logo_Area.png"));
+            Pagina.Canvas.DrawImage(_img, 100, 100, _img.Width, _img.Height, 0, PDFKeepAspectRatio.KeepNone);
+            TrueTypeFont _Arial = new TrueTypeFont(System.Web.Hosting.HostingEnvironment.MapPath(@"~/Content/fonts/arialbd.ttf"), 80, true, true);
+            _Arial.Bold = true;
+            _Arial.Size = 70;
+            long _ValFact = (long)parametrosCalculo.Valor;
+            PDFTextFormatOptions tfo = new PDFTextFormatOptions();
+            tfo.Align = PDFTextAlign.TopJustified;
+            tfo.ClipText = PDFClipText.ClipNone;
+            PDFBrush brush = new PDFBrush(new PDFRgbColor(Color.Black));
+            Pagina.Canvas.DrawText("ÁREA METROPOLITANA DEL", _Arial, null, brush, 600, 120);
+            Pagina.Canvas.DrawText("VALLE DE ABURRÁ", _Arial, null, brush, 780, 210);
+            _Arial.Bold = false;
+            _Arial.Size = 40;
+            var FuncCal = (from F in dbSIM.QRY_FUNCIONARIO_ALL where F.CODFUNCIONARIO == funcionario select F.NOMBRES).FirstOrDefault();
+            Pagina.Canvas.DrawText(FuncCal != null ? FuncCal.Trim().ToUpper() : "", _Arial, null, brush, 950, 500);
+            Pagina.Canvas.DrawText("                       CÁLCULO VALOR TRÁMITE AMBIENTAL (FASE EVALUACIÓN)", _Arial, null, brush, 500, 540);
+            var Tipotra = decimal.Parse(Datos.TipoTramite);
+            var PropTramites = (from Tra in dbSIM.TBTARIFAS_TRAMITE
+                                where Tra.CODIGO_TRAMITE == Tipotra && Tra.TIPO_ACTUACION == "E"
+                                select Tra).FirstOrDefault();
+            if (PropTramites == null)
+            {
+                _docSop.Save(Resp);
+                return Resp;
+            }
+            Pagina.Canvas.DrawText("Tipo de Trámite:          ", _Arial, null, brush, 110, 700);
+            Pagina.Canvas.DrawText(PropTramites.NOMBRE.ToUpper().Trim(), _Arial, null, brush, 610, 700);
+            Pagina.Canvas.DrawText("Tercero:                  ", _Arial, null, brush, 110, 750);
+            Pagina.Canvas.DrawText(Datos.NIT + "   " + Datos.Tercero.ToUpper().Trim(), _Arial, null, brush, 610, 750);
+            Pagina.Canvas.DrawText("CM:                       ", _Arial, null, brush, 110, 800);
+            Pagina.Canvas.DrawText(Datos.CM.Trim().ToUpper(), _Arial, null, brush, 610, 800);
+            Pagina.Canvas.DrawText("Valor proyecto:           ", _Arial, null, brush, 110, 850);
+            Pagina.Canvas.DrawText(Datos.ValorProyecto.ToString("C0"), _Arial, null, brush, 610, 850);
+            Pagina.Canvas.DrawText("Valor publicación:        ", _Arial, null, brush, 110, 900);
+            Pagina.Canvas.DrawText(Datos.ValorPublicacion.ToString("C0"), _Arial, null, brush, 610, 900);
+            Pagina.Canvas.DrawText("Con soportes:             ", _Arial, null, brush, 110, 950);
+            Pagina.Canvas.DrawText((Datos.ConSoportes > 0 ? "Si" : "No"), _Arial, null, brush, 610, 950);
+            if (Datos.TipoTramite == "26")
+            {
+                Pagina.Canvas.DrawText("Nro. Trámites SINA:       ", _Arial, null, brush, 110, 1000);
+                Pagina.Canvas.DrawText(Datos.TramitesSINA + "                 " + PropTramites.S_UNIDAD + "  " + Datos.Items + "   Normas:  " + Datos.CantNormas + "   Lineas:  " + Datos.CantLineas, _Arial, null, brush, 610, 1000);
+            }
+            else
+            {
+                Pagina.Canvas.DrawText("Nro. Trámites SINA:       ", _Arial, null, brush, 110, 1000);
+                Pagina.Canvas.DrawText(Datos.TramitesSINA + "                 " + PropTramites.S_UNIDAD + "  " + Datos.Items, _Arial, null, brush, 610, 1000);
+            }
+            Pagina.Canvas.DrawRectangle(_Pen, null, 500, 1100, 900, 340, 0);
+            Pagina.Canvas.DrawText("Parámetro                               Evaluación", _Arial, null, brush, 520, 1120);
+            Pagina.Canvas.DrawText("Nro. de Profesionales", _Arial, null, brush, 550, 1190);
+            Pagina.Canvas.DrawText(Datos.NumeroProfesionales.ToString(), _Arial, null, brush, 1080, 1190);
+            Pagina.Canvas.DrawText("Nro. Visitas              ", _Arial, null, brush, 550, 1240);
+            Pagina.Canvas.DrawText(Datos.NumeroVisitas.ToString(), _Arial, null, brush, 1080, 1240);
+            Pagina.Canvas.DrawText("Nro. Horas Informe        ",  _Arial, null, brush, 550, 1290);
+            Pagina.Canvas.DrawText(Datos.HorasInforme.ToString(), _Arial, null, brush, 1080, 1290);
+            Pagina.Canvas.DrawText("Duración Visita           ", _Arial, null, brush, 550, 1340);
+            Pagina.Canvas.DrawText(Datos.DuracionVisita.ToString(), _Arial, null, brush, 1080, 1340);
+            Pagina.Canvas.DrawText("                                  Observaciones", _Arial, null, brush, 500, 1500);
+            Pagina.Canvas.DrawRectangle(_Pen, null, 110, 1550, 2140, 340, 0); 
+            Pagina.Canvas.DrawTextBox(Datos.Observaciones.Trim().ToUpper(), _Arial, brush, 140, 1570, 2000, 340, tfo);
+            Pagina.Canvas.DrawRectangle(_Pen, null, 110, 1930, 2140, 500, 0);
+            Pagina.Canvas.DrawText("                       CÁLCULO DEL VALOR DE LA EVALUACIÓN", _Arial, null, brush, 500, 1950);
+            Pagina.Canvas.DrawText("                Item                                                                                         Valor", _Arial, null, brush, 500, 2000);
+            Pagina.Canvas.DrawText("GASTOS POR SUELDOS Y HONORARIOS (A):", _Arial, null, brush, 130, 2050);
+            Pagina.Canvas.DrawText(parametrosCalculo.Sueldos.ToString("C0"), _Arial, null, brush, 1800, 2050);
+            Pagina.Canvas.DrawText("GASTOS VIAJES (B):", _Arial, null, brush, 130, 2090);
+            Pagina.Canvas.DrawText(parametrosCalculo.Viajes.ToString("C0"), _Arial, null, brush, 1800, 2090);
+            Pagina.Canvas.DrawText("GASTOS ANÁLISIS DE LABORATORIO Y OTROS TRABAJOS TÉCNICOS (C):", _Arial, null, brush, 130, 2130);
+            Pagina.Canvas.DrawText(parametrosCalculo.Otros.ToString("C0"), _Arial, null, brush, 1800, 2130);
+            Pagina.Canvas.DrawText("GASTOS ADMINISTRACIÓN 25% (D):", _Arial, null, brush, 130, 2170);
+            Pagina.Canvas.DrawText(parametrosCalculo.Admin.ToString("C0"), _Arial, null, brush, 1800, 2170);
+            _Arial.Bold = true;
+            Pagina.Canvas.DrawText("COSTO TOTAL DE LA TARIFA:", _Arial, null, brush, 130, 2240);
+            Pagina.Canvas.DrawText(parametrosCalculo.Costo.ToString("C0"), _Arial, null, brush, 1800, 2240);
+            _Arial.Bold = false;
+            Pagina.Canvas.DrawText("DETERMINACIÓN DE LOS TOPES DE LAS TARIFAS (To):", _Arial, null, brush, 130, 2300);
+            Pagina.Canvas.DrawText(parametrosCalculo.Topes.ToString("C0"), _Arial, null, brush, 1800, 2300);
+            _Arial.Bold = true;
+            Pagina.Canvas.DrawText("VALOR A CANCELAR POR TRÁMITE:", _Arial, null, brush, 130, 2340);
+            Pagina.Canvas.DrawText(parametrosCalculo.Valor.ToString("C0"), _Arial, null, brush, 1800, 2340);
+            Pagina.Canvas.DrawText("VALOR A CANCELAR POR PUBLICACIÓN:", _Arial, null, brush, 130, 2380);
+            Pagina.Canvas.DrawText(parametrosCalculo.Publicacion.ToString("C0"), _Arial, null, brush, 1800, 2380);
+            _docSop.Save(Resp);
+            return Resp;
+        }
         private MemoryStream GeneraSoporte(ParametrosCalculo parametrosCalculo, DatosValorTramite Datos, int Consecutivo, TBTARIFAS_TRAMITE Tarifas, QRY_TERCERO Tercero, decimal funcionario)
         {
             MemoryStream Resp = new MemoryStream();
@@ -714,7 +810,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             Pagina.Canvas.DrawText("AGENTE RETENEDOR DEL IMPUESTO SOBRE LAS VENTAS", _Arial, null, brush, 1400, 3000);
             Pagina.Canvas.DrawText("metropol@metropol.gov.co", _Arial, null, brush, 1400, 3050);
             Pagina.Canvas.DrawText("http://www.metropol.gov.co", _Arial, null, brush, 1400, 3100);
-            _doc.Save(Resp);
+            Resp = GeneraHojaParametros(parametrosCalculo, Datos, funcionario, _doc);
             return Resp;
         }
 
