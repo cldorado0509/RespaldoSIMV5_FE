@@ -639,7 +639,8 @@ namespace SIM.Utilidades
                             switch (palabras[0].ToUpper())
                             {
                                 case "COMPLEMENTO":
-                                    indices.Add(new INDICE { CODINDICE = 2520, VALOR = string.Join(" ", palabras, 4, palabras.Length - 4).Trim(), TIPO = 0 });
+                                    if (palabras.Length >= 4)
+                                        indices.Add(new INDICE { CODINDICE = 2520, VALOR = string.Join(" ", palabras, 4, palabras.Length - 4).Trim(), TIPO = 0 });
                                     break;
                                 case "INFORME":
                                     if (palabras.Length > 1 && palabras[1].Length > 10 && palabras[1].Substring(0, 7) == "TÉCNICO")
