@@ -6,6 +6,7 @@
     using DevExpress.Web;
     using DevExpress.Xpo;
     using DocumentFormat.OpenXml.Drawing.Charts;
+    using DocumentFormat.OpenXml.EMMA;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SIM.Data;
@@ -113,8 +114,72 @@
                     resultado.datos = null;
                     return resultado;
                 }
-
                 return resultado;
+            }
+        }
+
+        /// <summary>
+        /// Consulta de Lista de Terceros con filtros y agrupación
+        /// </summary>
+        /// <param name="IdUnidadDoc">Para paginar. Indica a partir de qué registro debe cargar</param>
+        /// <param name="Buscar">Para paginar. Indica cuantos registros debe cargar (tamaño de página)</param>
+        /// <returns>Registros resultado de la consulta</returns>
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("BuscarDoc")]
+        public JArray GetBuscarDoc(int IdUnidadDoc, string Buscar)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            string _Sql = "SELECT ID_DOCUMENTO,CODTRAMITE,CODDOCUMENTO,'' AS NOMBRE,'' AS INDICES, FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO WHERE ID_DOCUMENTO <= 0";
+            var DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+            if (Buscar == "" || Buscar == null) return JArray.FromObject(DocsEncontrados, Js);
+            try
+            {
+                if (Buscar != "" && Buscar != null)
+                {
+                    string[] _Buscar = Buscar.Split(';');
+                    if (_Buscar.Length > 0)
+                    {
+                        switch (_Buscar[0])
+                        {
+                            case "T":
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,(SELECT BUS.S_INDICE FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS WHERE BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO) AS INDICES,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODTRAMITE= " + _Buscar[1].ToString().Trim() + " ORDER BY DOC.ID_DOCUMENTO DESC";
+                                DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                break;
+                            case "F":
+                                var _condicion = _Buscar[1].ToString().Replace("\r\n", string.Empty).Replace(" ", String.Empty);
+                                //_condicion = _condicion.Replace("\\", "").Replace("\"", "");
+                                _condicion = _condicion.Replace("[", "").Replace("]", "");
+                                if (_condicion != null)
+                                {
+
+                                    _condicion = ProcesaWhereOracle(_condicion);
+                                    if (_condicion != "")
+                                    {
+                                        _Sql = ObtenerSqlDocOracle(IdUnidadDoc, _condicion);
+                                        DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                    }
+                                    else
+                                    {
+                                       return JArray.FromObject(DocsEncontrados, Js);
+                                    }
+                                }
+                                break;
+                            case "B":
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,BUS.S_INDICE AS INDICES,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.ID_DOCUMENTO DESC";
+                                DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                break;
+                        }
+                    }
+                }
+                else
+                {                
+                    return JArray.FromObject(DocsEncontrados, Js);
+                }
+                return JArray.FromObject(DocsEncontrados, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
             }
         }
 

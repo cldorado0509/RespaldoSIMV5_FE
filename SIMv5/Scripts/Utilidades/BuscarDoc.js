@@ -163,7 +163,17 @@ $(document).ready(function () {
     }
 
     $("#gridDocsEnc").dxDataGrid({
-        dataSource: DocumentosDataSource,
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "ID_DOCUMENTO",
+                loadMode: "raw",
+                load: function () {
+                    var Buscar= txtTramite.length > 0 ? 'T;' + txtTramite : txtFiltro.length > 0 ? 'F;' + txtFiltro : txtFulltext.length > 0 ? 'B;' + txtFulltext : ''
+                    return $.getJSON($("#SIM").data("url") + 'api/UtilidadesApi/BuscarDoc?IdUnidadDoc=' + UnidadDoc + '&Buscar=' + Buscar);
+                }
+            })
+        }),
+        /*dataSource: DocumentosDataSource,*/
         allowColumnResizing: true,
         loadPanel: { enabled: true, text: 'Cargando Datos...' },
         noDataText: "Sin datos para mostrar",
@@ -217,23 +227,23 @@ $(document).ready(function () {
 
 });
 
-var DocumentosDataSource = new DevExpress.data.CustomStore({
-    load: function (loadOptions) {
-        var d = $.Deferred();
-        var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
-        var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
-        $.getJSON($('#SIM').data('url') + 'api/UtilidadesApi/BuscarDoc', {
-            skip: skip,
-            take: take,
-            IdUnidadDoc: UnidadDoc,
-            Buscar: txtTramite.length > 0 ? 'T;' + txtTramite : txtFiltro.length > 0 ? 'F;' + txtFiltro : txtFulltext.length > 0 ? 'B;' + txtFulltext : ''
-        }).done(function (data) {
-            d.resolve(data.datos, { totalCount: data.numRegistros });
-        }).fail(function (jqxhr, textStatus, error) {
-            alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
-        });
-        return d.promise();
-    }
-});
+//var DocumentosDataSource = new DevExpress.data.CustomStore({
+//    load: function (loadOptions) {
+//        var d = $.Deferred();
+//        var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
+//        var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
+//        $.getJSON($('#SIM').data('url') + 'api/UtilidadesApi/BuscarDoc', {
+//            skip: skip,
+//            take: take,
+//            IdUnidadDoc: UnidadDoc,
+//            Buscar: txtTramite.length > 0 ? 'T;' + txtTramite : txtFiltro.length > 0 ? 'F;' + txtFiltro : txtFulltext.length > 0 ? 'B;' + txtFulltext : ''
+//        }).done(function (data) {
+//            d.resolve(data.datos, { totalCount: data.numRegistros });
+//        }).fail(function (jqxhr, textStatus, error) {
+//            alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+//        });
+//        return d.promise();
+//    }
+//});
 
 
