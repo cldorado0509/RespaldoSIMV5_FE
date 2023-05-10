@@ -2548,6 +2548,7 @@
     <Content Include="Content\images\LogoAreaEtiqueta2018.png" />
     <Content Include="Content\images\LogoAreaEtiqueta2019.png" />
     <Content Include="Content\images\LogosA1.png" />
+    <Content Include="Content\images\Logo_Area.png" />
     <Content Include="Content\images\Logo_AreaRad.png" />
     <Content Include="Content\images\Logo_Area_Soporte.png" />
     <Content Include="Content\images\mensaje.png" />
@@ -3097,6 +3098,7 @@
     <Content Include="Areas\ControlVigilancia\Views\Facturacion\Index.cshtml" />
     <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
     <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
+    <Content Include="Content\fonts\arialbd.ttf" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
