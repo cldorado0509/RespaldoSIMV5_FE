@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -574,9 +575,9 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             Pagina.Canvas.DrawText("CM:                       ", _Arial, null, brush, 110, 800);
             Pagina.Canvas.DrawText(Datos.CM.Trim().ToUpper(), _Arial, null, brush, 610, 800);
             Pagina.Canvas.DrawText("Valor proyecto:           ", _Arial, null, brush, 110, 850);
-            Pagina.Canvas.DrawText(Datos.ValorProyecto.ToString("C0"), _Arial, null, brush, 610, 850);
+            Pagina.Canvas.DrawText(Datos.ValorProyecto.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 610, 850);
             Pagina.Canvas.DrawText("Valor publicación:        ", _Arial, null, brush, 110, 900);
-            Pagina.Canvas.DrawText(Datos.ValorPublicacion.ToString("C0"), _Arial, null, brush, 610, 900);
+            Pagina.Canvas.DrawText(Datos.ValorPublicacion.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 610, 900);
             Pagina.Canvas.DrawText("Con soportes:             ", _Arial, null, brush, 110, 950);
             Pagina.Canvas.DrawText((Datos.ConSoportes > 0 ? "Si" : "No"), _Arial, null, brush, 610, 950);
             if (Datos.TipoTramite == "26")
@@ -606,24 +607,24 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             Pagina.Canvas.DrawText("                       CÁLCULO DEL VALOR DE LA EVALUACIÓN", _Arial, null, brush, 500, 1950);
             Pagina.Canvas.DrawText("                Item                                                                                         Valor", _Arial, null, brush, 500, 2000);
             Pagina.Canvas.DrawText("GASTOS POR SUELDOS Y HONORARIOS (A):", _Arial, null, brush, 130, 2050);
-            Pagina.Canvas.DrawText(parametrosCalculo.Sueldos.ToString("C0"), _Arial, null, brush, 1800, 2050);
+            Pagina.Canvas.DrawText(parametrosCalculo.Sueldos.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2050);
             Pagina.Canvas.DrawText("GASTOS VIAJES (B):", _Arial, null, brush, 130, 2090);
-            Pagina.Canvas.DrawText(parametrosCalculo.Viajes.ToString("C0"), _Arial, null, brush, 1800, 2090);
+            Pagina.Canvas.DrawText(parametrosCalculo.Viajes.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2090);
             Pagina.Canvas.DrawText("GASTOS ANÁLISIS DE LABORATORIO Y OTROS TRABAJOS TÉCNICOS (C):", _Arial, null, brush, 130, 2130);
-            Pagina.Canvas.DrawText(parametrosCalculo.Otros.ToString("C0"), _Arial, null, brush, 1800, 2130);
+            Pagina.Canvas.DrawText(parametrosCalculo.Otros.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2130);
             Pagina.Canvas.DrawText("GASTOS ADMINISTRACIÓN 25% (D):", _Arial, null, brush, 130, 2170);
-            Pagina.Canvas.DrawText(parametrosCalculo.Admin.ToString("C0"), _Arial, null, brush, 1800, 2170);
+            Pagina.Canvas.DrawText(parametrosCalculo.Admin.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2170);
             _Arial.Bold = true;
             Pagina.Canvas.DrawText("COSTO TOTAL DE LA TARIFA:", _Arial, null, brush, 130, 2240);
-            Pagina.Canvas.DrawText(parametrosCalculo.Costo.ToString("C0"), _Arial, null, brush, 1800, 2240);
+            Pagina.Canvas.DrawText(parametrosCalculo.Costo.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2240);
             _Arial.Bold = false;
             Pagina.Canvas.DrawText("DETERMINACIÓN DE LOS TOPES DE LAS TARIFAS (To):", _Arial, null, brush, 130, 2300);
-            Pagina.Canvas.DrawText(parametrosCalculo.Topes.ToString("C0"), _Arial, null, brush, 1800, 2300);
+            Pagina.Canvas.DrawText(parametrosCalculo.Topes.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2300);
             _Arial.Bold = true;
             Pagina.Canvas.DrawText("VALOR A CANCELAR POR TRÁMITE:", _Arial, null, brush, 130, 2340);
-            Pagina.Canvas.DrawText(parametrosCalculo.Valor.ToString("C0"), _Arial, null, brush, 1800, 2340);
+            Pagina.Canvas.DrawText(parametrosCalculo.Valor.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2340);
             Pagina.Canvas.DrawText("VALOR A CANCELAR POR PUBLICACIÓN:", _Arial, null, brush, 130, 2380);
-            Pagina.Canvas.DrawText(parametrosCalculo.Publicacion.ToString("C0"), _Arial, null, brush, 1800, 2380);
+            Pagina.Canvas.DrawText(parametrosCalculo.Publicacion.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 1800, 2380);
             _docSop.Save(Resp);
             return Resp;
         }
@@ -733,7 +734,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                 }
                 Pagina.Canvas.DrawTextBox(Datos.Observaciones.Trim().ToUpper(), _Arial, brush, 1160, 960, 900, 100, tfo); //Variable
                 LinObs = Math.Round((double)(Datos.Observaciones.Trim().Length / 50), MidpointRounding.AwayFromZero);
-                Pagina.Canvas.DrawText(double.Parse(parametrosCalculo.Valor.ToString()).ToString("C0"), _Arial, null, brush, 2110, _Linea); //Variable
+                Pagina.Canvas.DrawText(double.Parse(parametrosCalculo.Valor.ToString()).ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 2110, _Linea); //Variable
                 if (LinNom > LinObs) _Linea += (int)(LinNom * 40);
                 else if (LinNom < LinObs) _Linea += (int)(LinObs * 40);
                 else _Linea += (int)(LinObs * 40);
@@ -743,14 +744,14 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     Pagina.Canvas.DrawText(Tarifas.CONCEPTO_PUBLICACION.Trim(), _Arial, null, brush, 145, _Linea); //Variable
                     if (Tarifas.CONCEPTO_PUBLICACION.Trim() != "395") Pagina.Canvas.DrawText("PUBLICACIONES AMBIENTALES", _Arial, null, brush, 310, _Linea);  //Variable
                     else Pagina.Canvas.DrawText("PUBLICACIONES RECURSO FORESTAL (FONDO VERDE)", _Arial, null, brush, 310, _Linea);  //Variable
-                    Pagina.Canvas.DrawText(double.Parse(parametrosCalculo.Publicacion.ToString()).ToString("C0"), _Arial, null, brush, 2110, _Linea); //Variable
+                    Pagina.Canvas.DrawText(double.Parse(parametrosCalculo.Publicacion.ToString()).ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 2110, _Linea); //Variable
                     _ValFact += (long)parametrosCalculo.Publicacion;
                 }
                 if (int.Parse(Tarifas.CONCEPTO_CONTABLE) == 393) IdTipoFactura = 5;
                 else IdTipoFactura = 4;
             } else IdTipoFactura = 4;
             Pagina.Canvas.DrawText(SIM.Utilidades.Facturacion.enletras(_ValFact.ToString().Trim()), _Arial, null, brush, 450, 1795);  //Variable
-            Pagina.Canvas.DrawText(_ValFact.ToString("C0"), _Arial, null, brush, 2110, 1850);  //Variable
+            Pagina.Canvas.DrawText(_ValFact.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 2110, 1850);  //Variable
             Pagina.Canvas.DrawText("Por favor conserve la parte superior para verificar su pago", _Arial, null, brush, 145, 2000);
             var TipoFactura = (from _Clave in dbSIM.TIPO_FACTURA
                              where _Clave.ID_TIPOFACTURA == IdTipoFactura
@@ -796,7 +797,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             else Pagina.Canvas.DrawText(Datos.NIT.Trim(), _Arial, null, brush, 490, 2430); //Variable
             Pagina.Canvas.DrawText(TipoFactura.S_CUENTA.Trim(), _Arial, null, brush, 1820, 2430); //Variable
             Pagina.Canvas.DrawText(DateTime.Now.AddMonths(1).ToString("yyyy/MM/dd"), _Arial, null, brush, 490, 2490); //Variable
-            Pagina.Canvas.DrawText(_ValFact.ToString("C0"), _Arial, null, brush, 490, 2550); //Variable
+            Pagina.Canvas.DrawText(_ValFact.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 490, 2550); //Variable
             Pagina.Canvas.DrawLine(_Pen, 100, 2770, 2400, 2770);
             Pagina.Canvas.DrawImage(_img, 100, 2790, _img.Width, _img.Height, 0, PDFKeepAspectRatio.KeepNone);
             Pagina.Canvas.DrawLine(_Pen, 650, 2790, 650, 3157);
