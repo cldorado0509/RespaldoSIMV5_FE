@@ -1,6 +1,7 @@
 ﻿var filtros = "";
 
 $(document).ready(function () {
+
     var Codigo = $("#txtCodigo").dxTextBox({
         placeholder: "Ingrese el código del bien",
         value: ""
@@ -112,7 +113,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         columns: [
             { dataField: 'CODIGO', width: '10%', caption: 'Código', dataType: 'string' },
-            { dataField: 'SICOF', width: '10%', caption: 'Código SICOF', dataType: 'string' },
+            { dataField: 'FECHAINV', width: '10%', caption: 'Último Inventario (M/D/YYYY)', dataType: 'date', format: 'MM/dd/yyyy' },
             { dataField: 'NOMBREBIEN', width: '20%', caption: 'Nombre del bien', dataType: 'string' },
             { dataField: 'ESTADOBIEN', width: '12%', caption: 'Estado', dataType: 'string' },
             { dataField: 'PERSONABIEN', width: '20%', caption: 'Responsable', dataType: 'string' },

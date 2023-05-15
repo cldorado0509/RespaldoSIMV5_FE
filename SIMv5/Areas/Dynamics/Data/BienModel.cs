@@ -20,6 +20,6 @@ namespace SIM.Areas.Dynamics.Data
         [JsonProperty("PERSONABIEN")]
         public string RESPONSIBLE { get; set; }
         public string UBICACION { get; set; }
-        public string SICOF { get; set; }
+        public DateTime FECHAINV { get; set; }
     }
 }
