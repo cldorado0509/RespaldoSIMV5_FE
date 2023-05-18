@@ -3774,6 +3774,13 @@
     <Content Include="Views\Utilidades\DetalleTramite.cshtml" />
     <Content Include="Views\Shared\_LayoutExpedienteFlip.cshtml" />
     <Content Include="Views\Utilidades\BuscarTramite.cshtml" />
+    <Content Include="Web.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <None Include="x64\Oracle.ManagedDataAccessDTC.dll" />
     <Content Include="Scripts\jquery-1.12.3.js" />
     <Content Include="Scripts\jquery-1.12.3.min.js" />
