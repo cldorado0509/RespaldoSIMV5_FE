@@ -1375,9 +1375,9 @@ function consultarEncuestas(jsonEn) {
         htmlGeneral += '</a>'
 
         if (json[r].ESTADO == 0) {
-            htmlGeneral += '<button class="agregar" title="Agregar Encuesta" onclick="agregarAcordeonEncuestaitem(this,' + json[r].ID_ENCUESTA + ',\'Encuestacollapse' + r + '\')" style="display: none"></button> </div>';
+            htmlGeneral += '<button class="agregar" title="Agregar Encuesta" onclick="agregarAcordeonEncuestaitem(this,' + json[r].ID_ENCUESTA + ',\'Encuestacollapse' + r + '\')"></button> </div>';
         } else {
-            htmlGeneral += '<button class="agregar quitar" title="Quitar Encuesta" onclick="quitarAcordeonEncuestaitem(this,\'Encuestacollapse' + r + '\',' + json[r].ID_ENCUESTA + ')"  style="display: none"></button> </div>';
+            htmlGeneral += '<button class="agregar quitar" title="Quitar Encuesta" onclick="quitarAcordeonEncuestaitem(this,\'Encuestacollapse' + r + '\',' + json[r].ID_ENCUESTA + ')"></button> </div>';
         }
 
 
