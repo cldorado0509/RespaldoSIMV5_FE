@@ -5,11 +5,10 @@
 
 
 <link href="@Url.Content("~/Scripts/jquery-ui.css")" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Reparto.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Reparto.css")?v=1.001" />
 
 
 <style>
-
 </style>
 <script type="text/javascript">
     var swTramite = false;
@@ -39,7 +38,7 @@
 
       cargarSoloMapa();
 
-       
+
         $(function () {
             $("#GrdTramitesnoubicados").dxDataGrid({
                 height: '480px',
@@ -76,7 +75,7 @@
                 onSelectionChanged: function (selecteditems) {
                     try {
                         codigoTarea = selecteditems.selectedRowsData[0]["CODTAREA"];
-                        nombreTarea = selecteditems.selectedRowsData[0]["TAREA"]; 
+                        nombreTarea = selecteditems.selectedRowsData[0]["TAREA"];
                         VectorcodtramiteNOGEO = [];
                         VectordireccionNOGEO = [];
                         VectormunicipioNOGEO = [];
@@ -103,7 +102,7 @@
                         case 7: //eliminar
                             abrirDetalleTramite(id);
                             break;
-                 
+
                     }
                 },
                 paging: {
@@ -117,7 +116,7 @@
             });
         });
 
-  
+
 
         $(function () {
             $("#GrdTramites").dxDataGrid({
@@ -188,7 +187,7 @@
                         case 7: //eliminar
                             abrirDetalleTramite(id);
                             break;
-                 
+
                     }
                 },
                 paging: {
@@ -349,7 +348,7 @@
         } catch (w) {
 
         }
-      
+
         CargarGrids();
     }
 
@@ -366,7 +365,7 @@
                 if (cod_tramite > 0) {
                     var x = g.x + "";
                     var y = g.y + "";
-                  
+
                     guardarGeoTramite(cod_tramite, x, y, tipoUbicacionM);
                     m.noDraw();
 
@@ -479,7 +478,7 @@
     function guardarGeoTramite(codigo, cx, cy, tipoUbicacion) {
         var x = cx + "";
         var y = cy + "";
-       
+
         $.ajax({
             type: "POST",
             url: '@Url.Action("GuardarTramitesGeocodificados", "Reparto")',
@@ -488,7 +487,7 @@
             success: function (response) {
                 var x = "" + cx
                 var y = "" + cy
-               
+
                 zoom(x * 1, y * 1);
                 conectar();
                 m.noDraw();
@@ -610,13 +609,13 @@
 
     function abrirAtiende() {
         validarEstado();
- 
+
     }
-    
+
     //función que realiza la garga de las grids GrdTramites y GrdTramitesnoubicados.
     function CargarGrids(tipo) {
-     
-       
+
+
         var CargarDatosTramitesnoubicados = new DevExpress.data.CustomStore({
             load: function (loadOptions) {
                 var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
@@ -627,8 +626,8 @@
                     take = 10;
                     skip = 0;
                 }
-              
-               
+
+
                 $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesnoubicados")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
                     d.resolve(data.datos, { totalCount: data.numRegistros });
                     $("#lblTotalRegNoU").text(data.numRegistros);
@@ -651,7 +650,7 @@
                     take = 10;
                     skip = 0;
                 }
-               
+
                 $.getJSON("@Url.Content("~/ControlVigilancia/api/VisitasWebAPI/GetTramitesubicados")" + "?filtro=" + filterOptions + "&take=" + take + "&skip=" + skip).done(function (data) {
                     d.resolve(data.datos, { totalCount: data.numRegistros });
                     $("#lblTotalRegU").text(data.numRegistros);
@@ -796,20 +795,20 @@
 
 
     }
-    
-   
+
+
     function validarSesionUbicacion() {
-   
+
         $.ajax({
             type: "POST",
             url: '@Url.Action("validarSesion", "Reparto")',
-          
+
             beforeSend: function () { },
             success: function (response) {
                 if (response == "0") {
                     mensajeSesion("La Sesión a Caducado");
-                   
-                    
+
+
                 }else
                 {
                     ubicarManualmente();
@@ -838,17 +837,17 @@
         });
     }
     function validarEstado() {
-   
+
         $.ajax({
             type: "POST",
             url: '@Url.Action("validarSesion", "Reparto")',
-          
+
             beforeSend: function () { },
             success: function (response) {
                 if (response == "0") {
                     mensajeSesion("La Sesión a Caducado");
-                   
-                    
+
+
                 }else
                 {
                     if (VectorcodtramiteGEO.length > 0) { // || VectorcodordenNOGEO.length > 0) {
@@ -868,7 +867,7 @@
             }
         });
     }
-   
+
     function abrirDetalleTramite(id)
     {
 
@@ -1000,7 +999,7 @@
                 beforeSend: function () { },
                 success: function (response) {
                     for (servicio in $("#mapa")[0].contentWindow.map._layers) {
-                      
+
                         servicio = $("#mapa")[0].contentWindow.map._layers[servicio];
                         servicio.nombre = servicio.name;
                         servicio.servicio = servicio.url;
@@ -1012,12 +1011,30 @@
 
                         }
                     }
-                   
+
 
                 }
             });
-           
+
         }
+    }
+
+    function CrearTramite() {
+        $("#popupCrearTramite").dialog(
+            {
+                title: 'Crear Tr\u00E1mite',
+                width: 1200,
+                height: 650,
+                modal: true
+            });
+
+        let parametros = '';
+
+        if ($('#app').data('p') != null && $('#app').data('p') != '') {
+            parametros = '?codProceso=' + $('#app').data('p') + '&codTarea=' + $('#app').data('t');
+        }
+
+        $("#frmCrearTramite").attr("src", $('#app').data('url') + 'Tramites/Tramites/NuevoTramite' + parametros);
     }
 
     function MostrarNotificacion(typeDialog, typeMsg, msg) {
@@ -1030,7 +1047,7 @@
 </script>
 
 <div class="dx-datagrid-bottom-load-panel dx-datagrid-table" style="visibility:hidden"></div>
-<div class="panel panel-default" style="  margin-top: -2px;">
+<div class="panel panel-default" style="  margin-top: -2px;" data-url="@Url.Content("~")"  data-p="@ViewBag.Proceso" data-t="@ViewBag.Tarea" id="app">
     <div class="panel-heading">
         <div class="col-sm-12">
             <div class="col-sm-10">
@@ -1048,6 +1065,9 @@
             <li id="Tab2"><a href="#NuevaVisita" data-toggle="tab" onclick=" setTimeout('cargarTamites2()' ,0300);">Trámites ubicados</a></li>
             <li id="Tab3" style='display:none'><a href="#profile" data-toggle="tab">Editar Visita</a></li>
         </ul>
+        <div id="popupCrearTramite" style="display: none; overflow: hidden;">
+            <iframe src="" id="frmCrearTramite" style="width:100%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+        </div>
         <div id="pantallaAsignacionTramites" title="Asignación de trámites" style="display: none; overflow: hidden;">
             <iframe src="" id="AsignacionTramites" width="100%" height="100%"></iframe>
         </div>
@@ -1058,7 +1078,9 @@
             <div class="tab-pane fade in" id="home">
                 <div id='MisVisitas'>
                     <div class="col-sm-12">
-                        <div class="col-sm-10">
+                        <div class="col-sm-8"></div>
+                        <div class="col-sm-2">
+                            <button id="btnCrearTramite" class="btn btn-default btn-sm" onclick="CrearTramite()" style=" margin-bottom: 24px;">Crear Tr&aacute;mite</button>
                         </div>
                         <div class="col-sm-2">
                             <button id="btnRealizarVisita" class="btn btn-default btn-sm" onclick="geocodificarValores()" style=" margin-bottom: 24px;">Geocodificar</button>
@@ -1069,15 +1091,15 @@
                             <td>
                                 <label>Total Registros:</label>
                                 <label id="lblTotalRegNoU"></label>
-                            </td> 
-                        
+                            </td>
+
                         </tr>
                         <tr>
                             <td>
                                 <div id="GrdTramitesnoubicados" style="height: 200px; "></div>
                             </td>
                         </tr>
-                   
+
                     </table>
                 </div>
             </div>
@@ -1094,7 +1116,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <table >
+                            <table>
                                 <tr>
                                     <td>
                                         <label>Total Registros:</label>
@@ -1103,7 +1125,7 @@
 
                                 </tr>
                                 <tr>
-                                    <td >
+                                    <td>
                                         <div id="GrdTramites" style="height: 200px;"></div>
                                     </td>
                                 </tr>

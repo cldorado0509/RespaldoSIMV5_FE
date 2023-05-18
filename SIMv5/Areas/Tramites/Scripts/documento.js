@@ -982,7 +982,6 @@ $(document).ready(function () {
                         }
                         ).done(function (data) {
                             $("#loadPanel").dxLoadPanel('instance').hide();
-
                             var respuesta = data.split(':');
 
                             if (respuesta[0] == 'OK') {
@@ -995,12 +994,9 @@ $(document).ready(function () {
                             } else {
                                 var result = MostrarNotificacion('alert', null, 'ERROR: ' + respuesta[2]);
 
-                                result.done(function () {
-                                    /*if (respuesta[1] != '0') {
-                                        window.location.href = $('#app').data('url') + 'Tramites/ProyeccionDocumento/Documento?id=' + respuesta[1] + '&c=@DateTime.Now.ToString("HHmmss")';
-                                    }*/
+                                /*result.done(function () {
                                     parent.CerrarPopupDocumento();
-                                });
+                                });*/
                             }
                         }).fail(function (jqxhr, textStatus, error) {
                             $("#loadPanel").dxLoadPanel('instance').hide();

@@ -1,0 +1,165 @@
+﻿@using SIM.Properties
+@{
+    if (ViewBag.Popup ?? false)
+    {
+        Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutV5.cshtml";
+    }
+}
+
+<style>
+    .dx-accordion-item-title {
+        background-color: #94C840;
+        color: white;
+    }
+
+    .dx-accordion-item-opened > .dx-accordion-item-title {
+        background-color: #94C840;
+        color: white;
+    }
+
+    .dx-accordion-item.dx-state-hover > .dx-accordion-item-title {
+        background-color: #76B705;
+        color: white;
+    }
+
+    .dx-accordion-item-opened.dx-state-hover > .dx-accordion-item-title {
+        background-color: #76B705;
+        color: white;
+    }
+
+    .ui-accordion .ui-accordion-content {
+        overflow: hidden;
+    }
+
+    #txtFuncionario .dx-texteditor-container .dx-texteditor-input {
+        float: left;
+        width: 100%;
+    }
+
+    .dx-fileuploader-input-wrapper {
+        padding: 0px;
+        border: 3px dashed transparent;
+    }
+
+    .dx-fileuploader-input-wrapper {
+        padding: 0px;
+        border: 0px;
+    }
+
+    .dx-fileuploader-wrapper {
+        padding: 0px;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td {
+        vertical-align: middle;
+    }
+
+    body {
+        overflow: hidden; /* Hide scrollbars */
+    }
+</style>
+
+<script>
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano() {
+        $("#panelTarea").height(document.body.clientHeight - ($('#app').data('type') == 'f' ? 400 : 250));
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/nuevotramite.js?v=1.000")"></script>
+
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" data-p="@ViewBag.CodProceso" data-tp="@ViewBag.CodTareaPadre" data-t="@ViewBag.CodTarea" data-type="@(ViewBag.Popup??false ? "p" : "f")" resizable>
+        <div id="loadPanel"></div>
+        <div id="grid-container"></div>
+        <div class="panelSIM-default">
+            <div class="panelSIM panelSIM-default" id="pnlContenedor" style="display:@(ViewBag.Popup??false ? "none" : "block")">
+                <div class="row" style="text-align: center; margin: 10px;">
+                    <h3 style="color: #94C840; font-weight:bold">
+                        Nuevo Tr&aacute;mite
+                    </h3>
+                </div>
+            </div>
+            <div id="asistente">
+                <h3>1. Datos Generales</h3>
+                <div>
+                    <div id="panelTarea" style="overflow: unset">
+                        <div class="row" style="height: 50px;">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Proceso</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="proceso"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="row" style="height: 50px;">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Tarea Padre</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="tareaPadre"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div-->
+                        <div class="row" style="height: 50px;">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Tarea</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="tarea"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 50px;">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div class="dx-field-label labelfullrow" style="padding-left: 10px; font-weight: bold">Comentario</div>
+                                    <div class="dx-field-value valuefullrow">
+                                        <div id="comentario"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>2. &Iacute;ndices</h3>
+                <div>
+                    <div id="grdIndices"></div>
+                </div>
+                <h3>3. Responsable</h3>
+                <div>
+                    <div class="row" style="width: 100%;">
+                        <div class="col-md-7"><div id="cboFuncionario"></div></div>
+                        <div class="col-md-5"><div id="agregarFuncionario"></div></div>
+                    </div>
+
+                    <div id="grdResponsables"></div>
+                    <div style="height:5%"></div>
+                </div>
+                <h3>4. Copias</h3>
+                <div>
+                    <div class="row" style="width: 100%;">
+                        <div class="col-md-7"><div id="cboFuncionarioC"></div></div>
+                        <div class="col-md-5"><div id="agregarFuncionarioC"></div></div>
+                    </div>
+                    <div id="grdCopias"></div>
+                    <div style="height:5%"></div>
+                    <div stye="height: 10%; buttom: 0">
+                        <div id="almacenar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

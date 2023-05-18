@@ -52,7 +52,8 @@ namespace SIM.Areas.Tramites.Controllers
             ViewBag.SoloLectura = (soloLectura ? "S" : "N");
             ViewBag.Popup = true;
 
-            string indicesSeleccionGrupo = ConfigurationManager.AppSettings["IndicesProyeccionGrupos"] ?? "";
+            //string indicesSeleccionGrupo = ConfigurationManager.AppSettings["IndicesProyeccionGrupos"] ?? "";
+            string indicesSeleccionGrupo = Utilidades.Data.ObtenerValorParametro("PD_IndicesProyeccionGruposPARA");
 
             ViewBag.IndicesProyeccionGrupos = indicesSeleccionGrupo;
 

@@ -20,6 +20,7 @@ using SIM.Models;
 using co.com.certicamara.encryption3DES.code;
 using SIM.Utilidades.FirmaDigital;
 using System.Text;
+using SIM.Data.Documental;
 
 namespace SIM.Areas.Tramites.Controllers
 {
@@ -529,7 +530,72 @@ namespace SIM.Areas.Tramites.Controllers
 
                 if (idUsuario == 0)
                 {
-                    return "ERROR:El Usuario no se encuentra autenticado.";
+                    return "ERROR:" + idProyeccionDocumento.ToString() + ":El Usuario no se encuentra autenticado.";
+                }
+
+                // Validar si el DE y PARA asociados al documento pueden proyectar la serie (esto es para memorandos)
+                string[] seriesCargo = Utilidades.Data.ObtenerValorParametro("PD_SeriesValidarCargo").ToString().Split(',');
+                string[] indicePARA = Utilidades.Data.ObtenerValorParametro("PD_IndicesProyeccionGruposPARA").ToString().Split(',');
+                foreach (string serie in seriesCargo)
+                {
+                    if (serie.Trim() != "")
+                    {
+                        if (Convert.ToInt32(serie) == datos.SerieDocumental)
+                        {
+                            // Valida el último qué firma para sabir si puede radicar memorandos
+                            var codFuncionarioRadica = datos.Firmas.Where(f => f.S_ACTIVO == "S").OrderByDescending(f => f.ORDEN).Select(f => f.CODFUNCIONARIO).FirstOrDefault();
+
+                            var cargoFuncionarioRadica = (
+                                    from f in dbSIM.TBFUNCIONARIO join 
+                                        c in dbSIM.TBCARGO on f.CODCARGO equals c.CODCARGO
+                                    where f.CODFUNCIONARIO == codFuncionarioRadica
+                                    select c
+                                ).FirstOrDefault();
+
+                            if (cargoFuncionarioRadica.RADICA_MEMORANDO == null || cargoFuncionarioRadica.RADICA_MEMORANDO.Trim() != "1")
+                            {
+                                return "ERROR:" + idProyeccionDocumento.ToString() + ":El funcionario correspondiente a la última firma, no está configurado para radicar documentos de esta serie documental.";
+                            }
+
+                            // Valida el indide PARA para saber si pueden recibir memorandos
+                            foreach (Indice indice in datos.Indices)
+                            {
+                                if (indicePARA.Contains(indice.CODINDICE.ToString()))
+                                {
+                                    // Obtene el cargo del funcionario asociado en el índice
+                                    var cargoFuncionario = (from f in dbSIM.TBFUNCIONARIO
+                                                            join
+                                                             c in dbSIM.TBCARGO on f.CODCARGO equals c.CODCARGO
+                                                            where f.CODFUNCIONARIO == indice.ID_VALOR
+                                                            select c).FirstOrDefault();
+
+                                    if (cargoFuncionario.RECIBE_MEMORANDO == null || cargoFuncionario.RECIBE_MEMORANDO.Trim() != "1")
+                                    {
+                                        return "ERROR:" + idProyeccionDocumento.ToString() + ":El funcionario relacionado en el Indice 'PARA', no está configurado para recibir documentos de esta serie documental.";
+                                    }
+                                }
+                            }
+
+                            if (datos.Grupo != null)
+                            {
+                                // Valida los funcionarios del grupo para saber si pueden recibir copias de memorandos
+                                var sqlFuncionariosNoRecibe = "SELECT SUM(CASE WHEN c.RECIBE_COPIAMEMO IS NULL OR TRIM(c.RECIBE_COPIAMEMO) <> '1' THEN 1 ELSE 0 END) AS NumNoRecibe " +
+                                    "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf INNER JOIN " +
+                                    "   TRAMITES.TBFUNCIONARIO f ON mf.CODFUNCIONARIO = f.CODFUNCIONARIO INNER JOIN " +
+                                    "   TRAMITES.TBCARGO c ON f.CODCARGO = c.CODCARGO " +
+                                    "WHERE ID_GRUPOMEMO = " + datos.Grupo.ToString();
+
+                                int? numFuncionariosNoRecibe = dbSIM.Database.SqlQuery<int?>(sqlFuncionariosNoRecibe).FirstOrDefault();
+
+                                if ((numFuncionariosNoRecibe ?? 0) > 0)
+                                {
+                                    return "ERROR:" + idProyeccionDocumento.ToString() + ":Por lo menos un funcionario del grupo seleccionado, no está configurado para recibir copias de documentos de esta serie documental.";
+                                }
+
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 PROYECCION_DOC proyeccionDocumento;
@@ -871,8 +937,10 @@ namespace SIM.Areas.Tramites.Controllers
         [HttpGet, ActionName("ObtenerSeriesDocumentales")]
         public dynamic GetObtenerSeriesDocumentales()
         {
-            var seriesHabilitadas = ConfigurationManager.AppSettings["SeriesProyeccionDocumento"];
-            var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
+            //var seriesHabilitadas = ConfigurationManager.AppSettings["SeriesProyeccionDocumento"];
+            var seriesHabilitadas = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionDocumento");
+            //var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
+            var seriesGrupos = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionGrupos");
 
             if (seriesHabilitadas == null || seriesHabilitadas.Trim() == "")
             {
@@ -1224,7 +1292,8 @@ namespace SIM.Areas.Tramites.Controllers
 
                                     if (respuesta.tipoRespuesta == "OK")
                                     {
-                                        string procesosIndicesProyeccion = ConfigurationManager.AppSettings["ProcesosIndicesProyeccion"];
+                                        //string procesosIndicesProyeccion = ConfigurationManager.AppSettings["ProcesosIndicesProyeccion"];
+                                        string procesosIndicesProyeccion = Utilidades.Data.ObtenerValorParametro("PD_ProcesosIndicesProyeccion");
 
                                         if (procesosIndicesProyeccion != null && procesosIndicesProyeccion.Trim() != "")
                                         {
@@ -1381,28 +1450,78 @@ namespace SIM.Areas.Tramites.Controllers
                                         {
                                             if (documento.S_TRAMITES == null)
                                             {
+                                                decimal codProceso = 0;
+                                                decimal codTarea = 0;
                                                 // Crea el trámite y lo relaciona con la Proyección
 
-                                                var codProceso = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("ProcesoNuevoTramite"));
-                                                var codTarea = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("TareaNuevoTramite"));
-                                                var codFuncionarioTN = documento.CODFUNCIONARIO;
-                                                ObjectParameter respCodTramite = new ObjectParameter("respCodTramite", typeof(decimal));
-                                                ObjectParameter respCodTarea = new ObjectParameter("respCodTarea", typeof(decimal));
-                                                ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
+                                                string codProcesoTareaSerieDocumental = SIM.Utilidades.Data.ObtenerValorParametro("PD_ProcesoTareaNuevoTramite");
 
-                                                dbTramites.SP_NUEVO_TRAMITE(codProceso, codTarea, codFuncionarioTN, documento.S_DESCRIPCION, respCodTramite, respCodTarea, rtaResultado);
+                                                if (codProcesoTareaSerieDocumental != null && codProcesoTareaSerieDocumental != "")
+                                                {
+                                                    var confSeries = codProcesoTareaSerieDocumental.Split('|');
+
+                                                    foreach (string confSerie in confSeries)
+                                                    {
+                                                        var procesoTareaSerie = confSerie.Split(';');
+
+                                                        if (procesoTareaSerie[0] == "*")
+                                                        {
+                                                            codProceso = Convert.ToDecimal(procesoTareaSerie[1]);
+                                                            codTarea = Convert.ToDecimal(procesoTareaSerie[2]);
+                                                        }
+                                                        else if (procesoTareaSerie[0] == documento.CODSERIE.ToString())
+                                                        {
+                                                            codProceso = Convert.ToDecimal(procesoTareaSerie[1]);
+                                                            codTarea = Convert.ToDecimal(procesoTareaSerie[2]);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    codProceso = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("ProcesoNuevoTramite"));
+                                                    codTarea = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("TareaNuevoTramite"));
+                                                }
+
+                                                var codFuncionarioTN = documento.CODFUNCIONARIO_ACTUAL;
+                                                //ObjectParameter respCodTramite = new ObjectParameter("respCodTramite", typeof(decimal));
+                                                //ObjectParameter respCodTarea = new ObjectParameter("respCodTarea", typeof(decimal));
+                                                //ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
+
+                                                int[] respNuevoTramite;
+                                                int respCodTramite;
+                                                int respCodTarea;
+
+                                                //dbTramites.SP_NUEVO_TRAMITE(codProceso, codTarea, codFuncionarioTN, documento.S_DESCRIPCION, respCodTramite, respCodTarea, rtaResultado);
+                                                if (documento.ID_GRUPO == null) {
+                                                    respNuevoTramite = Utilidades.Tramites.CrearTramite(Convert.ToInt32(codProceso), Convert.ToInt32(codTarea), null, documento.S_DESCRIPCION, documento.S_DESCRIPCION, (int)codFuncionarioTN, null, null, false);
+                                                    respCodTramite = respNuevoTramite[0];
+                                                    respCodTarea = respNuevoTramite[1];
+                                                }
+                                                else
+                                                {
+                                                    var sqlFuncionariosGrupo = "SELECT mf.CODFUNCIONARIO " +
+                                                        "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf " +
+                                                        "WHERE mf.ID_GRUPOMEMO = " + documento.ID_GRUPO.ToString() + " AND mf.CODFUNCIONARIO <> " + codFuncionarioTN.ToString();
+
+                                                    var funcionariosGrupo = dbSIM.Database.SqlQuery<int>(sqlFuncionariosGrupo).ToArray();
+
+                                                    respNuevoTramite = Utilidades.Tramites.CrearTramite(Convert.ToInt32(codProceso), Convert.ToInt32(codTarea), null, documento.S_DESCRIPCION, documento.S_DESCRIPCION, (int)codFuncionarioTN, funcionariosGrupo, null, false);
+                                                    respCodTramite = respNuevoTramite[0];
+                                                    respCodTarea = respNuevoTramite[1];
+                                                }
 
                                                 TRAMITES_PROYECCION nuevoTramite = new TRAMITES_PROYECCION();
                                                 nuevoTramite.ID_PROYECCION_DOC = documento.ID_PROYECCION_DOC;
-                                                nuevoTramite.CODTRAMITE = Convert.ToInt32(respCodTramite.Value);
-                                                nuevoTramite.CODTAREA_INICIAL = Convert.ToInt32(respCodTarea.Value);
+                                                nuevoTramite.CODTRAMITE = respCodTramite;
+                                                nuevoTramite.CODTAREA_INICIAL = respCodTarea;
 
                                                 dbSIM.Entry(nuevoTramite).State = System.Data.Entity.EntityState.Added;
                                                 dbSIM.SaveChanges();
 
-                                                int codTramite = Convert.ToInt32(respCodTramite.Value);
+                                                int codTramite = respCodTramite;
 
-                                                documento.S_TRAMITES = respCodTramite.Value.ToString();
+                                                documento.S_TRAMITES = respCodTramite.ToString();
                                                 //documentoProyeccion.D_FECHA_TRAMITE = dbSIM.TBTRAMITE.Where(t => t.CODTRAMITE == codTramite).Select(t => t.FECHAINI).FirstOrDefault();
                                                 int codProcesoNuevoTramite = Convert.ToInt32(codProceso);
                                                 documento.S_PROCESOS = dbSIM.TBPROCESO.Where(p => p.CODPROCESO == codProcesoNuevoTramite).Select(p => p.NOMBRE).FirstOrDefault();
@@ -1435,11 +1554,14 @@ namespace SIM.Areas.Tramites.Controllers
                                         {
                                             RegistrarDocumento(documento.ID_PROYECCION_DOC, documentoRadicado.documentoBinario, documentoRadicado.numPaginas);
 
-                                            var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
+                                            //var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
+                                            var seriesGrupos = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionGrupos");
                                             var codSeriesGrupos = seriesGrupos.Split(',').Select(s => int.Parse(s));
-                                            var indicesPara = ConfigurationManager.AppSettings["IndicesProyeccionGrupos"];
+                                            //var indicesPara = ConfigurationManager.AppSettings["IndicesProyeccionGrupos"];
+                                            var indicesPara = Utilidades.Data.ObtenerValorParametro("PD_IndicesProyeccionGruposPARA");
                                             var codindicesPara = indicesPara.Split(',').Select(s => int.Parse(s));
-                                            var indicesAsunto = ConfigurationManager.AppSettings["IndiceProyeccionGruposAsunto"];
+                                            //var indicesAsunto = ConfigurationManager.AppSettings["IndiceProyeccionGruposAsunto"];
+                                            var indicesAsunto = Utilidades.Data.ObtenerValorParametro("PD_IndiceProyeccionGruposAsunto");
                                             var codindicesAsunto = indicesAsunto.Split(',').Select(s => int.Parse(s));
 
                                             PROYECCION_DOC_INDICES paraProyeccion = dbSIM.PROYECCION_DOC_INDICES.Where(p => p.ID_PROYECCION_DOC == documento.ID_PROYECCION_DOC && codindicesPara.Contains(p.CODINDICE)).FirstOrDefault();
@@ -1922,6 +2044,13 @@ namespace SIM.Areas.Tramites.Controllers
 
                     contTramites++;
                 }
+
+                TBTRAMITE_DOC documentoRelacionado = new TBTRAMITE_DOC();
+                documentoRelacionado.CODTRAMITE = documento.CODTRAMITE;
+                documentoRelacionado.CODDOCUMENTO = documento.CODDOCUMENTO;
+                documentoRelacionado.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+                dbSIM.Entry(documentoRelacionado).State = System.Data.Entity.EntityState.Added;
+                dbSIM.SaveChanges();
 
                 TRAMITES_PROYECCION tramiteAsignado = dbSIM.TRAMITES_PROYECCION.Where(tp => tp.ID_TRAMITES_PROYECCION == tramiteDoc.ID_TRAMITES_PROYECCION).FirstOrDefault();
                 tramiteAsignado.CODDOCUMENTO = idCodDocumento;

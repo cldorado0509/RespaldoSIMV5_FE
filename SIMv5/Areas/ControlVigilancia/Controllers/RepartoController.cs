@@ -29,6 +29,20 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         
         public ActionResult Reparto()
         {
+            var procesoTarea = Utilidades.Data.ObtenerValorParametro("IdProcesoTareaReparto");
+
+            if (procesoTarea != null && procesoTarea.Trim() != "")
+            {
+                var datos = procesoTarea.Split(';');
+                ViewBag.Proceso = datos[0];
+                ViewBag.Tarea = datos[1];
+            }
+            else
+            {
+                ViewBag.Proceso = "";
+                ViewBag.Tarea = "";
+            }
+
             return View();
         }
 

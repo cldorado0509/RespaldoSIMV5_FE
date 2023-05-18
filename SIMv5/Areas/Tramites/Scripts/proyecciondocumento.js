@@ -21,7 +21,7 @@ $(document).ready(function () {
 
     $("#popDetalleTramite").dxPopup({
         title: "Detalle Trámite",
-        fullScreen: false,
+        fullScreen: true,
     });
 
     $("#popIndicesTramites").dxPopup({
@@ -1202,7 +1202,8 @@ function abrirDetalleTramite(id) {
     tramiteInstance.show();
 
     $('#frmDetalleTramite').attr('src', null);
-    $('#frmDetalleTramite').attr('src', 'https://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=' + id);
+    //$('#frmDetalleTramite').attr('src', 'https://webservices.metropol.gov.co/SIM/Tramites/WebForms/DetalleT.aspx?idt=' + id);
+    $('#frmDetalleTramite').attr('src', $('#app').data('url') + 'Utilidades/DetalleTramite?popup=true&CodTramite=' + id);
 }
 
 $.postJSON = function (url, data) {

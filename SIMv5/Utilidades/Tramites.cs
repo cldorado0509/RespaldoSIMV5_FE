@@ -1,6 +1,14 @@
 ﻿namespace SIM.Utilidades
 {
+    using DevExpress.CodeParser;
+    using DevExpress.DataProcessing.InMemoryDataProcessor;
+    using DevExpress.XtraScheduler.Native;
+    using DocumentFormat.OpenXml.Spreadsheet;
+    using SIM.Areas.Tramites.Models;
+    using SIM.Controllers;
     using SIM.Data;
+    using SIM.Data.General;
+    using SIM.Data.Seguridad;
     using SIM.Data.Tramites;
     using System;
     using System.Collections.Generic;
@@ -8,12 +16,18 @@
     using System.Threading.Tasks;
     using System.Web;
 
-    class DatosTarea {
+    public class DatosTarea {
         public decimal CODTAREA { get; set; }
         public decimal CODFUNCIONARIO { get; set; }
         public decimal? ORDEN { get; set; }
         public decimal? CODTAREAANTERIOR { get; set; }
         public decimal? CODGRUPOT { get; set; }
+    }
+
+    public class IndicesValores
+    {
+        public int CODINDICE { get; set; }
+        public string VALOR { get; set; }
     }
 
 
@@ -282,6 +296,140 @@
             {
                 return null;
             }
+        }
+
+        public static int[] CrearTramite(int codProceso, int codTarea, int? codTareaPadre, string comentarios, string mensaje, int codFuncionarioResponsable, int[] codFuncionariosCopias, List<IndicesValores> Indices)
+        {
+            return CrearTramite(codProceso, codTarea, codTareaPadre, comentarios, mensaje, codFuncionarioResponsable, codFuncionariosCopias, Indices, true);
+        }
+
+        public static int[] CrearTramite(int codProceso, int codTarea, int? codTareaPadre, string comentarios, string mensaje, int codFuncionarioResponsable, int[] codFuncionariosCopias, List<IndicesValores> Indices, bool sinDocumento)
+        {
+            decimal codNuevoTramite = 0;
+            decimal codTareaInicioProceso = 0;
+            int codTareaSiguiente = 0;
+            int codFuncionarioSiguiente = 0;
+            DateTime fechaActual = DateTime.Now;
+
+            TBINDICETRAMITE indiceTramite;
+            TBTRAMITETAREA nuevoTramiteTarea;
+            TBTRAMITE nuevoTramite = new TBTRAMITE();
+            nuevoTramite.CODPROCESO = Convert.ToDecimal(codProceso);
+            nuevoTramite.FECHAINI = fechaActual;
+            nuevoTramite.COMENTARIOS = comentarios;
+            nuevoTramite.MENSAJE = mensaje;
+            nuevoTramite.PRIORIDAD = 0;
+            nuevoTramite.ESTADO = 0;
+
+            dbSIM.Entry(nuevoTramite).State = System.Data.Entity.EntityState.Added;
+            dbSIM.SaveChanges();
+
+            codNuevoTramite = nuevoTramite.CODTRAMITE;
+
+            if (Indices != null)
+            {
+                foreach (IndicesValores valores in Indices)
+                {
+                    indiceTramite = new TBINDICETRAMITE();
+                    indiceTramite.CODTRAMITE = codNuevoTramite;
+                    indiceTramite.CODINDICE = valores.CODINDICE;
+                    indiceTramite.VALOR = valores.VALOR;
+                    indiceTramite.FECHAREGISTRO = fechaActual;
+                    indiceTramite.FECHAACTUALIZA = fechaActual;
+                    dbSIM.Entry(indiceTramite).State = System.Data.Entity.EntityState.Added;
+                    dbSIM.SaveChanges();
+                }
+            }
+
+            codTareaInicioProceso = dbSIM.TBTAREA.Where(t => t.CODPROCESO == codProceso && t.INICIO == 1).Select(t => t.CODTAREA).FirstOrDefault();
+
+            if (codTarea == 0)
+            {
+                string sql = "SELECT CODTAREASIGUIENTE FROM TRAMITES.TBDETALLEREGLA WHERE CODTAREA = " + codTareaInicioProceso.ToString();
+
+                codTareaSiguiente = dbSIM.Database.SqlQuery<int>(sql).FirstOrDefault();
+
+                codFuncionarioSiguiente = dbSIM.TBTAREARESPONSABLE.Where(tr => tr.CODTAREA == codTareaSiguiente).Select(tr => tr.CODFUNCIONARIO).FirstOrDefault();
+            }
+            else
+            {
+                codTareaSiguiente = codTarea;
+                codFuncionarioSiguiente = codFuncionarioResponsable;
+            }
+
+            // Se crea la tarea inicial del proceso
+            nuevoTramiteTarea = new TBTRAMITETAREA();
+            nuevoTramiteTarea.CODTRAMITE = codNuevoTramite;
+            nuevoTramiteTarea.CODTAREA = codTareaInicioProceso;
+            nuevoTramiteTarea.CODTAREA_ANTERIOR = null;
+            nuevoTramiteTarea.CODTAREA_SIGUIENTE = codTareaSiguiente;
+            nuevoTramiteTarea.CODFUNCIONARIO = Convert.ToDecimal(codFuncionarioResponsable);
+            nuevoTramiteTarea.FECHAINI = fechaActual;
+            nuevoTramiteTarea.COPIA = 0;
+            nuevoTramiteTarea.ORDEN = 1;
+            nuevoTramiteTarea.ESTADO = 1;
+            nuevoTramiteTarea.DELEGADO = 0;
+            nuevoTramiteTarea.RECHAZADO = 0;
+            nuevoTramiteTarea.COMENTARIO = (sinDocumento ? "Inicio Trámite Sin Documento" : comentarios);
+            nuevoTramiteTarea.RECIBIDA = 0;
+            nuevoTramiteTarea.IMPORTANTE = 0;
+            nuevoTramiteTarea.FECHAFIN = fechaActual;
+            nuevoTramiteTarea.DEVOLUCION = "0";
+
+            dbSIM.Entry(nuevoTramiteTarea).State = System.Data.Entity.EntityState.Added;
+            dbSIM.SaveChanges();
+
+            codTareaPadre = Convert.ToInt32(codTareaInicioProceso);
+
+            nuevoTramiteTarea = new TBTRAMITETAREA();
+            nuevoTramiteTarea.CODTRAMITE = codNuevoTramite;
+            nuevoTramiteTarea.CODTAREA = codTareaSiguiente;
+            nuevoTramiteTarea.CODTAREA_ANTERIOR = codTareaPadre;
+            nuevoTramiteTarea.CODTAREA_SIGUIENTE = null;
+            nuevoTramiteTarea.CODFUNCIONARIO = Convert.ToDecimal(codFuncionarioSiguiente);
+            nuevoTramiteTarea.FECHAINI = fechaActual;
+            nuevoTramiteTarea.COPIA = 0;
+            nuevoTramiteTarea.ORDEN = 2;
+            nuevoTramiteTarea.ESTADO = 0;
+            nuevoTramiteTarea.DELEGADO = 0;
+            nuevoTramiteTarea.RECHAZADO = 0;
+            nuevoTramiteTarea.COMENTARIO = comentarios;
+            nuevoTramiteTarea.RECIBIDA = 0;
+            nuevoTramiteTarea.IMPORTANTE = 0;
+            nuevoTramiteTarea.FECHAFIN = null;
+            nuevoTramiteTarea.DEVOLUCION = "0";
+
+            dbSIM.Entry(nuevoTramiteTarea).State = System.Data.Entity.EntityState.Added;
+            dbSIM.SaveChanges();
+
+            if (codFuncionariosCopias != null)
+            {
+                foreach (int codFuncionario in codFuncionariosCopias)
+                {
+                    nuevoTramiteTarea = new TBTRAMITETAREA();
+                    nuevoTramiteTarea.CODTRAMITE = codNuevoTramite;
+                    nuevoTramiteTarea.CODTAREA = codTareaSiguiente;
+                    nuevoTramiteTarea.CODTAREA_ANTERIOR = codTareaPadre;
+                    nuevoTramiteTarea.CODTAREA_SIGUIENTE = null;
+                    nuevoTramiteTarea.CODFUNCIONARIO = Convert.ToDecimal(codFuncionario);
+                    nuevoTramiteTarea.FECHAINI = fechaActual;
+                    nuevoTramiteTarea.COPIA = 1;
+                    nuevoTramiteTarea.ORDEN = 2;
+                    nuevoTramiteTarea.ESTADO = 0;
+                    nuevoTramiteTarea.DELEGADO = 0;
+                    nuevoTramiteTarea.RECHAZADO = 0;
+                    nuevoTramiteTarea.COMENTARIO = comentarios;
+                    nuevoTramiteTarea.RECIBIDA = 0;
+                    nuevoTramiteTarea.IMPORTANTE = 0;
+                    nuevoTramiteTarea.FECHAFIN = null;
+                    nuevoTramiteTarea.DEVOLUCION = "0";
+
+                    dbSIM.Entry(nuevoTramiteTarea).State = System.Data.Entity.EntityState.Added;
+                    dbSIM.SaveChanges();
+                }
+            }
+
+            return new int[] { Convert.ToInt32(codNuevoTramite), codTareaSiguiente };
         }
     }
 }

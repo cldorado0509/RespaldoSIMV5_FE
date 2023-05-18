@@ -366,7 +366,8 @@ namespace SIM.Areas.Tramites
                         DrawImage(graphics, imagenRadicado, 300, 30, 288, 72);
                         graphics.Dispose();
 
-                        string seriesDobleEtiqueta = ConfigurationManager.AppSettings["SeriesProyeccionDobleEtiqueta"];
+                        //string seriesDobleEtiqueta = ConfigurationManager.AppSettings["SeriesProyeccionDobleEtiqueta"];
+                        string seriesDobleEtiqueta = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionDobleEtiqueta");
 
                         if (seriesDobleEtiqueta != null && seriesDobleEtiqueta.Trim() != "" && ("," + seriesDobleEtiqueta.Replace(" ", "") + ",").Contains("," + proyeccionDocumento.CODSERIE.ToString() + ","))
                         {
@@ -716,7 +717,8 @@ namespace SIM.Areas.Tramites
                         DrawImage(graphics, imagenRadicado, 300, 30, 288, 72);
                         graphics.Dispose();
 
-                        string seriesDobleEtiqueta = ConfigurationManager.AppSettings["SeriesProyeccionDobleEtiqueta"];
+                        //string seriesDobleEtiqueta = ConfigurationManager.AppSettings["SeriesProyeccionDobleEtiqueta"];
+                        string seriesDobleEtiqueta = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionDobleEtiqueta");
 
                         if (seriesDobleEtiqueta != null && seriesDobleEtiqueta.Trim() != "" && ("," + seriesDobleEtiqueta.Replace(" ", "") + ",").Contains("," + proyeccionDocumento.CODSERIE.ToString() + ","))
                         {

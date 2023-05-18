@@ -125,5 +125,16 @@ namespace SIM.Areas.Tramites.Controllers
                 return null;
             }
         }
+
+        // Carga la ventana de creación de un nuevo trámite sin documento relacionado.
+        public ActionResult NuevoTramite(int? codProceso, int? codTareaPadre, int? codTarea, int? popup)
+        {
+            ViewBag.CodProceso = codProceso ?? 0;
+            ViewBag.CodTareaPadre = codTareaPadre ?? 0;
+            ViewBag.CodTarea = codTarea ?? 0;
+            ViewBag.Popup = ((popup ?? 1) == 1 ? true : false);
+
+            return View();
+        }
     }
 }

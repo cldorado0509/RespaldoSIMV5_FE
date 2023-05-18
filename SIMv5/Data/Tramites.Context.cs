@@ -62,6 +62,7 @@
         public virtual DbSet<TBTIPO_SOLICITUD> TBTIPO_SOLICITUD { get; set; }
         public virtual DbSet<TBTRAMITE> TBTRAMITE { get; set; }
         public virtual DbSet<TBTRAMITEDOCUMENTO> TBTRAMITEDOCUMENTO { get; set; }
+        public virtual DbSet<TBTRAMITE_DOC> TBTRAMITE_DOC { get; set; }
         public virtual DbSet<TBTRAMITES_BLOQUEADOS> TBTRAMITES_BLOQUEADOS { get; set; }
         public virtual DbSet<TBTRAMITETAREA> TBTRAMITETAREA { get; set; }
         public virtual DbSet<TERMINOSCONDICIONES_TRAMITE> TERMINOSCONDICIONES_TRAMITE { get; set; }

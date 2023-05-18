@@ -1543,6 +1543,7 @@
     <Compile Include="Data\Tramites\TBCARGO.cs" />
     <Compile Include="Data\Tramites\TBPERMISOS_SERIE.cs" />
     <Compile Include="Data\Tramites\TBSOLICITUDES_VITAL.cs" />
+    <Compile Include="Data\Tramites\TBTRAMITE_DOC.cs" />
     <Compile Include="Data\Tramites\TBVIGENCIA_TRD.cs" />
     <Compile Include="Data\Tramites\TBUNIDADESDOC_VIGENCIATRD.cs" />
     <Compile Include="Data\Tramites\CORRESPONDENCIASELECCION.cs" />
@@ -2461,6 +2462,7 @@
     <Content Include="Areas\Tramites\Scripts\anulaciondocumento.js" />
     <Content Include="Areas\Tramites\Scripts\avanzatareatramite.js" />
     <Content Include="Areas\Tramites\Scripts\BuscarTramites.js" />
+    <Content Include="Areas\Tramites\Scripts\nuevotramite.js" />
     <Content Include="Areas\Tramites\Scripts\indicesTramites.js" />
     <Content Include="Areas\Tramites\Scripts\documento.js" />
     <Content Include="Areas\Tramites\Scripts\MisTareas.js" />
@@ -3099,6 +3101,7 @@
     <Content Include="Areas\GestionDocumental\Views\Documentos\BuscarDocumentos.cshtml" />
     <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
     <Content Include="Content\fonts\arialbd.ttf" />
+    <Content Include="Areas\Tramites\Views\Tramites\NuevoTramite.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -3761,9 +3764,6 @@
     <Content Include="Views\Shared\_LayoutDashboard.cshtml" />
     <Content Include="Views\Shared\_Layout_Original.cshtml" />
     <Content Include="Views\Shared\_LayoutDashboard_Funciona.cshtml" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Scripts\ScriptsV5\jquery-3.4.1.min.map" />
     <Content Include="Scripts\ScriptsV5\jquery-3.4.1.slim.min.map" />
     <Content Include="Views\Shared\_LayoutV5.cshtml" />
@@ -3774,6 +3774,9 @@
     <Content Include="Views\Utilidades\DetalleTramite.cshtml" />
     <Content Include="Views\Shared\_LayoutExpedienteFlip.cshtml" />
     <Content Include="Views\Utilidades\BuscarTramite.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="x64\Oracle.ManagedDataAccessDTC.dll" />
     <Content Include="Scripts\jquery-1.12.3.js" />
     <Content Include="Scripts\jquery-1.12.3.min.js" />

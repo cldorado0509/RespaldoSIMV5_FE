@@ -13,6 +13,10 @@ using SIM.Data.Tramites;
 using System.Web.Hosting;
 using Newtonsoft.Json.Linq;
 using DocumentFormat.OpenXml.EMMA;
+using System.Configuration;
+using SIM.Utilidades;
+using System.IO;
+using System.Security.Claims;
 
 namespace SIM.Areas.Tramites.Controllers
 {
@@ -20,6 +24,31 @@ namespace SIM.Areas.Tramites.Controllers
     public class TramitesApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+
+        public class IndiceProceso
+        {
+            public decimal CODINDICE { get; set; }
+            public string INDICE { get; set; }
+            public decimal TIPO { get; set; }
+            public decimal LONGITUD { get; set; }
+            public decimal OBLIGA { get; set; }
+            public string VALORDEFECTO { get; set; }
+            public string VALOR { get; set; }
+            public Nullable<decimal> ID_LISTA { get; set; }
+            public Nullable<int> TIPO_LISTA { get; set; }
+            public string CAMPO_NOMBRE { get; set; }
+        }
+
+        public class DatosTramite
+        {
+            public int CodProceso { get; set; }
+            public int CodTareaPadre { get; set; }
+            public int CodTarea { get; set; }
+            public string Comentario { get; set; }
+            public List<IndicesValores> Indices { get; set; }
+            public Funcionario Responsable { get; set; }
+            public List<Funcionario> Copias { get; set; }
+        }
 
         public struct Tarea
         {
@@ -42,6 +71,12 @@ namespace SIM.Areas.Tramites.Controllers
             public string NOMBRE { get; set; }
 
             public string DEPENDENCIA { get; set; }
+        }
+
+        public class ValorLista
+        {
+            public int ID { get; set; }
+            public string NOMBRE { get; set; }
         }
 
         public struct DatosConsultaTramites
@@ -374,6 +409,162 @@ namespace SIM.Areas.Tramites.Controllers
             catch (Exception exp)
             {
                 throw exp;
+            }
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("ObtenerProcesos")]
+        public dynamic GetObtenerProcesos()
+        {
+            var procesos = from p in dbSIM.TBPROCESO
+                           where p.ACTIVO == "1"
+                           orderby p.NOMBRE
+                           select new
+                           {
+                               p.CODPROCESO,
+                               p.NOMBRE
+                           };
+
+            return procesos.ToList();
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("ObtenerTareasProceso")]
+        public dynamic GetObtenerTareasProceso(int codProceso)
+        {
+            var tareas = from t in dbSIM.TBTAREA
+                           where t.CODPROCESO == codProceso
+                           orderby t.INICIO descending, t.FIN, t.NOMBRE
+                           select new
+                           {
+                               t.CODTAREA,
+                               t.NOMBRE
+                           };
+
+            return tareas.ToList();
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("ObtenerIndicesProceso")]
+        public dynamic GetObtenerIndicesProceso(int codProceso)
+        {
+            var indicesProceso = from ip in dbSIM.TBINDICEPROCESO
+                                 join lista in dbSIM.TBSUBSERIE on (decimal)ip.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                 from pdis in l.DefaultIfEmpty()
+                                 where ip.CODPROCESO == codProceso && ip.MOSTRAR == "1"
+                                 orderby ip.ORDEN
+                                 select new IndiceProceso
+                                 {
+                                     CODINDICE = ip.CODINDICE,
+                                     INDICE = ip.INDICE,
+                                     TIPO = (decimal)ip.TIPO,
+                                     LONGITUD = (decimal)ip.LONGITUD,
+                                     OBLIGA = (decimal)ip.OBLIGA,
+                                     VALORDEFECTO = ip.VALORDEFECTO,
+                                     VALOR = "",
+                                     ID_LISTA = ip.CODIGO_SUBSERIE,
+                                     TIPO_LISTA = pdis.TIPO,
+                                     CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
+                                 };
+
+            return indicesProceso.ToList();
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("ObtenerIndiceValoresLista")]
+        public dynamic GetObtenerIndiceValoresLista(int id)
+        {
+            List<ValorLista> resultadoConsulta;
+            string sql;
+            TBSUBSERIE lista = dbSIM.TBSUBSERIE.Where(ss => ss.CODIGO_SUBSERIE == id).FirstOrDefault();
+
+            if (lista != null)
+            {
+                if (lista.TIPO == 0) // La lista se toma de la tabla TBDETALLE_SUBSERIE
+                {
+                    sql = "SELECT CODIGO_DETALLE AS ID, NOMBRE FROM TRAMITES.TBDETALLE_SUBSERIE WHERE CODIGO_SUBSERIE = " + lista.CODIGO_SUBSERIE.ToString() + " ORDER BY NOMBRE";
+
+                    resultadoConsulta = dbSIM.Database.SqlQuery<ValorLista>(sql).ToList<ValorLista>();
+                }
+                else
+                {
+                    resultadoConsulta = dbSIM.Database.SqlQuery<ValorLista>("SELECT " + lista.CAMPO_ID + " AS ID, " + lista.CAMPO_NOMBRE + " AS NOMBRE FROM (" + lista.SQL + ") datos").ToList<ValorLista>();
+                }
+
+                return resultadoConsulta;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        [Authorize]
+        [HttpPost, ActionName("CrearTramite")]
+        public string PostCrearTramite(DatosTramite datos)
+        {
+            int idUsuario = 0;
+            int[] nuevoTramite;
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            try
+            {
+                if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                }
+
+                if (idUsuario == 0)
+                {
+                    return "ERROR:El Usuario no se encuentra autenticado.";
+                }
+
+                nuevoTramite = Utilidades.Tramites.CrearTramite(datos.CodProceso, datos.CodTarea, datos.CodTareaPadre, datos.Comentario, datos.Comentario, datos.Responsable.CODFUNCIONARIO, datos.Copias.Select(f => f.CODFUNCIONARIO).ToArray(), datos.Indices);
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Crear Trámite - TramitesApiController [PostCrearTramite] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(error));
+                return "ERROR: Se pudo haber almacenado parcialmente la Información.";
+            }
+
+            return "OK:" + nuevoTramite[0].ToString();
+        }
+
+        // GET api/<controller>
+        [Authorize]
+        [HttpGet, ActionName("Funcionarios")]
+        public datosConsulta GetFuncionarios(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords)
+        {
+            dynamic modelData;
+
+            if ((filter == null || filter == "") && (searchValue == "" || searchValue == null) && noFilterNoRecords)
+            {
+                datosConsulta resultado = new datosConsulta();
+                resultado.numRegistros = 0;
+                resultado.datos = null;
+
+                return resultado;
+            }
+            else
+            {
+                var model = (from f in dbSIM.QRY_FUNCIONARIO_ALL
+                             where f.ACTIVO == "1"
+                             select new
+                             {
+                                 f.CODFUNCIONARIO,
+                                 NOMBRE = f.NOMBRES
+                             });
+
+                modelData = model;
+
+                IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
+
+                datosConsulta resultado = new datosConsulta();
+                resultado.numRegistros = modelFiltered.Count();
+                resultado.datos = modelFiltered.Skip(skip).Take(take).ToList();
+
+                return resultado;
             }
         }
     }
