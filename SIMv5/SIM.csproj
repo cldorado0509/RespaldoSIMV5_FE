@@ -3774,9 +3774,6 @@
     <Content Include="Views\Utilidades\DetalleTramite.cshtml" />
     <Content Include="Views\Shared\_LayoutExpedienteFlip.cshtml" />
     <Content Include="Views\Utilidades\BuscarTramite.cshtml" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="x64\Oracle.ManagedDataAccessDTC.dll" />
     <Content Include="Scripts\jquery-1.12.3.js" />
     <Content Include="Scripts\jquery-1.12.3.min.js" />
