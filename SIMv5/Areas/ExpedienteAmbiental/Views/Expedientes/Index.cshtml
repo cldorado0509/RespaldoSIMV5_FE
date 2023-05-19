@@ -26,7 +26,7 @@
 </script>
 <br />
 
-<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/expedienteAmbiental.js?v=3.9")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/expedienteAmbiental.js?v=6.0")"></script>
 
 <style>
     .dx-button .dx-icon {
@@ -138,7 +138,7 @@
                         <div class="col-sm-5" id="txtNit"></div>
                         <div class="col-sm-2" id="cmdBuscarNit"></div>
                         <div class="col-sm-2" id="cmdEditarNit"></div>
-                     </div>
+                    </div>
                     <div class="row">
                         <div class="control-label col-sm-3" style="align-content:end">Nombre/Razón Social:</div>
                         <div class="col-sm-9" id="txtRazonSocial"></div>
@@ -298,7 +298,7 @@
                                 <div id="btnNuevoEstadoPuntoControl"></div>
                             }
                         }
-                        
+
                         <div id="GidListadoEstadosPuntosControl"></div>
                         <br />
                         <div id="popupEstadoPuntoControl">
@@ -333,7 +333,7 @@
                         @{
                             if (Model.CanInsert)
                             {
-                               <div id="btnNuevoAnotacionPuntoControl"></div>
+                                <div id="btnNuevoAnotacionPuntoControl"></div>
                             }
                         }
                         <div id="GidListadoAnotacionesPuntosControl"></div>
@@ -354,7 +354,37 @@
                 </div>
             </div>
         </div>
+        <div id="popupTramitesExpediente">
+            <div id="divEncabezadoTramitesExp" class="divEncabezado">
+                <div class="row">
+                    <div class="control-label col-sm-2" style="align-content:end">Expediente :</div>
+                    <div class="col-sm-10" id="txtlblNombreExpediente2"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2" style="align-content:end">CM         :</div>
+                    <div class="col-sm-10" id="txtlblCM2"></div>
+                </div>
+
+            </div>
+            <div id="GridListadoTramitesExpediente"></div>
+        </div>
+
+        <div id="popDetalleTramite"></div>
     </div>
+
+    <div id="popupTramitesPuntoControl">
+        <div id="divEncabezadoTramitesPunto" class="divEncabezado">
+            <div class="row">
+                <div class="control-label col-sm-1" style="align-content:end">Punto de Control :</div>
+                <div class="col-sm-11" id="txtlblNombrePuntoControlTramite"></div>
+            </div>
+        </div>
+        <div id="GridListadoTramitesPuntoControl"></div>
+    </div>
+
+    <div id="popDetalleTramite"></div>
 </div>
+
+
 
 

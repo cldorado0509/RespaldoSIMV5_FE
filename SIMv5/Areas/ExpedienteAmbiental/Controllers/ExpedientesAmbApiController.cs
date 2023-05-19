@@ -5,13 +5,20 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
+using AreaMetro.Seguridad;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
 using DevExpress.Web.ASPxHtmlEditor.Internal;
+using DevExpress.XtraRichEdit.Import.Html;
+using iTextSharp.text.pdf.codec.wmf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SIM.Areas.ControlVigilancia.Models;
 using SIM.Areas.ExpedienteAmbiental.Clases;
 using SIM.Areas.ExpedienteAmbiental.Models;
 using SIM.Areas.ExpedienteAmbiental.Models.DTO;
 using SIM.Data;
+using SIM.Data.Control;
+using SIM.Data.General;
 using SIM.Data.Seguridad;
 using SIM.Models;
 using SIM.Services;
@@ -1057,6 +1064,53 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             {
                 return new { resp = "Error", mensaje = e.Message };
             }
+        }
+
+        #endregion
+
+        #region Trámites asociados al Expediente Documental
+        
+       
+        /// <summary>
+        /// Consulta de Lista de Trámites asociados al Expediente Ambiental
+        /// </summary>
+        ///<param name="codExpediente"></param>
+        /// <returns>Registros resultado de la consulta</returns>
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("GetTramitesExpedienteAsync")]
+        public JArray GetTramitesExpedienteAsync(int codExpediente)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+  
+            var model = dbSIM.Database.SqlQuery<TramitesExpedienteDTO>(@"SELECT distinct tea.codtramite as CODTRAMITE, CODIGO_PROYECTO , FECHAINI,FECHAFIN, p.nombre AS PROYECTO,t.COMENTARIOS as COMENTARIOS,T.MENSAJE AS MENSAJE, decode(estado, 0, 'Abierto', 'Cerrado') as ESTADO " +
+                      " from TRAMITES.TRAMITE_EXPEDIENTE_AMBIENTAL tea " +
+                      " inner join TRAMITES.TBTRAMITE t on t.codtramite = tea.codtramite " +
+                      " inner join TRAMITES.TBPROCESO p on p.codproceso = t.codproceso " +
+                      " where CODIGO_SOLICITUD IS NULL AND CODIGO_PROYECTO = " + codExpediente.ToString());
+
+            return JArray.FromObject(model.ToList(), Js);
+        }
+
+
+        /// <summary>
+        /// Consulta de Lista de Trámites asociados al Punto de Control
+        /// </summary>
+        ///<param name="codigoSolicitudId"></param>
+        /// <returns>Registros resultado de la consulta</returns>
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("GetTramitesPuntoAsync")]
+        public JArray GetTramitesPuntoAsync(int codigoSolicitudId)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            var model = dbSIM.Database.SqlQuery<TramitesExpedienteDTO>(@"SELECT distinct tea.codtramite as CODTRAMITE, CODIGO_PROYECTO , FECHAINI,FECHAFIN, p.nombre AS PROYECTO,t.COMENTARIOS as COMENTARIOS,T.MENSAJE AS MENSAJE, decode(estado, 0, 'Abierto', 'Cerrado') as ESTADO " +
+                      " from TRAMITES.TRAMITE_EXPEDIENTE_AMBIENTAL tea " +
+                      " inner join TRAMITES.TBTRAMITE t on t.codtramite = tea.codtramite " +
+                      " inner join TRAMITES.TBPROCESO p on p.codproceso = t.codproceso " +
+                      " where CODIGO_SOLICITUD  = " + codigoSolicitudId.ToString());
+           
+           
+            return JArray.FromObject(model.ToList(), Js);
         }
 
         #endregion
