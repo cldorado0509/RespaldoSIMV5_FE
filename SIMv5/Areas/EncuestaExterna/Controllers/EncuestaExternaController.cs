@@ -2508,6 +2508,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
 
             TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
+            TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
             documento.CODDOCUMENTO = idCodDocumento;
             documento.CODTRAMITE = idTramit;
             documento.TIPODOCUMENTO = 1;
@@ -2523,6 +2524,12 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             //Convert.ToInt32(radicado.CODSERIE);
 
             db.Entry(documento).State = System.Data.Entity.EntityState.Added;
+            db.SaveChanges();
+
+            relDocTra.CODTRAMITE = idTramit;
+            relDocTra.CODDOCUMENTO = idCodDocumento;
+            relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+            db.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
             db.SaveChanges();
 
             documento doc = new documento();

@@ -157,11 +157,12 @@
                                     {
                                         _Sql = ObtenerSqlDocOracle(IdUnidadDoc, _condicion);
                                         DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
-                                    }
-                                    else
+                                    }else
                                     {
-                                       return JArray.FromObject(DocsEncontrados, Js);
+                                        _Sql = ObtenerSqlDocOracle(IdUnidadDoc);
+                                        DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                     }
+                                       return JArray.FromObject(DocsEncontrados, Js);
                                 }
                                 break;
                             case "B":
@@ -812,6 +813,7 @@
                 for (int contFiltro = 0; contFiltro < filtros.Length; contFiltro += 4)
                 {
                     filtros[contFiltro] = filtros[contFiltro].Contains(@"\") ? filtros[contFiltro].Replace(@"\", "") : filtros[contFiltro];
+                    var esFecha = filtros[contFiltro].ToLower().Contains("fecha");
                     switch (filtros[contFiltro + 1])
                     {
                         case "contains":
@@ -827,16 +829,19 @@
                             condicion.Add(" LOWER(\"" + filtros[contFiltro] + "\") LIKE '%" + filtros[contFiltro + 2].Trim().ToLower() + "'");
                             break;
                         case "=":
-                            condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") = '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') = TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") = '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
                             break;
                         case "<>":
-                            condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") <> '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') <> TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") <> '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
                             break;
                         case "<":
                         case "<=":
                         case ">":
                         case ">=":
-                            condicion.Add("TO_NUMBER(LOWER(\"" + filtros[contFiltro] + "\")) " + filtros[contFiltro + 1] + " " + filtros[contFiltro + 2].Trim().ToLower());
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') " + filtros[contFiltro + 1] + " TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("TO_NUMBER(LOWER(\"" + filtros[contFiltro] + "\")) " + filtros[contFiltro + 1] + " " + filtros[contFiltro + 2].Trim().ToLower());
                             break;
                     }
                 }
@@ -856,7 +861,7 @@
             decimal CodSerie = (decimal)IdUnidadDocumental;
             if (CodSerie > 0)
             {
-                _aux = "SELECT DISTINCT QRY.ID_DOCUMENTO,QRY.CODTRAMITE,QRY.CODDOCUMENTO,(SELECT SER.NOMBRE FROM TRAMITES.TBSERIE SER WHERE QRY.CODSERIE = SER.CODSERIE) AS NOMBRE,(SELECT DISTINCT BUS.S_INDICE FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS WHERE BUS.ID_DOCUMENTO = QRY.ID_DOCUMENTO) AS INDICES, QRY.FECHACREACION ";
+                _aux = "SELECT DISTINCT QRY.ID_DOCUMENTO,QRY.CODTRAMITE,QRY.CODDOCUMENTO,(SELECT SER.NOMBRE FROM TRAMITES.TBSERIE SER WHERE QRY.CODSERIE = SER.CODSERIE) AS NOMBRE,(SELECT DISTINCT BUS.S_INDICE FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS WHERE BUS.ID_DOCUMENTO = QRY.ID_DOCUMENTO AND ROWNUM=1) AS INDICES, QRY.FECHACREACION ";
                 if (_criterio != "" && _criterio != null)
                 {
                     string _codindices = "";
@@ -892,8 +897,20 @@
                 }
                 else
                 {
-                    _aux += "FROM TRAMITES.TBTRAMITEDOCUMENTO DOC WHERE DOC.CODSERIE=" + CodSerie + " ORDER BY DOC.ID_DOCUMENTO DESC";
+                    _aux += "FROM TRAMITES.TBTRAMITEDOCUMENTO QRY WHERE QRY.CODSERIE=" + CodSerie + " ORDER BY QRY.ID_DOCUMENTO DESC";
                 }
+            }
+            return _aux;
+        }
+
+        public string ObtenerSqlDocOracle(int IdUnidadDocumental)
+        {
+            string _aux = "";
+            decimal CodSerie = (decimal)IdUnidadDocumental;
+            if (CodSerie > 0)
+            {
+                _aux = "SELECT DISTINCT QRY.ID_DOCUMENTO,QRY.CODTRAMITE,QRY.CODDOCUMENTO,(SELECT SER.NOMBRE FROM TRAMITES.TBSERIE SER WHERE QRY.CODSERIE = SER.CODSERIE) AS NOMBRE,(SELECT DISTINCT BUS.S_INDICE FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS WHERE BUS.ID_DOCUMENTO = QRY.ID_DOCUMENTO AND ROWNUM=1) AS INDICES, QRY.FECHACREACION ";
+                _aux += "FROM TRAMITES.TBTRAMITEDOCUMENTO QRY WHERE QRY.CODSERIE=" + CodSerie + " ORDER BY QRY.ID_DOCUMENTO DESC";
             }
             return _aux;
         }

@@ -1301,6 +1301,7 @@ namespace SIM.Areas.Tramites.Controllers
 
 
             TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
+            TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
             documento.CODDOCUMENTO = idCodDocumento;
             documento.CODTRAMITE = codTramite;
             documento.TIPODOCUMENTO = 1;
@@ -1314,6 +1315,11 @@ namespace SIM.Areas.Tramites.Controllers
             documento.CODSERIE = Convert.ToInt32(radicado.CODSERIE);
 
             db.Entry(documento).State = System.Data.Entity.EntityState.Added;
+            db.SaveChanges();
+            relDocTra.CODTRAMITE = codTramite;
+            relDocTra.CODDOCUMENTO = idCodDocumento;
+            relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+            db.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
             db.SaveChanges();
 
 

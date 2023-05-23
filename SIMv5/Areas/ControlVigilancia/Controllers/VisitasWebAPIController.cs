@@ -2726,6 +2726,7 @@ namespace SIM.Areas.General.Controllers
             codFuncionario = Convert.ToInt32(clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario));
 
             TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
+            TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
             documento.CODDOCUMENTO = idCodDocumento;
             documento.CODTRAMITE = tramite.CODTRAMITE;
             documento.TIPODOCUMENTO = 1;
@@ -2740,6 +2741,12 @@ namespace SIM.Areas.General.Controllers
             documento.CIFRADO = "1";
 
             db.Entry(documento).State = System.Data.Entity.EntityState.Added;
+            db.SaveChanges();
+
+            relDocTra.CODTRAMITE = tramite.CODTRAMITE;
+            relDocTra.CODDOCUMENTO = idCodDocumento;
+            relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+            db.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
             db.SaveChanges();
 
             INFORME_TECNICO informeTecnico = db.INFORME_TECNICO.Where(it => it.ID_VISITA == idVisita).FirstOrDefault();

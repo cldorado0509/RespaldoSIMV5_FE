@@ -74,6 +74,7 @@ namespace SIM.Utilidades
             archivoRadicado.Close();
 
             TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
+            TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
             documento.CODDOCUMENTO = idCodDocumento;
             documento.CODTRAMITE = tramite.CODTRAMITE;
             documento.TIPODOCUMENTO = 1;
@@ -90,6 +91,11 @@ namespace SIM.Utilidades
             dbSIM.Entry(documento).State = System.Data.Entity.EntityState.Added;
             dbSIM.SaveChanges();
 
+            relDocTra.CODTRAMITE = tramite.CODTRAMITE;
+            relDocTra.CODDOCUMENTO = idCodDocumento;
+            relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+            dbSIM.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
+            dbSIM.SaveChanges();
             // Consulta Datos de los Indices del Documento
             var indiceSerieRadicado = dbSIM.TBINDICESERIE.Where(isd => isd.CODSERIE == codSerie && isd.INDICE_RADICADO != null).ToList();
 

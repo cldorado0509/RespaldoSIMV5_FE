@@ -26,6 +26,7 @@ using System.Text;
 using System.Configuration;
 using SIM.Data.Tramites;
 using SIM.Models;
+using System.Data.Entity;
 
 namespace SIM.Areas.Tala.Controllers
 {
@@ -422,6 +423,8 @@ namespace SIM.Areas.Tala.Controllers
               
 
                TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
+               TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
+
                documento.CODDOCUMENTO = idCodDocumento;
                documento.CODTRAMITE = idTramit;
                documento.TIPODOCUMENTO = 1;
@@ -437,8 +440,13 @@ namespace SIM.Areas.Tala.Controllers
 
                db.Entry(documento).State = System.Data.Entity.EntityState.Added;
                db.SaveChanges();
+               relDocTra.CODTRAMITE = idTramit;
+               relDocTra.CODDOCUMENTO = idCodDocumento;
+               relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+               db.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
+               db.SaveChanges();
 
-               doc doc= new doc();
+               doc doc = new doc();
                doc.RUTA = rutaDocumento;
                doc.IDDOC = idCodDocumento.ToString();
                doc.file = rutaProceso.PATH + "\\" + Archivos.GetRutaDocumento(Convert.ToUInt64(idTramit), 100);

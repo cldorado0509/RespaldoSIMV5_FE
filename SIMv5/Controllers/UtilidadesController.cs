@@ -81,11 +81,16 @@
             if (Orden != null)
             {
                 UltFun = (from Tta in dbSIM.TBTRAMITETAREA
-                              where Tta.CODTRAMITE == CodTramite && Tta.ORDEN == Orden && Tta.ESTADO == 0
-                              select Tta.CODFUNCIONARIO).FirstOrDefault();
+                          where Tta.CODTRAMITE == CodTramite && Tta.ORDEN == Orden && Tta.ESTADO == 0
+                          select Tta.CODFUNCIONARIO).FirstOrDefault();
                 if (UltFun <= 0) UltFun = -1;
             }
-            else Orden= (int)dbSIM.TBTRAMITETAREA.Where(w => w.CODTRAMITE.Equals(CodTramite) && w.COPIA == 0).Max(m => m.ORDEN);
+            else
+            {
+                var Ord = dbSIM.TBTRAMITETAREA.Where(w => w.CODTRAMITE.Equals(CodTramite) && w.COPIA == 0).Select(s => s.ORDEN).ToList();
+                if (Ord.Count > 0) Orden = (int)Ord.Max();
+                else Orden = 1;           
+            }
 
 
             var TramiteTarea = (from TR in dbSIM.TBTRAMITE
