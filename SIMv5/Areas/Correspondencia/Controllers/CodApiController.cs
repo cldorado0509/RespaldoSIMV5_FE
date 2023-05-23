@@ -627,6 +627,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                             {
                                 Utilidades.Cryptografia.GrabaMemoryStream(ms, _ArchSubido.FullName);
                                 TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
+                                TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
                                 documento.CODDOCUMENTO = idCodDocumento;
                                 documento.CODTRAMITE = Codtramite;
                                 documento.TIPODOCUMENTO = 2;
@@ -640,6 +641,11 @@ namespace SIM.Areas.Correspondencia.Controllers
                                 documento.CIFRADO = "0";
                                 documento.CODSERIE = int.Parse(_CodSerieDev);
                                 dbSIM.Entry(documento).State = System.Data.Entity.EntityState.Added;
+                                dbSIM.SaveChanges();
+                                relDocTra.CODTRAMITE = Codtramite;
+                                relDocTra.CODDOCUMENTO = idCodDocumento;
+                                relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+                                dbSIM.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
                                 dbSIM.SaveChanges();
                                 var Indices = (from ModInd in dbSIM.TBINDICEDOCUMENTO
                                                where ModInd.CODTRAMITE == Codtramite && ModInd.CODDOCUMENTO == Coddocumento

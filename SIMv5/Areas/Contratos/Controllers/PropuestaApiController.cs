@@ -899,6 +899,12 @@
             tramiteDocumento.ACTIVIDAD = IdActividad;
             dbSIM.TBTRAMITEDOCUMENTO.Add(tramiteDocumento);
             dbSIM.SaveChanges();
+            TBTRAMITE_DOC relaDocTra = new TBTRAMITE_DOC();
+            relaDocTra.CODDOCUMENTO = tramiteDocumento.CODDOCUMENTO;
+            relaDocTra.CODTRAMITE = _Codtramite;
+            relaDocTra.ID_DOCUMENTO = tramiteDocumento.ID_DOCUMENTO;
+            dbSIM.TBTRAMITE_DOC.Add(relaDocTra);
+            dbSIM.SaveChanges();    
             return tramiteDocumento.CODDOCUMENTO;
         }
 
