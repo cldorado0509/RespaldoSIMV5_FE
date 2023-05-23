@@ -184,7 +184,7 @@ $(document).ready(function () {
         },
         pager: {
             showPageSizeSelector: true,
-            allowedPageSizes: [7, 10, 20, 50]
+            allowedPageSizes: [7]
         },
         selection: {
             mode: 'single'

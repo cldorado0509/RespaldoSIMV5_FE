@@ -162,7 +162,7 @@
                                         _Sql = ObtenerSqlDocOracle(IdUnidadDoc);
                                         DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                     }
-                                       return JArray.FromObject(DocsEncontrados, Js);
+                                    return JArray.FromObject(DocsEncontrados, Js);
                                 }
                                 break;
                             case "B":
@@ -1177,21 +1177,20 @@
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("EditarIndicesTramite")]
         public dynamic GetEditarIndicesTramite(int CodTramite)
         {
-            var Indices = (from Ind in dbSIM.TBINDICETRAMITE
-                           join Ise in dbSIM.TBINDICEPROCESO on Ind.CODINDICE equals Ise.CODINDICE
-                           join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
-                           from pdis in l.DefaultIfEmpty()
-                           where Ind.CODTRAMITE == CodTramite
+            var Indices = (from Tra in dbSIM.TBTRAMITE
+                           join Ise in dbSIM.TBINDICEPROCESO on Tra.CODPROCESO equals Ise.CODPROCESO
+                           join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l from pdis in l.DefaultIfEmpty()
+                           where Tra.CODTRAMITE == CodTramite
                            orderby Ise.ORDEN
                            select new Indice
                            {
-                               CODINDICE = (int)Ind.CODINDICE,
+                               CODINDICE = (int)Ise.CODINDICE,
                                INDICE = Ise.INDICE,
                                TIPO = (byte)Ise.TIPO,
                                LONGITUD = (long)Ise.LONGITUD,
                                OBLIGA = (int)Ise.OBLIGA,
                                VALORDEFECTO = Ise.VALORDEFECTO,
-                               VALOR = Ind.VALOR,
+                               VALOR = dbSIM.TBINDICETRAMITE.Where(w => w.CODTRAMITE == Tra.CODTRAMITE && w.CODINDICE == Ise.CODINDICE).Select(s => s.VALOR).FirstOrDefault(),
                                ID_LISTA = (int)Ise.CODIGO_SUBSERIE,
                                TIPO_LISTA = pdis.TIPO,
                                CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
