@@ -246,6 +246,81 @@ $(document).ready(function () {
                 }
             },
             {
+                visible: canRead,
+                width: '5%',
+                caption: "Abogados asignados al expediente",
+                alignment: 'center',
+                cellTemplate: function (container, options) {
+                    $('<div/>').dxButton({
+                        icon: 'group',
+                        height: 20,
+                        hint: 'Abogados asignados al Expediente Ambiental',
+                        onClick: function (e) {
+                            txtlblCM3.option("value", options.data.cm);
+                            codExpediente = options.data.idExpediente;
+                            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerDatosTerceroExpedienteAsync";
+                            $.getJSON(_Ruta,
+                                {
+                                    Id: options.data.idExpediente
+                                }).done(function (datat) {
+                                    if (datat !== null) {
+                                        $("#GridListadoAbogadosExpediente").dxDataGrid({
+                                            dataSource: new DevExpress.data.DataSource({
+                                                store: new DevExpress.data.CustomStore({
+                                                    key: "idAbogadoExpediente",
+                                                    loadMode: "raw",
+                                                    load: function () {
+                                                        return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/ExpedientesAmbApi/GetAbogadosExpedienteAsync", { idExpediente: codExpediente });
+                                                    }
+                                                })
+                                            }),
+                                            allowColumnResizing: true,
+                                            loadPanel: { enabled: true, text: 'Cargando Datos...' },
+                                            noDataText: "Sin datos para mostrar",
+                                            showBorders: true,
+                                            filterRow: {
+                                                visible: true,
+                                                emptyPanelText: 'Arrastre una columna para agrupar'
+                                            },
+                                            searchPanel: {
+                                                visible: true,
+                                                width: 240,
+                                                placeholder: "Buscar..."
+                                            },
+                                            selection: {
+                                                mode: 'single'
+                                            },
+                                            paging: {
+                                                pageSize: 5
+                                            },
+                                            pager: {
+                                                showPageSizeSelector: true,
+                                                allowedPageSizes: [5, 10, 20, 50]
+                                            },
+                                            hoverStateEnabled: true,
+                                            remoteOperations: true,
+                                            columns: [
+                                                { dataField: 'idAbogadoExpediente', width: '5%', caption: 'Código', alignment: 'center' },
+                                                { dataField: 'abogado', width: '30%', caption: 'Abogado', alignment: 'center' },
+                                                { dataField: 'fechaAsignacion', width: '10%', caption: 'Fecha Asignación', alignment: 'center', dataType: 'date' },
+                                                { dataField: 'fechaFin', width: '10%', caption: 'Fecha culminación', alignment: 'center', dataType: 'date' },
+                                                { dataField: 'observacion', width: '35%', caption: 'Observación', dataType: 'string' },
+                                            ],
+                                            onSelectionChanged: function (selectedItems) {
+
+                                            }
+                                        });
+                                    }
+                                }).fail(function (jqxhr, textStatus, error) {
+                                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
+                                });
+
+                            popupAbogados.show();
+                        }
+                    }).appendTo(container);
+                }
+            },
+            {
                 width: '5%',
                 caption: "Puntos de Control",
                 alignment: 'center',
@@ -809,6 +884,10 @@ $(document).ready(function () {
         readOnly: true
     }).dxTextBox("instance");
 
+    txtlblCM3 = $("#txtlblCM3").dxTextBox({
+        readOnly: true
+    }).dxTextBox("instance");
+
     var txtlblCedulaNit = $("#txtlblCedulaNit").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
@@ -1301,6 +1380,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         title: "Creación/Edición de Expediente Ambiental"
     }).dxPopup("instance");
+   
 
     var popupTramitesExpediente = $("#popupTramitesExpediente").dxPopup({
         width: 1200,
@@ -1311,6 +1391,7 @@ $(document).ready(function () {
         title: "Trámites asociados al Expediente"
     }).dxPopup("instance");
 
+    
     var popupTramitesPuntoControl = $("#popupTramitesPuntoControl").dxPopup({
         width: 1200,
         height: 700,
@@ -1338,6 +1419,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         title: "Creación/Edición de Anotación asociada al Punto de Control"
     }).dxPopup("instance"); 
+    
 
     $("#btnNuevoPuntoControl").dxButton({
         text: "Nuevo",
@@ -1359,6 +1441,7 @@ $(document).ready(function () {
         }
     }).dxButton("instance");
 
+    
     $("#btnNuevoEstadoPuntoControl").dxButton({
         text: "Nuevo",
         type: "success",
@@ -1488,6 +1571,106 @@ $(document).ready(function () {
                 CargarGridIndices();
             }
         }  
+    }).dxPopup("instance");
+
+    var cboAbogados = $("#cboAbogados").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "idAbogado",
+                loadMode: "raw",
+                load: function () {
+                    var datos = $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerAbogadosAsync");
+                    return datos;
+                }
+            })
+        }),
+        displayExpr: "nombre",
+        valueExpr : "idAbogado",
+    }).dxValidator({
+        validationGroup: "ProcesoGroup",
+        validationRules: [{
+            type: "required",
+            message: "Debe seleccionar el Abogado!"
+        }]
+    }).dxSelectBox("instance");
+
+
+    $("#btnGuardarAbogado").dxButton({
+        text: "Asignar",
+        type: "default",
+        height: 30,
+        width: 100,
+        icon: 'add',
+        onClick: function () {
+            DevExpress.validationEngine.validateGroup("ProcesoGroup");
+            var id = idExpedienteAmb;
+            var abogadoId = cboAbogados.option("value");
+            var params = {
+                expedienteAmbientalId: id, funcionarioId: abogadoId
+            };
+
+            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/AsignarExpedienteAmbientalAsync";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                crossDomain: true,
+                headers: { 'Access-Control-Allow-Origin': '*' },
+                success: function (data) {
+                    if (data.Result.Response === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
+                    else {
+                        DevExpress.ui.dialog.alert('Abogado asignado al expediente', 'Guardar Datos');
+                        $('#GridListadoAbogadosExpediente').dxDataGrid({
+                            dataSource: new DevExpress.data.DataSource({
+                                store: new DevExpress.data.CustomStore({
+                                    key: "idAbogadoExpediente",
+                                    loadMode: "raw",
+                                    load: function () {
+                                        return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/ExpedientesAmbApi/GetAbogadosExpedienteAsync", { idExpediente: id });
+                                    }
+                                })
+                            })
+                        });
+
+                        $('#popopAsociarAbogado').dxPopup("instance").hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Guardar Datos');
+                }
+            });
+        }
+    });
+
+    $("#btnAsociarAbogado").dxButton({
+        text: "Nuevo",
+        type: "default",
+        height: 30,
+        width: 100,
+        icon: 'add',
+        onClick: function () {
+            popopAsociarAbogado.show();
+        }
+    });
+
+    var popupAbogados = $("#popupAbogados").dxPopup({
+        width: 1200,
+        height: 600,
+        dragEnabled: true,
+        resizeEnabled: true,
+        hoverStateEnabled: true,
+        title: "Abogados asignados al Expediente Ambiental"
+    }).dxPopup("instance");
+
+    var popopAsociarAbogado = $("#popopAsociarAbogado").dxPopup({
+        width: 700,
+        height: 250,
+        dragEnabled: true,
+        resizeEnabled: true,
+        hoverStateEnabled: true,
+        title: "Asociar un Abogado al Expediente Ambiental"
     }).dxPopup("instance");
 
     var popupVicularExpedienteDocumental = $("#popupVicularExpedienteDocumental").dxPopup({

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -9,6 +10,7 @@ using AreaMetro.Seguridad;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
 using DevExpress.Web.ASPxHtmlEditor.Internal;
 using DevExpress.XtraRichEdit.Import.Html;
+using DevExtreme.AspNet.Mvc;
 using iTextSharp.text.pdf.codec.wmf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,6 +40,14 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         private string urlApiTerceros = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioTerceros").ToString();
         private string urlApiSecurity = SIM.Utilidades.Data.ObtenerValorParametro("urlApiSecurity").ToString();
       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="certification"></param>
+        /// <param name="chain"></param>
+        /// <param name="sslPolicyErrors"></param>
+        /// <returns></returns>
         public static bool AcceptAllCertifications(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
         {
             return true;
@@ -309,7 +319,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             }
         }
 
-
+      
         /// <summary>
         /// Retorna el listado de los tipos de Clasificación de los Expedientes Ambientales
         /// </summary>
@@ -340,8 +350,12 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 throw exp;
             }
         }
-
-
+        
+       
+        /// <summary>
+        /// Retorna el Listado de Municipios
+        /// </summary>
+        /// <returns></returns>
         [HttpGet, ActionName("ObtenerMunicipios")]
         public JArray ObtenerMunicipios()
         {
@@ -1112,6 +1126,108 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
            
             return JArray.FromObject(model.ToList(), Js);
         }
+
+        #endregion
+
+        #region Abogado asociados al Expediente
+
+        /// <summary>
+        /// Retorna los abogados asociados a un Expediente Ambiental determinado
+        /// </summary>
+        /// <param name="idExpediente">Identifica el Expediente Ambiental</param>
+        /// <returns></returns>
+        [HttpGet, ActionName("GetAbogadosExpedienteAsync")]
+        public async Task<JArray> GetAbogadosExpedienteAsync(string idExpediente)
+        {
+            ApiService apiService = new ApiService();
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            try
+            {
+                int _Id = -1;
+                if (!string.IsNullOrEmpty(idExpediente)) _Id = int.Parse(idExpediente);
+
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+                if (!response.IsSuccess) return null;
+                var tokenG = (TokenResponse)response.Result;
+                if (tokenG == null) return null;
+
+                response = await apiService.GetListAsync<AbogadoExpedienteDTO>(urlApiExpedienteAmbiental, "api/", $"AbogadoExpediente/ObtenerAbogadosExpediente?expedienteId={idExpediente}", tokenG.Token);
+                if (!response.IsSuccess) return null;
+                var list = (List<AbogadoExpedienteDTO>)response.Result;
+                if (list == null || list.Count == 0) return null;
+
+                var ja = JArray.FromObject(list, Js);
+                return ja;
+
+
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+
+        /// <summary>
+        /// Almacena la Información de un Abodago asociado a un Expediente Ambiental
+        /// </summary>
+        /// <param name="objData"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("AsignarExpedienteAmbientalAsync")]
+        public async Task<object> AsignarExpedienteAmbientalAsync(AbogadoExpedienteDTO objData)
+        {
+            Response resposeF = new Response();
+            try
+            {
+                objData.FechaAsignacion = DateTime.Now;
+                objData.Observacion = "";
+                objData.Abogado = "";
+                ApiService apiService = new ApiService();
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+                if (!response.IsSuccess) return null;
+                var tokenG = (TokenResponse)response.Result;
+                if (tokenG == null) return null;
+                resposeF = await apiService.PostAsync<AbogadoExpedienteDTO>(urlApiExpedienteAmbiental, "api/", "AbogadoExpediente/GuardarAbogadoExpediente", objData, tokenG.Token);
+                if (!resposeF.IsSuccess) return new Response { IsSuccess= false, Message = "Error Vinculando el Abogado!" };
+            }
+            catch (Exception e)
+            {
+                return new Response { IsSuccess= false, Message = "Error Vinculando el Abogado: " + e.Message };
+            }
+
+            return resposeF;
+        }
+
+
+        /// <summary>
+        /// Retorna el listado de los tipos de Abogados
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, ActionName("ObtenerAbogadosAsync")]
+        public async Task<JArray> ObtenerAbogadosAsync()
+        {
+            ApiService apiService = new ApiService();
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                var model = await (from Mod in dbSIM.QRY_ABOGADOS
+                                   orderby Mod.NOMBRES
+                                   select new AbogadoDTO
+                                   {
+                                       IdAbogado = (int)Mod.CODFUNCIONARIO,
+                                       Nombre = Mod.NOMBRES
+                                   }).ToListAsync();
+                return JArray.FromObject(model, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
 
         #endregion
     }

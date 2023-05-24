@@ -26,7 +26,7 @@
 </script>
 <br />
 
-<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/expedienteAmbiental.js?v=6.0")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/expedienteAmbiental.js?v=15")"></script>
 
 <style>
     .dx-button .dx-icon {
@@ -180,6 +180,41 @@
             <iframe src="" id="buscarTercero" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
         </div>
 
+        <div id="popupAbogados">
+            <div id="divEncabezadoAbogadosExp" class="divEncabezado">
+                <div class="row">
+                    <div class="control-label col-sm-2" style="align-content:end">Expediente :</div>
+                    <div class="col-sm-10" id="txtlblNombreExpediente3"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2" style="align-content:end">CM         :</div>
+                    <div class="col-sm-10" id="txtlblCM3"></div>
+                </div>
+
+            </div>
+            <br />
+            <br />
+            @{
+                if (Model.CanInsert)
+                {
+                    <div id="btnAsociarAbogado"></div>
+                }
+            }
+
+
+            <div id="GridListadoAbogadosExpediente"></div>
+        </div>
+
+        <div id="popopAsociarAbogado">
+            <div class="row">
+                <div class="control-label col-sm-3" style="align-content:end">Abogado:</div>
+                <div class="col-sm-9" id="cboAbogados"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3" id="btnGuardarAbogado"></div>
+             </div>
+        </div>
+
         <div id="PopupPuntosControl">
             <div id="divEncabezado" class="divEncabezado">
                 <div class="row">
@@ -201,12 +236,12 @@
                 <div id="asistente">
                     <h3>Listado de Puntos de Control asociados con el Expediente Ambiental</h3>
                     <div class="divDetalle">
-                        @{
-                            if (Model.CanInsert)
-                            {
-                                <div id="btnNuevoPuntoControl"></div>
-                            }
+                    @{
+                        if (Model.CanInsert)
+                        {
+                            <div id="btnNuevoPuntoControl"></div>
                         }
+                       }
                         <div id="GidListadoPuntosControl"></div>
                         <br />
                         <div id="popupNuevoPuntoControl">
@@ -354,6 +389,7 @@
                 </div>
             </div>
         </div>
+    
         <div id="popupTramitesExpediente">
             <div id="divEncabezadoTramitesExp" class="divEncabezado">
                 <div class="row">

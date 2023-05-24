@@ -1149,6 +1149,8 @@
     <Compile Include="Areas\ExpedienteAmbiental\Controllers\VitalApiController.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Controllers\VitalController.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\ExpedienteAmbientaAreaRegistration.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Models\AbogadoDTO.cs" />
+    <Compile Include="Areas\ExpedienteAmbiental\Models\AbogadoExpedienteDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\AnotacionPuntoControlDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\ClasificacionExpedienteDTO.cs" />
     <Compile Include="Areas\ExpedienteAmbiental\Models\DocumentoAportadoDTO.cs" />
@@ -1536,6 +1538,7 @@
     <Compile Include="Data\General\EVENTO_PARTICIPANTE.cs" />
     <Compile Include="Data\Tramites\BUSQUEDA_DOCUMENTO.cs" />
     <Compile Include="Data\Tramites\EXP_BUSQUEDA.cs" />
+    <Compile Include="Data\Tramites\QRY_ABOGADOS.cs" />
     <Compile Include="Data\Tramites\QRY_INFORMESTECNICOS.cs" />
     <Compile Include="Data\Tramites\QRY_MEMORANDOS.cs" />
     <Compile Include="Data\Tramites\QRY_RESOLUCIONES.cs" />

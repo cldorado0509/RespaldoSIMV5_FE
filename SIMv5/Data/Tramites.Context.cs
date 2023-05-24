@@ -109,7 +109,8 @@
         public virtual DbSet<TBSOLICITUDES_VITAL> TBSOLICITUDES_VITAL { get; set; }
         public virtual DbSet<QRY_RESOLUCIONES> QRY_RESOLUCIONES { get; set; }
         public virtual DbSet<TBPERMISOS_SERIE> PERMISOSSERIE { get; set; }
-        public virtual DbSet<QRY_TERCERO> QRY_TERCERO { get; set; } 
+        public virtual DbSet<QRY_TERCERO> QRY_TERCERO { get; set; }
+        public virtual DbSet<QRY_ABOGADOS> QRY_ABOGADOS { get; set; }
         /*
         public virtual int SP_SET_ITEMVISITA(Nullable<decimal> iDVISITA, Nullable<decimal> iDITEM, Nullable<decimal> iDTRAMITE, ObjectParameter rTAI)
         {
