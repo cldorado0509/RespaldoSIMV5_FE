@@ -1585,6 +1585,7 @@ $(document).ready(function () {
             })
         }),
         displayExpr: "nombre",
+        searchEnabled: true,
         valueExpr : "idAbogado",
     }).dxValidator({
         validationGroup: "ProcesoGroup",
