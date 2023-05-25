@@ -139,7 +139,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 {
                     objData.proyectoId = 0;
                     resposeF = await apiService.PostAsync<ExpedienteAmbientalDTO>(urlApiExpedienteAmbiental, "api/", "ExpedienteAmbiental/GuardarExpedienteAmbiental", objData, tokenG.Token);
-                    if (!resposeF.IsSuccess) return resposeF.Result;
+                    if (!resposeF.IsSuccess) return resposeF;
                 }
             }
             catch (Exception e)

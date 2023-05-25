@@ -51,5 +51,11 @@
 
         [JsonProperty("razonSocial")]
         public string RazonSocial { get; set; }
+
+        [JsonProperty("cedulaNit")]
+        public string CedulaNit { get; set; }
+
+        [JsonProperty("instalacion")]
+        public string Instalacion { get; set; }
     }
 }

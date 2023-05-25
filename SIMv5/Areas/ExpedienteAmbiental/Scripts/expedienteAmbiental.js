@@ -2,7 +2,7 @@
 var codExpediente = 0;
 var idExpedienteAmb = 0;
 var idTercero;
-var idInstalacion;
+var idInstalacion = 0;
 var idPuntoControl = 0;
 var codigoSolicitudId = 0;
 var idExpedienteDoc;
@@ -85,13 +85,16 @@ $(document).ready(function () {
                                     if (data !== null) {
                                         idExpedienteAmb = data.idExpediente;
                                         txtCM.option("value", data.cm);
+                                        txtNit.option("value", data.cedulaNit);
                                         txtRazonSocial.option("value", data.razonSocial);
                                         txtNombreExpediente.option("value", data.nombre);
                                         txtDescripcionExpediente.option("value", data.descripcion);
                                         txtDireccionExpediente.option("value", data.direccion);
                                         cboClasificacion.option("value", data.clasificacionExpedienteId);
                                         cboMunicipio.option("value", data.municipioId);
-                                        cboIntalaciones.option("value", data.instalacionId);
+                                        idInstalacion = data.instalacionId;
+                                        txtInstalacion.option("value", data.instalacion);
+                                        cboIntalaciones.option("disabled", true);
                                         popupNuevoExpediente.show();
                                     }
                                 }).fail(function (jqxhr, textStatus, error) {
@@ -858,6 +861,11 @@ $(document).ready(function () {
         value: "",
     }).dxTextBox("instance");
 
+    var txtInstalacion = $("#txtInstalacion").dxTextBox({
+        readOnly: true,
+        value: "",
+    }).dxTextBox("instance");
+
     var txtlblNombreExpediente = $("#txtlblNombreExpediente").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
@@ -1301,7 +1309,8 @@ $(document).ready(function () {
                 }
             })
         }),
-        displayExpr: "nombre"
+        displayExpr: "nombre",
+        valueExpr: "idClasificacionExpediente"
     }).dxValidator({
         validationGroup: "ProcesoGroup",
         validationRules: [{
@@ -1326,10 +1335,11 @@ $(document).ready(function () {
             var descripcion = txtDescripcionExpediente.option("value");
             var direccion = txtDireccionExpediente.option("value");
             var municipioId = cboMunicipio.option("value").Id;
-            var clasificacionId = cboClasificacion.option("value").idClasificacionExpediente;
+            var clasificacionId = cboClasificacion.option("value");
             var cm = txtCM.option("value");
             var params = {
-                idExpediente: id, nombre: nombre, cm: cm, descripcion: descripcion, clasificacionExpedienteId: clasificacionId, municipioId: municipioId, direccion: direccion, terceroId: idTercero, instalacionId : idInstalacion 
+                idExpediente: id, nombre: nombre, cm: cm, descripcion: descripcion, clasificacionExpedienteId: clasificacionId, municipioId: municipioId,
+                direccion: direccion, terceroId: idTercero, instalacionId: idInstalacion, razonSocial: "", proyectoId: 0, cedulaNit: "", instalacion: ""
             };
 
             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/GuardarExpedienteAmbientalAsync";
@@ -1344,7 +1354,7 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.Result.Response === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                     else {
-                        DevExpress.ui.dialog.alert('Expediente Ambiental Creado correctamente con el CM:' + data.Result.IdGenerated, 'Guardar Datos');
+                        DevExpress.ui.dialog.alert('Expediente Ambiental Creado/Actualizado correctamente con el CM:' + data.Result.IdGenerated, 'Guardar Datos');
                         $('#GidListado').dxDataGrid({ dataSource: ExpedientesDataSource });
                         $('#popupNuevoExpediente').dxPopup("instance").hide();
                     }
@@ -1364,9 +1374,12 @@ $(document).ready(function () {
         icon: 'add',
         onClick: function () {
             idExpediente = 0;
+            idExpedienteAmb = 0;
             txtCM.reset();
             txtlblCedulaNit.reset();
+            txtNit.reset();
             cboIntalaciones.reset();
+            cboIntalaciones.option("disabled", false);
             txtNombreExpediente.reset();
             txtRazonSocial.reset();
             txtDescripcionExpediente.reset();
@@ -1562,8 +1575,8 @@ $(document).ready(function () {
     }).dxButton("instance");
          
     var popupNuevoPuntoControl = $("#popupNuevoPuntoControl").dxPopup({
-        width: 800,
-        height: "auto",
+        width: 900,
+        height: 900,
         dragEnabled: true,
         resizeEnabled: true,
         hoverStateEnabled: true,
