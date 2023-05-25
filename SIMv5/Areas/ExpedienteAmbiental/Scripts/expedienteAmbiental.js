@@ -1174,6 +1174,7 @@ $(document).ready(function () {
             })
         }),
         displayExpr: "Nombre",
+        valueExpr: "Id",
         searchEnabled: true
     }).dxValidator({
         validationGroup: "ProcesoGroup",
@@ -1334,7 +1335,7 @@ $(document).ready(function () {
 
             var descripcion = txtDescripcionExpediente.option("value");
             var direccion = txtDireccionExpediente.option("value");
-            var municipioId = cboMunicipio.option("value").Id;
+            var municipioId = cboMunicipio.option("value");
             var clasificacionId = cboClasificacion.option("value");
             var cm = txtCM.option("value");
             var params = {
@@ -1381,6 +1382,7 @@ $(document).ready(function () {
             cboIntalaciones.reset();
             cboIntalaciones.option("disabled", false);
             txtNombreExpediente.reset();
+            txtInstalacion.reset();
             txtRazonSocial.reset();
             txtDescripcionExpediente.reset();
             txtDireccionExpediente.reset();
