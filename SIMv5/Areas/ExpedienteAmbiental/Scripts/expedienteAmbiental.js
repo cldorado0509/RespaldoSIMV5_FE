@@ -85,11 +85,13 @@ $(document).ready(function () {
                                     if (data !== null) {
                                         idExpedienteAmb = data.idExpediente;
                                         txtCM.option("value", data.cm);
+                                        txtRazonSocial.option("value", data.razonSocial);
                                         txtNombreExpediente.option("value", data.nombre);
                                         txtDescripcionExpediente.option("value", data.descripcion);
                                         txtDireccionExpediente.option("value", data.direccion);
                                         cboClasificacion.option("value", data.clasificacionExpedienteId);
                                         cboMunicipio.option("value", data.municipioId);
+                                        cboIntalaciones.option("value", data.instalacionId);
                                         popupNuevoExpediente.show();
                                     }
                                 }).fail(function (jqxhr, textStatus, error) {
@@ -1363,7 +1365,10 @@ $(document).ready(function () {
         onClick: function () {
             idExpediente = 0;
             txtCM.reset();
+            txtlblCedulaNit.reset();
+            cboIntalaciones.reset();
             txtNombreExpediente.reset();
+            txtRazonSocial.reset();
             txtDescripcionExpediente.reset();
             txtDireccionExpediente.reset();
             cboClasificacion.reset();

@@ -48,5 +48,8 @@
 
         [JsonProperty("fechaRegistro")]
         public DateTime? FechaRegistro { get; set; }
+
+        [JsonProperty("razonSocial")]
+        public string RazonSocial { get; set; }
     }
 }
