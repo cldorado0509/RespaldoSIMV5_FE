@@ -1,18 +1,181 @@
 ﻿var IdDocumento = -1;
+var txtTramite = "";
+var txtFiltro = "";
+var txtFulltext = "";
+var UnidadDoc = -1;
 
+const fechas = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 
 $(document).ready(function () {
-    $("#btnBuscarDoc").dxButton({
-        text: "Documentos",
-        icon: "search",
-        type: "default",
-        width: "190",
-        onClick: function () {
-            var _popup = $("#popupBuscaDoc").dxPopup("instance");
-            _popup.show();
-            $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true');
+    $("#rdbTipoBusca").dxRadioGroup({
+        dataSource: [{ value: 0, text: "Por trámite" }, { value: 1, text: "Por Unidad Documental" }, { value: 2, text: "Full Text" }],
+        displayExpr: "text",
+        valueExpr: "value",
+        value: 0,
+        layout: "horizontal",
+        onContentReady: function (e) {
+            $("#PanelTramite").show();
+            $("#PanelIndices").hide();
+            $("#PanelFulltext").hide();
+            SelTipo = 0;
+        },
+        onValueChanged: function (e) {
+            switch (e.value) {
+                case 0:
+                    $("#PanelTramite").show();
+                    $("#PanelIndices").hide();
+                    $("#PanelFulltext").hide();
+                    break;
+                case 1:
+                    $("#PanelTramite").hide();
+                    $("#PanelIndices").show();
+                    $("#PanelFulltext").hide();
+                    break;
+                case 2:
+                    $("#PanelTramite").hide();
+                    $("#PanelIndices").hide();
+                    $("#PanelFulltext").show();
+                    break;
+            }
+            SelTipo = e.value;
+            txtTramite = "";
+            txtFiltro = "";
+            txtFulltext = "";
+            UnidadDoc = -1;
+            $("#grdDocs").dxDataGrid("instance").refresh();
+            $("#grdDocs").dxDataGrid("instance").option("visible", false);
         }
     });
+
+    $("#txtTramite").dxTextBox({
+        placeholder: "Ingrese el código del trámite",
+        value: ""
+    });
+
+    $("#txtDato").dxTextBox({
+        placeholder: "Ingrese el dato a buscar",
+        value: ""
+    });
+
+    //$("#btnBuscarDoc").dxButton({
+    //    text: "Documentos",
+    //    icon: "search",
+    //    type: "default",
+    //    width: "190",
+    //    onClick: function () {
+    //        var _popup = $("#popupBuscaDoc").dxPopup("instance");
+    //        _popup.show();
+    //        $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true');
+    //    }
+    //});
+
+    $("#cmbUnidadDoc").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "CODSERIE",
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON($("#SIM").data("url") + "Utilidades/GetListaUnidades");
+                }
+            })
+        }),
+        displayExpr: "NOMBRE",
+        valueExpr: "CODSERIE",
+        searchEnabled: true,
+        noDataText: "No hay datos para mostrar",
+        placeholder: "Seleccione",
+        onValueChanged: function (data) {
+            UnidadDoc = data.value;
+            $.getJSON($('#SIM').data('url') + 'Utilidades/GetFields?UniDoc=' + UnidadDoc
+            ).done(function (data) {
+                var Filtro = $("#FilterBuscar").dxFilterBuilder(OpcionesFiltro).dxFilterBuilder("instance");
+                Filtro.option("fields", data);
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+            });
+        }
+    });
+
+    var OpcionesFiltro = {
+        fields: [],
+        value: [],
+        filterOperationDescriptions: {
+            between: "Entre",
+            contains: "Contiene",
+            endsWith: "Finaliza en",
+            equal: "Igual",
+            greaterThan: "Mayor que",
+            greaterThanOrEqual: "Mayor o igual a",
+            isBlank: "Es blanco",
+            isNotBlank: "No es blanco",
+            lessThan: "Menor que",
+            lessThanOrEqual: "Menor o igual a",
+            notContains: "No contiene",
+            notEqual: "Diferente",
+            startsWith: "Inicia con"
+        },
+        groupOperationDescriptions: {
+            and: "Y",
+            or: "O",
+            notOr: "",
+            notAnd: ""
+        }
+    };
+
+    $("#btnBuscar").dxButton({
+        text: "Buscar",
+        type: "default",
+        onClick: function () {
+            if (SelTipo == 0) {
+                var _tramite = $("#txtTramite").dxTextBox("instance").option("value");
+                if (_tramite != "") {
+                    txtFiltro = "";
+                    txtFulltext = "";
+                    txtTramite = _tramite;
+                } else {
+                    txtTramite = "";
+                    DevExpress.ui.dialog.alert('No se ha ingresado un código de trámite para buscar', 'Buscar documentos');
+                }
+            } else if (SelTipo == 1) {
+                var _Filto = formatValue($("#FilterBuscar").dxFilterBuilder("instance").option("value"));
+                if (_Filto != "") {
+                    txtTramite = "";
+                    txtFulltext = "";
+                    txtFiltro = _Filto;
+                } else {
+                    txtFiltro = "";
+                    DevExpress.ui.dialog.alert('El filtro no se ha establecido o esta mal', 'Buscar documentos');
+                }
+            } else if (SelTipo == 2) {
+                var _Dato = $("#txtDato").dxTextBox("instance").option("value");
+                if (_Dato != "") {
+                    txtTramite = "";
+                    txtFiltro = "";
+                    txtFulltext = _Dato;
+                } else {
+                    txtFulltext = "";
+                    DevExpress.ui.dialog.alert('No se ha ingresado un dato para buscar', 'Buscar documentos');
+                }
+            }
+            $("#grdDocs").dxDataGrid("instance").option("visible", true);
+            $("#grdDocs").dxDataGrid("instance").refresh();
+        }
+    });
+
+    function formatValue(value, spaces) {
+        if (value && Array.isArray(value[0])) {
+            var TAB_SIZE = 4;
+            spaces = spaces || TAB_SIZE;
+            return "[" + getLineBreak(spaces) + value.map(function (item) {
+                return Array.isArray(item[0]) ? formatValue(item, spaces + TAB_SIZE) : JSON.stringify(item);
+            }).join("," + getLineBreak(spaces)) + getLineBreak(spaces - TAB_SIZE) + "]";
+        }
+        return JSON.stringify(value);
+    }
+
+    function getLineBreak(spaces) {
+        return "\r\n" + new Array(spaces + 1).join(" ");
+    }
 
     $("#popupBuscaDoc").dxPopup({
         width: 900,
@@ -32,143 +195,162 @@ $(document).ready(function () {
                 key: "ID_DOCUMENTO",
                 loadMode: "raw",
                 load: function () {
-                    return $.getJSON($("#SIM").data("url") + 'GestionDocumental/api/DocumentosApi/ObtieneDocumento?IdDocumento=' + IdDocumento);
+                    var Buscar = txtTramite.length > 0 ? 'T;' + txtTramite : txtFiltro.length > 0 ? 'F;' + txtFiltro : txtFulltext.length > 0 ? 'B;' + txtFulltext : ''
+                    return $.getJSON($("#SIM").data("url") + 'GestionDocumental/api/DocumentosApi/BuscarDoc?IdUnidadDoc=' + UnidadDoc + '&Buscar=' + Buscar);
                 }
             })
         }),
         allowColumnResizing: true,
         loadPanel: { enabled: true, text: 'Cargando Datos...' },
         noDataText: "Sin datos para mostrar",
-        showBorders: true,
         paging: {
-            pageSize: 10
+            pageSize: 10,
+            enabled: true
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [10, 20, 50]
         },
         selection: {
             mode: 'single'
         },
-        remoteOperations: true,
+        visible: false,
+        remoteOperations: false,
         hoverStateEnabled: true,
         columns: [
             { dataField: "ID_DOCUMENTO", visible: false },
-            { dataField: "CODDOC", width: '5%', caption: 'Orden', dataType: 'number' },
-            { dataField: 'SERIE', width: '25%', caption: 'Unidad Documental', dataType: 'string' },
-            { dataField: 'FECHA', width: '12%', caption: 'Fecha Digitalización', dataType: 'date', format: 'MMM dd yyyy HH:mm' },
+            { dataField: "CODTRAMITE", width: '10%', caption: 'Trámite', dataType: 'number' },
+            { dataField: "CODDOCUMENTO", width: '7%', caption: 'Documento', dataType: 'number' },
+            { dataField: 'FECHACREACION', width: '15%', caption: 'Fecha Digitaliza', dataType: 'date', format: 'MMM dd yyyy HH: mm' },
+            { dataField: "NOMBRE", width: '20%', caption: 'Unidad Documental', dataType: 'string' },
+           /* { dataField: 'INDICES', width: '25%', caption: 'Indices', dataType: 'string' },*/
             {
-                dataField: 'ESTADO', width: '12%', caption: 'Anulado', dataType: 'string',
+                width: '12%',
+                caption: 'Anulado',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if (options.data.ESTADO == "Anulado") {
-                        $('<div/>').dxButton({
-                            text: 'Si',
-                            hint: 'Documento Anulado',
-                            onClick: function (e) {
-                                var Documento = options.data.ID_DOCUMENTO;
-                                var _Ruta = $('#SIM').data('url') + "Utilidades/MotivoDevolucion?IdDocumento=" + options.data.ID_DOCUMENTO;
-                                $.getJSON(_Ruta, function (data, status) {
-                                    if (status === "success") {
-                                        popupOpcAnu = {
-                                            width: 500,
-                                            height: 300,
-                                            contentTemplate: function () {
-                                                return $("<div>").append(
-                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
-                                                    $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
-                                                );
-                                            },
-                                            showTitle: true,
-                                            title: "Motivo de la anulación",
-                                            visible: false,
-                                            dragEnabled: false,
-                                            closeOnOutsideClick: true
-                                        };
-                                        popup = $("#PopupAnula").dxPopup(popupOpcAnu).dxPopup("instance");
-                                        $('#PopupAnula').css({ 'visibility': 'visible' });
-                                        $("#PopupAnula").fadeTo("slow", 1);
-                                        popup.show();
+                    var _RutaDoc = $("#SIM").data("url") + "GestionDocumental/api/DocumentosApi/ObtieneDocumento?IdDocumento=" + options.data.ID_DOCUMENTO;
+                    $.getJSON(_RutaDoc, function (data, status) {
+                        if (status === "success") {                           
+                            if (data.ESTADO == "Anulado") {
+                                $('<div/>').dxButton({
+                                    text: 'Si',
+                                    hint: 'Documento Anulado',
+                                    onClick: function (e) {
+                                        var _Ruta = $('#SIM').data('url') + "Utilidades/MotivoDevolucion?IdDocumento=" + data.ID_DOCUMENTO;
+                                        $.getJSON(_Ruta, function (data, status) {
+                                            if (status === "success") {
+                                                popupOpcAnu = {
+                                                    width: 500,
+                                                    height: 300,
+                                                    contentTemplate: function () {
+                                                        return $("<div>").append(
+                                                            $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
+                                                            $("<br />"),
+                                                            $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
+                                                            $("<br />"),
+                                                            $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
+                                                            $("<br />"),
+                                                            $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
+                                                        );
+                                                    },
+                                                    showTitle: true,
+                                                    title: "Motivo de la anulación",
+                                                    visible: false,
+                                                    dragEnabled: false,
+                                                    closeOnOutsideClick: true
+                                                };
+                                                popup = $("#PopupAnula").dxPopup(popupOpcAnu).dxPopup("instance");
+                                                $('#PopupAnula').css({ 'visibility': 'visible' });
+                                                $("#PopupAnula").fadeTo("slow", 1);
+                                                popup.show();
+                                            }
+                                        });
                                     }
-                                });
-                            }
-                        }).appendTo(container);
-                    } else if (options.data.ESTADO == "En proceso") {
-                        $('<div/>').dxButton({
-                            text: 'Proceso',
-                            hint: 'En proceso de Anulación',
-                            onClick: function (e) {
-                                var Documento = options.data.ID_DOCUMENTO;
-                                var _Ruta = $('#SIM').data('url') + "Utilidades/MotivoDevolucion?IdDocumento=" + options.data.ID_DOCUMENTO;
-                                $.getJSON(_Ruta, function (data, status) {
-                                    if (status === "success") {
-                                        popupOpcAnu = {
-                                            width: 500,
-                                            height: 300,
-                                            contentTemplate: function () {
-                                                return $("<div>").append(
-                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
-                                                    $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
-                                                );
-                                            },
-                                            showTitle: true,
-                                            title: "Motivo de la anulación",
-                                            visible: false,
-                                            dragEnabled: false,
-                                            closeOnOutsideClick: true
-                                        };
-                                        popup = $("#PopupAnula").dxPopup(popupOpcAnu).dxPopup("instance");
-                                        $('#PopupAnula').css({ 'visibility': 'visible' });
-                                        $("#PopupAnula").fadeTo("slow", 1);
-                                        popup.show();
+                                }).appendTo(container);
+                            } else if (data.ESTADO == "En proceso") {
+                                $('<div/>').dxButton({
+                                    text: 'Proceso',
+                                    hint: 'En proceso de Anulación',
+                                    onClick: function (e) {
+                                        var _Ruta = $('#SIM').data('url') + "Utilidades/MotivoDevolucion?IdDocumento=" + data.ID_DOCUMENTO;
+                                        $.getJSON(_Ruta, function (data, status) {
+                                            if (status === "success") {
+                                                popupOpcAnu = {
+                                                    width: 500,
+                                                    height: 300,
+                                                    contentTemplate: function () {
+                                                        return $("<div>").append(
+                                                            $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
+                                                            $("<br />"),
+                                                            $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
+                                                            $("<br />"),
+                                                            $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
+                                                            $("<br />"),
+                                                            $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
+                                                        );
+                                                    },
+                                                    showTitle: true,
+                                                    title: "Motivo de la anulación",
+                                                    visible: false,
+                                                    dragEnabled: false,
+                                                    closeOnOutsideClick: true
+                                                };
+                                                popup = $("#PopupAnula").dxPopup(popupOpcAnu).dxPopup("instance");
+                                                $('#PopupAnula').css({ 'visibility': 'visible' });
+                                                $("#PopupAnula").fadeTo("slow", 1);
+                                                popup.show();
+                                            }
+                                        });
                                     }
-                                });
+                                }).appendTo(container);
                             }
-                        }).appendTo(container);
-                    }
-                    else {
-                        $('<div/>').append(options.data.ESTADO).appendTo(container);
-                    }
+                            else {
+                                $('<div/>').append(data.ESTADO).appendTo(container);
+                            }
+                        }
+                    });
                 }
             },
             {
-                dataField: 'ADJUNTO', width: '12%', caption: 'Adjunto', dataType: 'string',
+                width: '12%',
+                caption: 'Adjunto',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if (options.data.ADJUNTO == "Si") {
-                        $('<div/>').dxButton({
-                            text: 'Si',
-                            hint: 'Ver Adjuntos',
-                            onClick: function (e) {
-                                var Documento = options.data.ID_DOCUMENTO;
-                                var _Ruta = $('#SIM').data('url') + "Utilidades/FuncionarioPoseePermiso?IdDocumento=" + options.data.ID_DOCUMENTO;
-                                $.getJSON(_Ruta, function (result, status) {
-                                    if (status === "success") {
-                                        if (result.returnvalue) {
-                                            var AdjuntoInstance = $("#popAdjuntosDocumento").dxPopup("instance");
-                                            AdjuntoInstance.option('title', 'Adjunto del documento - ' + Documento);
-                                            AdjuntoInstance.show();
-                                            $('#frmAdjuntoDocumento').attr('src', null);
-                                            $('#frmAdjuntoDocumento').attr('src', 'https://webservices.metropol.gov.co/FileManager/FileManager.aspx?id=.' + Documento);
-                                        } else {
-                                            DevExpress.ui.notify("No posee permiso para ver este tipo de documento");
-                                        }
+                    var _RutaDoc = $("#SIM").data("url") + "GestionDocumental/api/DocumentosApi/ObtieneDocumento?IdDocumento=" + options.data.ID_DOCUMENTO;
+                    $.getJSON(_RutaDoc, function (data, status) {
+                        if (status === "success") {
+                            if (data.ADJUNTO == "Si") {
+                                $('<div/>').dxButton({
+                                    text: 'Si',
+                                    hint: 'Ver Adjuntos',
+                                    onClick: function (e) {
+                                        var Documento = data.ID_DOCUMENTO;
+                                        var _Ruta = $('#SIM').data('url') + "Utilidades/FuncionarioPoseePermiso?IdDocumento=" + Documento;
+                                        $.getJSON(_Ruta, function (result, status) {
+                                            if (status === "success") {
+                                                if (result.returnvalue) {
+                                                    var AdjuntoInstance = $("#popAdjuntosDocumento").dxPopup("instance");
+                                                    AdjuntoInstance.option('title', 'Adjunto del documento - ' + Documento);
+                                                    AdjuntoInstance.show();
+                                                    $('#frmAdjuntoDocumento').attr('src', null);
+                                                    $('#frmAdjuntoDocumento').attr('src', 'https://webservices.metropol.gov.co/FileManager/FileManager.aspx?id=.' + Documento);
+                                                } else {
+                                                    DevExpress.ui.notify("No posee permiso para ver este tipo de documento");
+                                                }
+                                            }
+                                        });
                                     }
-                                });
+                                }).appendTo(container);
                             }
-                        }).appendTo(container);
-                    }
+                        }
+                    });
                 }
             },
             {
                 width: '12%',
                 alignment: 'center',
+                caption: 'Indices Doc',
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'fields',
@@ -191,6 +373,7 @@ $(document).ready(function () {
             {
                 width: '12%',
                 alignment: 'center',
+                caption: 'Ver Doc',
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'doc',
@@ -215,44 +398,60 @@ $(document).ready(function () {
             {
                 width: '12%',
                 alignment: 'center',
+                caption: 'Editar Indices',
                 cellTemplate: function (container, options) {
-                    if (options.data.EDIT_INDICES) {
-                        $('<div/>').dxButton({
-                            icon: 'comment',
-                            hint: 'Editar indices documento',
-                            onClick: function (e) {
-                                var _Ruta = $("#SIM").data("url") + 'Utilidades/PuedeEditarIndicesDoc?IdDoc=' + options.data.ID_DOCUMENTO;
-                                $.getJSON(_Ruta)
-                                    .done(function (data) {
-                                        if (data.returnvalue) {
-                                            var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/EditarIndicesDocumento";
-                                            $.getJSON(_Ruta, { IdDocumento: options.data.ID_DOCUMENTO })
-                                                .done(function (data) {
-                                                    if (data != null) {
-                                                        if (data.length > 0) {
-                                                            popupEditInd = $("#popUpEditIndicesDoc").dxPopup("instance");
-                                                            popupEditInd.show();
-                                                            AsignarIndicesDoc(data);
-                                                        } else {
-                                                            DevExpress.ui.dialog.alert('La unidad documnental no posee indices para el documento!', 'Detalle del trámite');
-                                                        }
+                    var _Ruta = $("#SIM").data("url") + 'Utilidades/PuedeEditarIndicesDoc?IdDoc=' + options.data.ID_DOCUMENTO;
+                    $.getJSON(_Ruta)
+                        .done(function (data) {
+                            if (data.returnvalue) {
+                                $('<div/>').dxButton({
+                                    icon: 'comment',
+                                    hint: 'Editar indices documento',
+                                    onClick: function (e) {
+                                        var _Ruta = $('#SIM').data('url') + "api/UtilidadesApi/EditarIndicesDocumento";
+                                        $.getJSON(_Ruta, { IdDocumento: options.data.ID_DOCUMENTO })
+                                            .done(function (data) {
+                                                if (data != null) {
+                                                    if (data.length > 0) {
+                                                        popupEditInd = $("#popUpEditIndicesDoc").dxPopup("instance");
+                                                        popupEditInd.show();
+                                                        AsignarIndicesDoc(data);
+                                                    } else {
+                                                        DevExpress.ui.dialog.alert('La unidad documnental no posee indices para el documento!', 'Detalle del trámite');
                                                     }
-                                                }).fail(function (jqxhr, textStatus, error) {
-                                                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
-                                                });
-                                        } else {
-                                            DevExpress.ui.dialog.alert('Usted no posee permisos para modificar índices del documento!', 'Detalle del trámite');
-                                        }
-                                    }).fail(function (jqxhr, textStatus, error) {
-                                        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
-                                    });                            }
-                        }).appendTo(container);
-                    }
+                                                }
+                                        }).fail(function (jqxhr, textStatus, error) {
+                                            DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
+                                        });
+                                    }
+                                }).appendTo(container);
+                            }
+                        });
+
+                    //$('<div/>').dxButton({
+                    //    icon: 'comment',
+                    //    hint: 'Editar indices documento',
+                    //    onClick: function (e) {
+                            //var _Ruta = $("#SIM").data("url") + 'Utilidades/PuedeEditarIndicesDoc?IdDoc=' + options.data.ID_DOCUMENTO;
+                            //$.getJSON(_Ruta)
+                            //    .done(function (data) {
+                            //        if (data.returnvalue) {
+
+                                //    } else {
+                                //        DevExpress.ui.dialog.alert('Usted no posee permisos para modificar índices del documento!', 'Detalle del trámite');
+                                //    }
+                                //}).fail(function (jqxhr, textStatus, error) {
+                                //    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Detalle del trámite');
+                                //});
+                    //    }
+                    //}).appendTo(container);
+
                 }
             },
             {
                 width: '12%',
                 alignment: 'center',
+                caption: 'Detalle Trámite',
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'rowfield',
@@ -281,6 +480,8 @@ $(document).ready(function () {
             {
                 width: '12%',
                 alignment: 'center',
+                caption: 'Reemplazar Doc',
+                visible: EditarDoc == "Y" ? true : false,
                 cellTemplate: function (container, options) {
                     if (EditarDoc == 'Y') {
                         $('<div/>').dxButton({
@@ -716,23 +917,23 @@ $(document).ready(function () {
     }
 });
 
-function SeleccionaDocumento(IdDocumento) {
-    var _popup = $("#popupBuscaDoc").dxPopup("instance");
-    _popup.hide();
-    if (IdDocumento != "") {
-        IdDocumento = IdDocumento;
-        $('#grdDocs').dxDataGrid({
-            dataSource: new DevExpress.data.DataSource({
-                store: new DevExpress.data.CustomStore({
-                    key: "ID_DOCUMENTO",
-                    loadMode: "raw",
-                    load: function () {
-                        return $.getJSON($("#SIM").data("url") + "GestionDocumental/api/DocumentosApi/ObtieneDocumento?IdDocumento=" + IdDocumento);
-                    }
-                })
-            })
-        });
-        var GridDocumento = $("#grdDocs").dxDataGrid("instance");
-        GridDocumento.refresh();
-    } else alert("No se ha ingresado el codifo del expediente");
-}
+//function SeleccionaDocumento(IdDocumento) {
+//    var _popup = $("#popupBuscaDoc").dxPopup("instance");
+//    _popup.hide();
+//    if (IdDocumento != "") {
+//        IdDocumento = IdDocumento;
+//        $('#grdDocs').dxDataGrid({
+//            dataSource: new DevExpress.data.DataSource({
+//                store: new DevExpress.data.CustomStore({
+//                    key: "ID_DOCUMENTO",
+//                    loadMode: "raw",
+//                    load: function () {
+//                        return $.getJSON($("#SIM").data("url") + "GestionDocumental/api/DocumentosApi/ObtieneDocumento?IdDocumento=" + IdDocumento);
+//                    }
+//                })
+//            })
+//        });
+//        var GridDocumento = $("#grdDocs").dxDataGrid("instance");
+//        GridDocumento.refresh();
+//    } else alert("No se ha ingresado el codifo del expediente");
+//}

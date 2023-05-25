@@ -101,8 +101,8 @@ $(document).ready(function () {
             startsWith: "Inicia con"
         },
         groupOperationDescriptions: {
-            and: "Y (and)",
-            or: "O (or)",
+            and: "Y",
+            or: "O",
             notOr: "",
             notAnd: ""
         }

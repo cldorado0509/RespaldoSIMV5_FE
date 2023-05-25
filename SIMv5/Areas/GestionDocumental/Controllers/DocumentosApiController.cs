@@ -5,9 +5,11 @@ using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
 using O2S.Components.PDF4NET.PDFFile;
 using SIM.Areas.Pqrsd.Models;
+using SIM.Controllers;
 using SIM.Data;
 using SIM.Data.Seguridad;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -33,12 +35,196 @@ namespace SIM.Areas.GestionDocumental.Controllers
         }
 
         /// <summary>
+        /// Consulta de Lista de Terceros con filtros y agrupación
+        /// </summary>
+        /// <param name="IdUnidadDoc">Para paginar. Indica a partir de qué registro debe cargar</param>
+        /// <param name="Buscar">Para paginar. Indica cuantos registros debe cargar (tamaño de página)</param>
+        /// <returns>Registros resultado de la consulta</returns>
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("BuscarDoc")]
+        public JArray GetBuscarDoc(int IdUnidadDoc, string Buscar)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            string _Sql = "SELECT ID_DOCUMENTO,CODTRAMITE,CODDOCUMENTO,'' AS NOMBRE,FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO WHERE ID_DOCUMENTO <= 0";
+            var DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+            if (Buscar == "" || Buscar == null) return JArray.FromObject(DocsEncontrados, Js);
+            try
+            {
+                if (Buscar != "" && Buscar != null)
+                {
+                    string[] _Buscar = Buscar.Split(';');
+                    if (_Buscar.Length > 0)
+                    {
+                        switch (_Buscar[0])
+                        {
+                            case "T":
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODTRAMITE= " + _Buscar[1].ToString().Trim() + " ORDER BY DOC.ID_DOCUMENTO DESC";
+                                DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                break;
+                            case "F":
+                                var _condicion = _Buscar[1].ToString().Replace("\r\n", string.Empty).Replace(" ", String.Empty);
+                                //_condicion = _condicion.Replace("\\", "").Replace("\"", "");
+                                _condicion = _condicion.Replace("[", "").Replace("]", "");
+                                if (_condicion != null)
+                                {
+
+                                    _condicion = ProcesaWhereOracle(_condicion);
+                                    if (_condicion != "")
+                                    {
+                                        _Sql = ObtenerSqlDocOracle(IdUnidadDoc, _condicion);
+                                        DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                    }
+                                    else
+                                    {
+                                        _Sql = ObtenerSqlDocOracle(IdUnidadDoc);
+                                        DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                    }
+                                    return JArray.FromObject(DocsEncontrados, Js);
+                                }
+                                break;
+                            case "B":
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.ID_DOCUMENTO DESC";
+                                DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    return JArray.FromObject(DocsEncontrados, Js);
+                }
+                return JArray.FromObject(DocsEncontrados, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+        private string ProcesaWhereOracle(string _Where)
+        {
+            ArrayList condicion = new ArrayList();
+            string orderby = string.Empty;
+            bool _And = true;
+
+            if (_Where != null && _Where.Trim() != "")
+            {
+                _Where = _Where.Replace("\\", "").Replace("\"", "");
+                _And = _Where.ToLower().Contains(",or,") ? false : true;
+                string[] filtros = _Where.Split(',');
+                for (int contFiltro = 0; contFiltro < filtros.Length; contFiltro += 4)
+                {
+                    filtros[contFiltro] = filtros[contFiltro].Contains(@"\") ? filtros[contFiltro].Replace(@"\", "") : filtros[contFiltro];
+                    var esFecha = filtros[contFiltro].ToLower().Contains("fecha");
+                    switch (filtros[contFiltro + 1])
+                    {
+                        case "contains":
+                            condicion.Add(" INSTR(LOWER(\"" + filtros[contFiltro] + "\"),'" + filtros[contFiltro + 2].Trim().ToLower() + "') > 0");
+                            break;
+                        case "notcontains":
+                            condicion.Add(" INSTR(LOWER(\"" + filtros[contFiltro] + "\"),'" + filtros[contFiltro + 2].Trim().ToLower() + "') = 0");
+                            break;
+                        case "startswith":
+                            condicion.Add(" LOWER(\"" + filtros[contFiltro] + "\") LIKE '" + filtros[contFiltro + 2].Trim().ToLower() + "%'");
+                            break;
+                        case "endswith":
+                            condicion.Add(" LOWER(\"" + filtros[contFiltro] + "\") LIKE '%" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            break;
+                        case "=":
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') = TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") = '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            break;
+                        case "<>":
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') <> TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") <> '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            break;
+                        case "<":
+                        case "<=":
+                        case ">":
+                        case ">=":
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') " + filtros[contFiltro + 1] + " TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("TO_NUMBER(LOWER(\"" + filtros[contFiltro] + "\")) " + filtros[contFiltro + 1] + " " + filtros[contFiltro + 2].Trim().ToLower());
+                            break;
+                    }
+                }
+            }
+
+            if (condicion.Count > 0)
+            {
+                string _strCondicion = " AND ";
+                if (!_And) _strCondicion = " OR ";
+                return String.Join(_strCondicion, condicion.ToArray());
+            }
+            else return "";
+        }
+
+        public string ObtenerSqlDocOracle(int IdUnidadDocumental, string _criterio)
+        {
+            string _aux = "";
+            decimal CodSerie = (decimal)IdUnidadDocumental;
+            if (CodSerie > 0)
+            {
+                _aux = "SELECT DISTINCT QRY.ID_DOCUMENTO,QRY.CODTRAMITE,QRY.CODDOCUMENTO,(SELECT SER.NOMBRE FROM TRAMITES.TBSERIE SER WHERE QRY.CODSERIE = SER.CODSERIE) AS NOMBRE, QRY.FECHACREACION ";
+                if (_criterio != "" && _criterio != null)
+                {
+                    string _codindices = "";
+                    _aux += " FROM (SELECT DISTINCT IND.CODTRAMITE,IND.CODDOCUMENTO,";
+                    var IndicesSerie = (from Ind in dbSIM.TBINDICESERIE
+                                        where Ind.CODSERIE == CodSerie
+                                        orderby Ind.INDICE
+                                        select new
+                                        {
+                                            Ind.CODINDICE,
+                                            Ind.INDICE,
+                                            Ind.TIPO
+                                        }).ToList();
+                    if (IndicesSerie != null)
+                    {
+                        string _Indice = "";
+                        foreach (var fila in IndicesSerie)
+                        {
+                            _Indice = fila.INDICE.ToUpper().Replace(" ", "");
+                            if (_criterio.Contains(_Indice))
+                            {
+                                _aux += "(SELECT TID.VALOR FROM TRAMITES.TBINDICEDOCUMENTO TID WHERE TID.CODTRAMITE = IND.CODTRAMITE AND TID.CODDOCUMENTO=IND.CODDOCUMENTO AND TID.CODINDICE=" + fila.CODINDICE.ToString() + ") AS \"" + _Indice + "\",";
+                                _codindices += fila.CODINDICE.ToString().Trim() + ",";
+                            }
+                        }
+                    }
+                    _aux += "(SELECT DOC.CODSERIE FROM TRAMITES.TBTRAMITEDOCUMENTO DOC WHERE DOC.CODTRAMITE = ind.codtramite AND DOC.CODDOCUMENTO = ind.coddocumento) AS CODSERIE, ";
+                    _aux += "(SELECT DOC.ID_DOCUMENTO FROM TRAMITES.TBTRAMITEDOCUMENTO DOC WHERE DOC.CODTRAMITE = ind.codtramite AND DOC.CODDOCUMENTO = ind.coddocumento) AS ID_DOCUMENTO, ";
+                    _aux += "(SELECT DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC WHERE DOC.CODTRAMITE = ind.codtramite AND DOC.CODDOCUMENTO = ind.coddocumento) AS FECHACREACION ";
+                    _codindices = _codindices.Substring(0, _codindices.Length - 1);
+                    _aux += " FROM TRAMITES.TBINDICEDOCUMENTO IND WHERE IND.CODINDICE IN (" + _codindices + ")) QRY ";
+                    _aux += " WHERE " + _criterio + " ORDER BY QRY.CODTRAMITE DESC, QRY.CODDOCUMENTO DESC";
+                }
+                else
+                {
+                    _aux += "FROM TRAMITES.TBTRAMITEDOCUMENTO QRY WHERE QRY.CODSERIE=" + CodSerie + " ORDER BY QRY.ID_DOCUMENTO DESC";
+                }
+            }
+            return _aux;
+        }
+
+        public string ObtenerSqlDocOracle(int IdUnidadDocumental)
+        {
+            string _aux = "";
+            decimal CodSerie = (decimal)IdUnidadDocumental;
+            if (CodSerie > 0)
+            {
+                _aux = "SELECT DISTINCT QRY.ID_DOCUMENTO,QRY.CODTRAMITE,QRY.CODDOCUMENTO,(SELECT SER.NOMBRE FROM TRAMITES.TBSERIE SER WHERE QRY.CODSERIE = SER.CODSERIE) AS NOMBRE, QRY.FECHACREACION ";
+                _aux += "FROM TRAMITES.TBTRAMITEDOCUMENTO QRY WHERE QRY.CODSERIE=" + CodSerie + " ORDER BY QRY.ID_DOCUMENTO DESC";
+            }
+            return _aux;
+        }
+
+        /// <summary>
         /// Retorna los documentos de un tramite
         /// </summary>
-        /// <param name="CodTramite">Codigo del trámite</param>
+        /// <param name="IdDocumento">Codigo del trámite</param>
         /// <returns></returns>
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("ObtieneDocumento")]
-        public JArray GetObtieneDocumento(int IdDocumento)
+        public JObject GetObtieneDocumento(int IdDocumento)
         {
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -72,22 +258,19 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                  CODTRAMITE = Doc.CODTRAMITE,
                                  EDIT_INDICES = (from PER in dbSIM.PERMISOSSERIE where PER.CODFUNCIONARIO == funcionario &&
                                                  PER.CODSERIE == Doc.CODSERIE select PER.PM).FirstOrDefault() == "1" ? true : false
-                             }).ToList();
+                             }).FirstOrDefault();
                 if (model != null)
                 {
-                    foreach (var doc in model)
+                    if (model.ESTADO != "Anulado")
                     {
-                        if (doc.ESTADO != "Anulado")
-                        {
-                            var estDoc = (from A in dbSIM.ANULACION_DOC
-                                          join D in dbSIM.TRAMITES_PROYECCION on A.ID_PROYECCION_DOC equals D.ID_PROYECCION_DOC
-                                          where D.CODTRAMITE == doc.CODTRAMITE && D.CODDOCUMENTO == doc.CODDOC && A.S_ESTADO == "P"
-                                          select A.ID_ANULACION_DOC).FirstOrDefault();
-                            if (estDoc > 0) doc.ESTADO = "En proceso";
-                        }
+                        var estDoc = (from A in dbSIM.ANULACION_DOC
+                                      join D in dbSIM.TRAMITES_PROYECCION on A.ID_PROYECCION_DOC equals D.ID_PROYECCION_DOC
+                                      where D.CODTRAMITE == model.CODTRAMITE && D.CODDOCUMENTO == model.CODDOC && A.S_ESTADO == "P"
+                                      select A.ID_ANULACION_DOC).FirstOrDefault();
+                        if (estDoc > 0) model.ESTADO = "En proceso";
                     }
                 }
-                return JArray.FromObject(model, Js);
+                return JObject.FromObject(model, Js);
             }
             catch (Exception exp)
             {
