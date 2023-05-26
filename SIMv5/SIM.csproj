@@ -1543,6 +1543,7 @@
     <Compile Include="Data\Tramites\QRY_MEMORANDOS.cs" />
     <Compile Include="Data\Tramites\QRY_RESOLUCIONES.cs" />
     <Compile Include="Data\Tramites\QRY_TERCERO.cs" />
+    <Compile Include="Data\Tramites\QRY_VERTEMPORALES.cs" />
     <Compile Include="Data\Tramites\TBACTIVIDADES_VITAL.cs" />
     <Compile Include="Data\Tramites\TBCARGO.cs" />
     <Compile Include="Data\Tramites\TBPERMISOS_SERIE.cs" />

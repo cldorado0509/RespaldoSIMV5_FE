@@ -496,9 +496,11 @@
             if (CodTramite < 0) return null;
             try
             {
+                string VerTemporales = "NO";
                 var TraOp = dbSIM.TBTRAMITE.Where(w => w.CODTRAMITE == CodTramite).Select(s => s.ESTADO).FirstOrDefault();
                 var FunAct = dbSIM.TBTRAMITETAREA.Where(w => w.CODTRAMITE == CodTramite).Where(w => w.ORDEN == Orden).Select(s => s.CODFUNCIONARIO).FirstOrDefault();
-
+                var FunDep = dbSIM.VERTEMPORALES.Where(w => w.CODFUNCIONARIO == funcionario).FirstOrDefault();
+                if (FunDep != null && FunDep.CODFUNCIONARIO > 0) VerTemporales = "SI";
                 var model = (from Doc in dbSIM.DOCUMENTO_TEMPORAL
                              join Fun in dbSIM.QRY_FUNCIONARIO_ALL on Doc.CODFUNCIONARIO equals Fun.CODFUNCIONARIO
                              where Doc.CODTRAMITE == CodTramite
@@ -511,7 +513,7 @@
                                  VERSION = Doc.N_VERSION,
                                  FUNCIONARIO = Fun.NOMBRES,
                                  ESTTRA = TraOp,
-                                 PUEDEVER = FunAct == funcionario ? "SI" : "NO",
+                                 PUEDEVER = FunAct == funcionario ? "SI" : VerTemporales == "SI" ? "SI" : "NO",
                                  ESULTVER = dbSIM.DOCUMENTO_TEMPORAL.Where(w => w.S_DESCRIPCION == Doc.S_DESCRIPCION && w.CODTRAMITE == CodTramite).Select(s => s.N_VERSION).Max() == Doc.N_VERSION ? true : false,
                              });
                 return JArray.FromObject(model.ToList(), Js);
