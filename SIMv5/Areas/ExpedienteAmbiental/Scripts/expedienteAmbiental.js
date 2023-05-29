@@ -17,6 +17,7 @@ var direccion = "";
 var municipio = "";
 var nombrePunto = "";
 
+
 $(document).ready(function () {
 
     $('#asistente').accordion({
@@ -88,6 +89,7 @@ $(document).ready(function () {
                                         txtNit.option("value", data.cedulaNit);
                                         txtRazonSocial.option("value", data.razonSocial);
                                         txtNombreExpediente.option("value", data.nombre);
+                                        NomExpediente = data.nombre;
                                         txtDescripcionExpediente.option("value", data.descripcion);
                                         txtDireccionExpediente.option("value", data.direccion);
                                         cboClasificacion.option("value", data.clasificacionExpedienteId);
@@ -827,6 +829,7 @@ $(document).ready(function () {
             if (data) {
                 idExpediente = data.idExpediente;
                 idExpedienteAmb = data.idExpediente; 
+                NomExpediente = data.nombre;
             }
         }
     });
@@ -1401,7 +1404,6 @@ $(document).ready(function () {
         title: "Creación/Edición de Expediente Ambiental"
     }).dxPopup("instance");
    
-
     var popupTramitesExpediente = $("#popupTramitesExpediente").dxPopup({
         width: 1200,
         height: 700,
@@ -1411,7 +1413,6 @@ $(document).ready(function () {
         title: "Trámites asociados al Expediente"
     }).dxPopup("instance");
 
-    
     var popupTramitesPuntoControl = $("#popupTramitesPuntoControl").dxPopup({
         width: 1200,
         height: 700,
@@ -1420,8 +1421,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         title: "Trámites asociados al Punto de Control"
     }).dxPopup("instance");
-       
-
+   
     var popupEstadoPuntoControl = $("#popupEstadoPuntoControl").dxPopup({
         width: 800,
         height: "auto",
@@ -1450,7 +1450,7 @@ $(document).ready(function () {
         onClick: function () {
             editar = false;
             idPuntoControl = 0;
-            txtNombrePuntoControl.reset();
+            txtNombrePuntoControl.option("value", NomExpediente);
             txtObservacionPuntoControl.reset();
             cboTipoSolicitudAmbiental.option("disabled", false);
             cboTipoSolicitudAmbiental.reset();
@@ -1847,54 +1847,58 @@ $(document).ready(function () {
                             case 0: // TEXTO
                                 if (cellInfo.data.VALOR != null) {
                                     cellElement.html(cellInfo.data.VALOR);
-                                } else {
-                                    if (cellInfo.data.INDICE == "CM") {
+                                } 
+                                if (cellInfo.data.INDICE === "CM") {
+                                    if (cm !== '') {
                                         cellElement.html(cm);
-                                    }
-                                    if (cellInfo.data.INDICE == "DIRECCIÓN") {
+                                     }
+                                }
+                                if (cellInfo.data.INDICE === "DIRECCIÓN") {
+                                    if (direccion !== '') {
                                         cellElement.html(direccion);
                                     }
-                                    if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
-                                        cellElement.html('10602');
-                                    }
+                                }
+                                if (cellInfo.data.INDICE === "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
+                                    cellElement.html('10602');
                                 }
                                 break;
                             case 1: // NUMERO
                                 if (cellInfo.data.VALOR != null) {
                                     cellElement.html(cellInfo.data.VALOR);
-                                } else {
-                                    if (cellInfo.data.INDICE == "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
-                                        cellElement.html('10602');
-                                    }
+                                } 
+                                if (cellInfo.data.INDICE === "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
+                                    cellElement.html('10602');
                                 }
                                 break;
                             case 3: // HORA
                             case 5: //LISTA
-                                if (cellInfo.data.VALOR != null) {
+                                if (cellInfo.data.VALOR !== null) {
                                     cellElement.html(cellInfo.data.VALOR);
-                                } else {
-                                    if (cellInfo.data.INDICE == "MUNICIPIO") {
+                                } 
+                                if (cellInfo.data.INDICE == "MUNICIPIO") {
+                                    if (municipio !== '') {
                                         cellElement.html(municipio);
                                     }
                                 }
+                                
                                 break;
                             case 8: // DIRECCION
-                                if (cellInfo.data.VALOR != null) {
+                                if (cellInfo.data.VALOR !== null) {
                                     cellElement.html(cellInfo.data.VALOR);
                                 }
                                 break;
                             case 2: // FECHA
-                                if (cellInfo.data.VALOR != null) {
+                                if (cellInfo.data.VALOR !== null) {
                                     //cellElement.html(cellInfo.data.VALOR.getDate() + '/' + (cellInfo.data.VALOR.getMonth() + 1) + '/' + cellInfo.data.VALOR.getFullYear());
                                     cellElement.html(cellInfo.data.VALOR);
                                 }
                                 break;
                             case 4: // BOOLEAN
-                                if (cellInfo.data.VALOR != null)
+                                if (cellInfo.data.VALOR !== null)
                                     cellElement.html(cellInfo.data.VALOR == 'S' ? 'SI' : 'NO');
                                 break;
                             default: // OTRO
-                                if (cellInfo.data.VALOR != null)
+                                if (cellInfo.data.VALOR !== null)
                                     cellElement.html(cellInfo.data.VALOR);
                                 break;
                         }
