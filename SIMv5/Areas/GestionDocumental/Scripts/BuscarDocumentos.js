@@ -68,6 +68,12 @@ $(document).ready(function () {
         value: ""
     });
 
+    $('#scrollView').dxScrollView({
+        scrollByContent: true,
+        scrollByThumb: true,
+        showScrollbar: 'always'
+    });
+
     //$("#btnBuscarDoc").dxButton({
     //    text: "Documentos",
     //    icon: "search",
