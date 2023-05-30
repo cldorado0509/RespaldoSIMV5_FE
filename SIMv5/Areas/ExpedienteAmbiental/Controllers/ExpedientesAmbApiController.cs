@@ -6,22 +6,14 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
-using AreaMetro.Seguridad;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
-using DevExpress.Web.ASPxHtmlEditor.Internal;
-using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Mvc;
-using iTextSharp.text.pdf.codec.wmf;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SIM.Areas.ControlVigilancia.Models;
 using SIM.Areas.ExpedienteAmbiental.Clases;
 using SIM.Areas.ExpedienteAmbiental.Models;
 using SIM.Areas.ExpedienteAmbiental.Models.DTO;
 using SIM.Data;
-using SIM.Data.Control;
-using SIM.Data.General;
-using SIM.Data.Seguridad;
 using SIM.Models;
 using SIM.Services;
 
@@ -582,6 +574,112 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
             return resposeF;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codSerie"></param>
+        /// <param name="codExpediente"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet, ActionName("ObtenerIndicesSerieDocumental")]
+        public async Task<dynamic> ObtenerIndicesSerieDocumental(int codSerie,int codExpediente)
+        {
+            var indicesSerieDocumental = from i in dbSIM.TBINDICESERIE
+                                         join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                         from pdis in l.DefaultIfEmpty()
+                                         where i.CODSERIE == codSerie && i.MOSTRAR == "1" && i.INDICE_RADICADO == null
+                                         orderby i.ORDEN
+                                         select new Indice
+                                         {
+                                             CODINDICE = i.CODINDICE,
+                                             INDICE = i.INDICE,
+                                             TIPO = i.TIPO,
+                                             LONGITUD = i.LONGITUD,
+                                             OBLIGA = i.OBLIGA,
+                                             VALORDEFECTO = i.VALORDEFECTO,
+                                             VALOR = "",
+                                             ID_LISTA = i.CODIGO_SUBSERIE,
+                                             TIPO_LISTA = pdis.TIPO,
+                                             CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
+                                             MAXIMO = i.VALORMAXIMO.Length > 0 ? i.VALORMAXIMO : "",
+                                             MINIMO = i.VALORMINIMO.Length > 0 ? i.VALORMINIMO : ""
+                                         };
+            var listaInd = indicesSerieDocumental.ToList();
+          
+            ApiService apiService = new ApiService();
+            ExpedienteAmbientalDTO expedienteAmbiental = new ExpedienteAmbientalDTO();
+
+            Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+            if (!response.IsSuccess) return listaInd;
+            var tokenG = (TokenResponse)response.Result;
+            if (tokenG == null) return listaInd;
+
+            response =  await apiService.GetAsync<ExpedienteAmbientalDTO>(urlApiExpedienteAmbiental, "api/", $"ExpedienteAmbiental/ObtenerExpedienteAmbiental?idExpedienteAmbiental={codExpediente}", tokenG.Token);
+            if (!response.IsSuccess) return listaInd;
+
+            expedienteAmbiental = (ExpedienteAmbientalDTO)response.Result;
+            foreach(var item in listaInd)
+            {
+                if (item.INDICE == "CM")
+                {
+                    item.VALOR = expedienteAmbiental.cm;
+                }
+
+                if (item.INDICE == "DIRECCIÓN")
+                {
+                    item.VALOR = expedienteAmbiental.direccion;
+                }
+                if (item.INDICE == "NOMBRE ESPECÍFICO")
+                {
+                    item.VALOR = expedienteAmbiental.nombre;
+                }
+                if (item.INDICE == "MUNICIPIO")
+                {
+                    item.VALOR = expedienteAmbiental.municipio;
+                }
+            }
+
+
+            return listaInd;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codExpedienteDocumental"></param>
+         /// <returns></returns>
+        [Authorize]
+        [HttpGet, ActionName("ObtenerIndicesExpedienteDocumental")]
+        public dynamic ObtenerIndicesExpedienteDocumental(int codExpedienteDocumental)
+        {
+            var IdCodSerie = dbSIM.EXP_EXPEDIENTES.Where(f => f.ID_EXPEDIENTE == codExpedienteDocumental).Select(s => s.ID_UNIDADDOC).FirstOrDefault(); 
+            List<Indice> indices = new List<Indice>();
+            var indicesS = from i in dbSIM.TBINDICESERIE
+                           join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                           from pdis in l.DefaultIfEmpty()
+                           where i.CODSERIE == IdCodSerie && i.MOSTRAR == "1" && i.INDICE_RADICADO == null
+                           orderby i.ORDEN
+                           select new Indice
+                           {
+                               CODINDICE = i.CODINDICE,
+                               INDICE = i.INDICE,
+                               TIPO = i.TIPO,
+                               LONGITUD = i.LONGITUD,
+                               OBLIGA = i.OBLIGA,
+                               VALORDEFECTO = i.VALORDEFECTO,
+                               VALOR = dbSIM.EXP_INDICES.Where(w => w.ID_EXPEDIENTE == (decimal)codExpedienteDocumental && w.CODINDICE == i.CODINDICE).Select(s => s.VALOR_TXT).FirstOrDefault(),
+                               ID_LISTA = i.CODIGO_SUBSERIE,
+                               TIPO_LISTA = pdis.TIPO,
+                               CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
+                               MAXIMO = i.VALORMAXIMO.Length > 0 ? i.VALORMAXIMO : "",
+                               MINIMO = i.VALORMINIMO.Length > 0 ? i.VALORMINIMO : ""
+                           };
+            var li =  indicesS.ToList();
+            return li;
+        }
+
 
         /// <summary>
         /// Retorna la información de un Punto de Control asociado a un Expediente Ambiental

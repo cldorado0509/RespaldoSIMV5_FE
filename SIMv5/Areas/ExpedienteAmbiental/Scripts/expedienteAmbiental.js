@@ -407,6 +407,9 @@ $(document).ready(function () {
                                                                 txtConexoPunto.option("value", data.conexo);
                                                                 txtFechaOrigen.option("value", data.fechaOrigen);
 
+                                                                indicesSerieDocumentalStore = null;
+                                                                CargarIndicesExpedienteDocumental(data.expedienteDocumentalId);
+
                                                                 popupNuevoPuntoControl.show();
                                                             }
                                                         }).fail(function (jqxhr, textStatus, error) {
@@ -1584,12 +1587,8 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         title: "Creación/Edición de un Punto de Control",
         onShown: function () {
-            if (!editar) {
-                indicesSerieDocumentalStore = null;
-                CargarIndices();
-            } else {
-                CargarGridIndices();
-            }
+            indicesSerieDocumentalStore = null;
+            CargarIndices(idExpedienteAmb);
         }  
     }).dxPopup("instance");
 
@@ -1774,19 +1773,19 @@ $(document).ready(function () {
     function CargarGridIndices() {
 
 
-        var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerExpedienteAsync";
-        $.getJSON(_Ruta,
-            {
-                Id: idExpediente
-            }).done(function (data) {
-                if (data !== null) {
-                    cm = data.cm;
-                    direccion = data.direccion;
-                    municipio = data.municipio;
-                }
-            }).fail(function (jqxhr, textStatus, error) {
-                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
-            });
+        //var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerExpedienteAsync";
+        //$.getJSON(_Ruta,
+        //    {
+        //        Id: idExpediente
+        //    }).done(function (data) {
+        //        if (data !== null) {
+        //            cm = data.cm;
+        //            direccion = data.direccion;
+        //            municipio = data.municipio;
+        //        }
+        //    }).fail(function (jqxhr, textStatus, error) {
+        //        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
+        //    });
 
 
 
@@ -1848,39 +1847,20 @@ $(document).ready(function () {
                                 if (cellInfo.data.VALOR != null) {
                                     cellElement.html(cellInfo.data.VALOR);
                                 } 
-                                if (cellInfo.data.INDICE === "CM") {
-                                    if (cm !== '') {
-                                        cellElement.html(cm);
-                                     }
-                                }
-                                if (cellInfo.data.INDICE === "DIRECCIÓN") {
-                                    if (direccion !== '') {
-                                        cellElement.html(direccion);
-                                    }
-                                }
-                                if (cellInfo.data.INDICE === "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
-                                    cellElement.html('10602');
-                                }
+                             
                                 break;
                             case 1: // NUMERO
                                 if (cellInfo.data.VALOR != null) {
                                     cellElement.html(cellInfo.data.VALOR);
                                 } 
-                                if (cellInfo.data.INDICE === "OFICINA PRODUCTORA Y / O CENTRO DE COSTOS") {
-                                    cellElement.html('10602');
-                                }
+                   
                                 break;
                             case 3: // HORA
                             case 5: //LISTA
                                 if (cellInfo.data.VALOR !== null) {
                                     cellElement.html(cellInfo.data.VALOR);
                                 } 
-                                if (cellInfo.data.INDICE == "MUNICIPIO") {
-                                    if (municipio !== '') {
-                                        cellElement.html(municipio);
-                                    }
-                                }
-                                
+                               
                                 break;
                             case 8: // DIRECCION
                                 if (cellInfo.data.VALOR !== null) {
@@ -2086,10 +2066,20 @@ $(document).ready(function () {
         }
     }
 
-    function CargarIndices() {
-        var URL = $('#SIM').data('url') + 'GestionDocumental/api/ExpedientesApi/ObtenerIndicesSerieDocumental';
+    function CargarIndices(idExpediente) {
+        var URL = $('#SIM').data('url') + 'ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerIndicesSerieDocumental';
         $.getJSON(URL, {
             codSerie: CodigoUnidadDocumental,
+            codExpediente: idExpediente
+        }).done(function (data) {
+            AsignarIndices(data);
+        });
+    }
+
+    function CargarIndicesExpedienteDocumental(idExpedienteDocumental) {
+        var URL = $('#SIM').data('url') + 'ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerIndicesExpedienteDocumental';
+        $.getJSON(URL, {
+            codExpedienteDocumental: idExpedienteDocumental
         }).done(function (data) {
             AsignarIndices(data);
         });
@@ -2322,7 +2312,7 @@ var ExpedientesDataSource = new DevExpress.data.CustomStore({
     load: function (loadOptions) {
         var d = $.Deferred();
         var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
-        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"nombre","desc":false}]';
+        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"idExpediente","desc":true}]';
         var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
 
         var skip = (typeof loadOptions.skip !== 'undefined' && loadOptions.skip !== null ? loadOptions.skip : 0);
