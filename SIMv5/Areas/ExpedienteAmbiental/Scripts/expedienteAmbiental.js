@@ -406,10 +406,7 @@ $(document).ready(function () {
                                                                 cboTipoSolicitudAmbiental.option("disabled", true);
                                                                 txtConexoPunto.option("value", data.conexo);
                                                                 txtFechaOrigen.option("value", data.fechaOrigen);
-
-                                                                indicesSerieDocumentalStore = null;
-                                                                CargarIndicesExpedienteDocumental(data.expedienteDocumentalId);
-
+                                                                idExpedienteDoc = data.expedienteDocumentalId;
                                                                 popupNuevoPuntoControl.show();
                                                             }
                                                         }).fail(function (jqxhr, textStatus, error) {
@@ -1453,6 +1450,7 @@ $(document).ready(function () {
         onClick: function () {
             editar = false;
             idPuntoControl = 0;
+            idExpedienteDoc = 0;
             txtNombrePuntoControl.option("value", NomExpediente);
             txtObservacionPuntoControl.reset();
             cboTipoSolicitudAmbiental.option("disabled", false);
@@ -1588,7 +1586,15 @@ $(document).ready(function () {
         title: "Creación/Edición de un Punto de Control",
         onShown: function () {
             indicesSerieDocumentalStore = null;
-            CargarIndices(idExpedienteAmb);
+            if (idExpedienteDoc > 0) {
+                CargarIndicesExpedienteDocumental(idExpedienteDoc);
+            }
+            else
+            {
+                CargarIndices(idExpedienteAmb);
+            }
+
+
         }  
     }).dxPopup("instance");
 
@@ -1877,6 +1883,7 @@ $(document).ready(function () {
                                 if (cellInfo.data.VALOR !== null)
                                     cellElement.html(cellInfo.data.VALOR == 'S' ? 'SI' : 'NO');
                                 break;
+
                             default: // OTRO
                                 if (cellInfo.data.VALOR !== null)
                                     cellElement.html(cellInfo.data.VALOR);
