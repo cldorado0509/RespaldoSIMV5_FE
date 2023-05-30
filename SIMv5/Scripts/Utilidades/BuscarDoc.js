@@ -187,7 +187,9 @@ $(document).ready(function () {
             allowedPageSizes: [7]
         },
         selection: {
-            mode: 'single'
+            mode: 'multiple',
+            allowSelectAll: false,
+            showCheckBoxesMode: 'always'
         },
         hoverStateEnabled: true,
         remoteOperations: true,
@@ -209,20 +211,23 @@ $(document).ready(function () {
                         }
                     }).appendTo(container);
                 }
-            },
-            {
-                alignment: 'center',
-                cellTemplate: function (container, options) {
-                    $('<div/>').dxButton({
-                        icon: 'export',
-                        hint: 'Seleccionar documento',
-                        onClick: function (e) {
-                            parent.SeleccionaDocumento(options.data.ID_DOCUMENTO);
-                        }
-                    }).appendTo(container);
-                }
             }
         ]
+    });
+
+
+    $("#btnSeleccion").dxButton({
+        text: "Asociar Seleccionados al Expediente",
+        type: "default",
+        onClick: function () {
+            var grid = $('#gridDocsEnc').dxDataGrid('instance');
+            var DocSel = grid.getSelectedRowsData();
+            var Documentos = [];
+            for (i = 0; i < DocSel.length; i++) {
+                Documentos.push(DocSel[i].ID_DOCUMENTO);
+            }
+            parent.SeleccionaDocumento(Documentos);
+        }
     });
 
 });

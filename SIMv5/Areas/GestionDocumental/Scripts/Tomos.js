@@ -630,7 +630,7 @@ $(document).ready(function () {
 
     $("#popupBuscaDoc").dxPopup({
         width: 900,
-        height: 800,
+        height: 850,
         showTitle: true,
         title: "Buscar Documento"
     });
@@ -697,13 +697,14 @@ var DocumentosDataSource = new DevExpress.data.CustomStore({
     }
 });
 
-function SeleccionaDocumento(Documento) {
+function SeleccionaDocumento(Documentos) {
     var _popup = $("#popupBuscaDoc").dxPopup("instance");
     _popup.hide();
     var Sel = $("#grdListaTomos").dxDataGrid("instance").getSelectedRowsData()[0];
-    if (Documento != "" && Sel.ID_TOMO != "") {
+    if (Documentos.length > 0 != "" && Sel.ID_TOMO != "") {
+        var ListaDocs = JSON.stringify(Documentos);       
         var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/AsociaDocumento";
-        $.getJSON(_Ruta, { IdDocumento: Documento, IdTomo: Sel.ID_TOMO })
+        $.getJSON(_Ruta, { ListaIdDocumentos: ListaDocs, IdTomo: Sel.ID_TOMO })
             .done(function (data) {
                 if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Asociar documento');
                 else {

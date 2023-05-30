@@ -1,164 +1,16 @@
 ﻿var IdDocumento = -1;
-var txtTramite = "";
-var txtFiltro = "";
-var txtFulltext = "";
-var UnidadDoc = -1;
 
 const fechas = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 
 $(document).ready(function () {
-    $("#rdbTipoBusca").dxRadioGroup({
-        dataSource: [{ value: 0, text: "Por trámite" }, { value: 1, text: "Por Unidad Documental" }, { value: 2, text: "Full Text" }],
-        displayExpr: "text",
-        valueExpr: "value",
-        value: 0,
-        layout: "horizontal",
-        onContentReady: function (e) {
-            $("#PanelTramite").show();
-            $("#PanelIndices").hide();
-            $("#PanelFulltext").hide();
-            SelTipo = 0;
-        },
-        onValueChanged: function (e) {
-            switch (e.value) {
-                case 0:
-                    $("#PanelTramite").show();
-                    $("#PanelIndices").hide();
-                    $("#PanelFulltext").hide();
-                    break;
-                case 1:
-                    $("#PanelTramite").hide();
-                    $("#PanelIndices").show();
-                    $("#PanelFulltext").hide();
-                    break;
-                case 2:
-                    $("#PanelTramite").hide();
-                    $("#PanelIndices").hide();
-                    $("#PanelFulltext").show();
-                    break;
-            }
-            SelTipo = e.value;
-            txtTramite = "";
-            txtFiltro = "";
-            txtFulltext = "";
-            UnidadDoc = -1;
-            $("#grdDocs").dxDataGrid("instance").refresh();
-            $("#grdDocs").dxDataGrid("instance").option("visible", false);
-        }
-    });
-
-    $("#txtTramite").dxTextBox({
-        placeholder: "Ingrese el código del trámite",
-        value: ""
-    });
-
-    $("#txtDato").dxTextBox({
-        placeholder: "Ingrese el dato a buscar",
-        value: ""
-    });
-
-    //$("#btnBuscarDoc").dxButton({
-    //    text: "Documentos",
-    //    icon: "search",
-    //    type: "default",
-    //    width: "190",
-    //    onClick: function () {
-    //        var _popup = $("#popupBuscaDoc").dxPopup("instance");
-    //        _popup.show();
-    //        $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true');
-    //    }
-    //});
-
-    $("#cmbUnidadDoc").dxSelectBox({
-        dataSource: new DevExpress.data.DataSource({
-            store: new DevExpress.data.CustomStore({
-                key: "CODSERIE",
-                loadMode: "raw",
-                load: function () {
-                    return $.getJSON($("#SIM").data("url") + "Utilidades/GetListaUnidades");
-                }
-            })
-        }),
-        displayExpr: "NOMBRE",
-        valueExpr: "CODSERIE",
-        searchEnabled: true,
-        noDataText: "No hay datos para mostrar",
-        placeholder: "Seleccione",
-        onValueChanged: function (data) {
-            UnidadDoc = data.value;
-            $.getJSON($('#SIM').data('url') + 'Utilidades/GetFields?UniDoc=' + UnidadDoc
-            ).done(function (data) {
-                var Filtro = $("#FilterBuscar").dxFilterBuilder(OpcionesFiltro).dxFilterBuilder("instance");
-                Filtro.option("fields", data);
-            }).fail(function (jqxhr, textStatus, error) {
-                alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
-            });
-        }
-    });
-
-    var OpcionesFiltro = {
-        fields: [],
-        value: [],
-        filterOperationDescriptions: {
-            between: "Entre",
-            contains: "Contiene",
-            endsWith: "Finaliza en",
-            equal: "Igual",
-            greaterThan: "Mayor que",
-            greaterThanOrEqual: "Mayor o igual a",
-            isBlank: "Es blanco",
-            isNotBlank: "No es blanco",
-            lessThan: "Menor que",
-            lessThanOrEqual: "Menor o igual a",
-            notContains: "No contiene",
-            notEqual: "Diferente",
-            startsWith: "Inicia con"
-        },
-        groupOperationDescriptions: {
-            and: "Y",
-            or: "O",
-            notOr: "",
-            notAnd: ""
-        }
-    };
-
-    $("#btnBuscar").dxButton({
-        text: "Buscar",
+    $("#btnBuscarDoc").dxButton({
+        text: "Documentos",
+        icon: "search",
         type: "default",
         onClick: function () {
-            if (SelTipo == 0) {
-                var _tramite = $("#txtTramite").dxTextBox("instance").option("value");
-                if (_tramite != "") {
-                    txtFiltro = "";
-                    txtFulltext = "";
-                    txtTramite = _tramite;
-                } else {
-                    txtTramite = "";
-                    DevExpress.ui.dialog.alert('No se ha ingresado un código de trámite para buscar', 'Buscar documentos');
-                }
-            } else if (SelTipo == 1) {
-                var _Filto = formatValue($("#FilterBuscar").dxFilterBuilder("instance").option("value"));
-                if (_Filto != "") {
-                    txtTramite = "";
-                    txtFulltext = "";
-                    txtFiltro = _Filto;
-                } else {
-                    txtFiltro = "";
-                    DevExpress.ui.dialog.alert('El filtro no se ha establecido o esta mal', 'Buscar documentos');
-                }
-            } else if (SelTipo == 2) {
-                var _Dato = $("#txtDato").dxTextBox("instance").option("value");
-                if (_Dato != "") {
-                    txtTramite = "";
-                    txtFiltro = "";
-                    txtFulltext = _Dato;
-                } else {
-                    txtFulltext = "";
-                    DevExpress.ui.dialog.alert('No se ha ingresado un dato para buscar', 'Buscar documentos');
-                }
-            }
-            $("#grdDocs").dxDataGrid("instance").option("visible", true);
-            $("#grdDocs").dxDataGrid("instance").refresh();
+            var _popup = $("#popupBuscaDoc").dxPopup("instance");
+            _popup.show();
+            $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true');
         }
     });
 
@@ -195,8 +47,7 @@ $(document).ready(function () {
                 key: "ID_DOCUMENTO",
                 loadMode: "raw",
                 load: function () {
-                    var Buscar = txtTramite.length > 0 ? 'T;' + txtTramite : txtFiltro.length > 0 ? 'F;' + txtFiltro : txtFulltext.length > 0 ? 'B;' + txtFulltext : ''
-                    return $.getJSON($("#SIM").data("url") + 'GestionDocumental/api/DocumentosApi/BuscarDoc?IdUnidadDoc=' + UnidadDoc + '&Buscar=' + Buscar);
+                    return $.getJSON($("#SIM").data("url") + 'GestionDocumental/api/DocumentosApi/ObtieneDocumento?IdDocumento=' + IdDocumento);
                 }
             })
         }),
@@ -635,9 +486,9 @@ $(document).ready(function () {
         visible: false,
         closeOnOutsideClick: true,
         contentTemplate: function () {
-            var Content = "";
+            var Content = "<table class='table table-striped'><thead><tr><th scope='col'>NOMBRE DEL ÍNDICE</th><th scope='col'>VALOR</th></tr></thead><tbody>";
             $.each(Indices, function (key, value) {
-                Content += "<p>" + value.INDICE + " : <span><b>" + value.VALOR + "</b></span></p>";
+                Content += "<tr><th scope='row'>" + value.INDICE + "</th><td>" + value.VALOR + "</td></tr>";
             });
             return $("<div />").append(
                 $("<p><b>Indices del documento " + IdDocumento + "</b></p>"),

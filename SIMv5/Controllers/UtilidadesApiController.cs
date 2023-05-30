@@ -515,6 +515,7 @@
                                  ESTTRA = TraOp,
                                  PUEDEVER = FunAct == funcionario ? "SI" : VerTemporales == "SI" ? "SI" : "NO",
                                  ESULTVER = dbSIM.DOCUMENTO_TEMPORAL.Where(w => w.S_DESCRIPCION == Doc.S_DESCRIPCION && w.CODTRAMITE == CodTramite).Select(s => s.N_VERSION).Max() == Doc.N_VERSION ? true : false,
+                                 PUEDEELIMINAR = FunAct == funcionario ? "SI" : "NO"
                              });
                 return JArray.FromObject(model.ToList(), Js);
             }

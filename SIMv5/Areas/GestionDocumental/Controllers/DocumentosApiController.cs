@@ -86,6 +86,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.ID_DOCUMENTO DESC";
                                 DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                 break;
+                            case "D":
+                                string[] _rango = _Buscar[1].Split(',');
+                                _Sql = $"SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODSERIE ={IdUnidadDoc} AND TO_DATE(TO_CHAR(DOC.FECHACREACION,'DD-MM-YYYY'),'DD-MM-YYYY') BETWEEN TO_DATE('{DateTime.Parse(_rango[0].ToString()).ToString("dd-MM-yyyy")}','DD-MM-YYYY') AND TO_DATE('{DateTime.Parse(_rango[1].ToString()).ToString("dd-MM-yyyy")}','DD-MM-YYYY') ORDER BY DOC.ID_DOCUMENTO DESC";
+                                DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
+                                break;
                         }
                     }
                 }

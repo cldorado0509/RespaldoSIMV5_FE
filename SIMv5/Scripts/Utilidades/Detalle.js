@@ -489,7 +489,7 @@ $(document).ready(function () {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
                     if (options.data.ESTTRA == "0") {
-                        if (options.data.PUEDEVER == "SI") {
+                        if (options.data.PUEDEELIMINAR == "SI") {
                             if (options.data.ESULTVER) {
                                 $('<div/>').dxButton({
                                     icon: 'trash',
