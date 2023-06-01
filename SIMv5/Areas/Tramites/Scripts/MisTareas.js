@@ -324,11 +324,15 @@ $(document).ready(function () {
                                                     var _Ruta = $('#SIM').data('url') + "Tramites/api/MisTareasApi/DevolverTarea";
                                                     $.getJSON(_Ruta, params, function (result, status) {
                                                         if (status === "success") {
-                                                            $('#MisTarGrid').dxDataGrid({ dataSource: misTareasDataSource });
-                                                            if (result != "") {
-                                                                DevExpress.ui.notify(result);
+                                                            if (!result.startsWith("Error:")) {
+                                                                $('#MisTarGrid').dxDataGrid({ dataSource: misTareasDataSource });
+                                                                if (result != "") {
+                                                                    DevExpress.ui.notify(result);
+                                                                } else {
+                                                                    $("#PopupDev").dxPopup("instance").hide();
+                                                                }
                                                             } else {
-                                                                $("#PopupDev").dxPopup("instance").hide();
+                                                                DevExpress.ui.notify(result);
                                                             }
                                                         } else {
                                                             DevExpress.ui.notify("Motivos seleccionados para el tramite " + CodTramite + " " + seleccionados);

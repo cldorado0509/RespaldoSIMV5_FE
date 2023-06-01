@@ -222,7 +222,7 @@
                         }
                         else _Rpta = "La tarea no se puede devolver ya que la actual y la anterior son de procesos diferentes!";
                     }
-                    catch (Exception ex) { }
+                    catch (Exception ex) { _Rpta = "Error: " + ex.Message; }
                 }
                 else _Rpta = "El funcionario al que se retorna la tarea no se encuentra activo!";
             }

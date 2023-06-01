@@ -470,19 +470,15 @@ $(document).ready(function () {
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if (options.data.ESTTRA == "0")
-                    {
-                        if (options.data.PUEDEVER == "SI")
-                        {
-                            $('<div/>').dxButton({
-                                icon: 'doc',
-                                hint: 'Ver el documento',
-                                onClick: function (e) {
-                                    window.open($('#SIM').data('url') + "Utilidades/LeeTemporal?IdDocumento=" + options.data.IDDOCUMENTO, "Documento Temporal" + options.data.DESCRIPCION, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
-                                }
-                            }).appendTo(container);
-                        }
-                    } 
+                    if (options.data.PUEDEVER == "SI") {
+                        $('<div/>').dxButton({
+                            icon: 'doc',
+                            hint: 'Ver el documento',
+                            onClick: function (e) {
+                                window.open($('#SIM').data('url') + "Utilidades/LeeTemporal?IdDocumento=" + options.data.IDDOCUMENTO, "Documento Temporal" + options.data.DESCRIPCION, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
+                            }
+                        }).appendTo(container);
+                    }
                 }
             },
             {
