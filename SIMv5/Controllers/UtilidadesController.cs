@@ -92,7 +92,7 @@
                 else Orden = 1;           
             }
 
-
+            var TraOp = dbSIM.TBTRAMITE.Where(w => w.CODTRAMITE == CodTramite).Select(s => s.ESTADO).FirstOrDefault();
             var TramiteTarea = (from TR in dbSIM.TBTRAMITE
                                 join PRO in dbSIM.TBPROCESO on TR.CODPROCESO equals PRO.CODPROCESO
                                 join TT in dbSIM.TBTRAMITETAREA on TR.CODTRAMITE equals TT.CODTRAMITE
@@ -112,7 +112,8 @@
                                     Vital = TR.NUMERO_VITAL,
                                     Orden = TT.ORDEN,
                                     CodFuncionario = funcionario,
-                                    Propietario = UltFun == funcionario ? true : false
+                                    Propietario = UltFun == funcionario,
+                                    TramiteAbierto = TraOp != 0
                                 }).FirstOrDefault();
             if (TramiteTarea == null) 
             {

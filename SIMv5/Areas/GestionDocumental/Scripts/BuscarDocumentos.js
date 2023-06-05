@@ -54,6 +54,7 @@ $(document).ready(function () {
             txtFulltext = "";
             UnidadDoc = -1;
             $("#grdDocs").dxDataGrid("instance").refresh();
+            $("#IndicesDoc").html("");
             $("#grdDocs").dxDataGrid("instance").option("visible", false);
         }
     });
@@ -235,6 +236,7 @@ $(document).ready(function () {
             }
             $("#grdDocs").dxDataGrid("instance").option("visible", true);
             $("#grdDocs").dxDataGrid("instance").refresh();
+            $("#IndicesDoc").html("");
         }
     });
 
@@ -298,10 +300,10 @@ $(document).ready(function () {
             { dataField: "CODTRAMITE", width: '10%', caption: 'Trámite', dataType: 'number' },
             { dataField: "CODDOCUMENTO", width: '7%', caption: 'Documento', dataType: 'number' },
             { dataField: 'FECHACREACION', width: '15%', caption: 'Fecha Digitaliza', dataType: 'date', format: 'MMM dd yyyy HH: mm' },
-            { dataField: "NOMBRE", width: '20%', caption: 'Unidad Documental', dataType: 'string' },
+            { dataField: "NOMBRE", width: '30%', caption: 'Unidad Documental', dataType: 'string' },
            /* { dataField: 'INDICES', width: '25%', caption: 'Indices', dataType: 'string' },*/
             {
-                width: '12%',
+                width: '10%',
                 caption: 'Anulado',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
@@ -389,7 +391,7 @@ $(document).ready(function () {
                 }
             },
             {
-                width: '12%',
+                width: '10%',
                 caption: 'Adjunto',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
@@ -423,31 +425,31 @@ $(document).ready(function () {
                     });
                 }
             },
+            //{
+            //    width: '12%',
+            //    alignment: 'center',
+            //    caption: 'Indices Doc',
+            //    cellTemplate: function (container, options) {
+            //        $('<div/>').dxButton({
+            //            icon: 'fields',
+            //            hint: 'Indices del documento',
+            //            onClick: function (e) {
+            //                var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/IndicesDocumento";
+            //                $.getJSON(_Ruta, { IdDocumento: options.data.ID_DOCUMENTO })
+            //                    .done(function (data) {
+            //                        if (data != null) {
+            //                            IdDocumento = options.data.ID_DOCUMENTO;
+            //                            showIndices(data);
+            //                        }
+            //                    }).fail(function (jqxhr, textStatus, error) {
+            //                        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Indices del documento');
+            //                    });
+            //            }
+            //        }).appendTo(container);
+            //    }
+            //},
             {
-                width: '12%',
-                alignment: 'center',
-                caption: 'Indices Doc',
-                cellTemplate: function (container, options) {
-                    $('<div/>').dxButton({
-                        icon: 'fields',
-                        hint: 'Indices del documento',
-                        onClick: function (e) {
-                            var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/IndicesDocumento";
-                            $.getJSON(_Ruta, { IdDocumento: options.data.ID_DOCUMENTO })
-                                .done(function (data) {
-                                    if (data != null) {
-                                        IdDocumento = options.data.ID_DOCUMENTO;
-                                        showIndices(data);
-                                    }
-                                }).fail(function (jqxhr, textStatus, error) {
-                                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Indices del documento');
-                                });
-                        }
-                    }).appendTo(container);
-                }
-            },
-            {
-                width: '12%',
+                width: '10%',
                 alignment: 'center',
                 caption: 'Ver Doc',
                 cellTemplate: function (container, options) {
@@ -472,7 +474,7 @@ $(document).ready(function () {
                 }
             },
             {
-                width: '12%',
+                width: '10%',
                 alignment: 'center',
                 caption: 'Editar Indices',
                 cellTemplate: function (container, options) {
@@ -525,7 +527,7 @@ $(document).ready(function () {
                 }
             },
             {
-                width: '12%',
+                width: '15%',
                 alignment: 'center',
                 caption: 'Detalle Trámite',
                 cellTemplate: function (container, options) {
@@ -575,7 +577,27 @@ $(document).ready(function () {
                     }
                 }
             }
-        ]
+        ],
+        onSelectionChanged(selectedItems) {
+            const data = selectedItems.selectedRowsData[0];
+            if (data) {
+                var strDocumento = data.ID_DOCUMENTO + " (Trámite: " + data.CODTRAMITE + " Documento: " + data.CODDOCUMENTO + ")";
+                var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/IndicesDocumento";
+                $.getJSON(_Ruta, { IdDocumento: data.ID_DOCUMENTO })
+                    .done(function (data) {
+                        if (data != null) {                        
+                            var Content = "<table class='table table-sm' style='font-size: 10px;'><thead><tr><th scope='col'>NOMBRE DEL ÍNDICE</th><th scope='col'>VALOR</th></tr></thead><tbody>";
+                            data.forEach(function (indice, index) {
+                                Content += "<tr><th scope='row'>" + indice.INDICE + "</th><td>" + indice.VALOR + "</td></tr>";
+                            });
+                            $("#IndicesDoc").html("<p><b>Índices del documento " + strDocumento + "</b></p><br />" + Content);
+                        }
+
+                    }).fail(function (jqxhr, textStatus, error) {
+                        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Indices del documento');
+                    });
+            }
+        }
     });
 
     $("#ufDocumento").dxFileUploader({

@@ -23,5 +23,6 @@ namespace SIM.Models
         public decimal CodFuncionario { get; set; }
 
         public bool Propietario { get; set; }
+        public bool TramiteAbierto { get; set; }  
     }
 }

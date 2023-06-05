@@ -1487,6 +1487,7 @@
     <Compile Include="Areas\Tala\Controllers\imgTalaController.cs" />
     <Compile Include="Areas\Tala\Controllers\solicitante.cs" />
     <Compile Include="Areas\Tala\Controllers\TalaController.cs" />
+    <Compile Include="Areas\Tramites\Controllers\TareasFuncionarioController.cs" />
     <Compile Include="Areas\Tramites\Models\DatosTareasFuncionario.cs" />
     <Compile Include="Controllers\UtilidadesApiController.cs" />
     <Compile Include="Data\Agua.Context.cs" />
@@ -2473,6 +2474,7 @@
     <Content Include="Areas\Tramites\Scripts\MisTareas.js" />
     <Content Include="Areas\Tramites\Scripts\proyecciondocumento.js" />
     <Content Include="Areas\Tramites\Scripts\programadoractuaciones.js" />
+    <Content Include="Areas\Tramites\Scripts\TareasFuncionario.js" />
     <Content Include="Content\arbolUrbano.css" />
     <Content Include="Content\arbolUrbanoF.css" />
     <Content Include="Content\bootstrap4.min.css" />
@@ -3107,6 +3109,7 @@
     <Content Include="Areas\AtencionUsuarios\Views\ValorTramite\Index.cshtml" />
     <Content Include="Content\fonts\arialbd.ttf" />
     <Content Include="Areas\Tramites\Views\Tramites\NuevoTramite.cshtml" />
+    <Content Include="Areas\Tramites\Views\TareasFuncionario\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
