@@ -65,6 +65,8 @@
                     string _Sql = "";
                     if (_Buscar.Length > 0)
                     {
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_COMP = LINGUISTIC");
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_SORT = 'SPANISH_AI'");
                         switch (_Buscar[0])
                         {
                             case "T":
@@ -139,6 +141,8 @@
                     string[] _Buscar = Buscar.Split(';');
                     if (_Buscar.Length > 0)
                     {
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_COMP = LINGUISTIC");
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_SORT = 'SPANISH_AI'");
                         switch (_Buscar[0])
                         {
                             case "T":
@@ -209,6 +213,8 @@
                     string _Sql = "";
                     if (_Buscar.Length > 0)
                     {
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_COMP = LINGUISTIC");
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_SORT = 'SPANISH_AI'");
                         switch (_Buscar[0])
                         {
                             case "C":
@@ -304,6 +310,8 @@
                     string _Sql = "";
                     if (_Buscar.Length > 0)
                     {
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_COMP = LINGUISTIC");
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_SORT = 'SPANISH_AI'");
                         switch (_Buscar[0])
                         {
                             case "T":

@@ -113,7 +113,7 @@
                                     Orden = TT.ORDEN,
                                     CodFuncionario = funcionario,
                                     Propietario = UltFun == funcionario,
-                                    TramiteAbierto = TraOp != 0
+                                    TramiteAbierto = TraOp == 0
                                 }).FirstOrDefault();
             if (TramiteTarea == null) 
             {
@@ -133,7 +133,8 @@
                                     Vital = TR.NUMERO_VITAL,
                                     Orden = 1,
                                     CodFuncionario = funcionario,
-                                    Propietario = false
+                                    Propietario = false,
+                                    TramiteAbierto = false
                                 }).FirstOrDefault(); 
             }
             TramiteTarea.Vital = TramiteTarea.Vital != null ? TramiteTarea.Vital : "-1";

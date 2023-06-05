@@ -55,6 +55,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     string[] _Buscar = Buscar.Split(';');
                     if (_Buscar.Length > 0)
                     {
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_COMP = LINGUISTIC");
+                        dbSIM.Database.ExecuteSqlCommandAsync("ALTER SESSION SET NLS_SORT = 'SPANISH_AI'");
                         switch (_Buscar[0])
                         {
                             case "T":
@@ -62,7 +64,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                 break;
                             case "F":
-                                var _condicion = _Buscar[1].ToString().Replace("\r\n", string.Empty).Replace(" ", String.Empty);
+                                var _condicion = _Buscar[1].ToString().Replace("\r\n", string.Empty);
                                 //_condicion = _condicion.Replace("\\", "").Replace("\"", "");
                                 _condicion = _condicion.Replace("[", "").Replace("]", "");
                                 if (_condicion != null)
