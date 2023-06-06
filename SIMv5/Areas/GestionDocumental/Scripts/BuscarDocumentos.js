@@ -104,6 +104,9 @@ $(document).ready(function () {
         placeholder: "Seleccione",
         onValueChanged: function (data) {
             UnidadDoc = data.value;
+            $("#grdDocs").dxDataGrid("instance").refresh();
+            $("#IndicesDoc").html("");
+            $("#grdDocs").dxDataGrid("instance").option("visible", false);
             $.getJSON($('#SIM').data('url') + 'Utilidades/GetFields?UniDoc=' + UnidadDoc
             ).done(function (data) {
                 var Filtro = $("#FilterBuscar").dxFilterBuilder(OpcionesFiltro).dxFilterBuilder("instance");
@@ -157,6 +160,10 @@ $(document).ready(function () {
         placeholder: "Seleccione",
         onValueChanged: function (data) {
             UnidadDoc = data.value;
+            $("#grdDocs").dxDataGrid("instance").refresh();
+            $("#IndicesDoc").html("");
+            $("#grdDocs").dxDataGrid("instance").option("visible", false);
+
         }
     });
 

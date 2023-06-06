@@ -190,7 +190,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         string _Indice = "";
                         foreach (var fila in IndicesSerie)
                         {
-                            _Indice = fila.INDICE.ToUpper().Replace(" ", "");
+                            _Indice = fila.INDICE.ToUpper(); //.Replace(" ", "");
                             if (_criterio.Contains(_Indice))
                             {
                                 _aux += "(SELECT TID.VALOR FROM TRAMITES.TBINDICEDOCUMENTO TID WHERE TID.CODTRAMITE = IND.CODTRAMITE AND TID.CODDOCUMENTO=IND.CODDOCUMENTO AND TID.CODINDICE=" + fila.CODINDICE.ToString() + ") AS \"" + _Indice + "\",";
