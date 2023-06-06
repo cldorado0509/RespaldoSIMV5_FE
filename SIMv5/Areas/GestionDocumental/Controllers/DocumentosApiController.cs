@@ -126,31 +126,31 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     switch (filtros[contFiltro + 1])
                     {
                         case "contains":
-                            condicion.Add(" INSTR(LOWER(\"" + filtros[contFiltro] + "\"),'" + filtros[contFiltro + 2].Trim().ToLower() + "') > 0");
+                            condicion.Add(" INSTR(LOWER(\"" + filtros[contFiltro].Trim() + "\"),'" + filtros[contFiltro + 2].Trim().ToLower() + "') > 0");
                             break;
                         case "notcontains":
-                            condicion.Add(" INSTR(LOWER(\"" + filtros[contFiltro] + "\"),'" + filtros[contFiltro + 2].Trim().ToLower() + "') = 0");
+                            condicion.Add(" INSTR(LOWER(\"" + filtros[contFiltro].Trim() + "\"),'" + filtros[contFiltro + 2].Trim().ToLower() + "') = 0");
                             break;
                         case "startswith":
-                            condicion.Add(" LOWER(\"" + filtros[contFiltro] + "\") LIKE '" + filtros[contFiltro + 2].Trim().ToLower() + "%'");
+                            condicion.Add(" LOWER(\"" + filtros[contFiltro].Trim() + "\") LIKE '" + filtros[contFiltro + 2].Trim().ToLower() + "%'");
                             break;
                         case "endswith":
-                            condicion.Add(" LOWER(\"" + filtros[contFiltro] + "\") LIKE '%" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            condicion.Add(" LOWER(\"" + filtros[contFiltro].Trim() + "\") LIKE '%" + filtros[contFiltro + 2].Trim().ToLower() + "'");
                             break;
                         case "=":
-                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') = TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
-                            else condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") = '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro].Trim() + "\",'dd-MM-yyyy') = TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("LOWER(\"" + filtros[contFiltro].Trim() + "\") = '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
                             break;
                         case "<>":
-                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') <> TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
-                            else condicion.Add("LOWER(\"" + filtros[contFiltro] + "\") <> '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro].Trim() + "\",'dd-MM-yyyy') <> TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("LOWER(\"" + filtros[contFiltro].Trim() + "\") <> '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
                             break;
                         case "<":
                         case "<=":
                         case ">":
                         case ">=":
-                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro] + "\",'dd-MM-yyyy') " + filtros[contFiltro + 1] + " TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
-                            else condicion.Add("TO_NUMBER(LOWER(\"" + filtros[contFiltro] + "\")) " + filtros[contFiltro + 1] + " " + filtros[contFiltro + 2].Trim().ToLower());
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro].Trim() + "\",'dd-MM-yyyy') " + filtros[contFiltro + 1] + " TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
+                            else condicion.Add("TO_NUMBER(LOWER(\"" + filtros[contFiltro].Trim() + "\")) " + filtros[contFiltro + 1] + " " + filtros[contFiltro + 2].Trim().ToLower());
                             break;
                     }
                 }
