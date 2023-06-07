@@ -167,24 +167,27 @@
                                                             select tar).FirstOrDefault();
                             if (_TareaFinal != null)
                             {
-                                ArrayMotivos = ArrayMotivos.Trim().EndsWith(",") ? ArrayMotivos.Trim().Substring(0, ArrayMotivos.Length - 1) : ArrayMotivos;
+                                // ArrayMotivos = ArrayMotivos.Trim().EndsWith(",") ? ArrayMotivos.Trim().Substring(0, ArrayMotivos.Length - 1) : ArrayMotivos;
                                 string[] _Motivos = ArrayMotivos.Split(',');
                                 string _TxtMotivos = "DEVOLUCIÓN – Motivos: ";
                                 if (_Motivos.Length > 0)
                                 {
                                     DEVOLUCION_TAREA dev = new DEVOLUCION_TAREA();
-                                    foreach(string DevItem in _Motivos)
+                                    foreach (string DevItem in _Motivos)
                                     {
-                                        string[] _ArrayMotivo = DevItem.Split(';');
-                                        dev.CODFUCNIONARIO = decimal.Parse(Funcionario);
-                                        dev.CODTRAMITE = CodigoTramite;
-                                        dev.CODTAREA = TareaActual.CODTAREA;
-                                        dev.CODTAREA_DEV = TareaAnterior.CODTAREA;
-                                        dev.ORDEN = Orden;
-                                        dev.ID_MOTIVODEV = long.Parse(_ArrayMotivo[0]);
-                                        dbSIM.DEVOLUCION_TAREA.Add(dev);
-                                        dbSIM.SaveChanges();
-                                        _TxtMotivos += _ArrayMotivo[1] + ", ";
+                                        if (DevItem != "")
+                                        {
+                                            string[] _ArrayMotivo = DevItem.Split(';');
+                                            dev.CODFUCNIONARIO = decimal.Parse(Funcionario);
+                                            dev.CODTRAMITE = CodigoTramite;
+                                            dev.CODTAREA = TareaActual.CODTAREA;
+                                            dev.CODTAREA_DEV = TareaAnterior.CODTAREA;
+                                            dev.ORDEN = Orden;
+                                            dev.ID_MOTIVODEV = long.Parse(_ArrayMotivo[0]);
+                                            dbSIM.DEVOLUCION_TAREA.Add(dev);
+                                            dbSIM.SaveChanges();
+                                            _TxtMotivos += _ArrayMotivo[1] + ", ";
+                                        }
                                     }
                                     _TxtMotivos = _TxtMotivos.Trim().EndsWith(",") ? _TxtMotivos.Trim().Substring(0, _TxtMotivos.Trim().Length - 1) : _TxtMotivos.Trim();
                                     Comentario = _TxtMotivos + " MENSAJE: " + Comentario;
@@ -219,14 +222,15 @@
                                 dbSIM.TBTAREACOMENTARIO.Add(tac);
                                 dbSIM.SaveChanges();
                             }
+                            else _Rpta = "Error: Ocurrió un problema localizando la última tarea del trámite!";
                         }
-                        else _Rpta = "La tarea no se puede devolver ya que la actual y la anterior son de procesos diferentes!";
+                        else _Rpta = "Error: La tarea no se puede devolver ya que la actual y la anterior son de procesos diferentes!";
                     }
                     catch (Exception ex) { _Rpta = "Error: " + ex.Message; }
                 }
-                else _Rpta = "El funcionario al que se retorna la tarea no se encuentra activo!";
+                else _Rpta = "Error: El funcionario al que se retorna la tarea no se encuentra activo!";
             }
-            else _Rpta = "La tarea es de un subproceso, favor devolverla por SIMV4";
+            else _Rpta = "Error: La tarea es de un subproceso, favor devolverla por SIMV4";
             return _Rpta;
         }
 

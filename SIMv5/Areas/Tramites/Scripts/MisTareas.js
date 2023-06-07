@@ -274,13 +274,13 @@ $(document).ready(function () {
             width: 400,
             icon: '../Content/Images/devolver-01.svg',
             onClick: function () {
-                if (CodTramite > 0) {
+                if (CodTramite > 0 && CodTarea > 0) {
                     var _FuncRecibe = "";
                     var _Ruta = $('#SIM').data('url') + "Tramites/api/MisTareasApi/FuncionarioAnterior?CodTramite=" + CodTramite + "&CodTarea=" + CodTarea + "&Orden=" + Orden;
                     $.getJSON(_Ruta, function (result, status) {
                         if (status === "success") {
                             _FuncRecibe = result;
-                            if (!_FuncRecibe.startsWith("No se encontr")) {
+                            if (!_FuncRecibe.startsWith("No se encontr") && !_FuncRecibe.startsWith("Error :")) {
                                 popupOpcDev = {
                                     width: 700,
                                     height: 500,

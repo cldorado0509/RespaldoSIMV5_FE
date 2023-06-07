@@ -204,10 +204,11 @@ namespace SIM.Areas.Tramites.Controllers
                             }
                             else _Rpta = "No se encontró un funcionario en la tarea anterior";
                     }
+                    else _Rpta = "No se encontró un funcionario en la tarea anterior";
                 }
                 catch (Exception ex)
                 {
-                    _Rpta = ex.Message;
+                    _Rpta = "Error : " + ex.Message;
                 }
             }
             else
@@ -247,12 +248,22 @@ namespace SIM.Areas.Tramites.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CodTramite"></param>
+        /// <param name="CodTarea"></param>
+        /// <param name="Orden"></param>
+        /// <param name="Funcionario"></param>
+        /// <param name="Comentario"></param>
+        /// <param name="Motivos"></param>
+        /// <returns></returns>
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("DevolverTarea")]
         public string DevolverTarea(long CodTramite,long CodTarea,long Orden, string Funcionario, string Comentario, string Motivos)
         {
-            if (CodTramite == 0) return "No se ha ingresado un código de trámite";
-            if (CodTarea == 0) return "No se ha ingresado un código de tarea";
-            if (Orden == 0) return "No se ha ingresado un orden para el trámite";
+            if (CodTramite == 0) return "Error: No se ha ingresado un código de trámite";
+            if (CodTarea == 0) return "Error: No se ha ingresado un código de tarea";
+            if (Orden == 0) return "Error: No se ha ingresado un orden para el trámite";
             if (Comentario == "" || Comentario == null) return "No se ha ingresado mensaje con la devolución del trámite";
             return Tramites.DevolverTramite(CodTramite, CodTarea, Funcionario, (int)Orden, Comentario, Motivos);
         }
