@@ -173,15 +173,18 @@
             </div>
         </div>
         <div class=" row col-xs-12 col-sm-12" style=" margin-top: 20px;">
-            <div class=" row col-xs-12 col-sm-12">
-                <label>Términos y condiciones</label>
-            </div>
-            <div class=" row col-xs-12 col-sm-12">
-                <textarea id="txtTeminos" disabled style="width:393px;height:200px;border: 1px solid  #c1c1c1;border-radius: 3px;width: 100%;background: #fff;padding: 5px;"></textarea>
-                <br />
-                <label style="    margin: 10px 0px;"><input type="checkbox" id="chterminos" onclick="aceptarterminos(this)" value="">Aceptar Términos y Condicciones</label>
-                <br />
-            </div>
+            @if (ViewBag.TipoTerminos == "V")
+            {
+                <div class=" row col-xs-12 col-sm-12">
+                    <label>Términos y condiciones</label>
+                </div>
+                <div class=" row col-xs-12 col-sm-12">
+                    <textarea id="txtTeminos" disabled style="width:393px;height:200px;border: 1px solid  #c1c1c1;border-radius: 3px;width: 100%;background: #fff;padding: 5px;"></textarea>
+                    <br />
+                    <label style="    margin: 10px 0px;"><input type="checkbox" id="chterminos" onclick="aceptarterminos(this)" value="">Aceptar Términos y Condicciones</label>
+                    <br />
+                </div>
+            }
             @if (ViewBag.permiteCopia)
             {
             <div class=" row col-xs-12 col-sm-12">
@@ -231,16 +234,10 @@
         function cerrarr() {
            parent.window.open('@Url.Content("~/")' , '_self');
         }
-    $(document).ready(function () {
-
-        $("#btnAceptar").prop("disabled", true).css("opacity", ".5");
-
-
-
-
-
-
-
+        $(document).ready(function () {
+        @if (ViewBag.TipoTerminos == "V") {
+            @Html.Raw("$(\"#btnAceptar\").prop(\"disabled\", true).css(\"opacity\", \".5\");");
+        }
 
         $("#txttipo").val(@ViewBag.tipo);
         consultarTerminos(@ViewBag.idVigen);

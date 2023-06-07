@@ -520,7 +520,7 @@ namespace SIM.Areas.Tramites.Controllers
                     return "ERROR:El Usuario no se encuentra autenticado.";
                 }
 
-                nuevoTramite = Utilidades.Tramites.CrearTramite(datos.CodProceso, datos.CodTarea, datos.CodTareaPadre, datos.Comentario, datos.Comentario, datos.Responsable.CODFUNCIONARIO, datos.Copias.Select(f => f.CODFUNCIONARIO).ToArray(), datos.Indices);
+                nuevoTramite = Utilidades.Tramites.CrearTramite(datos.CodProceso, datos.CodTarea, datos.CodTareaPadre, datos.Comentario, datos.Comentario, datos.Responsable.CODFUNCIONARIO, datos.Responsable.CODFUNCIONARIO, datos.Copias.Select(f => f.CODFUNCIONARIO).ToArray(), datos.Indices);
             }
             catch (Exception error)
             {

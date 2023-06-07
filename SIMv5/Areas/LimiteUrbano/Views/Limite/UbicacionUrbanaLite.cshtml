@@ -132,6 +132,7 @@
                         <option value="8">SABANETA</option>
                         <option value="9">CALDAS</option>
                         <option value="10">ENVIGADO</option>
+                        <option value="100">OTRO</option>
 
                     </select>
                 </div>
@@ -274,13 +275,13 @@
                 
 
     function consultarCoordenadas() {
-
+        let municipio = ($("#cmbMunicipio option:selected").text() == 'OTRO' ? '' : ' ' + $("#cmbMunicipio option:selected").text());
 
         $.ajax({
             type: "POST",
             url: '@Url.Action("../../LimiteUrbano/Limite/geoCodificar")',
             beforeSend: function () { },
-            data: { valor: $("#txtDireccion").val() + " " + $("#cmbMunicipio option:selected").text() },
+            data: { valor: $("#txtDireccion").val() + municipio },
             success: function (response) {
                 if (response.x != 0) {
                     $("#txtX").val(response.x.replace(",", "."))

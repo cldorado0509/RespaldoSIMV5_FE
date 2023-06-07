@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/FormularioGeneral.css")" />
 <script src="~/Scripts/jquery-1.11.0.js"></script>
 <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.11")"></script>
 
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -62,12 +62,20 @@
         @if (ViewBag.seleccionTercero)
         {
             <div style="width: 100%">
-                <div style="width: 100px; float: left;"><label style="font-weight:bold; font-size: 14px; padding-top: 7px; padding-left: 20px;">Tercero</label></div>
+                <div style="width: 120px; float: left;"><label style="font-weight:bold; font-size: 14px; padding-top: 7px; padding-left: 20px;">Tercero</label></div>
                 <div style="width: 600px; float: left;">
                     <div id="cboTercero"></div>
                 </div>
             </div>
         }
+    </div>
+    <div class="row">
+        <div style="width: 100%">
+            <div style="width: 120px; float: left;"><label style="font-weight:bold; font-size: 14px; padding-top: 7px; padding-left: 20px;">Clasificaci&oacute;n</label></div>
+            <div style="width: 600px; float: left;">
+                <div id="cboGrupoVigencia"></div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-sm-12" style=" padding-left: 20px;padding-right:20px;">
@@ -102,6 +110,7 @@
             var idTercero = @ViewBag.idTercero;
             var nombreTercero;
             var itemSeleccionadoTercero = false;
+            var idGrupoSeleccionado = null;
 
             $(document).ready(function () {
 
@@ -109,6 +118,32 @@
                 idestado=@ViewBag.idestado;
                 //if(idestado!=0)
                     //generarPdf(idestado,0);
+
+                $('#cboGrupoVigencia').dxSelectBox({
+                    dataSource: new DevExpress.data.DataSource({
+                        store: new DevExpress.data.CustomStore({
+                            key: "ID_VIGENCIA_GRUPO",
+                            loadMode: "raw",
+                            load: function () {
+                                return $.getJSON($('#app').data('url') + "EncuestaExterna/EncuestaExterna/GruposVigencia");
+                            }
+                        })
+                    }),
+                    valueExpr: 'ID_VIGENCIA_GRUPO',
+                    displayExpr: 'S_NOMBRE',
+                    placeholder: '[Seleccionar Clasificación]',
+                    value: null,
+                    onValueChanged: function (e) {
+                        idGrupoSeleccionado = e.value;
+                        if (idGrupoSeleccionado === -1) {
+                            $("#GrdUserEx").dxDataGrid('instance').filter(['ID_VIGENCIA_GRUPO', '<>', -1000]);
+                        } else if (idGrupoSeleccionado === -2) {
+                            $("#GrdUserEx").dxDataGrid('instance').filter(['ID_VIGENCIA_GRUPO', '=', null]);
+                        } else {
+                            $("#GrdUserEx").dxDataGrid('instance').filter(['ID_VIGENCIA_GRUPO', '=', idGrupoSeleccionado]);
+                        }
+                    },
+                });
 
                 $('#popTercero').dxPopup({
                     showTitle: true,
@@ -213,20 +248,29 @@
                         mode: 'single'
                     },
                     columns: [
-
-
+                        { dataField: 'ID_VIGENCIA_GRUPO', visible: false },
+                        {
+                            dataField: 'VIGENCIA_GRUPO',
+                            caption: 'Grupo',
+                            allowGrouping: true,
+                            width: '35%',
+                            groupIndex: 0,
+                            groupCellTemplate: function (cellElement, cellInfo) {
+                                cellElement.html("<span style='font-weight: bold; color: black;'>" + cellInfo.data.key + "</span>");
+                            }
+                        },
                         { dataField: 'ENCUESTA', caption: 'Encuesta', allowGrouping: true, width: '35%' },
                         { dataField: 'TIPOVIGENCIA', caption: 'Tipo Vigencia', allowGrouping: true, width: '15%' },
                         { dataField: 'VIGENCIA', caption: 'Vigencia', allowGrouping: true, width: '15%' },
                         { dataField: 'ESTADOENCUESTA', caption: 'Estado Encuesta', allowGrouping: true, width: '20%' },
-                        { dataField: 'D_EDICION', caption: 'Fecha Actualización', allowGrouping: true, width: '25%' },
+                        { dataField: 'D_EDICION', caption: 'Fecha Actualización', allowGrouping: true, allowFiltering: false, width: '25%' },
                          { dataField: 'EMPRESA', caption: 'Tercero', allowGrouping: true, width: '@(ViewBag.Habilitar ? "20%" : "25%")' },
                           { dataField: 'INSTALACION', caption: 'Instalacion', allowGrouping: true, width: '25%' },
                         { dataField: 'ID_ESTADO', visible: false },
                          { dataField: 'ID_VIGENCIA', visible: false },
                         { dataField: 'TIPO_GUARDADO', visible: false },
                         {
-                            dataField: 'CARD', caption: 'No. Encuestas', allowGrouping: true, width: '20%', alignment: 'center', cellTemplate: function (container, options) {
+                            dataField: 'CARD', caption: 'No. Encuestas', allowFiltering: false, allowGrouping: true, width: '20%', alignment: 'center', cellTemplate: function (container, options) {
                                 container.height(5);
                                 if (options.value == 'N') {
                                     $('<span title="Total de Encuestas" style="display: inline-block;min-width: 30px;text-align: center;padding:4px; border:1px solid #999999;border-radius: 20px;background-color:white;font-size: 9px;">' + options.data.TOTAL + '</span>').appendTo(container);
@@ -238,12 +282,12 @@
                             }
                         },
                         {
-                            dataField: 'ver', allowGrouping: true, caption: '', width: '7%', cellTemplate: function (container, options) {
+                            dataField: 'ver', allowGrouping: true, allowFiltering: false, caption: '', width: '7%', cellTemplate: function (container, options) {
                                 container.height(5);
                                 $('<img src="@Url.Content("../../Content/Images/edit.png")" style="width:25px;height:25px" class="btnEditar"/>').attr('src', options.value).appendTo(container);
                             }
                         }, {
-                            dataField: 'ELIMINAR', allowGrouping: true, caption: '', width: '7%', cellTemplate: function (container, options) {
+                            dataField: 'ELIMINAR', allowGrouping: true, allowFiltering: false, caption: '', width: '7%', cellTemplate: function (container, options) {
                                 container.height(5);
                                 $('<img src="@Url.Content("../../Content/Images/delete.png")" style="width:25px;height:25px" class="btnEditar" />')
 
@@ -251,13 +295,13 @@
                                         .appendTo(container);
                             }
                         },{
-                            dataField: 'DESCARGAR', allowGrouping: true, visible: true, caption: '', width: '7%', alignment: 'center', cellTemplate: function (container, options) {
+                            dataField: 'DESCARGAR', allowGrouping: true, allowFiltering: false, visible: true, caption: '', width: '7%', alignment: 'center', cellTemplate: function (container, options) {
                                 container.height(5);
                                 $('<img src="@Url.Content("../../Content/Images/descargar.png")" style="width:25px;height:25px" class="btnEditar" />').attr('src', options.value).appendTo(container);
                             }
                         },
                         {
-                            dataField: 'HABILITAR', allowGrouping: true, visible: @(ViewBag.Habilitar ? "true" : "false"), caption: '', width: '7%', alignment: 'center', cellTemplate: function (container, options) {
+                            dataField: 'HABILITAR', allowGrouping: true, allowFiltering: false, visible: @(ViewBag.Habilitar ? "true" : "false"), caption: '', width: '7%', alignment: 'center', cellTemplate: function (container, options) {
                                 container.height(5);
                                 if (options.data.ESTADOENCUESTA == 'Enviada')
                                     $('<img src="@Url.Content("../../Content/Images/aprobado.png")" style="width:25px;height:25px" class="btnEditar" />').attr('src', options.value).appendTo(container);
@@ -277,7 +321,7 @@
 
                                 switch (tipoBoton) {
 
-                                    case 8:
+                                    case 9:
                                         if (e.data.CARDINALIDAD == 2) {
                                             if (e.data.TIPO_GUARDADO == 0){
                                                 window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + e.data.VIGENCIA.replace("-","") + "&tercero=" + e.data.ID_TERCERO + "&instalacion=" + e.data.ID_INSTALACION + "&vigencia=" +e.data.ID_VIGENCIA , '_self');
@@ -288,14 +332,14 @@
                                         } else {
                                             if (e.data.TIPO_GUARDADO == 0)
                                             {
-                                                abrirEncuesta(e.data.ID_ESTADO,e.data.ID_ENCUESTA,e.data.ID_VIGENCIA);
+                                                abrirEncuesta(e.data.ID_ESTADO,e.data.ID_ENCUESTA,e.data.ID_VIGENCIA, e.data.URL_ENCUESTA);
                                             } else {
                                                 onload();
                                                 //alert(e.data.ID_INSTALACION);
                                                 //alert(e.data.VIGENCIA);
                                                 //alert(e.data.ID_ESTADO);
                                                 validarGenerarRadicado(e.data.ID_INSTALACION,e.data.VIGENCIA,e.data.ID_ESTADO)
-        
+
                                         //generarPdf(e.data.ID_ESTADO,0)
 
                                             }
@@ -303,7 +347,7 @@
 
 
                                         break;
-                                    case 9:
+                                    case 10:
                                         if (e.data.TIPO_GUARDADO == 1)
                                         {
                                             mensajeAlmacenamiento("La encuesta no se puede eliminar esta en estado enviado");
@@ -313,10 +357,10 @@
 
 
                                         break;
-                                    case 10:
+                                    case 11:
                                         window.open('@Url.Content("~/Reporte/Encuesta/DetalleRespuestas?idTercero=")' + e.data.ID_TERCERO + '&idInstalacion=' + e.data.ID_INSTALACION + '&idVigencia=' + e.data.ID_VIGENCIA + '&valorVigencia=' + e.data.VIGENCIA);
                                         break;
-                                    case 11:
+                                    case 12:
                                         if (e.data.ESTADOENCUESTA == 'Enviada') {
                                             var result = DevExpress.ui.dialog.confirm("Está Seguro de Habilitar la Encuesta ?", "Confirmación");
 
@@ -340,10 +384,11 @@
                             },
                     columnChooser: { enabled: false },
                     allowColumnReordering: true,
-                    sorting: { mode: 'single' },
+                    sorting: { mode: 'multiple' },
                     pager: { visible: false },
-                    paging: { enabled: false, pageSize: 5 }
-
+                    paging: { enabled: false, pageSize: 5 },
+                    filterRow: { visible: true },
+                    groupPanel: { visible: false },
                         });
                 offload();
             }
@@ -431,9 +476,10 @@
 
                 });
             }
-            function abrirEncuesta(idestado,idencuesta,idvigencia) {
+            function abrirEncuesta(idestado, idencuesta, idvigencia, urlEncuesta) {
                 //window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaUsuarioExterno?idVigencia=")' +idvigencia+"&tipo=1"+"&estado="+idestado+"&card=1", '_self');
-                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaEstado")?e=' + idestado + '&t=1&cr=1', '_self');
+                //window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaEstado")?e=' + idestado + '&t=1&cr=1', '_self');
+                window.open('@Url.Content("~/EncuestaExterna")/' + urlEncuesta + '?e=' + idestado + '&t=1&cr=1', '_self');
             }
 
             function generarPdf(idEstado,idRadicado) {

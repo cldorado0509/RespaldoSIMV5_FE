@@ -45,9 +45,14 @@
         public virtual DbSet<FRM_RESIDUOS_FOTOGRAFIA> FRM_RESIDUOS_FOTOGRAFIA { get; set; }
         public virtual DbSet<INFESTADO> INFESTADO { get; set; }
         public virtual DbSet<INFORME_TECNICO> INFORME_TECNICO { get; set; }
+        public virtual DbSet<INFORMATIVO_DOC> INFORMATIVO_DOC { get; set; }
+        public virtual DbSet<INFORMATIVO_TIPOCOM> INFORMATIVO_TIPOCOM { get; set; }
+        public virtual DbSet<INFORMATIVO_DOC_ARCHIVOS> INFORMATIVO_DOC_ARCHIVOS { get; set; }
+        public virtual DbSet<INFORMATIVO_DOC_DET_ARCH> INFORMATIVO_DOC_DET_ARCH { get; set; }
         public virtual DbSet<INSTALACION_TIPO> INSTALACION_TIPO { get; set; }
         public virtual DbSet<INSTALACION_VISITA> INSTALACION_VISITA { get; set; }
         public virtual DbSet<MAESTRO_TIPO> MAESTRO_TIPO { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_TERCERO> PMES_ESTRATEGIAS_TERCERO { get; set; }
         public virtual DbSet<PREGUNTA> PREGUNTA { get; set; }
         public virtual DbSet<RESPUESTA> RESPUESTA { get; set; }
         public virtual DbSet<ROL_VISITA> ROL_VISITA { get; set; }

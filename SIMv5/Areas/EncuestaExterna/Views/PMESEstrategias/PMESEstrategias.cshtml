@@ -1,0 +1,79 @@
+﻿@using SIM.Properties
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+    }
+
+    .dx-datagrid-rowsview .dx-row.dx-group-row {
+        color: black;
+    }
+
+    .dx-list-item-content, .dx-list .dx-empty-message {
+        padding: 5px 5px;
+    }
+
+    .dx-list-item, .dx-list .dx-empty-message {
+        border-top: unset;
+    }
+</style>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/EncuestaExterna/Scripts/PMESEstrategias/estrategias.js?v=1.00")"></script>
+
+<div id="popDetallePreguntaPEMS" style="padding: 0px">
+    <div style="height: calc(100% - 50px); ">
+        <div id="lstDetallePregunta" style="height: unset; margin-bottom: 20px"></div>
+        <div id="txtTextoComplementarioPregunta" style="height: 100px"></div>
+    </div>
+    <div style="height: 50px; text-align: center">
+        <div id="btnAceptarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+        <div id="btnCancelarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+    </div>
+</div>
+
+<div id="popDetallePreguntaPEPC" style="padding: 0px">
+    <div style="height: calc(100% - 50px); ">
+        <div id="lstDetallePregunta" style="height: unset; margin-bottom: 20px"></div>
+        <div id="txtTextoComplementarioPregunta" style="height: 100px"></div>
+    </div>
+    <div style="height: 50px; text-align: center">
+        <div id="btnAceptarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+        <div id="btnCancelarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+    </div>
+</div>
+
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" resizable>
+        <div class="panelSIM-default">
+            <div id="loadPanel"></div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div class="col-md-8" />
+                <div class="col-md-4">Vigencia: @ViewBag.Vigencia</div>
+                <div id="pnlGridEstrategias">
+                    <div>
+                        <div id="grdPreguntas"></div>
+                    </div>
+                    <div class="row" style="height: 50px;">
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div id="tipoTramites"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dx-field">
+                                <div id="noAvanzaTramites" style="float: left"></div>
+                                <div style="float: left; font-weight: bold; margin-left: 10px">Se requiere adicionar otro documento. No avanzar tr&aacute;mite.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

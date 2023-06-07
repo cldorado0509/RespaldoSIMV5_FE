@@ -10,14 +10,14 @@ function UbicarPunto() {
     objetoMapgis.drawPoint(rtaUbiPoint, 32, 203, 26, 'idPuntoUbi', 4326)
 }
 function ZoomXYmapa(x, y, contenedor) {
-  
+
     onLoad(contenedor);
     try {
         objetoMapgis = new MapGIS("mapa");
         objetoMapgis.initMapGIS();
 
         objetoMapgis.zoomPto(x, y, 4326, 14);
-        
+
 
         offLoad(contenedor);
     } catch (e) {
@@ -142,7 +142,7 @@ function consultarDetalle(jsonEntrante, grupo, padre, idAcordeon) {
                 /*nivel 2**/
                 htmlGeneral += ' <div class="panel-group acordeonVerde acordeonSecundario" id="acordionSecundario">'
                 if (json[r].ITEMCARACTERISTICA.length != 0) {
-                    for (var f = 0 ; f < json[r].ITEMCARACTERISTICA.length; f++) {
+                    for (var f = 0; f < json[r].ITEMCARACTERISTICA.length; f++) {
                         htmlGeneral += ' <div class="panel panel-default panel-tercero">'
                         htmlGeneral += '  <div class="panel-heading glyphicon-triangle-bottom" id="subcabezoteAcordeon_' + json[r].ID_CARACTERISTICA + '_' + f + '">'
                         if (json[r].ITEMCARACTERISTICA[f].NOMBRE != "") {
@@ -260,7 +260,7 @@ function consultarDetalle(jsonEntrante, grupo, padre, idAcordeon) {
                 /*nivel 2**/
                 htmlGeneralHijo += ' <div class="panel-group acordeonVerde acordeonSecundario" id="acordionSecundario">'
                 if (jsonHijo[ri].ITEMCARACTERISTICA.length != 0) {
-                    for (var fi = 0 ; fi < jsonHijo[ri].ITEMCARACTERISTICA.length; fi++) {
+                    for (var fi = 0; fi < jsonHijo[ri].ITEMCARACTERISTICA.length; fi++) {
                         htmlGeneralHijo += ' <div class="panel panel-default panel-tercero">'
                         htmlGeneralHijo += '  <div class="panel-heading glyphicon-triangle-bottom" id="subcabezoteAcordeon_' + jsonHijo[ri].ID_CARACTERISTICA + '_' + fi + '">'
                         if (jsonHijo[ri].ITEMCARACTERISTICA[fi].NOMBRE != "") {
@@ -383,7 +383,7 @@ function consultarDetalleHijos(jsonEntrante, grupo, padre, idAcordeon) {
                 /*nivel 2**/
                 htmlGeneral += ' <div class="panel-group acordeonVerde acordeonSecundario" id="acordionSecundario">'
                 if (json[r].ITEMCARACTERISTICA.length != 0) {
-                    for (var f = 0 ; f < json[r].ITEMCARACTERISTICA.length; f++) {
+                    for (var f = 0; f < json[r].ITEMCARACTERISTICA.length; f++) {
                         htmlGeneral += ' <div class="panel panel-default panel-tercero">'
                         htmlGeneral += '  <div class="panel-heading glyphicon-triangle-bottom" id="subcabezoteAcordeon_' + json[r].ID_CARACTERISTICA + '_' + f + '">'
                         if (json[r].ITEMCARACTERISTICA[f].NOMBRE != "") {
@@ -500,7 +500,7 @@ function consultarDetalleHijos(jsonEntrante, grupo, padre, idAcordeon) {
                 /*nivel 2**/
                 htmlGeneralHijo += ' <div class="panel-group acordeonVerde acordeonSecundario" id="acordionSecundario">'
                 if (jsonHijo[ri].ITEMCARACTERISTICA.length != 0) {
-                    for (var fi = 0 ; f < jsonHijo[ri].ITEMCARACTERISTICA.length; fi++) {
+                    for (var fi = 0; f < jsonHijo[ri].ITEMCARACTERISTICA.length; fi++) {
                         htmlGeneralHijo += ' <div class="panel panel-default panel-tercero">'
                         htmlGeneralHijo += '  <div class="panel-heading glyphicon-triangle-bottom" id="subcabezoteAcordeon_' + jsonHijo[ri].ID_CARACTERISTICA + '_' + f + '">'
                         if (jsonHijo[ri].ITEMCARACTERISTICA[fi].NOMBRE != "") {
@@ -735,44 +735,44 @@ function quitarAcordeonitem(id_padre, id_grupo, boton, id, cara) {
     }
 }
 function eliminarsubacordion(id_padre, idpadre, id_grupo, id, subid, idconr) {
-  /*  var jsonDetalle = jsonDetallegenerales[id_grupo];
-    if (confirm("Esta seguro en desagregar la informacion del detalle")) {
-        var posicion = id.replace("#subcabezoteAcordeon_" + subid + "_", "");
-        posicion = posicion * 1;
-        if (id_padre != 0) {
-            for (var t = 0; t < jsonDetalle.length; t++) {
-                if (jsonDetalle[t].ID_CARACTERISTICA == id_padre) {
-                    jsonDetalle = jsonDetalle[t].CARACTERISTICAS
-
-                }
-            }
-        }
-        for (var z = 0; z < jsonDetalle.length; z++) {
-            if (jsonDetalle[z].ID_CARACTERISTICA == subid) {
-                for (var i = 0; i < jsonDetalle[z].ITEMCARACTERISTICA.length; i++) {
-                    if (jsonDetalle[z].ITEMCARACTERISTICA.length == 1) {
-                        posicion = 0;
-                    }
-                    if (i == posicion) {
-                        $(id).remove();
-                        $(idconr).remove();
-                        jsonDetalle[z].ITEMCARACTERISTICA[i].ID_CARACTERISTICA_ESTADO = jsonDetalle[z].ITEMCARACTERISTICA[i].ID_CARACTERISTICA_ESTADO * -1
-                        if (jsonDetalle[posicion].ITEMCARACTERISTICA.length == 0) {
-                            var texr = idpadre.id.replace("#", "");
-                            $("#cabezote_" + texr).addClass("not-flecha");
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        var texr = id.replace("#", "");
-        $("#" + texr + " ").remove();
-
-    } else {
-        return;
-    }
-    */
+    /*  var jsonDetalle = jsonDetallegenerales[id_grupo];
+      if (confirm("Esta seguro en desagregar la informacion del detalle")) {
+          var posicion = id.replace("#subcabezoteAcordeon_" + subid + "_", "");
+          posicion = posicion * 1;
+          if (id_padre != 0) {
+              for (var t = 0; t < jsonDetalle.length; t++) {
+                  if (jsonDetalle[t].ID_CARACTERISTICA == id_padre) {
+                      jsonDetalle = jsonDetalle[t].CARACTERISTICAS
+  
+                  }
+              }
+          }
+          for (var z = 0; z < jsonDetalle.length; z++) {
+              if (jsonDetalle[z].ID_CARACTERISTICA == subid) {
+                  for (var i = 0; i < jsonDetalle[z].ITEMCARACTERISTICA.length; i++) {
+                      if (jsonDetalle[z].ITEMCARACTERISTICA.length == 1) {
+                          posicion = 0;
+                      }
+                      if (i == posicion) {
+                          $(id).remove();
+                          $(idconr).remove();
+                          jsonDetalle[z].ITEMCARACTERISTICA[i].ID_CARACTERISTICA_ESTADO = jsonDetalle[z].ITEMCARACTERISTICA[i].ID_CARACTERISTICA_ESTADO * -1
+                          if (jsonDetalle[posicion].ITEMCARACTERISTICA.length == 0) {
+                              var texr = idpadre.id.replace("#", "");
+                              $("#cabezote_" + texr).addClass("not-flecha");
+                          }
+                          break;
+                      }
+                  }
+              }
+          }
+          var texr = id.replace("#", "");
+          $("#" + texr + " ").remove();
+  
+      } else {
+          return;
+      }
+      */
 
 }
 var arrayFormulas = new Array();
@@ -795,7 +795,7 @@ function generarControlDetalle(objeto, id) {
     } else if (objeto.ID_TIPO_DATO == 4) {
         control = ' <input type="date" class="form-control" id="' + id + '" name="D_VALOR" value="' + objeto.D_VALOR + '">'
     } else if (objeto.ID_TIPO_DATO == 5) {
-        control = '<textarea class="form-control" rows="3" id="' + id + '" name="S_VALOR"  value="' + objeto.S_VALOR + '">' + objeto.S_VALOR + '</textarea>';
+        control = '<textarea class="form-control" rows="3" id="' + id + '" name="S_VALOR"  value="' + objeto.S_VALOR + '" style="height: 100px!important;">' + objeto.S_VALOR + '</textarea>';
     } else if (objeto.ID_TIPO_DATO == 7) {
         control = '<table id="' + id + '"  name="ID_VALOR" class="form-control" style="border: none; box-shadow: none;">'
         for (var i = 0; i < objeto.OPCIONES.length; i++) {
@@ -909,8 +909,7 @@ function guardarDetalle(idAcordeon, idgrupo) {
         }
         /************subcaracteristicas*****/
         if (jsonDetalle[z].ITEMCARACTERISTICA.length != 0) {
-            if (true)
-            {
+            if (true) {
                 guardarDetalleHijos(idAcordeon, idgrupo, jsonDetalle[z].CARACTERISTICAS);
             } else {
                 for (var zi = 0; zi < jsonDetalle[z].CARACTERISTICAS.length; zi++) {
@@ -1098,23 +1097,26 @@ function guardarDetalleHijos(idAcordeon, idgrupo, caracteristicas) {
 
 /*********************************************************/
 var arrayDependencias = [];
+var arrayTipoPregunta = [];
 function generarControlEncuesta(objeto, id) {
-    var control = ""
+    var control = "";
+
+    arrayTipoPregunta[id] = objeto.ID_TIPOPREGUNTA;
     if (objeto.ID_TIPOPREGUNTA == 1) {
         control = '<label class="radio-inline"><input type="radio" id="' + id + '"  value="1" name="rdo_' + id + '" ';
         if (objeto.ID_VALOR == 1) {
-            control += ' checked '; 
+            control += ' checked ';
         }
-       
+
 
         if (objeto.DEPENDENCIA.length != 0) {
             arrayDependencias[id] = objeto.DEPENDENCIA;
             control += ' onchange="dependenciaPreguntas(\'' + id + '\',1);" ';
             arrayDependencias[id] = objeto.DEPENDENCIA;
 
-        } 
+        }
         control += '> Si</label> ';
-      
+
         control += '<label class="radio-inline"> <input type="radio" id="' + id + '" value="0" name="rdo_' + id + '"'
         if (objeto.ID_VALOR == 0) {
             control += ' checked ';
@@ -1124,11 +1126,11 @@ function generarControlEncuesta(objeto, id) {
             control += ' onchange="dependenciaPreguntas(\'' + id + '\',1);" ';
             arrayDependencias[id] = objeto.DEPENDENCIA;
 
-        } 
+        }
         control += '>NO</label> ';
 
-        
-    //} else if (objeto.ID_TIPOPREGUNTA == 2) {
+
+        //} else if (objeto.ID_TIPOPREGUNTA == 2) {
     } else if ((objeto.ID_TIPOPREGUNTA == 2 || objeto.ID_TIPOPREGUNTA == 12)) {
         control = '<select id="' + id + '"  name="ID_VALOR" class="form-control"';
         if (objeto.DEPENDENCIA != undefined && objeto.DEPENDENCIA.length != 0) {
@@ -1142,7 +1144,7 @@ function generarControlEncuesta(objeto, id) {
         for (var i = 0; i < objeto.OPCIONES.length; i++) {
             control += '<option value="' + objeto.OPCIONES[i].ID_RESPUESTA + '"';
             if (objeto.OPCIONES[i].ID_DEPENDENCIA != undefined) {
-                control += ' iddependencia="' + objeto.OPCIONES[i].ID_DEPENDENCIA+'" ';
+                control += ' iddependencia="' + objeto.OPCIONES[i].ID_DEPENDENCIA + '" ';
             }
 
             control += '  > ' + objeto.OPCIONES[i].S_VALOR + '</option > '
@@ -1153,10 +1155,20 @@ function generarControlEncuesta(objeto, id) {
         }
 
     } else if (objeto.ID_TIPOPREGUNTA == 3 || objeto.ID_TIPOPREGUNTA == 13) {
+        if (objeto.DEPENDENCIA != undefined && objeto.DEPENDENCIA.length != 0) {
+            arrayDependencias[id] = objeto.DEPENDENCIA;
+        }
 
-        control = '<div ">'
+        //control = '<div id="' + id + '" style="display:none"></div>';
+        control = '<div id="' + id + '" data-tipo="check"></div>';
+        control += '<div>';
         for (var i = 0; i < objeto.OPCIONES.length; i++) {
-            control += '<div class="checkbox">  <label>   <input id="' + id + i + '" name="S_VALOR" value="' + objeto.OPCIONES[i].S_VALOR + '"'
+            control += '<div class="checkbox">  <label>   <input id="' + id + i + '" name="S_VALOR" data-idresp="' + objeto.OPCIONES[i].ID_RESPUESTA + '" value="' + objeto.OPCIONES[i].S_VALOR + '"'
+
+            if (objeto.DEPENDENCIA != undefined && objeto.DEPENDENCIA.length != 0) {
+                control += ' onchange="dependenciaPreguntas(\'' + id + '\', 1) "';
+            }
+
             if (objeto.OPCIONES[i].SELECTED == 1) {
                 control += 'checked  type="checkbox">' + objeto.OPCIONES[i].S_VALOR + '</label> </div>'
             } else {
@@ -1165,7 +1177,7 @@ function generarControlEncuesta(objeto, id) {
         }
         control += '</div>'
     } else if (objeto.ID_TIPOPREGUNTA == 4) {
-        
+
         control = ' <input type="number"   class="form-control" onkeydown="return validarNumeros(event)" ';
         try {
             if (objeto.RANGO != "" && objeto.RANGO != undefined) {
@@ -1175,15 +1187,15 @@ function generarControlEncuesta(objeto, id) {
         } catch (e) {
 
         }
-       
 
-        control +=  'id = "' + id + '" name = "N_VALOR" value = "' + objeto.N_VALOR + '" > '
+
+        control += 'id = "' + id + '" name = "N_VALOR" value = "' + objeto.N_VALOR + '" > '
     } else if (objeto.ID_TIPOPREGUNTA == 5) {
         control = ' <input type="text" class="form-controlform-control" id="' + id + '" name="S_VALOR" value="' + objeto.S_VALOR + '" >'
     } else if (objeto.ID_TIPOPREGUNTA == 6) {
         control = ' <input type="date" class="form-control" id="' + id + '" name="D_VALOR" value="' + objeto.D_VALOR + '">'
     } else if (objeto.ID_TIPOPREGUNTA == 7) {
-        control = '<textarea class="form-control" rows="3" id="' + id + '" name="S_VALOR"  >' + objeto.S_VALOR + '</textarea>';
+        control = '<textarea class="form-control" rows="3" id="' + id + '" name="S_VALOR" maxlength="1950" style="height: 100px!important;">' + objeto.S_VALOR + '</textarea>';
     } else if (objeto.ID_TIPOPREGUNTA == 8) {
 
 
@@ -1198,13 +1210,16 @@ function generarControlEncuesta(objeto, id) {
             var d = new Date();
             var m = d.getMinutes();
             var h = d.getHours();
-            var now=h+":"+m
+            var now = h + ":" + m
             //control = ' <input type="time" class="form-control" id="' + id + '" name="S_VALOR" value="' + now + '" style="font-size: 20px;width: 173px;height: 40px;" >'
             control = ' <input type="time" class="form-control" id="' + id + '" name="S_VALOR" style="font-size: 20px;width: 173px;height: 40px;" >'
         } else
             control = ' <input type="time" class="form-control" id="' + id + '" name="S_VALOR" value="' + objeto.S_VALOR + '" style="font-size: 20px;width: 173px;height: 40px;" >'
 
+    } else if (objeto.ID_TIPOPREGUNTA == 11) {
+        control = ' <div id="' + id + '"/>';
     }
+
     return control;
 }
 function agregarAcordeonEncuestaitem(boton, uso, id) {
@@ -1237,9 +1252,9 @@ function agregarAcordeonEncuestaitem(boton, uso, id) {
                 fila = "EncuestaCol1";
             }
             if (json.PREGUNTAS[v].ID_TIPOPREGUNTA == 11) {
-                htmlGeneral += '<div class="col-md-10 " ><label style="font-size: 12px;font-weight: 900;">' + json.PREGUNTAS[v].S_NOMBRE
+                htmlGeneral += '<div class="col-md-10"><label style="' + (json.PREGUNTAS[v].N_NIVEL <= 1 ? '' : 'padding-left: ' + (15 * (json.PREGUNTAS[v].N_NIVEL - 1)).toString() + 'px;') + 'font-size: ' + (json.PREGUNTAS[v].N_TIPO_TITULO == 1 ? '12px' : (json.PREGUNTAS[v].N_TIPO_TITULO == 2 ? '10px' : (json.PREGUNTAS[v].N_TIPO_TITULO == 3 ? '15px' : (json.PREGUNTAS[v].N_TIPO_TITULO == 4 ? '18px' : '12px')))) + ';font-weight: 900;">' + json.PREGUNTAS[v].S_NOMBRE
                 htmlGeneral += '</label></div>'
-                htmlGeneral += '<div class="col-md-6 " >' + generarControlEncuesta(json.PREGUNTAS[v], "encuesta_" + json.ID_ENCUESTA + "_pregunta_" + json.PREGUNTAS[v].ID_PREGUNTA) + '</div>'
+                htmlGeneral += '<div class="col-md-2">' + generarControlEncuesta(json.PREGUNTAS[v], "encuesta_" + json.ID_ENCUESTA + "_pregunta_" + json.PREGUNTAS[v].ID_PREGUNTA) + '</div>'
                 // htmlGeneral += '<button title="Ayuda" onclick="AbrirAyuda(\'' + json.PREGUNTAS[v].S_AYUDA + '\')" class="iconAyudaEncuesta">?</button>'
                 //htmlGeneral += '<button onclick="AbrirObservacion(\'Encuesta_' + json.ID_ENCUESTA + '_Pregunta_' + json.PREGUNTAS[v].ID_PREGUNTA + '_observacion\',\'' + json.PREGUNTAS[v].S_OBSERVACION + '\')" class="iconAyudaEncuesta iconobservacionEncuesta">i</button>'
 
@@ -1247,7 +1262,7 @@ function agregarAcordeonEncuestaitem(boton, uso, id) {
                 htmlGeneral += " </div><hr>"
             }
             else {
-                htmlGeneral += '<div class="col-md-5 " ><label>' + json.PREGUNTAS[v].S_NOMBRE;
+                htmlGeneral += '<div class="col-md-5"><label ' + (json.PREGUNTAS[v].N_NIVEL <= 1 ? '' : 'style="padding-left: ' + (15 * (json.PREGUNTAS[v].N_NIVEL - 1)).toString() + 'px;"') + '>' + json.PREGUNTAS[v].S_NOMBRE;
                 htmlGeneral += '</label>';
                 if (json.PREGUNTAS[v].S_REQUERIDA == "1") {
                     htmlGeneral += '<span style="color: red">&nbsp;&nbsp;*</span>';
@@ -1276,22 +1291,22 @@ function agregarAcordeonEncuestaitem(boton, uso, id) {
     ejecutarDependenciar();
 }
 function quitarAcordeonEncuestaitem(boton, id, uso) {
-  /*  if (confirm("Esta seguro en desagregar la informacion de la encuesta")) {
-        var nombre = $("#" + boton.parentElement.id)[0].className;
-        var n = nombre.search("glyphicon-triangle-top");
-        if (n < 0) {
-            $("#" + boton.parentElement.id + " a").click();
-        }
-        $("#" + id + " .contenidoSub").remove();
-        boton.outerHTML = '<button class="agregar" title="Agregar Encuesta" onclick="agregarAcordeonEncuestaitem(this,' + uso + ',\'' + id + '\')"></button> ';
-        for (var z = 0; z < jsonEncuestas.length; z++) {
-            if (jsonEncuestas[z].ID_ENCUESTA == uso) {
-                jsonEncuestas[z].ESTADO = 0;
-            }
-        }
-    } else {
-        return;
-    }*/
+    /*  if (confirm("Esta seguro en desagregar la informacion de la encuesta")) {
+          var nombre = $("#" + boton.parentElement.id)[0].className;
+          var n = nombre.search("glyphicon-triangle-top");
+          if (n < 0) {
+              $("#" + boton.parentElement.id + " a").click();
+          }
+          $("#" + id + " .contenidoSub").remove();
+          boton.outerHTML = '<button class="agregar" title="Agregar Encuesta" onclick="agregarAcordeonEncuestaitem(this,' + uso + ',\'' + id + '\')"></button> ';
+          for (var z = 0; z < jsonEncuestas.length; z++) {
+              if (jsonEncuestas[z].ID_ENCUESTA == uso) {
+                  jsonEncuestas[z].ESTADO = 0;
+              }
+          }
+      } else {
+          return;
+      }*/
 }
 
 function CambiarEstadoAcordeon(idEncabezado) {
@@ -1375,9 +1390,9 @@ function consultarEncuestas(jsonEn) {
         htmlGeneral += '</a>'
 
         if (json[r].ESTADO == 0) {
-            htmlGeneral += '<button class="agregar" title="Agregar Encuesta" onclick="agregarAcordeonEncuestaitem(this,' + json[r].ID_ENCUESTA + ',\'Encuestacollapse' + r + '\')"></button> </div>';
+            htmlGeneral += '<button class="agregar" title="Agregar Encuesta" onclick="agregarAcordeonEncuestaitem(this,' + json[r].ID_ENCUESTA + ',\'Encuestacollapse' + r + '\')" style="display: block"></button> </div>';
         } else {
-            htmlGeneral += '<button class="agregar quitar" title="Quitar Encuesta" onclick="quitarAcordeonEncuestaitem(this,\'Encuestacollapse' + r + '\',' + json[r].ID_ENCUESTA + ')"></button> </div>';
+            htmlGeneral += '<button class="agregar quitar" title="Quitar Encuesta" onclick="quitarAcordeonEncuestaitem(this,\'Encuestacollapse' + r + '\',' + json[r].ID_ENCUESTA + ')"  style="display: none"></button> </div>';
         }
 
 
@@ -1394,16 +1409,24 @@ function consultarEncuestas(jsonEn) {
                     fila = "EncuestaCol1";
                 }
 
-                htmlGeneral += '<div class="col-md-5 " ><label>' + json[r].PREGUNTAS[v].S_NOMBRE
-                htmlGeneral += '</label>';
-                if (json[r].PREGUNTAS[v].S_REQUERIDA == "1") {
-                    htmlGeneral += '<span style="color: red">&nbsp;&nbsp;*</span>';
+                if (json[r].PREGUNTAS[v].ID_TIPOPREGUNTA == 11) {
+                    htmlGeneral += '<div class="col-md-10"><label style="' + (json[r].PREGUNTAS[v].N_NIVEL <= 1 ? '' : 'padding-left: ' + (15 * (json[r].PREGUNTAS[v].N_NIVEL - 1)).toString() + 'px;') + 'font-size: ' + (json[r].PREGUNTAS[v].N_TIPO_TITULO == 1 ? '12px' : (json[r].PREGUNTAS[v].N_TIPO_TITULO == 2 ? '10px' : (json[r].PREGUNTAS[v].N_TIPO_TITULO == 3 ? '15px' : (json[r].PREGUNTAS[v].N_TIPO_TITULO == 4 ? '18px' : '12px')))) + ';font-weight: 900;">' + json[r].PREGUNTAS[v].S_NOMBRE;
+                    htmlGeneral += '</label></div>';
+                    htmlGeneral += '<div class="col-md-2">' + generarControlEncuesta(json[r].PREGUNTAS[v], "encuesta_" + json[r].ID_ENCUESTA + "_pregunta_" + json[r].PREGUNTAS[v].ID_PREGUNTA) + '</div>';
                 }
-                htmlGeneral += '</div>';
-                htmlGeneral += '<div class="col-md-6 " >' + generarControlEncuesta(json[r].PREGUNTAS[v], "encuesta_" + json[r].ID_ENCUESTA + "_pregunta_" + json[r].PREGUNTAS[v].ID_PREGUNTA) + '</div>'
-                htmlGeneral += '<input value="' + json[r].PREGUNTAS[v].S_AYUDA.toString() + '" class="form-control" id="Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_ayuda" " style="display:none" ><button onclick="AbrirAyuda(\'Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_ayuda\')" class="iconAyudaEncuesta">?</button>'
-                htmlGeneral += '<button onclick="AbrirObservacion(\'Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_observacion\',\'' + json[r].PREGUNTAS[v].S_OBSERVACION + '\')" class="iconAyudaEncuesta iconobservacionEncuesta">i</button>'
-                htmlGeneral += '<input type="text" style="display:none" value="' + json[r].PREGUNTAS[v].S_OBSERVACION + '" id="Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_observacion">';
+                else {
+                    htmlGeneral += '<div class="col-md-5 " ><label ' + (json[r].PREGUNTAS[v].N_NIVEL <= 1 ? '' : 'style="padding-left: ' + (15 * (json[r].PREGUNTAS[v].N_NIVEL - 1)).toString() + 'px;"') + '>' + json[r].PREGUNTAS[v].S_NOMBRE;
+
+                    htmlGeneral += '</label>';
+                    if (json[r].PREGUNTAS[v].S_REQUERIDA == "1") {
+                        htmlGeneral += '<span style="color: red">&nbsp;&nbsp;*</span>';
+                    }
+                    htmlGeneral += '</div>';
+                    htmlGeneral += '<div class="col-md-6 " >' + generarControlEncuesta(json[r].PREGUNTAS[v], "encuesta_" + json[r].ID_ENCUESTA + "_pregunta_" + json[r].PREGUNTAS[v].ID_PREGUNTA) + '</div>'
+                    htmlGeneral += '<input value="' + json[r].PREGUNTAS[v].S_AYUDA.toString() + '" class="form-control" id="Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_ayuda" " style="display:none" ><button onclick="AbrirAyuda(\'Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_ayuda\')" class="iconAyudaEncuesta">?</button>'
+                    htmlGeneral += '<button onclick="AbrirObservacion(\'Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_observacion\',\'' + json[r].PREGUNTAS[v].S_OBSERVACION + '\')" class="iconAyudaEncuesta iconobservacionEncuesta">i</button>'
+                    htmlGeneral += '<input type="text" style="display:none" value="' + json[r].PREGUNTAS[v].S_OBSERVACION + '" id="Encuesta_' + json[r].ID_ENCUESTA + '_Pregunta_' + json[r].PREGUNTAS[v].ID_PREGUNTA + '_observacion">';
+                }
                 htmlGeneral += " </div><hr>"
             }
             htmlGeneral += "</div>"
@@ -1526,25 +1549,30 @@ function AbrirGeo(idpregunta, id) {
 
 function AbrirGeoLite(idpregunta, id) {
     var arr = $("#" + id.id).val().toString().split(";");
+    var x = $("#X_" + id.id).val().toString();
+    var y = $("#Y_" + id.id).val().toString();
 
-    $("#ContenidoGeo").remove();
+    /*$("#ContenidoGeo").remove();
 
     var html = '<div class="col-md-12" id="ContenidoGeo"> <label>Dirección</label><br/><input class="form-control" id="txtdireccion" style="height: 30px;" /><br/><label>Municipio</label><br/><select id="cmbMunicipio" class="form-control" style="font-size: 12px;height: 30px;" ><option value="-1">--Selecione--</option><option value="1">BARBOSA</option><option value="2">GIRARDOTA</option><option value="3">COPACABANA</option><option value="4">BELLO</option><option value="5">MEDELLIN</option><option value="6">ITAGUI</option><option value="7">LA ESTRELLA</option><option value="8">SABANETA</option><option value="9">CALDAS</option><option value="10">ENVIGADO</option></select><br/> <button id="btnEnviar" class="btn btn-default" onclick="enviarLite(' + idpregunta + ',' + id.id + ')" style="height: 30px;margin-top: 10px;">Enviar</button>'
 
     html += '</div>';
     $("#dialogGeo").append(html);
-    $("#dialogGeo").dialog();
+    $("#dialogGeo").dialog();*/
 
+    if (arr.length > 1) {
+        abrirUrbanoRuralLite(arr[0], arr[1], idpregunta, id.id, x, y);
+    } else {
+        abrirUrbanoRuralLite('', '', idpregunta, id.id, '', '');
+    }
 }
 
 function enviar(idpregunta, id) {
-    if ($("#txtdireccion").val() == "")
-    {
+    if ($("#txtdireccion").val() == "") {
         alert("Ingrse una dirección");
         return;
     }
-    if ($("#cmbMunicipio").val() == "-1")
-    {
+    if ($("#cmbMunicipio").val() == "-1") {
         alert("Seleccione un municipio");
         return;
     }
@@ -1554,7 +1582,7 @@ function enviar(idpregunta, id) {
 
 function enviarLite(idpregunta, id) {
     if ($("#txtdireccion").val() == "") {
-        alert("Ingrse una dirección");
+        alert("Ingrese una dirección");
         return;
     }
     if ($("#cmbMunicipio").val() == "-1") {
@@ -1565,7 +1593,7 @@ function enviarLite(idpregunta, id) {
     abrirUrbanoRuralLite($("#txtdireccion").val(), $("#cmbMunicipio").val(), idpregunta, id.id);
 }
 
-function abrirUrbanoRuralLite(direcion, municipio, idpregunta, id) {
+function abrirUrbanoRuralLite(direcion, municipio, idpregunta, id, x, y) {
 
     $("#divUbicacionUrbana").dialog(
         {
@@ -1609,20 +1637,31 @@ function abrirUrbanoRuralLite(direcion, municipio, idpregunta, id) {
     campo6.setAttribute("type", "hidden");
     campo6.setAttribute("name", "idCampo");
     campo6.setAttribute("value", id);
-    form.appendChild(campo6)
+    form.appendChild(campo6);
+    var campo7 = document.createElement("input");
+    campo7.setAttribute("type", "hidden");
+    campo7.setAttribute("name", "x");
+    campo7.setAttribute("value", x);
+    form.appendChild(campo7);
+    var campo8 = document.createElement("input");
+    campo8.setAttribute("type", "hidden");
+    campo8.setAttribute("name", "y");
+    campo8.setAttribute("value", y);
+    form.appendChild(campo8);
+
     document.body.appendChild(form);
     form.submit();
 }
 
 function abrirUrbanoRural(direcion, municipio, idpregunta, id) {
-            
-    $("#divUbicacionUrbana").dialog(
-    {
 
-        width: 900,
-        height: 700,
-        modal: true
-    });
+    $("#divUbicacionUrbana").dialog(
+        {
+
+            width: 900,
+            height: 700,
+            modal: true
+        });
     var form = document.createElement("form");
     form.setAttribute("method", "post");
     form.setAttribute("action", "../../LimiteUrbano/Limite/UbicacionUrbana");
@@ -1662,11 +1701,10 @@ function abrirUrbanoRural(direcion, municipio, idpregunta, id) {
     document.body.appendChild(form);
     form.submit();
 }
-function getgeografico(x, y, idPregunta, idCampo,direccion,municipio)
-{
+function getgeografico(x, y, idPregunta, idCampo, direccion, municipio) {
     $("#X_" + idCampo).val(x);
     $("#Y_" + idCampo).val(y);
-    $("#" + idCampo).val(direccion+";"+municipio);
+    $("#" + idCampo).val(direccion + ";" + municipio);
     $("#divUbicacionUrbana").dialog("close");
 }
 
@@ -1774,29 +1812,31 @@ function guardarEncuestaJson(jsonEncuestas, validarObligatorios) {
                             jsonEncuestas[z].PREGUNTAS[i].Y_VALOR = $("#Y_encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).val();
                         }
                     } else {
-                        var valor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
+                        if ($("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA).parent().parent().parent().css('display') != 'none') {
+                            var valor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
 
-                        if ($(valor + ":checked").val() == 1) {
-                            jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 1
-                        } else {
-                            jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 0
-                        }
-                        if (jsonEncuestas[z].PREGUNTAS[i].S_REQUERIDA == "1" && validarObligatorios) {
-                            var Pvalor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
-
-                            //if (!$(Pvalor).is(':checked')) {
-                            if ($(Pvalor + ":checked").val() === undefined) {
-                                cont++;
-                                $('#encuesta_' + jsonEncuestas[z].ID_ENCUESTA + '_pregunta_' + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="0"]').css("boxShadow", "0px 1px 7px 2px #FA0D0D");
-                                $('#encuesta_' + jsonEncuestas[z].ID_ENCUESTA + '_pregunta_' + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="1"]').css("boxShadow", "0px 1px 7px 2px #FA0D0D");
-                                var tttemp = jsonEncuestas[z].S_NOMBRE;
-                                if (tttemp != tezttemp) {
-                                    tezttemp = jsonEncuestas[z].S_NOMBRE;
-                                    texto += "-" + jsonEncuestas[z].S_NOMBRE + "\n";
-                                }
+                            if ($(valor + ":checked").val() == 1) {
+                                jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 1
                             } else {
-                                $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="0"]').css("boxShadow", "");
-                                $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="1"]').css("boxShadow", "");
+                                jsonEncuestas[z].PREGUNTAS[i].ID_VALOR = 0
+                            }
+                            if (jsonEncuestas[z].PREGUNTAS[i].S_REQUERIDA == "1" && validarObligatorios) {
+                                var Pvalor = "#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA
+
+                                //if (!$(Pvalor).is(':checked')) {
+                                if ($(Pvalor + ":checked").val() === undefined) {
+                                    cont++;
+                                    $('#encuesta_' + jsonEncuestas[z].ID_ENCUESTA + '_pregunta_' + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="0"]').css("boxShadow", "0px 1px 7px 2px #FA0D0D");
+                                    $('#encuesta_' + jsonEncuestas[z].ID_ENCUESTA + '_pregunta_' + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="1"]').css("boxShadow", "0px 1px 7px 2px #FA0D0D");
+                                    var tttemp = jsonEncuestas[z].S_NOMBRE;
+                                    if (tttemp != tezttemp) {
+                                        tezttemp = jsonEncuestas[z].S_NOMBRE;
+                                        texto += "-" + jsonEncuestas[z].S_NOMBRE + "\n";
+                                    }
+                                } else {
+                                    $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="0"]').css("boxShadow", "");
+                                    $("#encuesta_" + jsonEncuestas[z].ID_ENCUESTA + "_pregunta_" + jsonEncuestas[z].PREGUNTAS[i].ID_PREGUNTA + '[value="1"]').css("boxShadow", "");
+                                }
                             }
                         }
                     }
@@ -1806,36 +1846,45 @@ function guardarEncuestaJson(jsonEncuestas, validarObligatorios) {
     }
     if (cont > 0) {
         totaltext = "Debe diligenciar todas las preguntas obligatorias de las encuestas:\n" + texto
-        alert(totaltext)
-        
+        alert(totaltext);
+
         return "1";
     }
     return jsonEncuestas;
 }
 
-function ejecutarDependenciar()
-{
+function ejecutarDependenciar() {
     setTimeout(function () {
         for (w in arrayDependencias) {
-            dependenciaPreguntas(w,0,1);
+            dependenciaPreguntas(w, 0, 1);
         }
     }, 8000);
-   
+
 }
 
-function dependenciaPreguntas(id, t,p) {
+function dependenciaPreguntas(id, t, p) {
+    var valor_padre = -1;
+    var tipoPregunta = arrayTipoPregunta[id];
+    var tipoPreguntaHijo;
+
     var t = 0;
-    if ($("#" + id).prop("type") == "radio") {
+
+    if (tipoPregunta == 1 && $("#" + id).prop("type") == "radio") {
         t = 1;
     }
-    var valor_padre = $("#" + id).val();
+    if (tipoPregunta != 3 && tipoPregunta != 13)
+        valor_padre = $("#" + id).val();
+
     var datos = arrayDependencias[id];
+
     if (datos != undefined) {
         for (var i = 0; i < datos.length; i++) {
+            tipoPreguntaHijo = arrayTipoPregunta[datos[i].ID_HIJO];
+
             if (datos[i].TIPO == 1) {
                 if (p == undefined) {
                     $("#" + datos[i].ID_HIJO).val(-1);
-                } 
+                }
                 if (valor_padre != -1) {
                     $("#" + datos[i].ID_HIJO + " option").each(function () {
                         var valordep = $(this).attr("iddependencia");
@@ -1849,21 +1898,21 @@ function dependenciaPreguntas(id, t,p) {
                                 $(this).prop('disabled', false);
                             }
                         }
-                       
+
                     });
                 } else {
                     $("#" + datos[i].ID_HIJO + " option").hide();
                 }
-               
+
             } else if (datos[i].TIPO == 2) {
                 if (p == undefined) {
                     $("#" + datos[i].ID_HIJO).val(-1);
-                }    
+                }
                 if (valor_padre != -1) {
                     var opcionessel = [];
                     var jsondatosdep = JSON.parse(datos[i].OPCIONES);
                     for (var t = 0; t < jsondatosdep.length; t++) {
-                        if (jsondatosdep[t].RESPUESTA == valor_padre*1) {
+                        if (jsondatosdep[t].RESPUESTA == valor_padre * 1) {
                             opcionessel = jsondatosdep[t].OPCIONES;
                             t = jsondatosdep.length + 1;
                         }
@@ -1871,7 +1920,7 @@ function dependenciaPreguntas(id, t,p) {
                     $("#" + datos[i].ID_HIJO + " option").each(function () {
                         var valordep = $(this).val();
                         if (valordep != -1) {
-                            if (!opcionessel.includes(valordep*1)) {
+                            if (!opcionessel.includes(valordep * 1)) {
                                 $(this).hide();
                                 $(this).prop('disabled', 'disabled');
 
@@ -1886,40 +1935,117 @@ function dependenciaPreguntas(id, t,p) {
                     $("#" + datos[i].ID_HIJO + " option").hide();
                 }
 
-            } else if (datos[i].TIPO == 3 || datos[i].TIPO == 13) {
-                if (t == 1) {
+            } else if (datos[i].TIPO == 3) {
+                if (tipoPregunta == 1) {
                     valor_padre = $('input[name=rdo_' + id + ']:checked').val();
+
                     if (valor_padre == "1") {
                         valor_padre = "true";
-                    } else {
+                    } else if (valor_padre == "0") {
                         valor_padre = "false";
+                    } else {
+                        valor_padre = "X";
                     }
+                } else if (tipoPregunta == 3 || tipoPregunta == 13) { // Selección Multiple
+                    valor_padre = -2;
                 }
+
                 $("#" + datos[i].ID_HIJO).parent().parent().css("display", "");
-                if (p == undefined)
-                {
+                if (p == undefined) {
                     limpiarhijodep(datos[i].ID_HIJO);
+                    dependenciaPreguntas(datos[i].ID_HIJO, 1);
                 }
                 if (valor_padre != -1) {
+                    var encontrado = false;
                     var opcionessel = [];
                     var jsondatosdep = JSON.parse(datos[i].OPCIONES);
-                    for (var t = 0; t < jsondatosdep.length; t++) {
-                        if (jsondatosdep[t].RESPUESTA.toUpperCase() == valor_padre.toUpperCase() ) {
+                    for (var t = 0; t < jsondatosdep.length && !encontrado; t++) {
+                        if (jsondatosdep[t].RESPUESTA.toUpperCase() == 'X') {
                             if (jsondatosdep[t].ACCION == 0) {
-                                $("#" + datos[i].ID_HIJO).parent().parent().css("display", "none");
+                                if (tipoPreguntaHijo == 1)
+                                    $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "none");
+                                else
+                                    $("#" + datos[i].ID_HIJO).parent().parent().css("display", "none");
                             } if (jsondatosdep[t].ACCION == 1) {
-                                $("#" + datos[i].ID_HIJO).parent().parent().css("display", "");
+                                if (tipoPreguntaHijo == 1)
+                                    $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "");
+                                else
+                                    $("#" + datos[i].ID_HIJO).parent().parent().css("display", "");
+                            }
+                            encontrado = true;
+                        } else {
+                            if (tipoPregunta == 3 || tipoPregunta == 13) { // Selección Multiple
+                                var respuestas = jsondatosdep[t].RESPUESTA.toUpperCase().split(',');
+                                var seleccionados = [];
+                                var seleccion = [];
+                                var seleccionRespuestas = '';
+
+                                $("input[id^='" + id + "']:checked:enabled").each(function () {
+                                    if (seleccionRespuestas == '')
+                                        seleccionRespuestas = $(this).data("idresp") + '';
+                                    else
+                                        seleccionRespuestas += ',' + $(this).data("idresp");
+
+                                    //seleccion.push($(this).data("idresp"));
+                                });
+
+                                seleccion = seleccionRespuestas.split(',');
+
+                                seleccionados = seleccion.filter(respuesta => respuestas.indexOf(respuesta) >= 0);
+
+                                /*alert('Pregunta: ' + id);
+                                alert('Selección: ' + seleccion.toString());
+                                alert('Respuestas: ' + respuestas.toString());                                
+                                alert('Seleccionados: ' + seleccionados.toString());*/
+
+                                if (seleccionados.length > 0) {
+                                    if (jsondatosdep[t].ACCION == 0) {
+                                        if (tipoPreguntaHijo == 1)
+                                            $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "none");
+                                        else
+                                            $("#" + datos[i].ID_HIJO).parent().parent().css("display", "none");
+                                    } if (jsondatosdep[t].ACCION == 1) {
+                                        if (tipoPreguntaHijo == 1)
+                                            $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "");
+                                        else
+                                            $("#" + datos[i].ID_HIJO).parent().parent().css("display", "");
+                                    }
+
+                                    encontrado = true;
+                                }
+                            } else {
+                                if (jsondatosdep[t].RESPUESTA.toUpperCase() == valor_padre.toUpperCase()) {
+                                    if (jsondatosdep[t].ACCION == 0) {
+                                        if (tipoPreguntaHijo == 1)
+                                            $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "none");
+                                        else
+                                            $("#" + datos[i].ID_HIJO).parent().parent().css("display", "none");
+                                    } if (jsondatosdep[t].ACCION == 1) {
+                                        if (tipoPreguntaHijo == 1)
+                                            $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "");
+                                        else
+                                            $("#" + datos[i].ID_HIJO).parent().parent().css("display", "");
+                                    }
+
+                                    encontrado = true;
+                                }
                             }
                         }
-
                     }
-                   
                 } else {
-                    $("#" + datos[i].ID_HIJO).parent().parent().css("display", "");
+                    /*if (tipoPreguntaHijo == 1)
+                        $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "");
+                    else
+                        $("#" + datos[i].ID_HIJO).parent().parent().css("display", "");*/
+
+                    if (tipoPreguntaHijo == 1)
+                        $("#" + datos[i].ID_HIJO).parent().parent().parent().css("display", "none");
+                    else
+                        $("#" + datos[i].ID_HIJO).parent().parent().css("display", "none");
                 }
 
             } else if (datos[i].TIPO == 4) {
-               
+
                 if (t == 1) {
                     valor_padre = $('input[name=rdo_' + id + ']:checked').val();
                     if (valor_padre == "1") {
@@ -1931,12 +2057,13 @@ function dependenciaPreguntas(id, t,p) {
                 $("#" + datos[i].ID_HIJO).removeAttr("disabled");
                 if (p == undefined) {
                     limpiarhijodep(datos[i].ID_HIJO);
+                    dependenciaPreguntas(datos[i].ID_HIJO, 1);
                 }
                 if (valor_padre != -1) {
                     var opcionessel = [];
                     var jsondatosdep = JSON.parse(datos[i].OPCIONES);
                     for (var t = 0; t < jsondatosdep.length; t++) {
-                        if (jsondatosdep[t].RESPUESTA.toUpperCase() == valor_padre.toUpperCase() ) {
+                        if (jsondatosdep[t].RESPUESTA.toUpperCase() == valor_padre.toUpperCase()) {
                             if (jsondatosdep[t].ACCION == 0) {
                                 $("#" + datos[i].ID_HIJO).removeAttr("disabled");
                             } if (jsondatosdep[t].ACCION == 1) {
@@ -1986,13 +2113,15 @@ function dependenciaPreguntas(id, t,p) {
 }
 
 function limpiarhijodep(id) {
-    if ($("#" + id).prop("type") == "checkbox") {
-       
+    if ($("#" + id).prop("type") == "checkbox" || $("#" + id).data("tipo") == 'check') {
+        $("input[id^='" + id + "']").prop('checked', false);
+    } else if ($("#" + id).prop("type") == "radio") {
+        $("input[id^='rdo_" + id + "']").prop('checked', false);
     } else if ($("#" + id).prop("type") == "select-one") {
         $("#" + id).val("-1")
-    } else  {
+    } else {
         $("#" + id).val("")
-    }    
+    }
 }
 
 function ValidarRango(vmin, vmax, obj) {

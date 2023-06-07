@@ -167,6 +167,8 @@ namespace SIM.Areas.Tramites.Models
         public string S_AYUDA { get { return (sAyuda == null ? "" : sAyuda); } set { sAyuda = value; } }
         public string S_REQUERIDA { get; set; }
         public int N_FACTOR { get; set; }
+        public int N_NIVEL { get; set; }
+        public int N_TIPO_TITULO { get; set; } // 1. Normal, 2. Pequeña, 3. Mediano, 4. Grande
         public Nullable<int> ID_VALOR { get; set; }
         [JsonConverter(typeof(DecimalConverter))]
         public Nullable<decimal> N_VALOR { get; set; }

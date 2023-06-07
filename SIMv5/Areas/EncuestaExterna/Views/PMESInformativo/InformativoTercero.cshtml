@@ -1,0 +1,93 @@
+﻿@using SIM.Properties
+@{
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-rowsview .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+        /*padding: 7px;*/
+    }
+
+    .dx-popup-content {
+        padding: 0px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        AjustarTamano();
+    });
+
+    $(window).resize(function () {
+        AjustarTamano();
+    });
+
+    function AjustarTamano() {
+        $("#pnlContenedor").height((window.innerHeight || document.body.clientHeight) - 180);
+        $("#pnlDocumentosPublicados").height($("#pnlContenedor").outerHeight() - 4);
+    }
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/EncuestaExterna/Scripts/PMESInformativo/informativotercero.js?v=1.00")"></script>
+
+<div id="popDocumento" style="padding: 0px">
+    <iframe src="" id="frmDocumento" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<div id="popComentario" style="padding: 0px">
+    <div id="comentarioContainer" style="width:100%; height:100%">
+        <div id="comentario"></div>
+        <div style="height: 10%; width:100%" class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3">
+                <div id="aceptarComentario" class="col-md-3"></div>
+            </div>
+            <!--div class="col-md-3">
+                <div id="cancelarComentario" class="col-md-3"></div>
+            </div-->
+        </div>
+    </div>
+</div>
+
+<div style="padding: 0px;">
+    <div data-url="@Url.Content("~")" id="app" data-codigo="@ViewBag.Codigo" data-tercero="@ViewBag.idTercero" data-nombretercero="@ViewBag.NombreTercero" resizable>
+        <div class="panelSIM-default">
+            <div id="popTercero">
+                <div id="grdTercero"></div>
+            </div>
+            <div id="loadPanel"></div>
+            <div class="panelSIM panelSIM-default" id="pnlContenedor">
+                <div class="row">
+                    <div class="col-md-8">
+                        @if (ViewBag.seleccionTercero)
+                        {
+                            <div class="dx-field">
+                                <div class="dx-field-label labelfullrow"><label style="font-weight:bold">Tercero</label></div>
+                                <div class="dx-field-value valuefullrow">
+                                    <div id="cboTercero"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dx-field">
+                            <div class="dx-field-label" style="font-weight: bold;">VIGENCIA</div>
+                            <div class="dx-field-value">
+                                <div id="vigencia"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="pnlDocumentosPublicados">
+                    <div style="height: 100%">
+                        <div id="grdDocumentosPublicados"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

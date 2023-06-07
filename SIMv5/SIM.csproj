@@ -1130,11 +1130,15 @@
     <Compile Include="Areas\Dynamics\Data\PrefijoModel.cs" />
     <Compile Include="Areas\Dynamics\Data\ResponsableModel.cs" />
     <Compile Include="Areas\Dynamics\DynamicsAreaRegistration.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESEstrategiasApiController.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESEstrategiasController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionApiController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\EncuestaExternaController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESInformativoApiController.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESInformativoController.cs" />
     <Compile Include="Areas\EncuestaExterna\empresa.cs" />
     <Compile Include="Areas\EncuestaExterna\encuesta.cs" />
     <Compile Include="Areas\EncuestaExterna\Utilidades\CargaMasiva.cs" />
@@ -1520,10 +1524,15 @@
     <Compile Include="Data\Agua\TSIMTASA_TRAMOS.cs" />
     <Compile Include="Data\Agua\TSIMTASA_TURNOS.cs" />
     <Compile Include="Data\Agua\TSIMTASA_UNIDADES.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_TERCERO.cs" />
     <Compile Include="Data\Control\EVALUACION_ESTRATEGIAS.cs" />
     <Compile Include="Data\Control\EVALUACION_ESTRATEGIAS_GRUPO.cs" />
     <Compile Include="Data\Control\EVALUACION_ESTRATEGIAS_T.cs" />
     <Compile Include="Data\Control\INFORMACION _INDUSTRIA.cs" />
+    <Compile Include="Data\Control\INFORMATIVO_DOC.cs" />
+    <Compile Include="Data\Control\INFORMATIVO_DOC_ARCHIVOS.cs" />
+    <Compile Include="Data\Control\INFORMATIVO_DOC_DET_ARCH.cs" />
+    <Compile Include="Data\Control\INFORMATIVO_TIPOCOM.cs" />
     <Compile Include="Data\Control\TBDERECHOS_PETICION.cs" />
     <Compile Include="Data\Control\TBDETALLE_REPOSICION.cs" />
     <Compile Include="Data\Control\TBREPOSICION.cs" />
@@ -2386,6 +2395,12 @@
     <Content Include="Areas\DesarrolloEconomico\Scripts\UnidadMedida.js" />
     <Content Include="Areas\Dynamics\Scripts\Etiquetas.js" />
     <Content Include="Areas\EnCicla\Scripts\testexterno.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESEstrategias\estrategias.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESEstrategias\evaluaciontercero.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESEstrategias\evaluacionterceros.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESInformativo\documentos.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESInformativo\informativo.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESInformativo\informativotercero.js" />
     <Content Include="Areas\EtiquetasAmbientales\Scripts\Monitoreo.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\expedienteAmbiental.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\basic.css" />
@@ -3110,6 +3125,10 @@
     <Content Include="Content\fonts\arialbd.ttf" />
     <Content Include="Areas\Tramites\Views\Tramites\NuevoTramite.cshtml" />
     <Content Include="Areas\Tramites\Views\TareasFuncionario\Index.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\Documentos.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\Index.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\InformativoTercero.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESEstrategias\PMESEstrategias.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />

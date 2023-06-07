@@ -35,20 +35,36 @@
     </style>
     <div class="containerDatos">
         <label for="uname"><b>C&oacute;digo Encuesta</b></label>
-        <input type="text" placeholder="[Ingresar Código de la Encuesta]" id="idV" required>
+        <input type="text" placeholder="[Ingresar Código de la Encuesta]" id="idCE" required>
         <label for="uname"><b>Nombre</b></label>
         <input type="text" placeholder="[Ingresar Nombre]" id="n" required>
         <label for="psw"><b>Clave</b></label>
         <input type="password" placeholder="[Ingresar Clave]" id="c" required>
-
-        <button class="btn btn-default" onclick="CargarEncuesta()">Cargar Encuesta</button>
+        <span style="font-style: italic; text-align: center">Recordar el Nombre y la Clave ingresadas para que posteriormente pueda ingresar nuevamente y modificar la encuesta.</span>
+        <button type="button" class="btn btn-default" onclick="CargarEncuesta()">Cargar Encuesta</button>
+        <br />
+        <span id="error" style="font-weight: bold; color: red; text-align: center; width:100%; display:none"></span>
     </div>
 <script>
     function CargarEncuesta() {
-        var idV = $("#idV").val();
+        var idCE = $("#idCE").val();
         var n = $("#n").val();
         var c = $("#c").val();
 
-        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaClave")' + '?idV=' + idV + '&n=' + n + '&c=' + c, '_self');
+        $('#error').hide();
+
+        if (n.trim() == '') {
+            $('#error').text('Campo [Nombre] Requerido');
+            $('#error').show();
+            return;
+        }
+
+        if (c.trim() == '') {
+            $('#error').text('Campo [Clave] Requerido');
+            $('#error').show();
+            return;
+        }
+
+        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaClave")' + '?idCE=' + idCE + '&n=' + n + '&c=' + c, '_self');
     }
 </script>

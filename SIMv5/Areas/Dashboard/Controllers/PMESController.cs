@@ -228,21 +228,28 @@ namespace SIM.Areas.Dashboard.Controllers
             ViewBag.IdEncuesta = e;
             ViewBag.Vigencia = v;
 
-            string sql;
+            string sql = "";
 
-            if (e == 1)
-            {
-                sql = "SELECT ID_RESPUESTA AS ID_MODO, TRIM(S_VALOR) AS MODO " +
+            switch (e)
+                {
+                case 1:
+                    sql = "SELECT ID_RESPUESTA AS ID_MODO, TRIM(S_VALOR) AS MODO " +
                             "FROM CONTROL.ENC_OPCION_RESPUESTA " +
                             "WHERE ID_PREGUNTA = 529 " +
                             "ORDER BY N_ORDEN";
-            }
-            else
-            {
-                sql = "SELECT ID_RESPUESTA AS ID_MODO, TRIM(S_VALOR) AS MODO " +
+                    break;
+                case 2:
+                    sql = "SELECT ID_RESPUESTA AS ID_MODO, TRIM(S_VALOR) AS MODO " +
                             "FROM CONTROL.ENC_OPCION_RESPUESTA " +
                             "WHERE ID_PREGUNTA = 2486 " +
                             "ORDER BY N_ORDEN";
+                    break;
+                case 3:
+                    sql = "SELECT ID_RESPUESTA AS ID_MODO, TRIM(S_VALOR) AS MODO " +
+                            "FROM CONTROL.ENC_OPCION_RESPUESTA " +
+                            "WHERE ID_PREGUNTA = 4047 " +
+                            "ORDER BY N_ORDEN";
+                    break;
             }
 
             var modos = dbSIM.Database.SqlQuery<ModoTransporte>(sql).ToList();

@@ -10,40 +10,448 @@ using System.Net.Http;
 using System.Web.Http;
 using SIM.Areas.Models;
 using System.Security.Claims;
-using SIM.Areas.Tramites.Models;
 using SIM.Utilidades;
 using System.IO;
 using System.Web.Hosting;
 using SIM.Data;
-using SIM.Data.Tramites;
+using SIM.Data.Control;
 using SIM.Models;
 using co.com.certicamara.encryption3DES.code;
 using SIM.Utilidades.FirmaDigital;
 using System.Text;
-using SIM.Data.Documental;
-//using DevExpress.Utils.Extensions;
+using SIM.Areas.Seguridad.Models;
 
-namespace SIM.Areas.Tramites.Controllers
+namespace SIM.Areas.EncuestaExterna.Controllers
 {
-    public class ProyeccionDocumentoApiController : ApiController
+    public class PMESInformativoApiController : ApiController
     {
-        public class Tramite
+        public struct datosConsulta
         {
-            public int CODTRAMITE { get; set; }
-            public decimal CODTAREA { get; set; }
-            public string S_ASUNTO { get; set; }
+            public int numRegistros;
+            public IEnumerable<dynamic> datos;
         }
 
-        public class Grupo
+        public class Archivo
         {
-            public int ID_GUPOMEMO { get; set; }
-            public string S_NOMBRE { get; set; }
+            public int ID_INFORMATIVO_DOC_ARCHIVOS { get; set; }
+            public string S_DESCRIPCION { get; set; }
+            public string S_ACTIVO { get; set; }
+            public Nullable<int> N_ORDEN { get; set; }
+            public string MODIFICADO { get; set; } // Si se modifica el Orden del Archivo (modificación del registro del archivo, no un cambio de archivo)
+            public string ARCHIVONUEVO { get; set; } // Si el archivo es nuevo, por lo tanto hay que crear el registro al almacenar la Proyección del Documento
+            public string ARCHIVOACTUALIZADO { get; set; } // Si el archivo que había se cambió por otro
+            public string S_NOMBRE_ARCHIVO { get; set; }
         }
 
-        public class ValorLista
+        public class DatosPublicacion
         {
-            public int ID { get; set; }
-            public string NOMBRE { get; set; }
+            public int Id { get; set; }
+            public int? IdTipoComunicacion { get; set; }
+            public string TipoComunicacion { get; set; }
+            public int? IdTercero { get; set; }
+            public string Descripcion { get; set; }
+            public List<Archivo> Archivos { get; set; }
+        }
+
+        EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+
+        [Authorize]
+        [HttpGet, ActionName("ConsultaDocumentos")]
+        public datosConsulta GetConsultaDocumentos(int tipo)
+        {
+            int idUsuario;
+            string formulario = (tipo == 1 ? "20" : "22");
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var model = (from id in dbSIM.INFORMATIVO_DOC
+                         join tc in dbSIM.INFORMATIVO_TIPOCOM on id.COD_TIPOCOMUNICACION equals tc.COD_TIPOCOMUNICACION into ljtcid
+                         from tcid in ljtcid.DefaultIfEmpty()
+                         join t in dbSIM.TERCERO on id.ID_TERCERO equals t.ID_TERCERO into ljtid
+                         from tid in ljtid.DefaultIfEmpty()
+                         where id.S_FORMULARIO == formulario
+                         select new
+                         {
+                             id.ID_INFORMATIVO_DOC,
+                             id.COD_TIPOCOMUNICACION,
+                             S_TIPOCOMUNICACION = (tcid.S_TIPOCOMUNICACION ?? id.S_TIPOCOMUNICACION),
+                             id.ID_TERCERO,
+                             S_ORGANIZACION = (tid.S_RSOCIAL ?? "(TODOS)"),
+                             id.S_DESCRIPCION,
+                             id.D_FECHA
+                         }).Distinct().OrderBy(f => f.D_FECHA);
+
+            datosConsulta resultado = new datosConsulta();
+            resultado.numRegistros = model.Count();
+            resultado.datos = model.ToList();
+
+            return resultado;
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("ConsultaDocumentosGeneradosTercero")]
+        public datosConsulta GetConsultaDocumentosGeneradosTercero(int ano, int t)
+        {
+            int idUsuario;
+            string formulario = "22";
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            var idTerceroUsuario = t; //Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
+
+            idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var model = (from id in dbSIM.INFORMATIVO_DOC
+                         join tc in dbSIM.INFORMATIVO_TIPOCOM on id.COD_TIPOCOMUNICACION equals tc.COD_TIPOCOMUNICACION into ljtcid
+                         from tcid in ljtcid.DefaultIfEmpty()
+                         join ter in dbSIM.TERCERO on id.ID_TERCERO equals ter.ID_TERCERO into ljtid
+                         from tid in ljtid.DefaultIfEmpty()
+                         where id.S_FORMULARIO == formulario && (id.ID_TERCERO == idTerceroUsuario || id.ID_TERCERO == null) && id.D_FECHA.Year == ano
+                         select new
+                         {
+                             id.ID_INFORMATIVO_DOC,
+                             id.COD_TIPOCOMUNICACION,
+                             S_TIPOCOMUNICACION = (tcid.S_TIPOCOMUNICACION ?? id.S_TIPOCOMUNICACION),
+                             id.ID_TERCERO,
+                             S_ORGANIZACION = (tid.S_RSOCIAL ?? "(TODOS)"),
+                             id.S_DESCRIPCION,
+                             id.D_FECHA
+                         }).Distinct().OrderBy(f => f.D_FECHA);
+
+            datosConsulta resultado = new datosConsulta();
+            resultado.numRegistros = model.Count();
+            resultado.datos = model.ToList();
+
+            return resultado;
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("ObtenerTiposComunicacion")]
+        public dynamic GetObtenerTiposComunicacion()
+        {
+            List<Data.Control.INFORMATIVO_TIPOCOM> tipoCOMOtros = new List<Data.Control.INFORMATIVO_TIPOCOM>();
+            tipoCOMOtros.Add(new Data.Control.INFORMATIVO_TIPOCOM() { COD_TIPOCOMUNICACION = -1, S_TIPOCOMUNICACION = "(Otro Tipo de Comunicación)" });
+
+            var tiposComunicacion = from tc in dbSIM.INFORMATIVO_TIPOCOM
+                                   orderby tc.S_TIPOCOMUNICACION
+                                   select tc;
+
+            return tiposComunicacion.ToList().Union(tipoCOMOtros);
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("ObtenerDatosDocumentoPublicacion")]
+        public DatosPublicacion GetObtenerDatosDocumentoPublicacion(int id)
+        {
+            DatosPublicacion resultado = new DatosPublicacion();
+
+            if (id > 0)
+            {
+                var informativoDocumento = (from idoc in dbSIM.INFORMATIVO_DOC where idoc.ID_INFORMATIVO_DOC == id select idoc).FirstOrDefault();
+
+                if (informativoDocumento != null)
+                {
+                    resultado.Descripcion = informativoDocumento.S_DESCRIPCION;
+                    resultado.IdTercero = informativoDocumento.ID_TERCERO;
+                    resultado.IdTipoComunicacion = informativoDocumento.COD_TIPOCOMUNICACION;
+                    resultado.TipoComunicacion = informativoDocumento.S_TIPOCOMUNICACION;
+
+                    var archivosPublicacion = (
+                        from a in dbSIM.INFORMATIVO_DOC_ARCHIVOS
+                        join da in dbSIM.INFORMATIVO_DOC_DET_ARCH on a.ID_INFORMATIVO_DOC_ARCHIVOS equals da.ID_INFORMATIVO_DOC_ARCHIVOS
+                        where a.ID_INFORMATIVO_DOC == id && a.S_ACTIVO == "S" && da.S_ACTIVO == "S"
+                        orderby a.N_ORDEN
+                        select new Archivo
+                        {
+                            ID_INFORMATIVO_DOC_ARCHIVOS = a.ID_INFORMATIVO_DOC_ARCHIVOS,
+                            S_DESCRIPCION = a.S_DESCRIPCION,
+                            N_ORDEN = a.N_ORDEN,
+                            S_ACTIVO = a.S_ACTIVO,
+                            MODIFICADO = "N",
+                            ARCHIVONUEVO = "N",
+                            ARCHIVOACTUALIZADO = "N",
+                            S_NOMBRE_ARCHIVO = ""
+                        }).ToList();
+
+
+                    resultado.Archivos = archivosPublicacion;
+                }
+                else
+                {
+                    resultado = null;
+                }
+            }
+            else
+            {
+                resultado.Descripcion = "";
+                resultado.IdTipoComunicacion = null;
+                resultado.TipoComunicacion = "";
+                resultado.IdTercero = null;
+                resultado.Archivos = new List<Archivo>();
+            }
+
+            return resultado;
+        }
+
+        [Authorize]
+        [HttpPost, ActionName("AlmacenarDatosPublicacion")]
+        public string PostAlmacenarDatosPublicacion(DatosPublicacion datos)
+        {
+            int idUsuario = 0;
+            int idPublicacion = 0;
+            string respuestaAdicional = "";
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            try
+            {
+                if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                }
+
+                if (idUsuario == 0)
+                {
+                    return "ERROR:El Usuario no se encuentra autenticado.";
+                }
+
+                INFORMATIVO_DOC publicacion;
+
+                if (datos.Id == 0) // Nueva Publicación
+                {
+                    int codFuncionario = dbSIM.USUARIO_FUNCIONARIO.Where(uf => uf.ID_USUARIO == idUsuario).Select(uf => uf.CODFUNCIONARIO).FirstOrDefault();
+
+                    publicacion = new INFORMATIVO_DOC();
+
+                    publicacion.COD_TIPOCOMUNICACION = datos.IdTipoComunicacion;
+                    publicacion.S_TIPOCOMUNICACION = datos.TipoComunicacion;
+                    publicacion.D_FECHA = DateTime.Now;
+                    publicacion.ID_TERCERO = datos.IdTercero;
+                    publicacion.S_DESCRIPCION = datos.Descripcion;
+                    publicacion.S_FORMULARIO = "20";
+
+                    dbSIM.Entry(publicacion).State = EntityState.Added;
+
+                    dbSIM.SaveChanges();
+                }
+                else
+                {
+                    publicacion = dbSIM.INFORMATIVO_DOC.Where(idoc => idoc.ID_INFORMATIVO_DOC == datos.Id).FirstOrDefault();
+
+                    publicacion.COD_TIPOCOMUNICACION = datos.IdTipoComunicacion;
+                    publicacion.S_TIPOCOMUNICACION = datos.TipoComunicacion;
+                    publicacion.D_FECHA = DateTime.Now;
+                    publicacion.ID_TERCERO = datos.IdTercero;
+                    publicacion.S_DESCRIPCION = datos.Descripcion;
+                    publicacion.S_FORMULARIO = "20";
+
+                    dbSIM.Entry(publicacion).State = EntityState.Modified;
+
+                    dbSIM.SaveChanges();
+                }
+
+                idPublicacion = publicacion.ID_INFORMATIVO_DOC;
+
+                // Archivos
+                if (datos.Archivos != null)
+                {
+                    foreach (Archivo archivo in datos.Archivos)
+                    {
+                        int idArchivo = archivo.ID_INFORMATIVO_DOC_ARCHIVOS;
+
+                        if (archivo.MODIFICADO == "S" || archivo.ARCHIVONUEVO == "S")
+                        {
+                            INFORMATIVO_DOC_ARCHIVOS archivoPublicacion;
+
+                            if (archivo.ARCHIVONUEVO == "S" && archivo.S_ACTIVO == "S") // Nuevo Archivo
+                            {
+                                archivoPublicacion = new INFORMATIVO_DOC_ARCHIVOS();
+
+                                archivoPublicacion.ID_INFORMATIVO_DOC = publicacion.ID_INFORMATIVO_DOC;
+                                archivoPublicacion.S_DESCRIPCION = archivo.S_DESCRIPCION;
+                                archivoPublicacion.S_ACTIVO = "S";
+                                archivoPublicacion.N_ORDEN = archivo.N_ORDEN;
+
+                                dbSIM.Entry(archivoPublicacion).State = EntityState.Added;
+                                dbSIM.SaveChanges();
+
+                                archivo.ID_INFORMATIVO_DOC_ARCHIVOS = archivoPublicacion.ID_INFORMATIVO_DOC_ARCHIVOS;
+                            }
+                            else if (archivo.ARCHIVONUEVO == "N" && archivo.MODIFICADO == "S")
+                            {
+                                archivoPublicacion = dbSIM.INFORMATIVO_DOC_ARCHIVOS.Where(idoc => idoc.ID_INFORMATIVO_DOC_ARCHIVOS == archivo.ID_INFORMATIVO_DOC_ARCHIVOS).FirstOrDefault();
+
+                                archivoPublicacion.S_ACTIVO = archivo.S_ACTIVO;
+                                archivoPublicacion.N_ORDEN = archivo.N_ORDEN;
+
+                                dbSIM.Entry(archivoPublicacion).State = EntityState.Modified;
+                                dbSIM.SaveChanges();
+                            }
+
+                            if ((archivo.ARCHIVONUEVO == "S" || archivo.ARCHIVOACTUALIZADO == "S") && archivo.S_ACTIVO == "S") // Si se cambió el archivo o se actualizó uno existente
+                            {
+                                INFORMATIVO_DOC_DET_ARCH archivoPublicacionDet;
+
+                                archivoPublicacion = dbSIM.INFORMATIVO_DOC_ARCHIVOS.Where(idoc => idoc.ID_INFORMATIVO_DOC_ARCHIVOS == archivo.ID_INFORMATIVO_DOC_ARCHIVOS).FirstOrDefault();
+
+                                if (archivo.ARCHIVOACTUALIZADO == "S")
+                                {
+                                    // Se obtiene el activo actual y se desactiva
+                                    archivoPublicacionDet = dbSIM.INFORMATIVO_DOC_DET_ARCH.Where(idd => idd.ID_INFORMATIVO_DOC_ARCHIVOS == archivo.ID_INFORMATIVO_DOC_ARCHIVOS && idd.S_ACTIVO == "S").FirstOrDefault();
+
+                                    if (archivoPublicacionDet != null)
+                                    {
+                                        archivoPublicacionDet.S_ACTIVO = "N";
+
+                                        dbSIM.Entry(archivoPublicacionDet).State = EntityState.Modified;
+                                        dbSIM.SaveChanges();
+                                    }
+                                }
+
+                                // Se crea el archivo en Temporales
+                                string rutaBaseTemporal = ConfigurationManager.AppSettings["RutaPublicacionDocumentos"] + "\\" + Archivos.GetRutaDocumento(Convert.ToUInt64(publicacion.ID_INFORMATIVO_DOC), 100);
+                                string ruta = rutaBaseTemporal + archivoPublicacion.ID_INFORMATIVO_DOC_ARCHIVOS.ToString() + "_" + archivo.S_NOMBRE_ARCHIVO.ToString();
+
+                                if (!Directory.Exists(rutaBaseTemporal))
+                                    Directory.CreateDirectory(rutaBaseTemporal);
+
+                                string rutaOriginal;
+
+                                rutaOriginal = HostingEnvironment.MapPath("~/App_Data/Temporal/MI/" + idUsuario.ToString() + "__" + idArchivo.ToString() + "__" + archivo.S_NOMBRE_ARCHIVO);
+
+                                File.Copy(rutaOriginal, ruta, true);
+
+                                // Se crea el registro del archivo nuevo y se activa
+                                archivoPublicacionDet = new INFORMATIVO_DOC_DET_ARCH();
+
+                                archivoPublicacionDet.ID_INFORMATIVO_DOC_ARCHIVOS = archivoPublicacion.ID_INFORMATIVO_DOC_ARCHIVOS;
+                                archivoPublicacionDet.D_FECHA_CARGA = DateTime.Now;
+                                archivoPublicacionDet.S_RUTA_ARCHIVO = ruta;
+                                archivoPublicacionDet.S_ACTIVO = "S";
+
+                                dbSIM.Entry(archivoPublicacionDet).State = EntityState.Added;
+                                dbSIM.SaveChanges();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "PublicacionDocumento [PostAlmacenarDatosPublicacion - " + datos.Id.ToString() + " ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(error));
+                return "ERROR:" + idPublicacion.ToString() + ":Se presentó un error. Se pudo haber almacenado parcialmente la Información.";
+            }
+
+            return "OK:" + idPublicacion.ToString() + ":" + respuestaAdicional;
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("PublicarDocumento")]
+        public string GetPublicarDocumento(int Id)
+        {
+            int idUsuario = 0;
+            int idPublicacion = 0;
+            string respuestaAdicional = "";
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            try
+            {
+                if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                }
+
+                if (idUsuario == 0)
+                {
+                    return "ERROR:El Usuario no se encuentra autenticado.";
+                }
+
+                INFORMATIVO_DOC publicacion = dbSIM.INFORMATIVO_DOC.Where(pd => pd.ID_INFORMATIVO_DOC == Id).FirstOrDefault();
+                publicacion.S_FORMULARIO = "22";
+
+                respuestaAdicional = publicacion.S_DESCRIPCION;
+
+                dbSIM.Entry(publicacion).State = EntityState.Modified;
+                dbSIM.SaveChanges();
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "PublicacionDocumento [GetPublicarDocumento - " + Id.ToString() + " ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(error));
+                return "ERROR:" + idPublicacion.ToString() + ":Se presentó un error. Se pudo haber almacenado parcialmente la Información.";
+            }
+
+            return "OK:" + respuestaAdicional;
+        }
+
+        [Authorize]
+        [HttpGet, ActionName("DevolverPublicacion")]
+        public string GetDevolverPublicacion(int Id)
+        {
+            int idUsuario = 0;
+            int idPublicacion = 0;
+            string respuestaAdicional = "";
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            try
+            {
+                if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                }
+
+                if (idUsuario == 0)
+                {
+                    return "ERROR:El Usuario no se encuentra autenticado.";
+                }
+
+                INFORMATIVO_DOC publicacion = dbSIM.INFORMATIVO_DOC.Where(pd => pd.ID_INFORMATIVO_DOC == Id).FirstOrDefault();
+                publicacion.S_FORMULARIO = "20";
+
+                respuestaAdicional = publicacion.S_DESCRIPCION;
+
+                dbSIM.Entry(publicacion).State = EntityState.Modified;
+                dbSIM.SaveChanges();
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "DevolverPublicacion [GetDevolverPublicacion - " + Id.ToString() + " ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(error));
+                return "ERROR:" + idPublicacion.ToString() + ":Se presentó un error. Se pudo haber almacenado parcialmente la Información.";
+            }
+
+            return "OK:" + respuestaAdicional;
+        }
+
+        [HttpGet, ActionName("Vigencias")]
+        public datosConsulta GetVigencias(int t)
+        {
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            int idTercero = 0;
+
+            idTercero = t; //int.Parse(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
+
+            var vigencias = (from idoc in dbSIM.INFORMATIVO_DOC
+                             where idoc.ID_TERCERO == idTercero || idoc.ID_TERCERO == null
+                             select new {
+                                 VIGENCIA = idoc.D_FECHA.Year
+                             }).Distinct().OrderBy(v => v.VIGENCIA);
+
+
+            datosConsulta resultado = new datosConsulta();
+            resultado.numRegistros = vigencias.Count();
+            resultado.datos = vigencias.ToList();
+
+            return resultado;
+        }
+
+        /*
+        public struct datosConsulta
+        {
+            public int numRegistros;
+            public IEnumerable<dynamic> datos;
         }
 
         public class Archivo
@@ -57,79 +465,6 @@ namespace SIM.Areas.Tramites.Controllers
             public string ARCHIVONUEVO { get; set; } // Si el archivo es nuevo, por lo tanto hay que crear el registro al almacenar la Proyección del Documento
             public string ARCHIVOACTUALIZADO { get; set; } // Si el archivo que había se cambió por otro
             public string S_NOMBRE_ARCHIVO { get; set; }
-        }
-
-        public class Indice
-        {
-            public int CODINDICE { get; set; }
-            public string INDICE { get; set; }
-            public byte TIPO { get; set; }
-            public long LONGITUD { get; set; }
-            public int OBLIGA { get; set; }
-            public string VALORDEFECTO { get; set; }
-            public string VALOR { get; set; }
-            public int? ID_VALOR { get; set; }
-            public Nullable<int> ID_LISTA { get; set; }
-            public Nullable<int> TIPO_LISTA { get; set; }
-            public string CAMPO_NOMBRE { get; set; }
-        }
-
-        public class IndiceProceso
-        {
-            public decimal CODINDICE { get; set; }
-            public string INDICE { get; set; }
-            public decimal TIPO { get; set; }
-            public decimal LONGITUD { get; set; }
-            public decimal OBLIGA { get; set; }
-            public string VALORDEFECTO { get; set; }
-            public string VALOR { get; set; }
-            public Nullable<decimal> ID_LISTA { get; set; }
-            public Nullable<int> TIPO_LISTA { get; set; }
-            public string CAMPO_NOMBRE { get; set; }
-        }
-
-        public class Firma
-        {
-            public decimal CODFUNCIONARIO { get; set; }
-            public string FUNCIONARIO { get; set; }
-            public int ORDEN { get; set; }
-            public Nullable<DateTime> D_FECHA_FIRMA { get; set; }
-            public string S_ESTADO { get; set; }
-            public string S_TIPO { get; set; }
-            public string S_REVISA { get; set; }
-            public string S_APRUEBA { get; set; }
-            public string S_ACTIVO { get; set; }
-        }
-
-        public class DatosProyeccion
-        {
-            public int Id { get; set; }
-            public int TipoSeleccionTramites { get; set; }
-            public string CentroCostos { get; set; }
-            public string Descripcion { get; set; }
-            public bool NoAvanzaTramites { get; set; }
-            public Nullable<int> SerieDocumental { get; set; }
-            public Nullable<int> Grupo { get; set; }
-            public List<Tramite> TramitesSeleccionados { get; set; }
-            public List<Indice> Indices { get; set; }
-            public List<Archivo> Archivos { get; set; }
-            public List<Firma> Firmas { get; set; }
-        }
-
-        public class DatosAvanzar
-        {
-            public int Id { get; set; }
-            public int Siguiente { get; set; }
-            public string Comentario { get; set; }
-            public int? Cargo { get; set; }
-            public string TipoFirma { get; set; }
-        }
-
-        public class Funcionario
-        {
-            public decimal CodFuncionario { get; set; }
-            public string Nombre { get; set; }
-            public string CentroCostos { get; set; }
         }
 
         public struct DatosRespuesta
@@ -157,9 +492,9 @@ namespace SIM.Areas.Tramites.Controllers
                 idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
 
                 funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
-                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                               where uf.ID_USUARIO == idUsuario
-                                               select f.CODFUNCIONARIO).FirstOrDefault());
+                                   join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                   where uf.ID_USUARIO == idUsuario
+                                   select f.CODFUNCIONARIO).FirstOrDefault());
             }
             else
             {
@@ -169,7 +504,7 @@ namespace SIM.Areas.Tramites.Controllers
 
                 return resultado;
             }
-
+                
             if (((filter == null || filter == "") && (searchValue == "" || searchValue == null) && noFilterNoRecords))
             {
                 datosConsulta resultado = new datosConsulta();
@@ -191,14 +526,14 @@ namespace SIM.Areas.Tramites.Controllers
                                  //from pdt in cd.DefaultIfEmpty()
                              join rd in dbSIM.RADICADO_DOCUMENTO on (int)pd.ID_RADICADODOC equals (int)rd.ID_RADICADODOC into rdd
                              from pdt in rdd.DefaultIfEmpty()
-                                 //join tt in dbSIM.TBTRAMITETAREA on tpt.CODTRAMITE equals (int)tt.CODTRAMITE into ttd
-                                 //from ttt in ttd.DefaultIfEmpty()
+                             //join tt in dbSIM.TBTRAMITETAREA on tpt.CODTRAMITE equals (int)tt.CODTRAMITE into ttd
+                             //from ttt in ttd.DefaultIfEmpty()
                                  //join ta in dbSIM.TBTAREA on ttt.CODTAREA equals ta.CODTAREA into tad
                                  //from tat in tad.DefaultIfEmpty()
                                  //join pr in dbSIM.TBPROCESO on tat.CODPROCESO equals pr.CODPROCESO into prd
                                  //from prt in prd.DefaultIfEmpty()
-                                 //join ft in dbSIM.TBFUNCIONARIO on ttt.CODFUNCIONARIO equals ft.CODFUNCIONARIO into ftd
-                                 //from ftt in ftd.DefaultIfEmpty()
+                             //join ft in dbSIM.TBFUNCIONARIO on ttt.CODFUNCIONARIO equals ft.CODFUNCIONARIO into ftd
+                             //from ftt in ftd.DefaultIfEmpty()
                              where (pd.CODFUNCIONARIO == funcionario || (fipt.CODFUNCIONARIO == funcionario && (fipt.S_ESTADO == "S" || fipt.D_FECHA_FIRMA != null))) && pd.S_FORMULARIO != "25"
                              orderby (pd.S_FORMULARIO == "22" ? "S" : "N"), pd.D_FECHA_TRAMITE ?? pd.D_FECHA_CREACION descending
                              select new
@@ -243,64 +578,48 @@ namespace SIM.Areas.Tramites.Controllers
         public datosConsulta GetConsultaDocumentos(int tipo)
         {
             int idUsuario;
-            string formulario = (tipo == 1 ? "20" : (tipo == 2 ? "21" : "22"));
+            string formulario = (tipo == 1 ? "20" : "22");
             System.Web.HttpContext context = System.Web.HttpContext.Current;
             ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
 
-            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
-            {
-                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+            idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
 
-                var funcionario = (from uf in dbSIM.USUARIO_FUNCIONARIO
-                                   join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                   where uf.ID_USUARIO == idUsuario
-                                   select f.CODFUNCIONARIO).FirstOrDefault();
+            var model = (from pd in dbSIM.PROYECCION_DOC
+                            //join fpd in dbSIM.PROYECCION_DOC_FIRMAS on new { pd.ID_PROYECCION_DOC, pd.CODFUNCIONARIO_ACTUAL } equals new { fpd.ID_PROYECCION_DOC, fpd.CODFUNCIONARIO }
+                            join ud in dbSIM.TBSERIE on pd.CODSERIE equals ud.CODSERIE
+                            join uf in dbSIM.USUARIO_FUNCIONARIO on pd.CODFUNCIONARIO equals uf.CODFUNCIONARIO
+                            join u in dbSIM.USUARIO on uf.ID_USUARIO equals u.ID_USUARIO
+                            join ufa in dbSIM.USUARIO_FUNCIONARIO on pd.CODFUNCIONARIO_ACTUAL equals ufa.CODFUNCIONARIO
+                            join ua in dbSIM.USUARIO on ufa.ID_USUARIO equals ua.ID_USUARIO
+                            join f in dbSIM.TBFUNCIONARIO on (decimal)pd.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                            join fa in dbSIM.TBFUNCIONARIO on (decimal)pd.CODFUNCIONARIO_ACTUAL equals fa.CODFUNCIONARIO
+                            join c in dbSIM.PROYECCION_DOC_COM.Where(cp => cp.S_ACTIVO == "S") on pd.ID_PROYECCION_DOC equals c.ID_PROYECCION_DOC into cd
+                            from pdt in cd.DefaultIfEmpty()
+                            where (ufa.ID_USUARIO == idUsuario || uf.ID_USUARIO == idUsuario) && pd.S_FORMULARIO == formulario// && u.S_ESTADO == "A" && ua.S_ESTADO == "A"
+                            //orderby (funcionario == pd.CODFUNCIONARIO_ACTUAL ? "S" : "N") descending, pd.ID_PROYECCION_DOC descending
+                            select new
+                            {
+                                pd.ID_PROYECCION_DOC,
+                                pd.S_DESCRIPCION,
+                                S_SERIE = ud.NOMBRE,
+                                pd.S_TRAMITES,
+                                pd.S_PROCESOS,
+                                pd.D_FECHA_TRAMITE,
+                                f.CODFUNCIONARIO,
+                                S_FUNCIONARIO = f.NOMBRES + " " + f.APELLIDOS,
+                                S_FUNCIONARIO_ACTUAL = fa.NOMBRES + " " + fa.APELLIDOS,
+                                S_DEVUELTO = (pdt != null ? "S" : "N"),
+                                //S_ACTUAL = (funcionario == pd.CODFUNCIONARIO_ACTUAL ? "S" : "N"),
+                                S_COMENTARIO = (pdt != null ? "S" : ""),
+                                //fpd.S_REVISA,
+                                //fpd.S_APRUEBA
+                            }).Distinct().OrderBy(f => f.D_FECHA_TRAMITE);
 
-                var model = (from pd in dbSIM.PROYECCION_DOC
-                                 //join fpd in dbSIM.PROYECCION_DOC_FIRMAS on new { pd.ID_PROYECCION_DOC, pd.CODFUNCIONARIO_ACTUAL } equals new { fpd.ID_PROYECCION_DOC, fpd.CODFUNCIONARIO }
-                             join ud in dbSIM.TBSERIE on pd.CODSERIE equals ud.CODSERIE
-                             join uf in dbSIM.USUARIO_FUNCIONARIO on pd.CODFUNCIONARIO equals uf.CODFUNCIONARIO
-                             join u in dbSIM.USUARIO on uf.ID_USUARIO equals u.ID_USUARIO
-                             join ufa in dbSIM.USUARIO_FUNCIONARIO on pd.CODFUNCIONARIO_ACTUAL equals ufa.CODFUNCIONARIO
-                             join ua in dbSIM.USUARIO on ufa.ID_USUARIO equals ua.ID_USUARIO
-                             join f in dbSIM.TBFUNCIONARIO on (decimal)pd.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                             join fa in dbSIM.TBFUNCIONARIO on (decimal)pd.CODFUNCIONARIO_ACTUAL equals fa.CODFUNCIONARIO
-                             join c in dbSIM.PROYECCION_DOC_COM.Where(cp => cp.S_ACTIVO == "S") on pd.ID_PROYECCION_DOC equals c.ID_PROYECCION_DOC into cd
-                             from pdt in cd.DefaultIfEmpty()
-                             where (ufa.ID_USUARIO == idUsuario || uf.ID_USUARIO == idUsuario) && pd.S_FORMULARIO == formulario// && u.S_ESTADO == "A" && ua.S_ESTADO == "A"
-                             //orderby (funcionario == pd.CODFUNCIONARIO_ACTUAL ? "S" : "N") descending, pd.ID_PROYECCION_DOC descending
-                             select new
-                             {
-                                 pd.ID_PROYECCION_DOC,
-                                 pd.S_DESCRIPCION,
-                                 S_SERIE = ud.NOMBRE,
-                                 pd.S_TRAMITES,
-                                 pd.S_PROCESOS,
-                                 pd.D_FECHA_TRAMITE,
-                                 f.CODFUNCIONARIO,
-                                 S_FUNCIONARIO = f.NOMBRES + " " + f.APELLIDOS,
-                                 S_FUNCIONARIO_ACTUAL = fa.NOMBRES + " " + fa.APELLIDOS,
-                                 S_DEVUELTO = (pdt != null ? "S" : "N"),
-                                 S_ACTUAL = (funcionario == pd.CODFUNCIONARIO_ACTUAL ? "S" : "N"),
-                                 S_COMENTARIO = (pdt != null ? "S" : ""),
-                                 //fpd.S_REVISA,
-                                 //fpd.S_APRUEBA
-                             }).Distinct().OrderBy(f => f.D_FECHA_TRAMITE);
+            datosConsulta resultado = new datosConsulta();
+            resultado.numRegistros = model.Count();
+            resultado.datos = model.ToList();
 
-                datosConsulta resultado = new datosConsulta();
-                resultado.numRegistros = model.Count();
-                resultado.datos = model.ToList();
-
-                return resultado;
-            }
-            else
-            {
-                datosConsulta resultado = new datosConsulta();
-                resultado.numRegistros = 0;
-                resultado.datos = null;
-
-                return resultado;
-            }
+            return resultado;
         }
 
         [Authorize]
@@ -352,7 +671,6 @@ namespace SIM.Areas.Tramites.Controllers
                             OBLIGA = i.OBLIGA,
                             VALORDEFECTO = i.VALORDEFECTO,
                             VALOR = pdi.S_VALOR,
-                            ID_VALOR = pdi.ID_VALOR,
                             ID_LISTA = i.CODIGO_SUBSERIE,
                             TIPO_LISTA = pdis.TIPO,
                             CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
@@ -461,23 +779,23 @@ namespace SIM.Areas.Tramites.Controllers
         public dynamic GetObtenerIndicesProceso(int codProceso)
         {
             var indicesProceso = from ip in dbSIM.TBINDICEPROCESO
-                                 join lista in dbSIM.TBSUBSERIE on (decimal)ip.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
-                                 from pdis in l.DefaultIfEmpty()
-                                 where ip.CODPROCESO == codProceso && ip.MOSTRAR == "1"
-                                 orderby ip.ORDEN
-                                 select new IndiceProceso
-                                 {
-                                     CODINDICE = ip.CODINDICE,
-                                     INDICE = ip.INDICE,
-                                     TIPO = (decimal)ip.TIPO,
-                                     LONGITUD = (decimal)ip.LONGITUD,
-                                     OBLIGA = (decimal)ip.OBLIGA,
-                                     VALORDEFECTO = ip.VALORDEFECTO,
-                                     VALOR = "",
-                                     ID_LISTA = ip.CODIGO_SUBSERIE,
-                                     TIPO_LISTA = pdis.TIPO,
-                                     CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
-                                 };
+                                         join lista in dbSIM.TBSUBSERIE on (decimal)ip.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                         from pdis in l.DefaultIfEmpty()
+                                         where ip.CODPROCESO == codProceso && ip.MOSTRAR == "1"
+                                         orderby ip.ORDEN
+                                         select new IndiceProceso
+                                         {
+                                             CODINDICE = ip.CODINDICE,
+                                             INDICE = ip.INDICE,
+                                             TIPO = (decimal)ip.TIPO,
+                                             LONGITUD = (decimal)ip.LONGITUD,
+                                             OBLIGA = (decimal)ip.OBLIGA,
+                                             VALORDEFECTO = ip.VALORDEFECTO,
+                                             VALOR = "",
+                                             ID_LISTA = ip.CODIGO_SUBSERIE,
+                                             TIPO_LISTA = pdis.TIPO,
+                                             CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
+                                         };
 
             return indicesProceso.ToList();
         }
@@ -531,72 +849,7 @@ namespace SIM.Areas.Tramites.Controllers
 
                 if (idUsuario == 0)
                 {
-                    return "ERROR:" + idProyeccionDocumento.ToString() + ":El Usuario no se encuentra autenticado.";
-                }
-
-                // Validar si el DE y PARA asociados al documento pueden proyectar la serie (esto es para memorandos)
-                string[] seriesCargo = Utilidades.Data.ObtenerValorParametro("PD_SeriesValidarCargo").ToString().Split(',');
-                string[] indicePARA = Utilidades.Data.ObtenerValorParametro("PD_IndicesProyeccionGruposPARA").ToString().Split(',');
-                foreach (string serie in seriesCargo)
-                {
-                    if (serie.Trim() != "")
-                    {
-                        if (Convert.ToInt32(serie) == datos.SerieDocumental)
-                        {
-                            // Valida el último qué firma para sabir si puede radicar memorandos
-                            var codFuncionarioRadica = datos.Firmas.Where(f => f.S_ACTIVO == "S").OrderByDescending(f => f.ORDEN).Select(f => f.CODFUNCIONARIO).FirstOrDefault();
-
-                            var cargoFuncionarioRadica = (
-                                    from f in dbSIM.TBFUNCIONARIO join 
-                                        c in dbSIM.TBCARGO on f.CODCARGO equals c.CODCARGO
-                                    where f.CODFUNCIONARIO == codFuncionarioRadica
-                                    select c
-                                ).FirstOrDefault();
-
-                            if (cargoFuncionarioRadica.RADICA_MEMORANDO == null || cargoFuncionarioRadica.RADICA_MEMORANDO.Trim() != "1")
-                            {
-                                return "ERROR:" + idProyeccionDocumento.ToString() + ":El funcionario correspondiente a la última firma, no está configurado para radicar documentos de esta serie documental.";
-                            }
-
-                            // Valida el indide PARA para saber si pueden recibir memorandos
-                            foreach (Indice indice in datos.Indices)
-                            {
-                                if (indicePARA.Contains(indice.CODINDICE.ToString()))
-                                {
-                                    // Obtene el cargo del funcionario asociado en el índice
-                                    var cargoFuncionario = (from f in dbSIM.TBFUNCIONARIO
-                                                            join
-                                                             c in dbSIM.TBCARGO on f.CODCARGO equals c.CODCARGO
-                                                            where f.CODFUNCIONARIO == indice.ID_VALOR
-                                                            select c).FirstOrDefault();
-
-                                    if (cargoFuncionario.RECIBE_MEMORANDO == null || cargoFuncionario.RECIBE_MEMORANDO.Trim() != "1")
-                                    {
-                                        return "ERROR:" + idProyeccionDocumento.ToString() + ":El funcionario relacionado en el Indice 'PARA', no está configurado para recibir documentos de esta serie documental.";
-                                    }
-                                }
-                            }
-
-                            if (datos.Grupo != null)
-                            {
-                                // Valida los funcionarios del grupo para saber si pueden recibir copias de memorandos
-                                var sqlFuncionariosNoRecibe = "SELECT SUM(CASE WHEN c.RECIBE_COPIAMEMO IS NULL OR TRIM(c.RECIBE_COPIAMEMO) <> '1' THEN 1 ELSE 0 END) AS NumNoRecibe " +
-                                    "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf INNER JOIN " +
-                                    "   TRAMITES.TBFUNCIONARIO f ON mf.CODFUNCIONARIO = f.CODFUNCIONARIO INNER JOIN " +
-                                    "   TRAMITES.TBCARGO c ON f.CODCARGO = c.CODCARGO " +
-                                    "WHERE ID_GRUPOMEMO = " + datos.Grupo.ToString();
-
-                                int? numFuncionariosNoRecibe = dbSIM.Database.SqlQuery<int?>(sqlFuncionariosNoRecibe).FirstOrDefault();
-
-                                if ((numFuncionariosNoRecibe ?? 0) > 0)
-                                {
-                                    return "ERROR:" + idProyeccionDocumento.ToString() + ":Por lo menos un funcionario del grupo seleccionado, no está configurado para recibir copias de documentos de esta serie documental.";
-                                }
-
-                                break;
-                            }
-                        }
-                    }
+                    return "ERROR:El Usuario no se encuentra autenticado.";
                 }
 
                 PROYECCION_DOC proyeccionDocumento;
@@ -814,7 +1067,6 @@ namespace SIM.Areas.Tramites.Controllers
                         if (indiceProyeccion != null)
                         {
                             indiceProyeccion.S_VALOR = indice.VALOR ?? "";
-                            indiceProyeccion.ID_VALOR = indice.ID_VALOR;
                             dbSIM.Entry(indiceProyeccion).State = EntityState.Modified;
                         }
                         else
@@ -824,7 +1076,6 @@ namespace SIM.Areas.Tramites.Controllers
                             indiceProyeccion.ID_PROYECCION_DOC = proyeccionDocumento.ID_PROYECCION_DOC;
                             indiceProyeccion.CODINDICE = indice.CODINDICE;
                             indiceProyeccion.S_VALOR = indice.VALOR ?? "";
-                            indiceProyeccion.ID_VALOR = indice.ID_VALOR;
 
                             dbSIM.Entry(indiceProyeccion).State = EntityState.Added;
                         }
@@ -930,18 +1181,12 @@ namespace SIM.Areas.Tramites.Controllers
             return "OK:" + idProyeccionDocumento.ToString() + ":" + respuestaAdicional;
         }
 
-        /// <summary>
-        /// /
-        /// </summary>
-        /// <returns></returns>
         [Authorize]
         [HttpGet, ActionName("ObtenerSeriesDocumentales")]
         public dynamic GetObtenerSeriesDocumentales()
         {
-            //var seriesHabilitadas = ConfigurationManager.AppSettings["SeriesProyeccionDocumento"];
-            var seriesHabilitadas = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionDocumento");
-            //var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
-            var seriesGrupos = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionGrupos");
+            var seriesHabilitadas = ConfigurationManager.AppSettings["SeriesProyeccionDocumento"];
+            var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
 
             if (seriesHabilitadas == null || seriesHabilitadas.Trim() == "")
             {
@@ -989,19 +1234,6 @@ namespace SIM.Areas.Tramites.Controllers
         }
 
         [Authorize]
-        [HttpGet, ActionName("ObtenerPrimerRegistro")]
-        public ValorLista GetObtenerPrimerRegistro(int idGrupo)
-        {
-            //var sql = "SELECT CODFUNCIONARIO AS ID FROM TRAMITES.MEMORANDO_FUNCGRUPO WHERE ID_GRUPOMEMO = " + idGrupo.ToString() + " FETCH FIRST 1 ROWS ONLY";
-
-            var sql = "SELECT CODFUNCIONARIO AS ID, NOMBRES AS NOMBRE " +
-                "FROM(SELECT * FROM TRAMITES.QRY_FUNCIONARIO WHERE CODFUNCIONARIO = (SELECT CODFUNCIONARIO AS ID FROM TRAMITES.MEMORANDO_FUNCGRUPO WHERE ID_GRUPOMEMO = " + idGrupo.ToString() + " FETCH FIRST 1 ROWS ONLY)) datos";
-           
-            var resultadoConsulta = dbSIM.Database.SqlQuery<ValorLista>(sql).FirstOrDefault();
-            return resultadoConsulta;
-        }
-
-        [Authorize]
         [HttpGet, ActionName("ObtenerIndicesSerieDocumental")]
         public dynamic GetObtenerIndicesSerieDocumental(int codSerie)
         {
@@ -1019,7 +1251,6 @@ namespace SIM.Areas.Tramites.Controllers
                                              OBLIGA = i.OBLIGA,
                                              VALORDEFECTO = i.VALORDEFECTO,
                                              VALOR = "",
-                                             ID_VALOR = null,
                                              ID_LISTA = i.CODIGO_SUBSERIE,
                                              TIPO_LISTA = pdis.TIPO,
                                              CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
@@ -1293,8 +1524,7 @@ namespace SIM.Areas.Tramites.Controllers
 
                                     if (respuesta.tipoRespuesta == "OK")
                                     {
-                                        //string procesosIndicesProyeccion = ConfigurationManager.AppSettings["ProcesosIndicesProyeccion"];
-                                        string procesosIndicesProyeccion = Utilidades.Data.ObtenerValorParametro("PD_ProcesosIndicesProyeccion");
+                                        string procesosIndicesProyeccion = ConfigurationManager.AppSettings["ProcesosIndicesProyeccion"];
 
                                         if (procesosIndicesProyeccion != null && procesosIndicesProyeccion.Trim() != "")
                                         {
@@ -1395,19 +1625,6 @@ namespace SIM.Areas.Tramites.Controllers
 
                                     if (firma == null) // No hay mas firmas y hay que avanzar los trámites
                                     {
-                                        /*var funcionariosInhabilitados = (from pf in dbSIM.PROYECCION_DOC_FIRMAS
-                                                                        join fi in dbSIM.TBFUNCIONARIO on pf.CODFUNCIONARIO equals fi.CODFUNCIONARIO
-                                                                        where pf.ID_PROYECCION_DOC == datos.Id && fi.ACTIVO == "0"
-                                                                        select new { FUNCIONARIO = fi.NOMBRES + " " + fi.APELLIDOS }).ToList();
-
-                                        if (funcionariosInhabilitados.Count > 0)
-                                        {
-                                            string listaFuncionarios = string.Join(", ", funcionariosInhabilitados.Select(f => f.FUNCIONARIO));
-
-                                            return new { Respuesta = "Error:¡Advertencia!<br>No puede radicarse el documento.<br>Actualmente el usuario " + listaFuncionarios + " se encuentra inhabilitado en el sistema y no puede firmar este documento.<br>Si desea cambiar el responsable de la firma puede devolver la tarea a quién proyectó el documento.", Avanzar = "0" };
-                                        }*/
-
-
                                         DatosRadicado radicado;
 
                                         bool puedeRadicar = (new Radicador()).SePuedeGenerarRadicado(DateTime.Now);
@@ -1447,105 +1664,32 @@ namespace SIM.Areas.Tramites.Controllers
 
                                         radicadoGenerado = radicado.Radicado;
 
-                                        //var seriesGrupos = ConfigurationManager.AppSettings["SeriesProyeccionGrupos"];
-                                        var seriesGrupos = Utilidades.Data.ObtenerValorParametro("PD_SeriesProyeccionGrupos");
-                                        var codSeriesGrupos = seriesGrupos.Split(',').Select(s => int.Parse(s));
-                                        //var indicesPara = ConfigurationManager.AppSettings["IndicesProyeccionGrupos"];
-                                        var indicesPara = Utilidades.Data.ObtenerValorParametro("PD_IndicesProyeccionGruposPARA");
-                                        var codindicesPara = indicesPara.Split(',').Select(s => int.Parse(s));
-                                        //var indicesAsunto = ConfigurationManager.AppSettings["IndiceProyeccionGruposAsunto"];
-                                        var indicesAsunto = Utilidades.Data.ObtenerValorParametro("PD_IndiceProyeccionGruposAsunto");
-                                        var codindicesAsunto = indicesAsunto.Split(',').Select(s => int.Parse(s));
-
-                                        PROYECCION_DOC_INDICES paraProyeccion = dbSIM.PROYECCION_DOC_INDICES.Where(p => p.ID_PROYECCION_DOC == documento.ID_PROYECCION_DOC && codindicesPara.Contains(p.CODINDICE)).FirstOrDefault();
-                                        PROYECCION_DOC_INDICES asuntoProyeccion = dbSIM.PROYECCION_DOC_INDICES.Where(p => p.ID_PROYECCION_DOC == documento.ID_PROYECCION_DOC && codindicesAsunto.Contains(p.CODINDICE)).FirstOrDefault();
-
-                                        bool noAvanzaFuncionarioDiferente = false;
-
                                         if (documento.S_TRAMITE_NUEVO == "S")
                                         {
                                             if (documento.S_TRAMITES == null)
                                             {
-                                                decimal codProceso = 0;
-                                                decimal codTarea = 0;
                                                 // Crea el trámite y lo relaciona con la Proyección
 
-                                                string codProcesoTareaSerieDocumental = SIM.Utilidades.Data.ObtenerValorParametro("PD_ProcesoTareaNuevoTramite");
+                                                var codProceso = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("ProcesoNuevoTramite"));
+                                                var codTarea = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("TareaNuevoTramite"));
+                                                var codFuncionarioTN = documento.CODFUNCIONARIO;
+                                                ObjectParameter respCodTramite = new ObjectParameter("respCodTramite", typeof(decimal));
+                                                ObjectParameter respCodTarea = new ObjectParameter("respCodTarea", typeof(decimal));
+                                                ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
 
-                                                if (codProcesoTareaSerieDocumental != null && codProcesoTareaSerieDocumental != "")
-                                                {
-                                                    var confSeries = codProcesoTareaSerieDocumental.Split('|');
-
-                                                    foreach (string confSerie in confSeries)
-                                                    {
-                                                        var procesoTareaSerie = confSerie.Split(';');
-
-                                                        if (procesoTareaSerie[0] == "*")
-                                                        {
-                                                            codProceso = Convert.ToDecimal(procesoTareaSerie[1]);
-                                                            codTarea = Convert.ToDecimal(procesoTareaSerie[2]);
-                                                        }
-                                                        else if (procesoTareaSerie[0] == documento.CODSERIE.ToString())
-                                                        {
-                                                            codProceso = Convert.ToDecimal(procesoTareaSerie[1]);
-                                                            codTarea = Convert.ToDecimal(procesoTareaSerie[2]);
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    codProceso = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("ProcesoNuevoTramite"));
-                                                    codTarea = Convert.ToDecimal(SIM.Utilidades.Data.ObtenerValorParametro("TareaNuevoTramite"));
-                                                }
-
-                                                var codFuncionarioTN = documento.CODFUNCIONARIO_ACTUAL;
-                                                //ObjectParameter respCodTramite = new ObjectParameter("respCodTramite", typeof(decimal));
-                                                //ObjectParameter respCodTarea = new ObjectParameter("respCodTarea", typeof(decimal));
-                                                //ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
-
-                                                int[] respNuevoTramite;
-                                                int respCodTramite;
-                                                int respCodTarea;
-                                                int funcionarioPrincipal = -1;
-
-                                                //dbTramites.SP_NUEVO_TRAMITE(codProceso, codTarea, codFuncionarioTN, documento.S_DESCRIPCION, respCodTramite, respCodTarea, rtaResultado);
-                                                if (documento.ID_GRUPO == null) {
-                                                    funcionarioPrincipal = (paraProyeccion != null && paraProyeccion.ID_VALOR != null ? (int)paraProyeccion.ID_VALOR : (int)codFuncionarioTN);
-
-                                                    respNuevoTramite = Utilidades.Tramites.CrearTramite(Convert.ToInt32(codProceso), Convert.ToInt32(codTarea), null, documento.S_DESCRIPCION, documento.S_DESCRIPCION, (int)codFuncionarioTN, funcionarioPrincipal, null, null, false);
-                                                    respCodTramite = respNuevoTramite[0];
-                                                    respCodTarea = respNuevoTramite[1];
-                                                }
-                                                else
-                                                {
-                                                    var sqlFuncionariosGrupo = "SELECT mf.CODFUNCIONARIO " +
-                                                        "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf " +
-                                                        "WHERE mf.ID_GRUPOMEMO = " + documento.ID_GRUPO.ToString() + " AND mf.CODFUNCIONARIO <> " + codFuncionarioTN.ToString();
-
-                                                    var funcionariosGrupo = dbSIM.Database.SqlQuery<int>(sqlFuncionariosGrupo).ToArray();
-                                                    var funcionarioPrincipalGrupo = funcionariosGrupo[0];
-
-                                                    funcionarioPrincipal = (paraProyeccion != null && paraProyeccion.ID_VALOR != null ? (int)paraProyeccion.ID_VALOR : funcionarioPrincipalGrupo);
-
-                                                    respNuevoTramite = Utilidades.Tramites.CrearTramite(Convert.ToInt32(codProceso), Convert.ToInt32(codTarea), null, documento.S_DESCRIPCION, documento.S_DESCRIPCION, (int)codFuncionarioTN, funcionarioPrincipal, funcionariosGrupo, null, false);
-                                                    respCodTramite = respNuevoTramite[0];
-                                                    respCodTarea = respNuevoTramite[1];
-                                                }
-
-                                                noAvanzaFuncionarioDiferente = (funcionarioPrincipal != codFuncionarioTN);
+                                                dbTramites.SP_NUEVO_TRAMITE(codProceso, codTarea, codFuncionarioTN, documento.S_DESCRIPCION, respCodTramite, respCodTarea, rtaResultado);
 
                                                 TRAMITES_PROYECCION nuevoTramite = new TRAMITES_PROYECCION();
                                                 nuevoTramite.ID_PROYECCION_DOC = documento.ID_PROYECCION_DOC;
-                                                nuevoTramite.CODTRAMITE = respCodTramite;
-                                                nuevoTramite.CODTAREA_INICIAL = respCodTarea;
+                                                nuevoTramite.CODTRAMITE = Convert.ToInt32(respCodTramite.Value);
+                                                nuevoTramite.CODTAREA_INICIAL = Convert.ToInt32(respCodTarea.Value);
 
                                                 dbSIM.Entry(nuevoTramite).State = System.Data.Entity.EntityState.Added;
                                                 dbSIM.SaveChanges();
 
-                                                int codTramite = respCodTramite;
+                                                int codTramite = Convert.ToInt32(respCodTramite.Value);
 
-                                                documento.S_TRAMITES = respCodTramite.ToString();
+                                                documento.S_TRAMITES = respCodTramite.Value.ToString();
                                                 //documentoProyeccion.D_FECHA_TRAMITE = dbSIM.TBTRAMITE.Where(t => t.CODTRAMITE == codTramite).Select(t => t.FECHAINI).FirstOrDefault();
                                                 int codProcesoNuevoTramite = Convert.ToInt32(codProceso);
                                                 documento.S_PROCESOS = dbSIM.TBPROCESO.Where(p => p.CODPROCESO == codProcesoNuevoTramite).Select(p => p.NOMBRE).FirstOrDefault();
@@ -1578,55 +1722,24 @@ namespace SIM.Areas.Tramites.Controllers
                                         {
                                             RegistrarDocumento(documento.ID_PROYECCION_DOC, documentoRadicado.documentoBinario, documentoRadicado.numPaginas);
 
-                                            if (codSeriesGrupos.Contains(documento.CODSERIE))
+                                            if (documento.ID_GRUPO != null)
                                             {
                                                 var serieDocumental = dbSIM.TBSERIE.FirstOrDefault(s => s.CODSERIE == documento.CODSERIE).NOMBRE;
 
-                                                if (documento.ID_GRUPO != null)
-                                                {
-                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_GRUPO, null, radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
-                                                }
-                                                else
-                                                {
-                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, null, (paraProyeccion != null ? paraProyeccion.ID_VALOR : null) , radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
-                                                }
+                                                EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_GRUPO, radicado.IdRadicado, documento.S_DESCRIPCION);
                                             }
 
                                             if (documento.S_TRAMITE_NUEVO != "S")
                                             {
-                                                int codFuncionarioTramite;
-
-                                                if (paraProyeccion != null && paraProyeccion.ID_VALOR != null)
-                                                {
-                                                    codFuncionarioTramite = (int)paraProyeccion.ID_VALOR;
-
-                                                    noAvanzaFuncionarioDiferente = ((int)paraProyeccion.ID_VALOR != documento.CODFUNCIONARIO);
-                                                }
-                                                else
-                                                {
-                                                    codFuncionarioTramite = documento.CODFUNCIONARIO;
-                                                }
-
-                                                string comentarioTramite;
-                                                if (noAvanzaFuncionarioDiferente)
-                                                {
-                                                    comentarioTramite = documento.S_DESCRIPCION;
-                                                }
-                                                else
-                                                {
-                                                    comentarioTramite = "Documento " + (radicado.IdRadicado > 0 ? "Radicado" : "Generado") + " y Enviado Nuevamente al Usuario que Proyectó el Documento.";
-                                                }
-
                                                 datosTareaTramiteFormulario = new DatosAvanzaTareaTramiteFormulario()
                                                 {
                                                     codTramites = tareasInicialesTramites,
                                                     codTarea = 0,
                                                     codTareaSiguiente = 0,
-                                                    codFuncionario = codFuncionarioTramite,
+                                                    codFuncionario = documento.CODFUNCIONARIO,
                                                     formularioSiguiente = "20",
                                                     copias = "",
-                                                    idGrupo = documento.ID_GRUPO,
-                                                    comentario = comentarioTramite
+                                                    comentario = "Documento " + (radicado.IdRadicado > 0 ? "Radicado" : "Generado") + " y Enviado Nuevamente al Usuario que Proyectó el Documento."
                                                 };
                                             }
                                             else
@@ -1634,7 +1747,7 @@ namespace SIM.Areas.Tramites.Controllers
                                                 tramitesAvanzar = tramiteNuevo;
                                             }
 
-                                            if (documento.S_NO_AVANZAR == "S" || noAvanzaFuncionarioDiferente)
+                                            if (documento.S_NO_AVANZAR == "S")
                                                 avanzar = "0";
                                             else
                                                 avanzar = "1";
@@ -1818,85 +1931,68 @@ namespace SIM.Areas.Tramites.Controllers
             }
         }
 
-        private bool EnviarEmailGrupo(string serieDocumental, int codFuncionario, int? idGrupo, int? codFuncionarioPara, int idRadicado, string asunto)
+        private bool EnviarEmailGrupo(string serieDocumental, int codFuncionario, int? idGrupo, int idRadicado, string descripcion)
         {
             string emailFrom;
             string emailSMTPServer;
             string emailSMTPUser;
             string emailSMTPPwd;
-            string emailPara;
             StringBuilder emailHtml;
             TBFUNCIONARIO funcionarioProyecta;
             string funcionariosGrupo = "";
-            string funcionarioPara = "";
-            //string asunto = serieDocumental + " Radicado No. " + idRadicado.ToString() + " - " + descripcion;
+            string asunto = serieDocumental + " Radicado No. " + idRadicado.ToString() + " - " + descripcion;
 
-            if (idGrupo != null || codFuncionarioPara != null)
+            emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+            emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
+            emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
+            emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+
+            try
             {
-                emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
-                emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
-                emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
-                emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+                funcionarioProyecta = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO == codFuncionario).FirstOrDefault();
 
-                try
+                if (idGrupo != null && idGrupo != -1)
                 {
-                    funcionarioProyecta = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO == codFuncionario).FirstOrDefault();
+                    var sqlFuncionariosGrupo = "SELECT f.EMAIL " +
+                            "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf INNER JOIN " +
+                            "   TRAMITES.TBFUNCIONARIO f ON mf.CODFUNCIONARIO = f.CODFUNCIONARIO " +
+                            "WHERE ID_GRUPOMEMO = " + idGrupo.ToString();
 
-                    if (idGrupo != null && idGrupo != -1)
-                    {
-                        var sqlFuncionariosGrupo = "SELECT f.EMAIL " +
-                                "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf INNER JOIN " +
-                                "   TRAMITES.TBFUNCIONARIO f ON mf.CODFUNCIONARIO = f.CODFUNCIONARIO " +
-                                "WHERE ID_GRUPOMEMO = " + idGrupo.ToString();
+                    funcionariosGrupo = String.Join(";", dbSIM.Database.SqlQuery<string>(sqlFuncionariosGrupo).ToList());
 
-                        funcionariosGrupo = String.Join(";", dbSIM.Database.SqlQuery<string>(sqlFuncionariosGrupo).ToList());
-
-                        if (funcionariosGrupo.Trim() == ";")
-                            funcionariosGrupo = "";
-
-                        emailPara = funcionariosGrupo;
-                    }
-                    else
-                    {
-                        var sqlFuncionarioPara = "SELECT f.EMAIL " +
-                                "FROM TRAMITES.TBFUNCIONARIO f " +
-                                "WHERE CODFUNCIONARIO = " + codFuncionarioPara.ToString();
-
-                        funcionarioPara = dbSIM.Database.SqlQuery<string>(sqlFuncionarioPara).FirstOrDefault();
-
-                        emailPara = funcionarioPara;
-                    }
-
-                    var radicado = dbSIM.RADICADO_DOCUMENTO.Where(rd => rd.ID_RADICADODOC == idRadicado).Select(rd => rd.S_RADICADO).FirstOrDefault();
-
-                    string saludo = "";
-
-                    if (DateTime.Now.Hour < 12) saludo = "Buenos D&iacute;as";
-                    else if (DateTime.Now.Hour < 18) saludo = "Buenas Tardes";
-                    else if (DateTime.Now.Hour < 24) saludo = "Buenas Noches";
-
-                    emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaNotificacionProyeccion.html")));
-                    emailHtml.Replace("[Tipo Proyeccion]", serieDocumental);
-                    emailHtml.Replace("[Radicado]", (radicado ?? ""));
-                    emailHtml.Replace("[Saludo]", saludo);
-                    emailHtml.Replace("[De]", funcionarioProyecta.NOMBRES + " " + funcionarioProyecta.APELLIDOS);
-                    emailHtml.Replace("[Asunto]", asunto);
-                }
-                catch (Exception error)
-                {
-                    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
-                    return false;
+                    if (funcionariosGrupo.Trim() == ";")
+                        funcionariosGrupo = "";
                 }
 
-                try
-                {
-                    Utilidades.Email.EnviarEmail(emailFrom, funcionarioProyecta.EMAIL, emailPara, "", asunto, emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
-                }
-                catch (Exception error)
-                {
-                    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
-                    return false;
-                }
+                var radicado = dbSIM.RADICADO_DOCUMENTO.Where(rd => rd.ID_RADICADODOC == idRadicado).Select(rd => rd.S_RADICADO).FirstOrDefault();
+
+                string saludo = "";
+
+                if (DateTime.Now.Hour < 12) saludo = "Buenos D&iacute;as";
+                else if (DateTime.Now.Hour < 18) saludo = "Buenas Tardes";
+                else if (DateTime.Now.Hour < 24) saludo = "Buenas Noches";
+
+                emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaNotificacionProyeccion.html")));
+                emailHtml.Replace("[Tipo Proyeccion]", serieDocumental);
+                emailHtml.Replace("[Radicado]", (radicado ?? ""));
+                emailHtml.Replace("[Saludo]", saludo);
+                emailHtml.Replace("[De]", funcionarioProyecta.NOMBRES + " " + funcionarioProyecta.APELLIDOS);
+                emailHtml.Replace("[Asunto]", asunto);
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
+                return false;
+            }
+
+            try
+            {
+                Utilidades.Email.EnviarEmail(emailFrom, funcionarioProyecta.EMAIL, funcionariosGrupo, "", asunto, emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
+                return false;
             }
 
             return true;
@@ -1906,7 +2002,7 @@ namespace SIM.Areas.Tramites.Controllers
         [HttpGet, ActionName("ObtenerIndiceValoresLista")]
         public dynamic GetObtenerIndiceValoresLista(int id)
         {
-            List<ValorLista> resultadoConsulta;
+            List<string> resultadoConsulta;
             string sql;
             TBSUBSERIE lista = dbSIM.TBSUBSERIE.Where(ss => ss.CODIGO_SUBSERIE == id).FirstOrDefault();
 
@@ -1914,15 +2010,15 @@ namespace SIM.Areas.Tramites.Controllers
             {
                 if (lista.TIPO == 0) // La lista se toma de la tabla TBDETALLE_SUBSERIE
                 {
-                    sql = "SELECT CODIGO_DETALLE AS ID, NOMBRE FROM TRAMITES.TBDETALLE_SUBSERIE WHERE CODIGO_SUBSERIE = " + lista.CODIGO_SUBSERIE.ToString() + " ORDER BY NOMBRE";
+                    sql = "SELECT NOMBRE FROM TRAMITES.TBDETALLE_SUBSERIE WHERE CODIGO_SUBSERIE = " + lista.CODIGO_SUBSERIE.ToString() + " ORDER BY NOMBRE";
 
-                    resultadoConsulta = dbSIM.Database.SqlQuery<ValorLista>(sql).ToList<ValorLista>();
+                    resultadoConsulta = dbSIM.Database.SqlQuery<string>(sql).ToList();
                 }
                 else
                 {
                     //sql = lista.SQL;
 
-                    resultadoConsulta = dbSIM.Database.SqlQuery<ValorLista>("SELECT " + lista.CAMPO_ID + " AS ID, " + lista.CAMPO_NOMBRE + " AS NOMBRE FROM (" + lista.SQL + ") datos").ToList<ValorLista>();
+                    resultadoConsulta = dbSIM.Database.SqlQuery<string>("SELECT " + lista.CAMPO_NOMBRE + " FROM (" + lista.SQL + ") datos").ToList();
                 }
 
                 //ObjectParameter jsonOut = new ObjectParameter("jSONOUT", typeof(string));
@@ -2080,13 +2176,6 @@ namespace SIM.Areas.Tramites.Controllers
                     contTramites++;
                 }
 
-                TBTRAMITE_DOC documentoRelacionado = new TBTRAMITE_DOC();
-                documentoRelacionado.CODTRAMITE = documento.CODTRAMITE;
-                documentoRelacionado.CODDOCUMENTO = documento.CODDOCUMENTO;
-                documentoRelacionado.ID_DOCUMENTO = documento.ID_DOCUMENTO;
-                dbSIM.Entry(documentoRelacionado).State = System.Data.Entity.EntityState.Added;
-                dbSIM.SaveChanges();
-
                 TRAMITES_PROYECCION tramiteAsignado = dbSIM.TRAMITES_PROYECCION.Where(tp => tp.ID_TRAMITES_PROYECCION == tramiteDoc.ID_TRAMITES_PROYECCION).FirstOrDefault();
                 tramiteAsignado.CODDOCUMENTO = idCodDocumento;
                 tramiteAsignado.D_FECHA_GENERACION = fechaActual;
@@ -2186,7 +2275,7 @@ namespace SIM.Areas.Tramites.Controllers
         public void GetCargarTramitesProcesos()
         {
             var proyecciones = (from p in dbSIM.PROYECCION_DOC
-                                    //where p.S_TRAMITES == null && p.S_PROCESOS == null
+                                //where p.S_TRAMITES == null && p.S_PROCESOS == null
                                 select p).ToList();
 
             foreach (var proyeccion in proyecciones)
@@ -2301,5 +2390,6 @@ namespace SIM.Areas.Tramites.Controllers
             }
             return _Resp;
         }
+        */
     }
 }

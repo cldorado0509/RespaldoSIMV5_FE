@@ -535,7 +535,7 @@ namespace SIM.Utilidades
 
                     // Preguntas
                     sql =
-                        "SELECT ep.ID_ENCUESTA, sp.ID_SOLUCION, sp.X_VALOR, sp.Y_VALOR, p.ID_PREGUNTA, p.S_NOMBRE, p.ID_TIPOPREGUNTA, p.S_AYUDA, ep.S_REQUERIDA, ep.N_FACTOR, sp.ID_VALOR, sp.N_VALOR, sp.S_VALOR, TO_CHAR(sp.D_VALOR,'yyyy-mm-dd') AS D_VALOR, sp.S_OBSERVACION, NVL(sp.ID_SOLUCION_PREGUNTAS,-1) ID_SOLUCION_PREGUNTAS, SQL_OPCION_EXTERNO, ID_OPCION_RESPUESTA_DOM " +
+                        "SELECT ep.ID_ENCUESTA, sp.ID_SOLUCION, sp.X_VALOR, sp.Y_VALOR, p.ID_PREGUNTA, p.S_NOMBRE, p.ID_TIPOPREGUNTA, p.S_AYUDA, ep.S_REQUERIDA, ep.N_FACTOR, NVL(ep.N_NIVEL, 1) AS N_NIVEL, NVL(ep.N_TIPO_TITULO, 1) AS N_TIPO_TITULO, sp.ID_VALOR, sp.N_VALOR, sp.S_VALOR, TO_CHAR(sp.D_VALOR,'yyyy-mm-dd') AS D_VALOR, sp.S_OBSERVACION, NVL(sp.ID_SOLUCION_PREGUNTAS,-1) ID_SOLUCION_PREGUNTAS, SQL_OPCION_EXTERNO, ID_OPCION_RESPUESTA_DOM " +
                         "FROM CONTROL.ENC_ENCUESTA_PREGUNTA ep INNER JOIN " +
                         "    CONTROL.ENC_PREGUNTA p ON ep.ID_PREGUNTA = p.ID_PREGUNTA LEFT OUTER JOIN " +
                         "    CONTROL.ENC_SOLUCION_PREGUNTAS sp ON p.ID_PREGUNTA = sp.ID_PREGUNTA AND sp.ID_SOLUCION IN (" + (listaSolucionesEncuestas.Trim() != "" ? listaSolucionesEncuestas : "-1") + ") " +

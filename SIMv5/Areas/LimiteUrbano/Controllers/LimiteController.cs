@@ -98,6 +98,9 @@ namespace SIM.Areas.LimiteUrbano.Controllers
                     case "ENVIGADO":
                         strMunicipio = "10";
                         break;
+                    case "OTRO":
+                        strMunicipio = "100";
+                        break;
                 }
             }
                 

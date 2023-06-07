@@ -8,7 +8,7 @@
 
 
 <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.10")"></script>
+<script src="@Url.Content("~/Scripts/js/FcomponentesGenerales.js?v=2.11")"></script>
 
 
 <head>
@@ -99,67 +99,76 @@
     <div id="divUbicacionUrbana" title="Ubicación Urbana/Rural" style="display: none; overflow: hidden; padding: 0px">
         <iframe src="" id="frm_UbicacionUrbana" name="frm_UbicacionUrbana" width="100%" height="100%"></iframe>
     </div>
-    <div id="app" data-url="@Url.Content("~")" data-vd="@ViewBag.Dependencias" class="row">
-        <div class="row col-md-12" id="divNombre" style="
-    margin-bottom: 10px;display:none;
-">
-            <h4 class="col-md-2" style="
-    height: 30px;
-    line-height: 29px;
-    width: 185px;
-">
+    <div id="app" data-url="@Url.Content("~")" data-vd="@ViewBag.Dependencias" data-tc="@ViewBag.TipoTerminos" class="row">
+        <div class="row col-md-12" id="divNombre" style="margin-bottom: 10px;display:none;">
+            <h4 class="col-md-2" style="height: 30px; line-height: 29px; width: 185px;">
                 Nombre Encuesta
             </h4>
             <!--input type="text" class="form-control col-md-4" value="" id="txtnombreEncMult" style="width:60%" -->
             <span class="form-control col-md-4" id="txtnombreEncMult" style="width:60%"></span>
         </div>
-                <div class="col-md-12" id="acordionEncuestaGeneral">
-                    <!--Nivel1-->
-                    <div class="panel-group acordeonVerde " id="acordionEncuestaPrincipal">
-                    </div>
-                </div>
+        <div class="col-md-12" id="acordionEncuestaGeneral">
+            <!--Nivel1-->
+            <div class="panel-group acordeonVerde " id="acordionEncuestaPrincipal">
             </div>
-            <div class="row">
-                <div class="col-sm-12" style="margin-top: 10px;">
-                    <div class="col-sm-4">
-                    </div>
-                    <div class="col-sm-3">
-                        <button class="btn btn-default" id="btnEnviar" style="width:100%" onclick="EnviarEncuesta()" disabled>Enviar</button>
-                    </div>
-                    <div class="col-sm-2">
-                    </div>
-                    <div class="col-sm-3">
-                        <button class="btn btn-default" id="btnAceptar" style="width:100%" onclick="guardarEncuesta(0)" disabled>Guardar y Cerrar</button>
-                    </div>
-                </div>
+        </div>
+    </div>
+    @if (ViewBag.TipoTerminos == "E")
+    {
+        <div class="row">
+            <div class="row col-xs-7 col-sm-7">
+                <label style="font-weight: bold;">Términos y condiciones</label>
             </div>
-            <input id="txtIdEnc" style="display:none" />
-            <input id="txtIdVgen" style="display:none" />
-            <input id="txtIdEstado" style="display:none" />
-            <div id="msAlmacenamiento" title="Información" style="display:none">
-                <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+            <div class="row col-xs-4 col-sm-4" style="float:right;">
+                <label style="float: right;"><input type="checkbox" id="chterminos" value="">&nbsp;&nbsp;Aceptar T&eacute;rminos y Condicciones</label>
             </div>
-            <div id="msAdvertencia" title="Advertencia" style="display:none">
-                <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msAdv"></p>
+        </div>
+        <div class="row col-xs-12 col-sm-12" style="border: 1px solid #c1c1c1; padding: 10px">
+            <span id="txtTeminos" style="width: 100%; background: #fff;">@ViewBag.TerminosCondiciones</span>
+            <br />
+        </div>
+    }
+    <div class="row">
+        <div class="col-sm-12" style="margin-top: 10px;">
+            <div class="col-sm-4">
             </div>
-            <div id="pantallaVigencia" title="Vigencia" style="display: none; overflow: hidden;">
-                <iframe src="" id="frVigencia" width="100%" height="100%"></iframe>
+            <div class="col-sm-3">
+                <button class="btn btn-default" id="btnEnviar" style="width:100%" onclick="EnviarEncuesta()" disabled>Enviar</button>
             </div>
-            <div id="validacionEnvio" title="Validación Envío" style="display: none;">
-                <h4>Las siguientes encuestas no han sido enviadas a&uacute;n para la vigencia actual.</h4>
-                <div>&nbsp;</div>
-                <table id="dependencias" class="tabledependientes"></table>
+            <div class="col-sm-2">
             </div>
-            <div id="pantallaReporte" title="PDF" style="display: none; overflow: hidden;">
+            <div class="col-sm-3">
+                <button class="btn btn-default" id="btnAceptar" style="width:100%" onclick="guardarEncuesta(0)" disabled>Guardar y Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <input id="txtIdEnc" style="display:none" />
+    <input id="txtIdVgen" style="display:none" />
+    <input id="txtIdEstado" style="display:none" />
+    <div id="msAlmacenamiento" title="Información" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextAlm"></p>
+    </div>
+    <div id="msAdvertencia" title="Advertencia" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msAdv"></p>
+    </div>
+    <div id="pantallaVigencia" title="Vigencia" style="display: none; overflow: hidden;">
+        <iframe src="" id="frVigencia" width="100%" height="100%"></iframe>
+    </div>
+    <div id="validacionEnvio" title="Validación Envío" style="display: none;">
+        <h4>Las siguientes encuestas no han sido enviadas a&uacute;n para la vigencia actual.</h4>
+        <div>&nbsp;</div>
+        <table id="dependencias" class="tabledependientes"></table>
+    </div>
+    <div id="pantallaReporte" title="PDF" style="display: none; overflow: hidden;">
 
-                <iframe src="" id="frEncuestaPDF" width="100%" height="100%"></iframe>
+        <iframe src="" id="frEncuestaPDF" width="100%" height="100%"></iframe>
 
 
-            </div>
-            <div id="msConfirmacion" title="Terminos Condiciones" style="display:none">
-                <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextConf"></p>
-            </div>
-            <script>
+    </div>
+    <div id="msConfirmacion" title="Terminos Condiciones" style="display:none">
+        <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextConf"></p>
+    </div>
+    <script>
     var arrFechaIni = "";
     var arrFechaFin = "";
     var jsonEncuestas = null;
@@ -202,7 +211,16 @@
         setTimeout(function () { $('#btnAceptar').attr('disabled', false); }, 15000);
         setTimeout(function () { $('#btnEnviar').attr('disabled', false); }, 15000);
         setTimeout(function () { apagarload(); }, 10000);
+        setTimeout(AlmacenarEncuesta, 120000);
     });
+
+    function AlmacenarEncuesta() {
+        setTimeout(AlmacenarEncuesta, 120000);
+
+        $('#btnAceptar').attr('disabled', true);
+        $('#btnEnviar').attr('disabled', true);
+        guardarEncuesta(0, true);
+    }
 
     function consultarVigencia(id) {
         //prenderload();
@@ -377,7 +395,7 @@
     }
 
     var datoscardinalidad1 = {};
-    function crearEstadoNuevoCardinalidad(idVigencia, valor, idtercero, idInstalacion, cantidad) {
+    function crearEstadoNuevoCardinalidad(idVigencia, valor, idtercero, idInstalacion, cantidad, idVigenciaCopia) {
         datoscardinalidad1 = {};
         datoscardinalidad1.valor = valor;
         datoscardinalidad1.idTercero = idtercero;
@@ -458,18 +476,18 @@
         $("#frVigencia").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/vigencia?id=")" + $("#txtIdVgen").val()+"&tipo="+tipo);
     }
 
-    function guardarEncuesta(tipoGuardado) {
+    function guardarEncuesta(tipoGuardado, silencio = false) {
         var resp = guardarEncuestaJson(jsonEncuestas, tipoGuardado == 1);
         if(resp!="1") //*********** Comentar este if y el contenido del else para evitar que se devuelva si deben llenarse los campos obligatorios
         {
         //    jsonEncuestas=guardarEncuestaJson(jsonEncuestas)
-            guardarEncuestaOficial(tipoGuardado);
+            guardarEncuestaOficial(tipoGuardado, silencio);
         }
         else
             apagarload();
     }
 
-    function guardarEncuestaOficial(tipoGuardado) {
+    function guardarEncuestaOficial(tipoGuardado, silencio = false) {
         var jsonOficial = JSON.stringify(jsonEncuestas);
 
         $.ajax({
@@ -482,24 +500,28 @@
                 {
                     terminarEncuesta();
                 } else {
-                    mensajeAlmacenamiento("Almacenamiento Exitoso");
+                    if (silencio) {
+                        $('#btnAceptar').attr('disabled', false);
+                        $('#btnEnviar').attr('disabled', false);
+                    } else {
+                        mensajeAlmacenamiento("Almacenamiento Exitoso");
 
-                    @if (ViewBag.TipoInvocacion == "I")
-                    {
-                        <text>
-                        if (card == "1")
+                        @if (ViewBag.TipoInvocacion == "I")
                         {
-                            window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=0")', '_self');
-                        } else {
+                            <text>
+                            if (card == "1") {
+                                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=0")', '_self');
+                            } else {
 
-                            window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + (valorV + "").replace("-", "") + "&tercero=" + idTercero + "&instalacion=" + idInstalacion + "&vigencia=" + $("#txtIdVgen").val(), '_self');
+                                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + (valorV + "").replace("-", "") + "&tercero=" + idTercero + "&instalacion=" + idInstalacion + "&vigencia=" + $("#txtIdVgen").val(), '_self');
+                            }
+                            </text>
+                        } else
+                        {
+                            <text>
+                            window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/IngresoEncuesta")', '_self');
+                            </text>
                         }
-                        </text>
-                    } else
-                    {
-                        <text>
-                        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/IngresoEncuesta")', '_self');
-                        </text>
                     }
                 }
 
@@ -669,7 +691,18 @@
     }
 
     function EnviarEncuesta() {
-        var idRadicado=0;
+        var idRadicado = 0;
+
+        @if (ViewBag.TipoTerminos == "E")
+        {
+        <text>
+        if (!$('#chterminos').is(":checked"))
+        {
+            alert('Debe aceptar "Términos y Condiciones antes de enviar la Encuesta."');
+            return;
+        }
+        </text>
+        }
 
         if (card == 2) {
             mensajeConfirmar("¿Está seguro de finalizar el proceso de diligenciamiento de la encuesta?, ya que no se podrá modificar la información");
@@ -790,6 +823,6 @@
         $("#frHora").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/tipoHora")");
 
     }
-            </script>
+    </script>
 </body>
 

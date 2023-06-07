@@ -302,12 +302,12 @@
             }
         }
 
-        public static int[] CrearTramite(int codProceso, int codTarea, int? codTareaPadre, string comentarios, string mensaje, int codFuncionarioResponsable, int[] codFuncionariosCopias, List<IndicesValores> Indices)
+        public static int[] CrearTramite(int codProceso, int codTarea, int? codTareaPadre, string comentarios, string mensaje, int codFuncionarioInicial, int codFuncionarioResponsable, int[] codFuncionariosCopias, List<IndicesValores> Indices)
         {
-            return CrearTramite(codProceso, codTarea, codTareaPadre, comentarios, mensaje, codFuncionarioResponsable, codFuncionariosCopias, Indices, true);
+            return CrearTramite(codProceso, codTarea, codTareaPadre, comentarios, mensaje, codFuncionarioInicial, codFuncionarioResponsable, codFuncionariosCopias, Indices, true);
         }
 
-        public static int[] CrearTramite(int codProceso, int codTarea, int? codTareaPadre, string comentarios, string mensaje, int codFuncionarioResponsable, int[] codFuncionariosCopias, List<IndicesValores> Indices, bool sinDocumento)
+        public static int[] CrearTramite(int codProceso, int codTarea, int? codTareaPadre, string comentarios, string mensaje, int codFuncionarioInicial, int codFuncionarioResponsable, int[] codFuncionariosCopias, List<IndicesValores> Indices, bool sinDocumento)
         {
             decimal codNuevoTramite = 0;
             decimal codTareaInicioProceso = 0;
@@ -367,7 +367,7 @@
             nuevoTramiteTarea.CODTAREA = codTareaInicioProceso;
             nuevoTramiteTarea.CODTAREA_ANTERIOR = null;
             nuevoTramiteTarea.CODTAREA_SIGUIENTE = codTareaSiguiente;
-            nuevoTramiteTarea.CODFUNCIONARIO = Convert.ToDecimal(codFuncionarioResponsable);
+            nuevoTramiteTarea.CODFUNCIONARIO = Convert.ToDecimal(codFuncionarioInicial);
             nuevoTramiteTarea.FECHAINI = fechaActual;
             nuevoTramiteTarea.COPIA = 0;
             nuevoTramiteTarea.ORDEN = 1;
@@ -410,26 +410,29 @@
             {
                 foreach (int codFuncionario in codFuncionariosCopias)
                 {
-                    nuevoTramiteTarea = new TBTRAMITETAREA();
-                    nuevoTramiteTarea.CODTRAMITE = codNuevoTramite;
-                    nuevoTramiteTarea.CODTAREA = codTareaSiguiente;
-                    nuevoTramiteTarea.CODTAREA_ANTERIOR = codTareaPadre;
-                    nuevoTramiteTarea.CODTAREA_SIGUIENTE = null;
-                    nuevoTramiteTarea.CODFUNCIONARIO = Convert.ToDecimal(codFuncionario);
-                    nuevoTramiteTarea.FECHAINI = fechaActual;
-                    nuevoTramiteTarea.COPIA = 1;
-                    nuevoTramiteTarea.ORDEN = 2;
-                    nuevoTramiteTarea.ESTADO = 0;
-                    nuevoTramiteTarea.DELEGADO = 0;
-                    nuevoTramiteTarea.RECHAZADO = 0;
-                    nuevoTramiteTarea.COMENTARIO = comentarios;
-                    nuevoTramiteTarea.RECIBIDA = 0;
-                    nuevoTramiteTarea.IMPORTANTE = 0;
-                    nuevoTramiteTarea.FECHAFIN = null;
-                    nuevoTramiteTarea.DEVOLUCION = "0";
+                    if (codFuncionario != codFuncionarioSiguiente)
+                    {
+                        nuevoTramiteTarea = new TBTRAMITETAREA();
+                        nuevoTramiteTarea.CODTRAMITE = codNuevoTramite;
+                        nuevoTramiteTarea.CODTAREA = codTareaSiguiente;
+                        nuevoTramiteTarea.CODTAREA_ANTERIOR = codTareaPadre;
+                        nuevoTramiteTarea.CODTAREA_SIGUIENTE = null;
+                        nuevoTramiteTarea.CODFUNCIONARIO = Convert.ToDecimal(codFuncionario);
+                        nuevoTramiteTarea.FECHAINI = fechaActual;
+                        nuevoTramiteTarea.COPIA = 1;
+                        nuevoTramiteTarea.ORDEN = 2;
+                        nuevoTramiteTarea.ESTADO = 0;
+                        nuevoTramiteTarea.DELEGADO = 0;
+                        nuevoTramiteTarea.RECHAZADO = 0;
+                        nuevoTramiteTarea.COMENTARIO = comentarios;
+                        nuevoTramiteTarea.RECIBIDA = 0;
+                        nuevoTramiteTarea.IMPORTANTE = 0;
+                        nuevoTramiteTarea.FECHAFIN = null;
+                        nuevoTramiteTarea.DEVOLUCION = "0";
 
-                    dbSIM.Entry(nuevoTramiteTarea).State = System.Data.Entity.EntityState.Added;
-                    dbSIM.SaveChanges();
+                        dbSIM.Entry(nuevoTramiteTarea).State = System.Data.Entity.EntityState.Added;
+                        dbSIM.SaveChanges();
+                    }
                 }
             }
 

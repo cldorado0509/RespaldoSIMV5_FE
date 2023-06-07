@@ -80,6 +80,13 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         public string datos { get; set; }
     }
 
+    public class GrupoVigencia
+    {
+        public int? ID_VIGENCIA_GRUPO { get; set; }
+        public string S_NOMBRE { get; set; }
+        public string S_NOMBRE_ORIGINAL { get; set; }
+    }
+
     public class EncuestaExternaController : Controller
     {
         EntitiesSIMOracle db = new EntitiesSIMOracle();
@@ -132,6 +139,11 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             ViewBag.instalacion = instalacion;
             int vigencia = Convert.ToInt32(Request.Params["vigencia"]);
             ViewBag.vigencia = vigencia;
+
+            var idPrimeraEncuesta = db.FRM_GENERICO_ESTADO.Where(ge => ge.ID_TERCERO == tercero && ge.ID_INSTALACION == instalacion && ge.ID_VIGENCIA == vigencia && ge.VALOR == valor).FirstOrDefault();
+
+            int codigoEncuesta = (idPrimeraEncuesta == null ? 0 : Convert.ToInt32(idPrimeraEncuesta.ID_ESTADO));
+            ViewBag.codigoEncuesta = codigoEncuesta;
 
             var vigenciaArchivo = db.VIGENCIA.Where(v => v.ID_VIGENCIA == vigencia).FirstOrDefault();
 
@@ -274,15 +286,16 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         
         public ActionResult vigencia()
         {
-            string sql = "SELECT NVL(PERMITE_COPIA, 'N') FROM CONTROL.VIGENCIA WHERE ID_VIGENCIA = " + Request.Params["id"];
+            string sql = "SELECT NVL(PERMITE_COPIA, 'N') || '-' || NVL(TIPO_TERMINOS, 'V') FROM CONTROL.VIGENCIA WHERE ID_VIGENCIA = " + Request.Params["id"];
 
-            var permiteCopia = db.Database.SqlQuery<string>(sql).FirstOrDefault();
+            string datosVigencia = db.Database.SqlQuery<string>(sql).FirstOrDefault();
 
             int id = Convert.ToInt32(Request.Params["id"]);
             ViewBag.idVigen = id;
             int tipo = Convert.ToInt32(Request.Params["tipo"]);
             ViewBag.tipo = tipo;
-            ViewBag.permiteCopia = (permiteCopia == "S");
+            ViewBag.permiteCopia = (datosVigencia.Split('-')[0] == "S");
+            ViewBag.TipoTerminos = (datosVigencia.Split('-')[1]);
             return View();
         }
         public ActionResult ModificaEncuesta()
@@ -472,6 +485,15 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             ViewBag.card = card;
             ViewBag.old = old;
 
+            var tipoTerminos = db.VIGENCIA.Where(v => v.ID_VIGENCIA == idVigen).FirstOrDefault();
+
+            ViewBag.TipoTerminos = (tipoTerminos.TIPO_TERMINOS ?? "V");
+
+            if (tipoTerminos.TIPO_TERMINOS == "E")
+            {
+                ViewBag.TerminosCondiciones = tipoTerminos.TERMINO;
+            }
+
             int numDependencias = db.Database.SqlQuery<int>("SELECT COUNT(0) FROM CONTROL.ENC_VIGENCIA_DEPENDENCIA WHERE ID_VIGENCIA = " + idVigen.ToString()).FirstOrDefault();
 
             if (numDependencias > 0)
@@ -517,6 +539,15 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                     ViewBag.old = "";
                     ViewBag.no = data[4];
 
+                    var tipoTerminos = db.VIGENCIA.Where(v => v.ID_VIGENCIA == idVigen).FirstOrDefault();
+
+                    ViewBag.TipoTerminos = (tipoTerminos.TIPO_TERMINOS ?? "V");
+
+                    if (tipoTerminos.TIPO_TERMINOS == "E")
+                    {
+                        ViewBag.TerminosCondiciones = tipoTerminos.TERMINO;
+                    }
+
                     int numDependencias = db.Database.SqlQuery<int>("SELECT COUNT(0) FROM CONTROL.ENC_VIGENCIA_DEPENDENCIA WHERE ID_VIGENCIA = " + idVigen.ToString()).FirstOrDefault();
 
                     if (numDependencias > 0)
@@ -543,37 +574,75 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             }
         }
 
-        //public ActionResult EncuestaClave(int idV, string n, string c, int cr, int t) // idV - Id Vigencia, n - Nombre Encuesta (email), c - Clave, cr - Cardinalidad, t - Tipo
-        public ActionResult EncuestaClave(int idV, string n, string c) // idV - Id Vigencia, n - Nombre Encuesta (email), c - Clave, cr - Cardinalidad, t - Tipo
+        public ActionResult EncuestaClave(int idCE, string n, string c) // idV - Id Vigencia, n - Nombre Encuesta (email), c - Clave, cr - Cardinalidad, t - Tipo
         {
+            return ProcesarEncuestaClave(idCE, n, c, false);
+        }
+
+        //public ActionResult EncuestaClave(int idV, string n, string c, int cr, int t) // idV - Id Vigencia, n - Nombre Encuesta (email), c - Clave, cr - Cardinalidad, t - Tipo
+        public ActionResult ProcesarEncuestaClave(int idCE, string n, string c, bool segundoIntento) // idV - Id Vigencia, n - Nombre Encuesta (email), c - Clave, cr - Cardinalidad, t - Tipo
+        {
+            decimal? idV;
+            string valorVigencia;
+
             if (c != null && c.Trim() != "")
             {
-                var estado = (from ge in db.FRM_GENERICO_ESTADO
-                               join vs in db.VIGENCIA_SOLUCION on ge.ID_ESTADO equals vs.ID_ESTADO
-                               where ge.NOMBRE.Trim() == n.Trim() && ge.S_CLAVE.Trim() == c.Trim() && vs.ID_VIGENCIA == idV && ge.ACTIVO == "0"
-                               select ge).FirstOrDefault();
+                var registroBaseEncuesta = db.FRM_GENERICO_ESTADO.Where(ge => ge.ID_ESTADO == idCE).FirstOrDefault();
 
-                if (estado != null)
+                if (registroBaseEncuesta != null)
                 {
-                    if (estado.TIPO_GUARDADO == 0)
-                    {
-                        //string data = Cryptografia.EncryptString(idV.ToString() + "|" + estado.ID_ESTADO.ToString() + "|" + t.ToString() + "|" + cr.ToString() + "|" + n.Replace("|", " "), "*&&%tyU23a2");
-                        string data = Cryptografia.EncryptString(idV.ToString() + "|" + estado.ID_ESTADO.ToString() + "|1|2|" + n.Replace("|", " "), "*&&%tyU23a2");
+                    idV = registroBaseEncuesta.ID_VIGENCIA;
+                    valorVigencia = registroBaseEncuesta.VALOR.ToString();
 
-                        return RedirectToAction("EncuestaUsuarioExterno", "EncuestaExterna", new { d = "E" + data });
-                    }
-                    else
+                    var estado = (from ge in db.FRM_GENERICO_ESTADO
+                                  join vs in db.VIGENCIA_SOLUCION on ge.ID_ESTADO equals vs.ID_ESTADO
+                                  where ge.NOMBRE.Trim().ToUpper() == n.Trim().ToUpper() && vs.ID_VIGENCIA == idV && vs.VALOR == valorVigencia && ge.ACTIVO == "0"
+                                  select ge).FirstOrDefault();
+
+                    if (estado != null)
                     {
-                        ViewBag.Respuesta = "La Encuesta ya fue diligenciada";
-                        return View("RespuestaEncuesta");
+                        if (estado.S_CLAVE.Trim() == c.Trim())
+                        {
+                            if (estado.TIPO_GUARDADO == 0)
+                            {
+                                //string data = Cryptografia.EncryptString(idV.ToString() + "|" + estado.ID_ESTADO.ToString() + "|" + t.ToString() + "|" + cr.ToString() + "|" + n.Replace("|", " "), "*&&%tyU23a2");
+                                string data = Cryptografia.EncryptString(idV.ToString() + "|" + estado.ID_ESTADO.ToString() + "|1|2|" + n.Replace("|", " "), "*&&%tyU23a2");
+
+                                return RedirectToAction("EncuestaUsuarioExterno", "EncuestaExterna", new { d = "E" + data });
+                            }
+                            else
+                            {
+                                ViewBag.Respuesta = "La Encuesta ya fue diligenciada";
+                                return View("RespuestaEncuesta");
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.Respuesta = "Clave Inválida";
+                            return View("RespuestaEncuesta");
+                        }
+                    }
+                    else // Crea la encuesta
+                    {
+                        if (!segundoIntento)
+                        {
+                            dbControl.SP_SET_ESTADO_CARDINALIDAD2(0, 0, Convert.ToInt32(registroBaseEncuesta.ID_TERCERO), Convert.ToInt32(registroBaseEncuesta.ID_INSTALACION), 1, Convert.ToInt32(registroBaseEncuesta.ID_VIGENCIA), registroBaseEncuesta.VALOR.ToString().Replace("-", ""), n, c);
+                            return ProcesarEncuestaClave(idCE, n, c, true);
+                        }
+                        else
+                        {
+                            ViewBag.Respuesta = "Error Creando Encuesta";
+                            return View("RespuestaEncuesta");
+                        }
                     }
                 }
                 else
                 {
-                    ViewBag.Respuesta = "Encuesta Inválida";
+                    ViewBag.Respuesta = "Código de Encuesta Inválido";
                     return View("RespuestaEncuesta");
                 }
-            } else
+            }
+            else
             {
                 ViewBag.Respuesta = "Encuesta Inválida";
                 return View("RespuestaEncuesta");
@@ -993,7 +1062,24 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
             //String sql = "SELECT distinct ge.ID_TERCERO ,ge.ID_INSTALACION , ge.TIPO_GUARDADO,v.ID_VIGENCIA, case v.CARDINALIDAD when 1 then ge.ID_ESTADO  when 2 then  0 end as ID_ESTADO,v.NOMBRE||'-'||vs.VALOR  encuesta,case vs.VALOR when '1' then 'Inicio' when '2' then 'Fin' else vs.VALOR end  vigencia,CASE v.TIPOVIGENCIA when 1 then 'Anual' when 2 then 'Mensual' when 3 then 'Unica' when 4 then 'periodo' end tipovigencia,case ge.TIPO_GUARDADO when 1 then 'Enviada' when 0 then 'Guardado Temporal'end estadoencuesta,t.S_RSOCIAL empresa,i.S_NOMBRE instalacion,v.CARDINALIDAD,case v.CARDINALIDAD when 1 then 'Uno' when 2 then 'N' end card,  TO_CHAR(SOL.D_EDICION,'DD/MM/YYYY hh:mi:ss')D_EDICION FROM control.ENC_ENCUESTA e INNER JOIN control.FORMULARIO_ENCUESTA fe ON fe.ID_ENCUESTA=e.ID_ENCUESTA INNER JOIN ENCUESTA_VIGENCIA ev ON ev.ID_ENCUESTA=e.ID_ENCUESTA INNER JOIN control.VIGENCIA v ON v.ID_VIGENCIA=ev.ID_VIGENCIA INNER JOIN control.VIGENCIA_SOLUCION vs ON vs.ID_VIGENCIA=v.ID_VIGENCIA INNER JOIN control.FRM_GENERICO_ESTADO ge ON vs.ID_ESTADO       =ge.ID_ESTADO inner join GENERAL.TERCERO t on t.ID_TERCERO=ge.ID_TERCERO inner join GENERAL.INSTALACION i on i.ID_INSTALACION=ge.ID_INSTALACION  left join (CONTROL.VW_ULTFECHA_ENCUESTA) SOL ON SOL.ID_VIGENCIA=v.ID_VIGENCIA AND SOL.ID_INSTALACION = ge.ID_INSTALACION AND vs.VALOR=SOL.VALOR AND SOL.ID_TERCERO = ge.ID_TERCERO WHERE fe.ID_FORMULARIO=14 and ge.activo=0 and ge.ID_TERCERO=" + idTerceroUsuario;
             //String sql = "SELECT distinct ge.ID_TERCERO ,ge.ID_INSTALACION , CASE WHEN ge.TIPO_GUARDADO <> 1 THEN 0 ELSE 1 END AS TIPO_GUARDADO,v.ID_VIGENCIA, case v.CARDINALIDAD when 1 then ge.ID_ESTADO  when 2 then  0 end as ID_ESTADO,v.NOMBRE||'-'||vs.VALOR  encuesta,case vs.VALOR when '1' then 'Inicio' when '2' then 'Fin' else vs.VALOR end  vigencia,CASE v.TIPOVIGENCIA when 1 then 'Anual' when 2 then 'Mensual' when 3 then 'Unica' when 4 then 'periodo' end tipovigencia,case ge.TIPO_GUARDADO when 1 then 'Enviada' else 'Guardado Temp'end estadoencuesta,t.S_RSOCIAL empresa,i.S_NOMBRE instalacion,v.CARDINALIDAD,case v.CARDINALIDAD when 1 then 'Uno' when 2 then 'N' end card,  TO_CHAR(SOL.D_EDICION,'DD/MM/YYYY hh:mi:ss')D_EDICION FROM control.ENC_ENCUESTA e INNER JOIN control.FORMULARIO_ENCUESTA fe ON fe.ID_ENCUESTA=e.ID_ENCUESTA INNER JOIN control.ENCUESTA_VIGENCIA ev ON ev.ID_ENCUESTA=e.ID_ENCUESTA INNER JOIN control.VIGENCIA v ON v.ID_VIGENCIA=ev.ID_VIGENCIA INNER JOIN control.VIGENCIA_SOLUCION vs ON vs.ID_VIGENCIA=v.ID_VIGENCIA INNER JOIN control.FRM_GENERICO_ESTADO ge ON vs.ID_ESTADO       =ge.ID_ESTADO inner join GENERAL.TERCERO t on t.ID_TERCERO=ge.ID_TERCERO inner join GENERAL.INSTALACION i on i.ID_INSTALACION=ge.ID_INSTALACION  left join (CONTROL.VW_ULTFECHA_ENCUESTA) SOL ON SOL.ID_VIGENCIA=v.ID_VIGENCIA AND SOL.ID_INSTALACION   =ge.ID_INSTALACION AND vs.VALOR=SOL.VALOR where fe.ID_FORMULARIO=14 and ge.activo=0 and ge.ID_TERCERO= " + idTercero.ToString();
-            String sql = "SELECT distinct ge.ID_TERCERO ,ge.ID_INSTALACION , CASE WHEN ge.TIPO_GUARDADO <> 1 THEN 0 ELSE 1 END AS TIPO_GUARDADO,v.ID_VIGENCIA, case v.CARDINALIDAD when 1 then ge.ID_ESTADO  when 2 then  0 end as ID_ESTADO,v.NOMBRE||'-'||vs.VALOR  encuesta,case vs.VALOR when '1' then 'Inicio' when '2' then 'Fin' else vs.VALOR end  vigencia,CASE v.TIPOVIGENCIA when 1 then 'Anual' when 2 then 'Mensual' when 3 then 'Unica' when 4 then 'periodo' end tipovigencia,case ge.TIPO_GUARDADO when 1 then 'Enviada' else 'Guardado Temp'end estadoencuesta,t.S_RSOCIAL empresa,i.S_NOMBRE instalacion,v.CARDINALIDAD,case v.CARDINALIDAD when 1 then 'Uno' when 2 then 'N' end card,  TO_CHAR(SOL.D_EDICION,'DD/MM/YYYY hh:mi:ss') D_EDICION, tv.TOTAL, tv.BORRADOR, tv.ENVIADAS FROM control.ENC_ENCUESTA e INNER JOIN control.FORMULARIO_ENCUESTA fe ON fe.ID_ENCUESTA=e.ID_ENCUESTA AND fe.ID_FORMULARIO=14 INNER JOIN control.ENCUESTA_VIGENCIA ev ON ev.ID_ENCUESTA=e.ID_ENCUESTA INNER JOIN control.VIGENCIA v ON v.ID_VIGENCIA=ev.ID_VIGENCIA INNER JOIN control.VIGENCIA_SOLUCION vs ON vs.ID_VIGENCIA=v.ID_VIGENCIA INNER JOIN control.FRM_GENERICO_ESTADO ge ON vs.ID_ESTADO = ge.ID_ESTADO and ge.activo=0 and ge.ID_TERCERO = " + idTercero.ToString() + " inner join GENERAL.TERCERO t on t.ID_TERCERO=ge.ID_TERCERO inner join GENERAL.INSTALACION i on i.ID_INSTALACION=ge.ID_INSTALACION  left join (CONTROL.VW_ULTFECHA_ENCUESTA) SOL ON SOL.ID_TERCERO = " + idTercero.ToString() + " AND SOL.ID_VIGENCIA=v.ID_VIGENCIA AND SOL.ID_INSTALACION   =ge.ID_INSTALACION AND vs.VALOR=SOL.VALOR LEFT OUTER JOIN (SELECT gei.ID_TERCERO, gei.ID_INSTALACION, vsi.ID_VIGENCIA, vsi.VALOR AS VIGENCIA, COUNT(0) AS TOTAL, SUM(CASE WHEN gei.TIPO_GUARDADO = 0 THEN 1 ELSE 0 END) AS BORRADOR, SUM(CASE WHEN gei.TIPO_GUARDADO <> 0 THEN 1 ELSE 0 END) AS ENVIADAS FROM CONTROL.FRM_GENERICO_ESTADO gei INNER JOIN CONTROL.VIGENCIA_SOLUCION vsi ON gei.ID_ESTADO = vsi.ID_ESTADO WHERE gei.ID_TERCERO = " + idTercero.ToString() + " AND ACTIVO = '0' GROUP BY gei.ID_TERCERO, gei.ID_INSTALACION, vsi.ID_VIGENCIA, vsi.VALOR) tv ON ge.ID_TERCERO = tv.ID_TERCERO AND ge.ID_INSTALACION = tv.ID_INSTALACION AND vs.ID_VIGENCIA = tv.ID_VIGENCIA AND vs.VALOR = tv.VIGENCIA";
+            String sql = "SELECT distinct ge.ID_TERCERO ,ge.ID_INSTALACION, vg.ID_VIGENCIA_GRUPO, NVL(vg.S_NOMBRE, 'OTROS') AS VIGENCIA_GRUPO, CASE WHEN NVL(v.TIPO_FORMULARIO, 1) = 1 THEN 'EncuestaExterna/EncuestaEstado' ELSE v.URL_PERSONALIZADA END AS URL_ENCUESTA, CASE WHEN ge.TIPO_GUARDADO <> 1 THEN 0 ELSE 1 END AS TIPO_GUARDADO,v.ID_VIGENCIA, case v.CARDINALIDAD when 1 then ge.ID_ESTADO  when 2 then  0 end as ID_ESTADO,v.NOMBRE||'-'||vs.VALOR  encuesta,case vs.VALOR when '1' then 'Inicio' when '2' then 'Fin' else vs.VALOR end  vigencia,CASE v.TIPOVIGENCIA when 1 then 'Anual' when 2 then 'Mensual' when 3 then 'Unica' when 4 then 'periodo' end tipovigencia,case ge.TIPO_GUARDADO when 1 then 'Enviada' else 'Guardado Temp'end estadoencuesta,t.S_RSOCIAL empresa,i.S_NOMBRE instalacion,v.CARDINALIDAD,case v.CARDINALIDAD when 1 then 'Uno' when 2 then 'N' end card,  TO_CHAR(SOL.D_EDICION,'DD/MM/YYYY hh:mi:ss') D_EDICION, tv.TOTAL, tv.BORRADOR, tv.ENVIADAS " +
+                "FROM control.ENC_ENCUESTA e INNER JOIN " +
+                "   control.FORMULARIO_ENCUESTA fe ON fe.ID_ENCUESTA=e.ID_ENCUESTA AND fe.ID_FORMULARIO=14 INNER JOIN " +
+                "   control.ENCUESTA_VIGENCIA ev ON ev.ID_ENCUESTA=e.ID_ENCUESTA INNER JOIN " +
+                "   control.VIGENCIA v ON v.ID_VIGENCIA=ev.ID_VIGENCIA LEFT OUTER JOIN " +
+                "   control.VIGENCIA_GRUPO vg ON v.ID_VIGENCIA_GRUPO = vg.ID_VIGENCIA_GRUPO INNER JOIN " +
+                "   control.VIGENCIA_SOLUCION vs ON vs.ID_VIGENCIA=v.ID_VIGENCIA INNER JOIN " +
+                "   control.FRM_GENERICO_ESTADO ge ON vs.ID_ESTADO = ge.ID_ESTADO and ge.activo=0 and ge.ID_TERCERO = " + idTercero.ToString() + " inner join " +
+                "   GENERAL.TERCERO t on t.ID_TERCERO=ge.ID_TERCERO inner join " +
+                "   GENERAL.INSTALACION i on i.ID_INSTALACION=ge.ID_INSTALACION  left join " +
+                "   (CONTROL.VW_ULTFECHA_ENCUESTA) SOL ON SOL.ID_TERCERO = " + idTercero.ToString() + " AND SOL.ID_VIGENCIA=v.ID_VIGENCIA AND SOL.ID_INSTALACION   =ge.ID_INSTALACION AND vs.VALOR=SOL.VALOR LEFT OUTER JOIN " +
+                "   (" +
+                "       SELECT gei.ID_TERCERO, gei.ID_INSTALACION, vsi.ID_VIGENCIA, vsi.VALOR AS VIGENCIA, COUNT(0) AS TOTAL, SUM(CASE WHEN gei.TIPO_GUARDADO = 0 THEN 1 ELSE 0 END) AS BORRADOR, SUM(CASE WHEN gei.TIPO_GUARDADO <> 0 THEN 1 ELSE 0 END) AS ENVIADAS " +
+                "       FROM CONTROL.FRM_GENERICO_ESTADO gei INNER JOIN " +
+                "           CONTROL.VIGENCIA_SOLUCION vsi ON gei.ID_ESTADO = vsi.ID_ESTADO " +
+                "       WHERE gei.ID_TERCERO = " + idTercero.ToString() + " AND ACTIVO = '0' " +
+                "       GROUP BY gei.ID_TERCERO, gei.ID_INSTALACION, vsi.ID_VIGENCIA, vsi.VALOR" +
+                "   ) tv ON ge.ID_TERCERO = tv.ID_TERCERO AND ge.ID_INSTALACION = tv.ID_INSTALACION AND vs.ID_VIGENCIA = tv.ID_VIGENCIA AND vs.VALOR = tv.VIGENCIA";
             ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
@@ -2945,6 +3031,26 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             {
                 return null;
             }*/
+        }
+
+        public string GruposVigencia()
+        {
+            var sql = "SELECT -1 AS ID_VIGENCIA_GRUPO, '(TODOS)' AS S_NOMBRE, '' AS S_NOMBRE_ORIGINAL " +
+                "FROM DUAL " +
+                "UNION ALL " +
+                "SELECT ID_VIGENCIA_GRUPO, S_NOMBRE, S_NOMBRE AS S_NOMBRE_ORIGINAL " +
+                "FROM CONTROL.VIGENCIA_GRUPO " +
+                "UNION ALL " +
+                "SELECT -2 ID_VIGENCIA_GRUPO, '[OTROS]' AS S_NOMBRE, '[OTROS]' AS S_NOMBRE_ORIGINAL " +
+                "FROM DUAL " +
+                "ORDER BY S_NOMBRE_ORIGINAL";
+
+            var datosGruposVigencia = db.Database.SqlQuery<GrupoVigencia>(sql, new object[0]);
+
+            if (datosGruposVigencia != null)
+                return JsonConvert.SerializeObject(datosGruposVigencia.OrderBy(g => g.S_NOMBRE_ORIGINAL).ToList());
+               else
+                return null;
         }
 
         private Cell ConstructCell(string value, CellValues dataType)

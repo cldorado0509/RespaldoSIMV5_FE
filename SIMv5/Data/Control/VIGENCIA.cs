@@ -45,5 +45,13 @@ namespace SIM.Data.Control
         public string S_NOMBRE_ARCHIVO { get; set; }
 
         public int? ID_PREGUNTA_CLAVE { get; set; }
+
+        [StringLength(1)]
+        public string TIPO_TERMINOS { get; set; }
+
+        public int? TIPO_FORMULARIO { get; set; }
+
+        [StringLength(250)]
+        public string URL_PERSONALIZADA { get; set; }
     }
 }

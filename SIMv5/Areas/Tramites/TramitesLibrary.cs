@@ -91,10 +91,11 @@ namespace SIM.Areas.Tramites
 
             if (datosAvanzaTareaTramite.idGrupo != null && datosAvanzaTareaTramite.idGrupo != -1)
             {
-                funcionariosGrupo = String.Join(",", dbSIM.Database.SqlQuery<int>(
-                        "SELECT td.CODTRAMITE, td.CODDOCUMENTO " +
-                        "FROM TRAMITES.MEMORANDO_FUNCGRUPO " +
-                        "WHERE ID_GRUPOMEMO = " + datosAvanzaTareaTramite.idGrupo.ToString()).ToList());
+                var sqlFuncionariosGrupo = "SELECT mf.CODFUNCIONARIO " +
+                                            "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf " +
+                                            "WHERE mf.ID_GRUPOMEMO = " + datosAvanzaTareaTramite.idGrupo.ToString() + " AND mf.CODFUNCIONARIO <> " + datosAvanzaTareaTramite.codFuncionario.ToString();
+
+                funcionariosGrupo = String.Join(",", dbSIM.Database.SqlQuery<int>(sqlFuncionariosGrupo).ToList());
 
                 if (funcionariosGrupo.Trim() == ",")
                     funcionariosGrupo = "";
@@ -165,10 +166,11 @@ namespace SIM.Areas.Tramites
 
             if (datosAvanzaTareaTramiteFormulario.idGrupo != null && datosAvanzaTareaTramiteFormulario.idGrupo != -1)
             {
-                funcionariosGrupo = String.Join(",", dbSIM.Database.SqlQuery<int>(
-                        "SELECT td.CODTRAMITE, td.CODDOCUMENTO " +
-                        "FROM TRAMITES.MEMORANDO_FUNCGRUPO " +
-                        "WHERE ID_GRUPOMEMO = " + datosAvanzaTareaTramiteFormulario.idGrupo.ToString()).ToList());
+                var sqlFuncionariosGrupo = "SELECT mf.CODFUNCIONARIO " +
+                                            "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf " +
+                                            "WHERE mf.ID_GRUPOMEMO = " + datosAvanzaTareaTramiteFormulario.idGrupo.ToString() + " AND mf.CODFUNCIONARIO <> " + datosAvanzaTareaTramiteFormulario.codFuncionario.ToString();
+
+                funcionariosGrupo = String.Join(",", dbSIM.Database.SqlQuery<int>(sqlFuncionariosGrupo).ToList());
 
                 if (funcionariosGrupo.Trim() == ",")
                     funcionariosGrupo = "";

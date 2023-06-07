@@ -91,7 +91,7 @@
         @if (ViewBag.archivoVigencia != null && ViewBag.archivoVigencia)
         {
             <div class="col-sm-4">
-                <span>Código Encuesta: @ViewBag.vigencia</span>
+                <span>Código Encuesta: @ViewBag.codigoEncuesta</span>
             </div>
             <div class="col-sm-2">
                 <button class="btn btn-default" style="width:100%; height:100%" id="btnNueva" onclick="DescargarPlantillaVigencia(@ViewBag.vigencia,@ViewBag.valor)">Descargar Plantilla</button>
@@ -103,7 +103,7 @@
         else
         {
             <div class="col-sm-8">
-                <span>Código Encuesta: @ViewBag.vigencia</span>
+                <span>Código Encuesta: @ViewBag.codigoEncuesta</span>
             </div>
         }
         <div class="col-sm-2">
