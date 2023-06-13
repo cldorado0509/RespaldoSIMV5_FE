@@ -21,5 +21,7 @@
         public decimal CODFUNCIONARIO { get; set; }
 
         public DateTime FECHA { get; set; }
+
+        public decimal IDDOCUMENTO { get; set; }
     }
 }

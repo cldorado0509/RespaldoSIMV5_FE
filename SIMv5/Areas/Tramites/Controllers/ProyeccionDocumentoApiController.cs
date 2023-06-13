@@ -2074,6 +2074,7 @@ namespace SIM.Areas.Tramites.Controllers
                 {
                     radicado.CODTRAMITE = tramite.CODTRAMITE;
                     radicado.CODDOCUMENTO = idCodDocumento;
+                    radicado.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                     dbSIM.Entry(radicado).State = System.Data.Entity.EntityState.Modified;
                     dbSIM.SaveChanges();
 
@@ -2090,6 +2091,7 @@ namespace SIM.Areas.Tramites.Controllers
                 TRAMITES_PROYECCION tramiteAsignado = dbSIM.TRAMITES_PROYECCION.Where(tp => tp.ID_TRAMITES_PROYECCION == tramiteDoc.ID_TRAMITES_PROYECCION).FirstOrDefault();
                 tramiteAsignado.CODDOCUMENTO = idCodDocumento;
                 tramiteAsignado.D_FECHA_GENERACION = fechaActual;
+                tramiteAsignado.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                 dbSIM.Entry(tramiteAsignado).State = System.Data.Entity.EntityState.Modified;
                 dbSIM.SaveChanges();
 
@@ -2115,6 +2117,7 @@ namespace SIM.Areas.Tramites.Controllers
                         indiceDocumento.CODDOCUMENTO = idCodDocumento;
                         indiceDocumento.CODINDICE = indice.CODINDICE;
                         indiceDocumento.VALOR = valor;
+                        indiceDocumento.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                         dbSIM.Entry(indiceDocumento).State = System.Data.Entity.EntityState.Added;
                         dbSIM.SaveChanges();
                     }
@@ -2129,6 +2132,7 @@ namespace SIM.Areas.Tramites.Controllers
                     indiceDocumento.CODDOCUMENTO = idCodDocumento;
                     indiceDocumento.CODINDICE = indice.CODINDICE;
                     indiceDocumento.VALOR = indice.S_VALOR;
+                    indiceDocumento.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                     dbSIM.Entry(indiceDocumento).State = System.Data.Entity.EntityState.Added;
                     dbSIM.SaveChanges();
                 }

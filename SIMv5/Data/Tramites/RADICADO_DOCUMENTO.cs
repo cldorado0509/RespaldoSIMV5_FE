@@ -48,5 +48,6 @@ namespace SIM.Data.Tramites
 
         [ForeignKey("CODSERIE")]
         public virtual TBSERIE TBSERIE { get; set; }
+        public decimal ID_DOCUMENTO { get; set; }
     }
 }

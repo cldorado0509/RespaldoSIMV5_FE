@@ -25,5 +25,6 @@ namespace SIM.Data.Tramites
 
         [ForeignKey("ID_PROYECCION_DOC")]
         public virtual PROYECCION_DOC PROYECCION_DOC { get; set; }
+        public decimal? ID_DOCUMENTO { get; set; }
     }
 }
