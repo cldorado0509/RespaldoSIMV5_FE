@@ -417,6 +417,25 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 DatosExp.Anulado = Expediente.S_ESTADO == "A" ? "No" : Expediente.S_ESTADO == "N" ? "Si" : "";
                 DatosExp.Tomos = Tomos;
                 DatosExp.Documentos = Documentos;
+                DatosExp.Indices = (from Ind in dbSIM.EXP_INDICES
+                                    join Ise in dbSIM.TBINDICESERIE on Ind.CODINDICE equals Ise.CODINDICE
+                                    join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                    from pdis in l.DefaultIfEmpty()
+                                    where Ind.ID_EXPEDIENTE == _IdExpediente
+                                    orderby Ise.ORDEN
+                                    select new Indice
+                                    {
+                                        CODINDICE = Ind.CODINDICE,
+                                        INDICE = Ise.INDICE,
+                                        TIPO = Ise.TIPO,
+                                        LONGITUD = Ise.LONGITUD,
+                                        OBLIGA = Ise.OBLIGA,
+                                        VALORDEFECTO = Ise.VALORDEFECTO,
+                                        VALOR = Ind.VALOR_FEC != null ? Ind.VALOR_FEC.ToString() : Ind.VALOR_NUM != null ? Ind.VALOR_NUM.ToString() : Ind.VALOR_TXT != null ? Ind.VALOR_TXT.Trim() : "",
+                                        ID_LISTA = Ise.CODIGO_SUBSERIE,
+                                        TIPO_LISTA = pdis.TIPO,
+                                        CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
+                                    }).ToList();
                 return JObject.FromObject(DatosExp, Js);
             }
             catch (Exception exp)
@@ -639,6 +658,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         break;
                                 }
                                 dbSIM.Entry(indiceDoc).State = EntityState.Modified;
+                                dbSIM.SaveChanges();
                             }
                             else
                             {
@@ -666,8 +686,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 }
 
                                 dbSIM.Entry(indiceDoc).State = EntityState.Added;
+                                dbSIM.SaveChanges();
                             }
-                            dbSIM.SaveChanges();
                         }
                     }
                 }
@@ -692,6 +712,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         Expediente.S_CODIGO = objData.Codigo;
                         Expediente.S_DESCRIPCION = objData.Descripcion;
                         Expediente.S_ESTADO = objData.Anulado;
+                        dbSIM.Entry(Expediente).State = EntityState.Modified;
                         dbSIM.SaveChanges();
                     }
                 }
@@ -716,7 +737,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     Tomo.ID_FUNCCREACION = funcionario;
                     Tomo.D_FECHACREACION = DateTime.Now;
                     Tomo.N_FOLIOS = 200;
-                    dbSIM.EXP_TOMOS.Add(Tomo);
+                    dbSIM.Entry(Tomo).State = EntityState.Added;
                     dbSIM.SaveChanges();
                     if (objData.Indices != null)
                     {

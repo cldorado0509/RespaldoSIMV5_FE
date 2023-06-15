@@ -1254,7 +1254,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 response = await apiService.GetListAsync<AbogadoExpedienteDTO>(urlApiExpedienteAmbiental, "api/", $"AbogadoExpediente/ObtenerAbogadosExpediente?expedienteId={idExpediente}", tokenG.Token);
                 if (!response.IsSuccess) return null;
                 var list = (List<AbogadoExpedienteDTO>)response.Result;
-                if (list == null || list.Count == 0) return null;
+          
 
                 var ja = JArray.FromObject(list, Js);
                 return ja;

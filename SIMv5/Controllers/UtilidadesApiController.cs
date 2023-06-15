@@ -1363,6 +1363,7 @@
                             {
                                 indiceDoc.VALOR = indice.VALOR ?? "";
                                 dbSIM.Entry(indiceDoc).State = System.Data.Entity.EntityState.Modified;
+                                dbSIM.SaveChanges();
                             }
                             else
                             {
@@ -1376,10 +1377,10 @@
                                 indiceDoc.CODINDICE = indice.CODINDICE;
                                 indiceDoc.VALOR = indice.VALOR ?? "";
                                 dbSIM.Entry(indiceDoc).State = System.Data.Entity.EntityState.Added;
+                                dbSIM.SaveChanges();
                             }
                         }
                     }
-                    dbSIM.SaveChanges();
                 }
                 else
                 {

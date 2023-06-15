@@ -22,6 +22,6 @@
 
         public DateTime FECHA { get; set; }
 
-        public decimal IDDOCUMENTO { get; set; }
+        public decimal ID_DOCUMENTO { get; set; }
     }
 }

@@ -370,7 +370,7 @@ $(document).ready(function () {
                                     allowedPageSizes: [5, 10, 20, 50]
                                 },
                                 hoverStateEnabled: true,
-                                remoteOperations: true,
+                                remoteOperations: false,
                                 columns: [
                                     { dataField: 'idPuntoControl', width: '5%', caption: 'Código', alignment: 'center' },
                                     { dataField: 'codigoSolicitudId', width: '5%', caption: 'CódigoV4', alignment: 'center', visible:false },

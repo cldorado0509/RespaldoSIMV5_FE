@@ -702,6 +702,21 @@ $(document).ready(function () {
                         DevExpress.ui.dialog.alert('Indices Guardados correctamente', 'Detalle del trámite');
                         popupEditInd = $("#popUpEditIndicesDoc").dxPopup("instance");
                         popupEditInd.hide();
+                        var strDocumento = Sel.ID_DOCUMENTO + " (Trámite: " + Sel.CODTRAMITE + " Documento: " + Sel.CODDOCUMENTO + ")";
+                        var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/IndicesDocumento";
+                        $.getJSON(_Ruta, { IdDocumento: Sel.ID_DOCUMENTO })
+                            .done(function (data) {
+                                if (data != null) {
+                                    var Content = "<table class='table table-sm' style='font-size: 10px;'><thead><tr><th scope='col'>NOMBRE DEL ÍNDICE</th><th scope='col'>VALOR</th></tr></thead><tbody>";
+                                    data.forEach(function (indice, index) {
+                                        Content += "<tr><th scope='row'>" + indice.INDICE + "</th><td>" + indice.VALOR + "</td></tr>";
+                                    });
+                                    $("#IndicesDoc").html("<p><b>Índices del documento " + strDocumento + "</b></p><br />" + Content);
+                                }
+
+                            }).fail(function (jqxhr, textStatus, error) {
+                                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Indices del documento');
+                            });
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {

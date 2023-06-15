@@ -703,6 +703,10 @@ $(document).ready(function () {
         visible: false,
         closeOnOutsideClick: true,
         contentTemplate: function () {
+            var TablaIndi = "<table class='table table-sm' style='font-size: 11px;'><thead><tr><th scope='col'>NOMBRE DEL ÍNDICE</th><th scope='col'>VALOR</th></tr></thead><tbody>";
+            Expediente.Indices.forEach(function (indice, index) {
+                TablaIndi += "<tr><th scope='row'>" + indice.INDICE + "</th><td>" + indice.VALOR + "</td></tr>";
+            });
             return $("<div />").append(
                 $("<p>Unidad Documental : <span><b>" + Expediente.UnidadDoc + "</b></span></p>"),
                 $("<p>Nombre del expediente : <span><b>" + Expediente.Nombre + "</b></span></p>"),
@@ -714,7 +718,8 @@ $(document).ready(function () {
                 $("<p>Último estado expediente : <span><b>" + Expediente.UltEstado + "</b></span></p>"),
                 $("<br />"),
                 $("<p>Cantidad de carpetas : <span><b>" + Expediente.Tomos + "</b></span></p>"),
-                $("<p>Cantidad documentos : <span><b>" + Expediente.Documentos + "</b></span></p>")
+                $("<p>Cantidad documentos : <span><b>" + Expediente.Documentos + "</b></span></p><br />"),
+                $("<div id='tbalaInd'>" + TablaIndi + "</div>")
             );
         }
     };

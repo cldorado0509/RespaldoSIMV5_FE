@@ -423,7 +423,7 @@ namespace SIM.Utilidades
                     Vis.CODTRAMITE = Docu.CODTRAMITE;
                     Vis.CODFUNCIONARIO = funcionario;
                     Vis.FECHA = DateTime.Now;
-                    Vis.IDDOCUMENTO = IdDocumento;
+                    Vis.ID_DOCUMENTO = IdDocumento;
                     dbSIM.TBVISITADOCUMENTO.Add(Vis);
                     dbSIM.SaveChanges();
                 }
