@@ -72,6 +72,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 numRegistros = 0,
             };
 
+
             ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
 
             AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new  AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
