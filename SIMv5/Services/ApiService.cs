@@ -52,6 +52,44 @@
             }
         }
 
+        public async Task<AuthenticationResponse> GetTokenMicroServiciosAsync(string urlBase, string servicePrefix, string controller, AuthenticationRequest request)
+        {
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse
+            {
+                ExpiresIn = 0,
+                JwtToken = "",
+                UserName = ""
+            };
+
+            try
+            {
+                string requestString = JsonConvert.SerializeObject(request);
+                StringContent content = new StringContent(requestString, Encoding.UTF8, "application/json");
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase)
+                };
+
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.PostAsync(url, content);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return authenticationResponse;
+                }
+
+                authenticationResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(result);
+                return authenticationResponse;
+            }
+            catch (Exception ex)
+            {
+                return authenticationResponse;
+            }
+        }
+
+
+
         public async Task<Response> GetTokenAsync(string urlBase, string servicePrefix, string controller, TokenRequest request)
         {
             try
@@ -92,6 +130,8 @@
                 };
             }
         }
+
+
 
         public async Task<Response> RegisterUserAsync(string urlBase, string servicePrefix, string controller, UserRequest userRequest)
         {
@@ -671,34 +711,28 @@
                     return new Response
                     {
                         IsSuccess = false,
-                        Message = result,
+                        Message = "Error al consumir los servicios!",
+                        Result = null,
                     };
                 }
-                if (result != "true")
-                {
+                
                     var item = JsonConvert.DeserializeObject<OperationResponse>(result);
-
                     return new Response
                     {
+                        Message = item.Message,
                         IsSuccess = true,
                         Result = item
                     };
-                }
-                else
-                {
-                    return new Response
-                    {
-                        IsSuccess = true,
-                        Result = false
-                    };
-                }
+               
             }
             catch (Exception ex)
             {
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = ex.Message
+                    Message = ex.Message,
+                    Result = ex
+                   
                 };
             }
         }

@@ -17,7 +17,6 @@ var direccion = "";
 var municipio = "";
 var nombrePunto = "";
 
-
 $(document).ready(function () {
 
     $('#asistente').accordion({
@@ -56,6 +55,7 @@ $(document).ready(function () {
         selection: {
             mode: 'single'
         },
+
         hoverStateEnabled: true,
         remoteOperations: true,
         columns: [
@@ -244,9 +244,6 @@ $(document).ready(function () {
                                 }).fail(function (jqxhr, textStatus, error) {
                                     DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
                                 });
-
-                       
-
                             popupTramitesExpediente.show();
                         }
                     }).appendTo(container);
@@ -263,6 +260,7 @@ $(document).ready(function () {
                         height: 20,
                         hint: 'Abogados asignados al Expediente Ambiental',
                         onClick: function (e) {
+
                             txtlblCM3.option("value", options.data.cm);
                             codExpediente = options.data.idExpediente;
                             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerDatosTerceroExpedienteAsync";
@@ -270,8 +268,7 @@ $(document).ready(function () {
                                 {
                                     Id: options.data.idExpediente
                                 }).done(function (datat) {
-                                    if (datat !== null) {
-                                        $("#GridListadoAbogadosExpediente").dxDataGrid({
+                                     $("#GridListadoAbogadosExpediente").dxDataGrid({
                                             dataSource: new DevExpress.data.DataSource({
                                                 store: new DevExpress.data.CustomStore({
                                                     key: "idAbogadoExpediente",
@@ -282,7 +279,7 @@ $(document).ready(function () {
                                                 })
                                             }),
                                             allowColumnResizing: true,
-                                            loadPanel: { enabled: true, text: 'Cargando Datos...' },
+                                            loadPanel: { text: 'Cargando Datos...' },
                                             noDataText: "Sin datos para mostrar",
                                             showBorders: true,
                                             filterRow: {
@@ -317,11 +314,9 @@ $(document).ready(function () {
 
                                             }
                                         });
-                                    }
                                 }).fail(function (jqxhr, textStatus, error) {
                                     DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
                                 });
-
                             popupAbogados.show();
                         }
                     }).appendTo(container);
@@ -342,12 +337,11 @@ $(document).ready(function () {
                             idExpediente = options.data.idExpediente;
                             txtlblNombreExpediente.option("value", options.data.nombre);
                             txtlblCM.option("value", options.data.cm);
-                                              
-
+                   
                             $("#GidListadoPuntosControl").dxDataGrid({
                                 dataSource: PuntosControlDataSource,
                                 allowColumnResizing: true,
-                                loadPanel: { enabled: true, text: 'Cargando Datos...' },
+                                loadPanel: { text: 'Cargando Datos...' },
                                 noDataText: "Sin datos para mostrar",
                                 showBorders: true,
                                 filterRow: {
@@ -377,6 +371,8 @@ $(document).ready(function () {
                                     { dataField: 'nombre', width: '25%', caption: 'Nombre', dataType: 'string' },
                                     { dataField: 'conexo', width: '9%', caption: 'Conexo', dataType: 'string' },
                                     { dataField: 'tipoSolicitudAmbiental', width: '20%', caption: 'Tipo de Solicitud Ambiental', dataType: 'string' },
+                                    { dataField: 'estadoPuntoControl', width: '20%', caption: 'Estado actual', dataType: 'string' },
+                                    { dataField: 'fechaEstadoPuntoControl', width: '20%', caption: 'F. Estado actual', dataType: 'date' },
                                     { dataField: 'observacion', width: '35%', caption: 'Observación', dataType: 'string' },
                                     { dataField: 'expedienteDocumentalLabel', width: '35%', caption: 'Expediente Documental', dataType: 'string' },
                                     { dataField: 'expedienteDocumentalId', width: '5%', caption: 'IdEdoc', dataType: 'string', visible:false },
@@ -403,7 +399,6 @@ $(document).ready(function () {
                                                                 txtNombrePuntoControl.option("value", data.nombre);
                                                                 txtObservacionPuntoControl.option("value", data.observacion);
                                                                 cboTipoSolicitudAmbiental.option("value", data.tipoSolicitudAmbientalId);
-                                                                cboTipoSolicitudAmbiental.option("disabled", true);
                                                                 txtConexoPunto.option("value", data.conexo);
                                                                 txtFechaOrigen.option("value", data.fechaOrigen);
                                                                 idExpedienteDoc = data.expedienteDocumentalId;
@@ -437,8 +432,9 @@ $(document).ready(function () {
                                                                 contentType: "application/json",
                                                                 dataType: 'text',
                                                                 success: function (data) {
-                                                                    if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Eliminar registro seleccionado');
-                                                                    else {
+                                                                    if (data.Response === false) {
+                                                                        DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, ' al eliminar registro seleccionado');
+                                                                    }else {
                                                                         $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
                                                                         DevExpress.ui.dialog.alert('Registro eliminado correctamente!');
                                                                     }
@@ -830,6 +826,7 @@ $(document).ready(function () {
                 idExpediente = data.idExpediente;
                 idExpedienteAmb = data.idExpediente; 
                 NomExpediente = data.nombre;
+                $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
             }
         }
     });
@@ -1563,7 +1560,7 @@ $(document).ready(function () {
                 crossDomain: true,
                 headers: { 'Access-Control-Allow-Origin': '*' },
                 success: function (data) {
-                    if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
+                    if (data.Result.Response === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Result.Message, 'Guardar Datos');
                     else {
                         DevExpress.ui.dialog.alert('Punto de Control Creado/Actualizado correctamente!', 'Guardar Datos');
                         $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
@@ -1734,8 +1731,7 @@ $(document).ready(function () {
     });
 
     $("#cmdShowExpedienteFlip").dxButton({
-        text: "Ver Expediente ...",
-        icon: "fields",
+        text: "Ver Carpeta seleccionada del Expediente ...",
         hint: 'Ver el Expediente Documental',
         visible: false,
         onClick: function () {
@@ -2096,7 +2092,7 @@ $(document).ready(function () {
 
 function SeleccionaExp(Expediente) {
     if (Expediente != "") {
-        var IdExpedienteDoc = Expediente;
+         IdExpedienteDoc = Expediente;
 
         var params = {
             idExpediente: IdExpedienteDoc, idPuntoControl: idPuntoControl
@@ -2186,7 +2182,7 @@ function SeleccionaExpPunto(ExpedienteDocId) {
                                         $("<img>").attr("src", $('#SIM').data('url') + "Content/imagenes/doc.png").appendTo(div1);
                                         var div2 = $("<div>").addClass("info").appendTo(divP);
                                         $("<div>").text("Documento: " + data.Documento).appendTo(div2);
-                                        $("<div>").text(data.Datos.substring(0, 30) + ' ...').appendTo(div2);
+                                        $("<div>").text(data.Datos ? data.Datos.substring(0, 30) + ' ...' : '').appendTo(div2);
                                         $("<div>").text("Fecha digitliza: " + data.Fecha).appendTo(div2);
                                         return divP;
                                     },
@@ -2241,7 +2237,7 @@ function SeleccionaExpPunto(ExpedienteDocId) {
                                         var div2 = $("<div>").addClass("info").appendTo(divP);
 
                                         $("<div>").text("Documento: " + data.Documento).appendTo(div2);
-                                        $("<div>").html("<p style='indices'>" + data.Datos + "</p>").addClass("divInd").appendTo(div2);
+                                        $("<div>").html("<p style='indices'>" + data.Datos ? data.Datos : '' + "</p>").addClass("divInd").appendTo(div2);
                                         $("<div>").text("Fecha digitliza: " + data.Fecha).appendTo(div2);
                                         return divP;
                                     },

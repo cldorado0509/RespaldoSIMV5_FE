@@ -100,6 +100,12 @@
 
         public List<Indice> Indices { get; set; }
 
+        [JsonProperty("estadoPuntoControl")]
+        public string EstadoPuntoControl { get; set; } = string.Empty;
+
+        [JsonProperty("fechaEstadoPuntoControl")]
+        public DateTime? FechaEstadoPuntoControl { get; set; }
+
         public List<IndiceSerieDocumentalDTO> IndicesSerieDocumentalDTO { get; set; }
 
     }

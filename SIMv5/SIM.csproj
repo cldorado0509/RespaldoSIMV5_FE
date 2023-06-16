@@ -324,6 +324,9 @@
     <Reference Include="PdfSharp.Charting-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\PdfSharp.Charting-gdi.dll</HintPath>
     </Reference>
+    <Reference Include="SecurityLibraryNetFramework">
+      <HintPath>..\..\Controles\SecurityLibraryNetFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -2249,6 +2252,8 @@
     </Compile>
     <Compile Include="Areas\Seguridad\Models\AccountViewModels.cs" />
     <Compile Include="Areas\Seguridad\Models\ApplicationUser.cs" />
+    <Compile Include="Models\AuthenticationRequest.cs" />
+    <Compile Include="Models\AuthenticationResponse.cs" />
     <Compile Include="Models\ChangePasswordRequest.cs" />
     <Compile Include="Models\CONFIGURACION.cs" />
     <Compile Include="Models\Control.Context.cs">
