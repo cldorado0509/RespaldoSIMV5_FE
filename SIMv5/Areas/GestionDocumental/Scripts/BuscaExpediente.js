@@ -159,7 +159,7 @@ function SeleccionaExp(Expediente) {
                                         $("<img>").attr("src", $('#SIM').data('url') + "Content/imagenes/doc.png").appendTo(div1);
                                         var div2 = $("<div>").addClass("info").appendTo(divP);
                                         $("<div>").text("Documento: " + data.Documento).appendTo(div2);
-                                        $("<div>").text(data.Datos.substring(0, 30) + ' ...').appendTo(div2);
+                                        $("<div>").text(data.Datos ? data.Datos.substring(0, 30) + ' ...' : '').appendTo(div2);
                                         $("<div>").text("Fecha digitliza: " + data.Fecha).appendTo(div2);
                                         return divP;
                                     },

@@ -1469,15 +1469,15 @@ namespace SIM.Areas.GestionDocumental.Controllers
             {
                 if (IdTomo <= 0) return null;
                 if (IdUniDoc <= 0) return null;
-                var Docs = (from Doc in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
-                            join Bus in dbSIM.BUSQUEDA_DOCUMENTO on Doc.ID_DOCUMENTO equals Bus.ID_DOCUMENTO
-                            where Doc.ID_TOMO == IdTomo && Bus.COD_SERIE == IdUniDoc
-                            orderby Doc.N_ORDEN
+                var Docs = (from DocExp in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                            join Doc in dbSIM.TBTRAMITEDOCUMENTO on DocExp.ID_DOCUMENTO equals Doc.ID_DOCUMENTO
+                            where DocExp.ID_TOMO == IdTomo && Doc.CODSERIE == IdUniDoc
+                            orderby DocExp.N_ORDEN
                             select new
                             {
                                 Documento = Doc.ID_DOCUMENTO,
-                                Datos = Bus.S_INDICE,
-                                Fecha = Bus.FECHADIGITALIZA
+                                Datos = dbSIM.BUSQUEDA_DOCUMENTO.Where(w => w.ID_DOCUMENTO== Doc.ID_DOCUMENTO).Select(s => s.S_INDICE).FirstOrDefault(),
+                                Fecha = Doc.FECHACREACION
                             });
                 var ListaDocumentos = Docs.ToList();
                 return JArray.FromObject(ListaDocumentos, Js);
@@ -1502,15 +1502,15 @@ namespace SIM.Areas.GestionDocumental.Controllers
             try
             {
                 if (IdTomo <= 0) return null;
-                var Docs = (from Doc in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
-                            join Bus in dbSIM.BUSQUEDA_DOCUMENTO on Doc.ID_DOCUMENTO equals Bus.ID_DOCUMENTO
-                            where Doc.ID_TOMO == IdTomo
-                            orderby Doc.N_ORDEN
+                var Docs = (from DocExp in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                            join Doc in dbSIM.TBTRAMITEDOCUMENTO on DocExp.ID_DOCUMENTO equals Doc.ID_DOCUMENTO
+                            where DocExp.ID_TOMO == IdTomo
+                            orderby DocExp.N_ORDEN
                             select new
                             {
                                 Documento = Doc.ID_DOCUMENTO,
-                                Datos = Bus.S_INDICE,
-                                Fecha = Bus.FECHADIGITALIZA.ToString()
+                                Datos =  dbSIM.BUSQUEDA_DOCUMENTO.Where(w => w.ID_DOCUMENTO == Doc.ID_DOCUMENTO).Select(s => s.S_INDICE).FirstOrDefault(),
+                                Fecha = Doc.FECHACREACION.ToString()
                             });
                 var ListaDocumentos = Docs.ToList();
                 return JArray.FromObject(ListaDocumentos, Js);

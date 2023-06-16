@@ -1224,6 +1224,7 @@
                 {
                     bool _alMenosUnoObliga = false;
                     decimal _indiceObliga = 0;
+                    int _valorObliga = 0;
                     foreach (Indice indice in objData.Indices)
                     {
                         if (indice.OBLIGA == 1 && (indice.VALOR == null || indice.VALOR == ""))
@@ -1236,19 +1237,23 @@
                             _alMenosUnoObliga = true;
                             if (indice.VALOR.ToLower() == "si" || indice.VALOR.ToLower() == "ok")
                             {
-                                //_indiceObliga = DefInd.ID_INDICEOBLIGA;
-                                //Indice _afect = objData.Indices.Where(w => w.CODINDICE == (int)_indiceObliga).Select(s => s.VALOR)
-                                //DataRow[] _afect = _dtIndTra.Select("IdIndice=" + _indiceObliga.ToString());
-                                //if (_afect.Length > 0)
-                                //{
-                                //    if (_afect[0][1].ToString() == "")
-                                //    {
-                                //        lblErrorIndTra.Text = "Falta ingresar datos para el indice " + archivo.GetNombreIndiceTra(_indiceObliga);
-                                //        return false;
-                                //    }
-                                //    else _valorObliga++;
-                                //}
+                                _indiceObliga = DefInd.ID_INDICEOBLIGA != null ? DefInd.ID_INDICEOBLIGA.Value : 0;
+                                if (_indiceObliga > 0) {
+                                    Indice _afect = objData.Indices.Where(w => w.CODINDICE == (int)_indiceObliga).FirstOrDefault();
+                                    if (_afect != null)
+                                    {
+                                        if (_afect.VALOR == "")
+                                        {
+                                                return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
+                                        }
+                                        else _valorObliga++;
+                                    }
+                                }
                             }
+                        }
+                        if (_alMenosUnoObliga && _valorObliga == 0)
+                        {
+                            return new { resp = "Error", mensaje = "Al menos una de las afectaciones debe ser seleccionada!!" };
                         }
                         if (objData.CodTramite > 1)
                         {
