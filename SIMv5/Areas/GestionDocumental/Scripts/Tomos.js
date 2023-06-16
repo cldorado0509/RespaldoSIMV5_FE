@@ -593,7 +593,7 @@ $(document).ready(function () {
     var MostrarDocumento = function (IdDocumento) {
         var _popup = $("#popDocumento").dxPopup("instance");
         _popup.show();
-        $("#Documento").attr("src", $('#SIM').data('url') + "GestionDocumental/Expedientes/LeeDoc?IdDocumento=" + IdDocumento);
+        $("#Documento").attr("src", $('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + IdDocumento);
     };
 
     var popupInd = null;
@@ -610,21 +610,27 @@ $(document).ready(function () {
 
     var popupOptInd = {
         width: 700,
-        height: "auto",
+        height: 900,
         hoverStateEnabled: true,
         title: "Indices del documento",
         visible: false,
         closeOnOutsideClick: true,
-        contentTemplate: function () {
-            var Content = "";
-            $.each(Indices, function (key, value) {
-                Content += "<p>" + value.INDICE + " : <span><b>" + value.VALOR + "</b></span></p>";
+        contentTemplate: function (container) {
+            var scrollView = $("<div id='scrollView'></div>");
+            var divIni = $("<div></div>");
+            scrollView.append(divIni);
+            scrollView.dxScrollView({
+                height: '100%',
+                width: '100%'
             });
-            return $("<div />").append(
-                $("<p><b>Indices del documento " + NroDocumento + " del " + Carpeta + " del expediente " + Expediente + "</b></p>"),
-                $("<br />"),
-                Content
-            );
+            var Content = "<table class='table table-sm' style='font-size: 10px;'><thead><tr><th scope='col'>NOMBRE DEL ÍNDICE</th><th scope='col'>VALOR</th></tr></thead><tbody>";
+            Indices.forEach(function (indice, index) {
+                Content += "<tr><th scope='row'>" + indice.INDICE + "</th><td>" + indice.VALOR + "</td></tr>";
+            });
+            divIni.html("<p><b>Indices del documento " + NroDocumento + " de la carpeta " + Carpeta + " del expediente " + Expediente + "</b></p><br />" + Content);
+            container.append(scrollView);
+
+            return container;
         }
     };
 

@@ -1209,6 +1209,11 @@
             return Indices.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objData"></param>
+        /// <returns></returns>
         [System.Web.Http.HttpPost, System.Web.Http.ActionName("GuardaindicesTramite")]
         public object PostGuardaindicesTramite(IndicesTramite objData)
         {
@@ -1217,11 +1222,33 @@
             {
                 if (objData.Indices != null)
                 {
+                    bool _alMenosUnoObliga = false;
+                    decimal _indiceObliga = 0;
                     foreach (Indice indice in objData.Indices)
                     {
                         if (indice.OBLIGA == 1 && (indice.VALOR == null || indice.VALOR == ""))
                         {
                             return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
+                        }
+                        var DefInd = dbSIM.TBINDICEPROCESO.Where(w => w.CODINDICE == indice.CODINDICE).FirstOrDefault();
+                        if (DefInd.ID_INDICEOBLIGA != null && DefInd.ID_INDICEOBLIGA  > 0)
+                        {
+                            _alMenosUnoObliga = true;
+                            if (indice.VALOR.ToLower() == "si" || indice.VALOR.ToLower() == "ok")
+                            {
+                                //_indiceObliga = DefInd.ID_INDICEOBLIGA;
+                                //Indice _afect = objData.Indices.Where(w => w.CODINDICE == (int)_indiceObliga).Select(s => s.VALOR)
+                                //DataRow[] _afect = _dtIndTra.Select("IdIndice=" + _indiceObliga.ToString());
+                                //if (_afect.Length > 0)
+                                //{
+                                //    if (_afect[0][1].ToString() == "")
+                                //    {
+                                //        lblErrorIndTra.Text = "Falta ingresar datos para el indice " + archivo.GetNombreIndiceTra(_indiceObliga);
+                                //        return false;
+                                //    }
+                                //    else _valorObliga++;
+                                //}
+                            }
                         }
                         if (objData.CodTramite > 1)
                         {

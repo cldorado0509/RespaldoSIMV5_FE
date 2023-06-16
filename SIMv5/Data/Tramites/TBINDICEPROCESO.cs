@@ -71,6 +71,8 @@ namespace SIM.Data.Tramites
 
         public decimal? CODSECUENCIA { get; set; }
 
+        public decimal? ID_INDICEOBLIGA { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TBINDICETRAMITE> TBINDICETRAMITE { get; set; }
     }
