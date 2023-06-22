@@ -18,6 +18,7 @@
     using Antlr.Runtime.Misc;
     using DevExpress.Web.Internal;
     using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
+    using SIM.Data.Tramites;
 
     [Authorize]
     public class UtilidadesController : Controller
@@ -189,7 +190,22 @@
         [ActionName("LeeTemporal")]
         public async Task<FileContentResult> GetTemporal(long IdDocumento)
         {
-            Temporal oStream = await SIM.Utilidades.Archivos.AbrirTemporal(IdDocumento);
+            int idUsuario = 0;
+            int funcionario = 0;
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
+                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                               where uf.ID_USUARIO == idUsuario
+                                               select f.CODFUNCIONARIO).FirstOrDefault());
+
+            }
+
+            Temporal oStream = await SIM.Utilidades.Archivos.AbrirTemporal(IdDocumento, funcionario);
             string _Mime = "";
             if (oStream.dataFile.Length > 0)
             {
@@ -253,6 +269,15 @@
                     dbSIM.DOCUMENTO_TEMPORAL.Remove(Temp);  
                     dbSIM.SaveChanges();
                     System.IO.File.Delete(Temp.S_RUTA);
+                    LOG_TEMPORALES log = new LOG_TEMPORALES();
+                    log.CODFUNCIONARIO = funcionario;
+                    log.CODTRAMITE = Temp.CODTRAMITE;
+                    log.FECHAEVENTO = DateTime.Now;
+                    log.NOMBREARCHIVO = Temp.S_RUTA;
+                    log.ID_DOCUMENTOTEMP = Temp.ID_DOCUMENTO;
+                    log.EVENTO = "El funcionario eliminó el documento";
+                    dbSIM.LOGTEMPORALES.Add(log);
+                    dbSIM.SaveChanges();
                     resp = true;
                 }
                 else resp = false;

@@ -744,6 +744,15 @@
                             Tempo.NRO_SILPA = 0;
                             dbSIM.DOCUMENTO_TEMPORAL.Add(Tempo);
                             dbSIM.SaveChanges();
+                            LOG_TEMPORALES log = new LOG_TEMPORALES();
+                            log.CODFUNCIONARIO = Tarea.CODFUNCIONARIO;
+                            log.CODTRAMITE = objData.CodTramite;
+                            log.FECHAEVENTO = DateTime.Now;
+                            log.ID_DOCUMENTOTEMP = Tempo.ID_DOCUMENTO;
+                            log.NOMBREARCHIVO = Tempo.S_RUTA;
+                            log.EVENTO = "El funcionario subió el documento temporal";
+                            dbSIM.LOGTEMPORALES.Add(log);
+                            dbSIM.SaveChanges();
                         }
                         else
                         {

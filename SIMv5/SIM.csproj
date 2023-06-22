@@ -1551,6 +1551,7 @@
     <Compile Include="Data\General\EVENTO_PARTICIPANTE.cs" />
     <Compile Include="Data\Tramites\BUSQUEDA_DOCUMENTO.cs" />
     <Compile Include="Data\Tramites\EXP_BUSQUEDA.cs" />
+    <Compile Include="Data\Tramites\LOG_TEMPORALES.cs" />
     <Compile Include="Data\Tramites\QRY_ABOGADOS.cs" />
     <Compile Include="Data\Tramites\QRY_INFORMESTECNICOS.cs" />
     <Compile Include="Data\Tramites\QRY_MEMORANDOS.cs" />

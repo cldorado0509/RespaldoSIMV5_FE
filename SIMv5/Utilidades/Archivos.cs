@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 using SIM.Data;
 using PdfSharp.Pdf.IO;
 using System.Security.Claims;
+using SIM.Data.Tramites;
+using System.Web.Http.ModelBinding;
 
 namespace SIM.Utilidades
 {
@@ -436,7 +438,7 @@ namespace SIM.Utilidades
         }
 
         /// <summary>
-        /// 
+        /// Retorna objeto con los datos del documento temporal que se esta abriendo
         /// </summary>
         /// <param name="IdDocumento"></param>
         /// <returns></returns>
@@ -470,6 +472,56 @@ namespace SIM.Utilidades
             {
                 return null;
             }
+            return Resp;
+        }
+
+        /// <summary>
+        /// Retorna objeto con los datos del documento temporal que se esta abriendo
+        /// </summary>
+        /// <param name="IdDocumento"></param>
+        /// <param name="CodFuncionario"></param>
+        /// <returns></returns>
+        public static async Task<SIM.Controllers.Temporal> AbrirTemporal(long IdDocumento, decimal CodFuncionario)
+        {
+            if (IdDocumento == 0 || CodFuncionario == 0 ) return null;
+            EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+            SIM.Controllers.Temporal Resp = new Controllers.Temporal();
+            MemoryStream _Ms = new MemoryStream();
+            try
+            {
+                Cryptografia Arc = new Cryptografia();
+                string Ruta = "";
+
+                var Docu = (from Doc in dbSIM.DOCUMENTO_TEMPORAL
+                            where Doc.ID_DOCUMENTO == IdDocumento
+                            select Doc).FirstOrDefault();
+                if (Docu != null)
+                {
+                    Ruta = Docu.S_RUTA;
+                    string Extension = Path.GetExtension(Ruta);
+                    Resp.fileType = Extension;
+                    Resp.filName = Docu.S_RUTA;
+                    using (var stream = new FileStream(Ruta, FileMode.Open))
+                    {
+                        await stream.CopyToAsync(_Ms);
+                    }
+                    Resp.dataFile = _Ms;
+                    LOG_TEMPORALES log = new LOG_TEMPORALES();
+                    log.CODFUNCIONARIO = CodFuncionario;
+                    log.CODTRAMITE = Docu.CODTRAMITE;
+                    log.FECHAEVENTO = DateTime.Now;
+                    log.ID_DOCUMENTOTEMP = Docu.ID_DOCUMENTO;
+                    log.NOMBREARCHIVO = Docu.S_RUTA;
+                    log.EVENTO = "El funcionario abrió el documento";
+                    dbSIM.LOGTEMPORALES.Add(log);
+                    dbSIM.SaveChanges();    
+                }
+            }
+            catch
+            {
+                return null;
+            }
+
             return Resp;
         }
 
