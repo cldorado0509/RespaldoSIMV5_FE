@@ -89,6 +89,12 @@
         [JsonProperty("observacion")]
         public string Observacion { get; set; }
 
+        /// <summary>
+        /// Observación relacionada con el estado del punto de control
+        /// </summary>
+        [JsonProperty("observacionEstado")]
+        public string ObservacionEstado { get; set; }
+
         [JsonProperty("fechaOrigen")]
         public DateTime? FechaOrigen { get; set; }
 

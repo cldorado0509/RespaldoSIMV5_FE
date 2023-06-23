@@ -373,8 +373,9 @@ $(document).ready(function () {
                                     { dataField: 'tipoSolicitudAmbiental', width: '20%', caption: 'Tipo de Solicitud Ambiental', dataType: 'string' },
                                     { dataField: 'estadoPuntoControl', width: '20%', caption: 'Estado actual', dataType: 'string' },
                                     { dataField: 'fechaEstadoPuntoControl', width: '20%', caption: 'F. Estado actual', dataType: 'date' },
-                                    { dataField: 'observacion', width: '35%', caption: 'Observación', dataType: 'string' },
-                                    { dataField: 'expedienteDocumentalLabel', width: '35%', caption: 'Expediente Documental', dataType: 'string' },
+                                    { dataField: 'observacionEstado', width: '25%', caption: 'Observación Estado', dataType: 'string' },
+                                    { dataField: 'observacion', width: '25%', caption: 'Observación', dataType: 'string' },
+                                    { dataField: 'expedienteDocumentalLabel', width: '20%', caption: 'Expediente Documental', dataType: 'string' },
                                     { dataField: 'expedienteDocumentalId', width: '5%', caption: 'IdEdoc', dataType: 'string', visible:false },
                                     {
                                         visible: canEdit,
@@ -1247,6 +1248,7 @@ $(document).ready(function () {
                     else {
                         DevExpress.ui.dialog.alert('Estado del Punto de Control Creado/Actualizado correctamente con el Id:' + data.Result.IdGenerated, 'Guardar Datos');
                         $('#GidListadoEstadosPuntosControl').dxDataGrid({ dataSource: EstadosPuntoControlDataSource });
+                        $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
                         popupEstadoPuntoControl.hide();
                     }
                 },

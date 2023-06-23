@@ -30,7 +30,9 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         private string urlApiGateWay = SecurityLibraryNetFramework.ToolsSecurity.Decrypt(SIM.Utilidades.Data.ObtenerValorParametro("UrlApiGateWay").ToString());
         private string userApiExpAGateWay = SecurityLibraryNetFramework.ToolsSecurity.Decrypt(SIM.Utilidades.Data.ObtenerValorParametro("UserApiExpAGateWay").ToString());
         private string userApiExpAGateWayS = SecurityLibraryNetFramework.ToolsSecurity.Decrypt(SIM.Utilidades.Data.ObtenerValorParametro("UserApiExpAGateWayS").ToString());
-     
+        private string urlApiExpedienteAmbiental = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioExpedienteAmbiental").ToString();
+        private string urlApiSecurity = SIM.Utilidades.Data.ObtenerValorParametro("urlApiSecurity").ToString();
+
         /// <summary>
         /// 
         /// </summary>
@@ -71,7 +73,6 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 datos = null,
                 numRegistros = 0,
             };
-
 
             ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
 
@@ -128,7 +129,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 else if (Id <= 0)
                 {
                     objData.proyectoId = 0;
-                    resposeF = await apiService.PostAsync<ExpedienteAmbientalDTO>(this.urlApiGateWay, "api/", "ExpA/ExpedienteAmbiental/GuardarExpedienteAmbiental", objData, response.JwtToken);
+                    resposeF = await apiService.PostAsync<ExpedienteAmbientalDTO>(this.urlApiGateWay, "ExpA/", "ExpedienteAmbiental/GuardarExpedienteAmbiental", objData, response.JwtToken);
                     if (!resposeF.IsSuccess) return resposeF;
                 }
             }
@@ -246,11 +247,14 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 TercerosDTO terceroExpedienteAmbiental = new TercerosDTO();
 
-                AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
-              
-                var responseF = await apiService.GetAsync<TercerosDTO>(urlApiTerceros, "api/", $"Terceros/ObtenerTerceroXExpediente?id={Id}", response.JwtToken);
-                if (!responseF.IsSuccess) return JObject.FromObject(terceroExpedienteAmbiental, Js);
-                terceroExpedienteAmbiental = (TercerosDTO)responseF.Result;
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "expediente.ambiental@metropol.gov.co", RememberMe = true });
+                if (!response.IsSuccess) return JObject.FromObject(terceroExpedienteAmbiental, Js);
+                var tokenG = (TokenResponse)response.Result;
+                if (tokenG == null) return JObject.FromObject(terceroExpedienteAmbiental, Js);
+
+                response = await apiService.GetAsync<TercerosDTO>(urlApiTerceros, "api/", $"Terceros/ObtenerTerceroXExpediente?id={Id}", tokenG.Token);
+                if (!response.IsSuccess) return JObject.FromObject(terceroExpedienteAmbiental, Js);
+                terceroExpedienteAmbiental = (TercerosDTO)response.Result;
                 return JObject.FromObject(terceroExpedienteAmbiental, Js);
             }
             catch (Exception exp)
@@ -258,6 +262,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 throw exp;
             }
         }
+
 
             
         /// <summary>
@@ -318,6 +323,8 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         }
 
 
+       
+
         /// <summary>
         /// Retorna la información de un Expediente Ambiental
         /// </summary>
@@ -337,12 +344,14 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 TerceroInstalacionDTO tercero = new TerceroInstalacionDTO();
 
-                AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
-                if (response.ExpiresIn == 0) return JObject.FromObject(tercero, Js);
-                              
-                var responseF = await apiService.GetAsync<TerceroInstalacionDTO>(urlApiTerceros, "api/", $"Terceros/ObtenerTercero?id={Id}", response.JwtToken);
-                if (!responseF.IsSuccess) return JObject.FromObject(tercero, Js);
-                tercero = (TerceroInstalacionDTO)responseF.Result;
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "federico.martinez@metropol.gov.co", RememberMe = true });
+                if (!response.IsSuccess) return JObject.FromObject(tercero, Js);
+                var tokenG = (TokenResponse)response.Result;
+                if (tokenG == null) return JObject.FromObject(tercero, Js);
+
+                response = await apiService.GetAsync<TerceroInstalacionDTO>(urlApiTerceros, "api/", $"Terceros/ObtenerTercero?id={Id}", tokenG.Token);
+                if (!response.IsSuccess) return JObject.FromObject(tercero, Js);
+                tercero = (TerceroInstalacionDTO)response.Result;
 
                 return JObject.FromObject(tercero, Js);
             }
@@ -351,6 +360,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 throw exp;
             }
         }
+
 
 
         /// <summary>
@@ -375,14 +385,14 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 int _Id = -1;
                 if (!string.IsNullOrEmpty(idTercero)) _Id = int.Parse(idTercero);
 
+                Response response = await apiService.GetTokenAsync(urlApiSecurity, "api/", "Users/CreateToken", new TokenRequest { Password = "Admin123", Username = "federico.martinez@metropol.gov.co", RememberMe = true });
+                if (!response.IsSuccess) return datosConsulta;
+                var tokenG = (TokenResponse)response.Result;
+                if (tokenG == null) return datosConsulta;
 
-                AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
-                if (response.ExpiresIn == 0) return datosConsulta;
-
-
-                var responseF = await apiService.GetListAsync<ListadoInstalacionesDTO>(urlApiTerceros, "api/", $"Terceros/ListadoInstalaciones?id={idTercero}", response.JwtToken);
-                if (!responseF.IsSuccess) return datosConsulta;
-                var list = (List<ListadoInstalacionesDTO>)responseF.Result;
+                response = await apiService.GetListAsync<ListadoInstalacionesDTO>(urlApiTerceros, "api/", $"Terceros/ListadoInstalaciones?id={idTercero}", tokenG.Token);
+                if (!response.IsSuccess) return datosConsulta;
+                var list = (List<ListadoInstalacionesDTO>)response.Result;
                 if (list == null || list.Count == 0) return datosConsulta;
 
                 model = list.AsQueryable();
@@ -399,6 +409,12 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 throw exp;
             }
         }
+
+
+
+
+
+
         #endregion
 
         #region Puntos de Control asociados a un Expediente Ambiental
