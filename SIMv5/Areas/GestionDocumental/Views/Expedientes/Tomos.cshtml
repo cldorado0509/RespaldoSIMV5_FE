@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Tomos";
     Layout = "~/Views/Shared/_LayoutPopupV5.cshtml";
 }
@@ -7,7 +6,7 @@
     var IdExpediente = @(ViewBag.IdExpediente);
     var Expediente = "@(ViewBag.Expediente)";
 </script>
-<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/Tomos.js?V=0.3")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/Tomos.js?V=" + DateTime.Now.ToString("yyyyddMMHHmmss"))"></script>
 <style>
     #BotonExp {
         display: flex;

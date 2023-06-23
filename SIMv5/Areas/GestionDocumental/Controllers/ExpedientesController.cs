@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -27,11 +28,16 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdExp"></param>
+        /// <returns></returns>
         public ActionResult Tomos(int? IdExp)
         {
             if (IdExp > 0) {
                 var Expediente = (from Exp in dbSIM.EXP_EXPEDIENTES where Exp.ID_EXPEDIENTE == IdExp select Exp.S_NOMBRE).FirstOrDefault();
-                ViewBag.Expediente = Expediente.Trim();
+                ViewBag.Expediente = Regex.Replace(Expediente.Trim(), "[^0-9A-Za-z _-]", "");
                 ViewBag.IdExpediente = IdExp;
                 return View();
             } else return null;

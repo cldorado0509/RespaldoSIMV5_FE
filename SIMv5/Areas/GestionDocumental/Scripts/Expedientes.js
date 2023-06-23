@@ -155,9 +155,8 @@ $(document).ready(function () {
                         hint: 'Administrar carpetas del expediente',
                         onClick: function (e) {
                             IdExpediente = options.data.ID_EXPEDIENTE;
-                            var aprobacionInstance = $("#popTomos").dxPopup("instance");
-                            aprobacionInstance.show();
-
+                            var Tomos = $("#popTomos").dxPopup("instance");
+                            Tomos.show();
                             $('#frmTomos').attr('src', $('#SIM').data('url') + 'GestionDocumental/Expedientes/Tomos?IdExp=' + IdExpediente + '&c=@DateTime.Now.ToString("HHmmss")');
                         }
                     }).appendTo(container);

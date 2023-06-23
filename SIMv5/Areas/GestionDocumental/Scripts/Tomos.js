@@ -34,11 +34,11 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         remoteOperations: true,
         columns: [
-            { dataField: 'ID_TOMO', width: '5%',  visible: false },
+            { dataField: 'ID_TOMO', width: '5%', visible: false },
             { dataField: 'N_TOMO', width: '5%', caption: 'Carpeta', dataType: 'string' },
             { dataField: 'UBICACION', width: '20%', caption: 'Ubicación', dataType: 'string' },
             { dataField: 'FECHA', width: '15%', caption: 'Fecha Creación', dataType: 'date', format: 'MMM dd yyyy HH:mm' },
-            { dataField: 'FUNCCREA', width: '20%', caption: 'Funcionario Crea', dataType: 'string'},
+            { dataField: 'FUNCCREA', width: '20%', caption: 'Funcionario Crea', dataType: 'string' },
             { dataField: 'ABIERTO', width: '5%', caption: 'Abierto', dataType: 'string' },
             { dataField: 'DOCUMENTOS', width: '10%', caption: 'Cantidad documentos', dataType: 'number' },
             { dataField: 'FOLIOS', width: '10%', caption: 'Cantidad folios', dataType: 'number' },
@@ -166,7 +166,7 @@ $(document).ready(function () {
             type: "required",
             message: "El número de la carpeta es obligatorio"
         }]
-        }).dxTextBox("instance");
+    }).dxTextBox("instance");
 
     var txtUbicacion = $("#txtUbicacion").dxTextBox({
         placeholder: "Ingrese la ubicación para la carpeta...",
@@ -187,7 +187,7 @@ $(document).ready(function () {
             type: "required",
             message: "El número de folios para la carpeta es obligatorio"
         }]
-        }).dxTextBox("instance");
+    }).dxTextBox("instance");
 
     $("#btnGuarda").dxButton({
         text: "Guardar",
@@ -281,7 +281,7 @@ $(document).ready(function () {
             { dataField: 'FECDIGITA', width: '15%', caption: 'Fecha Digitaliza', dataType: 'date', format: 'MMM dd yyyy HH:mm' },
             { dataField: 'FUNCASOCIA', width: '20%', caption: 'Funcionario asocia', dataType: 'string' },
             { dataField: 'TIPODOC', width: '20%', caption: 'Tipo de Documento', dataType: 'string' },
-            { dataField: 'IMAGENES', width: '5%', caption: 'Imágenes', dataType: 'string'},
+            { dataField: 'IMAGENES', width: '5%', caption: 'Imágenes', dataType: 'string' },
             { dataField: 'FOLIOS', width: '5%', caption: 'Folios', dataType: 'string' },
             {
                 width: '5%',
@@ -335,15 +335,15 @@ $(document).ready(function () {
                                         NroDocumento = options.data.ORDEN;
                                         var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/ObtieneOrdenDoc";
                                         $.getJSON(_Ruta,
-                                        {
-                                            IdTomo: IdTomo,
-                                            IdDocumento: IdDocumento
+                                            {
+                                                IdTomo: IdTomo,
+                                                IdDocumento: IdDocumento
                                             }).done(function (data) {
                                                 if (data != null) {
                                                     txtOrdenDoc.option("value", data.OrdenDoc);
                                                     txtOrdenDoc.option("max", data.MaxOrden);
                                                     popupReor.show();
-                                            }
+                                                }
                                             }).fail(function (jqxhr, textStatus, error) {
                                                 DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Modificar orden del documento');
                                             });
@@ -427,7 +427,7 @@ $(document).ready(function () {
             //}
         ],
         onContentReady: function (e) {
-            var visibleRowsCount = e.component.totalCount(); 
+            var visibleRowsCount = e.component.totalCount();
             if (visibleRowsCount > 0) {
                 $("#TituloDocumentos").text("Documentos de la " + Carpeta + " del expediente " + Expediente);
             } else {
@@ -437,7 +437,7 @@ $(document).ready(function () {
         }
     });
 
-    var txtOrden =  $("#txtOrden").dxNumberBox({
+    var txtOrden = $("#txtOrden").dxNumberBox({
         placeholder: "Ingrese el orden para el documento",
         value: ""
     }).dxValidator({
@@ -446,11 +446,11 @@ $(document).ready(function () {
             type: "required",
             message: "El orden del documento es obligatorio"
         }]
-        }).dxNumberBox("instance");
+    }).dxNumberBox("instance");
 
     var txtFolioIni = $("#txtFolioIni").dxNumberBox({
         placeholder: "Ingrese el folio inicial",
-        value:""
+        value: ""
     }).dxValidator({
         validationGroup: "DocumentoGroup",
         validationRules: [{
@@ -531,7 +531,7 @@ $(document).ready(function () {
             var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/ModificaOrdenDoc";
             if (Orden != NroDocumento) {
                 $.getJSON(_Ruta,
-                          params).done(function (data) {
+                    params).done(function (data) {
                         if (data != null) {
                             if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Reordenar documento');
                             else {
@@ -544,25 +544,25 @@ $(document).ready(function () {
                         DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Reordenar documento');
                     });
 
-            //    $.ajax({
-            //        type: "POST",
-            //        dataType: 'json',
-            //        url: _Ruta,
-            //        data: JSON.stringify(params),
-            //        contentType: "application/json",
-            //        beforeSend: function () { },
-            //        success: function (data) {
-            //            if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Reordenar documento');
-            //            else {
-            //                DevExpress.ui.dialog.alert(data.resp, 'Reordenar Documento');
-            //                $('#gridDocumentos').dxDataGrid({ dataSource: DocumentosDataSource });
-            //                $("#PopupReordenar").dxPopup("instance").hide();
-            //            }
-            //        },
-            //        error: function (xhr, textStatus, errorThrown) {
-            //            DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Reordenar documento');
-            //        }
-            //    });
+                //    $.ajax({
+                //        type: "POST",
+                //        dataType: 'json',
+                //        url: _Ruta,
+                //        data: JSON.stringify(params),
+                //        contentType: "application/json",
+                //        beforeSend: function () { },
+                //        success: function (data) {
+                //            if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Reordenar documento');
+                //            else {
+                //                DevExpress.ui.dialog.alert(data.resp, 'Reordenar Documento');
+                //                $('#gridDocumentos').dxDataGrid({ dataSource: DocumentosDataSource });
+                //                $("#PopupReordenar").dxPopup("instance").hide();
+                //            }
+                //        },
+                //        error: function (xhr, textStatus, errorThrown) {
+                //            DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Reordenar documento');
+                //        }
+                //    });
             } else DevExpress.ui.dialog.alert('Ocurrió un problema : Debe cambiar el orden del docuemnto', 'Reordenar documento');
         }
     });
@@ -708,7 +708,7 @@ function SeleccionaDocumento(Documentos) {
     _popup.hide();
     var Sel = $("#grdListaTomos").dxDataGrid("instance").getSelectedRowsData()[0];
     if (Documentos.length > 0 != "" && Sel.ID_TOMO != "") {
-        var ListaDocs = JSON.stringify(Documentos);       
+        var ListaDocs = JSON.stringify(Documentos);
         var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/AsociaDocumento";
         $.getJSON(_Ruta, { ListaIdDocumentos: ListaDocs, IdTomo: Sel.ID_TOMO })
             .done(function (data) {
