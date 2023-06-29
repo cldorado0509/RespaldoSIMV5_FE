@@ -206,33 +206,36 @@
             }
 
             Temporal oStream = await SIM.Utilidades.Archivos.AbrirTemporal(IdDocumento, funcionario);
-            string _Mime = "";
-            if (oStream.dataFile.Length > 0)
+            if (oStream != null)
             {
-                oStream.dataFile.Position = 0;
-                FileInfo _Archivo = new FileInfo(oStream.filName);
+                string _Mime = "";
+                if (oStream.dataFile.Length > 0)
+                {
+                    oStream.dataFile.Position = 0;
+                    FileInfo _Archivo = new FileInfo(oStream.filName);
 
-                var Archivo = oStream.dataFile.GetBuffer();
-                switch (oStream.fileType.ToLower())
-                {
-                    case ".pdf":
-                        _Mime = "application/pdf";
-                        break;
-                    case ".doc":
-                        _Mime = "application/msword";
-                        break;
-                    case ".docx":
-                        _Mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                        break;
+                    var Archivo = oStream.dataFile.GetBuffer();
+                    switch (oStream.fileType.ToLower())
+                    {
+                        case ".pdf":
+                            _Mime = "application/pdf";
+                            break;
+                        case ".doc":
+                            _Mime = "application/msword";
+                            break;
+                        case ".docx":
+                            _Mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                            break;
+                    }
+                    System.Net.Mime.ContentDisposition cd = new System.Net.Mime.ContentDisposition
+                    {
+                        FileName = _Archivo.Name,
+                        Inline = true  // false = prompt the user for downloading;  true = browser to try to show the file inline
+                    };
+                    Response.Headers.Add("Content-Disposition", cd.ToString());
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                    return File(Archivo, _Mime);
                 }
-                System.Net.Mime.ContentDisposition cd = new System.Net.Mime.ContentDisposition
-                {
-                    FileName = _Archivo.Name,
-                    Inline = true  // false = prompt the user for downloading;  true = browser to try to show the file inline
-                };
-                Response.Headers.Add("Content-Disposition", cd.ToString());
-                Response.Headers.Add("X-Content-Type-Options", "nosniff");
-                return File(Archivo, _Mime);
             }
             return null;
         }
