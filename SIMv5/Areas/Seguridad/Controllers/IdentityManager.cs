@@ -814,19 +814,22 @@ namespace SIM.Areas.Seguridad.Controllers
             //frente a la opcion de cargar solo los idRol y realizar un customAutorize que revise por cada peticion si el rol tiene permiso sobre ese metodo o clase
             foreach (var rol_forma in qrf)
             {
-                if (rol_forma.MENU.S_CONTROLADOR == null)
-                    continue;
-                string contr = rol_forma.MENU.S_CONTROLADOR.ToUpper();
-                if (rol_forma.S_NUEVO == "1")
-                    user.Permisos.Add("C" + contr);
-                if (rol_forma.S_ELIMINAR == "1")
-                    user.Permisos.Add("E" + contr);
-                if (rol_forma.S_EDITAR == "1")
-                    user.Permisos.Add("A" + contr);
-                if (rol_forma.S_BUSCAR == "1")
-                    user.Permisos.Add("V" + contr);
-                if (rol_forma.S_ADMINISTRADOR == "1")
-                    user.Permisos.Add("X" + contr);
+                try
+                {
+                    if (rol_forma.MENU.S_CONTROLADOR == null)
+                        continue;
+                    string contr = rol_forma.MENU.S_CONTROLADOR.ToUpper();
+                    if (rol_forma.S_NUEVO == "1")
+                        user.Permisos.Add("C" + contr);
+                    if (rol_forma.S_ELIMINAR == "1")
+                        user.Permisos.Add("E" + contr);
+                    if (rol_forma.S_EDITAR == "1")
+                        user.Permisos.Add("A" + contr);
+                    if (rol_forma.S_BUSCAR == "1")
+                        user.Permisos.Add("V" + contr);
+                    if (rol_forma.S_ADMINISTRADOR == "1")
+                        user.Permisos.Add("X" + contr);
+                }catch (Exception ex) { }
             }
         }
 
