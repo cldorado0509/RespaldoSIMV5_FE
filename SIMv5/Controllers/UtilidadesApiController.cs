@@ -1,32 +1,17 @@
 ﻿namespace SIM.Controllers
 {
-    using DevExpress.CodeParser;
-    using DevExpress.DataProcessing.InMemoryDataProcessor;
-    using DevExpress.Office.Utils;
-    using DevExpress.Web;
-    using DevExpress.Xpo;
-    using DocumentFormat.OpenXml.Drawing.Charts;
-    using DocumentFormat.OpenXml.EMMA;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SIM.Data;
-    using SIM.Data.Contrato;
-    using SIM.Data.General;
     using SIM.Data.Tramites;
-    using SIM.Utilidades;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Data;
     using System.IO;
     using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Reflection;
     using System.Security.Claims;
-    using System.Web;
     using System.Web.Http;
-    using System.Web.Mvc;
 
 
     [System.Web.Http.Authorize]
@@ -161,7 +146,8 @@
                                     {
                                         _Sql = ObtenerSqlDocOracle(IdUnidadDoc, _condicion);
                                         DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
-                                    }else
+                                    }
+                                    else
                                     {
                                         _Sql = ObtenerSqlDocOracle(IdUnidadDoc);
                                         DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
@@ -177,7 +163,7 @@
                     }
                 }
                 else
-                {                
+                {
                     return JArray.FromObject(DocsEncontrados, Js);
                 }
                 return JArray.FromObject(DocsEncontrados, Js);
@@ -947,14 +933,14 @@
                     string _codindices = "";
                     _aux += "FROM (SELECT DISTINCT IND.CODTRAMITE,";
                     var IndicesProceso = (from Ind in dbSIM.TBINDICEPROCESO
-                                        where Ind.CODPROCESO == TipoProceso
-                                        orderby Ind.INDICE
-                                        select new
-                                        {
-                                            Ind.CODINDICE,
-                                            Ind.INDICE,
-                                            Ind.TIPO
-                                        }).ToList();
+                                          where Ind.CODPROCESO == TipoProceso
+                                          orderby Ind.INDICE
+                                          select new
+                                          {
+                                              Ind.CODINDICE,
+                                              Ind.INDICE,
+                                              Ind.TIPO
+                                          }).ToList();
                     if (IndicesProceso != null)
                     {
                         foreach (var fila in IndicesProceso)
@@ -1199,7 +1185,8 @@
         {
             var Indices = (from Tra in dbSIM.TBTRAMITE
                            join Ise in dbSIM.TBINDICEPROCESO on Tra.CODPROCESO equals Ise.CODPROCESO
-                           join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l from pdis in l.DefaultIfEmpty()
+                           join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                           from pdis in l.DefaultIfEmpty()
                            where Tra.CODTRAMITE == CodTramite
                            orderby Ise.ORDEN
                            select new Indice
@@ -1241,28 +1228,25 @@
                             return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
                         }
                         var DefInd = dbSIM.TBINDICEPROCESO.Where(w => w.CODINDICE == indice.CODINDICE).FirstOrDefault();
-                        if (DefInd.ID_INDICEOBLIGA != null && DefInd.ID_INDICEOBLIGA  > 0)
+                        if (DefInd.ID_INDICEOBLIGA != null && DefInd.ID_INDICEOBLIGA > 0)
                         {
                             _alMenosUnoObliga = true;
                             if (indice.VALOR.ToLower() == "si" || indice.VALOR.ToLower() == "ok")
                             {
                                 _indiceObliga = DefInd.ID_INDICEOBLIGA != null ? DefInd.ID_INDICEOBLIGA.Value : 0;
-                                if (_indiceObliga > 0) {
+                                if (_indiceObliga > 0)
+                                {
                                     Indice _afect = objData.Indices.Where(w => w.CODINDICE == (int)_indiceObliga).FirstOrDefault();
                                     if (_afect != null)
                                     {
                                         if (_afect.VALOR == "")
                                         {
-                                                return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
+                                            return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
                                         }
                                         else _valorObliga++;
                                     }
                                 }
                             }
-                        }
-                        if (_alMenosUnoObliga && _valorObliga == 0)
-                        {
-                            return new { resp = "Error", mensaje = "Al menos una de las afectaciones debe ser seleccionada!!" };
                         }
                         if (objData.CodTramite > 1)
                         {
@@ -1283,6 +1267,10 @@
                             }
                             dbSIM.SaveChanges();
                         }
+                    }
+                    if (_alMenosUnoObliga && _valorObliga == 0)
+                    {
+                        return new { resp = "Error", mensaje = "Al menos una de las afectaciones debe ser seleccionada!!" };
                     }
                 }
                 else
@@ -1313,12 +1301,12 @@
         public dynamic GetEditarIndicesDocumento(int IdDocumento)
         {
             var Tramite = (from Doc in dbSIM.TBTRAMITEDOCUMENTO
-                          where Doc.ID_DOCUMENTO == IdDocumento
-                          select new
-                          {
-                              CodTramite = Doc.CODTRAMITE,
-                              CodDocumento = Doc.CODDOCUMENTO
-                          }).FirstOrDefault();
+                           where Doc.ID_DOCUMENTO == IdDocumento
+                           select new
+                           {
+                               CodTramite = Doc.CODTRAMITE,
+                               CodDocumento = Doc.CODDOCUMENTO
+                           }).FirstOrDefault();
             if (Tramite != null)
             {
                 var Indices = (from Ind in dbSIM.TBINDICEDOCUMENTO
@@ -1377,7 +1365,7 @@
                             var DefIndice = dbSIM.TBINDICESERIE.Where(w => w.CODINDICE == indice.CODINDICE).FirstOrDefault();
                             if (DefIndice != null)
                             {
-                                if (DefIndice.INDICE_RADICADO == "R" )
+                                if (DefIndice.INDICE_RADICADO == "R")
                                 {
                                     if (indice.VALOR != "")
                                     {
@@ -1390,7 +1378,8 @@
                                             if (NuevoRad == null)
                                             {
                                                 return new { resp = "Error", mensaje = "El radicado " + indice.VALOR + " no ha sido generado en el sistema!!" };
-                                            }else
+                                            }
+                                            else
                                             {
                                                 NuevoRad.CODTRAMITE = TraDoc.CODTRAMITE;
                                                 NuevoRad.CODDOCUMENTO = TraDoc.CODDOCUMENTO;
@@ -1412,7 +1401,7 @@
                                 if (TraDoc != null)
                                 {
                                     indiceDoc.CODTRAMITE = TraDoc.CODTRAMITE;
-                                    indiceDoc.CODDOCUMENTO = TraDoc.CODDOCUMENTO;   
+                                    indiceDoc.CODDOCUMENTO = TraDoc.CODDOCUMENTO;
                                 }
                                 indiceDoc.ID_DOCUMENTO = objData.IdDocumento;
                                 indiceDoc.CODINDICE = indice.CODINDICE;
@@ -1461,12 +1450,12 @@
 
     public class DatosDocs
     {
-       public decimal ID_DOCUMENTO { get; set; }
-       public decimal CODTRAMITE { get; set; }
-       public decimal CODDOCUMENTO { get; set; }
-       public string NOMBRE { get; set; }
-       public string INDICES { get; set; }
-       public DateTime FECHACREACION { get; set; }
+        public decimal ID_DOCUMENTO { get; set; }
+        public decimal CODTRAMITE { get; set; }
+        public decimal CODDOCUMENTO { get; set; }
+        public string NOMBRE { get; set; }
+        public string INDICES { get; set; }
+        public DateTime FECHACREACION { get; set; }
     }
     public class DatosExps
     {
@@ -1481,7 +1470,7 @@
     {
         public int CodTramite { get; set; }
         public int Orden { get; set; }
-        public int Version  { get; set; }
+        public int Version { get; set; }
         public string Descripcion { get; set; }
     }
 
@@ -1493,7 +1482,7 @@
         public string Importancia { get; set; }
     }
 
-    public class DocumentosVital 
+    public class DocumentosVital
     {
         public int ID_RADICACION { get; set; }
         public string Documento { get; set; }
