@@ -36,6 +36,7 @@
         public virtual DbSet<PROYECCION_DOC_COM> PROYECCION_DOC_COM { get; set; }
         public virtual DbSet<PROYECCION_DOC_DET_ARCH> PROYECCION_DOC_DET_ARCH { get; set; }
         public virtual DbSet<PROYECCION_DOC_FIRMAS> PROYECCION_DOC_FIRMAS { get; set; }
+        public virtual DbSet<PROYECCION_DOC_COPIAS> PROYECCION_DOC_COPIAS { get; set; }
         public virtual DbSet<PROYECCION_DOC_INDICES> PROYECCION_DOC_INDICES { get; set; }
         public virtual DbSet<RADICADO_DOCUMENTO> RADICADO_DOCUMENTO { get; set; }
         public virtual DbSet<RADICADO_UNIDADDOC> RADICADO_UNIDADDOC { get; set; }

@@ -21,6 +21,7 @@ using co.com.certicamara.encryption3DES.code;
 using SIM.Utilidades.FirmaDigital;
 using System.Text;
 using SIM.Data.Documental;
+using static SIM.Areas.Tramites.Controllers.ProyeccionDocumentoApiController;
 //using DevExpress.Utils.Extensions;
 
 namespace SIM.Areas.Tramites.Controllers
@@ -101,6 +102,13 @@ namespace SIM.Areas.Tramites.Controllers
             public string S_ACTIVO { get; set; }
         }
 
+        public class Copia
+        {
+            public decimal CODFUNCIONARIO { get; set; }
+            public string FUNCIONARIO { get; set; }
+            public string S_ACTIVO { get; set; }
+        }
+
         public class DatosProyeccion
         {
             public int Id { get; set; }
@@ -114,6 +122,7 @@ namespace SIM.Areas.Tramites.Controllers
             public List<Indice> Indices { get; set; }
             public List<Archivo> Archivos { get; set; }
             public List<Firma> Firmas { get; set; }
+            public List<Copia> Copias { get; set; }
         }
 
         public class DatosAvanzar
@@ -402,6 +411,20 @@ namespace SIM.Areas.Tramites.Controllers
 
 
                     resultado.Firmas = firmasProyeccion;
+
+                    var copiasProyeccion = (
+                        from pc in dbSIM.PROYECCION_DOC_COPIAS
+                        join f in dbSIM.TBFUNCIONARIO on pc.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                        where pc.ID_PROYECCION_DOC == id
+                        select new Copia
+                        {
+                            CODFUNCIONARIO = pc.CODFUNCIONARIO,
+                            FUNCIONARIO = f.NOMBRES + " " + f.APELLIDOS,
+                            S_ACTIVO = "S"
+                        }).ToList();
+
+
+                    resultado.Copias = copiasProyeccion;
                 }
                 else
                 {
@@ -451,6 +474,7 @@ namespace SIM.Areas.Tramites.Controllers
                 resultado.TramitesSeleccionados = new List<Tramite>();
                 resultado.Archivos = new List<Archivo>();
                 resultado.Indices = new List<Indice>();
+                resultado.Copias = new List<Copia>();
             }
 
             return resultado;
@@ -570,7 +594,7 @@ namespace SIM.Areas.Tramites.Controllers
                                                             where f.CODFUNCIONARIO == indice.ID_VALOR
                                                             select c).FirstOrDefault();
 
-                                    if (cargoFuncionario.RECIBE_MEMORANDO == null || cargoFuncionario.RECIBE_MEMORANDO.Trim() != "1")
+                                    if (cargoFuncionario == null || cargoFuncionario.RECIBE_MEMORANDO == null || cargoFuncionario.RECIBE_MEMORANDO.Trim() != "1")
                                     {
                                         return "ERROR:" + idProyeccionDocumento.ToString() + ":El funcionario relacionado en el Indice 'PARA', no está configurado para recibir documentos de esta serie documental.";
                                     }
@@ -912,6 +936,52 @@ namespace SIM.Areas.Tramites.Controllers
                             return "ERROR:" + idProyeccionDocumento.ToString() + ":Las Resoluciones y Autos deben tener por lo menos un usuario que Revise y uno que Apruebe.";
                         }
                     }
+                }
+
+                // Copias
+                if (datos.Copias != null)
+                {
+                    foreach (Copia copia in datos.Copias)
+                    {
+                        if (copia.S_ACTIVO == "N")
+                        {
+                            PROYECCION_DOC_COPIAS copiaProyeccion = dbSIM.PROYECCION_DOC_COPIAS.Where(c => c.ID_PROYECCION_DOC == proyeccionDocumento.ID_PROYECCION_DOC && c.CODFUNCIONARIO == copia.CODFUNCIONARIO).FirstOrDefault();
+
+                            if (copiaProyeccion != null)
+                            {
+                                dbSIM.Entry(copiaProyeccion).State = EntityState.Deleted;
+                            }
+
+                            dbSIM.SaveChanges();
+                        }
+                        else
+                        {
+                            PROYECCION_DOC_COPIAS copiaProyeccion = dbSIM.PROYECCION_DOC_COPIAS.Where(c => c.ID_PROYECCION_DOC == proyeccionDocumento.ID_PROYECCION_DOC && c.CODFUNCIONARIO == copia.CODFUNCIONARIO).FirstOrDefault();
+
+                            if (copiaProyeccion == null)
+                            {
+                                copiaProyeccion = new PROYECCION_DOC_COPIAS();
+
+                                copiaProyeccion.ID_PROYECCION_DOC = proyeccionDocumento.ID_PROYECCION_DOC;
+                                copiaProyeccion.CODFUNCIONARIO = Convert.ToInt32(copia.CODFUNCIONARIO);
+
+                                dbSIM.Entry(copiaProyeccion).State = EntityState.Added;
+                            }
+
+                            dbSIM.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    var copiasProyeccion = dbSIM.PROYECCION_DOC_COPIAS.Where(c => c.ID_PROYECCION_DOC == proyeccionDocumento.ID_PROYECCION_DOC);
+
+                    foreach (var copiaProyeccion in copiasProyeccion)
+                    {
+                        dbSIM.Entry(copiaProyeccion).State = EntityState.Deleted;
+                    }
+
+                    dbSIM.SaveChanges();
                 }
 
                 // Validación que el documento principal cargado tenga consistencia en las firmas ingresadas y configuradas
@@ -1511,9 +1581,15 @@ namespace SIM.Areas.Tramites.Controllers
 
                                                 //dbTramites.SP_NUEVO_TRAMITE(codProceso, codTarea, codFuncionarioTN, documento.S_DESCRIPCION, respCodTramite, respCodTarea, rtaResultado);
                                                 if (documento.ID_GRUPO == null) {
+                                                    var sqlFuncionariosCopias = "SELECT CODFUNCIONARIO " +
+                                                        "FROM TRAMITES.PROYECCION_DOC_COPIAS " +
+                                                        "WHERE ID_PROYECCION_DOC = " + documento.ID_PROYECCION_DOC.ToString();
+
+                                                    var funcionariosCopias = dbSIM.Database.SqlQuery<int>(sqlFuncionariosCopias).ToArray();
+
                                                     funcionarioPrincipal = (paraProyeccion != null && paraProyeccion.ID_VALOR != null ? (int)paraProyeccion.ID_VALOR : (int)codFuncionarioTN);
 
-                                                    respNuevoTramite = Utilidades.Tramites.CrearTramite(Convert.ToInt32(codProceso), Convert.ToInt32(codTarea), null, documento.S_DESCRIPCION, documento.S_DESCRIPCION, (int)codFuncionarioTN, funcionarioPrincipal, null, null, false);
+                                                    respNuevoTramite = Utilidades.Tramites.CrearTramite(Convert.ToInt32(codProceso), Convert.ToInt32(codTarea), null, documento.S_DESCRIPCION, documento.S_DESCRIPCION, (int)codFuncionarioTN, funcionarioPrincipal, funcionariosCopias, null, false);
                                                     respCodTramite = respNuevoTramite[0];
                                                     respCodTarea = respNuevoTramite[1];
                                                 }
@@ -1588,7 +1664,7 @@ namespace SIM.Areas.Tramites.Controllers
                                                 }
                                                 else
                                                 {
-                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, null, (paraProyeccion != null ? paraProyeccion.ID_VALOR : null) , radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
+                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_PROYECCION_DOC, (paraProyeccion != null ? paraProyeccion.ID_VALOR : null) , radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
                                                 }
                                             }
 
@@ -1828,6 +1904,7 @@ namespace SIM.Areas.Tramites.Controllers
             StringBuilder emailHtml;
             TBFUNCIONARIO funcionarioProyecta;
             string funcionariosGrupo = "";
+            string funcionariosCopias = "";
             string funcionarioPara = "";
             //string asunto = serieDocumental + " Radicado No. " + idRadicado.ToString() + " - " + descripcion;
 
@@ -1842,7 +1919,7 @@ namespace SIM.Areas.Tramites.Controllers
                 {
                     funcionarioProyecta = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO == codFuncionario).FirstOrDefault();
 
-                    if (idGrupo != null && idGrupo != -1)
+                    if (idGrupo != null && idGrupo > -1)
                     {
                         var sqlFuncionariosGrupo = "SELECT f.EMAIL " +
                                 "FROM TRAMITES.MEMORANDO_FUNCGRUPO mf INNER JOIN " +
@@ -1864,7 +1941,19 @@ namespace SIM.Areas.Tramites.Controllers
 
                         funcionarioPara = dbSIM.Database.SqlQuery<string>(sqlFuncionarioPara).FirstOrDefault();
 
-                        emailPara = funcionarioPara;
+                        var sqlFuncionariosCopias = "SELECT f.EMAIL " +
+                                "FROM TRAMITES.PROYECCION_DOC_COPIAS pc INNER JOIN " +
+                                "   TRAMITES.TBFUNCIONARIO f ON pc.CODFUNCIONARIO = f.CODFUNCIONARIO " +
+                                "WHERE ID_PROYECCION_DOC = " + (idGrupo*(-1)).ToString();
+
+                        funcionariosCopias = String.Join(";", dbSIM.Database.SqlQuery<string>(sqlFuncionariosCopias).ToList());
+
+                        if (funcionariosCopias.Trim() == ";")
+                            funcionariosCopias = "";
+                        else
+                            funcionariosCopias = ";" + funcionariosCopias;
+
+                        emailPara = funcionarioPara + funcionariosCopias;
                     }
 
                     var radicado = dbSIM.RADICADO_DOCUMENTO.Where(rd => rd.ID_RADICADODOC == idRadicado).Select(rd => rd.S_RADICADO).FirstOrDefault();

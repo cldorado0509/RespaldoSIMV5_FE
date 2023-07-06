@@ -17,6 +17,7 @@ var idSerieDocumental = -1;
 var idGrupo = -1;
 var indicesSerieDocumentalStore = null;
 var firmasDocumento = null;
+var copiasDocumento = null;
 var archivosDocumento = null;
 var tramitesSeleccionados = null;
 var idArchivo = 0;
@@ -26,6 +27,12 @@ var cargando = false;
 var indiceGrupos = [];
 
 var listoMostrar = false;
+var gruposVisible = false;
+
+var tabsDataFuncionarios = [
+    { text: 'Firmas', pos: 0 },
+    { text: 'Copias', pos: 1 },
+];
 
 $(document).ready(function () {
     $("#loadPanel").dxLoadPanel({
@@ -53,6 +60,28 @@ $(document).ready(function () {
         readOnly: ($('#app').data('ro') == 'S')
     });
 
+    $("#tabFuuncionarios").dxTabs({
+        dataSource: tabsDataFuncionarios,
+        onItemClick: (function (itemData) {
+            switch (itemData.itemIndex) {
+                case 0:
+                    $('#tab01').css('display', 'block');
+                    $('#tab02').css('display', 'none');
+                    break;
+                case 1:
+                    $('#tab02').css('display', 'block');
+                    $('#tab01').css('display', 'none');
+
+                    break;
+            }
+
+            posTab = itemData.itemIndex;
+        }),
+        selectedIndex: 0,
+    });
+
+    $("#tabFuuncionarios").dxTabs('instance').option('visible', false);
+
     indiceGrupos = $('#app').data('ipg').toString().split(',');
 
     $.getJSON($('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerSeriesDocumentales').done(function (data) {
@@ -65,14 +94,22 @@ $(document).ready(function () {
             onValueChanged: function (data) {
                 idSerieDocumental = data.value;
                 CargarIndices();
+                $('#grupo').dxSelectBox('instance').option('value', null);
                 idGrupo = -1;
                 $('#grupo').dxSelectBox('instance').option('value', idGrupo);
             },
             onSelectionChanged: function (data) {
                 if (data.selectedItem.GRUPO == 'S') {
                     $('#pnlGrupo').show();
+                    gruposVisible = true;
                 } else {
+                    $("#tabFuuncionarios").dxTabs('instance').option('selectedIndex', 0);
+                    $("#tabFuuncionarios").dxTabs('instance').option('visible', false);
+                    $('#tab01').css('display', 'block');
+                    $('#tab02').css('display', 'none');
+
                     $('#pnlGrupo').hide();
+                    gruposVisible = false;
                 }
             }
         });
@@ -139,9 +176,8 @@ $(document).ready(function () {
             $('#serieDocumental').dxSelectBox('instance').option('value', data.SerieDocumental);
 
             $('#grupo').dxSelectBox({
-                value: data.Grupo
+                value: (data.Grupo == null ? -1 : data.Grupo),
             });
-
 
             selectedItem = $('#serieDocumental').dxSelectBox('instance').option('selectedItem');
 
@@ -176,6 +212,12 @@ $(document).ready(function () {
                 dataSource: firmasDocumento
             });
 
+            copiasDocumento = data.Copias;
+
+            $("#grdCopias").dxDataGrid({
+                dataSource: copiasDocumento
+            });
+
             AsignarIndices(data.Indices);
 
             listoMostrar = true;
@@ -195,6 +237,21 @@ $(document).ready(function () {
         placeholder: ' -- NINGUNO -- ',
         showClearButton: false,
         readOnly: ($('#app').data('ro') == 'S'),
+        onSelectionChanged: function (data) {
+            if ((data.selectedItem == null || data.selectedItem.ID_GUPOMEMO == null || data.selectedItem.ID_GUPOMEMO == -1) && gruposVisible) {
+                $('#firmasCopias').html('<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>4. Firmas y Copias');
+
+                $("#tabFuuncionarios").dxTabs('instance').option('visible', true);
+            } else {
+                $('#firmasCopias').html('<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>4. Firmas');
+
+                $("#tabFuuncionarios").dxTabs('instance').option('selectedIndex', 0);
+                $("#tabFuuncionarios").dxTabs('instance').option('visible', false);
+
+                $('#tab01').css('display', 'block');
+                $('#tab02').css('display', 'none');
+            }
+        }
     });
 
     $.getJSON($('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerGrupos').done(function (data) {
@@ -734,33 +791,45 @@ $(document).ready(function () {
                     var item = $('#cboFuncionario').dxLookup('instance').option('selectedItem');
 
                     if (item != null) {
-                        if (firmasDocumento.findIndex(f => f.CODFUNCIONARIO == item.CODFUNCIONARIO) == -1) {
-                            var orden = 0;
-                            var TipoFirma = "Firma";
+                        if ($("#tabFuuncionarios").dxTabs('instance').option('selectedIndex') == 0) // Selección de Firmas
+                        {
+                            if (firmasDocumento.findIndex(f => f.CODFUNCIONARIO == item.CODFUNCIONARIO) == -1) {
+                                var orden = 0;
+                                var TipoFirma = "Firma";
 
-                            if (item.FIRMADIG == "1") {
-                                firmasDocumento.forEach(A => {
-                                    if (A.S_TIPO == "Digital") {
-                                        A.S_TIPO = "Firma";
+                                if (item.FIRMADIG == "1") {
+                                    firmasDocumento.forEach(A => {
+                                        if (A.S_TIPO == "Digital") {
+                                            A.S_TIPO = "Firma";
+                                        }
+                                    });
+                                    TipoFirma = "Digital";
+                                }
+
+                                firmasDocumento.forEach(fd => {
+                                    if (fd.ORDEN > orden) {
+                                        orden = fd.ORDEN;
                                     }
                                 });
-                                TipoFirma = "Digital";
+
+                                orden++;
+
+                                firmasDocumento.push({ CODFUNCIONARIO: item.CODFUNCIONARIO, FUNCIONARIO: item.FUNCIONARIO, ORDEN: orden, D_FECHA_FIRMA: null, S_ESTADO: 'N', S_ACTIVO: 'S', S_TIPO: TipoFirma });
+                                $("#grdFirmas").dxDataGrid({
+                                    dataSource: firmasDocumento
+                                });
+                            } else {
+                                MostrarNotificacion('alert', null, 'El funcionario ya se encuentra registrado.');
                             }
-
-                            firmasDocumento.forEach(fd => {
-                                if (fd.ORDEN > orden) {
-                                    orden = fd.ORDEN;
-                                }
-                            });
-
-                            orden++;
-
-                            firmasDocumento.push({ CODFUNCIONARIO: item.CODFUNCIONARIO, FUNCIONARIO: item.FUNCIONARIO, ORDEN: orden, D_FECHA_FIRMA: null, S_ESTADO: 'N', S_ACTIVO: 'S', S_TIPO: TipoFirma });
-                            $("#grdFirmas").dxDataGrid({
-                                dataSource: firmasDocumento
-                            });
-                        } else {
-                            MostrarNotificacion('alert', null, 'El funcionario ya se encuentra registrado.');
+                        } else { // Selección de Copias
+                            if (copiasDocumento.findIndex(c => c.CODFUNCIONARIO == item.CODFUNCIONARIO) == -1) {
+                                copiasDocumento.push({ CODFUNCIONARIO: item.CODFUNCIONARIO, FUNCIONARIO: item.FUNCIONARIO });
+                                $("#grdCopias").dxDataGrid({
+                                    dataSource: copiasDocumento
+                                });
+                            } else {
+                                MostrarNotificacion('alert', null, 'El funcionario ya se encuentra registrado.');
+                            }
                         }
                     }
                 }
@@ -952,6 +1021,79 @@ $(document).ready(function () {
         ],
     });
 
+    $("#grdCopias").dxDataGrid({
+        dataSource: null,
+        allowColumnResizing: true,
+        height: '75%',
+        width: '100%',
+        loadPanel: { text: 'Cargando Datos...' },
+        paging: {
+            enabled: false
+        },
+        filterRow: {
+            visible: false,
+        },
+        groupPanel: {
+            visible: false,
+            allowColumnDragging: false,
+        },
+        editing: {
+            mode: 'cell',
+            allowUpdating: ($('#app').data('ro') == 'N'),
+            allowDeleting: false,
+            allowAdding: false,
+            useIcons: false
+        },
+        selection: {
+            mode: 'single',
+        },
+        columns: [
+            {
+                dataField: "CODFUNCIONARIO",
+                caption: 'CODIGO',
+                dataType: 'number',
+                visible: false,
+            }, {
+                dataField: "FUNCIONARIO",
+                caption: 'NOMBRE',
+                width: '60%',
+                dataType: 'string',
+                allowEditing: false,
+                visible: true,
+                cellTemplate: function (cellElement, cellInfo) {
+                    if (cellInfo.data.S_ACTIVO == 'N') {
+                        cellElement.css('color', 'red');
+                    }
+
+                    cellElement.html(cellInfo.data.FUNCIONARIO);
+                },
+            }, {
+                alignment: 'center',
+                width: '5%',
+                visible: ($('#app').data('ro') == 'N'),
+                cellTemplate: function (cellElement, cellInfo) {
+                    if (cellInfo.data.S_ACTIVO == 'S') {
+                        var div = document.createElement("div");
+                        cellElement.get(0).appendChild(div);
+
+                        $(div).dxButton({
+                            icon: 'trash',
+                            width: '100%',
+                            onClick: function () {
+                                var result = DevExpress.ui.dialog.confirm("Está Seguro(a) de Eliminar la Copia ?", "Confirmación");
+                                result.done(function (dialogResult) {
+                                    if (dialogResult) {
+                                        cellInfo.data.S_ACTIVO = 'N';
+                                    }
+                                });
+                            }
+                        });
+                    }
+                },
+            }
+        ],
+    });
+
     if ($('#app').data('ro') == 'N') {
         $('#almacenar').dxButton(
             {
@@ -978,7 +1120,8 @@ $(document).ready(function () {
                             TramitesSeleccionados: tramitesSeleccionadosDataSource.items(),
                             Indices: indicesSerieDocumentalStore._array,
                             Archivos: archivosDocumento,
-                            Firmas: firmasDocumento
+                            Firmas: firmasDocumento,
+                            Copias: ($("#tabFuuncionarios").dxTabs('instance').option('visible') ? copiasDocumento : null)
                         }
                         ).done(function (data) {
                             $("#loadPanel").dxLoadPanel('instance').hide();

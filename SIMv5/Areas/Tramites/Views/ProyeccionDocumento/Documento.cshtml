@@ -69,7 +69,7 @@
     }
 </script>
 
-<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/documento.js?v=1.004")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Tramites/Scripts/documento.js?v=1.028")"></script>
 
 <div style="padding: 0px;">
     <div data-url="@Url.Content("~")" id="app" data-id="@ViewBag.id" data-time="@ViewBag.time" data-type="@(ViewBag.Popup??false ? "p" : "f")" data-ro="@ViewBag.SoloLectura" data-ipg="@ViewBag.IndicesProyeccionGrupos" resizable>
@@ -213,7 +213,7 @@
                 <div>
                     <div id="grdIndices"></div>
                 </div>
-                <h3>4. Firmas</h3>
+                <h3 id="firmasCopias">4. Firmas</h3>
                 <div>
                     @if (ViewBag.SoloLectura == "N")
                     {
@@ -222,10 +222,18 @@
                             <div class="col-md-5"><div id="agregarFuncionario"></div></div>
                         </div>
                     }
-                    <div id="grdFirmas"></div>
-                    <div style="height:5%"></div>
+                    <div id="tabFuuncionarios" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+                    <div id="tab01" style="display: block">
+                        <div id="grdFirmas"></div>
+                        <div style="height:5%"></div>
+                    </div>
+                    <div id="tab02" style="display: none">
+                        <div id="grdCopias"></div>
+                        <div style="height:5%"></div>
+                    </div>
                     @if (ViewBag.SoloLectura == "N")
                     {
+                        <br/>
                         <div stye="height: 10%; buttom: 0">
                             <div id="almacenar"></div>
                         </div>
