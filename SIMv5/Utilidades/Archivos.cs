@@ -1,28 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Linq.Dynamic;
-using System.Web;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
-using System.Linq.Expressions;
-using System.Text;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
+﻿using DevExpress.XtraRichEdit;
 using O2S.Components.PDF4NET;
 using O2S.Components.PDF4NET.Graphics.Shapes;
-using DevExpress.XtraRichEdit;
-using SIM.Areas.Models;
-using System.Threading.Tasks;
-using SIM.Data;
 using PdfSharp.Pdf.IO;
-using System.Security.Claims;
+using SIM.Data;
 using SIM.Data.Tramites;
-using System.Web.Http.ModelBinding;
+using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Linq.Dynamic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SIM.Utilidades
 {
@@ -413,7 +403,7 @@ namespace SIM.Utilidades
                     }
                     else
                     {
-                        _Ms = new MemoryStream(File.ReadAllBytes(Ruta));    
+                        _Ms = new MemoryStream(File.ReadAllBytes(Ruta));
                         //using (var stream = new FileStream(Ruta, FileMode.Open))
                         //{
                         //    await stream.CopyToAsync(_Ms);
@@ -463,7 +453,7 @@ namespace SIM.Utilidades
                     Resp.filName = Docu.S_RUTA;
                     using (var stream = new FileStream(Ruta, FileMode.Open))
                     {
-                            await stream.CopyToAsync(_Ms);
+                        await stream.CopyToAsync(_Ms);
                     }
                     Resp.dataFile = _Ms;
                 }
@@ -483,7 +473,7 @@ namespace SIM.Utilidades
         /// <returns></returns>
         public static async Task<SIM.Controllers.Temporal> AbrirTemporal(long IdDocumento, decimal CodFuncionario)
         {
-            if (IdDocumento == 0 || CodFuncionario == 0 ) return null;
+            if (IdDocumento == 0 || CodFuncionario == 0) return null;
             EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
             SIM.Controllers.Temporal Resp = new Controllers.Temporal();
             MemoryStream _Ms = new MemoryStream();
@@ -514,7 +504,7 @@ namespace SIM.Utilidades
                     log.NOMBREARCHIVO = Docu.S_RUTA;
                     log.EVENTO = "El funcionario abrió el documento";
                     dbSIM.LOGTEMPORALES.Add(log);
-                    dbSIM.SaveChanges();    
+                    dbSIM.SaveChanges();
                 }
             }
             catch
@@ -652,7 +642,7 @@ namespace SIM.Utilidades
                         select Pat.PATH).FirstOrDefault();
             if (Path != null)
             {
-                Ruta =Path;
+                Ruta = Path;
                 Ruta += "\\" + GetRutaDocumento(ulong.Parse(IdTramite), 100);
                 if (!File.Exists(Ruta))
                 {
