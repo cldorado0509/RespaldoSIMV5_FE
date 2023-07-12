@@ -1664,7 +1664,7 @@ namespace SIM.Areas.Tramites.Controllers
                                                 }
                                                 else
                                                 {
-                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_PROYECCION_DOC, (paraProyeccion != null ? paraProyeccion.ID_VALOR : null) , radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
+                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_PROYECCION_DOC*(-1), (paraProyeccion != null ? paraProyeccion.ID_VALOR : null) , radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
                                                 }
                                             }
 
