@@ -1239,7 +1239,7 @@
                                     Indice _afect = objData.Indices.Where(w => w.CODINDICE == (int)_indiceObliga).FirstOrDefault();
                                     if (_afect != null)
                                     {
-                                        if (_afect.VALOR == "")
+                                        if (_afect.VALOR == "" || _afect.VALOR == null)
                                         {
                                             return new { resp = "Error", mensaje = "Indice " + indice.INDICE + " es obligatorio y no se ingresó un valor!!" };
                                         }
