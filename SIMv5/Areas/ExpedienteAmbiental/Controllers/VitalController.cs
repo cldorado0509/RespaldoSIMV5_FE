@@ -7,7 +7,7 @@
     using System.Web.Mvc;
 
     /// <summary>
-    /// 
+    /// VitalControler
     /// </summary>
     public class VitalController : Controller
     {
