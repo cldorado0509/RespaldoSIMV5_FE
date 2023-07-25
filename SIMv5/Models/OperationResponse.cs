@@ -22,6 +22,8 @@ namespace SIM.Models
 
         public List<String> WarningsList { get; set; }
 
+        public object Result { get; set; }
+
         #endregion Properties
 
         public OperationResponse()

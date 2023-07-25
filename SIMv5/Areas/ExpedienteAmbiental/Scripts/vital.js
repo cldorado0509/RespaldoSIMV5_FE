@@ -4,8 +4,10 @@ var idInstalacion;
 var idPuntoControl = 0;
 var _numeroVITAL = "";
 var _numeroVITALAsociado = "";
+var idSolicitudVITAL = 0;
 var _radicadoVITAL = "";
-var _tareaId = "";
+var _procesoId = 0;
+var _tareaId = 0;
 var idExpedienteDoc;
 var idEstadoPuntoControl = 0;
 var idAnotacionPuntoControl = 0;
@@ -13,6 +15,7 @@ var NomExpediente = "";
 var _nombreArchivo = "";
 var IdIUnidadDoc = 0;
 var IdTomo = 0;
+var codFuncionarioSim = $('#SIM').data('codfuncionario')
 
 $(document).ready(function () {
 
@@ -21,6 +24,7 @@ $(document).ready(function () {
         animationDuration: 500,
         multiple : false
     });
+
     $('#asistente').css('visibility', 'hidden');
 
     $("#GridListado").dxDataGrid({
@@ -76,23 +80,7 @@ $(document).ready(function () {
                         height: 20,
                         hint: 'Editar la información relacionada con el Expediente Ambiental seleccionado',
                         onClick: function (e) {
-                            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerExpedienteAsync";
-                            $.getJSON(_Ruta,
-                                {
-                                    Id: options.data.id
-                                }).done(function (data) {
-                                    if (data !== null) {
-                                        txtCM.option("value", data.cm);
-                                        txtNombreExpediente.option("value", data.nombre);
-                                        txtDescripcionExpediente.option("value", data.descripcion);
-                                        txtDireccionExpediente.option("value", data.direccion);
-                                        cboClasificacion.option("value", data.clasificacionExpedienteId);
-                                        cboMunicipio.option("value", data.municipioId);
-                                        popupNuevoExpediente.show();
-                                    }
-                                }).fail(function (jqxhr, textStatus, error) {
-                                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
-                                });
+                           
                         }
                     }).appendTo(container);
                 }
@@ -104,6 +92,7 @@ $(document).ready(function () {
             if (data) {
                 id = data.id;
                 _numeroVITAL = data.numeroVITAL;
+                idSolicitudVITAL = data.id;
                 _numeroVITALAsociado = data.numeroVITALAsociado;
                 _radicadoVITAL = data.radicacionId;
                 $('#GridListadoDocumentosRequeridos').dxDataGrid({ dataSource: DocumentosRequeridosDataSource });
@@ -196,19 +185,7 @@ $(document).ready(function () {
                         height: 20,
                         hint: 'Ver documento',
                         onClick: function (e) {
-
-                            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/VitalApi/GetDocumentoAsync";
-
-                            $.getJSON(_Ruta,
-                                {
-                                    radicado: _radicadoVITAL,
-                                    nombreDocumento: _nombreArchivo
-                                }).done(function (data) {
-                                    window.open(data, "Documento ", "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
-
-                                }).fail(function (jqxhr, textStatus, error) {
-                                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
-                                });
+                            window.open($('#SIM').data('url') + "Utilidades/LeeDocVital?IdRadicadoVital=" + _radicadoVITAL + "&NombreArchivo=" + _nombreArchivo, "Documento " + _nombreArchivo, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
                        }
                     }).appendTo(container);
                 }
@@ -220,6 +197,33 @@ $(document).ready(function () {
         }
     });
 
+    var cboProceso = $("#cboProceso").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "procesoId",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetProcesos");
+                }
+            })
+        }),
+        onValueChanged: function (data) {
+            if (data.value != null) {
+                var cboActividadDs = cboActividad.getDataSource();
+                _procesoId = data.value;
+                cboActividadDs.reload();
+                cboActividad.option("value", null);
+                _tareaId = 0;
+                var cboResponsablesDs = cboResponsable.getDataSource();
+                cboResponsablesDs.reload();
+                cboResponsable.option("value", null);
+            }
+        },
+        displayExpr: "nombre",
+        valueExpr: "codProceso",
+        width:400,
+        searchEnabled: true
+    }).dxSelectBox("instance");
 
     var cboActividad = $("#cboActividad").dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -227,28 +231,23 @@ $(document).ready(function () {
                 key: "tareaId",
                 loadMode: "raw",
                 load: function (loadOptions) {
-                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetActividades", { NumeroVITAL: _numeroVITAL });
+                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetActividades", { procesoId: _procesoId });
                 }
             })
         }),
         onValueChanged: function (data) {
             if (data.value != null) {
                 var cboResponsablesDs = cboResponsable.getDataSource();
-                _tareaId = data.value.tareaId;
+                _tareaId = data.value;
                 cboResponsablesDs.reload();
                 cboResponsable.option("value", null);
             }
         },
         displayExpr: "nombre",
+        valueExpr: "tareaId",
+        width: 400,
         searchEnabled: true
-    }).dxValidator({
-        validationGroup: "ProcesoGroup",
-        validationRules: [{
-            type: "required",
-            message: "Se debe seleccionar la tarea!"
-        }]
     }).dxSelectBox("instance");
-
 
     var cboResponsable = $("#cboResponsable").dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -261,15 +260,26 @@ $(document).ready(function () {
             })
         }),
         displayExpr: "funcionario",
+        valueExpr: "codFuncionario",
+        width: 400,
         searchEnabled: true
-    }).dxValidator({
-        validationGroup: "ProcesoGroup",
-        validationRules: [{
-            type: "required",
-            message: "Se debe seleccionar la tarea!"
-        }]
     }).dxSelectBox("instance");
 
+    var cboCausaNoAtencion = $("#cboCausaNoAtencion").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "causaNoAtencionVITALId",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetCausasNoAtencion");
+                }
+            })
+        }),
+        displayExpr: "nombre",
+        valueExpr: "causaNoAtencionVITALId",
+        width: 500,
+        searchEnabled: true
+    }).dxSelectBox("instance");
 
     const loadIndicator = $('#spinLoadBusqueda').dxLoadIndicator({
         height: 40,
@@ -280,22 +290,33 @@ $(document).ready(function () {
     var txtComentario = $("#txtComentario").dxTextArea({
         value: "",
         readOnly: false,
-        height: 60
+        height: 80
     }).dxTextArea("instance");
+
+    var txtTramiteSIM = $("#txtTramiteSIM").dxTextBox({
+        value: "",
+    }).dxTextBox("instance");
 
 
     $("#btnIniciarTramite").dxButton({
-        text: "Avanzar en el SIM",
-        type: "default",
+        text: "Crear Trámite SIM",
+        icon: 'check',
+        type: 'success',
         height: 30,
         onClick: function () {
-            DevExpress.validationEngine.validateGroup("ProcesoGroup");
+          
+            var idResponsable = cboResponsable.option("value");
+            if (idResponsable <= 0) {
+                DevExpress.ui.notify("Debe seleccionar el funcionario Responsable!");
+                return
+            }
+
             var comentarios = txtComentario.option("value");
-            var idTarea = cboActividad.option("value").tareaId;
-            var idResponsable = cboResponsable.option("value").codFuncionario;
+            var idTarea = cboActividad.option("value");
+            var codProceso = cboProceso.option("value");
 
             var params = {
-                codTramite: 0, codProceso: 0, codTarea: idTarea, codFuncionario: idResponsable,  cliente: '', cedula: '', direccion: '', telefono: '', mail: '', comentarios: comentarios, numeroVital: _numeroVITAL, numeroVitalPadre: _numeroVITALAsociado
+                codTramite: 0, codProceso: codProceso, codTarea: idTarea, codFuncionario: idResponsable, cliente: '', cedula: '', direccion: '', telefono: '', mail: '', comentarios: comentarios, numeroVital: _numeroVITAL, numeroVitalPadre: _numeroVITALAsociado, idSolicitudVITAL: idSolicitudVITAL, radicadoVITAL: _radicadoVITAL
             };
 
             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/VitalApi/AvanzarEnSIMAsync";
@@ -308,9 +329,9 @@ $(document).ready(function () {
                 crossDomain: true,
                 headers: { 'Access-Control-Allow-Origin': '*' },
                 success: function (data) {
-                    if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Guardar Datos');
+                    if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                     else {
-                        DevExpress.ui.dialog.alert('Se envía trámite al SIM');
+                        DevExpress.ui.notify({ message: "Se crea el trámite en el SIM : " + data.Result + " para atender la solicitud de VITAL : ", width: 1000, shading: true }, "warning", 2000);
                         $('#GridListado').dxDataGrid({ dataSource: SolicitudesVitalDataSource });
                       
                     }
@@ -324,10 +345,134 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnDescartarTramite").dxButton({
+        text: "No atender solicitud",
+        type: "danger",
+        height: 30,
+        onClick: function () {
+            var comentarios = txtComentario.option("value");
+            if (comentarios.trim().length === 0) {
+                DevExpress.ui.notify("Debe explicar el motivo de la no atención de la solicitud de VITAL!");
+                return
+            }
+            var causaNoAtencion = cboCausaNoAtencion.option("value");
+            if (causaNoAtencion <= 0) {
+                DevExpress.ui.notify("Debe seleccionar la causa de la no atención de la solicitud de VITAL!");
+                return
+            }
+
+            var params = {
+                codTramite: 0, codProceso: 0, codTarea: 0, codFuncionario: 0, cliente: '', cedula: '', direccion: '', telefono: '', mail: '', comentarios: comentarios,
+                numeroVital: _numeroVITAL, numeroVitalPadre: _numeroVITALAsociado, codCausaNoAtencion: causaNoAtencion, mensaje: comentarios,
+                CodFuncionarioSIM: codFuncionarioSim
+            };
+
+            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/VitalApi/DescartarEnSIM";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                crossDomain: true,
+                headers: { 'Access-Control-Allow-Origin': '*' },
+                success: function (data) {
+                    if(data.IsSuccess === false) DevExpress.ui.notify({message: "Ocurrió un evento no esperado!:" + data.mensaje, width: 1000, shading: true }, "error", 2000);
+                    else {
+                        var cboActividadDs = cboActividad.getDataSource();
+
+                        _procesoId = 0;
+                        cboActividadDs.reload();
+                        cboActividad.option("value", null);
+
+                        _tareaId = 0;
+                        var cboResponsablesDs = cboResponsable.getDataSource();
+                        cboResponsablesDs.reload();
+                        cboResponsable.option("value", null);
+
+                        txtComentario.reset();
+                        txtTramiteSIM.reset();
+                        cboCausaNoAtencion.reset();
+
+                        DevExpress.ui.notify({ message: "Se descarta la atención en el SIM de la solicitud de VITAL" , width: 1000, shading: true }, "warning", 2000);
+                        $('#GridListado').dxDataGrid({ dataSource: SolicitudesVitalDataSource });
+
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Guardar Datos');
+                }
+            });
+        }
+    });
+
+    $("#btnAsignarATramite").dxButton({
+        text: "Asignar al Trámite SIM",
+        type: "default",
+        height: 30,
+        onClick: function () {
+            var tramiteSIM = txtTramiteSIM.option("value");
+            if (tramiteSIM.trim().length === 0) {
+                DevExpress.ui.notify("Debe Indicar el código del Trámite SIM!");
+                return
+            }
+
+            var idResponsable = cboResponsable.option("value");
+            if (idResponsable <= 0) {
+                DevExpress.ui.notify("Debe seleccionar el funcionario Responsable!");
+                return
+            }
+
+            var comentarios = txtComentario.option("value");
+            var idTarea = cboActividad.option("value");
+            var codProceso = cboProceso.option("value");
+            
+            var params = {
+                codTramite: tramiteSIM, codProceso: codProceso, codTarea: idTarea, codFuncionario: idResponsable, cliente: '', cedula: '', direccion: '', telefono: '', mail: '', comentarios: comentarios, numeroVital: _numeroVITAL, numeroVitalPadre: _numeroVITALAsociado, idSolicitudVITAL: idSolicitudVITAL, codFuncionarioSIM: CodigoFuncionario, radicadoVITAL: _radicadoVITAL
+            };
+
+            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/VitalApi/AsignarTramiteSIMAsync";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                crossDomain: true,
+                headers: { 'Access-Control-Allow-Origin': '*' },
+                success: function (data) {
+                    if (data.IsSuccess === false) DevExpress.ui.notify({ message: "Advertencia! : " + data.Message, width: 1000, shading: true }, "error", 2000);
+                    else {
+                        var cboActividadDs = cboActividad.getDataSource();
+
+                        _procesoId = 0;
+                        cboActividadDs.reload();
+                        cboActividad.option("value", null);
+
+                        //_tareaId = 0;
+                        var cboResponsablesDs = cboResponsable.getDataSource();
+                        cboResponsablesDs.reload();
+                        cboResponsable.option("value", null);
+
+                        txtComentario.reset();
+                        txtTramiteSIM.reset();
+                        cboCausaNoAtencion.reset();
+
+                        DevExpress.ui.notify({ message: "Se anexa la solicitud de VITAL al Trámite SIM: " + tramiteSIM, width: 1000, shading: true }, "warning", 2000);
+                        $('#GridListado').dxDataGrid({ dataSource: SolicitudesVitalDataSource });
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Guardar Datos');
+                }
+            });
+
+
+
+        }
+    });
 
 });
-
-
 
 var SolicitudesVitalDataSource = new DevExpress.data.CustomStore({
         load: function (loadOptions) {
@@ -352,7 +497,7 @@ var SolicitudesVitalDataSource = new DevExpress.data.CustomStore({
                 CodFuncionario: CodigoFuncionario
             }).done(function (data) {
                 if (data.datos === null) {
-                    alert('No fué posible realizar conexión al microservicio de Expedientes Ambientales');
+                    DevExpress.ui.notify({ message: "No fué posible realizar conexión al microservicio de Expedientes Ambientales", width: 1000, shading: true }, "error", 2000);
                 }
                 d.resolve(data.datos, { totalCount: data.numRegistros });
 
@@ -387,12 +532,13 @@ var DocumentosRequeridosDataSource = new DevExpress.data.CustomStore({
             numeroVITAL: _numeroVITAL
         }).done(function (data) {
             if (data.datos === null) {
-                alert('No existen documentos establecidos!!!');
+                DevExpress.ui.notify({ message: "No existen documentos establecidos para este tipo de solicitud!!!", width: 1000, shading: true }, "warning", 2000);
             }
             d.resolve(data.datos, { totalCount: data.numRegistros });
 
         }).fail(function (jqxhr, textStatus, error) {
-            alert('Error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+            DevExpress.ui.notify({
+                message: "Error cargando datos: " + textStatus + ", " + jqxhr.responseText, width: 1000, shading: true }, "error", 2000);
         });
         return d.promise();
     }
@@ -422,12 +568,14 @@ var DocumentosAportadosDataSource = new DevExpress.data.CustomStore({
             radicadoVITAL: _radicadoVITAL
         }).done(function (data) {
             if (data.datos === null) {
-                alert('No existen documentos establecidos!!!');
+                DevExpress.ui.notify({ message: "No existen documentos establecidos para este tipo de solicitud!!!", width: 1000, shading: true }, "warning", 2000);
             }
             d.resolve(data.datos, { totalCount: data.numRegistros });
 
         }).fail(function (jqxhr, textStatus, error) {
-            alert('Error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+            DevExpress.ui.notify({
+                message: "Error cargando datos: " + textStatus + ", " + jqxhr.responseText, width: 1000, shading: true
+            }, "error", 2000);
         });
         return d.promise();
     }

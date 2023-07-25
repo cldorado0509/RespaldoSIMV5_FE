@@ -1,15 +1,15 @@
 ﻿namespace SIM.Services
 {
+    using Newtonsoft.Json;
+    using SIM.Areas.Pqrsd.Models;
+    using SIM.Models;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
-    using System.IO;
-    using SIM.Models;
-    using SIM.Areas.Pqrsd.Models;
 
     public class ApiService : IApiService
     {
@@ -291,7 +291,7 @@
             }
         }
 
-             
+
         public async Task<Response> PostAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
         {
             try
@@ -715,15 +715,15 @@
                         Result = null,
                     };
                 }
-                
-                    var item = JsonConvert.DeserializeObject<OperationResponse>(result);
-                    return new Response
-                    {
-                        Message = item.Message,
-                        IsSuccess = true,
-                        Result = item
-                    };
-               
+
+                var item = JsonConvert.DeserializeObject<OperationResponse>(result);
+                return new Response
+                {
+                    Message = item.Message,
+                    IsSuccess = true,
+                    Result = item
+                };
+
             }
             catch (Exception ex)
             {
@@ -732,7 +732,7 @@
                     IsSuccess = false,
                     Message = ex.Message,
                     Result = ex
-                   
+
                 };
             }
         }

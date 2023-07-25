@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Linq.Dynamic;
-using System.Web;
+﻿using DevExpress.Pdf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
-using System.Linq.Expressions;
-using System.Text;
-using SIM.Data;
-using SIM.Areas.Tramites.Models;
-using System.Data.Entity.Core.Objects;
-using System.IO;
-using DevExpress.Pdf;
-using SIM.Areas.ControlVigilancia.Models;
-using PdfSharp.Pdf.IO;
-using Xceed.Words.NET;
-using System.Drawing.Imaging;
 using PdfSharp.Drawing;
-using System.Data;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using SIM.Areas.Tramites;
+using PdfSharp.Pdf.IO;
 using SIM.Areas.Models;
+using SIM.Areas.Tramites;
+using SIM.Data;
 using SIM.Data.Control;
 using SIM.Data.Tramites;
 using SIM.Models;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity.Core.Objects;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Linq.Dynamic;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
+using Xceed.Words.NET;
 
 namespace SIM.Utilidades
 {
@@ -1284,5 +1280,81 @@ namespace SIM.Utilidades
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
+
+        /// <summary>
+        /// Retorna la Fecha con la hora en formato VITAL
+        /// </summary>
+        /// <returns></returns>
+        public static string ObtenerFecha()
+        {
+            try
+            {
+                string _Fecha = "";
+                string _Mes = DateTime.Now.Month.ToString();
+                if (_Mes.Length == 1) _Mes = "0" + _Mes;
+
+                string _Dia = DateTime.Now.Day.ToString();
+                if (_Dia.Length == 1) _Dia = "0" + _Dia;
+
+                string _Horas = DateTime.Now.Hour.ToString();
+                if (_Horas.Length == 1) _Horas = "0" + _Horas;
+
+                string _Minutos = DateTime.Now.Minute.ToString();
+                if (_Minutos.Length == 1) _Minutos = "0" + _Minutos;
+
+                string _Segundos = DateTime.Now.Second.ToString();
+                if (_Segundos.Length == 1) _Segundos = "0" + _Segundos;
+
+
+                _Fecha = DateTime.Now.Year.ToString();
+                _Fecha = _Fecha + "-" + _Mes + "-" + _Dia + "T" + _Horas + ":" + _Minutos + ":" + _Segundos;
+
+                return _Fecha;
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+        /// <summary>
+        /// Retorna la Fecha con la hora en formato VITAL
+        /// </summary>
+        /// <returns></returns>
+        public static string ObtenerFecha(DateTime Fecha)
+        {
+            try
+            {
+                string _Fecha = "";
+                string _Mes = Fecha.Month.ToString();
+                if (_Mes.Length == 1) _Mes = "0" + _Mes;
+
+                string _Dia = Fecha.Day.ToString();
+                if (_Dia.Length == 1) _Dia = "0" + _Dia;
+
+                string _Horas = Fecha.Hour.ToString();
+                if (_Horas.Length == 1) _Horas = "0" + _Horas;
+
+                string _Minutos = Fecha.Minute.ToString();
+                if (_Minutos.Length == 1) _Minutos = "0" + _Minutos;
+
+                string _Segundos = Fecha.Second.ToString();
+                if (_Segundos.Length == 1) _Segundos = "0" + _Segundos;
+
+
+                _Fecha = Fecha.Year.ToString();
+                _Fecha = _Fecha + "-" + _Mes + "-" + _Dia + "T" + _Horas + ":" + _Minutos + ":" + _Segundos;
+
+                return _Fecha;
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+
     }
+
+
 }

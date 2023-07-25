@@ -9,7 +9,7 @@
 <br />
 
 
-<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/vital.js?v=1.8")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/vital.js")"></script>
 
 <style>
     .dx-button .dx-icon {
@@ -61,10 +61,7 @@
             width: 100%;
         }
 
-    /*    .dx-list .dx-scrollable-content {
-        column-count: 4;
-        -moz-column-count: 4;
-    }*/
+   
 
     .dx-list-item {
         border-top: none;
@@ -93,8 +90,7 @@
 
 <h2>Solicitudes Ambientales VITAL</h2>
 
-
-<div data-url="@Url.Content("~")" ID="SIM" resizable>
+<div data-url="@Url.Content("~")" data-codfuncionario="@ViewBag.CodFuncionario" ID="SIM" resizable>
     <div class="panelSIM panelSIM-default" id="pnlContenedor">
         <div class="panelSIM-heading">
             <h3 class="panelSIM-title">
@@ -126,24 +122,54 @@
                     <h3>Iniciar o avanzar el trámite</h3>
                     <div class="divTramite">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="control-label col-md-2">Actividad:</div>
+                            <div class="col-md-4">
+                                <div class="col-md-4">Proceso:</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-4">Actividad:</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-4">Responsable:</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="col-md-4" id="cboProceso"></div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="col-md-4" id="cboActividad"></div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="control-label col-md-2">Responsable:</div>
+                            <div class="col-md-4">
                                 <div class="col-md-4" id="cboResponsable"></div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="control-label col-md-10">Comentario</div>
+                            <div class="col-md-10">Comentario</div>
                         </div>
                         <div class="row">
-                            <div class="col-md-10" id="txtComentario"></div>
+                            <div class="col-md-11" id="txtComentario"></div>
                         </div>
                         <br />
                         <div class="row">
-                            <div class="col-sm-3" id="btnIniciarTramite"></div>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-2"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2" id="btnIniciarTramite"></div>
+                            <div class="col-sm-1" id="espacio"></div>
+                            <div class="col-sm-2"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2" id="btnAsignarATramite"></div>
+                            <div class="col-sm-1">Código Trámite:</div>
+                            <div class="col-sm-1" id="txtTramiteSIM"></div>
+                            <div class="col-sm-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2" id="btnDescartarTramite"></div>
+                            <div class="col-sm-1">Causa/Motivo:</div>
+                            <div class="col-sm-2" id="cboCausaNoAtencion"></div>
                         </div>
                     </div>
                 </div>
