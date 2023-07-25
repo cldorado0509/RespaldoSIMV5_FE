@@ -359,12 +359,30 @@
         [ActionName("LeeDocVital")]
         public FileContentResult GetLeeDocVital(long IdRadicadoVital, string NombreArchivo)
         {
-            if (IdRadicadoVital <= 0 || string.IsNullOrEmpty(NombreArchivo)) return null;
-            WSPQ03 ws = new WSPQ03();
-            Byte[] _Documento = ws.ObtenerDocumentoRadicacion(IdRadicadoVital, NombreArchivo);
-            return File(_Documento, "application/octetstream", NombreArchivo);
+            try
+            {
+                 if (IdRadicadoVital <= 0 || string.IsNullOrEmpty(NombreArchivo)) return null;
+                WSPQ03 ws = new WSPQ03();
+                Byte[] _Documento = ws.ObtenerDocumentoRadicacion(IdRadicadoVital, NombreArchivo);
+                if (_Documento == null)
+                {
+                    throw new Exception("El servicio de VITAL no retornó este Documento!");
+                }
+                return File(_Documento, "application/octetstream", NombreArchivo);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message,ex);
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Tra"></param>
+        /// <param name="Version"></param>
+        /// <returns></returns>
+        /// <exception cref="HttpException"></exception>
         [System.Web.Http.HttpPost]
         public ActionResult CargarArchivoTemp(int Tra, int Version)
         {

@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
-using System.DirectoryServices;
+﻿using Microsoft.AspNet.Identity;
 using SIM.Areas.Seguridad.Models;
-using System.Configuration;
-using System.Security.Claims;
-using Microsoft.AspNet.Identity;
-using System.Web.Security;
 using SIM.Data;
-using System.Data.Common;
-using System.Globalization;
 using SIM.Data.Seguridad;
-using System.Web.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Common;
+using System.Data.Entity;
+using System.DirectoryServices;
+using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
+using System.Web.Security;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
@@ -667,8 +665,8 @@ namespace SIM.Areas.Seguridad.Controllers
 
             // se carga modelo USUARIO con la informacion proporcionada por el usuario de aplicacion
             USUARIO nUser = (from usuarioEmail in dbSeguridad.USUARIO
-                           where usuarioEmail.S_LOGIN.Trim() == login
-                           select usuarioEmail).FirstOrDefault();
+                             where usuarioEmail.S_LOGIN.Trim() == login
+                             select usuarioEmail).FirstOrDefault();
 
             nUser.S_NOMBRES = user.FirstName.ToUpper();
             nUser.S_APELLIDOS = user.LastName.ToUpper();
@@ -814,10 +812,8 @@ namespace SIM.Areas.Seguridad.Controllers
             //frente a la opcion de cargar solo los idRol y realizar un customAutorize que revise por cada peticion si el rol tiene permiso sobre ese metodo o clase
             foreach (var rol_forma in qrf)
             {
-                try
+                if (rol_forma.MENU != null && rol_forma.MENU.S_CONTROLADOR != null)
                 {
-                    if (rol_forma.MENU.S_CONTROLADOR == null)
-                        continue;
                     string contr = rol_forma.MENU.S_CONTROLADOR.ToUpper();
                     if (rol_forma.S_NUEVO == "1")
                         user.Permisos.Add("C" + contr);
@@ -829,7 +825,8 @@ namespace SIM.Areas.Seguridad.Controllers
                         user.Permisos.Add("V" + contr);
                     if (rol_forma.S_ADMINISTRADOR == "1")
                         user.Permisos.Add("X" + contr);
-                }catch (Exception ex) { }
+                }
+
             }
         }
 
@@ -865,4 +862,3 @@ namespace SIM.Areas.Seguridad.Controllers
 
     }
 }
- 

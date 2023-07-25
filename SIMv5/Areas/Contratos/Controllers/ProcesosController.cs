@@ -14,6 +14,9 @@ using System.Web.Mvc;
 
 namespace SIM.Areas.Contratos.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Authorize]
     public class ProcesosController : Controller
     {

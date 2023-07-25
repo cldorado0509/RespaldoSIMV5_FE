@@ -105,5 +105,7 @@ namespace SIM.Data.Tramites
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TRAMITE_EXPEDIENTE_AMBIENTAL> TRAMITE_EXPEDIENTE_AMBIENTAL { get; set; }
+
+        public ICollection<TBSOLICITUDES_VITAL> TBSOLICITUDES_VITAL { get; set; }
     }
 }

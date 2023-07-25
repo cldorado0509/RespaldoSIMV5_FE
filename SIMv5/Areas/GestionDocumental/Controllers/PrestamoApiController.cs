@@ -1,26 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using SIM.Areas.General.Models;
-using SIM.Areas.Seguridad.Models;
-using SIM.Areas.GestionDocumental.Models;
+﻿using SIM.Areas.Seguridad.Models;
 using SIM.Data;
-using System.IO;
-using System.Net.Http.Headers;
-using System.Data.Entity;
-using System.Transactions;
-using System.Xml.Linq;
-using System.Drawing.Imaging;
-using System.Collections;
-using System.Configuration;
-using System.Text;
-using System.Web.Hosting;
-using System.Globalization;
 using SIM.Data.Documental;
 using SIM.Data.General;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web.Hosting;
+using System.Web.Http;
 
 namespace SIM.Areas.General.Controllers
 {
@@ -598,7 +589,7 @@ namespace SIM.Areas.General.Controllers
                              join prestamoDetalle in dbSIM.PRESTAMO_DETALLE.Where(pd => pd.D_DEVOLUCION == null) on radicado.ID_RADICADO equals prestamoDetalle.ID_RADICADO into lj0
                              from prestamoDetalleRadicado in lj0.DefaultIfEmpty()
                              join prestamo in dbSIM.PRESTAMOS on prestamoDetalleRadicado.ID_PRESTAMO equals prestamo.ID_PRESTAMO into lj1
-                             from prestamoRadicado in lj1.DefaultIfEmpty()                 
+                             from prestamoRadicado in lj1.DefaultIfEmpty()
                              join tercero in dbSIM.NATURAL on prestamoRadicado.ID_TERCEROPRESTAMO equals tercero.ID_TERCERO into lj2
                              from prestamoTercero in lj2.DefaultIfEmpty()
                              join tipoAnexo in dbSIM.TIPO_ANEXO on radicado.ID_TIPOANEXO equals tipoAnexo.ID_TIPOANEXO into lj3
@@ -670,7 +661,7 @@ namespace SIM.Areas.General.Controllers
             else
             {
                 var model = (from radicado in dbSIM.RADICADOS_ETIQUETAS
-                             join prestamoDetalle in dbSIM.PRESTAMO_DETALLE on radicado.ID_RADICADO equals prestamoDetalle.ID_RADICADO 
+                             join prestamoDetalle in dbSIM.PRESTAMO_DETALLE on radicado.ID_RADICADO equals prestamoDetalle.ID_RADICADO
                              join prestamo in dbSIM.PRESTAMOS on prestamoDetalle.ID_PRESTAMO equals prestamo.ID_PRESTAMO
                              join tercero in dbSIM.NATURAL on prestamo.ID_TERCEROPRESTAMO equals tercero.ID_TERCERO into lj2
                              from prestamoTercero in lj2.DefaultIfEmpty()
