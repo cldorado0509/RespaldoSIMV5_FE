@@ -505,7 +505,7 @@ namespace SIM.Utilidades
 
                     if (palabras.Length > 0)
                     {
-                        if (palabras.Length > 3 && 
+                        if (palabras.Length > 3 &&
                                 (
                                     (palabras[0].ToUpper().Trim() == "XCONTROL" && palabras[1].ToUpper().Trim() == "Y" && palabras[2].ToUpper().Trim() == "SEGUIMIENTO") ||
                                     (palabras[1].ToUpper().Trim() == "CONTROL" && palabras[2].ToUpper().Trim() == "Y" && palabras[3].ToUpper().Trim() == "SEGUIMIENTO")
@@ -1353,8 +1353,5 @@ namespace SIM.Utilidades
             }
         }
 
-
     }
-
-
 }
