@@ -519,7 +519,7 @@
 
                             TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
                             {
-                                CODTRAMITE =  decimal.Parse(tramiteSIMId),
+                                CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODDOCUMENTO = codmaxDoc,
                                 TIPODOCUMENTO = 2,
                                 FECHACREACION = DateTime.Now,
@@ -554,7 +554,7 @@
                             {
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceRadicado),
-                                CODDOCUMENTO =codmaxDoc,
+                                CODDOCUMENTO = codmaxDoc,
                                 VALOR = radicado.Radicado
                             };
 
@@ -639,7 +639,7 @@
             }
             catch (Exception e)
             {
-                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return responseF;
@@ -676,7 +676,7 @@
                                                   where uf.ID_USUARIO == idUsuario
                                                   select f.CODFUNCIONARIO).FirstOrDefault());
 
-                var Funcionario = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO ==codFuncionario).FirstOrDefault();
+                var Funcionario = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO == codFuncionario).FirstOrDefault();
                 if (Funcionario == null) Funcionario = new SIM.Data.Tramites.TBFUNCIONARIO();
 
                 var solicituVital = dbSIM.TBSOLICITUDES_VITAL.Where(f => f.NUMERO_VITAL == tramiteDTO.NumeroVital).FirstOrDefault();
@@ -698,7 +698,7 @@
             }
             catch (Exception e)
             {
-                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return resposeF;
@@ -719,7 +719,7 @@
 
                 var trmiteSIM = dbSIM.TBTRAMITE.Where(f => f.CODTRAMITE == tramiteDTO.CodTramite && f.ESTADO == 0).FirstOrDefault();
 
-                if (trmiteSIM == null) return new Response { IsSuccess = false, Result  = "Trámite no encontrado", Message = "El Trámite dado no existe en el SIM! " };
+                if (trmiteSIM == null) return new Response { IsSuccess = false, Result = "Trámite no encontrado", Message = "El Trámite dado no existe en el SIM! " };
 
                 ApiService apiService = new ApiService();
                 tramiteDTO.FechaIni = DateTime.Now;
@@ -846,7 +846,7 @@
 
                         TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
                         {
-                            CODTRAMITE =  decimal.Parse(tramiteSIMId),
+                            CODTRAMITE = decimal.Parse(tramiteSIMId),
                             CODDOCUMENTO = codmaxDoc,
                             TIPODOCUMENTO = 2,
                             FECHACREACION = DateTime.Now,
@@ -881,7 +881,7 @@
                         {
                             CODTRAMITE = decimal.Parse(tramiteSIMId),
                             CODINDICE = int.Parse(IdIndiceRadicado),
-                            CODDOCUMENTO =codmaxDoc,
+                            CODDOCUMENTO = codmaxDoc,
                             VALOR = radicado.Radicado
                         };
 
@@ -963,7 +963,7 @@
             }
             catch (Exception e)
             {
-                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return resposeF;
@@ -1000,7 +1000,7 @@
             var list = (List<CausaNoAtencionVITALDTO>)responseS.Result;
             if (list == null || list.Count == 0) return null;
 
-            list.Add(new CausaNoAtencionVITALDTO { CausaNoAtencionVITALId= 0, Nombre = "", Habilitado = "1" });
+            list.Add(new CausaNoAtencionVITALDTO { CausaNoAtencionVITALId = 0, Nombre = "", Habilitado = "1" });
 
             model = list.AsQueryable().OrderBy(o => o.Nombre);
 
