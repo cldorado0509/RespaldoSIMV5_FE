@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using SIM.Areas.Seguridad.Models;
-using DevExpress.Web.Mvc;
+﻿using DevExpress.Web.Mvc;
 using SIM.Data;
 using SIM.Data.Seguridad;
+using System;
+using System.Data;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
@@ -106,7 +101,7 @@ namespace SIM.Areas.Seguridad.Controllers
         /// <summary>
         /// Elimina un item del Menu
         /// </summary>
-        /// <param name="ID_CARGO">Identificador del item del Menu a eliminar</param>
+        /// <param name="ID_FORMA">Identificador del item del Menu a eliminar</param>
         /// <returns></returns>
         [HttpPost, ValidateInput(false)]
         [Authorize(Roles = "EMENU")]
@@ -139,7 +134,7 @@ namespace SIM.Areas.Seguridad.Controllers
         public ActionResult gvwSeleccionarFormaMenu()
         {
             var model = from m1 in dbSeguridad.MENU
-                        join m2 in dbSeguridad.MENU.AsEnumerable() on m1.ID_PADRE equals m2.ID_FORMA 
+                        join m2 in dbSeguridad.MENU.AsEnumerable() on m1.ID_PADRE equals m2.ID_FORMA
                         select new
                         {
                             m1.ID_FORMA,
