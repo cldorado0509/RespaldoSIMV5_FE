@@ -210,7 +210,7 @@ $(document).ready(function () {
                 CodSerieDoc = data.value.CODSERIE_DOCUMENTAL;
                 cboSubSerieDs.reload(); 
                 cboSubSerie.option("value", null);
-            }
+            } else CodSerieDoc = -1;
         }
     }).dxSelectBox("instance");
 
@@ -220,6 +220,7 @@ $(document).ready(function () {
                 key: "CODSUBSERIE",
                 loadMode: "raw",
                 load: function () {
+                    if (typeof CodSerieDoc === 'undefined') CodSerieDoc = -1;
                     return $.getJSON($("#SIM").data("url") + "GestionDocumental/api/ExpedientesApi/ListaSubSeries", { CodSerie: CodSerieDoc });
                 }
             })
@@ -238,9 +239,9 @@ $(document).ready(function () {
             if (data.value != null) {
                 var cboUniDocDs = cboUnidadDoc.getDataSource();
                 CodSubSerieDoc = data.value.CODSUBSERIE;
-                cboUniDocDs.reload(); 
+                cboUniDocDs.reload();
                 cboUnidadDoc.option("value", null);
-            }
+            } else CodSubSerieDoc = -1;
         }
     }).dxSelectBox("instance");
     
@@ -250,6 +251,7 @@ $(document).ready(function () {
                 key: "CODSERIE",
                 loadMode: "raw",
                 load: function () {
+                    if (typeof CodSubSerieDoc === 'undefined') CodSubSerieDoc = -1;
                     return $.getJSON($("#SIM").data("url") + "GestionDocumental/api/ExpedientesApi/ListaUnidades", { CodSubSerie: CodSubSerieDoc });
                 }
             })
@@ -561,7 +563,7 @@ $(document).ready(function () {
                                         items: itemsLista,
                                         width: '100%',
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR) > 0 ? itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID : null),
                                         displayExpr: 'NOMBRE',
                                         valueExpr: 'ID',
                                         searchEnabled: true,
