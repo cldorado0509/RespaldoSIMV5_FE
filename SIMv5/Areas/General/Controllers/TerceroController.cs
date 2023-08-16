@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using DevExpress.Web.Mvc;
+﻿using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using SIM.Areas.General.Models;
 using SIM.Areas.Seguridad.Models;
 using SIM.Data;
-using Microsoft.AspNet.Identity;
-using System.Text;
-using System.Data;
-using System.Data.Entity.Infrastructure;
-using Newtonsoft.Json;
-using System.Security.Claims;
 using SIM.Data.General;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Web.Mvc;
 
 namespace SIM.Areas.General.Controllers
 {
@@ -37,10 +31,13 @@ namespace SIM.Areas.General.Controllers
         public ActionResult Index(bool? popup)
         {
             //Utilidades.Email.EnviarEmail("trabajoprueba1208@gmail.com", "renemeneses1208@hotmail.com", "Validación de usuario registrados en el SIM", "Prueba Correo", "smtp.gmail.com", true, "trabajoprueba1208@gmail.com", "renemeneses");
-            ViewBag.popup = false;
-            if (popup != null) { ViewBag.popup = popup; }
+
             return View();
         }
+
+
+
+
 
         /// <summary>
         /// Carga modelo del tercero seleccionado
@@ -59,13 +56,13 @@ namespace SIM.Areas.General.Controllers
             int? idTerceroUsuario = null;
 
             var model = from roles in dbSIM.ROL.Where(r => r.S_TIPO == "E")
-                    orderby roles.S_NOMBRE
-                    select new ROLESUSUARIO()
-                    {
-                        SEL = false,
-                        ID_ROL = roles.ID_ROL,
-                        S_NOMBRE = roles.S_NOMBRE
-                    };
+                        orderby roles.S_NOMBRE
+                        select new ROLESUSUARIO()
+                        {
+                            SEL = false,
+                            ID_ROL = roles.ID_ROL,
+                            S_NOMBRE = roles.S_NOMBRE
+                        };
 
             var administrador = false;
 
@@ -241,13 +238,13 @@ namespace SIM.Areas.General.Controllers
             if (ValidarAccesoUsuarioDatosTercero(id))
             {
                 var model = from roles in dbSIM.ROL.Where(r => r.S_TIPO == "E")
-                    orderby roles.S_NOMBRE
-                    select new ROLESUSUARIO()
-                    {
-                        SEL = false,
-                        ID_ROL = roles.ID_ROL,
-                        S_NOMBRE = roles.S_NOMBRE
-                    };
+                            orderby roles.S_NOMBRE
+                            select new ROLESUSUARIO()
+                            {
+                                SEL = false,
+                                ID_ROL = roles.ID_ROL,
+                                S_NOMBRE = roles.S_NOMBRE
+                            };
 
                 ViewBag.idTercero = id;
                 ViewBag.tipoTercero = tipoTercero;

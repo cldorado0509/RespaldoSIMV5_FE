@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web.Http;
-using DevExpress.Office.Utils;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SIM.Areas.ExpedienteAmbiental.Clases;
 using SIM.Areas.ExpedienteAmbiental.Models;
@@ -15,6 +6,14 @@ using SIM.Areas.ExpedienteAmbiental.Models.DTO;
 using SIM.Data;
 using SIM.Models;
 using SIM.Services;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 
 namespace SIM.Areas.ExpedienteAmbiental.Controllers
@@ -76,7 +75,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
             ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
 
-            AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new  AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
+            AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
             if (response.ExpiresIn == 0) return datosConsulta;
 
 
@@ -166,7 +165,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
 
 
-                SIM.Models.Response responsef = await apiService.GetAsync<ExpedienteAmbientalDTO>(urlApiGateWay, "ExpA/ExpedienteAmbiental/", $"ObtenerExpedienteAmbiental/idExpedienteAmbiental/{Id}", response.JwtToken);
+                SIM.Models.Response responsef = await apiService.GetAsync<ExpedienteAmbientalDTO>(urlApiGateWay, "ExpA/ExpedienteAmbiental/", $"ObtenerExpedienteAmbiental?idExpedienteAmbiental={Id}", response.JwtToken);
                 if (!responsef.IsSuccess) return JObject.FromObject(expedienteAmbiental, Js);
                 expedienteAmbiental = (ExpedienteAmbientalDTO)responsef.Result;
                 return JObject.FromObject(expedienteAmbiental, Js);
@@ -212,7 +211,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
                 if (response.ExpiresIn == 0) return null;
-               
+
                 var resp = await apiService.DeleteAsync<ExpedienteAmbientalDTO>(urlApiGateWay, "ExpA/ExpedienteAmbiental/", "BorrarExpedienteAmbiental", expediente, response.JwtToken);
                 if (!resp.IsSuccess)
                 {
@@ -264,7 +263,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         }
 
 
-            
+
         /// <summary>
         /// Retorna el listado de los tipos de Clasificación de los Expedientes Ambientales
         /// </summary>
@@ -294,8 +293,8 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 throw exp;
             }
         }
-        
-       
+
+
         /// <summary>
         /// Retorna el Listado de Municipios
         /// </summary>
@@ -323,7 +322,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         }
 
 
-       
+
 
         /// <summary>
         /// Retorna la información de un Expediente Ambiental
@@ -480,7 +479,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
                 if (response.ExpiresIn == 0) return null;
-                               
+
                 var responseF = await apiService.GetListAsync<TipoSolicitudAmbientalDTO>(this.urlApiGateWay, "ExpA/TipoSolicitudAmbiental/", $"ObtenerTiposSolicitudesAmbientales", response.JwtToken);
                 if (!responseF.IsSuccess) return null;
                 var list = (List<TipoSolicitudAmbientalDTO>)responseF.Result;
@@ -588,7 +587,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpGet, ActionName("ObtenerIndicesSerieDocumental")]
-        public async Task<dynamic> ObtenerIndicesSerieDocumental(int codSerie,int codExpediente)
+        public async Task<dynamic> ObtenerIndicesSerieDocumental(int codSerie, int codExpediente)
         {
             var indicesSerieDocumental = from i in dbSIM.TBINDICESERIE
                                          join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
@@ -611,7 +610,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                                              MINIMO = i.VALORMINIMO.Length > 0 ? i.VALORMINIMO : ""
                                          };
             var listaInd = indicesSerieDocumental.ToList();
-          
+
             ApiService apiService = new ApiService();
             ExpedienteAmbientalDTO expedienteAmbiental = new ExpedienteAmbientalDTO();
 
@@ -619,11 +618,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
             if (response.ExpiresIn == 0) return listaInd;
 
-            var responseF =  await apiService.GetAsync<ExpedienteAmbientalDTO>(this.urlApiGateWay, "ExpA/ExpedienteAmbiental/", $"ObtenerExpedienteAmbiental?idExpedienteAmbiental={codExpediente}", response.JwtToken);
+            var responseF = await apiService.GetAsync<ExpedienteAmbientalDTO>(this.urlApiGateWay, "ExpA/ExpedienteAmbiental/", $"ObtenerExpedienteAmbiental?idExpedienteAmbiental={codExpediente}", response.JwtToken);
             if (!responseF.IsSuccess) return listaInd;
 
             expedienteAmbiental = (ExpedienteAmbientalDTO)responseF.Result;
-            foreach(var item in listaInd)
+            foreach (var item in listaInd)
             {
                 if (item.INDICE == "CM")
                 {
@@ -653,12 +652,12 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         /// 
         /// </summary>
         /// <param name="codExpedienteDocumental"></param>
-         /// <returns></returns>
+        /// <returns></returns>
         [Authorize]
         [HttpGet, ActionName("ObtenerIndicesExpedienteDocumental")]
         public dynamic ObtenerIndicesExpedienteDocumental(int codExpedienteDocumental)
         {
-            var IdCodSerie = dbSIM.EXP_EXPEDIENTES.Where(f => f.ID_EXPEDIENTE == codExpedienteDocumental).Select(s => s.ID_UNIDADDOC).FirstOrDefault(); 
+            var IdCodSerie = dbSIM.EXP_EXPEDIENTES.Where(f => f.ID_EXPEDIENTE == codExpedienteDocumental).Select(s => s.ID_UNIDADDOC).FirstOrDefault();
             List<Indice> indices = new List<Indice>();
             var indicesS = from i in dbSIM.TBINDICESERIE
                            join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
@@ -680,7 +679,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                                MAXIMO = i.VALORMAXIMO.Length > 0 ? i.VALORMAXIMO : "",
                                MINIMO = i.VALORMINIMO.Length > 0 ? i.VALORMINIMO : ""
                            };
-            var li =  indicesS.ToList();
+            var li = indicesS.ToList();
             return li;
         }
 
@@ -706,8 +705,8 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
-                if (response.ExpiresIn == 0) return JObject.FromObject(puntoControl, Js); 
-                              
+                if (response.ExpiresIn == 0) return JObject.FromObject(puntoControl, Js);
+
                 var responseF = await apiService.GetAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", $"ObtenerPuntoControl/idPuntoControl/{Id}", response.JwtToken);
                 if (!responseF.IsSuccess) return JObject.FromObject(puntoControl, Js);
 
@@ -751,7 +750,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
 
                 var resp = await apiService.PostAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", $"BorrarPuntoControll/", puntoControl, response.JwtToken);
-           
+
                 return resp.Result;
             }
             catch (Exception e)
@@ -855,7 +854,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 EstadoPuntoControlDTO estadoPuntoControl = new EstadoPuntoControlDTO();
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
-                if (response.ExpiresIn == 0) return JObject.FromObject(estadoPuntoControl, Js); 
+                if (response.ExpiresIn == 0) return JObject.FromObject(estadoPuntoControl, Js);
 
                 var responseF = await apiService.GetAsync<EstadoPuntoControlDTO>(this.urlApiGateWay, "ExpA/EstadoPuntoControl/", $"ObtenerEstadoPuntoControl?idEstadoPuntoControl={Id}", response.JwtToken);
                 if (!responseF.IsSuccess) return JObject.FromObject(estadoPuntoControl, Js);
@@ -972,7 +971,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
                 if (response.ExpiresIn == 0) return null;
-              
+
                 var resp = await apiService.DeleteAsync<EstadoPuntoControlDTO>(this.urlApiGateWay, "ExpA/EstadoPuntoControl/", "BorrarEstadoPuntoControll", puntoControl, response.JwtToken);
                 if (!resp.IsSuccess) return null;
 
@@ -1054,8 +1053,8 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 AnotacionPuntoControlDTO anotacionPuntoControl = new AnotacionPuntoControlDTO();
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
-                if (response.ExpiresIn == 0) return JObject.FromObject(anotacionPuntoControl, Js); 
-               
+                if (response.ExpiresIn == 0) return JObject.FromObject(anotacionPuntoControl, Js);
+
                 var responseF = await apiService.GetAsync<AnotacionPuntoControlDTO>(this.urlApiGateWay, "ExpA/AnotacionPuntoControl/", $"ObtenerAnotacionPuntoControl?idAnotacionPuntoControl={Id}", response.JwtToken);
                 if (!responseF.IsSuccess) return JObject.FromObject(anotacionPuntoControl, Js);
                 anotacionPuntoControl = (AnotacionPuntoControlDTO)responseF.Result;
@@ -1148,7 +1147,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 };
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
-                if (response.ExpiresIn == 0) return new { resp = "Error", mensaje = "No es posible autenticar la aplicación" }; 
+                if (response.ExpiresIn == 0) return new { resp = "Error", mensaje = "No es posible autenticar la aplicación" };
 
                 var resp = await apiService.PostAsync<AnotacionPuntoControlDTO>(this.urlApiGateWay, "ExpA/AnotacionPuntoControl/", "BorrarAnotacionPuntoControll/", anotacion, response.JwtToken);
                 if (!resp.IsSuccess) return new { resp = "Error", mensaje = resp.Message };
@@ -1164,8 +1163,8 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         #endregion
 
         #region Trámites asociados al Expediente Documental
-        
-       
+
+
         /// <summary>
         /// Consulta de Lista de Trámites asociados al Expediente Ambiental
         /// </summary>
@@ -1176,7 +1175,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         {
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
-  
+
             var model = dbSIM.Database.SqlQuery<TramitesExpedienteDTO>(@"SELECT distinct tea.codtramite as CODTRAMITE, CODIGO_PROYECTO , FECHAINI,FECHAFIN, p.nombre AS PROYECTO,t.COMENTARIOS as COMENTARIOS,T.MENSAJE AS MENSAJE, decode(estado, 0, 'Abierto', 'Cerrado') as ESTADO " +
                       " from TRAMITES.TRAMITE_EXPEDIENTE_AMBIENTAL tea " +
                       " inner join TRAMITES.TBTRAMITE t on t.codtramite = tea.codtramite " +
@@ -1203,8 +1202,8 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                       " inner join TRAMITES.TBTRAMITE t on t.codtramite = tea.codtramite " +
                       " inner join TRAMITES.TBPROCESO p on p.codproceso = t.codproceso " +
                       " where CODIGO_SOLICITUD  = " + codigoSolicitudId.ToString());
-           
-           
+
+
             return JArray.FromObject(model.ToList(), Js);
         }
 
@@ -1235,7 +1234,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 var responseF = await apiService.GetListAsync<AbogadoExpedienteDTO>(this.urlApiGateWay, "ExpA/AbogadoExpediente/", $"ObtenerAbogadosExpediente?expedienteId={idExpediente}", response.JwtToken);
                 if (!responseF.IsSuccess) return null;
                 var list = (List<AbogadoExpedienteDTO>)responseF.Result;
-           
+
                 var ja = JArray.FromObject(list, Js);
                 return ja;
 
@@ -1254,7 +1253,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
         [HttpPost, ActionName("AsignarExpedienteAmbientalAsync")]
         public async Task<object> AsignarExpedienteAmbientalAsync(AbogadoExpedienteDTO objData)
         {
-            SIM.Models.Response resposeF = new   SIM.Models.Response();
+            SIM.Models.Response resposeF = new SIM.Models.Response();
             try
             {
                 objData.FechaAsignacion = DateTime.Now;

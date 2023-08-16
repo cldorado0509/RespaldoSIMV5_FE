@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
 using SIM.Areas.ControlVigilancia.Models;
 using SIM.Data;
-using SIM.Data.General;
 using SIM.Data.Tramites;
 using SIM.Models;
 using System;
@@ -11,18 +10,20 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace SIM.Areas.GestionDocumental.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ExpedientesApiController : ApiController
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public struct datosConsulta
         {
             public int numRegistros;
@@ -1476,7 +1477,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             select new
                             {
                                 Documento = Doc.ID_DOCUMENTO,
-                                Datos = dbSIM.BUSQUEDA_DOCUMENTO.Where(w => w.ID_DOCUMENTO== Doc.ID_DOCUMENTO).Select(s => s.S_INDICE).FirstOrDefault(),
+                                Datos = dbSIM.BUSQUEDA_DOCUMENTO.Where(w => w.ID_DOCUMENTO == Doc.ID_DOCUMENTO).Select(s => s.S_INDICE).FirstOrDefault(),
                                 Fecha = Doc.FECHACREACION
                             });
                 var ListaDocumentos = Docs.ToList();
@@ -1509,7 +1510,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             select new
                             {
                                 Documento = Doc.ID_DOCUMENTO,
-                                Datos =  dbSIM.BUSQUEDA_DOCUMENTO.Where(w => w.ID_DOCUMENTO == Doc.ID_DOCUMENTO).Select(s => s.S_INDICE).FirstOrDefault(),
+                                Datos = dbSIM.BUSQUEDA_DOCUMENTO.Where(w => w.ID_DOCUMENTO == Doc.ID_DOCUMENTO).Select(s => s.S_INDICE).FirstOrDefault(),
                                 Fecha = Doc.FECHACREACION.ToString()
                             });
                 var ListaDocumentos = Docs.ToList();

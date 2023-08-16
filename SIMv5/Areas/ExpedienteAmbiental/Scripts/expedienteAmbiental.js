@@ -96,6 +96,16 @@ $(document).ready(function () {
                                         cboMunicipio.option("value", data.municipioId);
                                         idInstalacion = data.instalacionId;
                                         txtInstalacion.option("value", data.instalacion);
+                                        var OptAnulado = false;
+                                        if (data.anulado === 1) {
+                                            OptAnulado = true;
+                                        }                                            
+                                        chkAnulado.option("value", OptAnulado);
+                                        var OptArchivado = false;
+                                        if (data.archivado === 1) {
+                                            OptArchivado = true;
+                                        }
+                                        chkArchivado.option("value", OptArchivado);
                                         cboIntalaciones.option("disabled", true);
                                         popupNuevoExpediente.show();
                                     }
@@ -903,6 +913,19 @@ $(document).ready(function () {
         readOnly: true
     }).dxTextBox("instance");
 
+    var chkArchivado = $("#chkArchivado").dxCheckBox({
+        value: false,
+        width: 80,
+        text: "Si",
+
+    }).dxCheckBox("instance");
+
+    var chkAnulado = $("#chkAnulado").dxCheckBox({
+        value: false,
+        width: 80,
+        text: "Si",
+
+    }).dxCheckBox("instance");
     
     var txtlblNombreRazonSocial = $("#txtlblNombreRazonSocial").dxTextBox({
         readOnly: true
@@ -1340,9 +1363,21 @@ $(document).ready(function () {
             var municipioId = cboMunicipio.option("value");
             var clasificacionId = cboClasificacion.option("value");
             var cm = txtCM.option("value");
+            var banulado = chkAnulado.option("value");
+            var anulado = 0;
+            if (banulado) {
+                anulado = 1;
+            }
+            var barchivado = chkArchivado.option("value");
+            var archivado = 0;
+            if (barchivado) {
+                archivado = 1;
+            }
+
             var params = {
                 idExpediente: id, nombre: nombre, cm: cm, descripcion: descripcion, clasificacionExpedienteId: clasificacionId, municipioId: municipioId,
-                direccion: direccion, terceroId: idTercero, instalacionId: idInstalacion, razonSocial: "", proyectoId: 0, cedulaNit: "", instalacion: ""
+                direccion: direccion, terceroId: idTercero, instalacionId: idInstalacion, razonSocial: "", proyectoId: 0, cedulaNit: "", instalacion: "",
+                archivado: archivado,anulado:anulado
             };
 
             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/GuardarExpedienteAmbientalAsync";
@@ -1390,6 +1425,8 @@ $(document).ready(function () {
             txtDireccionExpediente.reset();
             cboClasificacion.reset();
             cboMunicipio.reset();
+            chkArchivado.option("value", false);
+            chkAnulado.option("value", false);
             popupNuevoExpediente.show();
         }
     }).dxButton("instance");
