@@ -1,0 +1,671 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-CO">
+  <Title Text="PLAN DE MOVILIDAD EMPRESARIAL SOSTENIBLE" />
+  <DataSources>
+    <ObjectDataSource Name="SPMES" ComponentName="dataSource1">
+      <DataSource Type="System.Data.DataTable, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    </ObjectDataSource>
+    <ObjectDataSource Name="SPMES_DIAS_TELETRABAJO" ComponentName="dataSource3">
+      <DataSource Type="System.Data.DataTable, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    </ObjectDataSource>
+  </DataSources>
+  <Items>
+    <TextBox ComponentName="textBoxDashboardItem1" Name="Cuadro de Texto 1" ShowCaption="false" Group="dashboardItemGroup1">
+      <Text>{\rtf1\deff0{\fonttbl{\f0 Calibri;}{\f1 Times New Roman;}{\f2 Verdana;}}{\colortbl ;\red0\green0\blue255 ;\red0\green0\blue0 ;}{\*\defchp \f1\fs24}{\stylesheet {\ql\f1\fs24 Normal;}{\*\cs1\f1\fs24 Default Paragraph Font;}{\*\cs2\sbasedon1\f1\fs24 Line Number;}{\*\cs3\ul\f1\fs24\cf1 Hyperlink;}{\*\ts4\tsrowd\f1\fs24\ql\tscellpaddfl3\tscellpaddl108\tscellpaddfb3\tscellpaddfr3\tscellpaddr108\tscellpaddft3\tsvertalt\cltxlrtb Normal Table;}{\*\ts5\tsrowd\sbasedon4\f1\fs24\ql\trbrdrt\brdrs\brdrw10\trbrdrl\brdrs\brdrw10\trbrdrb\brdrs\brdrw10\trbrdrr\brdrs\brdrw10\trbrdrh\brdrs\brdrw10\trbrdrv\brdrs\brdrw10\tscellpaddfl3\tscellpaddl108\tscellpaddfr3\tscellpaddr108\tsvertalt\cltxlrtb Table Simple 1;}}{\*\listoverridetable}\nouicompat\splytwnine\htmautsp\sectd\pard\plain\ql{\lang9226\langfe9226\b\f2\fs20\cf2 NOTA}{\lang9226\langfe9226\f2\fs20\cf2 : Los datos estimados y reportados por la plataforma PMES-SIM corresponden a los viajes de la casa al trabajo en un d\u237\'eda regular laboral.}\f1\fs24\par{\*\themedata 
+504b03041400020008000000210201159325ae000000270100000b0000005f72656c732f2e72656c738d8f310ec2300c45af1279a76e1910424dbbb07460415c204a9d34a24da224457036068ec415c8d82206164b5ffe7efffbfd7cd5ed7d1ad98d4234
+ce72a88a121859e97a63358739a9cd1edaa63ed3285276c4c1f8c8f2898d1c8694fc0131ca8126110be7c9e68d72611229cba0d10b79159a705b963b0c4b06ac99aceb3984aeaf805d1e9efe613ba58ca4a393f34436fd88f87264b2089a12879499848b
+791236b70c454e00864d8dab779b0f504b0304140002000800000021027f624aeb730000007b0000001c0000007468656d652f7468656d652f7468656d654d616e616765722e786d6c0d8cc10d83300c005789fc2f4e7954554460820e61810991888392
+b465b73e3a5257a89fa7d3ddeff31da633ede6c5a5c62c1eae9d05c332e7254af0f06cebe50ed338906b1b277e9050e062b491eac8c3d6dae110ebac966a970f16756b2e899a6209b8147aeb2bedd85b7bc34451c0e0f807504b03041400020008000000
+21020a5d705ea60000000c010000270000007468656d652f7468656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c738dcf3d0ec2300c05e0ab44dea95b068450d32e2c5d11178852278d687e94a408cec6c091b8021113951818
+9fecf7597e3d9e6d7fb333bb524cc63b0e4d55032327fd689ce6b064b5d943dfb5279a452e1b693221b1527189c39473382026399115a9f2815c99281fadc825468d41c88bd084dbbade61fc36606db261e41087b10176be07fac7f64a1949472f174b2e
+ff3881b974a980226aca1c3eb1a90a030cbb16573f756f504b0304140002000800000021020b868735b9050000e71b0000160000007468656d652f7468656d652f7468656d65312e786d6ced594f6fdb3614ff2a84eead2cdb4a9da06e113b76bbb56983
+c4ebd0232dd3121b4a14483aa96f437b1c30605837ec3260b71d866d055a608775d887c9d661eb807c853dd1b245d9549ab429b661f1c116a9dfeffde57b22e5e39f7eb97afd61ccd0011192f2a4ed78976b0e2249c0473409dbce448d2fb59cebd7aee2
+0d1591982000277203b79d48a974c3756500d3585ee62949e0de988b182b188ad01d097c084262e6d66bb53537c63471508263d276ee8ec734206890897416c27b0cbe1225b3898089bd406b34191a3bdaf7b21f39955d26d001666d07f48cf8e1803c54
+0e62582ab8d1766afae320f7da5577c162aa826c10fbfa3327e68cd17e5d1345385c30bd7e73fdca56a1a13ed3b00aecf57add9e5748d4081c04e0adb7026ef65b5e6721d540cd2e57a5776b7eadb9443034345608eb9d4ec75f2f131a05a1b94268d5d6
+9a9bf532a15910fc551f3a9bddee5a99e01784b51542ffcafa5a7389a05111a3c9fe0a3ccb6c91a20566ccd94d2bbe05f8d6622d1430d75869330189aa5a77317ec0451f003acb58d104a9694ac638005c17c74341b1d6803708366ee573815c9dcbd421
+19089aaab6f37e8aa1400accf18bef8e5f3c43c72f9e1e3d7a7ef4e8c7a3c78f8f1efd6063dec44968325f7df3e95f5f7d84fe7cf6f5ab279f5710a449f8edfb8f7ffdf9b30aa432912fbf78fafbf3a72fbffce48f6f9fd8f09b020f4dfc80c644a23be4
+10edf238f3cfa2820cc519298308d312054700b5217b2a2a21ef4c31b3023ba41cc37b02da82157963f2a064ef5e24268ada90b7a2b884dce69c75b8b0fb744bab337c9a2461857e313181bb181f58d57797b2dc9ba4b0b2a95568372225537718241e87
+24210a65f7f83e2136de7d4a4bf1dda681e0928f15ba4f5107537b600674a8ecac9b3486044dad3642d64b11dabe873a9c59156c918332142a0433ab50c24ad1bc81270ac776ab71cc4ce86dac22aba17b531194022f15243d248ca3de88486925dd15d3
+92c9b730b428fb0ad866d3b80c158aee5ba1b731e726748bef77231ca776bb691299e0f7e43eac588c76b8b2dbc1cb35938d212138a9cefc3d4ad4198bfd031a46f6c592dd99086b8d105eaed1291b6392cc1f00a5561ed3e4a4bece2834f68bbebed4d7
+37e16167ada7e56e5e09fc8ff6f02d3c4976485627172dfca2855fb4f0132afc5d34eea257bbe66e5dcb892bb7ee63cad89e9a32725bea2e2fc1c5511f26f5409316478534824b67a6ae840b05d6d74870f52155d15e845350e3690da1cc458712a55cc2
+09c5a994ad0fbc149cd673be3ea5ea4848acb6f96836dda8cde75d438c1e85d254d4c8049c5659e3cadb29f366c0536af37cbb36ff446dae114da81f84b31711de5a3d3fcecb003332cae23e13304fcbb9a748467844f21c795647bcc629c3d67a7dd40c
+6deb8db7d3769a2499ea9a15eafc73c8526d254bee6a39b2a43c428760955ff71d14e0b4ed8c61530697710af264d6ae300b93b613a8dc95d716f3b2c3f665e9d52a1d2ea94885545b58463396be95935852d85ff79b591ccec7014b373a9d158d96f70f
+5ae12ea7968cc724501533c530bfc7278a88bd687488866c227631d8dd9cadae1195f0aca8cf07022ab4992fbc72e5e755b0fcea28af0eccd208e73da965e47e06d7d70b1bf4c830cfadb0fd0d5d699ca32bfeffd7956ce5c286b731d22733d806088cb2
+35da76b85011872e944634e80bd838685d601782b2c84c422c7bff9dd94a0e8abe3593316b7261a476698804854ea72241c88ecafd7c8d30af6e3e5fe782f23eb33057a6b3df2139206c9055ef5ae6bf83a27937c903a171cb49736dd5350cfbffe29d4f
+b362e773f2f6a050d43ccb5ea469347de351b0fe76269cf1515bb77b5cf74ffda84de1c082b22f68dc5404acd8df0ef82e641f2d76940816e2a5565e7e8bc921d8dc329ccb44bddb6d5491825645becf73f36904bb5111ec93d5bd79b07d4bacfd9343ed
+ae96a86b1c64f468e5af313e7c00bab7e08034614ae62fa61ec2f1b43bff270304e5e7254dbef637504b030414000200080000002102e9278183ee00000010020000130000005b436f6e74656e745f54797065735d2e786d6cad914d4ec3301085af6279
+5bc54e5920849274012cf959708191334e2ce21fd993aa9c8d0547e20a4cd382102a48486c2cd9efcdfb66c66f2fafcd66e727b1c55c5c0cad5cab5a0a0c26f62e0cad9cc9561772d3358fcf098b606b28ad1c89d2a5d6c58ce8a1a89830b06263f6407c
+cd834e609e60407d56d7e7dac44018a8a27d86ec9a6bb4304f246e76fc7cc0669c8a145707e39ed54a486972068875bd0dfd374a752428ae5c3c6574a9acd820853e8958a41f091f85f7bc89ec7a140f90e90e3cdb34f198f8f55cabdfc34eb41bad7506
+fb6866cf256a8959fd097a0b81e7cdff833e867d76a097ffedde01504b010214001400020008000000210201159325ae000000270100000b00000000000000000000000000000000005f72656c732f2e72656c73504b0102140014000200080000002102
+7f624aeb730000007b0000001c00000000000000000000000000d70000007468656d652f7468656d652f7468656d654d616e616765722e786d6c504b01021400140002000800000021020a5d705ea60000000c0100002700000000000000000000000000
+840100007468656d652f7468656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c73504b01021400140002000800000021020b868735b9050000e71b000016000000000000000000000000006f0200007468656d652f7468656d65
+2f7468656d65312e786d6c504b0102140014000200080000002102e9278183ee0000001002000013000000000000000000000000005c0800005b436f6e74656e745f54797065735d2e786d6c504b050600000000050005005d0100007b0900000000}{\*\colorschememapping 
+3c3f786d6c2076657273696f6e3d22312e302220656e636f64696e673d227574662d38223f3e3c613a636c724d617020786d6c6e733a613d22687474703a2f2f736368656d61732e6f70656e786d6c666f726d6174732e6f72672f64726177696e676d6c
+2f323030362f6d61696e22206267313d226c743122207478313d22646b3122206267323d226c743222207478323d22646b322220616363656e74313d22616363656e74312220616363656e74323d22616363656e74322220616363656e74333d22616363
+656e74332220616363656e74343d22616363656e74342220616363656e74353d22616363656e74352220616363656e74363d22616363656e74362220686c696e6b3d22686c696e6b2220666f6c486c696e6b3d22666f6c486c696e6b22202f3e}}</Text>
+    </TextBox>
+    <Card ComponentName="cardDashboardItem1" Name="A. KILOGRAMOS CO2 PERCÁPITA" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'A', IsNull([N_CO2P], 0), 0)) / 1000 / Sum(Iif([TIPO_VIGENCIA] = 'A', IsNull([N_CANTIDADP], 0), 0))" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'B', IsNull([N_CO2P], 0), 0)) / 1000 / Sum(Iif([TIPO_VIGENCIA] = 'B', IsNull([N_CANTIDADP], 0), 0))" DefaultId="DataItem4">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <TargetValue DefaultId="DataItem4" />
+		<CardDeltaOptions ResultIndicationMode="LessIsGood" />
+        <AbsoluteVariationNumericFormat Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        <PercentVariationNumericFormat IncludeGroupSeparator="true" />
+        <PercentOfTargetNumericFormat IncludeGroupSeparator="true" />
+        <LayoutTemplate MinWidth="125" MaxWidth="150" Type="Compact">
+          <MainValue Visible="true" ValueType="TargetValue" DimensionIndex="0" />
+          <SubValue Visible="true" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="true" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="true" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem1" Name="G. SEDES DE LA ORGANIZACIÓN" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="N_POBLACION" Name="NÚMERO DE COLABORADORES" SummaryType="Max" DefaultId="DataItem0" />
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem1" />
+        <Dimension DataMember="INSTALACION" DefaultId="DataItem2" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem2" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem0" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem2" Name="H. DISTRIBUCIÓN MODAL" Group="dashboardItemGroup1" DataSource="dataSource1" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOPH" DefaultId="DataItem0" />
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem1" />
+        <Measure DataMember="N_CANTIDADP" Name="% COLABORADORES" DefaultId="DataItem2">
+          <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+		  <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+		  <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="% DE COLABORADORES">
+              <Value DefaultId="DataItem2" />
+              <PointLabelOptions Position="Inside" ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem3" Name="A. HORARIO DE INGRESO" Group="dashboardItemGroup2" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="N_HORAINGRESO" DefaultId="DataItem0" />
+        <Dimension DataMember="VIGENCIA" ColoringMode="Hue" DefaultId="DataItem2" />
+        <Measure DataMember="N_CANTIDADP" Name="% COLABORADORES" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+		  <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+		  <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="% COLABORADORES" SeriesType="Line">
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem4" Name="B. HORARIO DE SALIDA" Group="dashboardItemGroup2" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="N_HORASALIDA" DefaultId="DataItem0" />
+        <Dimension DataMember="VIGENCIA" ColoringMode="Hue" DefaultId="DataItem2" />
+        <Measure DataMember="N_CANTIDADP" Name="% COLABORADORES" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+		  <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+		  <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="% COLABORADORES" SeriesType="Line">
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Card ComponentName="cardDashboardItem2" Name="B. GRAMOS PM 2,5 PERCÁPITA" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'A', IsNull([N_PM25P], 0), 0)) / Sum(Iif([TIPO_VIGENCIA] = 'A', IsNull([N_CANTIDADP], 0), 0))" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'B', IsNull([N_PM25P], 0), 0)) / Sum(Iif([TIPO_VIGENCIA] = 'B', IsNull([N_CANTIDADP], 0), 0))" DefaultId="DataItem4">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <TargetValue DefaultId="DataItem4" />
+		<CardDeltaOptions ResultIndicationMode="LessIsGood" />
+        <AbsoluteVariationNumericFormat Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        <PercentVariationNumericFormat IncludeGroupSeparator="true" />
+        <PercentOfTargetNumericFormat IncludeGroupSeparator="true" />
+        <LayoutTemplate MinWidth="125" MaxWidth="150" Type="Compact">
+          <MainValue Visible="true" ValueType="TargetValue" DimensionIndex="0" />
+          <SubValue Visible="true" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="true" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="true" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Card ComponentName="cardDashboardItem3" Name="C. TONELADAS CO2 TOTAL" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'A', IsNull([N_CO2P], 0), 0)) / 1000000" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'B', IsNull([N_CO2P], 0), 0)) / 1000000" DefaultId="DataItem4">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <TargetValue DefaultId="DataItem4" />
+		<CardDeltaOptions ResultIndicationMode="LessIsGood" />
+        <AbsoluteVariationNumericFormat Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        <PercentVariationNumericFormat IncludeGroupSeparator="true" />
+        <PercentOfTargetNumericFormat IncludeGroupSeparator="true" />
+        <LayoutTemplate MinWidth="125" MaxWidth="150" Type="Compact">
+          <MainValue Visible="true" ValueType="TargetValue" DimensionIndex="0" />
+          <SubValue Visible="true" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="true" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="true" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Card ComponentName="cardDashboardItem4" Name="D. GRAMOS PM 2,5 TOTAL" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'A', IsNull([N_PM25P], 0), 0))" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_CO2P" Expression="Sum(Iif([TIPO_VIGENCIA] = 'B', IsNull([N_PM25P], 0), 0))" DefaultId="DataItem4">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <TargetValue DefaultId="DataItem4" />
+		<CardDeltaOptions ResultIndicationMode="LessIsGood" />
+        <AbsoluteVariationNumericFormat Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        <PercentVariationNumericFormat IncludeGroupSeparator="true" />
+        <PercentOfTargetNumericFormat IncludeGroupSeparator="true" />
+        <LayoutTemplate MinWidth="125" MaxWidth="150" Type="Compact">
+          <MainValue Visible="true" ValueType="TargetValue" DimensionIndex="0" />
+          <SubValue Visible="true" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="true" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="true" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem5" Name="C. COLAB. EN TELETRABAJO" Group="dashboardItemGroup2" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="TELETRABAJO" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="% COLABORADORES" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+		  <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+		  <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem2" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem6" Name="D. DÍAS DE TELETRABAJO" Group="dashboardItemGroup2" DataSource="dataSource3">
+      <ColoringOptions MeasuresColoringMode="None" />
+      <DataItems>
+        <Dimension DataMember="DIA" DefaultId="DataItem0" />
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem1" />
+        <Measure DataMember="DIAS_TELETRABAJO" Name="% COLABORADORES" DefaultId="DataItem2">
+			<NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+			<Calculation>
+				<PercentOfTotal />
+			</Calculation>
+			<WindowDefinition>
+				<ChartWindowDefinition />
+			</WindowDefinition>
+		</Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Card ComponentName="cardDashboardItem5" Name="E. POBLACIÓN" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="N_CANTIDADP" SummaryType="Sum" DefaultId="DataItem0">
+			<NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+		</Measure>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem1" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate Type="Stretched">
+          <TopValue Visible="true" ValueType="DimensionValue" DimensionIndex="0" />
+          <MainValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomValue1 Visible="false" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomValue2 Visible="false" ValueType="ActualValue" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Grid ComponentName="gridDashboardItem1" Name="F. DISTANCIA (RANGOS)" Group="dashboardItemGroup1" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="S_DISTANCIA" Name="DISTANCIA (RANGOS)" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="AÑO ACTUAL" Expression="ToDecimal(Sum(Iif([TIPO_VIGENCIA] = 'A', [N_CANTIDADP], 0))) / Total(Sum(Iif([TIPO_VIGENCIA] = 'A', [N_CANTIDADP], 0)))" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <GridWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_CANTIDADP" Name="AÑO BASE" Expression="ToDecimal(Sum(Iif([TIPO_VIGENCIA] = 'B', [N_CANTIDADP], 0))) / Total(Sum(Iif([TIPO_VIGENCIA] = 'B', [N_CANTIDADP], 0)))" DefaultId="DataItem2">
+          <NumericFormat FormatType="Percent" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <GridWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_CANTIDADP" Name="DIFERENCIA" Expression="ToDecimal(Sum(Iif([TIPO_VIGENCIA] = 'A', [N_CANTIDADP], 0))) / Total(Sum(Iif([TIPO_VIGENCIA] = 'A', [N_CANTIDADP], 0))) - ToDecimal(Sum(Iif([TIPO_VIGENCIA] = 'B', [N_CANTIDADP], 0))) / Total(Sum(Iif([TIPO_VIGENCIA] = 'B', [N_CANTIDADP], 0)))" DefaultId="DataItem3">
+          <NumericFormat FormatType="Percent" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <GridWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <FormatRules>
+        <GridItemFormatRule Name="FormatRule 1" DataItem="DataItem3">
+          <FormatConditionValue Condition="Greater">
+            <IconSettings IconType="DirectionalGreenArrowUp" />
+            <Value1 Type="System.Decimal" Value="0" />
+          </FormatConditionValue>
+        </GridItemFormatRule>
+        <GridItemFormatRule Name="FormatRule 2" DataItem="DataItem3">
+          <FormatConditionValue>
+            <IconSettings IconType="DirectionalYellowDash" />
+            <Value1 Type="System.Decimal" Value="0" />
+          </FormatConditionValue>
+        </GridItemFormatRule>
+        <GridItemFormatRule Name="FormatRule 3" DataItem="DataItem3">
+          <FormatConditionValue Condition="Less">
+            <IconSettings IconType="DirectionalRedDownArrow" />
+            <Value1 Type="System.Decimal" Value="0" />
+          </FormatConditionValue>
+        </GridItemFormatRule>
+      </FormatRules>
+      <GridColumns>
+        <GridDimensionColumn Name="DISTANCIA" Weight="134.76148409893992" FixedWidth="94.756235572513631" WidthType="FixedWidth">
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridMeasureColumn Weight="45.715547703180214" FixedWidth="20" WidthType="FixedWidth">
+          <Measure DefaultId="DataItem2" />
+        </GridMeasureColumn>
+        <GridMeasureColumn Weight="44.522968197879855" FixedWidth="20" WidthType="FixedWidth">
+          <Measure DefaultId="DataItem1" />
+        </GridMeasureColumn>
+        <GridMeasureColumn FixedWidth="20" WidthType="FixedWidth">
+          <Measure DefaultId="DataItem3" />
+        </GridMeasureColumn>
+      </GridColumns>
+      <GridOptions ColumnWidthMode="Manual" />
+    </Grid>
+    <Chart ComponentName="chartDashboardItem7" Name="A. TIEMPO DE VIAJE POR MODO" Group="dashboardItemGroup3" DataSource="dataSource1" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOPH" DefaultId="DataItem0" />
+        <Measure DataMember="N_TIEMPOM" Name="TIEMPO PROMEDIO DE VIAJE EN MINUTOS" SummaryType="Average" Expression="Avg(Iif([TIPO_VIGENCIA] = 'A', [N_TIEMPOM] * 60, [N_TIEMPOM]))" DefaultId="DataItem1">
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem2" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem8" Name="B. EMISIONES DE CO2/DÍA POR ÁREA" Group="dashboardItemGroup3" DataSource="dataSource1" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem2" />
+        <Measure DataMember="N_CO2" Name="% CO2" Expression="Sum([N_CO2]) / 1000000" DefaultId="DataItem1">
+		  <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+		  <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Dimension DataMember="AREA" DefaultId="DataItem0" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Card ComponentName="cardDashboardItem6" Name="A. NUMERO DE VIAJES LABORALES / MES" Group="dashboardItemGroup4" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem0" />
+        <Measure DataMember="VIAJES_LABORALES" DefaultId="DataItem1" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate Type="Stretched">
+          <TopValue Visible="true" ValueType="DimensionValue" DimensionIndex="0" />
+          <MainValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Subtitle" DimensionIndex="0" />
+          <BottomValue1 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <BottomValue2 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem9" Name="B. DISTRIBUCIÓN MODAL VIAJES LABORALES" Group="dashboardItemGroup4" DataSource="dataSource1" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem1" />
+        <Measure DataMember="VIAJES_LABORALES" Name="% COLABORADORES" DefaultId="DataItem2">
+          <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+		  <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+		  <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Dimension DataMember="MODOL" Name="MODO" DefaultId="DataItem0" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+              <PointLabelOptions Position="Inside" ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Card ComponentName="cardDashboardItem7" Name="A. NUMERO DE DUCHAS DISPONIBLES" Group="dashboardItemGroup5" DataSource="dataSource1">
+      <DataItems>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem0" />
+        <Measure DataMember="N_DUCHAS" SummaryType="Sum" DefaultId="DataItem1">
+			<NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+		</Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate Type="Stretched">
+          <TopValue Visible="true" ValueType="DimensionValue" DimensionIndex="0" />
+          <MainValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Subtitle" DimensionIndex="0" />
+          <BottomValue1 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <BottomValue2 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem10" Name="B. NÚMERO DE CELDAS DISPONIBLES" Group="dashboardItemGroup5" DataSource="dataSource1">
+      <DataItems>
+        <Measure DataMember="N_BICICLETA" Name="BICICLETA" SummaryType="Sum" DefaultId="DataItem2">
+			<NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+			<WindowDefinition>
+				<ChartWindowDefinition />
+			</WindowDefinition>
+        </Measure>
+        <Dimension DataMember="VIGENCIA" DefaultId="DataItem1" />
+        <Measure DataMember="N_CARRO" Name="AUTOMÓVIL" SummaryType="Sum" DefaultId="DataItem0" >
+			<NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+			<WindowDefinition>
+				<ChartWindowDefinition />
+			</WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_MOTO" Name="MOTOCICLETA" SummaryType="Sum" DefaultId="DataItem3" >
+			<NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+			<WindowDefinition>
+				<ChartWindowDefinition />
+			</WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+              <PointLabelOptions Position="Inside" ContentType="Value" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem0" />
+              <PointLabelOptions ContentType="Value" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem3" />
+              <PointLabelOptions ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <Groups>
+    <Group ComponentName="dashboardItemGroup1" Name="1. DATOS GENERALES" />
+    <Group ComponentName="dashboardItemGroup2" Name="2. HORARIO DE TRABAJO" />
+    <Group ComponentName="dashboardItemGroup3" Name="3. DATOS DE DESPLAZAMIENTO" />
+    <Group ComponentName="dashboardItemGroup4" Name="4. VIAJES LABORALES" />
+    <Group ComponentName="dashboardItemGroup5" Name="5. INFRAESTRUCTURA ORGANIZACIONAL" />
+  </Groups>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical">
+      <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup1" Weight="35">
+        <LayoutItem DashboardItem="textBoxDashboardItem1" Weight="3" />
+        <LayoutGroup Weight="22">
+          <LayoutItem DashboardItem="cardDashboardItem1" Weight="24.222222222222221" />
+          <LayoutItem DashboardItem="cardDashboardItem2" Weight="24.222222222222221" />
+          <LayoutItem DashboardItem="cardDashboardItem3" Weight="24.333333333333332" />
+          <LayoutItem DashboardItem="cardDashboardItem4" Weight="27.222222222222221" />
+        </LayoutGroup>
+        <LayoutGroup Weight="20">
+          <LayoutItem DashboardItem="cardDashboardItem5" Weight="34.555555555555557" />
+          <LayoutItem DashboardItem="gridDashboardItem1" Weight="65.444444444444443" />
+        </LayoutGroup>
+        <LayoutGroup Weight="55">
+          <LayoutItem DashboardItem="chartDashboardItem1" Weight="48.666666666666664" />
+          <LayoutItem DashboardItem="chartDashboardItem2" Weight="51.333333333333336" />
+        </LayoutGroup>
+      </LayoutGroup>
+      <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup2" Weight="21.344537815126049">
+        <LayoutGroup Weight="50">
+          <LayoutItem DashboardItem="chartDashboardItem3" Weight="49.888888888888886" />
+          <LayoutItem DashboardItem="chartDashboardItem4" Weight="50.111111111111114" />
+        </LayoutGroup>
+        <LayoutGroup Weight="50">
+          <LayoutItem DashboardItem="chartDashboardItem5" Weight="49.888888888888886" />
+          <LayoutItem DashboardItem="chartDashboardItem6" Weight="50.111111111111114" />
+        </LayoutGroup>
+      </LayoutGroup>
+      <LayoutGroup DashboardItem="dashboardItemGroup3" Weight="14.621848739495798">
+        <LayoutItem DashboardItem="chartDashboardItem7" Weight="58.555555555555557" />
+        <LayoutItem DashboardItem="chartDashboardItem8" Weight="41.444444444444443" />
+      </LayoutGroup>
+      <LayoutGroup DashboardItem="dashboardItemGroup4" Weight="14.621848739495798">
+        <LayoutItem DashboardItem="cardDashboardItem6" Weight="30" />
+        <LayoutItem DashboardItem="chartDashboardItem9" Weight="70" />
+      </LayoutGroup>
+      <LayoutGroup DashboardItem="dashboardItemGroup5" Weight="14.621848739495798">
+        <LayoutItem DashboardItem="cardDashboardItem7" Weight="30" />
+        <LayoutItem DashboardItem="chartDashboardItem10" Weight="70" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>
