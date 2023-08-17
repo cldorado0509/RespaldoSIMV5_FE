@@ -31,7 +31,8 @@ namespace SIM.Areas.General.Controllers
         public ActionResult Index(bool? popup)
         {
             //Utilidades.Email.EnviarEmail("trabajoprueba1208@gmail.com", "renemeneses1208@hotmail.com", "Validación de usuario registrados en el SIM", "Prueba Correo", "smtp.gmail.com", true, "trabajoprueba1208@gmail.com", "renemeneses");
-
+            if (popup == null) ViewBag.popup = false;
+            else ViewBag.popup = popup;
             return View();
         }
 
