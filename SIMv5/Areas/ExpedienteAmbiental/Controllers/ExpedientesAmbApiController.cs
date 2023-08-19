@@ -134,7 +134,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new SIM.Models.Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return resposeF;
@@ -522,7 +522,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 ApiService apiService = new ApiService();
 
                 objData.IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>();
-                objData.UnidadDocumentalId =  int.Parse(SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString());
+                objData.UnidadDocumentalId = int.Parse(SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString());
                 foreach (var item in objData.Indices)
                 {
 
@@ -553,6 +553,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 objData.FechaRegistro = DateTime.Now;
                 objData.Conexo = ".";
                 objData.FuncionarioId = funcionario;
+                objData.ObservacionEstado = "";
 
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
@@ -573,7 +574,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess= false, Message = "Error Almacenando el registro : " + e.Message, Result = "" };
+                return new SIM.Models.Response { IsSuccess = false, Message = "Error Almacenando el registro : " + e.Message, Result = "" };
             }
 
             return resposeF;
@@ -739,7 +740,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                     IdPuntoControl = _id,
                     Conexo = ".",
                     Nombre = ".",
-                    IndicesSerieDocumentalDTO= new List<IndiceSerieDocumentalDTO>(),
+                    IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>(),
                     UnidadDocumentalId = 0,
                     TipoSolicitudAmbientalId = 0,
                     ExpedienteAmbientalId = 0,
@@ -776,11 +777,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 if (response.ExpiresIn == 0) return null;
 
                 resposeF = await apiService.PutAsync<PuntoControlExpedienteDocumentalDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", "VincularExpedienteDocumentalAPuntoControl", objData, response.JwtToken);
-                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Expediente!" };
+                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Expediente!" };
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Expediente: " + e.Message };
+                return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Expediente: " + e.Message };
             }
 
             return resposeF;
@@ -1142,7 +1143,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                     IdAnotacionPuntoControl = _id,
                     Anotacion = ".",
                     FuncionarioId = 1,
-                    Funcionario =  ".",
+                    Funcionario = ".",
                     PuntoControlId = 1,
                 };
 
@@ -1265,11 +1266,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 if (response.ExpiresIn == 0) return null;
 
                 resposeF = await apiService.PostAsync<AbogadoExpedienteDTO>(this.urlApiGateWay, "ExpA/AbogadoExpediente/", "GuardarAbogadoExpediente", objData, response.JwtToken);
-                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Abogado!" };
+                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Abogado!" };
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Abogado: " + e.Message };
+                return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Abogado: " + e.Message };
             }
 
             return resposeF;
