@@ -4330,12 +4330,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporteVisitas\certificadoVisita\aguaSuperficial.resx">
       <DependentUpon>aguaSuperficial.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporteVisitas\certificadoVisita\aguaSuterranea.resx">
       <DependentUpon>aguaSuterranea.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporteVisitas\certificadoVisita\atiendeVisita.resx">
       <DependentUpon>atiendeVisita.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporteVisitas\certificadoVisita\certificadoVisita.resx">
       <DependentUpon>certificadoVisita.cs</DependentUpon>
@@ -4386,6 +4388,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporte\aguas\arbolUrbano.resx">
       <DependentUpon>arbolUrbano.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporte\aguas\captacionNuevo.resx">
       <DependentUpon>captacionNuevo.cs</DependentUpon>
@@ -4596,6 +4599,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporte\aguas\visita\atiendeSubreport.resx">
       <DependentUpon>atiendeSubreport.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\ControlVigilancia\reporte\aguas\visita\contanciaVisita.resx">
       <DependentUpon>contanciaVisita.cs</DependentUpon>

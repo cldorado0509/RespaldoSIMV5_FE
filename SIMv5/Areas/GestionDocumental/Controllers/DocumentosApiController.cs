@@ -1,24 +1,14 @@
-﻿using DevExpress.Web;
-using Independentsoft.Office.Odf.Fields;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using O2S.Components.PDF4NET;
 using O2S.Components.PDF4NET.PDFFile;
-using SIM.Areas.Pqrsd.Models;
 using SIM.Controllers;
 using SIM.Data;
-using SIM.Data.Seguridad;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 
 namespace SIM.Areas.GestionDocumental.Controllers
@@ -60,7 +50,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         switch (_Buscar[0])
                         {
                             case "T":
-                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODTRAMITE= " + _Buscar[1].ToString().Trim() + " ORDER BY DOC.ID_DOCUMENTO DESC";
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODTRAMITE= " + _Buscar[1].ToString().Trim() + " ORDER BY DOC.FECHACREACION DESC";
                                 DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                 break;
                             case "F":
@@ -85,12 +75,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 }
                                 break;
                             case "B":
-                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.ID_DOCUMENTO DESC";
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.FECHACREACION DESC";
                                 DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                 break;
                             case "D":
                                 string[] _rango = _Buscar[1].Split(',');
-                                _Sql = $"SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODSERIE ={IdUnidadDoc} AND TO_DATE(TO_CHAR(DOC.FECHACREACION,'DD-MM-YYYY'),'DD-MM-YYYY') BETWEEN TO_DATE('{DateTime.Parse(_rango[0].ToString()).ToString("dd-MM-yyyy")}','DD-MM-YYYY') AND TO_DATE('{DateTime.Parse(_rango[1].ToString()).ToString("dd-MM-yyyy")}','DD-MM-YYYY') ORDER BY DOC.ID_DOCUMENTO DESC";
+                                _Sql = $"SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODSERIE ={IdUnidadDoc} AND TO_DATE(TO_CHAR(DOC.FECHACREACION,'DD-MM-YYYY'),'DD-MM-YYYY') BETWEEN TO_DATE('{DateTime.Parse(_rango[0].ToString()).ToString("dd-MM-yyyy")}','DD-MM-YYYY') AND TO_DATE('{DateTime.Parse(_rango[1].ToString()).ToString("dd-MM-yyyy")}','DD-MM-YYYY') ORDER BY DOC.FECHACREACION DESC";
                                 DocsEncontrados = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                 break;
                         }
@@ -263,8 +253,10 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                  ESTADO = Doc.S_ESTADO == "N" ? "Anulado" : "",
                                  ADJUNTO = Doc.S_ADJUNTO != "1" ? "No" : "Si",
                                  CODTRAMITE = Doc.CODTRAMITE,
-                                 EDIT_INDICES = (from PER in dbSIM.PERMISOSSERIE where PER.CODFUNCIONARIO == funcionario &&
-                                                 PER.CODSERIE == Doc.CODSERIE select PER.PM).FirstOrDefault() == "1" ? true : false
+                                 EDIT_INDICES = (from PER in dbSIM.PERMISOSSERIE
+                                                 where PER.CODFUNCIONARIO == funcionario &&
+                                                 PER.CODSERIE == Doc.CODSERIE
+                                                 select PER.PM).FirstOrDefault() == "1" ? true : false
                              }).FirstOrDefault();
                 if (model != null)
                 {
@@ -308,11 +300,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 {
                     return fileName.LastIndexOf(ext) > -1;
                 });
-                if (isValidExtenstion) {
+                if (isValidExtenstion)
+                {
                     string filePath = _Ruta + @"\" + fileName;
                     if (System.IO.File.Exists(filePath))
                     {
-                        System.IO.File.Delete(filePath);    
+                        System.IO.File.Delete(filePath);
                     }
                     File.SaveAs(filePath);
                     try
@@ -349,7 +342,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
             string _Ruta = _RutaBase + @"\" + DateTime.Now.ToString("yyyyMM");
             string filePath = _Ruta + @"\" + Doc;
-            FileInfo DocNuevo = new FileInfo(filePath);   
+            FileInfo DocNuevo = new FileInfo(filePath);
             if (!DocNuevo.Exists) return new { resp = "Error", mensaje = "No se ha podido encontrar el documento subido al sistema" };
             var Docu = (from D in dbSIM.TBTRAMITEDOCUMENTO
                         where D.ID_DOCUMENTO == IdDocumento
@@ -360,14 +353,15 @@ namespace SIM.Areas.GestionDocumental.Controllers
             try
             {
                 oSrcPDF = PDFFile.FromFile(DocNuevo.FullName);
-                var _bkFile = new FileInfo(DocAnte.DirectoryName + @"\"+ Path.GetFileNameWithoutExtension(DocAnte.FullName) + "_old" + DocAnte.Extension);
+                var _bkFile = new FileInfo(DocAnte.DirectoryName + @"\" + Path.GetFileNameWithoutExtension(DocAnte.FullName) + "_old" + DocAnte.Extension);
                 if (_bkFile.Exists) _bkFile.Delete();
                 DocAnte.CopyTo(_bkFile.FullName);
-                if (DocAnte.Extension.ToLower() != DocNuevo.Extension.ToLower()) {
+                if (DocAnte.Extension.ToLower() != DocNuevo.Extension.ToLower())
+                {
                     DocAnte.Delete();
                     Docu.RUTA = DocAnte.DirectoryName + @"\" + Path.GetFileNameWithoutExtension(DocAnte.FullName) + DocNuevo.Extension;
                 }
-                
+
                 DocNuevo.CopyTo(Docu.RUTA);
                 int _Pag = oSrcPDF.PagesCount;
                 oSrcPDF.Dispose();
@@ -384,7 +378,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         }
     }
 
-        public class Documento
+    public class Documento
     {
         public decimal ID_DOCUMENTO { get; set; }
         public decimal CODDOC { get; set; }
@@ -393,6 +387,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
         public string ESTADO { get; set; }
         public string ADJUNTO { get; set; }
         public decimal CODTRAMITE { get; set; }
-        public bool EDIT_INDICES { get; set; }   
+        public bool EDIT_INDICES { get; set; }
     }
 }

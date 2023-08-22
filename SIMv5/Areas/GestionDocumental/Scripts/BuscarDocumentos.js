@@ -6,7 +6,7 @@ var txtFechas = "";
 var UnidadDoc = -1;
 
 const fechas = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-
+DevExpress.localization.locale(navigator.language);
 $(document).ready(function () {
     $("#rdbTipoBusca").dxRadioGroup({
         dataSource: [{ value: 0, text: "Por trámite" }, { value: 1, text: "Por Unidad Documental" }, { value: 2, text: "Full Text" }, { value: 3, text: "Por Fecha Digitalización" }],
@@ -305,7 +305,7 @@ $(document).ready(function () {
         columns: [
             { dataField: "ID_DOCUMENTO", visible: false },
             { dataField: "CODTRAMITE", width: '10%', caption: 'Trámite', dataType: 'number' },
-            { dataField: "CODDOCUMENTO", width: '7%', caption: 'Documento', dataType: 'number' },
+            { dataField: "CODDOCUMENTO", width: '7%', caption: 'Documento', dataType: 'number', visible: false  },
             { dataField: 'FECHACREACION', width: '15%', caption: 'Fecha Digitaliza', dataType: 'date', format: 'MMM dd yyyy HH: mm' },
             { dataField: "NOMBRE", width: '30%', caption: 'Unidad Documental', dataType: 'string' },
            /* { dataField: 'INDICES', width: '25%', caption: 'Indices', dataType: 'string' },*/

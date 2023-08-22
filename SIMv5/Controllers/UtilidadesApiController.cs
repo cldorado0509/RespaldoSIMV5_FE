@@ -55,7 +55,7 @@
                         switch (_Buscar[0])
                         {
                             case "T":
-                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,(SELECT BUS.S_INDICE FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS WHERE BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO) AS INDICES,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODTRAMITE= " + _Buscar[1].ToString().Trim() + " ORDER BY DOC.ID_DOCUMENTO DESC";
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,(SELECT BUS.S_INDICE FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS WHERE BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO) AS INDICES,DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC INNER JOIN TRAMITES.TBSERIE SER ON DOC.CODSERIE = SER.CODSERIE WHERE DOC.CODTRAMITE= " + _Buscar[1].ToString().Trim() + " ORDER BY DOC.FECHACREACION DESC";
                                 var TraDocs = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                 if (skip > 0 || take > 0) resultado.datos = TraDocs.Skip(skip).Take(take).ToList();
                                 else resultado.datos = TraDocs.ToList();
@@ -85,7 +85,7 @@
                                 }
                                 break;
                             case "B":
-                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,BUS.S_INDICE AS INDICES,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.ID_DOCUMENTO DESC";
+                                _Sql = "SELECT DISTINCT DOC.ID_DOCUMENTO,DOC.CODTRAMITE,DOC.CODDOCUMENTO,SER.NOMBRE,BUS.S_INDICE AS INDICES,DOC.FECHACREACION FROM TRAMITES.BUSQUEDA_DOCUMENTO BUS INNER JOIN TRAMITES.TBTRAMITEDOCUMENTO DOC ON BUS.COD_TRAMITE = DOC.CODTRAMITE AND BUS.COD_DOCUMENTO = DOC.CODDOCUMENTO INNER JOIN TRAMITES.TBSERIE SER ON BUS.COD_SERIE = SER.CODSERIE WHERE CONTAINS(BUS.S_INDICE, '%" + _Buscar[1].ToString().ToUpper().Trim() + "%') > 0 ORDER BY DOC.FECHACREACION DESC";
                                 var BusDocs = dbSIM.Database.SqlQuery<DatosDocs>(_Sql);
                                 if (skip > 0 || take > 0) resultado.datos = BusDocs.Skip(skip).Take(take).ToList();
                                 else resultado.datos = BusDocs.ToList();
@@ -437,7 +437,7 @@
                 var model = (from Doc in dbSIM.TBTRAMITEDOCUMENTO
                              join Ser in dbSIM.TBSERIE on Doc.CODSERIE equals Ser.CODSERIE
                              where Doc.CODTRAMITE == CodTramite
-                             orderby Doc.CODDOCUMENTO descending
+                             orderby Doc.FECHACREACION descending
                              select new Documento
                              {
                                  ID_DOCUMENTO = Doc.ID_DOCUMENTO,
@@ -899,11 +899,11 @@
                     _aux += "(SELECT DOC.FECHACREACION FROM TRAMITES.TBTRAMITEDOCUMENTO DOC WHERE DOC.CODTRAMITE = ind.codtramite AND DOC.CODDOCUMENTO = ind.coddocumento) AS FECHACREACION ";
                     _codindices = _codindices.Substring(0, _codindices.Length - 1);
                     _aux += " FROM TRAMITES.TBINDICEDOCUMENTO IND WHERE IND.CODINDICE IN (" + _codindices + ")) QRY ";
-                    _aux += " WHERE " + _criterio + " ORDER BY QRY.CODTRAMITE DESC, QRY.CODDOCUMENTO DESC";
+                    _aux += " WHERE " + _criterio + " ORDER BY QRY.FECHACREACION DESC";
                 }
                 else
                 {
-                    _aux += "FROM TRAMITES.TBTRAMITEDOCUMENTO QRY WHERE QRY.CODSERIE=" + CodSerie + " ORDER BY QRY.ID_DOCUMENTO DESC";
+                    _aux += "FROM TRAMITES.TBTRAMITEDOCUMENTO QRY WHERE QRY.CODSERIE=" + CodSerie + " ORDER BY QRY.FECHACREACION DESC";
                 }
             }
             return _aux;
