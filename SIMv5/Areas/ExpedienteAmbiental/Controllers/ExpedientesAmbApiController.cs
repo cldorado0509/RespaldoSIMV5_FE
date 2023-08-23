@@ -134,7 +134,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new SIM.Models.Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return resposeF;
@@ -504,8 +504,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             SIM.Models.Response resposeF = new SIM.Models.Response();
             try
             {
+                decimal Id = 0;
+                Id = objData.IdPuntoControl;
                 int idUsuario = 0;
                 int funcionario = 0;
+
                 System.Web.HttpContext context = System.Web.HttpContext.Current;
                 ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
 
@@ -522,45 +525,49 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 ApiService apiService = new ApiService();
 
                 objData.IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>();
-                objData.UnidadDocumentalId = int.Parse(SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString());
-                foreach (var item in objData.Indices)
+                objData.UnidadDocumentalId =  int.Parse(SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString());
+
+                if (Id <= 0)
                 {
-
-                    var indE = new IndiceSerieDocumentalDTO();
-                    indE.IndiceSerieDocumentaId = item.CODINDICE;
-                    indE.ValorString = item.VALOR;
-                    switch (item.TIPO)
+                    foreach (var item in objData.Indices)
                     {
-                        case 0: //Texto
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 8:
-                            indE.ValorString = item.VALOR ?? "";
-                            break;
-                        case 1: //Numero
-                        case 6:
-                        case 7:
-                            indE.ValorNumerico = decimal.Parse(item.VALOR);
-                            break;
-                        case 2: //Fecha
-                            indE.ValorFecha = DateTime.Parse(item.VALOR);
-                            break;
-                    }
 
-                    objData.IndicesSerieDocumentalDTO.Add(indE);
-                };
+                        var indE = new IndiceSerieDocumentalDTO();
+                        indE.IndiceSerieDocumentaId = item.CODINDICE;
+                        indE.ValorString = item.VALOR;
+                        switch (item.TIPO)
+                        {
+                            case 0: //Texto
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 8:
+                                indE.ValorString = item.VALOR ?? "";
+                                break;
+                            case 1: //Numero
+                            case 6:
+                            case 7:
+                                indE.ValorNumerico = decimal.Parse(item.VALOR);
+                                break;
+                            case 2: //Fecha
+                                indE.ValorFecha = DateTime.Parse(item.VALOR);
+                                break;
+                        }
+
+                        objData.IndicesSerieDocumentalDTO.Add(indE);
+                    };
+                }
+
                 objData.FechaRegistro = DateTime.Now;
                 objData.Conexo = ".";
-                objData.FuncionarioId = funcionario;
                 objData.ObservacionEstado = "";
+                objData.FuncionarioId = funcionario;
 
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
                 if (response.ExpiresIn == 0) return null;
 
-                decimal Id = 0;
-                Id = objData.IdPuntoControl;
+
                 if (Id > 0)
                 {
                     resposeF = await apiService.PutAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", "ActualizarPuntoControl", objData, response.JwtToken);
@@ -570,11 +577,12 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 {
                     resposeF = await apiService.PostAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", "GuardarPuntoControl", objData, response.JwtToken);
                     if (!resposeF.IsSuccess) return resposeF;
+
                 }
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess = false, Message = "Error Almacenando el registro : " + e.Message, Result = "" };
+                return new SIM.Models.Response { IsSuccess= false, Message = "Error Almacenando el registro : " + e.Message, Result = "" };
             }
 
             return resposeF;
@@ -740,7 +748,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                     IdPuntoControl = _id,
                     Conexo = ".",
                     Nombre = ".",
-                    IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>(),
+                    IndicesSerieDocumentalDTO= new List<IndiceSerieDocumentalDTO>(),
                     UnidadDocumentalId = 0,
                     TipoSolicitudAmbientalId = 0,
                     ExpedienteAmbientalId = 0,
@@ -777,11 +785,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 if (response.ExpiresIn == 0) return null;
 
                 resposeF = await apiService.PutAsync<PuntoControlExpedienteDocumentalDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", "VincularExpedienteDocumentalAPuntoControl", objData, response.JwtToken);
-                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Expediente!" };
+                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Expediente!" };
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Expediente: " + e.Message };
+                return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Expediente: " + e.Message };
             }
 
             return resposeF;
@@ -1143,7 +1151,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                     IdAnotacionPuntoControl = _id,
                     Anotacion = ".",
                     FuncionarioId = 1,
-                    Funcionario = ".",
+                    Funcionario =  ".",
                     PuntoControlId = 1,
                 };
 
@@ -1266,11 +1274,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 if (response.ExpiresIn == 0) return null;
 
                 resposeF = await apiService.PostAsync<AbogadoExpedienteDTO>(this.urlApiGateWay, "ExpA/AbogadoExpediente/", "GuardarAbogadoExpediente", objData, response.JwtToken);
-                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Abogado!" };
+                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Abogado!" };
             }
             catch (Exception e)
             {
-                return new SIM.Models.Response { IsSuccess = false, Message = "Error Vinculando el Abogado: " + e.Message };
+                return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Abogado: " + e.Message };
             }
 
             return resposeF;

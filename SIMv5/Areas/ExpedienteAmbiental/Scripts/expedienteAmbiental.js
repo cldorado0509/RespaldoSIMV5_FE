@@ -19,6 +19,7 @@ var nombrePunto = "";
 
 $(document).ready(function () {
 
+    $('#divIndices').hide();
     $('#asistente').accordion({
         collapsible: true,
         animationDuration: 500,
@@ -106,7 +107,7 @@ $(document).ready(function () {
                                             OptArchivado = true;
                                         }
                                         chkArchivado.option("value", OptArchivado);
-                                        cboIntalaciones.option("disabled", true);
+                                        //cboIntalaciones.option("disabled", true);
                                         popupNuevoExpediente.show();
                                     }
                                 }).fail(function (jqxhr, textStatus, error) {
@@ -406,6 +407,7 @@ $(document).ready(function () {
                                                             Id: options.data.idPuntoControl
                                                         }).done(function (data) {
                                                             if (data !== null) {
+                                                                $('#divIndices').hide();
                                                                 editar = true;
                                                                 txtNombrePuntoControl.option("value", data.nombre);
                                                                 txtObservacionPuntoControl.option("value", data.observacion);
@@ -466,9 +468,14 @@ $(document).ready(function () {
                                         caption: "Vincular Expediente Documental",
                                         alignment: 'center',
                                         cellTemplate: function (container, options) {
+                                            var isDisabled = true;
+                                            if (options.data.expedienteDocumentalId == null) {
+                                                isDisabled = false;
+                                            }
                                             $('<div/>').dxButton({
                                                 icon: 'event',
                                                 height: 20,
+                                                disabled: isDisabled,
                                                 hint: 'Vincular Expediente Documental',
                                                 onClick: function (e) {
                                                     popupVicularExpedienteDocumental.show();
@@ -1485,6 +1492,7 @@ $(document).ready(function () {
         icon: 'add',
         onClick: function () {
             editar = false;
+            $('#divIndices').show();
             idPuntoControl = 0;
             idExpedienteDoc = 0;
             txtNombrePuntoControl.option("value", NomExpediente);
@@ -1599,7 +1607,7 @@ $(document).ready(function () {
                 crossDomain: true,
                 headers: { 'Access-Control-Allow-Origin': '*' },
                 success: function (data) {
-                    if (data.Result.Response === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Result.Message, 'Guardar Datos');
+                    if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Result.Message, 'Guardar Datos');
                     else {
                         DevExpress.ui.dialog.alert('Punto de Control Creado/Actualizado correctamente!', 'Guardar Datos');
                         $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
@@ -2026,7 +2034,7 @@ $(document).ready(function () {
                                         items: itemsLista,
                                         width: '100%',
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: (cellInfo.data.VALOR == null ? null : itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID),
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR) > 1? itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID:null),
                                         displayExpr: 'NOMBRE',
                                         valueExpr: 'ID',
                                         searchEnabled: true,
