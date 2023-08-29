@@ -2535,6 +2535,10 @@
     <Content Include="Content\ContentV5\dx.spa.css" />
     <Content Include="Content\ContentV5\Site.css" />
     <Content Include="Content\dashboard\PMES.xml" />
+    <Content Include="Content\dashboard\PMES_2021.xml" />
+    <Content Include="Content\dashboard\PMES_2023.xml" />
+    <Content Include="Content\dashboard\PMES_2022.xml" />
+    <Content Include="Content\dashboard\SPMES_2021.xml" />
     <Content Include="Content\imagenes\cabezoteVisitas.jpg" />
     <Content Include="Content\imagenes\cabezoteVisitas.png" />
     <Content Include="Content\imagenes\desasignar.png" />

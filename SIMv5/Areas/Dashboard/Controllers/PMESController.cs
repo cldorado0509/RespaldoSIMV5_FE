@@ -574,7 +574,7 @@ namespace SIM.Areas.Dashboard.Controllers
                         model.DashboardSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Content/Dashboard/PMES_2022.xml");
                         break;
                     case 4:
-                        model.DashboardSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Content/Dashboard/PMES_2022.xml");
+                        model.DashboardSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Content/Dashboard/PMES_2023.xml");
                         break;
                     case 100:
                         model.DashboardSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Content/Dashboard/SPMES_2021.xml");
