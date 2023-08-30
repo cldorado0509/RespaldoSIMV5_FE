@@ -1725,6 +1725,25 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnDocumentos").dxButton({
+        text: "Asociar Documentos",
+        icon: "fields",
+        hint: 'Asociar Documentos',
+        visible: false,
+        onClick: function () {
+            var _popup = $("#popupBuscaDoc").dxPopup("instance");
+            _popup.show();
+            $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true');
+        }
+    });
+
+    $("#popupBuscaDoc").dxPopup({
+        width: 900,
+        height: 850,
+        showTitle: true,
+        title: "Buscar Documento"
+    });
+
     var popupAbogados = $("#popupAbogados").dxPopup({
         width: 1200,
         height: 600,
@@ -2186,6 +2205,7 @@ function SeleccionaExpPunto(ExpedienteDocId) {
                     $("#btnIndices").dxButton("instance").option("visible", true);
                     $("#cmdShowExpedienteFlip").removeClass("hidden");
                     $("#cmdShowExpedienteFlip").dxButton("instance").option("visible", true);
+                    $("#btnDocumentos").dxButton("instance").option("visible", true);
                     $("#dxTreeView").dxTreeView({
                         dataSource: new DevExpress.data.DataSource({
                             store: new DevExpress.data.CustomStore({
@@ -2434,3 +2454,23 @@ var AnotacionesPuntoControlDataSource = new DevExpress.data.CustomStore({
     }
 });
 
+function SeleccionaDocumento(Documentos) {
+    var _popup = $("#popupBuscaDoc").dxPopup("instance");
+    _popup.hide();
+    //var Sel = $("#grdListaTomos").dxDataGrid("instance").getSelectedRowsData()[0];
+    if (Documentos.length > 0) {
+        var ListaDocs = JSON.stringify(Documentos);
+        var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/AsociaDocumento";
+        $.getJSON(_Ruta, { ListaIdDocumentos: ListaDocs, IdExp: idExpedienteDoc })
+            .done(function (data) {
+                if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Asociar documento');
+                else {
+                    $('#gridDocumentos').dxDataGrid({ dataSource: DocumentosDataSource });
+                    $("#TituloDocumentos").text("");
+                    DevExpress.ui.dialog.alert('El documento ' + Documento + ' se asoció correctamente al expediente', 'Asociar documento');
+                }
+            }).fail(function (jqxhr, textStatus, error) {
+                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Asociar documento');
+            });
+    }
+}

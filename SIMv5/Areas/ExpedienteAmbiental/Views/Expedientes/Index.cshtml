@@ -78,10 +78,10 @@
             width: 100%;
         }
 
-/*      .dx-list .dx-scrollable-content {
+    .dx-list .dx-scrollable-content {
         column-count: 4;
         -moz-column-count: 4;
-    }*/
+    }
 
     .dx-list-item {
         border-top: none;
@@ -222,7 +222,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-3" id="btnGuardarAbogado"></div>
-             </div>
+            </div>
         </div>
 
         <div id="PopupPuntosControl">
@@ -246,12 +246,12 @@
                 <div id="asistente">
                     <h3>Listado de Puntos de Control asociados con el Expediente Ambiental</h3>
                     <div class="divDetalle">
-                    @{
-                        if (Model.CanInsert)
-                        {
-                            <div id="btnNuevoPuntoControl"></div>
+                        @{
+                            if (Model.CanInsert)
+                            {
+                                <div id="btnNuevoPuntoControl"></div>
+                            }
                         }
-                       }
                         <div id="GidListadoPuntosControl"></div>
                         <br />
                         <div id="popupNuevoPuntoControl">
@@ -302,6 +302,7 @@
                         <div class="row">
                             <div class="col-sm-8" style="font-family:Arial;font-size:12px;font-weight:bold;text-align:left;vertical-align:text-bottom;height:20px;" id="lblExpediente"></div>
                             <div class="col-sm-2" id="btnIndices"></div>
+                            <div class="col-sm-2" id="btnDocumentos"></div>
                         </div>
                         <div class="row">
                             <div class="col-sm-3">
@@ -314,7 +315,7 @@
                                             <label class="header">Documentos del expediente</label>
                                         </h3>
                                     </div>
-                                    <div id="ListaDocs" style="column-count: 4; -moz-column-count: 4;"></div>
+                                    <div id="ListaDocs"></div>
                                     <div id="tooltip"></div>
                                 </div>
                             </div>
@@ -399,7 +400,7 @@
                 </div>
             </div>
         </div>
-    
+
         <div id="popupTramitesExpediente">
             <div id="divEncabezadoTramitesExp" class="divEncabezado">
                 <div class="row">
@@ -429,6 +430,9 @@
     </div>
 
     <div id="popDetalleTramite"></div>
+    <div id="popupBuscaDoc">
+        <iframe src="" id="BuscarDoc" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+    </div>
 </div>
 
 
