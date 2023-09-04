@@ -1139,6 +1139,8 @@
     <Compile Include="Areas\Dynamics\Data\ResponsableModel.cs" />
     <Compile Include="Areas\Dynamics\Data\TercerosModel.cs" />
     <Compile Include="Areas\Dynamics\DynamicsAreaRegistration.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESEstrategiasApiController.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESEstrategiasController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionApiController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\EncuestaExternaController.cs">
@@ -2412,6 +2414,7 @@
     <Content Include="Areas\Dynamics\Scripts\CertificadoIng.js" />
     <Content Include="Areas\Dynamics\Scripts\Etiquetas.js" />
     <Content Include="Areas\EnCicla\Scripts\testexterno.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESEstrategias\estrategias.js" />
     <Content Include="Areas\EtiquetasAmbientales\Scripts\Monitoreo.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\expedienteAmbiental.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\basic.css" />
@@ -3148,6 +3151,7 @@
     <Content Include="Areas\Dynamics\Plantilla\Formulario_220_2020.pdf" />
     <Content Include="Areas\Dynamics\Plantilla\Formulario_220_2021.pdf" />
     <Content Include="Areas\Dynamics\Plantilla\Formulario_220_2022.pdf" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESEstrategias\PMESEstrategias.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />

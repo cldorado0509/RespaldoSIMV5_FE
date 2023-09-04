@@ -16,7 +16,7 @@
     </ObjectDataSource>
   </DataSources>
   <Items>
-    <Pie ComponentName="pieDashboardItem1" Name="C. SEXO Y EDAD" Group="dashboardItemGroup2" DataSource="dataSource1" FilterString="[DataItem1] Is Not Null And [DataItem0] Is Not Null" ContentArrangementMode="FixedColumnCount" ContentLineCount="2">
+    <Pie ComponentName="pieDashboardItem1" Name="C. SEXO Y EDAD" Group="dashboardItemGroup2" DataSource="dataSource1" FilterString="[DataItem1] Is Not Null And [DataItem0] Is Not Null" ContentArrangementMode="FixedColumnCount" ContentLineCount="2" IsMasterFilterCrossDataSource="true">
       <DataItems>
         <Dimension DataMember="SEXO" DefaultId="DataItem0" />
         <Dimension DataMember="EDAD" DefaultId="DataItem1" />
@@ -110,7 +110,7 @@
       </Panes>
       <ChartLegend Visible="false" />
     </Chart>
-    <Chart ComponentName="chartDashboardItem9" Name="H. TIPO COLABORADOR" Group="dashboardItemGroup1" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+    <Chart ComponentName="chartDashboardItem9" Name="I. TIPO COLABORADOR" Group="dashboardItemGroup1" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
       <InteractivityOptions MasterFilterMode="Multiple" />
       <DataItems>
         <Dimension DataMember="TIPOTRABAJADOR" ColoringMode="Hue" DefaultId="DataItem0" />
@@ -191,19 +191,13 @@
       </Panes>
       <ChartLegend Visible="false" />
     </Chart>
-	<Chart ComponentName="chartDashboardItem1" Name="H. MODALIDAD LABORAL" Group="dashboardItemGroup1" DataSource="dataSource1" Rotated="true">
+	<Chart ComponentName="chartDashboardItem1" Name="H. MODALIDAD LABORAL" Group="dashboardItemGroup1" DataSource="dataSource1" Rotated="true" IsMasterFilterCrossDataSource="true">
 		  <ColoringOptions MeasuresColoringMode="Hue" />
 		  <InteractivityOptions MasterFilterMode="Multiple" />
 		  <DataItems>
-			  <Dimension DataMember="AREA" Name="ÁREAS" ColoringMode="Hue" TopNShowOthers="true" TopNCount="12" TopNMeasure="DataItem1" DefaultId="DataItem0" />
+			  <Dimension DataMember="TELETRABAJO" Name="MODALIDAD LABORAL" ColoringMode="Hue" TopNShowOthers="true" TopNCount="12" TopNMeasure="DataItem1" DefaultId="DataItem0" />
 			  <Measure DataMember="N_CANTIDADP" Name="NÚMERO DE COLABORADORES" DefaultId="DataItem1">
-				  <NumericFormat FormatType="Percent" />
-				  <Calculation>
-					  <PercentOfTotal />
-				  </Calculation>
-				  <WindowDefinition>
-					  <ChartWindowDefinition />
-				  </WindowDefinition>
+				  <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
 			  </Measure>
 		  </DataItems>
 		  <Arguments>
@@ -212,7 +206,7 @@
 		  <Panes>
 			  <Pane Name="Panel 2">
 				  <Series>
-					  <Simple Name="% DE COLABORADORES">
+					  <Simple Name="NÚMERO DE COLABORADORES">
 						  <Value DefaultId="DataItem1" />
 						  <PointLabelOptions Position="Inside" ContentType="Value" />
 					  </Simple>
@@ -385,13 +379,13 @@
       </Panes>
       <ChartLegend Visible="false" />
     </Chart>
-    <Pie ComponentName="pieDashboardItem3" Name="B. SEXO" Group="dashboardItemGroup2" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" ShowPieCaptions="false">
+    <Pie ComponentName="pieDashboardItem3" Name="B. SEXO" Group="dashboardItemGroup2" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" ShowPieCaptions="false" IsMasterFilterCrossDataSource="true">
 	  <InteractivityOptions MasterFilterMode="Multiple" />
       <DataItems>
-        <Dimension DataMember="SEXO" Name="SEXO" DefaultId="DataItem0" />
         <Measure DataMember="N_CANTIDADP" Name="Cantidad" DefaultId="DataItem1">
           <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
         </Measure>
+		<Dimension DataMember="SEXO" Name="SEXO" DefaultId="DataItem0" />
       </DataItems>
       <Arguments>
         <Argument DefaultId="DataItem0" />
@@ -633,8 +627,8 @@ fb6866cf256a8959fd097a0b81e7cdff833e867d76a097ffedde01504b0102140014000200080000
     </Card>
   </Items>
   <Groups>
-    <Group ComponentName="dashboardItemGroup1" Name="1. DATOS GENERALES"><InteractivityOptions IsMasterFilter="true"/></Group>
-    <Group ComponentName="dashboardItemGroup2" Name="2. INFORMACIÓN SOCIO-ECONÓMICA"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
+    <Group ComponentName="dashboardItemGroup1" Name="1. DATOS GENERALES"><InteractivityOptions IsMasterFilter="true" IgnoreMasterFilters="false"/></Group>
+    <Group ComponentName="dashboardItemGroup2" Name="2. INFORMACIÓN SOCIO-ECONÓMICA"><InteractivityOptions IsMasterFilter="true" IgnoreMasterFilters="false"/></Group>
     <Group ComponentName="dashboardItemGroup3" Name="3. HORARIO DE TRABAJO"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
     <Group ComponentName="dashboardItemGroup4" Name="4. DATOS DE DESPLAZAMIENTO"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
     <Group ComponentName="dashboardItemGroup5" Name="5. INFRAESTRUCTURA ORGANIZACIONAL"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
@@ -653,8 +647,10 @@ fb6866cf256a8959fd097a0b81e7cdff833e867d76a097ffedde01504b0102140014000200080000
         <LayoutItem DashboardItem="cardDashboardItem6" Weight="20" />
         <LayoutGroup Weight="20">
           <LayoutItem DashboardItem="chartDashboardItem14" Weight="28.940886699507388" />
-          <LayoutItem DashboardItem="pieDashboardItem4" Weight="71.059113300492612" />
         </LayoutGroup>
+		  <LayoutGroup Weight="20">
+			  <LayoutItem DashboardItem="pieDashboardItem4" Weight="71.059113300492612" />
+		  </LayoutGroup>
         <LayoutGroup Weight="23">
           <LayoutItem DashboardItem="chartDashboardItem10" Weight="66.7487684729064" />
           <LayoutGroup Orientation="Vertical" Weight="33.251231527093594">
@@ -689,8 +685,10 @@ fb6866cf256a8959fd097a0b81e7cdff833e867d76a097ffedde01504b0102140014000200080000
         </LayoutGroup>
         <LayoutGroup Weight="33.333333333333336">
           <LayoutItem DashboardItem="chartDashboardItem6" Weight="46.921182266009851" />
-          <LayoutItem DashboardItem="chartDashboardItem3" Weight="53.078817733990149" />
         </LayoutGroup>
+		  <LayoutGroup Weight="33.333333333333336">
+			  <LayoutItem DashboardItem="chartDashboardItem3" Weight="53.078817733990149" />
+		  </LayoutGroup>
       </LayoutGroup>
       <LayoutGroup DashboardItem="dashboardItemGroup5" Weight="5">
         <LayoutGroup Orientation="Vertical" Weight="49.876847290640391">
