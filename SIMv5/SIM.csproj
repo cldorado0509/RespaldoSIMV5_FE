@@ -2615,6 +2615,7 @@
     <Content Include="Content\images\tala\popUpTitle.png" />
     <Content Include="Content\images\tala\solAgr.png" />
     <Content Include="Content\images\tala\title2c.png" />
+    <Content Include="Content\plantillas\PlantillaCorreoPrestamoNotificacionDevolucion.html" />
     <Content Include="Content\plantillas\PlantillaCorreoRegistroRechazado.html" />
     <Content Include="Content\plantillas\PlantillaCorreoRolesUsuarioAsignados.html" />
     <Content Include="Content\plantillas\PlantillaCorreoSolicitudRolesUsuario.html" />
