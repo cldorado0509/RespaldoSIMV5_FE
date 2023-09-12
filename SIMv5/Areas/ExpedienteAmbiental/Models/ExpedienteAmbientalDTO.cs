@@ -1,4 +1,4 @@
-﻿namespace SIM.Areas.ExpedienteAmbiental.Models.DTO
+﻿ namespace SIM.Areas.ExpedienteAmbiental.Models.DTO
 {
     using Newtonsoft.Json;
     using System;
@@ -57,13 +57,5 @@
 
         [JsonProperty("instalacion")]
         public string Instalacion { get; set; }
-
-        [JsonProperty("anulado")]
-        public int Anulado { get; set; }
-
-        [JsonProperty("archivado")]
-        public int Archivado { get; set; }
-
-
     }
 }

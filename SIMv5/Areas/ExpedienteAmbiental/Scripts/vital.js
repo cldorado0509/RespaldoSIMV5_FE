@@ -19,6 +19,7 @@ var codFuncionarioSim = $('#SIM').data('codfuncionario')
 
 $(document).ready(function () {
 
+   
     $('#asistente').accordion({
         collapsible: true,
         animationDuration: 500,
@@ -92,6 +93,14 @@ $(document).ready(function () {
             if (data) {
                 id = data.id;
                 _numeroVITAL = data.numeroVITAL;
+                if (data.codigoTramiteSIM == null) {
+                    $("#btnIniciarTramite").dxButton("instance").option("disabled", false);
+                    txtTramiteSIM.option("value", '');
+                }
+                else {
+                    txtTramiteSIM.option("value", data.codigoTramiteSIM);
+                    $("#btnIniciarTramite").dxButton("instance").option("disabled", true);
+                }
                 idSolicitudVITAL = data.id;
                 _numeroVITALAsociado = data.numeroVITALAsociado;
                 _radicadoVITAL = data.radicacionId;
@@ -200,10 +209,10 @@ $(document).ready(function () {
     var cboProceso = $("#cboProceso").dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
-                key: "procesoId",
+                key: "codProceso",
                 loadMode: "raw",
                 load: function (loadOptions) {
-                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetProcesos");
+                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetProcesos");;
                 }
             })
         }),
@@ -219,10 +228,16 @@ $(document).ready(function () {
                 cboResponsable.option("value", null);
             }
         },
+        onInitialized(e) {
+            e.component.getDataSource().load().done(function (res) {
+                e.component.option("value", res[0].codProceso);
+            })
+        },  
         displayExpr: "nombre",
         valueExpr: "codProceso",
-        width:400,
-        searchEnabled: true
+        width: 400,
+        searchEnabled: true,
+        
     }).dxSelectBox("instance");
 
     var cboActividad = $("#cboActividad").dxSelectBox({
@@ -249,6 +264,31 @@ $(document).ready(function () {
         searchEnabled: true
     }).dxSelectBox("instance");
 
+    var cboActividadUserE = $("#cboActividadUserE").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "tareaId",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetActividades", { procesoId: _procesoId });
+                }
+            })
+        }),
+        onValueChanged: function (data) {
+            if (data.value != null) {
+                var cboResponsablesDs = cboResponsable.getDataSource();
+                _tareaId = data.value;
+                cboResponsablesDs.reload();
+                cboResponsable.option("value", null);
+            }
+        },
+        disabled : true,
+        displayExpr: "nombre",
+        valueExpr: "tareaId",
+        width: 400,
+        searchEnabled: true
+    }).dxSelectBox("instance");
+
     var cboResponsable = $("#cboResponsable").dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -259,6 +299,23 @@ $(document).ready(function () {
                 }
             })
         }),
+        displayExpr: "funcionario",
+        valueExpr: "codFuncionario",
+        width: 400,
+        searchEnabled: true
+    }).dxSelectBox("instance");
+
+    var cboResponsableUserE = $("#cboResponsableUserE").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "codFuncionario",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/VitalApi/GetResponsables", { TareaId: _tareaId });
+                }
+            })
+        }),
+        disabled: true,
         displayExpr: "funcionario",
         valueExpr: "codFuncionario",
         width: 400,
@@ -277,7 +334,7 @@ $(document).ready(function () {
         }),
         displayExpr: "nombre",
         valueExpr: "causaNoAtencionVITALId",
-        width: 500,
+        width: 400,
         searchEnabled: true
     }).dxSelectBox("instance");
 
@@ -290,13 +347,73 @@ $(document).ready(function () {
     var txtComentario = $("#txtComentario").dxTextArea({
         value: "",
         readOnly: false,
-        height: 80
+        height: 380
     }).dxTextArea("instance");
 
     var txtTramiteSIM = $("#txtTramiteSIM").dxTextBox({
         value: "",
     }).dxTextBox("instance");
 
+
+    $("#btnBuscarTramite").dxButton({
+        text: "Buscar Trámite SIM",
+        icon: 'check',
+        type: 'success',
+        height: 30,
+        onClick: function () {
+            var tramiteSIM = txtTramiteSIM.option("value");
+            if (tramiteSIM === '') {
+                DevExpress.ui.notify("Debe Indicar el código del Trámite SIM!");
+                return
+            }
+            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/VitalApi/BuscarTramiteEnSIMAsync?codTramite=" + tramiteSIM;
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                contentType: "application/json",
+                crossDomain: true,
+                headers: { 'Access-Control-Allow-Origin': '*' },
+                success: function (data) {
+                    if (data.IsSuccess === false) DevExpress.ui.notify({ message: "Ocurrió un evento no esperado!:" + data.Message, width: 1000, shading: true }, "error", 2000);
+                    else {
+                        var popupOpciones = null;
+
+                        popupOpciones = {
+                            height: 600,
+                            width: 1100,
+                            title: 'Detalle del trámite',
+                            visible: false,
+                            contentTemplate: function (container) {
+                                $("<iframe>").attr("src", $('#SIM').data('url') + 'Utilidades/DetalleTramite?popup=true&CodTramite=' + tramiteSIM).attr("width", "100%").attr("height", "100%").attr("frameborder", "0").attr("scrolling", "0").appendTo(container);
+                            }
+                        };
+
+                        popup = $("#PopupDetalle").dxPopup(popupOpciones).dxPopup("instance");
+                        $('#PopupDetalle').css({ 'visibility': 'visible' });
+                        $("#PopupDetalle").fadeTo("slow", 1);
+                        popup.show();
+
+                        if (data.Message === 'usuario externo') {
+                            cboActividadUserE.option("disabled", false);
+                            cboResponsableUserE.option("disabled", false);
+                        }
+                        else {
+                            cboActividadUserE.option("disabled", true);
+                            cboActividadUserE.reset();
+                            cboResponsableUserE.option("disabled", true);
+                            cboResponsableUserE.reset();
+                        }
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Guardar Datos');
+                }
+            });
+
+
+        }
+    });
 
     $("#btnIniciarTramite").dxButton({
         text: "Crear Trámite SIM",
@@ -307,7 +424,7 @@ $(document).ready(function () {
           
             var idResponsable = cboResponsable.option("value");
             if (idResponsable <= 0) {
-                DevExpress.ui.notify("Debe seleccionar el funcionario Responsable!");
+                DevExpress.ui.notify("Debe seleccionar el funcionario responsable!");
                 return
             }
 
@@ -344,7 +461,7 @@ $(document).ready(function () {
 
         }
     });
-
+        
     $("#btnDescartarTramite").dxButton({
         text: "No atender solicitud",
         type: "danger",
@@ -364,7 +481,7 @@ $(document).ready(function () {
             var params = {
                 codTramite: 0, codProceso: 0, codTarea: 0, codFuncionario: 0, cliente: '', cedula: '', direccion: '', telefono: '', mail: '', comentarios: comentarios,
                 numeroVital: _numeroVITAL, numeroVitalPadre: _numeroVITALAsociado, codCausaNoAtencion: causaNoAtencion, mensaje: comentarios,
-                CodFuncionarioSIM: codFuncionarioSim
+                CodFuncionarioSIM: codFuncionarioSim, radicadoVITAL: _radicadoVITAL
             };
 
             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/VitalApi/DescartarEnSIM";
@@ -408,23 +525,23 @@ $(document).ready(function () {
 
     $("#btnAsignarATramite").dxButton({
         text: "Asignar al Trámite SIM",
-        type: "default",
+        type: "success",
         height: 30,
         onClick: function () {
             var tramiteSIM = txtTramiteSIM.option("value");
-            if (tramiteSIM.trim().length === 0) {
+            if (tramiteSIM.length <= 0) {
                 DevExpress.ui.notify("Debe Indicar el código del Trámite SIM!");
                 return
             }
 
-            var idResponsable = cboResponsable.option("value");
-            if (idResponsable <= 0) {
+            var idResponsable = cboResponsableUserE.option("value");
+            if (idResponsable <= 0 && cboResponsableUserE.option("disabled") == false) {
                 DevExpress.ui.notify("Debe seleccionar el funcionario Responsable!");
                 return
             }
 
             var comentarios = txtComentario.option("value");
-            var idTarea = cboActividad.option("value");
+            var idTarea = cboActividadUserE.option("value");
             var codProceso = cboProceso.option("value");
             
             var params = {
@@ -452,7 +569,7 @@ $(document).ready(function () {
                         //_tareaId = 0;
                         var cboResponsablesDs = cboResponsable.getDataSource();
                         cboResponsablesDs.reload();
-                        cboResponsable.option("value", null);
+                        cboResponsableUserE.option("value", null);
 
                         txtComentario.reset();
                         txtTramiteSIM.reset();

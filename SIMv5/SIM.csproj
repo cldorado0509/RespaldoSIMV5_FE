@@ -2432,6 +2432,7 @@
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\zoom.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\zoom.min.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\vital.js" />
+    <Content Include="Areas\ExpedienteAmbiental\Templates\TemplateCOD.html" />
     <Content Include="Areas\ExpedienteAmbiental\Templates\TemplateCOR.html" />
     <Content Include="Areas\ExpedienteAmbiental\Views\Expedientes\FlipExpediente.cshtml" />
     <Content Include="Areas\ExpedienteAmbiental\Views\Expedientes\Index.cshtml" />

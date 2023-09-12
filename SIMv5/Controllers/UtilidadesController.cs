@@ -1,24 +1,17 @@
 ﻿namespace SIM.Controllers
 {
-    using SIM.Data;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using System.Threading.Tasks;
-    using System.IO;
-    using System.Security.Claims;
+    using SIM.Data;
+    using SIM.Data.Tramites;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
-    using System.Net.Http;
-    using DevExtreme.AspNet.Mvc;
-    using DevExpress.CodeParser;
-    using DocumentFormat.OpenXml.EMMA;
-    using Antlr.Runtime.Misc;
-    using DevExpress.Web.Internal;
-    using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
-    using SIM.Data.Tramites;
 
     [Authorize]
     public class UtilidadesController : Controller
@@ -90,7 +83,7 @@
             {
                 var Ord = dbSIM.TBTRAMITETAREA.Where(w => w.CODTRAMITE.Equals(CodTramite) && w.COPIA == 0).Select(s => s.ORDEN).ToList();
                 if (Ord.Count > 0) Orden = (int)Ord.Max();
-                else Orden = 1;           
+                else Orden = 1;
             }
 
             var TraOp = dbSIM.TBTRAMITE.Where(w => w.CODTRAMITE == CodTramite).Select(s => s.ESTADO).FirstOrDefault();
@@ -116,11 +109,11 @@
                                     Propietario = UltFun == funcionario,
                                     TramiteAbierto = TraOp == 0
                                 }).FirstOrDefault();
-            if (TramiteTarea == null) 
+            if (TramiteTarea == null)
             {
                 TramiteTarea = (from TR in dbSIM.TBTRAMITE
                                 join PRO in dbSIM.TBPROCESO on TR.CODPROCESO equals PRO.CODPROCESO
-                                where TR.CODTRAMITE == CodTramite 
+                                where TR.CODTRAMITE == CodTramite
                                 select new SIM.Models.TramiteTarea
                                 {
                                     CodTramite = (int)TR.CODTRAMITE,
@@ -136,7 +129,7 @@
                                     CodFuncionario = funcionario,
                                     Propietario = false,
                                     TramiteAbierto = false
-                                }).FirstOrDefault(); 
+                                }).FirstOrDefault();
             }
             TramiteTarea.Vital = TramiteTarea.Vital != null ? TramiteTarea.Vital : "-1";
             return View(TramiteTarea);
@@ -269,7 +262,7 @@
                 var Temp = (from Tem in dbSIM.DOCUMENTO_TEMPORAL where Tem.ID_DOCUMENTO == IdDocumento && Tem.CODFUNCIONARIO == funcionario select Tem).FirstOrDefault();
                 if (Temp != null)
                 {
-                    dbSIM.DOCUMENTO_TEMPORAL.Remove(Temp);  
+                    dbSIM.DOCUMENTO_TEMPORAL.Remove(Temp);
                     dbSIM.SaveChanges();
                     System.IO.File.Delete(Temp.S_RUTA);
                     LOG_TEMPORALES log = new LOG_TEMPORALES();
@@ -361,7 +354,7 @@
         {
             try
             {
-                 if (IdRadicadoVital <= 0 || string.IsNullOrEmpty(NombreArchivo)) return null;
+                if (IdRadicadoVital <= 0 || string.IsNullOrEmpty(NombreArchivo)) return null;
                 WSPQ03 ws = new WSPQ03();
                 Byte[] _Documento = ws.ObtenerDocumentoRadicacion(IdRadicadoVital, NombreArchivo);
                 if (_Documento == null)
@@ -370,9 +363,9 @@
                 }
                 return File(_Documento, "application/octetstream", NombreArchivo);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new Exception(ex.Message,ex);
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -470,7 +463,8 @@
             {
                 var model = (from Ind in dbSIM.TBINDICESERIE
                              where Ind.CODSERIE == UniDoc
-                             select new Fields {
+                             select new Fields
+                             {
                                  dataField = Ind.INDICE,
                                  dataType = Ind.TIPO == 0 ? "string" :
                                             Ind.TIPO == 5 ? "string" :
@@ -595,7 +589,7 @@
                              select new
                              {
                                  Func.CODFUNCIONARIO,
-                                 NOMBRE = Func.NOMBRES 
+                                 NOMBRE = Func.NOMBRES
                              }).ToList();
                 return JArray.FromObject(model, Js);
             }
