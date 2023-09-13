@@ -278,6 +278,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 else _continua = true;
                                 if (_continua)
                                 {
+                                    decimal IdRadicado = -1;
                                     _doc = new PDFDocument();
                                     _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
                                     PDFImportedPage ip = null;
@@ -317,6 +318,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
                                         if (imagenRadicado != null)
                                         {
+                                            IdRadicado = radicadoGenerado.IdRadicado;
                                             _pag = _doc.Pages[0];
                                             _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
                                         }
@@ -343,7 +345,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     MemoryStream streamDoc = new MemoryStream();
                                     _doc.Save(streamDoc);
                                     documento.Archivo = streamDoc.ToArray();
-                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, documento, _Indices))
+                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, IdRadicado, documento, _Indices))
                                     {
                                         _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya que ocurrió un problema con el documento <br />";
                                     }
