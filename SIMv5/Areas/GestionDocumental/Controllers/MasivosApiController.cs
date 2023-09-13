@@ -36,6 +36,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
     /// <summary>
     /// 
     /// </summary>
+    [Authorize]
     public class MasivosApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
@@ -344,7 +345,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     documento.Archivo = streamDoc.ToArray();
                                     if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, documento, _Indices))
                                     {
-                                        _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
+                                        _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya que ocurrió un problema con el documento <br />";
                                     }
                                     else _correctos++;
                                 }

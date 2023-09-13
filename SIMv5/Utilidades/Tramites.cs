@@ -493,8 +493,9 @@
         /// <param name="CodTramite"></param>
         /// <param name="_doc"></param>
         /// <param name="_indices"></param>
+        /// <param name="IdRadicado"></param>
         /// <returns></returns>
-        public static bool AdicionaDocumentoTramite(decimal CodTramite, Documento _doc, List<IndicesDocumento> _indices)
+        public static bool AdicionaDocumentoTramite(decimal CodTramite, decimal IdRadicado, Documento _doc, List<IndicesDocumento> _indices)
         {
             bool _resp = false;
             try
@@ -530,6 +531,12 @@
                     _RelTraDoc.ID_DOCUMENTO = _NuevoDoc.ID_DOCUMENTO;
                     dbSIM.TBTRAMITE_DOC.Add(_RelTraDoc);
                     dbSIM.SaveChanges();
+                    var Rad = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).FirstOrDefault();
+                    Rad.CODTRAMITE = _NuevoDoc.CODTRAMITE;
+                    Rad.CODDOCUMENTO = _NuevoDoc.CODDOCUMENTO;
+                    Rad.S_ESTADO = "A";
+                    dbSIM.Entry(Rad).State = System.Data.Entity.EntityState.Modified;
+                    dbSIM.SaveChanges();
                     if (_indices.Count > 0)
                     {
                         foreach (var i in _indices)
@@ -553,6 +560,7 @@
             }
             catch (Exception e)
             {
+
                 _resp = false;
             }
 
