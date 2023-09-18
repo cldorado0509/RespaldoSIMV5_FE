@@ -462,16 +462,19 @@ $(document).ready(function () {
             if (_Tramite.length == 0) {
                 var columns = $("#grdExcel").dxDataGrid("instance").option("columns");
                 if (!columns.some(item => item.toLowerCase() === 'codtramite')) {
+                    $("#loadPanel").dxLoadPanel('instance').hide();
                     DevExpress.ui.notify("Para poder asociar el documento a un trámite debe proporcionar un único código general o por documento!");
                     return;
                 }
             } else {
                 if (!TramiteValido) {
+                    $("#loadPanel").dxLoadPanel('instance').hide();
                     DevExpress.ui.notify("Si el trámite es general para todos los documentos debe ser validado para verificar que exista en el SIM!");
                     return;
                 }
             }
             if (ArrIndices.length === 0) {
+                $("#loadPanel").dxLoadPanel('instance').hide();
                 DevExpress.ui.notify("Para poder radicar los documentos se deben proporcionar la asociación de índices!");
                 return;
             }

@@ -36,7 +36,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize]
     public class MasivosApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
@@ -278,7 +277,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 else _continua = true;
                                 if (_continua)
                                 {
-                                    decimal IdRadicado = -1;
+                                    string _Radicado = "";
+                                    string _FecRad = "";
                                     _doc = new PDFDocument();
                                     _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
                                     PDFImportedPage ip = null;
@@ -318,9 +318,10 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
                                         if (imagenRadicado != null)
                                         {
-                                            IdRadicado = radicadoGenerado.IdRadicado;
                                             _pag = _doc.Pages[0];
                                             _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
+                                            _Radicado = radicadoGenerado.Radicado;
+                                            _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
                                         }
                                         _doc.Pages[reemp.Pagina] = _pag;
                                     }
@@ -331,8 +332,15 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     {
                                         _Index = new IndicesDocumento();
                                         _Index.CODINDICE = Ind.CODINDICE;
-                                        if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _Index.VALOR = fila[Ind.VALORDEFECTO].ToString();
-                                        else _Index.VALOR = Ind.VALOR;
+                                        if (Ind.INDICE.ToLower().Contains("radicado") || Ind.INDICE.ToLower().Contains("fecha"))
+                                        {
+                                            _Index.VALOR = Ind.INDICE.ToLower().Contains("radicado") ? _Radicado : _FecRad;
+                                        }
+                                        else
+                                        {
+                                            if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _Index.VALOR = fila[Ind.VALORDEFECTO].ToString();
+                                            else _Index.VALOR = Ind.VALOR;
+                                        }
                                         _Indices.Add(_Index);
                                     }
                                     SIM.Utilidades.Documento documento = new Utilidades.Documento();
@@ -345,9 +353,9 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     MemoryStream streamDoc = new MemoryStream();
                                     _doc.Save(streamDoc);
                                     documento.Archivo = streamDoc.ToArray();
-                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, IdRadicado, documento, _Indices))
+                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, documento, _Indices))
                                     {
-                                        _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya que ocurrió un problema con el documento <br />";
+                                        _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
                                     }
                                     else _correctos++;
                                 }
