@@ -188,7 +188,7 @@ $(document).ready(function () {
         },
         selection: {
             mode: 'multiple',
-            allowSelectAll: false,
+            allowSelectAll: true,
             showCheckBoxesMode: 'always'
         },
         hoverStateEnabled: true,

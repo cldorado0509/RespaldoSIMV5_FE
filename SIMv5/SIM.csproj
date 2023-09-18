@@ -3155,7 +3155,7 @@
     <Content Include="Areas\Dynamics\Plantilla\Formulario_220_2022.pdf" />
     <Content Include="Areas\GestionDocumental\Views\Masivos\Index.cshtml" />
     <Content Include="Areas\Dynamics\Views\PazsalvoBienes\Index.cshtml" />
-    <Content Include="Areas\Dynamics\Plantilla\Plantilla Paz y Salvo Bienes.pdf" />
+    <Content Include="Areas\Dynamics\Plantilla\Plantilla_Paz_y_Salvo_Bienes.pdf" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
