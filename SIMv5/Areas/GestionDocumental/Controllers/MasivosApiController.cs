@@ -264,6 +264,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         {
                             PDFPage _pag = null;
                             bool _continua = true;
+                            decimal IdRadicado = -1;
                             foreach (DataRow fila in dt.Rows)
                             {
                                 if (datos.CodTramite == "")
@@ -322,6 +323,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                             _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
                                             _Radicado = radicadoGenerado.Radicado;
                                             _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
+                                            IdRadicado = radicadoGenerado.IdRadicado;
                                         }
                                         _doc.Pages[reemp.Pagina] = _pag;
                                     }
@@ -353,7 +355,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     MemoryStream streamDoc = new MemoryStream();
                                     _doc.Save(streamDoc);
                                     documento.Archivo = streamDoc.ToArray();
-                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, documento, _Indices))
+                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, IdRadicado, documento, _Indices))
                                     {
                                         _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
                                     }
