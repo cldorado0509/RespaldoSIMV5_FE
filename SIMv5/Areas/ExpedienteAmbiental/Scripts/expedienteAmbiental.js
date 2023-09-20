@@ -27,6 +27,20 @@ $(document).ready(function () {
     $('#divEncabezado').css('visibility', 'hidden');
     $('#asistente').css('visibility', 'hidden');
 
+    var chkArchivado = $("#chkArchivado").dxCheckBox({
+        value: false,
+        width: 80,
+        text: "Si",
+
+    }).dxCheckBox("instance");
+
+    var chkAnulado = $("#chkAnulado").dxCheckBox({
+        value: false,
+        width: 80,
+        text: "Si",
+
+    }).dxCheckBox("instance");
+
     $("#GridListado").dxDataGrid({
         dataSource: ExpedientesDataSource,
         allowColumnResizing: true,
@@ -61,7 +75,7 @@ $(document).ready(function () {
         remoteOperations: true,
         columns: [
             { dataField: 'idExpediente', width: '5%', caption: 'Id', alignment: 'center' },
-            { dataField: 'proyectoId', width: '5%', caption: 'Id', alignment: 'center', visible:false },
+            { dataField: 'proyectoId', width: '5%', caption: 'Id', alignment: 'center', visible: false },
             { dataField: 'nombre', width: '20%', caption: 'Nombre', alignment: 'center' },
             { dataField: 'cm', width: '5%', caption: 'CM', alignment: 'center' },
             { dataField: 'descripcion', width: '25%', caption: 'Descripción', alignment: 'center' },
@@ -100,7 +114,7 @@ $(document).ready(function () {
                                         var OptAnulado = false;
                                         if (data.anulado === 1) {
                                             OptAnulado = true;
-                                        }                                            
+                                        }
                                         chkAnulado.option("value", OptAnulado);
                                         var OptArchivado = false;
                                         if (data.archivado === 1) {
@@ -131,7 +145,7 @@ $(document).ready(function () {
                             var result = DevExpress.ui.dialog.confirm('Desea eliminar el registro seleccionado?', 'Confirmación');
                             result.done(function (dialogResult) {
                                 if (dialogResult) {
-                                    var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/EliminarExpedienteAsync?Id=" + options.data.idExpediente; 
+                                    var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/EliminarExpedienteAsync?Id=" + options.data.idExpediente;
                                     $.ajax({
                                         type: 'POST',
                                         url: _Ruta,
@@ -213,7 +227,7 @@ $(document).ready(function () {
                                             columns: [
                                                 { dataField: 'CODTRAMITE', width: '5%', caption: 'Código Trámite', alignment: 'center' },
                                                 { dataField: 'PROYECTO', width: '15%', caption: 'Proyecto', alignment: 'center' },
-                                                { dataField: 'FECHAINI', width: '5%', caption: 'Fecha Inicial', alignment: 'center', dataType:'date' },
+                                                { dataField: 'FECHAINI', width: '5%', caption: 'Fecha Inicial', alignment: 'center', dataType: 'date' },
                                                 { dataField: 'FECHAFIN', width: '5%', caption: 'Fecha Final', alignment: 'center', dataType: 'date' },
                                                 { dataField: 'COMENTARIOS', width: '15%', caption: 'Comentarios', dataType: 'string' },
                                                 { dataField: 'MENSAJE', width: '25%', caption: 'Mensaje', dataType: 'string' },
@@ -279,52 +293,52 @@ $(document).ready(function () {
                                 {
                                     Id: options.data.idExpediente
                                 }).done(function (datat) {
-                                     $("#GridListadoAbogadosExpediente").dxDataGrid({
-                                            dataSource: new DevExpress.data.DataSource({
-                                                store: new DevExpress.data.CustomStore({
-                                                    key: "idAbogadoExpediente",
-                                                    loadMode: "raw",
-                                                    load: function () {
-                                                        return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/ExpedientesAmbApi/GetAbogadosExpedienteAsync", { idExpediente: codExpediente });
-                                                    }
-                                                })
-                                            }),
-                                            allowColumnResizing: true,
-                                            loadPanel: { text: 'Cargando Datos...' },
-                                            noDataText: "Sin datos para mostrar",
-                                            showBorders: true,
-                                            filterRow: {
-                                                visible: true,
-                                                emptyPanelText: 'Arrastre una columna para agrupar'
-                                            },
-                                            searchPanel: {
-                                                visible: true,
-                                                width: 240,
-                                                placeholder: "Buscar..."
-                                            },
-                                            selection: {
-                                                mode: 'single'
-                                            },
-                                            paging: {
-                                                pageSize: 5
-                                            },
-                                            pager: {
-                                                showPageSizeSelector: true,
-                                                allowedPageSizes: [5, 10, 20, 50]
-                                            },
-                                            hoverStateEnabled: true,
-                                            remoteOperations: true,
-                                            columns: [
-                                                { dataField: 'idAbogadoExpediente', width: '5%', caption: 'Código', alignment: 'center' },
-                                                { dataField: 'abogado', width: '30%', caption: 'Abogado', alignment: 'center' },
-                                                { dataField: 'fechaAsignacion', width: '10%', caption: 'Fecha Asignación', alignment: 'center', dataType: 'date' },
-                                                { dataField: 'fechaFin', width: '10%', caption: 'Fecha culminación', alignment: 'center', dataType: 'date' },
-                                                { dataField: 'observacion', width: '35%', caption: 'Observación', dataType: 'string' },
-                                            ],
-                                            onSelectionChanged: function (selectedItems) {
+                                    $("#GridListadoAbogadosExpediente").dxDataGrid({
+                                        dataSource: new DevExpress.data.DataSource({
+                                            store: new DevExpress.data.CustomStore({
+                                                key: "idAbogadoExpediente",
+                                                loadMode: "raw",
+                                                load: function () {
+                                                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/ExpedientesAmbApi/GetAbogadosExpedienteAsync", { idExpediente: codExpediente });
+                                                }
+                                            })
+                                        }),
+                                        allowColumnResizing: true,
+                                        loadPanel: { text: 'Cargando Datos...' },
+                                        noDataText: "Sin datos para mostrar",
+                                        showBorders: true,
+                                        filterRow: {
+                                            visible: true,
+                                            emptyPanelText: 'Arrastre una columna para agrupar'
+                                        },
+                                        searchPanel: {
+                                            visible: true,
+                                            width: 240,
+                                            placeholder: "Buscar..."
+                                        },
+                                        selection: {
+                                            mode: 'single'
+                                        },
+                                        paging: {
+                                            pageSize: 5
+                                        },
+                                        pager: {
+                                            showPageSizeSelector: true,
+                                            allowedPageSizes: [5, 10, 20, 50]
+                                        },
+                                        hoverStateEnabled: true,
+                                        remoteOperations: true,
+                                        columns: [
+                                            { dataField: 'idAbogadoExpediente', width: '5%', caption: 'Código', alignment: 'center' },
+                                            { dataField: 'abogado', width: '30%', caption: 'Abogado', alignment: 'center' },
+                                            { dataField: 'fechaAsignacion', width: '10%', caption: 'Fecha Asignación', alignment: 'center', dataType: 'date' },
+                                            { dataField: 'fechaFin', width: '10%', caption: 'Fecha culminación', alignment: 'center', dataType: 'date' },
+                                            { dataField: 'observacion', width: '35%', caption: 'Observación', dataType: 'string' },
+                                        ],
+                                        onSelectionChanged: function (selectedItems) {
 
-                                            }
-                                        });
+                                        }
+                                    });
                                 }).fail(function (jqxhr, textStatus, error) {
                                     DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
                                 });
@@ -348,7 +362,7 @@ $(document).ready(function () {
                             idExpediente = options.data.idExpediente;
                             txtlblNombreExpediente.option("value", options.data.nombre);
                             txtlblCM.option("value", options.data.cm);
-                   
+
                             $("#GidListadoPuntosControl").dxDataGrid({
                                 dataSource: PuntosControlDataSource,
                                 allowColumnResizing: true,
@@ -378,7 +392,7 @@ $(document).ready(function () {
                                 remoteOperations: false,
                                 columns: [
                                     { dataField: 'idPuntoControl', width: '5%', caption: 'Código', alignment: 'center' },
-                                    { dataField: 'codigoSolicitudId', width: '5%', caption: 'CódigoV4', alignment: 'center', visible:false },
+                                    { dataField: 'codigoSolicitudId', width: '5%', caption: 'CódigoV4', alignment: 'center', visible: false },
                                     { dataField: 'nombre', width: '25%', caption: 'Nombre', dataType: 'string' },
                                     { dataField: 'conexo', width: '9%', caption: 'Conexo', dataType: 'string' },
                                     { dataField: 'tipoSolicitudAmbiental', width: '20%', caption: 'Tipo de Solicitud Ambiental', dataType: 'string' },
@@ -387,7 +401,7 @@ $(document).ready(function () {
                                     { dataField: 'observacionEstado', width: '25%', caption: 'Observación Estado', dataType: 'string' },
                                     { dataField: 'observacion', width: '25%', caption: 'Observación', dataType: 'string' },
                                     { dataField: 'expedienteDocumentalLabel', width: '20%', caption: 'Expediente Documental', dataType: 'string' },
-                                    { dataField: 'expedienteDocumentalId', width: '5%', caption: 'IdEdoc', dataType: 'string', visible:false },
+                                    { dataField: 'expedienteDocumentalId', width: '5%', caption: 'IdEdoc', dataType: 'string', visible: false },
                                     {
                                         visible: canEdit,
                                         width: 40,
@@ -447,7 +461,7 @@ $(document).ready(function () {
                                                                 success: function (data) {
                                                                     if (data.Response === false) {
                                                                         DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, ' al eliminar registro seleccionado');
-                                                                    }else {
+                                                                    } else {
                                                                         $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
                                                                         DevExpress.ui.dialog.alert('Registro eliminado correctamente!');
                                                                     }
@@ -498,83 +512,83 @@ $(document).ready(function () {
 
                                                     popupTramitesPuntoControl.show();
                                                     codigoSolicitudId = options.data.codigoSolicitudId;
-                                                      $("#GridListadoTramitesPuntoControl").dxDataGrid({
-                                                                    dataSource: new DevExpress.data.DataSource({
-                                                                        store: new DevExpress.data.CustomStore({
-                                                                            key: "CODTRAMITE",
-                                                                            loadMode: "raw",
-                                                                            load: function () {
-                                                                                return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/ExpedientesAmbApi/GetTramitesPuntoAsync", { codigoSolicitudId: codigoSolicitudId });
-                                                                            }
-                                                                        })
-                                                                    }),
-                                                                    allowColumnResizing: true,
-                                                                    loadPanel: { enabled: true, text: 'Cargando Datos...' },
-                                                                    noDataText: "Sin datos para mostrar",
-                                                                    showBorders: true,
-                                                                    filterRow: {
-                                                                        visible: true,
-                                                                        emptyPanelText: 'Arrastre una columna para agrupar'
-                                                                    },
-                                                                    searchPanel: {
-                                                                        visible: true,
-                                                                        width: 240,
-                                                                        placeholder: "Buscar..."
-                                                                    },
-                                                                    selection: {
-                                                                        mode: 'single'
-                                                                    },
-                                                                    paging: {
-                                                                        pageSize: 5
-                                                                    },
-                                                                    pager: {
-                                                                        showPageSizeSelector: true,
-                                                                        allowedPageSizes: [5, 10, 20, 50]
-                                                                    },
-                                                                    hoverStateEnabled: true,
-                                                                    remoteOperations: true,
-                                                                    columns: [
-                                                                        { dataField: 'CODTRAMITE', width: '5%', caption: 'Código Trámite', alignment: 'center' },
-                                                                        { dataField: 'PROYECTO', width: '15%', caption: 'Proyecto', alignment: 'center' },
-                                                                        { dataField: 'FECHAINI', width: '5%', caption: 'Fecha Inicial', alignment: 'center', dataType: 'date' },
-                                                                        { dataField: 'FECHAFIN', width: '5%', caption: 'Fecha Final', alignment: 'center', dataType: 'date' },
-                                                                        { dataField: 'COMENTARIOS', width: '15%', caption: 'Comentarios', dataType: 'string' },
-                                                                        { dataField: 'MENSAJE', width: '25%', caption: 'Mensaje', dataType: 'string' },
-                                                                        { dataField: 'ESTADO', width: '10%', caption: 'Estado', dataType: 'string' },
-                                                                        {
-                                                                            width: '12%',
-                                                                            alignment: 'center',
-                                                                            cellTemplate: function (container, options) {
-                                                                                $('<div/>').dxButton({
-                                                                                    icon: 'fields',
-                                                                                    text: options.data.CODTRAMITE,
-                                                                                    hint: 'Detalle trámite',
-                                                                                    onClick: function (e) {
-                                                                                        if (options.data.CODTRAMITE > 0) {
-                                                                                            var popupOpciones = {
-                                                                                                height: 600,
-                                                                                                width: 1100,
-                                                                                                title: 'Detalle del trámite',
-                                                                                                visible: false,
-                                                                                                contentTemplate: function (container) {
-                                                                                                    $("<iframe>").attr("src", $('#SIM').data('url') + 'Utilidades/DetalleTramite?popup=true&CodTramite=' + options.data.CODTRAMITE).attr("width", "100%").attr("height", "100%").attr("frameborder", "0").attr("scrolling", "0").appendTo(container);
-                                                                                                }
-                                                                                            }
-                                                                                            var popupTra = $("#popDetalleTramite").dxPopup(popupOpciones).dxPopup("instance");
-                                                                                            $("#popDetalleTramite").css({ 'visibility': 'visible' });
-                                                                                            $("#popDetalleTramite").fadeTo("slow", 1);
-                                                                                            popupTra.show();
-                                                                                        }
+                                                    $("#GridListadoTramitesPuntoControl").dxDataGrid({
+                                                        dataSource: new DevExpress.data.DataSource({
+                                                            store: new DevExpress.data.CustomStore({
+                                                                key: "CODTRAMITE",
+                                                                loadMode: "raw",
+                                                                load: function () {
+                                                                    return $.getJSON($("#SIM").data("url") + "ExpedienteAmbiental/api/ExpedientesAmbApi/GetTramitesPuntoAsync", { codigoSolicitudId: codigoSolicitudId });
+                                                                }
+                                                            })
+                                                        }),
+                                                        allowColumnResizing: true,
+                                                        loadPanel: { enabled: true, text: 'Cargando Datos...' },
+                                                        noDataText: "Sin datos para mostrar",
+                                                        showBorders: true,
+                                                        filterRow: {
+                                                            visible: true,
+                                                            emptyPanelText: 'Arrastre una columna para agrupar'
+                                                        },
+                                                        searchPanel: {
+                                                            visible: true,
+                                                            width: 240,
+                                                            placeholder: "Buscar..."
+                                                        },
+                                                        selection: {
+                                                            mode: 'single'
+                                                        },
+                                                        paging: {
+                                                            pageSize: 5
+                                                        },
+                                                        pager: {
+                                                            showPageSizeSelector: true,
+                                                            allowedPageSizes: [5, 10, 20, 50]
+                                                        },
+                                                        hoverStateEnabled: true,
+                                                        remoteOperations: true,
+                                                        columns: [
+                                                            { dataField: 'CODTRAMITE', width: '5%', caption: 'Código Trámite', alignment: 'center' },
+                                                            { dataField: 'PROYECTO', width: '15%', caption: 'Proyecto', alignment: 'center' },
+                                                            { dataField: 'FECHAINI', width: '5%', caption: 'Fecha Inicial', alignment: 'center', dataType: 'date' },
+                                                            { dataField: 'FECHAFIN', width: '5%', caption: 'Fecha Final', alignment: 'center', dataType: 'date' },
+                                                            { dataField: 'COMENTARIOS', width: '15%', caption: 'Comentarios', dataType: 'string' },
+                                                            { dataField: 'MENSAJE', width: '25%', caption: 'Mensaje', dataType: 'string' },
+                                                            { dataField: 'ESTADO', width: '10%', caption: 'Estado', dataType: 'string' },
+                                                            {
+                                                                width: '12%',
+                                                                alignment: 'center',
+                                                                cellTemplate: function (container, options) {
+                                                                    $('<div/>').dxButton({
+                                                                        icon: 'fields',
+                                                                        text: options.data.CODTRAMITE,
+                                                                        hint: 'Detalle trámite',
+                                                                        onClick: function (e) {
+                                                                            if (options.data.CODTRAMITE > 0) {
+                                                                                var popupOpciones = {
+                                                                                    height: 600,
+                                                                                    width: 1100,
+                                                                                    title: 'Detalle del trámite',
+                                                                                    visible: false,
+                                                                                    contentTemplate: function (container) {
+                                                                                        $("<iframe>").attr("src", $('#SIM').data('url') + 'Utilidades/DetalleTramite?popup=true&CodTramite=' + options.data.CODTRAMITE).attr("width", "100%").attr("height", "100%").attr("frameborder", "0").attr("scrolling", "0").appendTo(container);
                                                                                     }
-                                                                                }).appendTo(container);
+                                                                                }
+                                                                                var popupTra = $("#popDetalleTramite").dxPopup(popupOpciones).dxPopup("instance");
+                                                                                $("#popDetalleTramite").css({ 'visibility': 'visible' });
+                                                                                $("#popDetalleTramite").fadeTo("slow", 1);
+                                                                                popupTra.show();
                                                                             }
-                                                                        },
-                                                                    ],
-                                                                    onSelectionChanged: function (selectedItems) {
+                                                                        }
+                                                                    }).appendTo(container);
+                                                                }
+                                                            },
+                                                        ],
+                                                        onSelectionChanged: function (selectedItems) {
 
-                                                                    }
-                                                                });
-                                                   
+                                                        }
+                                                    });
+
                                                 }
                                             }).appendTo(container);
                                         }
@@ -590,10 +604,9 @@ $(document).ready(function () {
                                         txtlblNombrePuntoControlNotas.option("value", data.nombre);
                                         txtlblNombrePuntoControlTramite.option("value", data.nombre);
                                         if (data.expedienteDocumentalId) {
-                                                idExpedienteDoc = data.expedienteDocumentalId;
-                                        } else
-                                        {
-                                           idExpedienteDoc = 0;
+                                            idExpedienteDoc = data.expedienteDocumentalId;
+                                        } else {
+                                            idExpedienteDoc = 0;
                                         }
                                         $("#GidListadoEstadosPuntosControl").dxDataGrid({
                                             dataSource: EstadosPuntoControlDataSource,
@@ -649,7 +662,7 @@ $(document).ready(function () {
                                                                             txtObservacionEstado.option("value", data.observacion);
                                                                             cboTipoEstado.option("value", data.tipoEstadoPuntoControlId);
                                                                             popupEstadoPuntoControl.show();
-                                                                      
+
                                                                         }
                                                                     }).fail(function (jqxhr, textStatus, error) {
                                                                         DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
@@ -702,7 +715,7 @@ $(document).ready(function () {
                                                     idEstadoPuntoControl = data.idEstadoPuntoControl;
                                                 }
                                             }
-                                         });
+                                        });
                                         $("#GidListadoAnotacionesPuntosControl").dxDataGrid({
                                             dataSource: AnotacionesPuntoControlDataSource,
                                             allowColumnResizing: true,
@@ -814,7 +827,7 @@ $(document).ready(function () {
                                         SeleccionaExpPunto(idExpedienteDoc);
                                         $('#GidListadoEstadosPuntosControl').dxDataGrid({ dataSource: EstadosPuntoControlDataSource });
                                         $('#GidListadoAnotacionesPuntosControl').dxDataGrid({ dataSource: AnotacionesPuntoControlDataSource });
-                                   }
+                                    }
                                 }
                             });
 
@@ -842,7 +855,7 @@ $(document).ready(function () {
             $('#asistente').css('visibility', 'hidden');
             if (data) {
                 idExpediente = data.idExpediente;
-                idExpedienteAmb = data.idExpediente; 
+                idExpedienteAmb = data.idExpediente;
                 NomExpediente = data.nombre;
                 $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
             }
@@ -887,7 +900,7 @@ $(document).ready(function () {
     var txtlblNombreExpediente = $("#txtlblNombreExpediente").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
-       
+
     var txtlblNombrePuntoControl = $("#txtlblNombrePuntoControl").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
@@ -895,7 +908,7 @@ $(document).ready(function () {
     var txtlblNombrePuntoControlTramite = $("#txtlblNombrePuntoControlTramite").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
-  
+
     var txtlblNombrePuntoControlEstado = $("#txtlblNombrePuntoControlEstado").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
@@ -920,24 +933,10 @@ $(document).ready(function () {
         readOnly: true
     }).dxTextBox("instance");
 
-    var chkArchivado = $("#chkArchivado").dxCheckBox({
-        value: false,
-        width: 80,
-        text: "Si",
-
-    }).dxCheckBox("instance");
-
-    var chkAnulado = $("#chkAnulado").dxCheckBox({
-        value: false,
-        width: 80,
-        text: "Si",
-
-    }).dxCheckBox("instance");
-    
     var txtlblNombreRazonSocial = $("#txtlblNombreRazonSocial").dxTextBox({
         readOnly: true
     }).dxTextBox("instance");
-        
+
     var cboIntalaciones = $('#cboInstalaciones').dxDropDownBox({
         valueExpr: 'idInstalacion',
         deferRendering: false,
@@ -1021,7 +1020,7 @@ $(document).ready(function () {
                     type: "array",
                     key: "idInstalacion",
                     data: instalacionesArray,
-                
+
                 },
             });
 
@@ -1062,7 +1061,7 @@ $(document).ready(function () {
                     return $dataGrid;
                 },
             });
-           
+
             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/ObtenerTerceroAsync";
             loadIndicator.option("visible", true);
             $.getJSON(_Ruta,
@@ -1088,7 +1087,7 @@ $(document).ready(function () {
                                 if (datal.numRegistros === 0) {
                                     loadIndicator.option("visible", false);
                                     txtRazonSocial.option("value", "");
-                                 
+
                                     alert('No existen instalaciones disponibles (sin Expediente Ambiental asociado) para el Tercero!')
                                     popupTercero.show();
                                     $('#buscarTercero').attr('src', $('#SIM').data('url') + 'General/Tercero/Index?popup=true');
@@ -1105,7 +1104,7 @@ $(document).ready(function () {
                                         dataSource: new DevExpress.data.ArrayStore({
                                             data: datal.datos,
                                             key: "idInstalacion"
-                                        }), 
+                                        }),
                                         contentTemplate(e) {
                                             const value = e.component.option('value');
                                             const $dataGrid = $('<div>').dxDataGrid({
@@ -1126,7 +1125,7 @@ $(document).ready(function () {
                                                     const keys = selectedItems.selectedRowKeys;
                                                     const hasSelection = keys.length;
                                                     idInstalacion = keys[0] ? keys[0] : null;
-                                                    txtDireccionExpediente.option("value", selectedItems.selectedRowsData[0] ? selectedItems.selectedRowsData[0].direccion  :null);
+                                                    txtDireccionExpediente.option("value", selectedItems.selectedRowsData[0] ? selectedItems.selectedRowsData[0].direccion : null);
                                                     e.component.option('value', hasSelection ? keys[0] : null);
                                                 },
                                             });
@@ -1148,7 +1147,7 @@ $(document).ready(function () {
                                 loadIndicator.option("visible", false);
                                 DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
                             });
-               
+
                         loadIndicator.option("visible", false);
                     }
                 }).fail(function (jqxhr, textStatus, error) {
@@ -1176,7 +1175,7 @@ $(document).ready(function () {
         readOnly: false,
         height: 60
     }).dxTextArea("instance");
-    
+
     var txtNombreExpediente = $("#txtNombreExpediente").dxTextArea({
         value: "",
         readOnly: false,
@@ -1214,8 +1213,8 @@ $(document).ready(function () {
             message: "Debe seleccionar el Municipio asociado con el Expediente Ambiental!"
         }]
     }).dxSelectBox("instance");
-     
-       
+
+
     var cboTipoEstado = $("#cboTipoEstado").dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -1290,7 +1289,7 @@ $(document).ready(function () {
 
         }
     });
-          
+
     $("#btnGuardarAnotacionPuntoControl").dxButton({
         text: "Guardar Anotación",
         type: "default",
@@ -1330,7 +1329,7 @@ $(document).ready(function () {
         }
     });
 
-       
+
     var cboClasificacion = $("#cboClasificacion").dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -1352,7 +1351,7 @@ $(document).ready(function () {
         }]
     }).dxSelectBox("instance");
 
-    
+
     $("#btnGuardarExpediente").dxButton({
         text: "Guardar",
         type: "default",
@@ -1384,7 +1383,7 @@ $(document).ready(function () {
             var params = {
                 idExpediente: id, nombre: nombre, cm: cm, descripcion: descripcion, clasificacionExpedienteId: clasificacionId, municipioId: municipioId,
                 direccion: direccion, terceroId: idTercero, instalacionId: idInstalacion, razonSocial: "", proyectoId: 0, cedulaNit: "", instalacion: "",
-                archivado: archivado,anulado:anulado
+                archivado: archivado, anulado: anulado
             };
 
             var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/GuardarExpedienteAmbientalAsync";
@@ -1446,7 +1445,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         title: "Creación/Edición de Expediente Ambiental"
     }).dxPopup("instance");
-   
+
     var popupTramitesExpediente = $("#popupTramitesExpediente").dxPopup({
         width: 1200,
         height: 700,
@@ -1464,7 +1463,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         title: "Trámites asociados al Punto de Control"
     }).dxPopup("instance");
-   
+
     var popupEstadoPuntoControl = $("#popupEstadoPuntoControl").dxPopup({
         width: 800,
         height: "auto",
@@ -1472,7 +1471,7 @@ $(document).ready(function () {
         resizeEnabled: true,
         hoverStateEnabled: true,
         title: "Creación/Edición de Estado de Punto de Control"
-    }).dxPopup("instance"); 
+    }).dxPopup("instance");
 
     var popupAnotacionPuntoControl = $("#popupAnotacionPuntoControl").dxPopup({
         width: 800,
@@ -1481,8 +1480,8 @@ $(document).ready(function () {
         resizeEnabled: true,
         hoverStateEnabled: true,
         title: "Creación/Edición de Anotación asociada al Punto de Control"
-    }).dxPopup("instance"); 
-    
+    }).dxPopup("instance");
+
 
     $("#btnNuevoPuntoControl").dxButton({
         text: "Nuevo",
@@ -1502,11 +1501,11 @@ $(document).ready(function () {
             txtConexoPunto.reset();
             txtFechaOrigen.option("value", new Date());
             popupNuevoPuntoControl.show();
-           
+
         }
     }).dxButton("instance");
 
-    
+
     $("#btnNuevoEstadoPuntoControl").dxButton({
         text: "Nuevo",
         type: "success",
@@ -1535,7 +1534,7 @@ $(document).ready(function () {
 
         }
     }).dxButton("instance");
-            
+
     var txtNombrePuntoControl = $("#txtNombrePuntoControl").dxTextArea({
         value: "",
         readOnly: false,
@@ -1553,7 +1552,7 @@ $(document).ready(function () {
         readOnly: false,
         height: 70
     }).dxTextArea("instance");
-          
+
     var txtFechaOrigen = $("#txtFechaOrigen").dxDateBox({
         type: "date",
         value: new Date(),
@@ -1620,7 +1619,7 @@ $(document).ready(function () {
             });
         }
     }).dxButton("instance");
-         
+
     var popupNuevoPuntoControl = $("#popupNuevoPuntoControl").dxPopup({
         width: 900,
         height: 900,
@@ -1633,13 +1632,12 @@ $(document).ready(function () {
             if (idExpedienteDoc > 0) {
                 CargarIndicesExpedienteDocumental(idExpedienteDoc);
             }
-            else
-            {
+            else {
                 CargarIndices(idExpedienteAmb);
             }
 
 
-        }  
+        }
     }).dxPopup("instance");
 
     var cboAbogados = $("#cboAbogados").dxSelectBox({
@@ -1655,7 +1653,7 @@ $(document).ready(function () {
         }),
         displayExpr: "nombre",
         searchEnabled: true,
-        valueExpr : "idAbogado",
+        valueExpr: "idAbogado",
     }).dxValidator({
         validationGroup: "ProcesoGroup",
         validationRules: [{
@@ -1725,25 +1723,6 @@ $(document).ready(function () {
         }
     });
 
-    $("#btnDocumentos").dxButton({
-        text: "Asociar Documentos",
-        icon: "fields",
-        hint: 'Asociar Documentos',
-        visible: false,
-        onClick: function () {
-            var _popup = $("#popupBuscaDoc").dxPopup("instance");
-            _popup.show();
-            $('#BuscarDoc').attr('src', $('#SIM').data('url') + 'Utilidades/BuscarDocumento?popup=true');
-        }
-    });
-
-    $("#popupBuscaDoc").dxPopup({
-        width: 900,
-        height: 850,
-        showTitle: true,
-        title: "Buscar Documento"
-    });
-
     var popupAbogados = $("#popupAbogados").dxPopup({
         width: 1200,
         height: 600,
@@ -1770,7 +1749,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         title: "Vincular Expediente Documental"
     }).dxPopup("instance");
-       
+
     $("#btnIndices").dxButton({
         text: "Indices Expediente",
         icon: "fields",
@@ -1836,7 +1815,7 @@ $(document).ready(function () {
                 Content
             );
         }
-    };    
+    };
 
     function CargarGridIndices() {
 
@@ -1914,21 +1893,21 @@ $(document).ready(function () {
                             case 0: // TEXTO
                                 if (cellInfo.data.VALOR != null) {
                                     cellElement.html(cellInfo.data.VALOR);
-                                } 
-                             
+                                }
+
                                 break;
                             case 1: // NUMERO
                                 if (cellInfo.data.VALOR != null) {
                                     cellElement.html(cellInfo.data.VALOR);
-                                } 
-                   
+                                }
+
                                 break;
                             case 3: // HORA
                             case 5: //LISTA
                                 if (cellInfo.data.VALOR !== null) {
                                     cellElement.html(cellInfo.data.VALOR);
-                                } 
-                               
+                                }
+
                                 break;
                             case 8: // DIRECCION
                                 if (cellInfo.data.VALOR !== null) {
@@ -2053,7 +2032,7 @@ $(document).ready(function () {
                                         items: itemsLista,
                                         width: '100%',
                                         placeholder: "[SELECCIONAR OPCION]",
-                                        value: (cellInfo.data.VALOR == null ? null : itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR) > 1? itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID:null),
+                                        value: (cellInfo.data.VALOR == null ? null : itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR) > 1 ? itemsLista[itemsLista.findIndex(ls => ls.NOMBRE == cellInfo.data.VALOR)].ID : null),
                                         displayExpr: 'NOMBRE',
                                         valueExpr: 'ID',
                                         searchEnabled: true,
@@ -2154,11 +2133,11 @@ $(document).ready(function () {
         });
     }
 
-   });
+});
 
 function SeleccionaExp(Expediente) {
     if (Expediente != "") {
-         IdExpedienteDoc = Expediente;
+        IdExpedienteDoc = Expediente;
 
         var params = {
             idExpediente: IdExpedienteDoc, idPuntoControl: idPuntoControl
@@ -2175,8 +2154,7 @@ function SeleccionaExp(Expediente) {
             headers: { 'Access-Control-Allow-Origin': '*' },
             success: function (data) {
                 if (data.Result.Response === false) DevExpress.ui.dialog.alert('Advertencia:  ' + data.Result.Message, 'Vinculando Expediente Documental');
-                else
-                {
+                else {
                     $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
                     DevExpress.ui.dialog.alert('Expediente Documental se vinculó con el Punto de Control seleccionado!');
                 }
@@ -2205,7 +2183,6 @@ function SeleccionaExpPunto(ExpedienteDocId) {
                     $("#btnIndices").dxButton("instance").option("visible", true);
                     $("#cmdShowExpedienteFlip").removeClass("hidden");
                     $("#cmdShowExpedienteFlip").dxButton("instance").option("visible", true);
-                    $("#btnDocumentos").dxButton("instance").option("visible", true);
                     $("#dxTreeView").dxTreeView({
                         dataSource: new DevExpress.data.DataSource({
                             store: new DevExpress.data.CustomStore({
@@ -2387,7 +2364,7 @@ var ExpedientesDataSource = new DevExpress.data.CustomStore({
 
         var skip = (typeof loadOptions.skip !== 'undefined' && loadOptions.skip !== null ? loadOptions.skip : 0);
         var take = (typeof loadOptions.take !== 'undefined' && loadOptions.take !== null ? loadOptions.take : 0);
-        $.getJSON($('#SIM').data('url') +'ExpedienteAmbiental/api/ExpedientesAmbApi/GetExpedientesAsync', {
+        $.getJSON($('#SIM').data('url') + 'ExpedienteAmbiental/api/ExpedientesAmbApi/GetExpedientesAsync', {
             filter: loadOptions.filter ? JSON.stringify(filterOptions) : '',
             sort: sortOptions,
             group: JSON.stringify(groupOptions),
@@ -2453,24 +2430,3 @@ var AnotacionesPuntoControlDataSource = new DevExpress.data.CustomStore({
         return d.promise();
     }
 });
-
-function SeleccionaDocumento(Documentos) {
-    var _popup = $("#popupBuscaDoc").dxPopup("instance");
-    _popup.hide();
-    //var Sel = $("#grdListaTomos").dxDataGrid("instance").getSelectedRowsData()[0];
-    if (Documentos.length > 0) {
-        var ListaDocs = JSON.stringify(Documentos);
-        var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/AsociaDocumento";
-        $.getJSON(_Ruta, { ListaIdDocumentos: ListaDocs, IdExp: idExpedienteDoc })
-            .done(function (data) {
-                if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Asociar documento');
-                else {
-                    $('#gridDocumentos').dxDataGrid({ dataSource: DocumentosDataSource });
-                    $("#TituloDocumentos").text("");
-                    DevExpress.ui.dialog.alert('El documento ' + Documento + ' se asoció correctamente al expediente', 'Asociar documento');
-                }
-            }).fail(function (jqxhr, textStatus, error) {
-                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Asociar documento');
-            });
-    }
-}
