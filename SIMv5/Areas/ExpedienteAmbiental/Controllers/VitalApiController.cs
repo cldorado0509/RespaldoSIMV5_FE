@@ -51,10 +51,10 @@
         /// </summary>
         public VitalApiController()
         {
-            if (Environment.MachineName == "SISTEMD26")
-            {
-                urlApiGateWay = "https://localhost:5000/";
-            }
+            //if (Environment.MachineName == "SISTEMD26")
+            //{
+            //    urlApiGateWay = "https://localhost:5000/";
+            //}
 
         }
 

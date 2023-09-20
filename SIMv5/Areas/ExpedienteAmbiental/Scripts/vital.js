@@ -613,7 +613,7 @@ var SolicitudesVitalDataSource = new DevExpress.data.CustomStore({
                 CodFuncionario: CodigoFuncionario
             }).done(function (data) {
                 if (data.datos === null) {
-                    DevExpress.ui.notify({ message: "No fué posible realizar conexión al microservicio de Expedientes Ambientales", width: 1000, shading: true }, "error", 2000);
+                    DevExpress.ui.notify({ message: "No hay solicitudes pendientes por atender desde la plataforma VITAL", width: 1000, shading: true }, "warning", 2000);
                 }
                 d.resolve(data.datos, { totalCount: data.numRegistros });
 
