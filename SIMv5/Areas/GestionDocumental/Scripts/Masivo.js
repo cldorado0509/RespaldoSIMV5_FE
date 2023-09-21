@@ -138,6 +138,7 @@ $(document).ready(function () {
                                     showSpinButtons: false,
                                     onValueChanged: function (e) {
                                         cellInfo.setValue(e.value);
+                                        cellElement.setValue(e.value);
                                     },
                                 });
                                 break;
@@ -152,6 +153,7 @@ $(document).ready(function () {
                                     width: '100%',
                                     onValueChanged: function (e) {
                                         cellInfo.setValue(e.value);
+                                        cellElement.setValue(e.value);
                                     },
                                 });
                                 break;
@@ -174,6 +176,7 @@ $(document).ready(function () {
                                         onValueChanged: function (e) {
                                             //cellInfo.setValue(e.value);
                                             cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
+                                            cellElement.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
                                         },
                                     });
                                 } else {
@@ -184,6 +187,7 @@ $(document).ready(function () {
                                         onValueChanged: function (e) {
                                             //cellInfo.setValue(e.value);
                                             cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
+                                            cellElement.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
                                         },
                                     });
                                 }
@@ -202,6 +206,7 @@ $(document).ready(function () {
                                     value: cellInfo.data.VALOR,
                                     onValueChanged: function (e) {
                                         cellInfo.setValue(e.value);
+                                        cellElement.setValue(e.value);
                                         $("#grdIndices").dxDataGrid("saveEditData");
                                     },
                                 });
@@ -286,7 +291,7 @@ $(document).ready(function () {
         type: "default",
         disabled: true,
         onClick: function () {
-            $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerIndicesSerieDocumental', { codSerie: 12 })
+            $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/ObtenerIndicesSerieDocumental', { codSerie: 12 })
                 .done(function (data) {
                     AsignarIndicesDoc(data);
             });

@@ -314,18 +314,19 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                                 //_pag.Canvas.DrawTextBox(Campo, _Arial, Pen, BrushTrans, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 120, 40, tfo);
                                             }
                                         }
-                                        var fechaCreacion = DateTime.Now;
-                                        DatosRadicado radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
-                                        var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
-                                        if (imagenRadicado != null)
-                                        {
-                                            _pag = _doc.Pages[0];
-                                            _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
-                                            _Radicado = radicadoGenerado.Radicado;
-                                            _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
-                                            IdRadicado = radicadoGenerado.IdRadicado;
-                                        }
                                         _doc.Pages[reemp.Pagina] = _pag;
+                                    }
+                                    var fechaCreacion = DateTime.Now;
+                                    DatosRadicado radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
+                                    var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
+                                    if (imagenRadicado != null)
+                                    {
+                                        _pag = _doc.Pages[0];
+                                        _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
+                                        _Radicado = radicadoGenerado.Radicado;
+                                        _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
+                                        IdRadicado = radicadoGenerado.IdRadicado;
+                                        _doc.Pages[0] = _pag;
                                     }
                                     decimal CodTramite = datos.CodTramite != "" ? decimal.Parse(datos.CodTramite) : decimal.Parse(fila["CODTRAMITE"].ToString());
                                     List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
@@ -373,6 +374,39 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 else _resp = new { resp = "Error", mensaje = "Falta el identificador de la solicitud!!" };
             }
             return _resp;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codSerie"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet, ActionName("ObtenerIndicesSerieDocumental")]
+        public dynamic GetObtenerIndicesSerieDocumental(int codSerie)
+        {
+            var indicesSerieDocumental = from i in dbSIM.TBINDICESERIE
+                                         join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                         from pdis in l.DefaultIfEmpty()
+                                         where i.CODSERIE == codSerie && i.MOSTRAR == "1"
+                                         orderby i.ORDEN
+                                         select new IndiceCOD
+                                         {
+                                             CODINDICE = i.CODINDICE,
+                                             INDICE = i.INDICE,
+                                             TIPO = i.TIPO,
+                                             LONGITUD = i.LONGITUD,
+                                             OBLIGA = i.OBLIGA,
+                                             VALORDEFECTO = i.VALORDEFECTO,
+                                             VALOR = "",
+                                             ID_VALOR = null,
+                                             ID_LISTA = i.CODIGO_SUBSERIE,
+                                             TIPO_LISTA = pdis.TIPO,
+                                             CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
+                                             INDICE_RADICADO = i.INDICE_RADICADO
+                                         };
+
+            return indicesSerieDocumental.ToList();
         }
 
         #region Metodos Privados de la clase
@@ -518,5 +552,23 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return _resp;
         }
         #endregion
+    }
+
+    public class IndiceCOD
+    {
+        public int CODINDICE { get; set; }
+        public string INDICE { get; set; }
+        public byte TIPO { get; set; }
+        public long LONGITUD { get; set; }
+        public int OBLIGA { get; set; }
+        public string VALORDEFECTO { get; set; }
+        public string VALOR { get; set; }
+        public int? ID_VALOR { get; set; }
+        public Nullable<int> ID_LISTA { get; set; }
+        public Nullable<int> TIPO_LISTA { get; set; }
+        public string CAMPO_NOMBRE { get; set; }
+        public string MAXIMO { get; set; }
+        public string MINIMO { get; set; }
+        public string INDICE_RADICADO { get; set; }
     }
 }
