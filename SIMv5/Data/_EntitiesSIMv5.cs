@@ -1,5 +1,6 @@
 ﻿using SIM.Data.General;
 using SIM.Data.Poeca;
+using SIM.Data.ExpedienteAmbiental;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -491,6 +492,77 @@ namespace SIM.Data
             modelBuilder.Entity<TPOEAIR_SEGUIMIENTO_META>()
                 .Property(e => e.S_OBSERVACIONES)
                 .IsUnicode(false);
+
+            // Expediente Ambiental
+            modelBuilder.Entity<DEXPAMB_CLASIFICACIONEXPEDIENTE>()
+                .Property(e => e.ID_MIGRACION)
+                .HasPrecision(20, 0);
+
+            modelBuilder.Entity<DEXPAMB_CLASIFICACIONEXPEDIENTE>()
+                .HasMany(e => e.TEXPAMB_EXPEDIENTEAMBIENTAL)
+                .WithRequired(e => e.DEXPAMB_CLASIFICACIONEXPEDIENTE)
+                .HasForeignKey(e => e.CLASIFICACIONEXPEDIENTE_ID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<DEXPAMB_COMPONENTEAMBIENTAL>()
+                .Property(e => e.B_HABILITADO)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DEXPAMB_COMPONENTEAMBIENTAL>()
+                .HasMany(e => e.DEXPAMB_TIPOSOLICITUDAMBIENTAL)
+                .WithRequired(e => e.DEXPAMB_COMPONENTEAMBIENTAL)
+                .HasForeignKey(e => e.COMPONENTEAMBIENTAL_ID);
+
+            modelBuilder.Entity<DEXPAMB_TIPOESTADOPUNTOCONTROL>()
+                .HasMany(e => e.TEXPAMB_ESTADOPUNTOCONTROL)
+                .WithRequired(e => e.DEXPAMB_TIPOESTADOPUNTOCONTROL)
+                .HasForeignKey(e => e.TIPOESTADOPUNTOCONTROL_ID);
+
+            modelBuilder.Entity<DEXPAMB_TIPOSOLICITUDAMBIENTAL>()
+                .HasMany(e => e.TEXPAMB_PUNTOCONTROL)
+                .WithRequired(e => e.DEXPAMB_TIPOSOLICITUDAMBIENTAL)
+                .HasForeignKey(e => e.TIPOSOLICITUDAMBIENTAL_ID);
+
+            modelBuilder.Entity<TEXPAMB_ESTADOPUNTOCONTROL>()
+                .Property(e => e.CODIGO_ESTADO_SOLICITUD)
+                .HasPrecision(20, 0);
+
+            modelBuilder.Entity<TEXPAMB_EXPEDIENTEAMBIENTAL>()
+                .Property(e => e.ANULADO)
+                .HasPrecision(20, 0);
+
+            modelBuilder.Entity<TEXPAMB_EXPEDIENTEAMBIENTAL>()
+                .Property(e => e.ARCHIVADO)
+                .HasPrecision(20, 0);
+
+            modelBuilder.Entity<TEXPAMB_EXPEDIENTEAMBIENTAL>()
+                .HasMany(e => e.TEXPAMB_ABOGADOEXPEDIENTE)
+                .WithRequired(e => e.TEXPAMB_EXPEDIENTEAMBIENTAL)
+                .HasForeignKey(e => e.EXPEDIENTEAMBIENTAL_ID);
+
+            modelBuilder.Entity<TEXPAMB_EXPEDIENTEAMBIENTAL>()
+                .HasMany(e => e.TEXPAMB_FUNCIONARIOEXPEDIENTE)
+                .WithRequired(e => e.TEXPAMB_EXPEDIENTEAMBIENTAL)
+                .HasForeignKey(e => e.EXPEDIENTEAMBIENTAL_ID);
+
+            modelBuilder.Entity<TEXPAMB_EXPEDIENTEAMBIENTAL>()
+                .HasMany(e => e.TEXPAMB_PUNTOCONTROL)
+                .WithRequired(e => e.TEXPAMB_EXPEDIENTEAMBIENTAL)
+                .HasForeignKey(e => e.EXPEDIENTEAMBIENTAL_ID);
+
+            modelBuilder.Entity<TEXPAMB_PUNTOCONTROL>()
+                .Property(e => e.CODIGOSOLICITUD_ID)
+                .HasPrecision(38, 0);
+
+            modelBuilder.Entity<TEXPAMB_PUNTOCONTROL>()
+                .HasMany(e => e.TEXPAMB_ANOTACIONESPUNTO)
+                .WithRequired(e => e.TEXPAMB_PUNTOCONTROL)
+                .HasForeignKey(e => e.PUNTOCONTROL_ID);
+
+            modelBuilder.Entity<TEXPAMB_PUNTOCONTROL>()
+                .HasMany(e => e.TEXPAMB_ESTADOPUNTOCONTROL)
+                .WithRequired(e => e.TEXPAMB_PUNTOCONTROL)
+                .HasForeignKey(e => e.PUNTOCONTROL_ID);
         }
     }
 }
