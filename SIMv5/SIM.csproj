@@ -1560,6 +1560,17 @@
     <Compile Include="Data\Control\VISITA_SOLICITUD.cs" />
     <Compile Include="Data\Control\V_REPOCISIONES.cs" />
     <Compile Include="Data\Control\V_SEGUIMIENTO_TRAMITES_NUEVOS.cs" />
+    <Compile Include="Data\ExpedienteAmbientalContext.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\DEXPAMB_CLASIFICACIONEXPEDIENTE.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\DEXPAMB_COMPONENTEAMBIENTAL.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\DEXPAMB_TIPOESTADOPUNTOCONTROL.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\DEXPAMB_TIPOSOLICITUDAMBIENTAL.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\TEXPAMB_ABOGADOEXPEDIENTE.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\TEXPAMB_ANOTACIONESPUNTO.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\TEXPAMB_ESTADOPUNTOCONTROL.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\TEXPAMB_EXPEDIENTEAMBIENTAL.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\TEXPAMB_FUNCIONARIOEXPEDIENTE.cs" />
+    <Compile Include="Data\ExpedienteAmbiental\TEXPAMB_PUNTOCONTROL.cs" />
     <Compile Include="Data\FuentesFijas.Context.cs" />
     <Compile Include="Data\FuentesFijas\TMOVPEM_MONITOREO.cs" />
     <Compile Include="Data\General\EVENTO_PARTICIPANTE.cs" />
