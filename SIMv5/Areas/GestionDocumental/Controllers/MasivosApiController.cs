@@ -1,4 +1,5 @@
 ﻿using DevExpress.Pdf;
+using DevExpress.Spreadsheet;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,11 +22,15 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Http;
 
 namespace SIM.Areas.GestionDocumental.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ReemplazoDTO
     {
         public int Pagina { get; set; }
@@ -236,12 +241,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <param name="datos"></param>
         /// <returns></returns>
         [HttpPost]
-        public object RadicarMasivo(MasivoDTO datos)
+        public ResponseMassiveDTO RadicarMasivo(MasivoDTO datos)
         {
             object _resp = null;
             var _mensaje = "";
             int _paginas = 0;
-            if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Error generando la radicación masiva" };
+            if (!ModelState.IsValid) return new ResponseMassiveDTO() { isSuccess = false, message = "Error generando la radicación masiva" };
             PDFDocument _doc = new PDFDocument();
             _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
             var userId = Int32.Parse(User.Identity.GetUserId());
@@ -252,6 +257,10 @@ namespace SIM.Areas.GestionDocumental.Controllers
             if (datos.IdSolicitud != "")
             {
                 DataTable dt = LeeArchivoExcel(datos.IdSolicitud);
+                dt.Columns.Add("Radicado Generado", typeof(string));
+                dt.Columns.Add("Código Tramite", typeof(Int32));
+                dt.Columns.Add("Código Documento", typeof(Int32));
+                dt.Columns.Add("Comentarios", typeof(string));
                 string _RutaPdf = ObtienePlatillaPdf(datos.IdSolicitud);
                 if (_RutaPdf != "")
                 {
@@ -311,21 +320,21 @@ namespace SIM.Areas.GestionDocumental.Controllers
 
                                                 _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
                                                 _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
-                                                //_pag.Canvas.DrawTextBox(Campo, _Arial, Pen, BrushTrans, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 120, 40, tfo);
                                             }
                                         }
-                                        var fechaCreacion = DateTime.Now;
-                                        DatosRadicado radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
-                                        var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
-                                        if (imagenRadicado != null)
-                                        {
-                                            _pag = _doc.Pages[0];
-                                            _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
-                                            _Radicado = radicadoGenerado.Radicado;
-                                            _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
-                                            IdRadicado = radicadoGenerado.IdRadicado;
-                                        }
                                         _doc.Pages[reemp.Pagina] = _pag;
+                                    }
+                                    var fechaCreacion = DateTime.Now;
+                                    DatosRadicado radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
+                                    var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
+                                    if (imagenRadicado != null)
+                                    {
+                                        _pag = _doc.Pages[0];
+                                        _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
+                                        _Radicado = radicadoGenerado.Radicado;
+                                        _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
+                                        IdRadicado = radicadoGenerado.IdRadicado;
+                                        _doc.Pages[0] = _pag;
                                     }
                                     decimal CodTramite = datos.CodTramite != "" ? decimal.Parse(datos.CodTramite) : decimal.Parse(fila["CODTRAMITE"].ToString());
                                     List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
@@ -354,25 +363,90 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     documento.Paginas = _paginas;
                                     MemoryStream streamDoc = new MemoryStream();
                                     _doc.Save(streamDoc);
+
+
                                     documento.Archivo = streamDoc.ToArray();
-                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, IdRadicado, documento, _Indices))
+                                    if (!SIM.Utilidades.Tramites.AdicionaDocRadicadoTramite(CodTramite, IdRadicado, documento, _Indices))
                                     {
                                         _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
+                                        fila["Comentarios"] = $"El documento no se pudo generar ya ocurrió un problema con el documento";
                                     }
-                                    else _correctos++;
+                                    else
+                                    {
+                                        _correctos++;
+                                        var CodDoc = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).Select(s => s.CODDOCUMENTO).FirstOrDefault();
+                                        fila["Radicado Generado"] = _Radicado;
+                                        fila["Código Documento"] = CodDoc;
+                                        fila["Código Tramite"] = CodTramite;
+                                        fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                    }
                                 }
+                                else fila["Comentarios"] = $"El documento no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró";
                             }
+                            dt.AcceptChanges();
                         }
                         if (_mensaje != "") _mensaje = _correctos + " documentos creados correctamente con excepciones: <br />" + _mensaje;
                         else _mensaje = _correctos + " documentos creados correctamente.";
-                        return new { resp = "Ok", mensaje = _mensaje };
+                        FileInfo result = new FileInfo(_Dir + @"\" + "Resultado.xlsx");
+                        Workbook wb = new Workbook();
+                        wb.Worksheets[0].Import(dt, true, 0, 0);
+                        wb.SaveDocument(result.FullName, DevExpress.Spreadsheet.DocumentFormat.Xlsx);
+
+                        StringBuilder sb = new StringBuilder();
+
+                        IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
+                                                          Select(column => column.ColumnName);
+                        sb.AppendLine(string.Join(",", columnNames));
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            IEnumerable<string> fields = row.ItemArray.Select(field => string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
+                            sb.AppendLine(string.Join(",", fields));
+                        }
+                        MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
+
+
+                        return new ResponseMassiveDTO() { isSuccess = true, message = _mensaje, responseFile = File.ReadAllBytes(result.FullName) };
                     }
-                    else _resp = new { resp = "Error", mensaje = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
+                    else return new ResponseMassiveDTO() { isSuccess = false, message = "No se ingresaron los índices para la unidad documental!!" };
 
                 }
-                else _resp = new { resp = "Error", mensaje = "Falta el identificador de la solicitud!!" };
+                else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
             }
-            return _resp;
+            else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codSerie"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet, ActionName("ObtenerIndicesSerieDocumental")]
+        public dynamic GetObtenerIndicesSerieDocumental(int codSerie)
+        {
+            var indicesSerieDocumental = from i in dbSIM.TBINDICESERIE
+                                         join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                         from pdis in l.DefaultIfEmpty()
+                                         where i.CODSERIE == codSerie && i.MOSTRAR == "1"
+                                         orderby i.ORDEN
+                                         select new IndiceCOD
+                                         {
+                                             CODINDICE = i.CODINDICE,
+                                             INDICE = i.INDICE,
+                                             TIPO = i.TIPO,
+                                             LONGITUD = i.LONGITUD,
+                                             OBLIGA = i.OBLIGA,
+                                             VALORDEFECTO = i.VALORDEFECTO,
+                                             VALOR = "",
+                                             ID_VALOR = null,
+                                             ID_LISTA = i.CODIGO_SUBSERIE,
+                                             TIPO_LISTA = pdis.TIPO,
+                                             CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
+                                             INDICE_RADICADO = i.INDICE_RADICADO
+                                         };
+
+            return indicesSerieDocumental.ToList();
         }
 
         #region Metodos Privados de la clase
@@ -518,5 +592,23 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return _resp;
         }
         #endregion
+    }
+
+    public class IndiceCOD
+    {
+        public int CODINDICE { get; set; }
+        public string INDICE { get; set; }
+        public byte TIPO { get; set; }
+        public long LONGITUD { get; set; }
+        public int OBLIGA { get; set; }
+        public string VALORDEFECTO { get; set; }
+        public string VALOR { get; set; }
+        public int? ID_VALOR { get; set; }
+        public Nullable<int> ID_LISTA { get; set; }
+        public Nullable<int> TIPO_LISTA { get; set; }
+        public string CAMPO_NOMBRE { get; set; }
+        public string MAXIMO { get; set; }
+        public string MINIMO { get; set; }
+        public string INDICE_RADICADO { get; set; }
     }
 }

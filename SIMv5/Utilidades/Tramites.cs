@@ -495,7 +495,7 @@
         /// <param name="_indices"></param>
         /// <param name="IdRadicado"></param>
         /// <returns></returns>
-        public static bool AdicionaDocumentoTramite(decimal CodTramite, decimal IdRadicado, Documento _doc, List<IndicesDocumento> _indices)
+        public static bool AdicionaDocRadicadoTramite(decimal CodTramite, decimal IdRadicado, Documento _doc, List<IndicesDocumento> _indices)
         {
             bool _resp = false;
             try

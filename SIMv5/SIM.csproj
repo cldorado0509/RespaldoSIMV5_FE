@@ -1218,6 +1218,7 @@
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosController.cs" />
     <Compile Include="Areas\GestionDocumental\Models\MasivoDTO.cs" />
     <Compile Include="Areas\GestionDocumental\Models\ResponseFile.cs" />
+    <Compile Include="Areas\GestionDocumental\Models\ResponseMassiveDTO.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosApiController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\EventosController.cs" />
     <Compile Include="Areas\GestionRiesgo\Controllers\NivelesRiesgoApiController.cs" />

@@ -286,7 +286,7 @@ $(document).ready(function () {
         type: "default",
         disabled: true,
         onClick: function () {
-            $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/ObtenerIndicesSerieDocumental', { codSerie: 12 })
+            $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/ObtenerIndicesSerieDocumental', { codSerie: 12 })
                 .done(function (data) {
                     AsignarIndicesDoc(data);
             });
@@ -488,8 +488,15 @@ $(document).ready(function () {
                 data: JSON.stringify(parametros),
                 contentType: "application/json",
                 success: function (data) {
-                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Radicación Masivos');
-                    else DevExpress.ui.dialog.alert(data.mensaje, 'Radicación Masivos');
+                    if (!data.isSuccess) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Radicación Masivos');
+                    else {
+                        DevExpress.ui.dialog.alert(data.message, 'Radicación Masivos');
+                        var fileURL = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8;base64,' + data.responseFile;
+                        var link = document.createElement('a');
+                        link.href = fileURL;
+                        link.download = "resultado.xlsx";
+                        link.click();
+                    }
                 }
             });
             $("#loadPanel").dxLoadPanel('instance').hide();
