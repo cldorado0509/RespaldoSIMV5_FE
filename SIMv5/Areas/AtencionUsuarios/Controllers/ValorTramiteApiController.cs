@@ -1,18 +1,10 @@
-﻿using AreaMetro.Seguridad;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
-using DevExpress.Web.Internal;
-using DevExpress.XtraReports.Native;
-using Microsoft.Owin.Security.Provider;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
 using O2S.Components.PDF4NET.Graphics;
 using O2S.Components.PDF4NET.Graphics.Fonts;
 using O2S.Components.PDF4NET.Graphics.Shapes;
-using PdfSharp.Drawing;
 using SIM.Areas.AtencionUsuarios.Models;
-using SIM.Areas.GestionDocumental.Controllers;
-using SIM.Areas.Tala.Controllers;
 using SIM.Data;
 using SIM.Data.Tramites;
 using System;
@@ -23,13 +15,8 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Web;
 using System.Web.Http;
-using static SIM.Areas.EncuestaExterna.Controllers.EncuestaExternaController;
-using static SIM.Areas.Tramites.Controllers.ProyeccionDocumentoApiController;
 
 namespace SIM.Areas.AtencionUsuarios.Controllers
 {
@@ -153,7 +140,8 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     if (_Soporte.Exists) return new { resp = "Ok", mensaje = "" };
                     else return new { resp = "Error", mensaje = "No se encontro el documento del soporte generado" };
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new { resp = "Error", mensaje = "Ocurrio el error : " + ex.Message };
             }
@@ -248,7 +236,8 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             try
             {
                 _resp = CalculaTotalesValorTramite(DatosTramite);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _resp.Calculado = false;
                 _resp.Mensaje = ex.Message;
@@ -360,7 +349,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     dbSIM.TBTARIFAS_CALCULO.Add(_Calculo);
                     dbSIM.SaveChanges();
                     decimal _IdCalculo = _Calculo.ID_CALCULO;
-                    _resp.IdCalculo = _IdCalculo;   
+                    _resp.IdCalculo = _IdCalculo;
                     FileInfo _Soporte = new FileInfo(_RutaArchSopValorAuto + _Calculo.D_ELABORACION.Value.ToString("MMyyyy") + @"\" + _IdCalculo.ToString() + ".pdf");
                     if (!_Soporte.Directory.Exists) _Soporte.Directory.Create();
                     SIM.Utilidades.Archivos.GrabaMemoryStream(oStream, _Soporte.FullName);
@@ -389,8 +378,8 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             var Valida = Validar(datosTramite);
             if (Valida.Length > 0) resp.Mensaje = Valida;
             var PropTramite = (from Prop in dbSIM.TBTARIFAS_TRAMITE
-                              where Prop.CODIGO_TRAMITE == _TipoTramite && Prop.TIPO_ACTUACION == "E"
-                              select Prop).FirstOrDefault();
+                               where Prop.CODIGO_TRAMITE == _TipoTramite && Prop.TIPO_ACTUACION == "E"
+                               select Prop).FirstOrDefault();
             if (PropTramite == null) resp.Mensaje = "Existe problema consultando los datos del tipo de trámite";
             decimal Salario = ObtenerHonorarios(datosTramite.Agno);
             if (Salario <= 0) resp.Mensaje = "No se ha ingresado un salario mensual para este año para el personal que participara en el trámite";
@@ -402,15 +391,16 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     factorE = Math.Ceiling(factorE);
                 }
                 else factorE = 1;
-            }else factorE = 0;
+            }
+            else factorE = 0;
             if (factorE > 0)
             {
-                    TotalHTecnicoE = (double)datosTramite.HorasInforme + (double)datosTramite.DuracionVisita;
-                    TotalHTecnicoEE = ((double)datosTramite.HorasInforme * factorE) + (double)datosTramite.DuracionVisita;
+                TotalHTecnicoE = (double)datosTramite.HorasInforme + (double)datosTramite.DuracionVisita;
+                TotalHTecnicoEE = ((double)datosTramite.HorasInforme * factorE) + (double)datosTramite.DuracionVisita;
             }
             else
             {
-                    TotalHTecnicoE = (double)datosTramite.HorasInforme + (double)datosTramite.DuracionVisita;
+                TotalHTecnicoE = (double)datosTramite.HorasInforme + (double)datosTramite.DuracionVisita;
             }
             if (long.Parse(datosTramite.TipoTramite) == 26)
             {
@@ -437,7 +427,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             }
             resp.Costo = (decimal)TotalNetoE;
             decimal CalTope = CalculaTopes(datosTramite.ValorProyecto, datosTramite.Agno);
-            if (CalTope <= 0 ) resp.Mensaje = "No se ha ingresado un valor de salario mínimo mensual como parámetro para este año para el cálculo de los topes.";
+            if (CalTope <= 0) resp.Mensaje = "No se ha ingresado un valor de salario mínimo mensual como parámetro para este año para el cálculo de los topes.";
             resp.Topes = CalTope;
             if (datosTramite.ConSoportes == 1)
             {
@@ -465,7 +455,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
         private decimal ObtenerHonorarios(decimal Agno)
         {
             var Sal = dbSIM.TBTARIFAS_PARAMETRO.Where(w => w.NOMBRE == "SALARIO" && w.ACTIVO == "1" && w.ANO == Agno.ToString()).Select(s => s.VALOR).FirstOrDefault();
-            return Sal;  
+            return Sal;
         }
 
         private decimal ObtenerPasaje(decimal Agno)
@@ -479,7 +469,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             var topes = dbSIM.TBTARIFAS_TOPES.OrderBy(o => o.ID_TOPE).ToList();
             if (topes == null) return 0;
             var SalMinimo = dbSIM.TBTARIFAS_PARAMETRO.Where(w => w.NOMBRE == "SMMLV" && w.ACTIVO == "1" && w.ANO == Agno.ToString()).Select(s => s.VALOR).FirstOrDefault();
-            if (SalMinimo <=  0) return 0;  
+            if (SalMinimo <= 0) return 0;
             bool _TopePorc = false;
             decimal CoefTope = 0;
             foreach (var tope in topes)
@@ -495,7 +485,8 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                         CoefTope = tope.TARIFA.Value;
                         _TopePorc = true;
                         break;
-                    } else if (tope.TOPE != null && tope.TOPE > 0 && tope.TARIFA == null)
+                    }
+                    else if (tope.TOPE != null && tope.TOPE > 0 && tope.TARIFA == null)
                     {
                         CoefTope = tope.TOPE.Value;
                         _TopePorc = false;
@@ -511,11 +502,11 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
 
         private string Validar(DatosValorTramite datosTramite)
         {
-            if (datosTramite.NIT == "") return  "Debe ingresar el NIT de la empresa";
+            if (datosTramite.NIT == "") return "Debe ingresar el NIT de la empresa";
             if (datosTramite.Tercero == "") return "Debe ingresar el tercero";
-            if (datosTramite.TipoTramite == "") return  "Debe seleccionar un tipo de trámite";
+            if (datosTramite.TipoTramite == "") return "Debe seleccionar un tipo de trámite";
             if (datosTramite.NumeroProfesionales <= 0) return "Debe ingresar la cantidad de profesionales técnicos que participaran en el tramite";
-            if (datosTramite.ValorProyecto <= 0) return  "Debe ingresar el valor del proyecto";
+            if (datosTramite.ValorProyecto <= 0) return "Debe ingresar el valor del proyecto";
             if (long.Parse(datosTramite.TipoTramite) == 26)
             {
                 if (datosTramite.CantNormas == 0) return "Debe ingresar la cantidad de Normas";
@@ -531,7 +522,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                 if (Tercero.ID_MUNICIPIO == null) return "No se encontró el municipio de la instalación del tercero y esto puede generar error!!";
                 if (Tercero.ID_DEPARTAMENTO == null) return "No se encontró el departamento de la instalación del tercero y esto puede generar error!!";
             }
-            return "" ;
+            return "";
         }
 
 
@@ -596,12 +587,12 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             Pagina.Canvas.DrawText(Datos.NumeroProfesionales.ToString(), _Arial, null, brush, 1080, 1190);
             Pagina.Canvas.DrawText("Nro. Visitas              ", _Arial, null, brush, 550, 1240);
             Pagina.Canvas.DrawText(Datos.NumeroVisitas.ToString(), _Arial, null, brush, 1080, 1240);
-            Pagina.Canvas.DrawText("Nro. Horas Informe        ",  _Arial, null, brush, 550, 1290);
+            Pagina.Canvas.DrawText("Nro. Horas Informe        ", _Arial, null, brush, 550, 1290);
             Pagina.Canvas.DrawText(Datos.HorasInforme.ToString(), _Arial, null, brush, 1080, 1290);
             Pagina.Canvas.DrawText("Duración Visita           ", _Arial, null, brush, 550, 1340);
             Pagina.Canvas.DrawText(Datos.DuracionVisita.ToString(), _Arial, null, brush, 1080, 1340);
             Pagina.Canvas.DrawText("                                  Observaciones", _Arial, null, brush, 500, 1500);
-            Pagina.Canvas.DrawRectangle(_Pen, null, 110, 1550, 2140, 340, 0); 
+            Pagina.Canvas.DrawRectangle(_Pen, null, 110, 1550, 2140, 340, 0);
             Pagina.Canvas.DrawTextBox(Datos.Observaciones.Trim().ToUpper(), _Arial, brush, 140, 1570, 2000, 340, tfo);
             Pagina.Canvas.DrawRectangle(_Pen, null, 110, 1930, 2140, 500, 0);
             Pagina.Canvas.DrawText("                       CÁLCULO DEL VALOR DE LA EVALUACIÓN", _Arial, null, brush, 500, 1950);
@@ -678,7 +669,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             Pagina.Canvas.DrawText(_Tercero.DIRECCION.Trim().ToUpper(), _Arial, null, brush, 750, 640); // Variable
             Pagina.Canvas.DrawText(_Tercero.MUNICIPIO.Trim() + " - " + _Tercero.DEPARTAMENTO.Trim(), _Arial, null, brush, 750, 680); // Variable
             Pagina.Canvas.DrawText("Teléfono : " + _Tercero.TELEFONO.ToString().Trim(), _Arial, null, brush, 750, 720); // Variable
-            var _codentidad = (from Dep in dbSIM.DEPENDENCIA 
+            var _codentidad = (from Dep in dbSIM.DEPENDENCIA
                                where Dep.ID_DEPENDENCIA == (from Df in dbSIM.FUNCIONARIO_DEPENDENCIA
                                                             where Df.CODFUNCIONARIO == funcionario && Df.D_SALIDA == null
                                                             select Df.ID_DEPENDENCIA).FirstOrDefault()
@@ -749,19 +740,20 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                 }
                 if (int.Parse(Tarifas.CONCEPTO_CONTABLE) == 393) IdTipoFactura = 5;
                 else IdTipoFactura = 4;
-            } else IdTipoFactura = 4;
+            }
+            else IdTipoFactura = 4;
             Pagina.Canvas.DrawText(SIM.Utilidades.Facturacion.enletras(_ValFact.ToString().Trim()), _Arial, null, brush, 450, 1795);  //Variable
             Pagina.Canvas.DrawText(_ValFact.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 2110, 1850);  //Variable
             Pagina.Canvas.DrawText("Por favor conserve la parte superior para verificar su pago", _Arial, null, brush, 145, 2000);
             var TipoFactura = (from _Clave in dbSIM.TIPO_FACTURA
-                             where _Clave.ID_TIPOFACTURA == IdTipoFactura
-                             select _Clave).FirstOrDefault();
+                               where _Clave.ID_TIPOFACTURA == IdTipoFactura
+                               select _Clave).FirstOrDefault();
             if (!string.IsNullOrEmpty(TipoFactura.S_CLAVE))
             {
                 string _NIT = long.Parse(Datos.NIT).ToString("00000000000");
                 string _FACT = MaxNum.ToString("000000000");
                 string _ValorF = _ValFact.ToString("00000000000000");
-               // if ((_ValorF.Length % 2) == 1) _ValorF = "0" + _ValorF;
+                // if ((_ValorF.Length % 2) == 1) _ValorF = "0" + _ValorF;
                 string _FechaPago = DateTime.Now.AddMonths(1).ToString("yyyyMMdd");
                 string _TextCode = "415" + TipoFactura.S_CLAVE.Trim() + "8020" + _FACT + _NIT + "#3900" + _ValorF + "#96" + _FechaPago; //Variable
                 Image _ImgBc = AreaMetro.Utilidades.CodeBar.CodeBar128Fact(_TextCode, DateTime.Now.AddMonths(1), new System.Drawing.Size(1300, 250));
@@ -797,7 +789,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             else Pagina.Canvas.DrawText(Datos.NIT.Trim(), _Arial, null, brush, 490, 2430); //Variable
             Pagina.Canvas.DrawText(TipoFactura.S_CUENTA.Trim(), _Arial, null, brush, 1820, 2430); //Variable
             Pagina.Canvas.DrawText(DateTime.Now.AddMonths(1).ToString("yyyy/MM/dd"), _Arial, null, brush, 490, 2490); //Variable
-            Pagina.Canvas.DrawText(_ValFact.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 490, 2550); //Variable
+            Pagina.Canvas.DrawText(double.Parse(_ValFact.ToString()).ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 490, 2550); //Variable
             Pagina.Canvas.DrawLine(_Pen, 100, 2770, 2400, 2770);
             Pagina.Canvas.DrawImage(_img, 100, 2790, _img.Width, _img.Height, 0, PDFKeepAspectRatio.KeepNone);
             Pagina.Canvas.DrawLine(_Pen, 650, 2790, 650, 3157);
@@ -836,7 +828,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             v %= 11;
             if (v >= 2)
                 v = 11 - v;
-            return v ;
+            return v;
         }
         #endregion
     }

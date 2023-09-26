@@ -1,4 +1,5 @@
 ﻿using DevExpress.Pdf;
+using DevExpress.Spreadsheet;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,12 +22,15 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace SIM.Areas.GestionDocumental.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ReemplazoDTO
     {
         public int Pagina { get; set; }
@@ -237,12 +241,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <param name="datos"></param>
         /// <returns></returns>
         [HttpPost]
-        public FileContentResult RadicarMasivo(MasivoDTO datos)
+        public ResponseMassiveDTO RadicarMasivo(MasivoDTO datos)
         {
             object _resp = null;
             var _mensaje = "";
             int _paginas = 0;
-            if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Error generando la radicación masiva" };
+            if (!ModelState.IsValid) return new ResponseMassiveDTO() { isSuccess = false, message = "Error generando la radicación masiva" };
             PDFDocument _doc = new PDFDocument();
             _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
             var userId = Int32.Parse(User.Identity.GetUserId());
@@ -253,7 +257,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             if (datos.IdSolicitud != "")
             {
                 DataTable dt = LeeArchivoExcel(datos.IdSolicitud);
-                dt.Columns.Add("Radicado Generado", typeof(string)));
+                dt.Columns.Add("Radicado Generado", typeof(string));
                 dt.Columns.Add("Código Tramite", typeof(Int32));
                 dt.Columns.Add("Código Documento", typeof(Int32));
                 dt.Columns.Add("Comentarios", typeof(string));
@@ -316,7 +320,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
 
                                                 _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
                                                 _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
-                                                //_pag.Canvas.DrawTextBox(Campo, _Arial, Pen, BrushTrans, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 120, 40, tfo);
                                             }
                                         }
                                         _doc.Pages[reemp.Pagina] = _pag;
@@ -384,14 +387,33 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         }
                         if (_mensaje != "") _mensaje = _correctos + " documentos creados correctamente con excepciones: <br />" + _mensaje;
                         else _mensaje = _correctos + " documentos creados correctamente.";
-                        return new { resp = "Ok", mensaje = _mensaje };
+                        FileInfo result = new FileInfo(_Dir + @"\" + "Resultado.xlsx");
+                        Workbook wb = new Workbook();
+                        wb.Worksheets[0].Import(dt, true, 0, 0);
+                        wb.SaveDocument(result.FullName, DevExpress.Spreadsheet.DocumentFormat.Xlsx);
+
+                        StringBuilder sb = new StringBuilder();
+
+                        IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
+                                                          Select(column => column.ColumnName);
+                        sb.AppendLine(string.Join(",", columnNames));
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            IEnumerable<string> fields = row.ItemArray.Select(field => string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
+                            sb.AppendLine(string.Join(",", fields));
+                        }
+                        MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
+
+
+                        return new ResponseMassiveDTO() { isSuccess = true, message = _mensaje, responseFile = File.ReadAllBytes(result.FullName) };
                     }
-                    else _resp = new { resp = "Error", mensaje = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
+                    else return new ResponseMassiveDTO() { isSuccess = false, message = "No se ingresaron los índices para la unidad documental!!" };
 
                 }
-                else _resp = new { resp = "Error", mensaje = "Falta el identificador de la solicitud!!" };
+                else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
             }
-            return _resp;
+            else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
         }
 
         /// <summary>

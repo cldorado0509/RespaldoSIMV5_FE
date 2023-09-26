@@ -138,7 +138,6 @@ $(document).ready(function () {
                                     showSpinButtons: false,
                                     onValueChanged: function (e) {
                                         cellInfo.setValue(e.value);
-                                        cellElement.setValue(e.value);
                                     },
                                 });
                                 break;
@@ -153,7 +152,6 @@ $(document).ready(function () {
                                     width: '100%',
                                     onValueChanged: function (e) {
                                         cellInfo.setValue(e.value);
-                                        cellElement.setValue(e.value);
                                     },
                                 });
                                 break;
@@ -176,7 +174,6 @@ $(document).ready(function () {
                                         onValueChanged: function (e) {
                                             //cellInfo.setValue(e.value);
                                             cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
-                                            cellElement.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
                                         },
                                     });
                                 } else {
@@ -187,7 +184,6 @@ $(document).ready(function () {
                                         onValueChanged: function (e) {
                                             //cellInfo.setValue(e.value);
                                             cellInfo.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
-                                            cellElement.setValue(e.value.getDate() + '/' + (e.value.getMonth() + 1) + '/' + e.value.getFullYear());
                                         },
                                     });
                                 }
@@ -206,7 +202,6 @@ $(document).ready(function () {
                                     value: cellInfo.data.VALOR,
                                     onValueChanged: function (e) {
                                         cellInfo.setValue(e.value);
-                                        cellElement.setValue(e.value);
                                         $("#grdIndices").dxDataGrid("saveEditData");
                                     },
                                 });
@@ -493,8 +488,15 @@ $(document).ready(function () {
                 data: JSON.stringify(parametros),
                 contentType: "application/json",
                 success: function (data) {
-                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Radicación Masivos');
-                    else DevExpress.ui.dialog.alert(data.mensaje, 'Radicación Masivos');
+                    if (!data.isSuccess) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Radicación Masivos');
+                    else {
+                        DevExpress.ui.dialog.alert(data.message, 'Radicación Masivos');
+                        var fileURL = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8;base64,' + data.responseFile;
+                        var link = document.createElement('a');
+                        link.href = fileURL;
+                        link.download = "resultado.xlsx";
+                        link.click();
+                    }
                 }
             });
             $("#loadPanel").dxLoadPanel('instance').hide();
