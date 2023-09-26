@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Http;
+using System.Web.Mvc;
 
 namespace SIM.Areas.GestionDocumental.Controllers
 {
@@ -236,7 +237,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <param name="datos"></param>
         /// <returns></returns>
         [HttpPost]
-        public object RadicarMasivo(MasivoDTO datos)
+        public FileContentResult RadicarMasivo(MasivoDTO datos)
         {
             object _resp = null;
             var _mensaje = "";
@@ -252,6 +253,10 @@ namespace SIM.Areas.GestionDocumental.Controllers
             if (datos.IdSolicitud != "")
             {
                 DataTable dt = LeeArchivoExcel(datos.IdSolicitud);
+                dt.Columns.Add("Radicado Generado", typeof(string)));
+                dt.Columns.Add("Código Tramite", typeof(Int32));
+                dt.Columns.Add("Código Documento", typeof(Int32));
+                dt.Columns.Add("Comentarios", typeof(string));
                 string _RutaPdf = ObtienePlatillaPdf(datos.IdSolicitud);
                 if (_RutaPdf != "")
                 {
@@ -355,14 +360,27 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     documento.Paginas = _paginas;
                                     MemoryStream streamDoc = new MemoryStream();
                                     _doc.Save(streamDoc);
+
+
                                     documento.Archivo = streamDoc.ToArray();
-                                    if (!SIM.Utilidades.Tramites.AdicionaDocumentoTramite(CodTramite, IdRadicado, documento, _Indices))
+                                    if (!SIM.Utilidades.Tramites.AdicionaDocRadicadoTramite(CodTramite, IdRadicado, documento, _Indices))
                                     {
                                         _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
+                                        fila["Comentarios"] = $"El documento no se pudo generar ya ocurrió un problema con el documento";
                                     }
-                                    else _correctos++;
+                                    else
+                                    {
+                                        _correctos++;
+                                        var CodDoc = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).Select(s => s.CODDOCUMENTO).FirstOrDefault();
+                                        fila["Radicado Generado"] = _Radicado;
+                                        fila["Código Documento"] = CodDoc;
+                                        fila["Código Tramite"] = CodTramite;
+                                        fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                    }
                                 }
+                                else fila["Comentarios"] = $"El documento no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró";
                             }
+                            dt.AcceptChanges();
                         }
                         if (_mensaje != "") _mensaje = _correctos + " documentos creados correctamente con excepciones: <br />" + _mensaje;
                         else _mensaje = _correctos + " documentos creados correctamente.";
