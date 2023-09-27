@@ -708,7 +708,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             Pagina.Canvas.DrawText("TOTAL  ", _Arial, null, brush, 1840, 1850);
             _Arial.Bold = false;
             int _Linea = 960;
-            long _ValFact = (long)parametrosCalculo.Valor;
+            double _ValFact = (double)parametrosCalculo.Valor;
             PDFTextFormatOptions tfo = new PDFTextFormatOptions();
             tfo.Align = PDFTextAlign.TopJustified;
             tfo.ClipText = PDFClipText.ClipNone;
@@ -736,7 +736,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
                     if (Tarifas.CONCEPTO_PUBLICACION.Trim() != "395") Pagina.Canvas.DrawText("PUBLICACIONES AMBIENTALES", _Arial, null, brush, 310, _Linea);  //Variable
                     else Pagina.Canvas.DrawText("PUBLICACIONES RECURSO FORESTAL (FONDO VERDE)", _Arial, null, brush, 310, _Linea);  //Variable
                     Pagina.Canvas.DrawText(double.Parse(parametrosCalculo.Publicacion.ToString()).ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 2110, _Linea); //Variable
-                    _ValFact += (long)parametrosCalculo.Publicacion;
+                    _ValFact += (double)parametrosCalculo.Publicacion;
                 }
                 if (int.Parse(Tarifas.CONCEPTO_CONTABLE) == 393) IdTipoFactura = 5;
                 else IdTipoFactura = 4;
@@ -789,7 +789,7 @@ namespace SIM.Areas.AtencionUsuarios.Controllers
             else Pagina.Canvas.DrawText(Datos.NIT.Trim(), _Arial, null, brush, 490, 2430); //Variable
             Pagina.Canvas.DrawText(TipoFactura.S_CUENTA.Trim(), _Arial, null, brush, 1820, 2430); //Variable
             Pagina.Canvas.DrawText(DateTime.Now.AddMonths(1).ToString("yyyy/MM/dd"), _Arial, null, brush, 490, 2490); //Variable
-            Pagina.Canvas.DrawText(double.Parse(_ValFact.ToString()).ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 490, 2550); //Variable
+            Pagina.Canvas.DrawText(_ValFact.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 490, 2550); //Variable
             Pagina.Canvas.DrawLine(_Pen, 100, 2770, 2400, 2770);
             Pagina.Canvas.DrawImage(_img, 100, 2790, _img.Width, _img.Height, 0, PDFKeepAspectRatio.KeepNone);
             Pagina.Canvas.DrawLine(_Pen, 650, 2790, 650, 3157);
