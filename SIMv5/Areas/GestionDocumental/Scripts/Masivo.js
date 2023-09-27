@@ -488,8 +488,11 @@ $(document).ready(function () {
                 data: JSON.stringify(parametros),
                 contentType: "application/json",
                 success: function (data) {
-                    if (!data.isSuccess) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Radicación Masivos');
-                    else {
+                    if (!data.isSuccess) {
+                        $("#loadPanel").dxLoadPanel('instance').hide();
+                        DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Radicación Masivos');
+                    } else {
+                        $("#loadPanel").dxLoadPanel('instance').hide();
                         DevExpress.ui.dialog.alert(data.message, 'Radicación Masivos');
                         var fileURL = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8;base64,' + data.responseFile;
                         var link = document.createElement('a');
@@ -499,7 +502,6 @@ $(document).ready(function () {
                     }
                 }
             });
-            $("#loadPanel").dxLoadPanel('instance').hide();
         }
     }).dxButton("instance"); 
 
