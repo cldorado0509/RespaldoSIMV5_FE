@@ -56,6 +56,13 @@
                     <label class="col-sm-4" id="NumVital">@Model.Vital</label>
                 </div>
             }
+            @if (Model.TramitePadre > 0)
+            {
+                <div class="row">
+                    <label class="col-sm-3">Trámite que dió orígen trámite actual</label>
+                    <label class="col-sm-4">@Model.TramitePadre</label>
+                </div>
+            }
             <div id="sebDetalleTramite" class="col-12"></div>
             <br />
             <div id="PanelMensajes">

@@ -107,7 +107,8 @@
                                     Orden = TT.ORDEN,
                                     CodFuncionario = funcionario,
                                     Propietario = UltFun == funcionario,
-                                    TramiteAbierto = TraOp == 0
+                                    TramiteAbierto = TraOp == 0,
+                                    TramitePadre = (int)TR.CODTRAMITE_ANTERIOR
                                 }).FirstOrDefault();
             if (TramiteTarea == null)
             {
@@ -122,13 +123,14 @@
                                     Tarea = "Sin tarea asociada",
                                     FechaIniciaTarea = TR.FECHAINI.Value,
                                     TipoTarea = "Sin tarea asociada",
-                                    Funcionario =  "Sin fumcionario asignado",
+                                    Funcionario = "Sin fumcionario asignado",
                                     QueDeboHacer = "Sin tarea asociada",
                                     Vital = TR.NUMERO_VITAL,
                                     Orden = 1,
                                     CodFuncionario = funcionario,
                                     Propietario = false,
-                                    TramiteAbierto = false
+                                    TramiteAbierto = false,
+                                    TramitePadre = (int)TR.CODTRAMITE_ANTERIOR
                                 }).FirstOrDefault();
             }
             TramiteTarea.Vital = TramiteTarea.Vital != null ? TramiteTarea.Vital : "-1";
@@ -280,7 +282,7 @@
             }
             catch
             {
-                resp=false;
+                resp = false;
             }
             return Json(new { returnvalue = resp }, JsonRequestBehavior.AllowGet);
         }
