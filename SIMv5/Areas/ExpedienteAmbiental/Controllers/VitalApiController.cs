@@ -706,7 +706,7 @@
 
 
                 SIM.Utilidades.Radicador radicador = new Radicador();
-                if (!radicador.SePuedeGenerarRadicado(DateTime.Now))
+                if (radicador.SePuedeGenerarRadicado(DateTime.Now))
                 {
                     resposeF = await apiService.PostAsync<TramiteDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "DescartarTramiteAmbientalSIM", tramiteDTO, response.JwtToken);
                     if (!resposeF.IsSuccess)
