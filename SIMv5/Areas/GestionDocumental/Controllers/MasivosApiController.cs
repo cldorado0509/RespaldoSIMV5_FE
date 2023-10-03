@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -243,7 +244,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
         [HttpPost]
         public ResponseMassiveDTO RadicarMasivo(MasivoDTO datos)
         {
-            object _resp = null;
             var _mensaje = "";
             int _paginas = 0;
             if (!ModelState.IsValid) return new ResponseMassiveDTO() { isSuccess = false, message = "Error generando la radicación masiva" };
@@ -414,6 +414,86 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
             }
             else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datos"></param>
+        /// <returns></returns>
+        [HttpPost]
+        // public System.Web.Mvc.FileContentResult PrevisualizaMasivo(MasivoDTO datos)
+        public byte[] PrevisualizaMasivo(MasivoDTO datos)
+        {
+            MemoryStream streamDoc = new MemoryStream();
+            PDFDocument _doc = new PDFDocument();
+            _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
+            string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
+            string _Dir = _RutaCorrespondencia + @"\" + datos.IdSolicitud;
+            if (!Directory.Exists(_Dir)) Directory.CreateDirectory(_Dir);
+            if (datos.IdSolicitud != "")
+            {
+                DataTable dt = LeeArchivoExcel(datos.IdSolicitud);
+                DataRow dr = dt.Rows[0];
+                string _RutaPdf = ObtienePlatillaPdf(datos.IdSolicitud);
+                if (_RutaPdf != "")
+                {
+                    if (dr != null)
+                    {
+                        PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
+                        var DatosReemplazo = ReemplazoDoc(datos.IdSolicitud, dt.Columns);
+                        if (DatosReemplazo.Count > 0)
+                        {
+                            PDFPage _pag = null;
+                            PDFImportedPage ip = null;
+                            PDFTextRun pDFTextRun = null;
+                            int _paginas = _docPdf.PagesCount;
+                            for (var i = 0; i < _paginas; i++)
+                            {
+                                ip = _docPdf.ExtractPage(i);
+                                _doc.Pages.Add(ip);
+                            }
+                            foreach (var reemp in DatosReemplazo)
+                            {
+                                _pag = _doc.Pages[reemp.Pagina];
+                                var Campo = dr[reemp.CampoReemplazo].ToString();
+                                foreach (var dato in reemp.ListReemplazo)
+                                {
+                                    pDFTextRun = dato.TextRuns[0];
+                                    if (pDFTextRun != null)
+                                    {
+                                        Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
+                                        TrueTypeFont _Arial = new TrueTypeFont(_fnt, true);
+                                        PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
+                                        PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
+                                        PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
+                                        PDFTextFormatOptions tfo = new PDFTextFormatOptions();
+                                        PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
+                                        tfo.Align = PDFTextAlign.TopLeft;
+                                        tfo.ClipText = PDFClipText.ClipNone;
+
+                                        _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
+                                        _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
+                                    }
+                                }
+                                if (reemp.Pagina == 0)
+                                {
+                                    Bitmap _BmpRad = ObtenerImagenEspacioRadicado();
+                                    _pag.Canvas.DrawImage(_BmpRad, 300, 30, 288, 72);
+                                }
+                                _doc.Pages[reemp.Pagina] = _pag;
+                            }
+                        }
+                        _doc.Save(streamDoc);
+                    }
+                }
+                else return null;
+            }
+            else return null;
+            streamDoc.Position = 0;
+            return streamDoc.ToArray();
+            //var Archivo = streamDoc.ToArray();
+            //return new System.Web.Mvc.FileContentResult(Archivo, "application/pdf");
         }
 
         /// <summary>
@@ -591,6 +671,30 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
             return _resp;
         }
+
+        /// <summary>
+        /// Obtiene el espacio donde va el radicado en imagen
+        /// </summary>
+        /// <returns></returns>
+        private Bitmap ObtenerImagenEspacioRadicado()
+        {
+            Bitmap canvas = new Bitmap(590, 150);
+            canvas.SetResolution(150, 150);
+            Font _fnt = new Font(FontFamily.GenericSerif, 12, FontStyle.Bold);
+            System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
+            Pen pen = new Pen(Color.Black, 1);
+            pen.Alignment = PenAlignment.Inset;
+            Rectangle _rect = new Rectangle(0, 0, canvas.Width - 1, canvas.Height - 1);
+            using (Graphics gra = Graphics.FromImage(canvas))
+            {
+                gra.FillRectangle(new SolidBrush(Color.White), _rect);
+                gra.DrawRectangle(pen, _rect);
+                gra.DrawString("Espacio para el RADICADO", _fnt, brush, 100, 60);
+            }
+            return canvas;
+        }
+
+
         #endregion
     }
 
