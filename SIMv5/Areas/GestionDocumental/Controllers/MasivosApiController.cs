@@ -490,6 +490,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 else return null;
             }
             else return null;
+
             streamDoc.Position = 0;
             return streamDoc.ToArray();
             //var Archivo = streamDoc.ToArray();
