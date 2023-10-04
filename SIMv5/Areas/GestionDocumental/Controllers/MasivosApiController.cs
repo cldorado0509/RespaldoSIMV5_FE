@@ -403,13 +403,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             IEnumerable<string> fields = row.ItemArray.Select(field => string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
                             sb.AppendLine(string.Join(",", fields));
                         }
-                        MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
+                        //MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
 
 
                         return new ResponseMassiveDTO() { isSuccess = true, message = _mensaje, responseFile = File.ReadAllBytes(result.FullName) };
                     }
                     else return new ResponseMassiveDTO() { isSuccess = false, message = "No se ingresaron los índices para la unidad documental!!" };
-
                 }
                 else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
             }
@@ -422,11 +421,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <param name="datos"></param>
         /// <returns></returns>
         [HttpPost]
-        // public System.Web.Mvc.FileContentResult PrevisualizaMasivo(MasivoDTO datos)
-        public byte[] PrevisualizaMasivo(MasivoDTO datos)
+        public ResponseMassiveDTO PrevisualizaMasivo(MasivoDTO datos)
         {
             MemoryStream streamDoc = new MemoryStream();
             PDFDocument _doc = new PDFDocument();
+            if (!ModelState.IsValid) return new ResponseMassiveDTO() { isSuccess = false, message = "Error generando la previsualización del documento" };
             _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
             string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
             string _Dir = _RutaCorrespondencia + @"\" + datos.IdSolicitud;
@@ -487,14 +486,13 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         _doc.Save(streamDoc);
                     }
                 }
-                else return null;
+                else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
             }
-            else return null;
-
+            else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
+            FileInfo result = new FileInfo(_Dir + @"\" + "Preview.pdf");
             streamDoc.Position = 0;
-            return streamDoc.ToArray();
-            //var Archivo = streamDoc.ToArray();
-            //return new System.Web.Mvc.FileContentResult(Archivo, "application/pdf");
+            SIM.Utilidades.Archivos.GrabaMemoryStream(streamDoc, result.FullName);
+            return new ResponseMassiveDTO() { isSuccess = true, message = "", responseFile = File.ReadAllBytes(result.FullName) };
         }
 
         /// <summary>

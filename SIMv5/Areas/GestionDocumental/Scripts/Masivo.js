@@ -523,12 +523,14 @@ $(document).ready(function () {
                 data: JSON.stringify(parametros),
                 contentType: "application/json",
                 success: function (data) {
-                    $("#loadPanel").dxLoadPanel('instance').hide();
-                    //var file = new Blob([data], { type: 'application/pdf' });
-                    //var fileURL = URL.createObjectURL(file);
-                    var pdfAsDataUri = "data:application/pdf;base64," + data;
-                    window.open(pdfAsDataUri, "Previsualizar Radicación Masiva" , "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
-                    
+                    if (!data.isSuccess) {
+                        $("#loadPanel").dxLoadPanel('instance').hide();
+                        DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Previsualización Radicación Masivos');
+                    } else {
+                        $("#loadPanel").dxLoadPanel('instance').hide();
+                        var pdfWindow = window.open("");
+                        pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data.responseFile + "'></iframe>")
+                    }
                 }
             });
             $("#loadPanel").dxLoadPanel('instance').hide();
