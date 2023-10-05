@@ -19,7 +19,7 @@ namespace SIM.Areas.GestionDocumental.Models
         public long LONGITUD { get; set; }
         public int OBLIGA { get; set; }
         public string VALORDEFECTO { get; set; }
-        public string VALOR { get; set; }
+        public string VALOR { get; set; } = string.Empty;
         public int? ID_VALOR { get; set; }
         public Nullable<int> ID_LISTA { get; set; }
         public Nullable<int> TIPO_LISTA { get; set; }

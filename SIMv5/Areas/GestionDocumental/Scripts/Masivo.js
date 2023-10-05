@@ -2,7 +2,7 @@
 var indicesSerieDocumentalStore = null;
 var columnasExcel;
 var opcionesLista = [];
-var ArrIndices = null;
+var ArrIndices =  [];
 var TramiteValido = false;
 $(document).ready(function () {
 
@@ -335,6 +335,7 @@ $(document).ready(function () {
                 IdSolicitud = obj.IdSolicitud;
                 DevExpress.ui.dialog.alert(obj.MensajeExito, 'Plantilla COD');
                 btnRadicar.option("disabled", false);
+                btnPreview.option("disabled", false);
             } else {
                 DevExpress.ui.dialog.alert(obj.MensajeError, 'Plantilla COD');
             }
@@ -375,7 +376,7 @@ $(document).ready(function () {
                 IdSolicitud = obj.IdSolicitud;
                 DevExpress.ui.notify(obj.MensajeExito);
                 ufPlantilla.option("disabled", false);
-                chkEmail.option("disabled", false);
+                //chkEmail.option("disabled", false);
                 btnAsociaInd.option("disabled", false);
                 var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/CargaExcel";
                 $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
@@ -475,7 +476,7 @@ $(document).ready(function () {
             }
             if (ArrIndices.length === 0) {
                 $("#loadPanel").dxLoadPanel('instance').hide();
-                DevExpress.ui.notify("Para poder radicar los documentos se deben proporcionar la asociación de índices!");
+                DevExpress.ui.notify("Para poder radicar los documentos se deben proporcionar las asociaciones de índices!");
                 return;
             }
             var _EnviarEmail = chkEmail.option("value");
@@ -504,6 +505,37 @@ $(document).ready(function () {
             });
         }
     }).dxButton("instance"); 
+
+    var btnPreview = $("#btnPreview").dxButton({
+        text: "Previsualizar muestra",
+        type: "default",
+        disabled: true,
+        onClick: function () {
+            $("#loadPanel").dxLoadPanel('instance').show();
+            var _Tramite = txtTramite.option("value");
+            var _EnviarEmail = chkEmail.option("value");
+            var parametros = { IdSolicitud: IdSolicitud, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Indices: ArrIndices };
+            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/PrevisualizaMasivo";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(parametros),
+                contentType: "application/json",
+                success: function (data) {
+                    if (!data.isSuccess) {
+                        $("#loadPanel").dxLoadPanel('instance').hide();
+                        DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Previsualización Radicación Masivos');
+                    } else {
+                        $("#loadPanel").dxLoadPanel('instance').hide();
+                        var pdfWindow = window.open("");
+                        pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data.responseFile + "'></iframe>")
+                    }
+                }
+            });
+            $("#loadPanel").dxLoadPanel('instance').hide();
+        }
+    }).dxButton("instance");
 
     $("#popupIndices").dxPopup({
         width: 900,

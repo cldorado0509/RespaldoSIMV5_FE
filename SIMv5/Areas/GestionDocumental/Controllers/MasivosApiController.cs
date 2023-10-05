@@ -1,6 +1,8 @@
 ﻿using DevExpress.Pdf;
 using DevExpress.Spreadsheet;
+using MailKit.Security;
 using Microsoft.AspNet.Identity;
+using MimeKit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
@@ -19,11 +21,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web.Hosting;
 using System.Web.Http;
 
 namespace SIM.Areas.GestionDocumental.Controllers
@@ -243,7 +247,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
         [HttpPost]
         public ResponseMassiveDTO RadicarMasivo(MasivoDTO datos)
         {
-            object _resp = null;
             var _mensaje = "";
             int _paginas = 0;
             if (!ModelState.IsValid) return new ResponseMassiveDTO() { isSuccess = false, message = "Error generando la radicación masiva" };
@@ -339,6 +342,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     decimal CodTramite = datos.CodTramite != "" ? decimal.Parse(datos.CodTramite) : decimal.Parse(fila["CODTRAMITE"].ToString());
                                     List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
                                     IndicesDocumento _Index;
+                                    var _asunto = "";
+                                    var _para = "";
                                     foreach (var Ind in datos.Indices)
                                     {
                                         _Index = new IndicesDocumento();
@@ -351,6 +356,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         {
                                             if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _Index.VALOR = fila[Ind.VALORDEFECTO].ToString();
                                             else _Index.VALOR = Ind.VALOR;
+                                        }
+                                        if (Ind.INDICE.ToLower().Contains("asunto")) _asunto = Ind.VALOR;
+                                        if (Ind.INDICE.ToLower().Contains("destinatario"))
+                                        {
+                                            if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _para = fila[Ind.VALORDEFECTO].ToString();
+                                            else _para = Ind.VALOR;
                                         }
                                         _Indices.Add(_Index);
                                     }
@@ -378,7 +389,19 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         fila["Radicado Generado"] = _Radicado;
                                         fila["Código Documento"] = CodDoc;
                                         fila["Código Tramite"] = CodTramite;
-                                        fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                        if (datos.EnviarEmail)
+                                        {
+                                            var _email = fila["EMAIL"].ToString();
+                                            if (_email.Length > 0)
+                                            {
+                                                if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                                {
+                                                    fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                                }
+                                            }
+                                            else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se encontró un email para el envío";
+                                        }
+                                        else fila["Comentarios"] = "Radicado y documento generado correctamente";
                                     }
                                 }
                                 else fila["Comentarios"] = $"El documento no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró";
@@ -403,17 +426,97 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             IEnumerable<string> fields = row.ItemArray.Select(field => string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
                             sb.AppendLine(string.Join(",", fields));
                         }
-                        MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
+                        //MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
 
 
                         return new ResponseMassiveDTO() { isSuccess = true, message = _mensaje, responseFile = File.ReadAllBytes(result.FullName) };
                     }
                     else return new ResponseMassiveDTO() { isSuccess = false, message = "No se ingresaron los índices para la unidad documental!!" };
-
                 }
                 else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
             }
             else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datos"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ResponseMassiveDTO PrevisualizaMasivo(MasivoDTO datos)
+        {
+            MemoryStream streamDoc = new MemoryStream();
+            PDFDocument _doc = new PDFDocument();
+            if (!ModelState.IsValid) return new ResponseMassiveDTO() { isSuccess = false, message = "Error generando la previsualización del documento" };
+            _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
+            string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
+            string _Dir = _RutaCorrespondencia + @"\" + datos.IdSolicitud;
+            if (!Directory.Exists(_Dir)) Directory.CreateDirectory(_Dir);
+            if (datos.IdSolicitud != "")
+            {
+                DataTable dt = LeeArchivoExcel(datos.IdSolicitud);
+                DataRow dr = dt.Rows[0];
+                string _RutaPdf = ObtienePlatillaPdf(datos.IdSolicitud);
+                if (_RutaPdf != "")
+                {
+                    if (dr != null)
+                    {
+                        PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
+                        var DatosReemplazo = ReemplazoDoc(datos.IdSolicitud, dt.Columns);
+                        if (DatosReemplazo.Count > 0)
+                        {
+                            PDFPage _pag = null;
+                            PDFImportedPage ip = null;
+                            PDFTextRun pDFTextRun = null;
+                            int _paginas = _docPdf.PagesCount;
+                            for (var i = 0; i < _paginas; i++)
+                            {
+                                ip = _docPdf.ExtractPage(i);
+                                _doc.Pages.Add(ip);
+                            }
+                            foreach (var reemp in DatosReemplazo)
+                            {
+                                _pag = _doc.Pages[reemp.Pagina];
+                                var Campo = dr[reemp.CampoReemplazo].ToString();
+                                foreach (var dato in reemp.ListReemplazo)
+                                {
+                                    pDFTextRun = dato.TextRuns[0];
+                                    if (pDFTextRun != null)
+                                    {
+                                        Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
+                                        TrueTypeFont _Arial = new TrueTypeFont(_fnt, true);
+                                        PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
+                                        PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
+                                        PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
+                                        PDFTextFormatOptions tfo = new PDFTextFormatOptions();
+                                        PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
+                                        tfo.Align = PDFTextAlign.TopLeft;
+                                        tfo.ClipText = PDFClipText.ClipNone;
+
+                                        _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
+                                        _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
+                                    }
+                                }
+                                if (reemp.Pagina == 0)
+                                {
+                                    Bitmap _BmpRad = ObtenerImagenEspacioRadicado();
+                                    _pag.Canvas.DrawImage(_BmpRad, 300, 30, 288, 72);
+                                }
+                                _doc.Pages[reemp.Pagina] = _pag;
+                            }
+                        }
+                        _doc.Save(streamDoc);
+                    }
+                }
+                else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
+            }
+            else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
+            FileInfo result = new FileInfo(_Dir + @"\" + "Preview.pdf");
+            if (result.Exists) result.Delete();
+            streamDoc.Position = 0;
+            SIM.Utilidades.Archivos.GrabaMemoryStream(streamDoc, result.FullName);
+            return new ResponseMassiveDTO() { isSuccess = true, message = "", responseFile = File.ReadAllBytes(result.FullName) };
         }
 
         /// <summary>
@@ -591,6 +694,171 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
             return _resp;
         }
+
+        /// <summary>
+        /// Obtiene el espacio donde va el radicado en imagen
+        /// </summary>
+        /// <returns></returns>
+        private Bitmap ObtenerImagenEspacioRadicado()
+        {
+            Bitmap canvas = new Bitmap(590, 150);
+            canvas.SetResolution(150, 150);
+            Font _fnt = new Font(FontFamily.GenericSerif, 12, FontStyle.Bold);
+            System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
+            Pen pen = new Pen(Color.Black, 1);
+            pen.Alignment = PenAlignment.Inset;
+            Rectangle _rect = new Rectangle(0, 0, canvas.Width - 1, canvas.Height - 1);
+            using (Graphics gra = Graphics.FromImage(canvas))
+            {
+                gra.FillRectangle(new SolidBrush(Color.White), _rect);
+                gra.DrawRectangle(pen, _rect);
+                gra.DrawString("Espacio para el RADICADO", _fnt, brush, 100, 60);
+            }
+            return canvas;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="documento"></param>
+        /// <param name="asunto"></param>
+        /// <param name="para"></param>
+        /// <param name="radicado"></param>
+        /// <param name="fechaRad"></param>
+        /// <returns></returns>
+        private bool EnviarMailMk(string email, byte[] documento, string asunto, string para, string radicado, string fechaRad)
+        {
+            if (email.Length == 0) return false;
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Areas/GestionDocumental/Plantillas/MasivosCOD.html")))
+            {
+                body = reader.ReadToEnd();
+            }
+            if (body.Length > 0)
+            {
+                body = body.Replace("[Destinatario]", para);
+                body = body.Replace("[Radicado]", radicado);
+                body = body.Replace("[FechaRad]", fechaRad);
+                var correo = new MimeMessage();
+
+                if (email.Contains(";"))
+                {
+                    string[] _mails = email.Split(';');
+                    foreach (string _para in _mails) correo.To.Add(MailboxAddress.Parse(_para));
+                }
+                else correo.To.Add(MailboxAddress.Parse(email));
+                correo.Subject = asunto != "" ? asunto : "Sin asunto";
+                var bodyBuilder = new BodyBuilder();
+                bodyBuilder.HtmlBody = body;
+                correo.Priority = MessagePriority.Urgent;
+                if (documento.Length > 0)
+                {
+                    MemoryStream _anexo = new MemoryStream(documento);
+                    _anexo.Seek(0, SeekOrigin.Begin);
+                    //Attachment _File = new Attachment(_anexo, "COD_" + radicado + ".pdf", "application/pdf");
+                    //correo.Attachments.Add(_File);
+                    bodyBuilder.Attachments.Add("Receipt.pdf", _anexo);
+                }
+                correo.Body = bodyBuilder.ToMessageBody();
+                using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                    smtp.Authenticate("codelectronicas@metropol.gov.co", "Area2020");
+                    smtp.Send(correo);
+                    smtp.Disconnect(true);
+                    return true;
+                }
+            }
+            else return false;
+        }
+
+        private bool EnviarMailPrueba(string email, byte[] documento, string asunto, string para, string radicado, string fechaRad)
+        {
+            if (email.Length == 0) return false;
+            string body = string.Empty;
+            body = body.Replace("[Destinatario]", para);
+            body = body.Replace("[Radicado]", radicado);
+            body = body.Replace("[FechaRad]", fechaRad);
+            var correo = new MimeMessage();
+
+            correo.To.Add(MailboxAddress.Parse(email));
+            correo.Subject = asunto;
+            correo.Priority = MessagePriority.Urgent;
+            correo.Body = new TextPart("hola, esto es una prueba de envio de correo!!!!");
+            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+            {
+                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("codelectronicas@metropol.gov.co", "Area2020");
+                smtp.Send(correo);
+                smtp.Disconnect(true);
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="documento"></param>
+        /// <param name="asunto"></param>
+        /// <param name="para"></param>
+        /// <param name="radicado"></param>
+        /// <param name="fechaRad"></param>
+        /// <returns></returns>
+        //private bool EnviarMail(string email, byte[] documento, string asunto, string para, string radicado, string fechaRad)
+        //{
+        //    if (email.Length == 0) return false;
+        //    string body = string.Empty;
+        //    using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Areas/GestionDocumental/Plantillas/MasivosCOD.html")))
+        //    {
+        //        body = reader.ReadToEnd();
+        //    }
+        //    if (body.Length > 0)
+        //    {
+        //        body = body.Replace("[Destinatario]", para);
+        //        body = body.Replace("[Radicado]", radicado);
+        //        body = body.Replace("[FechaRad]", fechaRad);
+        //        MailMessage correo = new MailMessage();
+
+        //        if (email.Contains(";"))
+        //        {
+        //            string[] _mails = email.Split(';');
+        //            foreach (string _para in _mails) correo.To.Add(new MailAddress(_para));
+        //        }
+        //        else correo.To.Add(new MailAddress(email));
+        //        correo.Subject = asunto;
+        //        correo.Body = body;
+        //        correo.IsBodyHtml = true;
+        //        correo.Priority = MailPriority.High;
+        //        if (documento.Length > 0)
+        //        {
+        //            MemoryStream _anexo = new MemoryStream(documento);
+        //            _anexo.Seek(0, SeekOrigin.Begin);
+        //            Attachment _File = new Attachment(_anexo, "COD_" + radicado + ".pdf", "application/pdf");
+        //            correo.Attachments.Add(_File);
+        //        }
+        //        SmtpClient smtp = new SmtpClient();
+        //        try
+        //        {
+        //            using (var client = new SmtpClient("smtp.office365.com"))
+        //            {
+        //                client.UseDefaultCredentials = false;
+        //                client.Port = 25;
+        //                client.Credentials = new NetworkCredential("codelectronicas@metropol.gov.co", "Area2020");
+        //                client.EnableSsl = true;
+        //                client.SendMailAsync(correo).Wait(); // Email sent
+        //                return true;
+        //            }
+        //        }
+        //        catch (SmtpException ex)
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    else return false;
+        //}
+
         #endregion
     }
 
