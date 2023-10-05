@@ -1,6 +1,8 @@
 ﻿using DevExpress.Pdf;
 using DevExpress.Spreadsheet;
+using MailKit.Security;
 using Microsoft.AspNet.Identity;
+using MimeKit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
@@ -25,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web.Hosting;
 using System.Web.Http;
 
 namespace SIM.Areas.GestionDocumental.Controllers
@@ -339,6 +342,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     decimal CodTramite = datos.CodTramite != "" ? decimal.Parse(datos.CodTramite) : decimal.Parse(fila["CODTRAMITE"].ToString());
                                     List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
                                     IndicesDocumento _Index;
+                                    var _asunto = "";
+                                    var _para = "";
                                     foreach (var Ind in datos.Indices)
                                     {
                                         _Index = new IndicesDocumento();
@@ -351,6 +356,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         {
                                             if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _Index.VALOR = fila[Ind.VALORDEFECTO].ToString();
                                             else _Index.VALOR = Ind.VALOR;
+                                        }
+                                        if (Ind.INDICE.ToLower().Contains("asunto")) _asunto = Ind.VALOR;
+                                        if (Ind.INDICE.ToLower().Contains("destinatario"))
+                                        {
+                                            if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _para = fila[Ind.VALORDEFECTO].ToString();
+                                            else _para = Ind.VALOR;
                                         }
                                         _Indices.Add(_Index);
                                     }
@@ -378,7 +389,19 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         fila["Radicado Generado"] = _Radicado;
                                         fila["Código Documento"] = CodDoc;
                                         fila["Código Tramite"] = CodTramite;
-                                        fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                        if (datos.EnviarEmail)
+                                        {
+                                            var _email = fila["EMAIL"].ToString();
+                                            if (_email.Length > 0)
+                                            {
+                                                if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                                {
+                                                    fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                                }
+                                            }
+                                            else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se encontró un email para el envío";
+                                        }
+                                        else fila["Comentarios"] = "Radicado y documento generado correctamente";
                                     }
                                 }
                                 else fila["Comentarios"] = $"El documento no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró";
@@ -490,6 +513,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
             else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
             FileInfo result = new FileInfo(_Dir + @"\" + "Preview.pdf");
+            if (result.Exists) result.Delete();
             streamDoc.Position = 0;
             SIM.Utilidades.Archivos.GrabaMemoryStream(streamDoc, result.FullName);
             return new ResponseMassiveDTO() { isSuccess = true, message = "", responseFile = File.ReadAllBytes(result.FullName) };
@@ -693,6 +717,147 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return canvas;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="documento"></param>
+        /// <param name="asunto"></param>
+        /// <param name="para"></param>
+        /// <param name="radicado"></param>
+        /// <param name="fechaRad"></param>
+        /// <returns></returns>
+        private bool EnviarMailMk(string email, byte[] documento, string asunto, string para, string radicado, string fechaRad)
+        {
+            if (email.Length == 0) return false;
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Areas/GestionDocumental/Plantillas/MasivosCOD.html")))
+            {
+                body = reader.ReadToEnd();
+            }
+            if (body.Length > 0)
+            {
+                body = body.Replace("[Destinatario]", para);
+                body = body.Replace("[Radicado]", radicado);
+                body = body.Replace("[FechaRad]", fechaRad);
+                var correo = new MimeMessage();
+
+                if (email.Contains(";"))
+                {
+                    string[] _mails = email.Split(';');
+                    foreach (string _para in _mails) correo.To.Add(MailboxAddress.Parse(_para));
+                }
+                else correo.To.Add(MailboxAddress.Parse(email));
+                correo.Subject = asunto != "" ? asunto : "Sin asunto";
+                var bodyBuilder = new BodyBuilder();
+                bodyBuilder.HtmlBody = body;
+                correo.Priority = MessagePriority.Urgent;
+                if (documento.Length > 0)
+                {
+                    MemoryStream _anexo = new MemoryStream(documento);
+                    _anexo.Seek(0, SeekOrigin.Begin);
+                    //Attachment _File = new Attachment(_anexo, "COD_" + radicado + ".pdf", "application/pdf");
+                    //correo.Attachments.Add(_File);
+                    bodyBuilder.Attachments.Add("Receipt.pdf", _anexo);
+                }
+                correo.Body = bodyBuilder.ToMessageBody();
+                using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                    smtp.Authenticate("codelectronicas@metropol.gov.co", "Area2020");
+                    smtp.Send(correo);
+                    smtp.Disconnect(true);
+                    return true;
+                }
+            }
+            else return false;
+        }
+
+        private bool EnviarMailPrueba(string email, byte[] documento, string asunto, string para, string radicado, string fechaRad)
+        {
+            if (email.Length == 0) return false;
+            string body = string.Empty;
+            body = body.Replace("[Destinatario]", para);
+            body = body.Replace("[Radicado]", radicado);
+            body = body.Replace("[FechaRad]", fechaRad);
+            var correo = new MimeMessage();
+
+            correo.To.Add(MailboxAddress.Parse(email));
+            correo.Subject = asunto;
+            correo.Priority = MessagePriority.Urgent;
+            correo.Body = new TextPart("hola, esto es una prueba de envio de correo!!!!");
+            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+            {
+                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("codelectronicas@metropol.gov.co", "Area2020");
+                smtp.Send(correo);
+                smtp.Disconnect(true);
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="documento"></param>
+        /// <param name="asunto"></param>
+        /// <param name="para"></param>
+        /// <param name="radicado"></param>
+        /// <param name="fechaRad"></param>
+        /// <returns></returns>
+        //private bool EnviarMail(string email, byte[] documento, string asunto, string para, string radicado, string fechaRad)
+        //{
+        //    if (email.Length == 0) return false;
+        //    string body = string.Empty;
+        //    using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Areas/GestionDocumental/Plantillas/MasivosCOD.html")))
+        //    {
+        //        body = reader.ReadToEnd();
+        //    }
+        //    if (body.Length > 0)
+        //    {
+        //        body = body.Replace("[Destinatario]", para);
+        //        body = body.Replace("[Radicado]", radicado);
+        //        body = body.Replace("[FechaRad]", fechaRad);
+        //        MailMessage correo = new MailMessage();
+
+        //        if (email.Contains(";"))
+        //        {
+        //            string[] _mails = email.Split(';');
+        //            foreach (string _para in _mails) correo.To.Add(new MailAddress(_para));
+        //        }
+        //        else correo.To.Add(new MailAddress(email));
+        //        correo.Subject = asunto;
+        //        correo.Body = body;
+        //        correo.IsBodyHtml = true;
+        //        correo.Priority = MailPriority.High;
+        //        if (documento.Length > 0)
+        //        {
+        //            MemoryStream _anexo = new MemoryStream(documento);
+        //            _anexo.Seek(0, SeekOrigin.Begin);
+        //            Attachment _File = new Attachment(_anexo, "COD_" + radicado + ".pdf", "application/pdf");
+        //            correo.Attachments.Add(_File);
+        //        }
+        //        SmtpClient smtp = new SmtpClient();
+        //        try
+        //        {
+        //            using (var client = new SmtpClient("smtp.office365.com"))
+        //            {
+        //                client.UseDefaultCredentials = false;
+        //                client.Port = 25;
+        //                client.Credentials = new NetworkCredential("codelectronicas@metropol.gov.co", "Area2020");
+        //                client.EnableSsl = true;
+        //                client.SendMailAsync(correo).Wait(); // Email sent
+        //                return true;
+        //            }
+        //        }
+        //        catch (SmtpException ex)
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    else return false;
+        //}
 
         #endregion
     }

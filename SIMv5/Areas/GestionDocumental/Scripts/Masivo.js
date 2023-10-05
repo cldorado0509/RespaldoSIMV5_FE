@@ -376,7 +376,7 @@ $(document).ready(function () {
                 IdSolicitud = obj.IdSolicitud;
                 DevExpress.ui.notify(obj.MensajeExito);
                 ufPlantilla.option("disabled", false);
-                chkEmail.option("disabled", false);
+                //chkEmail.option("disabled", false);
                 btnAsociaInd.option("disabled", false);
                 var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/CargaExcel";
                 $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
