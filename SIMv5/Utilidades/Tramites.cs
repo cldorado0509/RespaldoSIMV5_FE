@@ -157,6 +157,16 @@
             else return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CodigoTramite"></param>
+        /// <param name="CodigoTarea"></param>
+        /// <param name="Funcionario"></param>
+        /// <param name="Orden"></param>
+        /// <param name="Comentario"></param>
+        /// <param name="ArrayMotivos"></param>
+        /// <returns></returns>
         public string DevolverTramite(long CodigoTramite, long CodigoTarea, string Funcionario, int Orden, string Comentario, string ArrayMotivos)
         {
             string _Rpta = "";
@@ -195,7 +205,6 @@
                                             dev.ORDEN = Orden;
                                             dev.ID_MOTIVODEV = long.Parse(_ArrayMotivo[0]);
                                             dbSIM.DEVOLUCION_TAREA.Add(dev);
-                                            dbSIM.SaveChanges();
                                             _TxtMotivos += _ArrayMotivo[1] + ", ";
                                         }
                                     }
@@ -206,7 +215,6 @@
                                 _TareaFinal.ESTADO = 1;
                                 _TareaFinal.COMENTARIO = Comentario;
                                 dbSIM.Entry(_TareaFinal).State = System.Data.Entity.EntityState.Modified;
-                                dbSIM.SaveChanges();
                                 TBTRAMITETAREA tta = new TBTRAMITETAREA();
                                 tta.CODTRAMITE = CodigoTramite;
                                 tta.CODTAREA = TareaAnterior.CODTAREA;
@@ -221,7 +229,6 @@
                                 tta.RECIBIDA = 0;
                                 tta.DEVOLUCION = "1";
                                 dbSIM.TBTRAMITETAREA.Add(tta);
-                                dbSIM.SaveChanges();
                                 TBTAREACOMENTARIO tac = new TBTAREACOMENTARIO();
                                 tac.CODTRAMITE = CodigoTramite;
                                 tac.CODTAREA = TareaActual.CODTAREA;
@@ -244,18 +251,24 @@
             return _Rpta;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_TareaAnterior"></param>
+        /// <param name="_TareaActual"></param>
+        /// <returns></returns>
         public bool SePuedeDevolver(decimal _TareaAnterior, decimal _TareaActual)
         {
             bool _Rpta = true;
             if (_TareaAnterior == 0 || _TareaActual == 0) return false;
-            var TareaAnt = (from Tar in dbSIM.TBTAREA
-                            where Tar.CODTAREA == _TareaAnterior
-                            select Tar.CODPROCESO).FirstOrDefault();
-            var TareaAct = (from Tar in dbSIM.TBTAREA
-                            where Tar.CODTAREA == _TareaActual
-                            select Tar.CODPROCESO).FirstOrDefault();
-            if (TareaAnt == 0 || TareaAct == 0) return false;
-            if (TareaAct == TareaAnt) _Rpta = true; else _Rpta = false;
+            var ProcesoAnt = (from Tar in dbSIM.TBTAREA
+                              where Tar.CODTAREA == _TareaAnterior
+                              select Tar.CODPROCESO).FirstOrDefault();
+            var ProcesoAct = (from Tar in dbSIM.TBTAREA
+                              where Tar.CODTAREA == _TareaActual
+                              select Tar.CODPROCESO).FirstOrDefault();
+            if (ProcesoAnt == 0 || ProcesoAct == 0) return false;
+            if (ProcesoAct == ProcesoAnt) _Rpta = true; else _Rpta = false;
             return _Rpta;
         }
 
