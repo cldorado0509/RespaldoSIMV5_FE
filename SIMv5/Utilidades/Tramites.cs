@@ -87,7 +87,6 @@
         {
             try
             {
-
                 var TarAnt = (from Tta in dbSIM.TBTRAMITETAREA
                               where Tta.CODTRAMITE == codTramite
                               && Tta.COPIA == 0
