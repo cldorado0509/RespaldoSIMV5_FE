@@ -449,12 +449,12 @@ $(document).ready(function () {
         text: "Verificar folios documentos",
         type: "default",
         onClick: function () {
-            $("#loadPanel").dxLoadPanel('instance').show();
             if (Carpeta == "") DevExpress.ui.dialog.alert('Aún no ha seleccionado una carpeta para verificar su foliado', 'Verificar folios documentos');
             else {
                 var result = DevExpress.ui.dialog.confirm('Se verificará y actualizará el foliado de la carpeta, Esta seguro de esta acción?', 'Verificar folios documentos');
                 result.done(function (dialogResult) {
                     if (dialogResult) {
+                        $("#loadPanel").dxLoadPanel('instance').show();
                         var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/FoliarCarpeta?IdTomo=" + IdTomo;
                         $.ajax({
                             type: "POST",
@@ -473,10 +473,10 @@ $(document).ready(function () {
                                 DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Verificar folios documentos');
                             }
                         });
+                        $("#loadPanel").dxLoadPanel('instance').hide();
                     }
                 });
             }
-            $("#loadPanel").dxLoadPanel('instance').hide();
         }
     });
 
