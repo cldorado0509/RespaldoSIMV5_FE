@@ -437,6 +437,39 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnOrdenar").dxButton({
+        text: "Verificar folios documentos",
+        type: "default",
+        onClick: function () {
+            if (Carpeta == "") DevExpress.ui.dialog.alert('Aún no ha seleccionado una carpeta para verificar su foliado', 'Verificar folios documentos');
+            else {
+                var result = DevExpress.ui.dialog.confirm('Se verificará y actualizará el foliado de la carpeta, Esta seguro de esta acción?', 'Verificar folios documentos');
+                result.done(function (dialogResult) {
+                    if (dialogResult) {
+                        var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/FoliarCarpeta?IdTomo=" + IdTomo;
+                        $.ajax({
+                            type: "POST",
+                            dataType: 'json',
+                            url: _Ruta,
+                            contentType: "application/json",
+                            beforeSend: function () { },
+                            success: function (data) {
+                                if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Verificar folios documentos');
+                                else {
+                                    DevExpress.ui.dialog.alert('Datos Guardados correctamente', 'Verificar folios documentos');
+                                    $('#gridDocumentos').dxDataGrid({ dataSource: DocumentosDataSource });
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Verificar folios documentos');
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
     var txtOrden = $("#txtOrden").dxNumberBox({
         placeholder: "Ingrese el orden para el documento",
         value: ""

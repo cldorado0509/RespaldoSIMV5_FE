@@ -55,7 +55,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <param name="IdSolicitud"></param>
         /// <returns></returns>
         [HttpPost, ActionName("RecibePlantilla")]
-        public ResponseFile RecibePantilla(string IdSolicitud)
+        public ResponseFile RecibePlantilla(string IdSolicitud)
         {
             ResponseFile archivoDTO = new ResponseFile();
             ApiService apiService = new ApiService();
@@ -90,7 +90,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 BinaryReader b = new BinaryReader(File.InputStream);
                                 byte[] FileData = b.ReadBytes(File.ContentLength);
                                 SIM.Utilidades.Archivos.GrabaMemoryStream(new MemoryStream(FileData), _Plantilla.FullName);
-                                string _resp = ValidaPlatilla(IdSolicitud);
+                                string _resp = ValidaPlantilla(IdSolicitud);
                                 if (_resp != null && _resp.StartsWith("Error:"))
                                 {
                                     Directory.GetFiles(_Plantilla.Directory.FullName, "*.pdf").ToList().ForEach(f => System.IO.File.Delete(f));
@@ -598,7 +598,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return dt;
         }
 
-        private string ValidaPlatilla(string IdSolicitud)
+        private string ValidaPlantilla(string IdSolicitud)
         {
             DataTable dtExcel = new DataTable();
             string _resp = "";
