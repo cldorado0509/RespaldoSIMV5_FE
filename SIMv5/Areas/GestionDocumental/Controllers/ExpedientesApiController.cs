@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DevExpress.Pdf;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
 using SIM.Areas.ControlVigilancia.Models;
@@ -1425,21 +1426,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         [Authorize(Roles = "VEXPEDIENTES")]
         public object FoliarDocumento(int IdTomo, decimal IdDocumento, int Orden, int FolioIni, int FolioFin, int Imagenes)
         {
-            int idUsuario = 0;
-            decimal funcionario = 0;
             bool _Accion = false;
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
-
-            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
-            {
-                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
-
-                funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
-                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                               where uf.ID_USUARIO == idUsuario
-                                               select f.CODFUNCIONARIO).FirstOrDefault());
-            }
             if (FolioIni > FolioFin) return new { resp = "Error", mensaje = "El rango de folios inical y final esta mal establecido!!" };
             if (IdTomo <= 0) return new { resp = "Error", mensaje = "No se ingresó un número de carpeta para foliar!!" };
             if (IdDocumento <= 0) return new { resp = "Error", mensaje = "No se ingresó un número de documento para foliar!!" };
@@ -1496,6 +1483,63 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 return new { resp = "Error", mensaje = "Error Almacenando el foliado del documento: " + ex.Message };
             }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdTomo"></param>
+        /// <returns></returns>
+        [System.Web.Http.HttpPostAttribute, System.Web.Http.ActionName("FoliarCarpeta")]
+        [Authorize(Roles = "VEXPEDIENTES")]
+        public async Task<object> FoliarCarpeta(int IdTomo)
+        {
+            if (IdTomo <= 0) return new { resp = "Error", mensaje = "No se seleccionó una carpeta para verificar el foliado!!" };
+            try
+            {
+                var ListaDocs = (from D in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                                 join DF in dbSIM.TBTRAMITEDOCUMENTO on D.ID_DOCUMENTO equals DF.ID_DOCUMENTO
+                                 where D.ID_TOMO == IdTomo
+                                 orderby D.N_ORDEN
+                                 select D).ToList();
+                decimal _FolioFin = -1;
+                bool _primero = true;
+                MemoryStream _msDoc;
+                foreach (EXP_DOCUMENTOSEXPEDIENTE _doc in ListaDocs)
+                {
+                    _msDoc = new MemoryStream();
+                    _msDoc = await SIM.Utilidades.Archivos.AbrirDocumento((long)_doc.ID_DOCUMENTO);
+                    if (_msDoc != null)
+                    {
+                        try
+                        {
+                            PdfDocumentProcessor Pdf = new PdfDocumentProcessor();
+                            Pdf.LoadDocument(_msDoc, true);
+                            _doc.N_IMAGENES = Pdf.Document.Pages.Count;
+                            Pdf.CloseDocument();
+                            Pdf.Dispose();
+                        }
+                        catch { _doc.N_IMAGENES = 1; }
+                    }
+                    else _doc.N_IMAGENES = 1;
+                    if (!_primero) _doc.N_FOLIOINI = _FolioFin + 1;
+                    else _doc.N_FOLIOINI = 1;
+                    _doc.N_FOLIOFIN = _doc.N_FOLIOINI + _doc.N_IMAGENES;
+                    _primero = false;
+                    _FolioFin = _doc.N_FOLIOFIN.Value;
+                    dbSIM.Entry(_doc).State = EntityState.Modified;
+                }
+                dbSIM.SaveChanges();
+                return new { resp = "Ok", mensaje = "Se modificó correctamnete el foliado del documento!" };
+
+            }
+            catch (Exception ex)
+            {
+                return new { resp = "Error", mensaje = "Error Almacenando el foliado del documento: " + ex.Message };
+            }
+        }
+
+
 
         /// <summary>
         /// 
