@@ -5,15 +5,6 @@ var IdDocumento = -1;
 var TomoCerrado = false;
 
 $(document).ready(function () {
-
-    $("#loadPanel").dxLoadPanel({
-        message: 'Procesando...',
-        showIndicator: true,
-        shading: true,
-        shadingColor: "rgba(0,0,0,0.4)",
-    });
-
-
     $("#grdListaTomos").dxDataGrid({
         dataSource: TomosDataSource,
         allowColumnResizing: true,
@@ -445,6 +436,13 @@ $(document).ready(function () {
         }
     });
 
+    $("#loadPanel").dxLoadPanel({
+        message: 'Procesando...',
+        showIndicator: true,
+        shading: true,
+        shadingColor: "rgba(0,0,0,0.4)",
+    });
+
     $("#btnOrdenar").dxButton({
         text: "Verificar folios documentos",
         type: "default",
@@ -461,8 +459,11 @@ $(document).ready(function () {
                             dataType: 'json',
                             url: _Ruta,
                             contentType: "application/json",
-                            beforeSend: function () { },
+                            beforeSend: function () {
+                                $("#loadPanel").dxLoadPanel('instance').show();
+                            },
                             success: function (data) {
+                                $("#loadPanel").dxLoadPanel('instance').hide();
                                 if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Verificar folios documentos');
                                 else {
                                     DevExpress.ui.dialog.alert('Datos Guardados correctamente', 'Verificar folios documentos');
@@ -473,7 +474,7 @@ $(document).ready(function () {
                                 DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Verificar folios documentos');
                             }
                         });
-                        $("#loadPanel").dxLoadPanel('instance').hide();
+                        
                     }
                 });
             }
