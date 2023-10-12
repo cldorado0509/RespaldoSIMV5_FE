@@ -6,6 +6,14 @@ var TomoCerrado = false;
 
 $(document).ready(function () {
 
+    $("#loadPanel").dxLoadPanel({
+        message: 'Procesando...',
+        showIndicator: true,
+        shading: true,
+        shadingColor: "rgba(0,0,0,0.4)",
+    });
+
+
     $("#grdListaTomos").dxDataGrid({
         dataSource: TomosDataSource,
         allowColumnResizing: true,
@@ -441,6 +449,7 @@ $(document).ready(function () {
         text: "Verificar folios documentos",
         type: "default",
         onClick: function () {
+            $("#loadPanel").dxLoadPanel('instance').show();
             if (Carpeta == "") DevExpress.ui.dialog.alert('Aún no ha seleccionado una carpeta para verificar su foliado', 'Verificar folios documentos');
             else {
                 var result = DevExpress.ui.dialog.confirm('Se verificará y actualizará el foliado de la carpeta, Esta seguro de esta acción?', 'Verificar folios documentos');
@@ -467,6 +476,7 @@ $(document).ready(function () {
                     }
                 });
             }
+            $("#loadPanel").dxLoadPanel('instance').hide();
         }
     });
 
