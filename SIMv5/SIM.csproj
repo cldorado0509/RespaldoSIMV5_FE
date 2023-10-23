@@ -1219,6 +1219,7 @@
     <Compile Include="Areas\GestionDocumental\Controllers\MasivosController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosController.cs" />
+    <Compile Include="Areas\GestionDocumental\Models\ListadoMasivos.cs" />
     <Compile Include="Areas\GestionDocumental\Models\MasivoDTO.cs" />
     <Compile Include="Areas\GestionDocumental\Models\ResponseFile.cs" />
     <Compile Include="Areas\GestionDocumental\Models\ResponseMassiveDTO.cs" />
@@ -2231,9 +2232,13 @@
     <Compile Include="Data\Tramites\QRY_TERCERO.cs" />
     <Compile Include="Data\Tramites\QRY_TRAMITEPRIORITARIO.cs" />
     <Compile Include="Data\Tramites\QRY_VERTEMPORALES.cs" />
+    <Compile Include="Data\Tramites\RADICACIONMASIVA.cs" />
     <Compile Include="Data\Tramites\RADICADOS.cs" />
     <Compile Include="Data\Tramites\RADICADO_DOCUMENTO.cs" />
     <Compile Include="Data\Tramites\RADICADO_UNIDADDOC.cs" />
+    <Compile Include="Data\Tramites\RADMASIVAFIRMAS.cs" />
+    <Compile Include="Data\Tramites\RADMASIVAINDICES.cs" />
+    <Compile Include="Data\Tramites\RADMASIVARUTA.cs" />
     <Compile Include="Data\Tramites\REQUISITOS_TRAMITE.cs" />
     <Compile Include="Data\Tramites\TBACTIVIDADES_VITAL.cs" />
     <Compile Include="Data\Tramites\TBCARGO.cs" />
@@ -2471,6 +2476,7 @@
     <Content Include="Areas\GestionDocumental\Scripts\BuscarDocumentos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\consultaprestamos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Expedientes.js" />
+    <Content Include="Areas\GestionDocumental\Scripts\ListadoMasivo.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Masivo.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Memorandos.js" />
     <Content Include="Areas\GestionDocumental\Scripts\Tomos.js" />
@@ -3172,6 +3178,7 @@
     <Content Include="Areas\GestionDocumental\Views\Masivos\Index.cshtml" />
     <Content Include="Areas\Dynamics\Views\PazsalvoBienes\Index.cshtml" />
     <Content Include="Areas\Dynamics\Plantilla\Plantilla_Paz_y_Salvo_Bienes.pdf" />
+    <Content Include="Areas\GestionDocumental\Views\Masivos\EditarMasivo.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />

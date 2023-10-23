@@ -3,9 +3,6 @@
     ViewBag.Title = "Radicación Masiva COD";
     Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
-<script>
-    var CodFunc = @(ViewBag.CodFuncionario);
-</script>
 
 <script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/Masivo.js?V=" + DateTime.Now.ToString("yyyyddMMHHmmss"))"></script>
 <style>
@@ -29,50 +26,35 @@
             </h3>
         </div>
         <div id="loadPanel"></div>
-        <div id="grdListaMasivos"></div>
-        <br />
-        <div id="BotonExp">
-            <div class="col-sm-3">&nbsp;</div>
-            <label class="control-label col-md-2" for="txtTemaMasivo">Tema del proceso de radicación masiva : </label>
-            <div class="col-md-2" id="txtTemaMasivo"></div>
-            <div id="btnNuevoMasivo"></div>
-            <div class="col-sm-3">&nbsp;</div>
-        </div>
-        <div id="popDetalleMasivo">
-            <div id="divEncabezado" class="divEncabezado">
-                <div class="row">
-                    <div class="form-group">
-                        <label class="control-label col-md-1" for="fuListaExcel">Listado Excel : </label>
-                        <div class="col-md-5" id="fuListaExcel"></div>
-                        <label class="control-label col-md-2" for="fuPlantilla">Documento a combinar : </label>
-                        <div class="col-sm-4" id="fuPlantilla"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="control-label col-md-2" for="txtTramite">Asociar al trámite : </label>
-                        <div class="col-md-3" id="txtTramite"></div>
-                        <div class="col-md-1" id="btnBuscaTra"></div>
-                        <label class="control-label col-md-2" for="chkEmail">Se debe enviar por email? : </label>
-                        <div class="col-md-1" id="chkEmail"></div>
-                        <div class="col-md-1" id="btnAsociaIndices"></div>
-                        <div class="col-md-1" id="btnFirmas" "></div>
-                    </div>
+        <div id="divEncabezado" class="divEncabezado">
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-md-1" for="fuListaExcel">Listado Excel : </label>
+                    <div class="col-md-5" id="fuListaExcel"></div>
+                    <label class="control-label col-md-2" for="fuPlantilla">Documento a combinar : </label>
+                    <div class="col-sm-4" id="fuPlantilla"></div>
                 </div>
             </div>
             <div class="row">
-                <div id="grdExcel"></div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="txtTramite">Asociar al trámite : </label>
+                    <div class="col-md-3" id="txtTramite"></div>
+                    <div class="col-md-1" id="btnBuscaTra"></div>
+                    <label class="control-label col-md-2" for="chkEmail">Se debe enviar por email? : </label>
+                    <div class="col-md-1" id="chkEmail"></div>
+                    <div class="col-md-1" id="btnAsociaIndices"></div>
+                    <div class="col-md-1" id="btnFirmas" "></div>
+                </div>
             </div>
-            <div id="BotonExp">
-                <div id="btnGuardar"></div>
-                @if (ViewBag.PuedeRadicar == true)
-                {
-                    <div id="btnRadicar"></div>
-                }
-                <div id="btnPreview"></div>
-            </div>
-            <br />
         </div>
+        <div class="row">
+            <div id="grdExcel"></div>
+        </div>
+        <div id="BotonExp">
+            <div id="btnRadicar"></div>
+            <div id="btnPreview"></div>
+        </div>
+        <br />
         <div id="popupBuscaTra">
             <iframe src="" id="BuscarTra" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
         </div>
@@ -85,7 +67,7 @@
                     <div id="grdAsociaIndices"></div>
                 </div>
                 <div class="row">
-                    <h5 style="text-align:center;font-weight:bold;">Para cada índice se debe seleccionar un dato como índice o una columna del archivo de Excel o dejarlo en blanco, pero no seleccione varias opciones para el mismo índice. <br /> Si esto ocurre se tomará el dato de la columna de Excel.</h5>
+                    <h5 style="text-align:center;font-weight:bold;">Para cada índice se debe seleccionar un dato como índice o una columna del archivo de Excel o dejarlo en blanco, pero no seleccione varias opciones para el mismo índice. <br /> Si es ocurre se tomará el dato de la columna de Excel.</h5>
                 </div>
                 <br />
                 <div class="row">

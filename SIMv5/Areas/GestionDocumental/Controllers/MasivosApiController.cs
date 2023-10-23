@@ -552,6 +552,35 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return indicesSerieDocumental.ToList();
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CodFunc"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ListadoMasivos")]
+        public JArray GetListadoMasivos(decimal CodFunc)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            var lista = (from mas in dbSIM.RADMASIVA
+                         join rut in dbSIM.RADMASIVARUTA on mas.ID equals rut.ID_RADMASIVO
+                         where rut.CODFUNCIONARIO == CodFunc && mas.S_REALIZADO == "0" &&
+                         rut.FECHA_RUTA == dbSIM.RADMASIVARUTA.Where(w => w.ID == rut.ID).OrderByDescending(f => f.FECHA_RUTA).Select(s => s.FECHA_RUTA).FirstOrDefault()
+                         orderby mas.D_FECHA descending
+                         select new ListadoMasivos
+                         {
+                             ID = mas.ID,
+                             TEMA = mas.S_TEMA,
+                             D_FECHA = mas.D_FECHA,
+                             CANTIDAD_FILAS = mas.CANTIDAD_FILAS,
+                             ESTADO = mas.S_VALIDADO == "0" ? "ELABORACION" : "LISTO PARA RADICAR"
+                         }).ToList();
+
+            return JArray.FromObject(lista, Js);
+        }
+
         #region Metodos Privados de la clase
         private DataTable LeeExcel(string _ruta)
         {

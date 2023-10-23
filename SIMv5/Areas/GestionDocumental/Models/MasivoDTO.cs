@@ -8,6 +8,7 @@ namespace SIM.Areas.GestionDocumental.Models
         public string IdSolicitud { get; set; }
         public string CodTramite { get; set; } = string.Empty;
         public bool EnviarEmail { get; set; } = false;
+        public string Tema { get; set; }
         public List<Indice> Indices { get; set; }
     }
 
