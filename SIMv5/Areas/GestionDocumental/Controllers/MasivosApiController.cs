@@ -630,6 +630,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         private string ValidaPlantilla(string IdSolicitud)
         {
             DataTable dtExcel = new DataTable();
+            bool _firmas = false;
             string _resp = "";
             string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
             string[] files;
@@ -661,15 +662,17 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     string _textoPdf = PdfPlantilla.Text;
                     Regex rx = new Regex(@"\[(.*?)\]");
                     MatchCollection matchedAuthors = rx.Matches(_textoPdf);
-                    foreach (Match match in matchedAuthors)
+                    foreach (System.Text.RegularExpressions.Match match in matchedAuthors)
                     {
                         if (!dtExcel.Columns.Contains(match.Value.Trim().Substring(1, match.Value.Trim().Length - 2)))
                         {
                             return $"Error: El archivo de Excel no contiene datos para la clave {match.Value.Trim()} de la platilla pdf!";
                         }
+                        if (match.Value.Trim().Substring(1, match.Value.Trim().Length - 2).Contains("firma")) _firmas = true;
                     }
                 }
             }
+            if (!_firmas) return $"Error: La plantilla no contiene llaves para la o las firmas del documento!";
             return _resp;
         }
 

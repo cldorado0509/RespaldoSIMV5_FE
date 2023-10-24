@@ -2,7 +2,8 @@
 var indicesSerieDocumentalStore = null;
 var columnasExcel;
 var opcionesLista = [];
-var ArrIndices =  [];
+var ArrIndices = [];
+var ArrFirmas = [];
 var TramiteValido = false;
 $(document).ready(function () {
 
@@ -125,7 +126,7 @@ $(document).ready(function () {
         },
         pager: {
             showPageSizeSelector: true,
-            allowedPageSizes: [15, 20 , 50]
+            allowedPageSizes: [15, 20, 50]
         },
         columns: []
     });
@@ -390,11 +391,11 @@ $(document).ready(function () {
             $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/ObtenerIndicesSerieDocumental', { codSerie: 12 })
                 .done(function (data) {
                     AsignarIndicesDoc(data);
-            });
+                });
             columnasExcel = $("#grdExcel").dxDataGrid("instance").option("columns");
             const index = columnasExcel.indexOf("ID");
-            if (index > -1) { 
-                columnasExcel.splice(index, 1); 
+            if (index > -1) {
+                columnasExcel.splice(index, 1);
             }
             var popupInd = $("#popupIndices").dxPopup("instance");
             popupInd.show();
@@ -456,6 +457,7 @@ $(document).ready(function () {
                 btnFirmas.option("disabled", false);
             } else {
                 DevExpress.ui.dialog.alert(obj.MensajeError, 'Plantilla COD');
+                ufPlantilla.reset();
             }
         },
         onUploadStarted: function (e) {
@@ -561,6 +563,30 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnGuardaFirmas").dxButton({
+        text: "Guardar Firmas Documento",
+        type: "default",
+        onClick: function () {
+            ArrFirmas = firmasStore._array;;
+            var popupFirmas = $("#popupFirmas").dxPopup("instance");
+            popupFirmas.hide();
+        }
+    });
+
+    $('#cboFuncionario').dxLookup({
+        dataSource: funcionariosDataSource,
+        placeholder: '[Seleccionar Funcionario]',
+        title: 'Funcionario',
+        displayExpr: 'FUNCIONARIO',
+        valueExpr: 'CODFUNCIONARIO',
+        cancelButtonText: 'Cancelar',
+        pageLoadingText: 'Cargando...',
+        refreshingText: 'Refrescando...',
+        searchPlaceholder: 'Buscar',
+        noDataText: 'Sin Datos',
+    });
+
+
     $("#btnCancelIndDoc").dxButton({
         text: "Cancelar",
         type: "default",
@@ -570,6 +596,68 @@ $(document).ready(function () {
             popupInd.hide();
         }
     });
+
+    $('#agregarFuncionario').dxButton({
+        icon: 'plus',
+        text: '',
+        width: '30x',
+        type: 'success',
+        elementAttr: { style: "float: left;" },
+        onClick: function (params) {
+            var item = $('#cboFuncionario').dxLookup('instance').option('selectedItem');
+            if (item != null) {
+                if (firmasDocumento.findIndex(f => f.CODFUNCIONARIO == item.CODFUNCIONARIO) == -1) {
+                    var orden = 0;
+                    firmasDocumento.forEach(fd => {
+                        if (fd.ORDEN > orden) {
+                            orden = fd.ORDEN;
+                        }
+                    });
+                    orden++;
+                    firmasDocumento.push({ CODFUNCIONARIO: item.CODFUNCIONARIO, FUNCIONARIO: item.FUNCIONARIO, ORDEN: orden, D_FECHA_FIRMA: null, S_ESTADO: 'N', S_ACTIVO: 'S', S_TIPO: TipoFirma });
+                    $("#grdFirmas").dxDataGrid({ dataSource: firmasDocumento });
+                } else DevExpress.ui.dialog.alert('El funcionario ya se encuentra registrado.');
+            }
+        }
+    });
+
+    $("#grdFirmas").dxDataGrid({
+        dataSource: null,
+        allowColumnResizing: true,
+        height: '75%',
+        width: '100%',
+        loadPanel: { text: 'Cargando Datos...' },
+        selection: {
+            mode: 'single',
+        },
+        columns: [
+            { dataField: "CODFUNCIONARIO", caption: 'CODIGO', dataType: 'number', visible: false, },
+            { dataField: "FUNCIONARIO", caption: 'NOMBRE', width: '60%', dataType: 'string', visible: true },
+            { dataField: 'ORDEN', caption: 'ORDEN', alignment: 'center', width: '10%', dataType: 'number', visible: true },
+            {
+                alignment: 'center',
+                width: '5%',
+                cellTemplate: function (cellElement, cellInfo) {
+                    var div = document.createElement("div");
+                    cellElement.get(0).appendChild(div);
+                    $(div).dxButton({
+                        icon: 'trash',
+                        width: '100%',
+                        onClick: function () {
+                            var result = DevExpress.ui.dialog.confirm("Está Seguro(a) de Eliminar la Firma ?", "Confirmación");
+                            result.done(function (dialogResult) {
+                                if (dialogResult) {
+                                    cellInfo.data.S_ACTIVO = 'N';
+                                }
+                            });
+                        }
+                    });
+
+                },
+            }
+        ],
+    });
+
 
     var btnRadicar = $("#btnRadicar").dxButton({
         text: "Radicar COD",
@@ -664,8 +752,8 @@ $(document).ready(function () {
             var result = DevExpress.ui.dialog.confirm('El proceso de radicación masiva esta completo?', 'Confirmación');
             result.done(function (dialogResult) {
                 if (dialogResult) {
-                    
-                    var params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: true, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail };
+
+                    var params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: true, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Firmas: ArrFirmas };
                 }
                 var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/MasivosApi/GuardaMasivo";
                 $.ajax({
@@ -686,8 +774,8 @@ $(document).ready(function () {
                     error: function (xhr, textStatus, errorThrown) {
                         DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Guardar Datos');
                     }
-                });  
-            }
+                });
+            });
         }
     }).dxButton("instance");
 
@@ -702,7 +790,7 @@ $(document).ready(function () {
         width: 600,
         height: 400,
         showTitle: true,
-        title: "Asociar indices del documeno"
+        title: "Firmas del documento COD (Plantilla)"
     });
 
     var DetalleMasivo =$("#popDetalleMasivo").dxPopup({
@@ -755,3 +843,39 @@ function SelTramite(CodTramite) {
         TramiteValido = true;
     } else alert("No se ha ingresado el codigo del trámite");
 }
+
+var funcionariosDataSource = new DevExpress.data.CustomStore({
+    load: function (loadOptions) {
+
+        var d = $.Deferred();
+
+        var searchValueOptions = loadOptions.searchValue;
+        var searchExprOptions = loadOptions.searchExpr;
+
+        var skip = (loadOptions.skip ? loadOptions.skip : 0);
+        var take = (loadOptions.take ? loadOptions.take : 0);
+
+        if (take != 0) {
+            $.getJSON($('#app').data('url') + 'Tramites/api/ProyeccionDocumentoApi/Funcionarios', {
+                filter: '',
+                sort: '[{"selector":"FUNCIONARIO","desc":false}]',
+                group: '',
+                skip: skip,
+                take: take,
+                searchValue: (searchValueOptions === undefined || searchValueOptions === null ? '' : searchValueOptions),
+                searchExpr: (searchExprOptions === undefined || searchExprOptions === null ? '' : searchExprOptions),
+                comparation: 'contains',
+                tipoData: 'f',
+                noFilterNoRecords: true
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('falla2a: ' + textStatus + ", " + error);
+            });
+            return d.promise();
+        }
+    },
+    byKey: function (key, extra) {
+        return key.toString();
+    },
+});
