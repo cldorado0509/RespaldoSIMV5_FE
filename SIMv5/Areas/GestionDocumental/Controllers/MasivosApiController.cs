@@ -14,6 +14,7 @@ using O2S.Components.PDF4NET.Text;
 using PdfSharp.Drawing;
 using SIM.Areas.GestionDocumental.Models;
 using SIM.Data;
+using SIM.Data.Tramites;
 using SIM.Services;
 using SIM.Utilidades;
 using System;
@@ -25,6 +26,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Hosting;
@@ -552,7 +554,63 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return indicesSerieDocumental.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdSolicitud"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet, ActionName("EditarIndicesMasivo")]
+        public dynamic GetEditarIndicesMasivo(string IdSolicitud)
+        {
+            var indices = (from mas in dbSIM.RADMASIVA
+                           join ind in dbSIM.RADMASIVAINDICES on mas.ID equals ind.ID_RADMASIVO
+                           join din in dbSIM.TBINDICESERIE on ind.CODINDICE equals din.CODINDICE
+                           join lista in dbSIM.TBSUBSERIE on (decimal)din.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                           from pdis in l.DefaultIfEmpty()
+                           where mas.IDSOLICITUD == IdSolicitud
+                           orderby din.ORDEN
+                           select new IndiceCOD
+                           {
+                               CODINDICE = (int)ind.CODINDICE,
+                               INDICE = din.INDICE,
+                               TIPO = din.TIPO,
+                               LONGITUD = din.LONGITUD,
+                               OBLIGA = din.OBLIGA,
+                               VALORDEFECTO = ind.S_VALOREXCEL,
+                               VALOR = ind.S_VALORASIGNADO,
+                               ID_VALOR = null,
+                               ID_LISTA = din.CODIGO_SUBSERIE,
+                               TIPO_LISTA = pdis.TIPO,
+                               CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
+                               INDICE_RADICADO = din.INDICE_RADICADO
+                           });
+            return indices.ToList();
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdSolicitud"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet, ActionName("ObtenerFirmas")]
+        public dynamic GetObtenerFirmas(string IdSolicitud)
+        {
+            var firmas = from mas in dbSIM.RADMASIVA
+                         join fir in dbSIM.RADMASIVAFIRMAS on mas.ID equals fir.ID_RADMASIVO
+                         join fun in dbSIM.QRY_FUNCIONARIO_ALL on fir.FUNC_FIRMA equals fun.CODFUNCIONARIO
+                         where mas.IDSOLICITUD == IdSolicitud
+                         orderby fir.ORDEN_FIRMA
+                         select new
+                         {
+                             CODFUNCIONARIO = fir.FUNC_FIRMA,
+                             FUNCIONARIO = fun.NOMBRES,
+                             ORDEN = fir.ORDEN_FIRMA
+                         };
+            return firmas.ToList();
+
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -575,10 +633,252 @@ namespace SIM.Areas.GestionDocumental.Controllers
                              TEMA = mas.S_TEMA,
                              D_FECHA = mas.D_FECHA,
                              CANTIDAD_FILAS = mas.CANTIDAD_FILAS,
-                             ESTADO = mas.S_VALIDADO == "0" ? "ELABORACION" : "LISTO PARA RADICAR"
+                             ESTADO = mas.S_VALIDADO == "0" ? "ELABORACION" : "LISTO PARA RADICAR",
+                             IDSOLICITUD = mas.IDSOLICITUD,
+                             CODTRAMITE = mas.CODTRAMITE,
+                             ENVIACORREO = mas.S_ENVIACORREO
                          }).ToList();
 
             return JArray.FromObject(lista, Js);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdSolicitud"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ObtenerCantidadFirmas")]
+        public object GetCantidadFirmas(string IdSolicitud)
+        {
+            int contFirmas = 0;
+            if (IdSolicitud == "" || IdSolicitud == null) return new { resp = "Error", mensaje = "No se ingresó un identificador de solicitud!" };
+            string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
+            string _Dir = _RutaCorrespondencia + @"\" + IdSolicitud;
+            if (Directory.Exists(_Dir))
+            {
+                var files = Directory.GetFiles(_Dir, @"*.pdf", SearchOption.TopDirectoryOnly);
+                if (files.Length > 0)
+                {
+                    files = files.Where((val, idx) => !val.ToLower().Contains("preview")).ToArray();
+                }
+                if (files.Length > 0)
+                {
+                    PdfDocumentProcessor PdfPlantilla = new PdfDocumentProcessor();
+                    PdfPlantilla.LoadDocument(files[0], true);
+                    string _textoPdf = PdfPlantilla.Text;
+                    Regex rx = new Regex(@"\[(.*?)\]");
+                    MatchCollection matchedAuthors = rx.Matches(_textoPdf);
+                    foreach (System.Text.RegularExpressions.Match match in matchedAuthors)
+                    {
+                        if (match.Value.Trim().Substring(1, match.Value.Trim().Length - 2).ToLower().Contains("firma")) contFirmas++;
+                    }
+                }
+                else return new { resp = "Error", mensaje = "No se encontró un archivo de plantilla!" };
+            }
+            return new { resp = "Ok", mensaje = "", Cantidad = contFirmas };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datos"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("GuardaMasivo")]
+        public object PostGuardaMasivo(MasivoDTO datos)
+        {
+            if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Faltan datos en la solicitud!" };
+            int idUsuario = 0;
+            decimal funcionario = 0;
+            decimal IdMasivo = -1;
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                funcionario = SIM.Utilidades.Security.Obtener_Codigo_Funcionario(idUsuario);
+            }
+            if (datos.IdSolicitud != null && datos.IdSolicitud != "")
+            {
+                var Excel = ObtieneExcel(datos.IdSolicitud);
+                if (Excel == null || Excel == "") return new { resp = "Error", mensaje = "Ocurrió un problema con el archivo de excel!" };
+                var Plantilla = ObtienePlatillaPdf(datos.IdSolicitud);
+                if (Plantilla == null || Plantilla == "") return new { resp = "Error", mensaje = "Ocurrió un problema con la platilla de la COD para el proceso de radicación masiva!" };
+                var RadMasiva = dbSIM.RADMASIVA.Where(w => w.IDSOLICITUD == datos.IdSolicitud).FirstOrDefault();
+                if (RadMasiva != null)
+                {
+                    IdMasivo = RadMasiva.ID;
+                    RadMasiva.S_RUTAEXCEL = Excel;
+                    RadMasiva.S_RUTAPLANTILLA = Plantilla;
+                    if (datos.Indices == null || datos.Indices.Count == 0) RadMasiva.S_VALIDADO = "0";
+                    else
+                    {
+                        RadMasiva.S_VALIDADO = "1";
+                        var IndicesBD = dbSIM.RADMASIVAINDICES.Where(w => w.ID_RADMASIVO == RadMasiva.ID).ToList();
+                        if (IndicesBD != null && IndicesBD.Count > 0)
+                        {
+                            foreach (var ind in datos.Indices)
+                            {
+                                var IndBd = IndicesBD.Where(i => i.CODINDICE == ind.CODINDICE).FirstOrDefault();
+                                if (IndBd != null)
+                                {
+                                    if (ind.VALORDEFECTO != "") IndBd.S_VALOREXCEL = ind.VALORDEFECTO;
+                                    else IndBd.S_VALORASIGNADO = ind.VALOR;
+                                    dbSIM.Entry(IndBd).State = System.Data.Entity.EntityState.Modified;
+                                }
+                                else
+                                {
+                                    RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                                    {
+                                        CODINDICE = ind.CODINDICE,
+                                        ID_RADMASIVO = RadMasiva.ID,
+                                        S_VALOREXCEL = ind.VALORDEFECTO != "" ? ind.VALORDEFECTO : "",
+                                        S_VALORASIGNADO = ind.VALOR != "" ? ind.VALOR : ""
+                                    };
+                                    dbSIM.RADMASIVAINDICES.Add(newInd);
+                                }
+                            }
+                            foreach (var ind in IndicesBD)
+                            {
+                                var _ind = datos.Indices.Where(w => w.CODINDICE == ind.CODINDICE).FirstOrDefault();
+                                if (_ind == null) dbSIM.Entry(ind).State = System.Data.Entity.EntityState.Deleted;
+                            }
+                        }
+                        else
+                        {
+                            foreach (var ind in datos.Indices)
+                            {
+                                RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                                {
+                                    CODINDICE = ind.CODINDICE,
+                                    ID_RADMASIVO = RadMasiva.ID,
+                                    S_VALOREXCEL = ind.VALORDEFECTO != "" ? ind.VALORDEFECTO : "",
+                                    S_VALORASIGNADO = ind.VALOR != "" ? ind.VALOR : ""
+                                };
+                                dbSIM.RADMASIVAINDICES.Add(newInd);
+                            }
+                        }
+                    }
+                    if (datos.Firmas == null || datos.Firmas.Count == 0) RadMasiva.S_VALIDADO = "0";
+                    else
+                    {
+                        RadMasiva.S_VALIDADO = "1";
+                        var FirmasBD = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == RadMasiva.ID).ToList();
+                        if (FirmasBD != null && FirmasBD.Count > 0)
+                        {
+                            foreach (var fir in datos.Firmas)
+                            {
+                                var FirBd = FirmasBD.Where(i => i.FUNC_FIRMA == fir.CodFuncionario).FirstOrDefault();
+                                if (FirBd != null)
+                                {
+                                    FirBd.ORDEN_FIRMA = fir.Orden;
+                                    dbSIM.Entry(FirBd).State = System.Data.Entity.EntityState.Modified;
+                                }
+                                else
+                                {
+                                    RADMASIVAFIRMAS newFirm = new RADMASIVAFIRMAS
+                                    {
+                                        FUNC_FIRMA = fir.CodFuncionario,
+                                        ORDEN_FIRMA = fir.Orden
+
+                                    };
+                                    dbSIM.RADMASIVAFIRMAS.Add(newFirm);
+                                }
+                            }
+                            foreach (var fir in FirmasBD)
+                            {
+                                var _fir = datos.Firmas.Where(w => w.CodFuncionario == fir.FUNC_FIRMA).FirstOrDefault();
+                                if (_fir == null) dbSIM.Entry(fir).State = System.Data.Entity.EntityState.Deleted;
+                            }
+                        }
+                        else
+                        {
+                            foreach (var fir in datos.Firmas)
+                            {
+                                RADMASIVAFIRMAS newFirm = new RADMASIVAFIRMAS
+                                {
+                                    ID_RADMASIVO = RadMasiva.ID,
+                                    FUNC_FIRMA = fir.CodFuncionario,
+                                    ORDEN_FIRMA = fir.Orden
+
+                                };
+                                dbSIM.RADMASIVAFIRMAS.Add(newFirm);
+                            }
+                        }
+                        dbSIM.SaveChanges();
+                    }
+                    RadMasiva.S_TEMA = datos.TemaMasivo;
+                    RadMasiva.S_REALIZADO = "0";
+                    dbSIM.Entry(RadMasiva).State = System.Data.Entity.EntityState.Modified;
+                    dbSIM.SaveChanges();
+                }
+                else
+                {
+                    RADICACIONMASIVA _masiva = new RADICACIONMASIVA();
+                    _masiva.FUNC_ELABORA = funcionario;
+                    if (datos.Indices.Count > 0) _masiva.S_VALIDADO = "1";
+                    else _masiva.S_VALIDADO = "0";
+                    if (datos.Firmas.Count > 0) _masiva.S_VALIDADO = "1";
+                    else _masiva.S_VALIDADO = "0";
+                    _masiva.S_RUTAEXCEL = Excel;
+                    _masiva.S_RUTAPLANTILLA = Plantilla;
+                    _masiva.IDSOLICITUD = datos.IdSolicitud;
+                    _masiva.S_REALIZADO = "0";
+                    _masiva.CANTIDAD_FILAS = LeeExcel(Excel).Rows.Count;
+                    _masiva.D_FECHA = DateTime.Now;
+                    _masiva.S_TEMA = datos.TemaMasivo;
+                    dbSIM.RADMASIVA.Add(_masiva);
+                    dbSIM.SaveChanges();
+                    IdMasivo = _masiva.ID;
+                    foreach (var ind in datos.Indices)
+                    {
+                        RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                        {
+                            ID_RADMASIVO = _masiva.ID,
+                            CODINDICE = ind.CODINDICE,
+                            S_VALOREXCEL = ind.VALORDEFECTO != "" ? ind.VALORDEFECTO : "",
+                            S_VALORASIGNADO = ind.VALOR != "" ? ind.VALOR : ""
+                        };
+                        dbSIM.RADMASIVAINDICES.Add(newInd);
+                    }
+                    foreach (var fir in datos.Firmas)
+                    {
+                        RADMASIVAFIRMAS newFirm = new RADMASIVAFIRMAS
+                        {
+                            ID_RADMASIVO = _masiva.ID,
+                            FUNC_FIRMA = fir.CodFuncionario,
+                            ORDEN_FIRMA = fir.Orden
+
+                        };
+                        dbSIM.RADMASIVAFIRMAS.Add(newFirm);
+                    }
+                    RADMASIVARUTA _ruta = new RADMASIVARUTA
+                    {
+                        ID_RADMASIVO = IdMasivo,
+                        CODFUNCIONARIO = funcionario,
+                        FECHA_RUTA = DateTime.Now
+                    };
+                    dbSIM.RADMASIVARUTA.Add(_ruta);
+                    dbSIM.SaveChanges();
+                }
+                if (datos.Completo)
+                {
+                    var FuncRuta = dbSIM.RADMASIVAFIRMAS.Where(w => w.ORDEN_FIRMA == 1 && w.ID_RADMASIVO == IdMasivo).Select(s => s.FUNC_FIRMA).FirstOrDefault();
+                    if (FuncRuta == 0) return new { resp = "Error", mensaje = "Estableció el proceso como completo pero aún no se han establecido firmas en la plantilla!" };
+                    RADMASIVARUTA _ruta = new RADMASIVARUTA
+                    {
+                        ID_RADMASIVO = IdMasivo,
+                        CODFUNCIONARIO = FuncRuta,
+                        FECHA_RUTA = DateTime.Now
+                    };
+                    dbSIM.RADMASIVARUTA.Add(_ruta);
+                    dbSIM.SaveChanges();
+                }
+            }
+            else return new { resp = "Error", mensaje = "Aun no se ha ingresado una identificador para el proceso de radicación masiva!" };
+            return new { resp = "Ok", mensaje = "Proceso completado correctamente" };
         }
 
         #region Metodos Privados de la clase
@@ -606,18 +906,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
             if (Identificador != null && Identificador.Length > 0)
             {
                 string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
-                string[] files;
                 string _ExcelEncontrado = "";
                 string _Dir = _RutaCorrespondencia + @"\" + Identificador;
                 if (Directory.Exists(_Dir))
                 {
-                    files = Directory.GetFiles(_Dir, @"*.xls", SearchOption.TopDirectoryOnly);
-                    if (files.Length > 0) _ExcelEncontrado = files[0];
-                    else
-                    {
-                        files = Directory.GetFiles(_Dir, @"*.xlsx", SearchOption.TopDirectoryOnly);
-                        if (files.Length > 0) _ExcelEncontrado = files[0];
-                    }
+                    var files = Directory.EnumerateFiles(_Dir, "*.*").Where(file => file.ToLower().EndsWith("xls") || file.ToLower().EndsWith("xlsx")).ToList();
+                    if (files.Count > 0) _ExcelEncontrado = files[0];
                 }
                 if (_ExcelEncontrado != "")
                 {
@@ -633,21 +927,20 @@ namespace SIM.Areas.GestionDocumental.Controllers
             bool _firmas = false;
             string _resp = "";
             string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
-            string[] files;
+            //string[] files;
             string _ExcelEncontrado = "";
             string _PdfEncontrado = "";
             string _Dir = _RutaCorrespondencia + @"\" + IdSolicitud;
             if (Directory.Exists(_Dir))
             {
-                files = Directory.GetFiles(_Dir, @"*.xls", SearchOption.TopDirectoryOnly);
-                if (files.Length > 0) _ExcelEncontrado = files[0];
-                else
+                var files = Directory.EnumerateFiles(_Dir, "*.*").Where(file => file.ToLower().EndsWith("xls") || file.ToLower().EndsWith("xlsx")).ToList();
+                if (files.Count > 0) _ExcelEncontrado = files[0];
+                files = Directory.EnumerateFiles(_Dir, @"*.pdf").ToList();
+                if (files.Count > 0)
                 {
-                    files = Directory.GetFiles(_Dir, @"*.xlsx", SearchOption.TopDirectoryOnly);
-                    if (files.Length > 0) _ExcelEncontrado = files[0];
+                    files = files.Where(val => !val.ToLower().Contains("preview")).ToList();
+                    _PdfEncontrado = files[0];
                 }
-                files = Directory.GetFiles(_Dir, @"*.pdf", SearchOption.TopDirectoryOnly);
-                if (files.Length > 0) _PdfEncontrado = files[0];
             }
             if (_ExcelEncontrado != "")
             {
@@ -664,11 +957,14 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     MatchCollection matchedAuthors = rx.Matches(_textoPdf);
                     foreach (System.Text.RegularExpressions.Match match in matchedAuthors)
                     {
-                        if (!dtExcel.Columns.Contains(match.Value.Trim().Substring(1, match.Value.Trim().Length - 2)))
+                        if (!match.Value.Trim().Substring(1, match.Value.Trim().Length - 2).ToLower().Contains("firma"))
                         {
-                            return $"Error: El archivo de Excel no contiene datos para la clave {match.Value.Trim()} de la platilla pdf!";
+                            if (!dtExcel.Columns.Contains(match.Value.Trim().Substring(1, match.Value.Trim().Length - 2)))
+                            {
+                                return $"Error: El archivo de Excel no contiene datos para la clave {match.Value.Trim()} de la platilla pdf!";
+                            }
                         }
-                        if (match.Value.Trim().Substring(1, match.Value.Trim().Length - 2).Contains("firma")) _firmas = true;
+                        if (match.Value.Trim().Substring(1, match.Value.Trim().Length - 2).ToLower().Contains("firma")) _firmas = true;
                     }
                 }
             }
@@ -685,10 +981,27 @@ namespace SIM.Areas.GestionDocumental.Controllers
             if (Directory.Exists(_Dir))
             {
                 files = Directory.GetFiles(_Dir, @"*.pdf", SearchOption.TopDirectoryOnly);
-                if (files.Length > 0) _PdfEncontrado = files[0];
+                if (files.Length > 0)
+                {
+                    files = files.Where((val, idx) => !val.ToLower().Contains("preview")).ToArray();
+                    _PdfEncontrado = files[0];
+                }
             }
             return _PdfEncontrado;
         }
+        private string ObtieneExcel(string Identificador)
+        {
+            string _ExcelEncontrado = "";
+            string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
+            string _Dir = _RutaCorrespondencia + @"\" + Identificador;
+            if (Directory.Exists(_Dir))
+            {
+                var files = Directory.EnumerateFiles(_Dir, "*.*").Where(file => file.ToLower().EndsWith("xls") || file.ToLower().EndsWith("xlsx")).ToList();
+                if (files.Count > 0) _ExcelEncontrado = files[0];
+            }
+            return _ExcelEncontrado;
+        }
+
 
         private void DrawImage(XGraphics gfx, System.Drawing.Image imageFirma, int x, int y, int width, int height)
         {

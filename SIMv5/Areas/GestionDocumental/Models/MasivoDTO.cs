@@ -8,8 +8,11 @@ namespace SIM.Areas.GestionDocumental.Models
         public string IdSolicitud { get; set; }
         public string CodTramite { get; set; } = string.Empty;
         public bool EnviarEmail { get; set; } = false;
-        public string Tema { get; set; }
+        public string TemaMasivo { get; set; }
+        public decimal CodFuncionario { get; set; }
+        public bool Completo { get; set; }
         public List<Indice> Indices { get; set; }
+        public List<Firma> Firmas { get; set; }
     }
 
     public class Indice
@@ -25,5 +28,11 @@ namespace SIM.Areas.GestionDocumental.Models
         public Nullable<int> ID_LISTA { get; set; }
         public Nullable<int> TIPO_LISTA { get; set; }
         public string CAMPO_NOMBRE { get; set; }
+    }
+
+    public class Firma
+    {
+        public decimal CodFuncionario { get; set; }
+        public int Orden { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace SIM.Data.Tramites
         public decimal ID { get; set; }
         public decimal ID_RADMASIVO { get; set; }
         public decimal CODINDICE { get; set; }
-        public string S_VALORASIGNADO { get; set; }
-        public string S_VALOREXCEL { get; set; }
+        public string S_VALORASIGNADO { get; set; } = string.Empty;
+        public string S_VALOREXCEL { get; set; } = string.Empty;
     }
 }

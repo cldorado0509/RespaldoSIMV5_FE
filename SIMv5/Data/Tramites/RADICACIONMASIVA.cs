@@ -18,5 +18,8 @@ namespace SIM.Data.Tramites
         public decimal CANTIDAD_FILAS { get; set; }
         public string S_VALIDADO { get; set; }
         public string S_REALIZADO { get; set; }
+        public string IDSOLICITUD { get; set; }
+        public string CODTRAMITE { get; set; }
+        public string S_ENVIACORREO { get; set; }
     }
 }

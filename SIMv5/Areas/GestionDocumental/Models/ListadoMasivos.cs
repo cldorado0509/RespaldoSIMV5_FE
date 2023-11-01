@@ -9,5 +9,8 @@ namespace SIM.Areas.GestionDocumental.Models
         public DateTime D_FECHA { get; set; }
         public decimal CANTIDAD_FILAS { get; set; }
         public string ESTADO { get; set; }
+        public string IDSOLICITUD { get; set; }
+        public string CODTRAMITE { get; set; }
+        public string ENVIACORREO { get; set; }
     }
 }

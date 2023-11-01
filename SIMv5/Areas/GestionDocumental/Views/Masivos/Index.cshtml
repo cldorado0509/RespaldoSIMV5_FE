@@ -51,11 +51,11 @@
                 <div class="row">
                     <div class="form-group">
                         <label class="control-label col-md-2" for="txtTramite">Asociar al trámite : </label>
-                        <div class="col-md-3" id="txtTramite"></div>
+                        <div class="col-md-2" id="txtTramite"></div>
                         <div class="col-md-1" id="btnBuscaTra"></div>
                         <label class="control-label col-md-2" for="chkEmail">Se debe enviar por email? : </label>
                         <div class="col-md-1" id="chkEmail"></div>
-                        <div class="col-md-1" id="btnAsociaIndices"></div>
+                        <div class="col-md-2" id="btnAsociaIndices"></div>
                         <div class="col-md-1" id="btnFirmas"></div>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
         </div>
         <div id="popupFirmas">
             <div class="row">
-                <div class="control-label">FUNCIONARIOS QUE FIRMAN EL DOCUMENTO</div>
+                <div class="control-label">FUNCIONARIOS QUE FIRMAN EL DOCUMENTO  <b>(<span id="CantFirmas"></span>)</b></div>
             </div>
             <div class="row">
                 <div id="txtCantFirmas"></div>
@@ -111,6 +111,21 @@
             <br />
             <div class="row" id="BotonExp">
                 <div id="btnGuardaFirmas"></div>
+            </div>
+        </div>
+        <div id="popupFirmar">
+            <div class="row">
+                <div class="control-label">APROBAR/RECHAZAR FIRMA DE LA PLANTILLA COD</div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-md-6" for="txtTramite">Asociar al trámite : </label>
+                    <div class="col-md-10" id="txtComentario"></div>
+                </div>
+            </div>
+            <div class="row" id="BotonExp">
+                <div id="btnAceptaFirma"></div>
+                <div id="btnRechazaFirma"></div>
             </div>
         </div>
     </div>
