@@ -51,10 +51,10 @@
         /// </summary>
         public VitalApiController()
         {
-            //if (Environment.MachineName == "SISTEMD26")
-            //{
-            //    urlApiGateWay = "https://localhost:5000/";
-            //}
+            if (Environment.MachineName == "SISTEMD26")
+            {
+                urlApiGateWay = "https://localhost:5000/";
+            }
 
         }
 
@@ -120,7 +120,6 @@
             else datosConsulta.datos = modelFiltered.Skip(skip).Take(take).ToList();
 
             return datosConsulta;
-
         }
 
 
@@ -640,7 +639,8 @@
                             #endregion
 
                             #region Envía correo electrónico al usuario de VITAL
-                            SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", "jorgeestradacorrea@gmail.com", "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                            var destinatario = datos[4];
+                            SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                             #endregion
 
                         }
@@ -706,247 +706,247 @@
 
 
                 SIM.Utilidades.Radicador radicador = new Radicador();
-                if (radicador.SePuedeGenerarRadicado(DateTime.Now))
+
+                resposeF = await apiService.PostAsync<TramiteDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "DescartarTramiteAmbientalSIM", tramiteDTO, response.JwtToken);
+                if (!resposeF.IsSuccess)
                 {
-                    resposeF = await apiService.PostAsync<TramiteDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "DescartarTramiteAmbientalSIM", tramiteDTO, response.JwtToken);
-                    if (!resposeF.IsSuccess)
-                    {
-                        return resposeF;
-                    }
-
-                    var datos = ((SIM.Models.OperationResponse)resposeF.Result).Message.Split('-');
-
-                    var tramiteSIMId = datos[0];
-                    decimal tramiteSim = 0;
-                    decimal.TryParse(tramiteSIMId, out tramiteSim);
-                    if (tramiteSim > 0)
-                    {
-                        SIM.Models.Response responseS = await apiService.GetListAsync<DocumentoAportadoDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", $"ObtenerDocumentosSolicitudVital?RadicadoVITAL={tramiteDTO.RadicadoVITAL}", response.JwtToken);
-                        string documentosAnexos = string.Empty;
-                        if (responseS.IsSuccess)
-                        {
-                            var list = (List<DocumentoAportadoDTO>)responseS.Result;
-                            foreach (var item in list)
-                            {
-                                documentosAnexos = $"{documentosAnexos}{item.Nombre}<br/>";
-                            }
-
-                            if (!string.IsNullOrEmpty(documentosAnexos) && documentosAnexos.Length > 0)
-                            {
-                                documentosAnexos = documentosAnexos.Substring(0, documentosAnexos.Length - 2);
-                            }
-                        }
-
-                        #region Genera la Comuniciación Oficial Recibida
-                        var radicado = radicador.GenerarRadicado(10, idUsuario, DateTime.Now);
-                        Radicado01Report radicado01Report = new Radicado01Report();
-                        var labelRadicado = radicador.GenerarEtiquetaRadicado(radicado.IdRadicado, radicado01Report, "PNG");
-
-                        #region Crear PDF desde HTML
-                        MemoryStream _DocRad = new MemoryStream();
-                        using (RichEditDocumentServer server = new RichEditDocumentServer())
-                        {
-
-                            TextInfo texto = new CultureInfo("es-CO", false).TextInfo;
-                            string body = string.Empty;
-                            MemoryStream _msPdf = new MemoryStream();
-
-                            using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath(@"~/Areas/ExpedienteAmbiental/Templates/TemplateCOR.html")))
-                            {
-                                body = reader.ReadToEnd();
-                            }
-
-                            if (body.Length > 0)
-                            {
-                                CultureInfo cultureInfo = new CultureInfo("es-CO");
-                                body = body.Replace("[Fecha]", DateTime.Now.Date.ToString("dd 'de ' MMMM ' de' yyyy"));
-                                body = body.Replace("[Para]", "ÁREA METROPOLITANA DEL VALLE DE ABURRÁ");
-                                body = body.Replace("[Asunto]", "Solicitud de trámite en la plataforma VITAL");
-                                body = body.Replace("[Contenido]", "Se aportan los siguientes documentos : <br/>" + documentosAnexos);
-
-                                body = body.Replace("[Usuario]", datos[3]);
-                                body = body.Replace("[TipoDocumento]", datos[1]);
-                                body = body.Replace("[NumeroDocumento]", datos[2]);
-                                body = body.Replace("[NroVITAL]", tramiteDTO.NumeroVital);
-                            }
-
-                            byte[] byteArray = Encoding.UTF8.GetBytes(body);
-                            MemoryStream stream = new MemoryStream(byteArray);
-
-                            server.LoadDocument(stream, DocumentFormat.OpenXml);
-
-                            PdfExportOptions options = new PdfExportOptions();
-                            options.DocumentOptions.Author = "SIM";
-                            options.Compressed = false;
-                            options.ImageQuality = PdfJpegImageQuality.Highest;
-
-                            //Save to PDF  
-                            server.ExportToPdf(_DocRad);
-
-                            if (_DocRad.Length > 0)
-                            {
-                                _DocRad.Seek(0, SeekOrigin.Begin);
-                                Bitmap _BmpRad = new Bitmap(labelRadicado);
-                                if (_BmpRad != null)
-                                {
-                                    using (PdfDocumentProcessor _Processor = new PdfDocumentProcessor())
-                                    {
-                                        _Processor.CreateEmptyDocument();
-                                        _Processor.AppendDocument(_DocRad);
-                                        DevExpress.Pdf.PdfPage page = _Processor.Document.Pages[0];
-                                        using (DevExpress.Pdf.PdfGraphics GrphRad = _Processor.CreateGraphics())
-                                        {
-                                            GrphRad.DrawImage(_BmpRad, new Rectangle(300, 30, 288, 72));
-                                            GrphRad.AddToPageForeground(page, 72f, 72f);
-                                        }
-                                        _Processor.SaveDocument(_DocRad);
-                                    }
-                                }
-
-                                #region Adiciona la Comunicación Oficial Recibida a los documentos del Trámite Generado
-                                var fecha = DateTime.Now;
-
-                                string codProcesoTramitesNoAtendidos = Utilidades.Data.ObtenerValorParametro("IdProcesoSolicitudesRechazadasVITAL");
-
-                                var r = Utilidades.Archivos.SubirDocumentoServidorSinCifrar(_DocRad, ".pdf", tramiteSIMId, long.Parse(codProcesoTramitesNoAtendidos), fecha.Minute);
-
-                                decimal codmaxDoc = 1;
-                                var codtramite = decimal.Parse(tramiteSIMId);
-                                var documentosTra = this.dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == codtramite).ToList();
-                                if (documentosTra != null && documentosTra.Count > 0) codmaxDoc = documentosTra.Max(f => f.CODDOCUMENTO) + 1;
-
-                                TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
-                                {
-                                    CODTRAMITE =  decimal.Parse(tramiteSIMId),
-                                    CODDOCUMENTO = codmaxDoc,
-                                    TIPODOCUMENTO = 2,
-                                    FECHACREACION = DateTime.Now,
-                                    CODFUNCIONARIO = 420,
-                                    NOMBRE = "00000001",
-                                    CIFRADO = "0",
-                                    RUTA = r,
-                                    MAPAARCHIVO = "M",
-                                    CODSERIE = 10
-                                };
-
-                                this.dbSIM.TBTRAMITEDOCUMENTO.Add(tBTRAMITEDOCUMENTO);
-                                this.dbSIM.SaveChanges();
-
-                                TBTRAMITE_DOC reltradoc = new TBTRAMITE_DOC();
-                                reltradoc.CODTRAMITE = codtramite;
-                                reltradoc.CODDOCUMENTO = codmaxDoc;
-                                reltradoc.ID_DOCUMENTO = tBTRAMITEDOCUMENTO.ID_DOCUMENTO;
-                                this.dbSIM.TBTRAMITE_DOC.Add(reltradoc);
-                                this.dbSIM.SaveChanges();
-
-                                var tramiteDocu = this.dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == codtramite && f.CODDOCUMENTO == codmaxDoc).FirstOrDefault();
-
-                                string IdIndiceRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicionRecibidaRadicado");
-                                string IdIndiceAsunto = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidadAsunto");
-                                string IdIndiceFechaRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaFechaRadicado");
-                                string IdIndiceHoraRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaHoraRadicado");
-                                string IdIndiceRemitente = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaRemitente");
-                                string IdIndiceEmailSolicitante = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaEmailSolicitante");
-
-                                TBINDICEDOCUMENTO tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
-                                {
-                                    CODTRAMITE = decimal.Parse(tramiteSIMId),
-                                    CODINDICE = int.Parse(IdIndiceRadicado),
-                                    CODDOCUMENTO =codmaxDoc,
-                                    VALOR = radicado.Radicado
-                                };
-
-                                this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
-                                this.dbSIM.SaveChanges();
-
-                                tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
-                                {
-                                    CODTRAMITE = decimal.Parse(tramiteSIMId),
-                                    CODINDICE = int.Parse(IdIndiceAsunto),
-                                    CODDOCUMENTO = codmaxDoc,
-                                    VALOR = "Solicitud de trámite desde la plataforma VITAL"
-                                };
-
-                                this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
-                                this.dbSIM.SaveChanges();
-
-                                tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
-                                {
-                                    CODTRAMITE = decimal.Parse(tramiteSIMId),
-                                    CODINDICE = int.Parse(IdIndiceFechaRadicado),
-                                    CODDOCUMENTO = codmaxDoc,
-                                    VALOR = radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy")
-                                };
-
-                                this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
-                                this.dbSIM.SaveChanges();
-
-                                tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
-                                {
-                                    CODTRAMITE = decimal.Parse(tramiteSIMId),
-                                    CODINDICE = int.Parse(IdIndiceRemitente),
-                                    CODDOCUMENTO = codmaxDoc,
-                                    VALOR =  datos[3]
-                                };
-
-                                this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
-                                this.dbSIM.SaveChanges();
-
-                                #endregion
-
-                                #region Envía a VITAL el Documento 
-
-                                SIM.Models.Response responseSolVital = await apiService.GetAsync<SolicitudVITALDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", $"ObtenerSolicitudVITAL?idSolicitudVITAL={tramiteDTO.IdSolicitudVITAL}", response.JwtToken);
-                                if (!responseSolVital.IsSuccess) return null;
-
-                                var solicitudVITALDTO = (SolicitudVITALDTO)responseSolVital.Result;
-
-                                DatoRadicacionDTO datoRadicacionDTO = new DatoRadicacionDTO
-                                {
-                                    FechaRadicacion = Utilidades.Data.ObtenerFecha(DateTime.Now),
-                                    FechaSolicitud = Utilidades.Data.ObtenerFecha(solicitudVITALDTO.Fecha),
-                                    IdRadicacion = solicitudVITALDTO.RadicacionId,
-                                    NumeroFormulario = solicitudVITALDTO.FormularioId,
-                                    NumeroRadicadoAA = IdIndiceRadicado,
-                                    NumeroSilpa = solicitudVITALDTO.NumeroSILPA,
-                                };
-
-                                var responseV = await apiService.PostAsync<DatoRadicacionDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "EnviarAVITALDatosRadicacion", datoRadicacionDTO, response.JwtToken);
-
-                                #endregion
-                                try
-                                {
-                                    #region Envía correo electrónico al usuario de VITAL
-                                    SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", "jorgeestradacorrea@gmail.com", "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
-                                    #endregion
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Enviar Correo Usuario VITAL - " + tramiteDTO.NumeroVital + " Comunicación Oficial Recibidad con Radicado : " + datoRadicacionDTO.NumeroRadicadoAA + " Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(ex));
-                                }
-                            }
-                        }
-                        #endregion
-
-                        #endregion
-
-                        #region Genera la Comunicación Oficial Despachada
-                        //try
-                        //{
-                        //    #region Envía correo electrónico al usuario de VITAL
-                        //    SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", "jorgeestradacorrea@gmail.com", "", "", "Solicitud VITAL:" +  tramiteDTO.NumeroVital, "El Área Metropolitana del Valle de Aburrá dando respuesta a su solicitud desde la plataforma VITAL : " + tramiteDTO.NumeroVital + ", le informa que " + tramiteDTO.Comentarios , "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialDespachada.pdf");
-                        //    #endregion
-                        //}
-                        //catch (Exception ex)
-                        //{
-                        //    Console.WriteLine(ex.Message);
-                        //    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Enviar Correo Usuario VITAL - " + solicitudVITALDTO.NumeroVITAL + " ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(ex));
-                        //}
-
-                        #endregion
-                    }
+                    return resposeF;
                 }
+
+                var datos = ((SIM.Models.OperationResponse)resposeF.Result).Message.Split('-');
+
+                var tramiteSIMId = datos[0];
+                decimal tramiteSim = 0;
+                decimal.TryParse(tramiteSIMId, out tramiteSim);
+                if (tramiteSim > 0)
+                {
+                    SIM.Models.Response responseS = await apiService.GetListAsync<DocumentoAportadoDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", $"ObtenerDocumentosSolicitudVital?RadicadoVITAL={tramiteDTO.RadicadoVITAL}", response.JwtToken);
+                    string documentosAnexos = string.Empty;
+                    if (responseS.IsSuccess)
+                    {
+                        var list = (List<DocumentoAportadoDTO>)responseS.Result;
+                        foreach (var item in list)
+                        {
+                            documentosAnexos = $"{documentosAnexos}{item.Nombre}<br/>";
+                        }
+
+                        if (!string.IsNullOrEmpty(documentosAnexos) && documentosAnexos.Length > 0)
+                        {
+                            documentosAnexos = documentosAnexos.Substring(0, documentosAnexos.Length - 2);
+                        }
+                    }
+
+                    #region Genera la Comuniciación Oficial Recibida
+                    var radicado = radicador.GenerarRadicado(10, idUsuario, DateTime.Now);
+                    Radicado01Report radicado01Report = new Radicado01Report();
+                    var labelRadicado = radicador.GenerarEtiquetaRadicado(radicado.IdRadicado, radicado01Report, "PNG");
+
+                    #region Crear PDF desde HTML
+                    MemoryStream _DocRad = new MemoryStream();
+                    using (RichEditDocumentServer server = new RichEditDocumentServer())
+                    {
+
+                        TextInfo texto = new CultureInfo("es-CO", false).TextInfo;
+                        string body = string.Empty;
+                        MemoryStream _msPdf = new MemoryStream();
+
+                        using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath(@"~/Areas/ExpedienteAmbiental/Templates/TemplateCOR.html")))
+                        {
+                            body = reader.ReadToEnd();
+                        }
+
+                        if (body.Length > 0)
+                        {
+                            CultureInfo cultureInfo = new CultureInfo("es-CO");
+                            body = body.Replace("[Fecha]", DateTime.Now.Date.ToString("dd 'de ' MMMM ' de' yyyy"));
+                            body = body.Replace("[Para]", "ÁREA METROPOLITANA DEL VALLE DE ABURRÁ");
+                            body = body.Replace("[Asunto]", "Solicitud de trámite en la plataforma VITAL");
+                            body = body.Replace("[Contenido]", "Se aportan los siguientes documentos : <br/>" + documentosAnexos);
+
+                            body = body.Replace("[Usuario]", datos[3]);
+                            body = body.Replace("[TipoDocumento]", datos[1]);
+                            body = body.Replace("[NumeroDocumento]", datos[2]);
+                            body = body.Replace("[NroVITAL]", tramiteDTO.NumeroVital);
+                        }
+
+                        byte[] byteArray = Encoding.UTF8.GetBytes(body);
+                        MemoryStream stream = new MemoryStream(byteArray);
+
+                        server.LoadDocument(stream, DocumentFormat.OpenXml);
+
+                        PdfExportOptions options = new PdfExportOptions();
+                        options.DocumentOptions.Author = "SIM";
+                        options.Compressed = false;
+                        options.ImageQuality = PdfJpegImageQuality.Highest;
+
+                        //Save to PDF  
+                        server.ExportToPdf(_DocRad);
+
+                        if (_DocRad.Length > 0)
+                        {
+                            _DocRad.Seek(0, SeekOrigin.Begin);
+                            Bitmap _BmpRad = new Bitmap(labelRadicado);
+                            if (_BmpRad != null)
+                            {
+                                using (PdfDocumentProcessor _Processor = new PdfDocumentProcessor())
+                                {
+                                    _Processor.CreateEmptyDocument();
+                                    _Processor.AppendDocument(_DocRad);
+                                    DevExpress.Pdf.PdfPage page = _Processor.Document.Pages[0];
+                                    using (DevExpress.Pdf.PdfGraphics GrphRad = _Processor.CreateGraphics())
+                                    {
+                                        GrphRad.DrawImage(_BmpRad, new Rectangle(300, 30, 288, 72));
+                                        GrphRad.AddToPageForeground(page, 72f, 72f);
+                                    }
+                                    _Processor.SaveDocument(_DocRad);
+                                }
+                            }
+
+                            #region Adiciona la Comunicación Oficial Recibida a los documentos del Trámite Generado
+                            var fecha = DateTime.Now;
+
+                            string codProcesoTramitesNoAtendidos = Utilidades.Data.ObtenerValorParametro("IdProcesoSolicitudesRechazadasVITAL");
+
+                            var r = Utilidades.Archivos.SubirDocumentoServidorSinCifrar(_DocRad, ".pdf", tramiteSIMId, long.Parse(codProcesoTramitesNoAtendidos), fecha.Minute);
+
+                            decimal codmaxDoc = 1;
+                            var codtramite = decimal.Parse(tramiteSIMId);
+                            var documentosTra = this.dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == codtramite).ToList();
+                            if (documentosTra != null && documentosTra.Count > 0) codmaxDoc = documentosTra.Max(f => f.CODDOCUMENTO) + 1;
+
+                            TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
+                            {
+                                CODTRAMITE =  decimal.Parse(tramiteSIMId),
+                                CODDOCUMENTO = codmaxDoc,
+                                TIPODOCUMENTO = 2,
+                                FECHACREACION = DateTime.Now,
+                                CODFUNCIONARIO = 420,
+                                NOMBRE = "00000001",
+                                CIFRADO = "0",
+                                RUTA = r,
+                                MAPAARCHIVO = "M",
+                                CODSERIE = 10
+                            };
+
+                            this.dbSIM.TBTRAMITEDOCUMENTO.Add(tBTRAMITEDOCUMENTO);
+                            this.dbSIM.SaveChanges();
+
+                            TBTRAMITE_DOC reltradoc = new TBTRAMITE_DOC();
+                            reltradoc.CODTRAMITE = codtramite;
+                            reltradoc.CODDOCUMENTO = codmaxDoc;
+                            reltradoc.ID_DOCUMENTO = tBTRAMITEDOCUMENTO.ID_DOCUMENTO;
+                            this.dbSIM.TBTRAMITE_DOC.Add(reltradoc);
+                            this.dbSIM.SaveChanges();
+
+                            var tramiteDocu = this.dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == codtramite && f.CODDOCUMENTO == codmaxDoc).FirstOrDefault();
+
+                            string IdIndiceRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicionRecibidaRadicado");
+                            string IdIndiceAsunto = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidadAsunto");
+                            string IdIndiceFechaRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaFechaRadicado");
+                            string IdIndiceHoraRadicado = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaHoraRadicado");
+                            string IdIndiceRemitente = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaRemitente");
+                            string IdIndiceEmailSolicitante = Utilidades.Data.ObtenerValorParametro("IdIndiceComunicacionRecibidaEmailSolicitante");
+
+                            TBINDICEDOCUMENTO tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                            {
+                                CODTRAMITE = decimal.Parse(tramiteSIMId),
+                                CODINDICE = int.Parse(IdIndiceRadicado),
+                                CODDOCUMENTO =codmaxDoc,
+                                VALOR = radicado.Radicado
+                            };
+
+                            this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                            this.dbSIM.SaveChanges();
+
+                            tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                            {
+                                CODTRAMITE = decimal.Parse(tramiteSIMId),
+                                CODINDICE = int.Parse(IdIndiceAsunto),
+                                CODDOCUMENTO = codmaxDoc,
+                                VALOR = "Solicitud de trámite desde la plataforma VITAL"
+                            };
+
+                            this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                            this.dbSIM.SaveChanges();
+
+                            tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                            {
+                                CODTRAMITE = decimal.Parse(tramiteSIMId),
+                                CODINDICE = int.Parse(IdIndiceFechaRadicado),
+                                CODDOCUMENTO = codmaxDoc,
+                                VALOR = radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy")
+                            };
+
+                            this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                            this.dbSIM.SaveChanges();
+
+                            tBINDICEDOCUMENTO = new TBINDICEDOCUMENTO
+                            {
+                                CODTRAMITE = decimal.Parse(tramiteSIMId),
+                                CODINDICE = int.Parse(IdIndiceRemitente),
+                                CODDOCUMENTO = codmaxDoc,
+                                VALOR =  datos[3]
+                            };
+
+                            this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
+                            this.dbSIM.SaveChanges();
+
+                            #endregion
+
+                            #region Envía a VITAL el Documento 
+
+                            SIM.Models.Response responseSolVital = await apiService.GetAsync<SolicitudVITALDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", $"ObtenerSolicitudVITAL?idSolicitudVITAL={tramiteDTO.IdSolicitudVITAL}", response.JwtToken);
+                            if (!responseSolVital.IsSuccess) return null;
+
+                            var solicitudVITALDTO = (SolicitudVITALDTO)responseSolVital.Result;
+
+                            DatoRadicacionDTO datoRadicacionDTO = new DatoRadicacionDTO
+                            {
+                                FechaRadicacion = Utilidades.Data.ObtenerFecha(DateTime.Now),
+                                FechaSolicitud = Utilidades.Data.ObtenerFecha(solicitudVITALDTO.Fecha),
+                                IdRadicacion = solicitudVITALDTO.RadicacionId,
+                                NumeroFormulario = solicitudVITALDTO.FormularioId,
+                                NumeroRadicadoAA = IdIndiceRadicado,
+                                NumeroSilpa = solicitudVITALDTO.NumeroSILPA,
+                            };
+
+                            var responseV = await apiService.PostAsync<DatoRadicacionDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "EnviarAVITALDatosRadicacion", datoRadicacionDTO, response.JwtToken);
+
+                            #endregion
+                            try
+                            {
+                                #region Envía correo electrónico al usuario de VITAL
+                                string destinatario = datos[4];
+                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                                #endregion
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Enviar Correo Usuario VITAL - " + tramiteDTO.NumeroVital + " Comunicación Oficial Recibidad con Radicado : " + datoRadicacionDTO.NumeroRadicadoAA + " Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(ex));
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #endregion
+
+                    #region Genera la Comunicación Oficial Despachada
+                    //try
+                    //{
+                    //    #region Envía correo electrónico al usuario de VITAL
+                    //    SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", "jorgeestradacorrea@gmail.com", "", "", "Solicitud VITAL:" +  tramiteDTO.NumeroVital, "El Área Metropolitana del Valle de Aburrá dando respuesta a su solicitud desde la plataforma VITAL : " + tramiteDTO.NumeroVital + ", le informa que " + tramiteDTO.Comentarios , "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialDespachada.pdf");
+                    //    #endregion
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Console.WriteLine(ex.Message);
+                    //    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Enviar Correo Usuario VITAL - " + solicitudVITALDTO.NumeroVITAL + " ] : Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(ex));
+                    //}
+
+                    #endregion
+                }
+
 
 
                 resposeF.IsSuccess = true;
@@ -1207,11 +1207,12 @@
                             #region Envía correo electrónico al usuario de VITAL
                             try
                             {
-                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", "jorgeestradacorrea@gmail.com", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "prueba", "172.16.0.5", false, "", "");
+                                string destinatario = datos[4];
+                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                             }
                             catch (Exception ex)
                             {
-                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", "jorgeestradacorrea@gmail.com", "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Enviar Correo Usuario VITAL - " + tramiteDTO.NumeroVital + " Comunicación Oficial Recibidad con Radicado : " + datoRadicacionDTO.NumeroRadicadoAA + " Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(ex));
                             }
                             #endregion
 
