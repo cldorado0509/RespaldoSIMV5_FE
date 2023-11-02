@@ -13,7 +13,7 @@ namespace SIM.Data.Tramites
         public decimal ID_RADMASIVO { get; set; }
         public decimal FUNC_FIRMA { get; set; }
         public decimal ORDEN_FIRMA { get; set; }
-        public DateTime D_FECHAFIRMA { get; set; }
+        public DateTime? D_FECHAFIRMA { get; set; }
         public string S_FIRMADO { get; set; }
     }
 }

@@ -637,12 +637,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                              IDSOLICITUD = mas.IDSOLICITUD,
                              CODTRAMITE = mas.CODTRAMITE,
                              ENVIACORREO = mas.S_ENVIACORREO,
-                             FUNCIONARIOFIRMA = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == mas.ID).Select(s => s.FUNC_FIRMA).FirstOrDefault(),
+                             FUNCIONARIOFIRMA = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == mas.ID && w.S_FIRMADO == "0").Select(s => s.FUNC_FIRMA).FirstOrDefault(),
                              FUNCIONARIOELABORA = mas.FUNC_ELABORA,
                              MENSAJE = rut.S_COMENTARIO
-                         }).ToList();
+                         });
 
-            return JArray.FromObject(lista, Js);
+            return JArray.FromObject(lista.ToList(), Js);
         }
 
         /// <summary>
@@ -787,7 +787,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         {
                                             FUNC_FIRMA = fir.CodFuncionario,
                                             ORDEN_FIRMA = fir.Orden
-
                                         };
                                         dbSIM.RADMASIVAFIRMAS.Add(newFirm);
                                     }
@@ -931,7 +930,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         ruta.FECHA_RUTA = DateTime.Now;
                         dbSIM.RADMASIVARUTA.Add(ruta);
                         dbSIM.SaveChanges();
-                        return new { resp = "Ok", mensaje = "Documento con firmado, se avanza para siguiente firma" };
+                        return new { resp = "Ok", mensaje = "Documento firmado, se avanza para siguiente firma" };
                     }
                 }
                 else return new { resp = "Error", mensaje = "No se ha aceptado la firma" };
