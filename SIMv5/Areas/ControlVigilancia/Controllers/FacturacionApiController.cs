@@ -30,6 +30,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
     {
         public class RegistroFacturacion
         {
+            public string TRAMITES { get; set; }
             public int CODTRAMITE { get; set; }
             public int CODDOCUMENTO { get; set; }
             public string ASUNTO { get; set; }
@@ -55,6 +56,8 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             public string VALORID { get; set; }
 
             public DateTime? D_RADICADO { get; set; }
+
+            public string S_RADICADO { get; set; }
         }
 
         public struct DatosRespuesta
@@ -102,23 +105,26 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             else
             {
                 string documentoActual = "";
+                string tramiteDocumentoActual = "";
                 RegistroFacturacion registroFacturacion = null;
                 List<RegistroFacturacion> pendientesFacturacion = new List<RegistroFacturacion>();
 
-                string sql = "SELECT ida.*, rd.D_RADICADO, rd.S_RADICADO " +
+                string sql = "SELECT ida.*, rd.D_RADICADO, idr.VALOR AS S_RADICADO " +
                         "FROM TRAMITES.TBINDICEDOCUMENTO id INNER JOIN " +
                         "   TRAMITES.TBINDICEDOCUMENTO idf ON id.CODDOCUMENTO = idf.CODDOCUMENTO AND id.CODTRAMITE = idf.CODTRAMITE AND id.CODINDICE = 3922 AND id.VALOR = 'S' AND idf.CODINDICE = 2740 AND NVL(idf.VALOR, '0') IN ('0', 'NA', 'N/A')  INNER JOIN " +
+                        "   TRAMITES.TBINDICEDOCUMENTO idr ON id.CODDOCUMENTO = idr.CODDOCUMENTO AND id.CODTRAMITE = idr.CODTRAMITE AND idr.CODINDICE = 381 INNER JOIN " +
                         "   TRAMITES.TBINDICEDOCUMENTO idm ON id.CODDOCUMENTO = idm.CODDOCUMENTO AND id.CODTRAMITE = idm.CODTRAMITE AND id.CODINDICE = 3922 AND id.VALOR = 'S' AND idm.CODINDICE = 326 AND NVL(idm.VALOR, '0') " + (usuario.ID_GRUPO == 2 ? "NOT LIKE '%ENV%'" : "LIKE '%ENV%'") + " INNER JOIN " +
                         //"   TRAMITES.TBINDICEDOCUMENTO ide ON id.CODDOCUMENTO = ide.CODDOCUMENTO AND id.CODTRAMITE = ide.CODTRAMITE AND id.CODINDICE = 3922 AND id.VALOR = 'S' AND ide.CODINDICE = 2022 AND NVL(ide.VALOR, '0') = '" + (usuario.ID_GRUPO == 2 ? "00" : "10") + "' INNER JOIN " +
                         "   TRAMITES.TBINDICEDOCUMENTO ida ON id.CODDOCUMENTO = ida.CODDOCUMENTO AND id.CODTRAMITE = ida.CODTRAMITE AND ida.CODINDICE IN(320, 321, 323, 324, 325, 327, 381, 3922, 3940) LEFT OUTER JOIN" +
                         "   TRAMITES.RADICADO_DOCUMENTO rd ON id.CODTRAMITE = rd.CODTRAMITE AND id.CODDOCUMENTO = rd.CODDOCUMENTO " +
-                        "ORDER BY ida.CODTRAMITE, ida.CODDOCUMENTO, ida.CODINDICE";
+                        "ORDER BY idr.VALOR, ida.CODTRAMITE, ida.CODDOCUMENTO, ida.CODINDICE";
 
                 var documentosFacturacion = dbSIM.Database.SqlQuery<IndicesDocumento>(sql).ToList();
 
                 foreach (var registro in documentosFacturacion)
                 {
-                    string documentoRegistro = registro.CODTRAMITE.ToString() + "|" + registro.CODDOCUMENTO.ToString();
+                    string tramiteDocumentoRegistro = registro.CODTRAMITE.ToString() + "|" + registro.CODDOCUMENTO.ToString();
+                    string documentoRegistro = registro.S_RADICADO;
 
                     if (documentoRegistro != documentoActual)
                     {
@@ -131,8 +137,21 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                         registroFacturacion.CODTRAMITE = Convert.ToInt32(registro.CODTRAMITE);
                         registroFacturacion.CODDOCUMENTO = Convert.ToInt32(registro.CODDOCUMENTO);
                         registroFacturacion.FECHARADICADO = registro.D_RADICADO;
+                        registroFacturacion.TRAMITES = registro.CODTRAMITE.ToString() + "," + registro.CODDOCUMENTO.ToString();
 
-                        documentoActual = registroFacturacion.CODTRAMITE.ToString() + "|" + registroFacturacion.CODDOCUMENTO.ToString();
+                        tramiteDocumentoActual = registroFacturacion.CODTRAMITE.ToString() + "|" + registroFacturacion.CODDOCUMENTO.ToString();
+                        documentoActual = registro.S_RADICADO;
+                    }
+                    else
+                    {
+                        if (tramiteDocumentoRegistro != tramiteDocumentoActual)
+                        {
+                            registroFacturacion.TRAMITES += ";" + registro.CODTRAMITE.ToString() + "," + registro.CODDOCUMENTO.ToString();
+                            tramiteDocumentoActual = tramiteDocumentoRegistro;
+                        }
+
+                        if (registroFacturacion.FECHARADICADO == null)
+                            registroFacturacion.FECHARADICADO = registro.D_RADICADO;
                     }
 
                     switch (registro.CODINDICE)
@@ -180,24 +199,33 @@ namespace SIM.Areas.ControlVigilancia.Controllers
 
         [Authorize(Roles = "VFACTURACION")]
         [HttpGet, ActionName("RegistrarFactura")]
-        public void GetRegistrarFactura(decimal Tramite, decimal Documento, string Factura)
+        public void GetRegistrarFactura(string Tramites, string Factura)
         {
-            var indiceFacturaDocumento = dbSIM.TBINDICEDOCUMENTO.Where(id => id.CODTRAMITE == Tramite && id.CODDOCUMENTO == Documento && id.CODINDICE == 2740).FirstOrDefault();
+            decimal Tramite;
+            decimal Documento;
 
-            if (indiceFacturaDocumento == null)
+            foreach (string tramiteDocumento in Tramites.Split(';'))
             {
-                indiceFacturaDocumento = new TBINDICEDOCUMENTO() { CODTRAMITE = Tramite, CODDOCUMENTO = Documento, CODSERIE = 62, CODINDICE = 2740, VALOR = Factura, FECHAREGISTRO = DateTime.Now };
+                Tramite = Convert.ToDecimal(tramiteDocumento.Split(',')[0]);
+                Documento = Convert.ToDecimal(tramiteDocumento.Split(',')[1]);
 
-                dbSIM.Entry(indiceFacturaDocumento).State = EntityState.Added;
+                var indiceFacturaDocumento = dbSIM.TBINDICEDOCUMENTO.Where(id => id.CODTRAMITE == Tramite && id.CODDOCUMENTO == Documento && id.CODINDICE == 2740).FirstOrDefault();
+
+                if (indiceFacturaDocumento == null)
+                {
+                    indiceFacturaDocumento = new TBINDICEDOCUMENTO() { CODTRAMITE = Tramite, CODDOCUMENTO = Documento, CODSERIE = 62, CODINDICE = 2740, VALOR = Factura, FECHAREGISTRO = DateTime.Now };
+
+                    dbSIM.Entry(indiceFacturaDocumento).State = EntityState.Added;
+                }
+                else
+                {
+                    indiceFacturaDocumento.VALOR = Factura;
+
+                    dbSIM.Entry(indiceFacturaDocumento).State = EntityState.Modified;
+                }
+
+                dbSIM.SaveChanges();
             }
-            else
-            {
-                indiceFacturaDocumento.VALOR = Factura;
-
-                dbSIM.Entry(indiceFacturaDocumento).State = EntityState.Modified;
-            }
-
-            dbSIM.SaveChanges();
         }
     }
 }
