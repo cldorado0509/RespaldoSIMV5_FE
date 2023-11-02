@@ -29,7 +29,27 @@ $(document).ready(function () {
         type: "default",
         text: "Firmar Plantilla COD",
         onClick: function () {
-
+            var params = { CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Comentario: "", Firmado: true };
+            var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/MasivosApi/GuardaFirma";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                beforeSend: function () { },
+                success: function (data) {
+                    if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Firmar documento');
+                    else {
+                        DevExpress.ui.dialog.alert(data.mensaje, 'Firmar documento');
+                        $('#grdListaMasivos').dxDataGrid("instance").refresh();
+                        popFirmar.hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Firmar documento');
+                }
+            });
         }
     });
 
@@ -38,7 +58,32 @@ $(document).ready(function () {
         type: "default",
         text: "No Firmar COD",
         onClick: function () {
-
+            var txtRechaza = txtRechazo.option("value");
+            if (txtRechaza.length > 0) {
+                var params = { CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Comentario: txtRechaza, Firmado: false };
+                var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/MasivosApi/RechazaFirma";
+                $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    url: _Ruta,
+                    data: JSON.stringify(params),
+                    contentType: "application/json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Firmar documento');
+                        else {
+                            DevExpress.ui.dialog.alert(data.mensaje, 'Firmar documento');
+                            $('#grdListaMasivos').dxDataGrid("instance").refresh();
+                            popFirmar.hide();
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Firmar documento');
+                    }
+                });
+            } else {
+                DevExpress.ui.dialog.alert('Si rechaza la firma debe indicar el motivo', 'Firmar documento');
+            }
         }
     });
 
@@ -816,79 +861,85 @@ $(document).ready(function () {
             { dataField: 'IDSOLICITUD', dataType: 'string', visible: false },
             { dataField: 'CODTRAMITE', dataType: 'string', visible: false },
             { dataField: 'ENVIACORREO', dataType: 'string', visible: false },
+            { dataField: 'FUNCIONARIOFIRMA', dataType: 'number', visible: false },
+            { dataField: 'FUNCIONARIOELABORA', dataType: 'number', visible: false },
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    $('<div/>').dxButton({
-                        icon: 'edit',
-                        type: 'success',
-                        hint: 'Editar proceso masivo COD',
-                        onClick: function (e) {
-                            EnEdicion = true;
-                            IdSolicitud = options.data.IDSOLICITUD;
-                            Tema = options.data.TEMA;
-                            ufPlantilla.option("disabled", false);
-                            //chkEmail.option("disabled", false);
-                            btnAsociaInd.option("disabled", false);
-                            gridExcel.option("dataSource", null);
-                            gridExcel.repaint();
-                            gridExcel.option("visible", false);
+                    if (options.data.FUNCIONARIOELABORA == CodFunc) {
+                        $('<div/>').dxButton({
+                            icon: 'edit',
+                            type: 'success',
+                            hint: 'Editar proceso masivo COD',
+                            onClick: function (e) {
+                                EnEdicion = true;
+                                IdSolicitud = options.data.IDSOLICITUD;
+                                Tema = options.data.TEMA;
+                                ufPlantilla.option("disabled", false);
+                                //chkEmail.option("disabled", false);
+                                btnAsociaInd.option("disabled", false);
+                                gridExcel.option("dataSource", null);
+                                gridExcel.repaint();
+                                gridExcel.option("visible", false);
 
-                            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/CargaExcel";
-                            $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
-                                if (data.length > 0) {
-                                    var columnsIn = data[0];
-                                    var columns = [];
-                                    for (var key in columnsIn) {
-                                        columns.push(key);
+                                var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/CargaExcel";
+                                $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
+                                    if (data.length > 0) {
+                                        var columnsIn = data[0];
+                                        var columns = [];
+                                        for (var key in columnsIn) {
+                                            columns.push(key);
+                                        }
+                                        gridExcel.option("columns", columns);
+                                        DatosExcelStore = new DevExpress.data.LocalStore({
+                                            key: columns[0],
+                                            data: data,
+                                            name: 'DatosExcelStore'
+                                        });
+                                        btnFirmas.option("disabled", false);
+                                        gridExcel.option("dataSource", DatosExcelStore);
+                                        gridExcel.option("visible", true);
                                     }
-                                    gridExcel.option("columns", columns);
-                                    DatosExcelStore = new DevExpress.data.LocalStore({
-                                        key: columns[0],
-                                        data: data,
-                                        name: 'DatosExcelStore'
-                                    });
-                                    btnFirmas.option("disabled", false);
-                                    gridExcel.option("dataSource", DatosExcelStore);
-                                    gridExcel.option("visible", true);
+                                });
+                                if (options.data.CODTRAMITE != "") {
+                                    txtTramite.option("value", options.data.CODTRAMITE);
+                                    TramiteValido = true;
                                 }
-                            });
-                            if (options.data.CODTRAMITE != "") {
-                                txtTramite.option("value", options.data.CODTRAMITE);
-                                TramiteValido = true;
-                            }
-                            if (options.data.ENVIACORREO == "1") {
-                                chkEmail.option("diabled", false);
-                                chkEmail.option("value", true);
-                            }
-                            _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/ObtenerFirmas";
-                            firmasDocumento = [];
-                            $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
-                                if (data.length > 0) {
-                                    data.forEach(fd => {
-                                        firmasDocumento.push({ CODFUNCIONARIO: fd.CODFUNCIONARIO, FUNCIONARIO: fd.FUNCIONARIO, ORDEN: fd.ORDEN });
-                                    });
-                                    $("#grdFirmas").dxDataGrid({ dataSource: firmasDocumento });
+                                if (options.data.ENVIACORREO == "1") {
+                                    chkEmail.option("diabled", false);
+                                    chkEmail.option("value", true);
                                 }
-                            });
-                            DetalleMasivo.option("title", "Generar / Modificar proceso de radicación masiva de COD " + Tema);
-                            DetalleMasivo.show();
-                        }
-                    }).appendTo(container);
+                                _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/ObtenerFirmas";
+                                firmasDocumento = [];
+                                $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
+                                    if (data.length > 0) {
+                                        data.forEach(fd => {
+                                            firmasDocumento.push({ CODFUNCIONARIO: fd.CODFUNCIONARIO, FUNCIONARIO: fd.FUNCIONARIO, ORDEN: fd.ORDEN });
+                                        });
+                                        $("#grdFirmas").dxDataGrid({ dataSource: firmasDocumento });
+                                    }
+                                });
+                                DetalleMasivo.option("title", "Generar / Modificar proceso de radicación masiva de COD " + Tema);
+                                DetalleMasivo.show();
+                            }
+                        }).appendTo(container);
+                    }
                 }
             },
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    $('<div/>').dxButton({
-                        icon: 'check',
-                        type: 'success',
-                        hint: 'Firmar la plantilla',
-                        onClick: function (e) {
-                            txtRechazo.option("value", "");
-                            popFirmar.show();
-                        }
-                    }).appendTo(container);
+                    if (options.data.FUNCIONARIOFIRMA == CodFunc) {
+                        $('<div/>').dxButton({
+                            icon: 'check',
+                            type: 'success',
+                            hint: 'Firmar la plantilla',
+                            onClick: function (e) {
+                                txtRechazo.option("value", "");
+                                popFirmar.show();
+                            }
+                        }).appendTo(container);
+                    }
                 }
             },
             {
@@ -920,18 +971,46 @@ $(document).ready(function () {
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    $('<div/>').dxButton({
-                        icon: 'tips',
-                        type: 'success',
-                        hint: 'Ver motivo de rechazo firma',
-                        onClick: function (e) {
+                    if (options.data.FUNCIONARIOELABORA == CodFunc) {
+                        $('<div/>').dxButton({
+                            icon: 'tips',
+                            type: 'success',
+                            hint: 'Ver motivo de rechazo firma',
+                            onClick: function (e) {
+                                MostrarMensage(options.data);
 
-                        }
-                    }).appendTo(container);
+                            }
+                        }).appendTo(container);
+                    }
                 }
             }
         ]
     });
+
+    var popupMess = null;
+
+    var MostrarMensage = function (data) {
+        dt = data
+        if (popupMess) {
+            popupMess.option("contentTemplate", popupOptMess.contentTemplate.bind(this));
+        } else {
+            popupMess = $("#PopupMensaje").dxPopup(popupOptMess).dxPopup("instance");
+        }
+        popupMess.show();
+    }
+
+    var popupOptMess = {
+        width: 300,
+        height: 300,
+        hoverStateEnabled: true,
+        title: "Modivo del rechazo d ela firma del documento COD (Plantilla)",
+        closeOnOutsideClick: true,
+        contentTemplate: function (container) {
+            var divIni = $("<div>").append($("<p><span><b>" + data.MENSAJE + "</b></span></p>"))
+            container.append(divIni);
+            return container;
+        }
+    };
 
 });
 

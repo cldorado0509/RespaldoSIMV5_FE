@@ -1219,6 +1219,7 @@
     <Compile Include="Areas\GestionDocumental\Controllers\MasivosController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosApiController.cs" />
     <Compile Include="Areas\GestionDocumental\Controllers\MemorandosController.cs" />
+    <Compile Include="Areas\GestionDocumental\Models\FirmaMasivoDTO.cs" />
     <Compile Include="Areas\GestionDocumental\Models\ListadoMasivos.cs" />
     <Compile Include="Areas\GestionDocumental\Models\MasivoDTO.cs" />
     <Compile Include="Areas\GestionDocumental\Models\ResponseFile.cs" />
