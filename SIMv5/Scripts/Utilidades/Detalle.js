@@ -1132,6 +1132,16 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnTramitePadre").dxButton({
+        text: TramitePadre,
+        type: 'normal',
+        onClick: function (e) {
+            var left = (screen.width / 2) - 550;
+            var top = (screen.height / 2) - 300;
+            window.open($('#SIM').data('url') + "Utilidades/DetalleTramite?popup=true&CodTramite=" + TramitePadre + "&Orden=" + Orden, "Documento ", "width= 1100,height=600,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no, top" + top + ",left=" + left);
+        }
+    });
+
     var popupTemp = $("#PopupTemporal").dxPopup({
         width: 900,
         height: "auto",
