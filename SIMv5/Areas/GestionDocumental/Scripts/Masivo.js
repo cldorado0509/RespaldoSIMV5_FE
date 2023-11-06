@@ -9,6 +9,7 @@ var CantFirmas = 0;
 var firmasDocumento = [];
 var Tema = "";
 var EnEdicion = false;
+var FuncElabora = false;
 $(document).ready(function () {
 
     $("#loadPanel").dxLoadPanel({
@@ -726,6 +727,7 @@ $(document).ready(function () {
     var btnGuardar = $("#btnGuardar").dxButton({
         text: "Guardar datos",
         type: "default",
+        visible: (CodFunc == FuncElabora),
         onClick: function () {
             var _Tramite = txtTramite.option("value");
             var _EnviarEmail = chkEmail.option("value");
@@ -950,7 +952,29 @@ $(document).ready(function () {
                         type: 'success',
                         hint: 'Previsualizar muestra del documento',
                         onClick: function (e) {
-
+                            $("#loadPanel").dxLoadPanel('instance').show();
+                            var _Tramite = txtTramite.option("value");
+                            var _EnviarEmail = chkEmail.option("value");
+                            var parametros = { IdSolicitud: options.data.IDSOLICITUD, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Indices: ArrIndices };
+                            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/PrevisualizaMasivo";
+                            $.ajax({
+                                type: "POST",
+                                dataType: 'json',
+                                url: _Ruta,
+                                data: JSON.stringify(parametros),
+                                contentType: "application/json",
+                                success: function (data) {
+                                    if (!data.isSuccess) {
+                                        $("#loadPanel").dxLoadPanel('instance').hide();
+                                        DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Previsualización Radicación Masivos');
+                                    } else {
+                                        $("#loadPanel").dxLoadPanel('instance').hide();
+                                        var pdfWindow = window.open("");
+                                        pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data.responseFile + "'></iframe>")
+                                    }
+                                }
+                            });
+                            $("#loadPanel").dxLoadPanel('instance').hide();
                         }
                     }).appendTo(container);
                 }
@@ -963,6 +987,19 @@ $(document).ready(function () {
                         type: 'success',
                         hint: 'Ver la plantilla del proceso',
                         onClick: function (e) {
+                            var parametros = { IdSolicitud: options.data.IDSOLICITUD };
+                            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/LeePlantilla?IdSolicitud=" + options.data.IDSOLICITUD;
+                            $.ajax({
+                                type: "POST",
+                                dataType: 'json',
+                                url: _Ruta,
+                                data: JSON.stringify(parametros),
+                                contentType: "application/json",
+                                success: function (data) {
+                                    var pdfWindow = window.open("");
+                                    pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
+                                }
+                            });
 
                         }
                     }).appendTo(container);
@@ -978,13 +1015,18 @@ $(document).ready(function () {
                             hint: 'Ver motivo de rechazo firma',
                             onClick: function (e) {
                                 MostrarMensage(options.data);
-
                             }
                         }).appendTo(container);
                     }
                 }
             }
-        ]
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            if (data) {
+                FuncElabora = data.FUNCIONARIOELABORA;
+            }
+        }
     });
 
     var popupMess = null;
@@ -1000,13 +1042,13 @@ $(document).ready(function () {
     }
 
     var popupOptMess = {
-        width: 300,
-        height: 300,
+        width: 600,
+        height: 200,
         hoverStateEnabled: true,
-        title: "Modivo del rechazo d ela firma del documento COD (Plantilla)",
+        title: "Motivo del rechazo de la firma (Plantilla)",
         closeOnOutsideClick: true,
         contentTemplate: function (container) {
-            var divIni = $("<div>").append($("<p><span><b>" + data.MENSAJE + "</b></span></p>"))
+            var divIni = $("<div>").append($("<p><span><b>" + dt.MENSAJE + "</b></span></p>"))
             container.append(divIni);
             return container;
         }
