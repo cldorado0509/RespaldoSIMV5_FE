@@ -642,7 +642,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
             bool _PuedeRadicar = false;
-            dynamic lista = null;
             var _FuncionariosRadicanMasivos = SIM.Utilidades.Data.ObtenerValorParametro("FuncionariosRadicanMasivos");
             if (_FuncionariosRadicanMasivos != "")
             {
@@ -651,47 +650,48 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
             if (!_PuedeRadicar)
             {
-                lista = (from rut in dbSIM.RADMASIVARUTA
-                         join mas in dbSIM.RADMASIVA on rut.ID_RADMASIVO equals mas.ID
-                         where rut.FECHA_RUTA == dbSIM.RADMASIVARUTA.Where(w => w.ID_RADMASIVO == mas.ID).OrderByDescending(f => f.FECHA_RUTA).Select(s => s.FECHA_RUTA).FirstOrDefault() &&
-                         rut.CODFUNCIONARIO == CodFunc && mas.S_REALIZADO == "0"
-                         orderby mas.D_FECHA descending
-                         select new ListadoMasivos
-                         {
-                             ID = mas.ID,
-                             TEMA = mas.S_TEMA,
-                             D_FECHA = mas.D_FECHA,
-                             CANTIDAD_FILAS = mas.CANTIDAD_FILAS,
-                             ESTADO = mas.S_VALIDADO == "0" ? "ELABORACION" : "LISTO PARA RADICAR",
-                             IDSOLICITUD = mas.IDSOLICITUD,
-                             CODTRAMITE = mas.CODTRAMITE,
-                             ENVIACORREO = mas.S_ENVIACORREO,
-                             FUNCIONARIOFIRMA = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == mas.ID && (w.S_FIRMADO == "0" || string.IsNullOrEmpty(w.S_FIRMADO))).Select(s => s.FUNC_FIRMA).FirstOrDefault(),
-                             FUNCIONARIOELABORA = mas.FUNC_ELABORA,
-                             MENSAJE = rut.S_COMENTARIO
-                         });
+                var listaUsr = (from rut in dbSIM.RADMASIVARUTA
+                                join mas in dbSIM.RADMASIVA on rut.ID_RADMASIVO equals mas.ID
+                                where rut.FECHA_RUTA == dbSIM.RADMASIVARUTA.Where(w => w.ID_RADMASIVO == mas.ID).OrderByDescending(f => f.FECHA_RUTA).Select(s => s.FECHA_RUTA).FirstOrDefault() &&
+                                rut.CODFUNCIONARIO == CodFunc && mas.S_REALIZADO == "0"
+                                orderby mas.D_FECHA descending
+                                select new ListadoMasivos
+                                {
+                                    ID = mas.ID,
+                                    TEMA = mas.S_TEMA,
+                                    D_FECHA = mas.D_FECHA,
+                                    CANTIDAD_FILAS = mas.CANTIDAD_FILAS,
+                                    ESTADO = mas.S_VALIDADO == "0" ? "ELABORACION" : "LISTO PARA RADICAR",
+                                    IDSOLICITUD = mas.IDSOLICITUD,
+                                    CODTRAMITE = mas.CODTRAMITE,
+                                    ENVIACORREO = mas.S_ENVIACORREO,
+                                    FUNCIONARIOFIRMA = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == mas.ID && (w.S_FIRMADO == "0" || string.IsNullOrEmpty(w.S_FIRMADO))).Select(s => s.FUNC_FIRMA).FirstOrDefault(),
+                                    FUNCIONARIOELABORA = mas.FUNC_ELABORA,
+                                    MENSAJE = rut.S_COMENTARIO
+                                });
+                return JArray.FromObject(listaUsr.ToList(), Js);
             }
             else
             {
-                lista = (from mas in dbSIM.RADMASIVA
-                         where mas.S_REALIZADO == "0" && mas.S_VALIDADO.Equals("1")
-                         orderby mas.D_FECHA descending
-                         select new ListadoMasivos
-                         {
-                             ID = mas.ID,
-                             TEMA = mas.S_TEMA,
-                             D_FECHA = mas.D_FECHA,
-                             CANTIDAD_FILAS = mas.CANTIDAD_FILAS,
-                             ESTADO = mas.S_VALIDADO == "0" ? "ELABORACION" : "LISTO PARA RADICAR",
-                             IDSOLICITUD = mas.IDSOLICITUD,
-                             CODTRAMITE = mas.CODTRAMITE,
-                             ENVIACORREO = mas.S_ENVIACORREO,
-                             FUNCIONARIOFIRMA = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == mas.ID && (w.S_FIRMADO == "0" || string.IsNullOrEmpty(w.S_FIRMADO))).Select(s => s.FUNC_FIRMA).FirstOrDefault(),
-                             FUNCIONARIOELABORA = mas.FUNC_ELABORA,
-                             MENSAJE = ""
-                         });
+                var lista = (from mas in dbSIM.RADMASIVA
+                             where mas.S_REALIZADO == "0" && mas.S_VALIDADO.Equals("1")
+                             orderby mas.D_FECHA descending
+                             select new ListadoMasivos
+                             {
+                                 ID = mas.ID,
+                                 TEMA = mas.S_TEMA,
+                                 D_FECHA = mas.D_FECHA,
+                                 CANTIDAD_FILAS = mas.CANTIDAD_FILAS,
+                                 ESTADO = mas.S_VALIDADO == "0" ? "ELABORACION" : "LISTO PARA RADICAR",
+                                 IDSOLICITUD = mas.IDSOLICITUD,
+                                 CODTRAMITE = mas.CODTRAMITE,
+                                 ENVIACORREO = mas.S_ENVIACORREO,
+                                 FUNCIONARIOFIRMA = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == mas.ID && (w.S_FIRMADO == "0" || string.IsNullOrEmpty(w.S_FIRMADO))).Select(s => s.FUNC_FIRMA).FirstOrDefault(),
+                                 FUNCIONARIOELABORA = mas.FUNC_ELABORA,
+                                 MENSAJE = ""
+                             });
+                return JArray.FromObject(lista.ToList(), Js);
             }
-            return JArray.FromObject(lista.ToList(), Js);
         }
 
         /// <summary>
