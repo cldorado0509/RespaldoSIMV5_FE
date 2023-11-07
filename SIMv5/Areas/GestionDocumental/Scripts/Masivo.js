@@ -727,7 +727,6 @@ $(document).ready(function () {
     var btnGuardar = $("#btnGuardar").dxButton({
         text: "Guardar datos",
         type: "default",
-        visible: (CodFunc == FuncElabora),
         onClick: function () {
             var _Tramite = txtTramite.option("value");
             var _EnviarEmail = chkEmail.option("value");
@@ -883,7 +882,7 @@ $(document).ready(function () {
                                 gridExcel.option("dataSource", null);
                                 gridExcel.repaint();
                                 gridExcel.option("visible", false);
-
+                                btnGuardar.option("visible", FuncElabora);
                                 var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/CargaExcel";
                                 $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
                                     if (data.length > 0) {
@@ -1024,7 +1023,8 @@ $(document).ready(function () {
         onSelectionChanged: function (selectedItems) {
             var data = selectedItems.selectedRowsData[0];
             if (data) {
-                FuncElabora = data.FUNCIONARIOELABORA;
+                FuncElabora = data.FUNCIONARIOELABORA === CodFunc ? true : false;
+                alert(FuncElabora);
             }
         }
     });

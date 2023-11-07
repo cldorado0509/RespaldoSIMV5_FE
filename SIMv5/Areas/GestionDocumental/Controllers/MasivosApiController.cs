@@ -441,9 +441,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
             else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
         }
 
-
-
-
         /// <summary>
         /// 
         /// </summary>
