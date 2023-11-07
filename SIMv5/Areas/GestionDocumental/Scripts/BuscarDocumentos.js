@@ -468,7 +468,10 @@ $(document).ready(function () {
                             $.getJSON(_Ruta, function (result, status) {
                                 if (status === "success") {
                                     if (result.returnvalue) {
-                                        window.open($('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + options.data.ID_DOCUMENTO, "Documento " + options.data.ID_DOCUMENTO, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
+                                        var pdfWindow = window.open("");
+                                        pdfWindow.document.write("'<html><head><title>Tramite: " + options.data.CODTRAMITE + " Documento: " + options.data.CODDOCUMENTO + "</title></head><body height='100%' width='100%'><iframe width='100%' height='100%' src='" + $('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + options.data.ID_DOCUMENTO + "'></iframe></body></html>")
+
+                                       // window.open($('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + options.data.ID_DOCUMENTO, "Documento " + options.data.ID_DOCUMENTO, "width= 100%,height=100%,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
                                     }
                                     else {
                                         DevExpress.ui.notify("No posee permiso para ver este tipo de documento");
