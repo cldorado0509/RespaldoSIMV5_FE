@@ -367,7 +367,15 @@ $(document).ready(function () {
                         AsignarIndicesDoc(data);
                     }
                 });
-            }         
+            }
+            var Indices = indicesSerieDocumentalStore._array;
+            for (const indice of Indices) {
+
+                if ((indice.VALOR !== null && indice.VALOR !== "") && (indice.VALORDEFECTO !== "" && indice.VALORDEFECTO !== null)) {
+                    indice.VALOR = "";
+                }
+            }
+            ArrIndices = Indices;
             columnasExcel = $("#grdExcel").dxDataGrid("instance").option("columns");
             const index = columnasExcel.indexOf("ID");
             if (index > -1) {
@@ -389,19 +397,10 @@ $(document).ready(function () {
                     if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Firmas COD');
                     else {
                         CantFirmas = data.Cantidad;
-                        _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/ObtenerFirmas";
-                        firmasDocumento = [];
-                        $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
-                            if (data.length > 0) {
-                                data.forEach(fd => {
-                                    firmasDocumento.push({ CODFUNCIONARIO: fd.CODFUNCIONARIO, FUNCIONARIO: fd.FUNCIONARIO, ORDEN: fd.ORDEN });
-                                });
-                                $("#grdFirmas").dxDataGrid({ dataSource: firmasDocumento });
-                                $("#CantFirmas").text(CantFirmas);
-                                var popupFirm = $("#popupFirmas").dxPopup("instance");
-                                popupFirm.show();
-                            }
-                        });
+                        $("#CantFirmas").text(CantFirmas);
+                        grdFirmas.repaint();
+                        var popupFirm = $("#popupFirmas").dxPopup("instance");
+                        popupFirm.show();
                     }
                 });
         }
@@ -653,11 +652,10 @@ $(document).ready(function () {
     var btnRadicar = $("#btnRadicar").dxButton({
         text: "Radicar COD",
         type: "default",
-        disabled: true,
         onClick: function () {
             $("#loadPanel").dxLoadPanel('instance').show();
             var _Tramite = txtTramite.option("value");
-            if (_Tramite.length == 0) {
+            if (_Tramite == "") {
                 var columns = $("#grdExcel").dxDataGrid("instance").option("columns");
                 if (!columns.some(item => item.toLowerCase() === 'codtramite')) {
                     $("#loadPanel").dxLoadPanel('instance').hide();
@@ -671,14 +669,8 @@ $(document).ready(function () {
                     return;
                 }
             }
-            if (ArrIndices.length === 0) {
-                $("#loadPanel").dxLoadPanel('instance').hide();
-                DevExpress.ui.notify("Para poder radicar los documentos se deben proporcionar las asociaciones de índices!");
-                return;
-            }
-            var _EnviarEmail = chkEmail.option("value");
-            var parametros = { IdSolicitud: IdSolicitud, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Indices: ArrIndices };
-            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/RadicarMasivo";
+            var parametros = { IdSolicitud: IdSolicitud };
+            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/RadicarMasivo?IdSolicitud=" + IdSolicitud;
             $.ajax({
                 type: "POST",
                 dataType: 'json',
@@ -877,13 +869,14 @@ $(document).ready(function () {
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if (options.data.FUNCIONARIOELABORA == CodFunc) {
+                    if ((options.data.FUNCIONARIOELABORA == CodFunc) || PuedeRadicar == "1") {
                         $('<div/>').dxButton({
                             icon: 'edit',
                             type: 'success',
                             hint: 'Editar proceso masivo COD',
                             onClick: function (e) {
                                 EnEdicion = true;
+                                FuncElabora = options.data.FUNCIONARIOELABORA === CodFunc ? true : false;
                                 IdSolicitud = options.data.IDSOLICITUD;
                                 Tema = options.data.TEMA;
                                 ufPlantilla.option("disabled", false);
@@ -921,6 +914,18 @@ $(document).ready(function () {
                                     chkEmail.option("diabled", false);
                                     chkEmail.option("value", true);
                                 }
+                                _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/ObtenerFirmas";
+                                firmasDocumento = [];
+                                $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
+                                    if (data.length > 0) {
+                                        data.forEach(fd => {
+                                            firmasDocumento.push({ CODFUNCIONARIO: fd.CODFUNCIONARIO, FUNCIONARIO: fd.FUNCIONARIO, ORDEN: fd.ORDEN });
+                                        });
+                                        //$("#grdFirmas").dxDataGrid({ dataSource: firmasDocumento });
+                                        grdFirmas.option("dataSource", firmasDocumento);
+                                    }
+                                });
+
                                 DetalleMasivo.option("title", "Generar / Modificar proceso de radicación masiva de COD " + Tema);
                                 DetalleMasivo.show();
                             }
@@ -937,6 +942,7 @@ $(document).ready(function () {
                             type: 'success',
                             hint: 'Firmar la plantilla',
                             onClick: function (e) {
+                                IdSolicitud = options.data.IDSOLICITUD;
                                 txtRechazo.option("value", "");
                                 popFirmar.show();
                             }

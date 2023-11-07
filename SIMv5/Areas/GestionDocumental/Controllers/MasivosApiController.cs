@@ -244,201 +244,199 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="datos"></param>
+        /// <param name="IdSolicitud"></param>
         /// <returns></returns>
         [HttpPost]
-        public ResponseMassiveDTO RadicarMasivo(MasivoDTO datos)
+        public ResponseMassiveDTO RadicarMasivo(string IdSolicitud)
         {
             var _mensaje = "";
             int _paginas = 0;
-            if (!ModelState.IsValid) return new ResponseMassiveDTO() { isSuccess = false, message = "Error generando la radicación masiva" };
+            if (IdSolicitud == null || IdSolicitud == "") return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
             PDFDocument _doc = new PDFDocument();
             _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
             var userId = Int32.Parse(User.Identity.GetUserId());
             string _RutaCorrespondencia = SIM.Utilidades.Data.ObtenerValorParametro("RutaCorrespondencia").ToString();
-            string _Dir = _RutaCorrespondencia + @"\" + datos.IdSolicitud;
+            string _Dir = _RutaCorrespondencia + @"\" + IdSolicitud;
             if (!Directory.Exists(_Dir)) Directory.CreateDirectory(_Dir);
             Radicador radicador = new Radicador();
-            if (datos.IdSolicitud != "")
+            DataTable dt = LeeArchivoExcel(IdSolicitud);
+            dt.Columns.Add("Radicado Generado", typeof(string));
+            dt.Columns.Add("Código Tramite", typeof(Int32));
+            dt.Columns.Add("Código Documento", typeof(Int32));
+            dt.Columns.Add("Comentarios", typeof(string));
+            string _RutaPdf = ObtienePlatillaPdf(IdSolicitud);
+            var Masiva = dbSIM.RADMASIVA.Where(w => w.IDSOLICITUD == IdSolicitud).FirstOrDefault();
+            if (_RutaPdf != "")
             {
-                DataTable dt = LeeArchivoExcel(datos.IdSolicitud);
-                dt.Columns.Add("Radicado Generado", typeof(string));
-                dt.Columns.Add("Código Tramite", typeof(Int32));
-                dt.Columns.Add("Código Documento", typeof(Int32));
-                dt.Columns.Add("Comentarios", typeof(string));
-                string _RutaPdf = ObtienePlatillaPdf(datos.IdSolicitud);
-                if (_RutaPdf != "")
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    if (dt != null && dt.Rows.Count > 0)
+                    var Firmas = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == Masiva.ID).ToList();
+                    PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
+                    FirmarPlantilla(ref _docPdf, Firmas);
+                    var DatosReemplazo = ReemplazoDoc(IdSolicitud, dt.Columns);
+                    int _correctos = 0;
+                    if (DatosReemplazo.Count > 0)
                     {
-                        PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
-                        FirmarPlantilla(ref _docPdf, datos.Firmas);
-                        var DatosReemplazo = ReemplazoDoc(datos.IdSolicitud, dt.Columns);
-                        int _correctos = 0;
-                        if (DatosReemplazo.Count > 0)
+                        PDFPage _pag = null;
+                        bool _continua = true;
+                        decimal IdRadicado = -1;
+                        foreach (DataRow fila in dt.Rows)
                         {
-                            PDFPage _pag = null;
-                            bool _continua = true;
-                            decimal IdRadicado = -1;
-                            foreach (DataRow fila in dt.Rows)
+                            if (Masiva.CODTRAMITE == "")
                             {
-                                if (datos.CodTramite == "")
+                                if (!SIM.Utilidades.Tramites.ExisteTramite(decimal.Parse(fila["CODTRAMITE"].ToString())))
                                 {
-                                    if (!SIM.Utilidades.Tramites.ExisteTramite(decimal.Parse(fila["CODTRAMITE"].ToString())))
-                                    {
-                                        _continua = false;
-                                        _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró <br />";
-                                    }
+                                    _continua = false;
+                                    _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya que el Codtramite {fila["CODTRAMITE"]} no se encontró <br />";
                                 }
-                                else _continua = true;
-                                if (_continua)
+                            }
+                            else _continua = true;
+                            if (_continua)
+                            {
+                                string _Radicado = "";
+                                string _FecRad = "";
+                                _doc = new PDFDocument();
+                                _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
+                                PDFImportedPage ip = null;
+                                PDFTextRun pDFTextRun = null;
+                                _paginas = _docPdf.PagesCount;
+                                for (var i = 0; i < _paginas; i++)
                                 {
-                                    string _Radicado = "";
-                                    string _FecRad = "";
-                                    _doc = new PDFDocument();
-                                    _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
-                                    PDFImportedPage ip = null;
-                                    PDFTextRun pDFTextRun = null;
-                                    _paginas = _docPdf.PagesCount;
-                                    for (var i = 0; i < _paginas; i++)
+                                    ip = _docPdf.ExtractPage(i);
+                                    _doc.Pages.Add(ip);
+                                }
+                                foreach (var reemp in DatosReemplazo)
+                                {
+                                    _pag = _doc.Pages[reemp.Pagina];
+                                    var Campo = fila[reemp.CampoReemplazo].ToString();
+                                    foreach (var dato in reemp.ListReemplazo)
                                     {
-                                        ip = _docPdf.ExtractPage(i);
-                                        _doc.Pages.Add(ip);
-                                    }
-                                    foreach (var reemp in DatosReemplazo)
-                                    {
-                                        _pag = _doc.Pages[reemp.Pagina];
-                                        var Campo = fila[reemp.CampoReemplazo].ToString();
-                                        foreach (var dato in reemp.ListReemplazo)
+                                        pDFTextRun = dato.TextRuns[0];
+                                        if (pDFTextRun != null)
                                         {
-                                            pDFTextRun = dato.TextRuns[0];
-                                            if (pDFTextRun != null)
-                                            {
-                                                Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
-                                                TrueTypeFont _Arial = new TrueTypeFont(_fnt, true);
-                                                PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
-                                                PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
-                                                PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
-                                                PDFTextFormatOptions tfo = new PDFTextFormatOptions();
-                                                PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
-                                                tfo.Align = PDFTextAlign.TopLeft;
-                                                tfo.ClipText = PDFClipText.ClipNone;
+                                            Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
+                                            TrueTypeFont _Arial = new TrueTypeFont(_fnt, true);
+                                            PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
+                                            PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
+                                            PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
+                                            PDFTextFormatOptions tfo = new PDFTextFormatOptions();
+                                            PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
+                                            tfo.Align = PDFTextAlign.TopLeft;
+                                            tfo.ClipText = PDFClipText.ClipNone;
 
-                                                _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
-                                                _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
-                                            }
+                                            _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
+                                            _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
                                         }
-                                        _doc.Pages[reemp.Pagina] = _pag;
                                     }
-                                    var fechaCreacion = DateTime.Now;
-                                    DatosRadicado radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
-                                    var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
-                                    if (imagenRadicado != null)
+                                    _doc.Pages[reemp.Pagina] = _pag;
+                                }
+                                var fechaCreacion = DateTime.Now;
+                                DatosRadicado radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
+                                var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
+                                if (imagenRadicado != null)
+                                {
+                                    _pag = _doc.Pages[0];
+                                    _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
+                                    _Radicado = radicadoGenerado.Radicado;
+                                    _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
+                                    IdRadicado = radicadoGenerado.IdRadicado;
+                                    _doc.Pages[0] = _pag;
+                                }
+                                decimal CodTramite = Masiva.CODTRAMITE != "" ? decimal.Parse(Masiva.CODTRAMITE) : decimal.Parse(fila["CODTRAMITE"].ToString());
+                                List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
+                                IndicesDocumento _Index;
+                                var _asunto = "";
+                                var _para = "";
+                                var Indices = dbSIM.RADMASIVAINDICES.Where(w => w.ID_RADMASIVO == Masiva.ID).ToList();
+                                foreach (var Ind in Indices)
+                                {
+                                    _Index = new IndicesDocumento();
+                                    var TbIndice = dbSIM.TBINDICESERIE.Where(w => w.CODINDICE == Ind.CODINDICE).FirstOrDefault();
+                                    _Index.CODINDICE = TbIndice.CODINDICE;
+                                    if (TbIndice.INDICE.ToLower().Contains("radicado") || TbIndice.INDICE.ToLower().Contains("fecha"))
                                     {
-                                        _pag = _doc.Pages[0];
-                                        _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
-                                        _Radicado = radicadoGenerado.Radicado;
-                                        _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
-                                        IdRadicado = radicadoGenerado.IdRadicado;
-                                        _doc.Pages[0] = _pag;
-                                    }
-                                    decimal CodTramite = datos.CodTramite != "" ? decimal.Parse(datos.CodTramite) : decimal.Parse(fila["CODTRAMITE"].ToString());
-                                    List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
-                                    IndicesDocumento _Index;
-                                    var _asunto = "";
-                                    var _para = "";
-                                    foreach (var Ind in datos.Indices)
-                                    {
-                                        _Index = new IndicesDocumento();
-                                        _Index.CODINDICE = Ind.CODINDICE;
-                                        if (Ind.INDICE.ToLower().Contains("radicado") || Ind.INDICE.ToLower().Contains("fecha"))
-                                        {
-                                            _Index.VALOR = Ind.INDICE.ToLower().Contains("radicado") ? _Radicado : _FecRad;
-                                        }
-                                        else
-                                        {
-                                            if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _Index.VALOR = fila[Ind.VALORDEFECTO].ToString();
-                                            else _Index.VALOR = Ind.VALOR;
-                                        }
-                                        if (Ind.INDICE.ToLower().Contains("asunto")) _asunto = Ind.VALOR;
-                                        if (Ind.INDICE.ToLower().Contains("destinatario"))
-                                        {
-                                            if (Ind.VALORDEFECTO != null && Ind.VALORDEFECTO != "") _para = fila[Ind.VALORDEFECTO].ToString();
-                                            else _para = Ind.VALOR;
-                                        }
-                                        _Indices.Add(_Index);
-                                    }
-                                    SIM.Utilidades.Documento documento = new Utilidades.Documento();
-                                    documento.TipoDocumento = 1;
-                                    documento.Extension = "pdf";
-                                    documento.Codfuncionario = SIM.Utilidades.Tramites.ObtenerCodiogoFuncionario(userId);
-                                    documento.CodSerie = 12;
-                                    documento.IdUsuario = userId;
-                                    documento.Paginas = _paginas;
-                                    MemoryStream streamDoc = new MemoryStream();
-                                    _doc.Save(streamDoc);
-
-
-                                    documento.Archivo = streamDoc.ToArray();
-                                    if (!SIM.Utilidades.Tramites.AdicionaDocRadicadoTramite(CodTramite, IdRadicado, documento, _Indices))
-                                    {
-                                        _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
-                                        fila["Comentarios"] = $"El documento no se pudo generar ya ocurrió un problema con el documento";
+                                        _Index.VALOR = TbIndice.INDICE.ToLower().Contains("radicado") ? _Radicado : _FecRad;
                                     }
                                     else
                                     {
-                                        _correctos++;
-                                        var CodDoc = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).Select(s => s.CODDOCUMENTO).FirstOrDefault();
-                                        fila["Radicado Generado"] = _Radicado;
-                                        fila["Código Documento"] = CodDoc;
-                                        fila["Código Tramite"] = CodTramite;
-                                        if (datos.EnviarEmail)
-                                        {
-                                            var _email = fila["EMAIL"].ToString();
-                                            if (_email.Length > 0)
-                                            {
-                                                if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
-                                                {
-                                                    fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
-                                                }
-                                            }
-                                            else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se encontró un email para el envío";
-                                        }
-                                        else fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                        if (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") _Index.VALOR = fila[Ind.S_VALOREXCEL].ToString();
+                                        else _Index.VALOR = Ind.S_VALORASIGNADO;
                                     }
+                                    if (TbIndice.INDICE.ToLower().Contains("asunto")) _asunto = (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") ? Ind.S_VALOREXCEL : Ind.S_VALORASIGNADO;
+                                    if (TbIndice.INDICE.ToLower().Contains("destinatario")) _para = (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") ? Ind.S_VALOREXCEL : Ind.S_VALORASIGNADO;
+                                    _Indices.Add(_Index);
                                 }
-                                else fila["Comentarios"] = $"El documento no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró";
+                                SIM.Utilidades.Documento documento = new Utilidades.Documento();
+                                documento.TipoDocumento = 1;
+                                documento.Extension = "pdf";
+                                documento.Codfuncionario = SIM.Utilidades.Tramites.ObtenerCodiogoFuncionario(userId);
+                                documento.CodSerie = 12;
+                                documento.IdUsuario = userId;
+                                documento.Paginas = _paginas;
+                                MemoryStream streamDoc = new MemoryStream();
+                                _doc.Save(streamDoc);
+
+
+                                documento.Archivo = streamDoc.ToArray();
+                                if (!SIM.Utilidades.Tramites.AdicionaDocRadicadoTramite(CodTramite, IdRadicado, documento, _Indices))
+                                {
+                                    _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
+                                    fila["Comentarios"] = $"El documento no se pudo generar ya ocurrió un problema con el documento";
+                                }
+                                else
+                                {
+                                    _correctos++;
+                                    var CodDoc = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).Select(s => s.CODDOCUMENTO).FirstOrDefault();
+                                    fila["Radicado Generado"] = _Radicado;
+                                    fila["Código Documento"] = CodDoc;
+                                    fila["Código Tramite"] = CodTramite;
+                                    if (Masiva.S_ENVIACORREO == "1")
+                                    {
+                                        var _email = fila["EMAIL"].ToString();
+                                        if (_email.Length > 0)
+                                        {
+                                            if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                            {
+                                                fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                            }
+                                        }
+                                        else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se encontró un email para el envío";
+                                    }
+                                    else fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                }
                             }
-                            dt.AcceptChanges();
+                            else fila["Comentarios"] = $"El documento no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró";
                         }
-                        if (_mensaje != "") _mensaje = _correctos + " documentos creados correctamente con excepciones: <br />" + _mensaje;
-                        else _mensaje = _correctos + " documentos creados correctamente.";
-                        FileInfo result = new FileInfo(_Dir + @"\" + "Resultado.xlsx");
-                        Workbook wb = new Workbook();
-                        wb.Worksheets[0].Import(dt, true, 0, 0);
-                        wb.SaveDocument(result.FullName, DevExpress.Spreadsheet.DocumentFormat.Xlsx);
-
-                        StringBuilder sb = new StringBuilder();
-
-                        IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
-                                                          Select(column => column.ColumnName);
-                        sb.AppendLine(string.Join(",", columnNames));
-
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            IEnumerable<string> fields = row.ItemArray.Select(field => string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
-                            sb.AppendLine(string.Join(",", fields));
-                        }
-                        //MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
-
-
-                        return new ResponseMassiveDTO() { isSuccess = true, message = _mensaje, responseFile = File.ReadAllBytes(result.FullName) };
+                        dt.AcceptChanges();
                     }
-                    else return new ResponseMassiveDTO() { isSuccess = false, message = "No se ingresaron los índices para la unidad documental!!" };
+                    if (_mensaje != "") _mensaje = _correctos + " documentos creados correctamente con excepciones: <br />" + _mensaje;
+                    else _mensaje = _correctos + " documentos creados correctamente.";
+                    FileInfo result = new FileInfo(_Dir + @"\" + "Resultado.xlsx");
+                    Workbook wb = new Workbook();
+                    wb.Worksheets[0].Import(dt, true, 0, 0);
+                    wb.SaveDocument(result.FullName, DevExpress.Spreadsheet.DocumentFormat.Xlsx);
+
+                    StringBuilder sb = new StringBuilder();
+
+                    IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
+                                                      Select(column => column.ColumnName);
+                    sb.AppendLine(string.Join(",", columnNames));
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        IEnumerable<string> fields = row.ItemArray.Select(field => string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
+                        sb.AppendLine(string.Join(",", fields));
+                    }
+                    //MemoryStream stream = new MemoryStream(File.ReadAllBytes(result.FullName));
+
+                    Masiva.S_REALIZADO = "1";
+                    dbSIM.Entry(Masiva).State = System.Data.Entity.EntityState.Modified;
+                    dbSIM.SaveChanges();
+                    return new ResponseMassiveDTO() { isSuccess = true, message = _mensaje, responseFile = File.ReadAllBytes(result.FullName) };
                 }
-                else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
+                else return new ResponseMassiveDTO() { isSuccess = false, message = "No se ingresaron los índices para la unidad documental!!" };
             }
-            else return new ResponseMassiveDTO() { isSuccess = false, message = "Falta el identificador de la solicitud!!" };
+            else return new ResponseMassiveDTO() { isSuccess = false, message = "No se pudo localizar el archivo Pdf de la plantilla para combinar!!" };
         }
 
         /// <summary>
@@ -579,29 +577,61 @@ namespace SIM.Areas.GestionDocumental.Controllers
         [HttpGet, ActionName("EditarIndicesMasivo")]
         public dynamic GetEditarIndicesMasivo(string IdSolicitud)
         {
-            var indices = (from mas in dbSIM.RADMASIVA
-                           join ind in dbSIM.RADMASIVAINDICES on mas.ID equals ind.ID_RADMASIVO
-                           join din in dbSIM.TBINDICESERIE on ind.CODINDICE equals din.CODINDICE
-                           join lista in dbSIM.TBSUBSERIE on (decimal)din.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
-                           from pdis in l.DefaultIfEmpty()
-                           where mas.IDSOLICITUD == IdSolicitud
-                           orderby din.ORDEN
-                           select new IndiceCOD
-                           {
-                               CODINDICE = (int)ind.CODINDICE,
-                               INDICE = din.INDICE,
-                               TIPO = din.TIPO,
-                               LONGITUD = din.LONGITUD,
-                               OBLIGA = din.OBLIGA,
-                               VALORDEFECTO = ind.S_VALOREXCEL,
-                               VALOR = ind.S_VALORASIGNADO,
-                               ID_VALOR = null,
-                               ID_LISTA = din.CODIGO_SUBSERIE,
-                               TIPO_LISTA = pdis.TIPO,
-                               CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
-                               INDICE_RADICADO = din.INDICE_RADICADO
-                           });
-            return indices.ToList();
+            var IdMasiva = (from mas in dbSIM.RADMASIVA
+                            join ind in dbSIM.RADMASIVAINDICES on mas.ID equals ind.ID_RADMASIVO
+                            where mas.IDSOLICITUD == IdSolicitud
+                            select mas.ID).FirstOrDefault();
+            if (IdMasiva > 0)
+            {
+                var Editindices = (from mas in dbSIM.RADMASIVA
+                                   join ind in dbSIM.RADMASIVAINDICES on mas.ID equals ind.ID_RADMASIVO
+                                   join din in dbSIM.TBINDICESERIE on ind.CODINDICE equals din.CODINDICE
+                                   join lista in dbSIM.TBSUBSERIE on (decimal)din.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                   from pdis in l.DefaultIfEmpty()
+                                   where mas.IDSOLICITUD == IdSolicitud
+                                   orderby din.ORDEN
+                                   select new IndiceCOD
+                                   {
+                                       CODINDICE = (int)ind.CODINDICE,
+                                       INDICE = din.INDICE,
+                                       TIPO = din.TIPO,
+                                       LONGITUD = din.LONGITUD,
+                                       OBLIGA = din.OBLIGA,
+                                       VALORDEFECTO = ind.S_VALOREXCEL,
+                                       VALOR = ind.S_VALORASIGNADO,
+                                       ID_VALOR = null,
+                                       ID_LISTA = din.CODIGO_SUBSERIE,
+                                       TIPO_LISTA = pdis.TIPO,
+                                       CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
+                                       INDICE_RADICADO = din.INDICE_RADICADO
+                                   });
+                return Editindices.ToList();
+            }
+            else
+            {
+                var indicesSerieDocumental = from i in dbSIM.TBINDICESERIE
+                                             join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
+                                             from pdis in l.DefaultIfEmpty()
+                                             where i.CODSERIE == 12 && i.MOSTRAR == "1"
+                                             orderby i.ORDEN
+                                             select new IndiceCOD
+                                             {
+                                                 CODINDICE = i.CODINDICE,
+                                                 INDICE = i.INDICE,
+                                                 TIPO = i.TIPO,
+                                                 LONGITUD = i.LONGITUD,
+                                                 OBLIGA = i.OBLIGA,
+                                                 VALORDEFECTO = i.VALORDEFECTO,
+                                                 VALOR = "",
+                                                 ID_VALOR = null,
+                                                 ID_LISTA = i.CODIGO_SUBSERIE,
+                                                 TIPO_LISTA = pdis.TIPO,
+                                                 CAMPO_NOMBRE = pdis.CAMPO_NOMBRE,
+                                                 INDICE_RADICADO = i.INDICE_RADICADO
+                                             };
+                return indicesSerieDocumental.ToList();
+            }
+
         }
 
         /// <summary>
@@ -1285,7 +1315,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         //}
 
 
-        private void FirmarPlantilla(ref PDFFile docPdf, List<Firma> Firmas)
+        private void FirmarPlantilla(ref PDFFile docPdf, List<RADMASIVAFIRMAS> Firmas)
         {
             PDFImportedPage ip = null;
             if (Firmas.Count > 0)
@@ -1295,11 +1325,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     ip = docPdf.ExtractPage(i);
                     foreach (var firma in Firmas)
                     {
-                        PDFSearchTextResultCollection _result = ip.SearchText("[Firma" + firma.Orden + "]");
+                        PDFSearchTextResultCollection _result = ip.SearchText("[Firma" + firma.ORDEN_FIRMA + "]");
                         if (_result != null && _result.Count > 0)
                         {
                             var pDFTextRun = _result[0].TextRuns[0];
-                            Image imagenFirma = Security.ObtenerFirmaElectronicaFuncionario((long)firma.CodFuncionario, true, "");
+                            Image imagenFirma = Security.ObtenerFirmaElectronicaFuncionario((long)firma.FUNC_FIRMA, true, "");
                             if (imagenFirma != null)
                             {
                                 ip.Canvas.DrawImage((Bitmap)imagenFirma, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 400, 130);

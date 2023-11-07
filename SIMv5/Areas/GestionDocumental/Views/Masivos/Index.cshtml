@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
 <script>
+    var PuedeRadicar = @(ViewBag.PuedeRadicar);
     var CodFunc = @(ViewBag.CodFuncionario);
 </script>
 
@@ -65,7 +66,7 @@
             </div>
             <div id="BotonExp">
                 <div id="btnGuardar"></div>
-                @if (ViewBag.PuedeRadicar == true)
+                @if (ViewBag.PuedeRadicar == "1")
                 {
                     <div id="btnRadicar"></div>
                 }

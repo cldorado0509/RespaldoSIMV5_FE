@@ -14,7 +14,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         public ActionResult Index()
         {
             decimal codFuncionario = -1;
-            bool _PuedeRadicar = false;
+            string _PuedeRadicar = "0";
             try
             {
                 System.Web.HttpContext context = System.Web.HttpContext.Current;
@@ -28,7 +28,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         if (_FuncionariosRadicanMasivos != "")
                         {
                             string[] _Funcionarios = _FuncionariosRadicanMasivos.Split(',');
-                            _PuedeRadicar = _Funcionarios.Contains(codFuncionario.ToString());
+                            _PuedeRadicar = _Funcionarios.Contains(codFuncionario.ToString()) ? "1" : "0";
                         }
                     }
                 }
