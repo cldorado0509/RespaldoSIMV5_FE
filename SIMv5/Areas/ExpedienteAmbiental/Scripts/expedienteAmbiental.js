@@ -499,6 +499,49 @@ $(document).ready(function () {
                                         }
                                     },
                                     {
+                                        visible: canEdit,
+                                        width: '5%',
+                                        caption: "Desvincular Expediente Documental",
+                                        alignment: 'center',
+                                        cellTemplate: function (container, options) {
+                                            var isDisabled = true;
+                                            if (options.data.expedienteDocumentalId != null) {
+                                                isDisabled = false;
+                                            }
+                                            $('<div/>').dxButton({
+                                                icon: 'event',
+                                                height: 20,
+                                                disabled: isDisabled,
+                                                hint: 'Desvincular Expediente Documental',
+                                                onClick: function (e) {
+                                                    var result = DevExpress.ui.dialog.confirm('Desea desvincular el expediente documental?', 'Confirmación');
+                                                    result.done(function (dialogResult) {
+                                                        if (dialogResult) {
+                                                            var _Ruta = $('#SIM').data('url') + "ExpedienteAmbiental/api/ExpedientesAmbApi/DesvincularExpedienteDocumentalAsync?Id=" + options.data.idPuntoControl;
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: _Ruta,
+                                                                contentType: "application/json",
+                                                                dataType: 'text',
+                                                                success: function (data) {
+                                                                    if (data.Response === false) {
+                                                                        DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, ' al eliminar registro seleccionado');
+                                                                    } else {
+                                                                        $('#GidListadoPuntosControl').dxDataGrid({ dataSource: PuntosControlDataSource });
+                                                                        DevExpress.ui.dialog.alert('Expediente documental desvinculado correctamente!');
+                                                                    }
+                                                                },
+                                                                error: function (xhr, textStatus, errorThrown) {
+                                                                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'al desvincular el expediente documental');
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            }).appendTo(container);
+                                        }
+                                    },
+                                    {
                                         visible: canRead,
                                         width: '5%',
                                         caption: "Trámites asociados",
@@ -509,7 +552,6 @@ $(document).ready(function () {
                                                 height: 20,
                                                 hint: 'Trámites asociados al Punto de Control',
                                                 onClick: function (e) {
-
                                                     popupTramitesPuntoControl.show();
                                                     codigoSolicitudId = options.data.codigoSolicitudId;
                                                     $("#GridListadoTramitesPuntoControl").dxDataGrid({

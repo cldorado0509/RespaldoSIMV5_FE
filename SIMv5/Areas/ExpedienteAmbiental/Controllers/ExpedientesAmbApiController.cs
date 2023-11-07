@@ -795,6 +795,33 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             return resposeF;
         }
 
+        /// <summary>
+        /// Permite desvincular el expediente documental asociado al punto de control
+        /// </summary>
+        /// <param name="Id">Identifica el Punto de Control</param>
+        /// <returns></returns>
+        [HttpPost, ActionName("DesvincularExpedienteDocumentalAsync")]
+        public async Task<object> DesvincularExpedienteDocumentalAsync(int Id)
+        {
+            SIM.Models.Response resposeF = new SIM.Models.Response();
+            try
+            {
+                ApiService apiService = new ApiService();
+
+                AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
+                if (response.ExpiresIn == 0) return null;
+
+                resposeF = await apiService.PutAsync(this.urlApiGateWay, "ExpA/PuntoControl/", "DesvincularExpedienteDocumentalAPuntoControl", Id, response.JwtToken);
+                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess= false, Message = "Error desvinculando el Expediente!" };
+            }
+            catch (Exception e)
+            {
+                return new SIM.Models.Response { IsSuccess= false, Message = "Error desvinculando el Expediente: " + e.Message };
+            }
+
+            return resposeF;
+        }
+
         #endregion
 
         #region Estados Punto de Control
