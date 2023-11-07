@@ -134,6 +134,7 @@
                                 }).FirstOrDefault();
             }
             TramiteTarea.Vital = TramiteTarea.Vital != null ? TramiteTarea.Vital : "-1";
+            TramiteTarea.TramitePadre = TramiteTarea.TramitePadre != null ? TramiteTarea.TramitePadre : -1;
             return View(TramiteTarea);
         }
 
