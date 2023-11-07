@@ -389,9 +389,19 @@ $(document).ready(function () {
                     if (data.resp == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Firmas COD');
                     else {
                         CantFirmas = data.Cantidad;
-                        $("#CantFirmas").text(CantFirmas);
-                        var popupFirm = $("#popupFirmas").dxPopup("instance");
-                        popupFirm.show();
+                        _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/ObtenerFirmas";
+                        firmasDocumento = [];
+                        $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
+                            if (data.length > 0) {
+                                data.forEach(fd => {
+                                    firmasDocumento.push({ CODFUNCIONARIO: fd.CODFUNCIONARIO, FUNCIONARIO: fd.FUNCIONARIO, ORDEN: fd.ORDEN });
+                                });
+                                $("#grdFirmas").dxDataGrid({ dataSource: firmasDocumento });
+                                $("#CantFirmas").text(CantFirmas);
+                                var popupFirm = $("#popupFirmas").dxPopup("instance");
+                                popupFirm.show();
+                            }
+                        });
                     }
                 });
         }
@@ -597,7 +607,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#grdFirmas").dxDataGrid({
+    var grdFirmas = $("#grdFirmas").dxDataGrid({
         dataSource: firmasDocumento,
         allowColumnResizing: true,
         height: '75%',
@@ -637,7 +647,7 @@ $(document).ready(function () {
                 },
             }
         ],
-    });
+    }).dxDataGrid("instance");
 
 
     var btnRadicar = $("#btnRadicar").dxButton({
@@ -783,7 +793,7 @@ $(document).ready(function () {
         showTitle: true,
         title: "Firmas del documento COD (Plantilla)",
         onShown: function () {
-            $("#grdFirmas").dxDataGrid("instance").refresh();
+            grdFirmas.refresh();
             $("#CantFirmas").text(CantFirmas);
         }
     });
@@ -900,6 +910,7 @@ $(document).ready(function () {
                                         btnFirmas.option("disabled", false);
                                         gridExcel.option("dataSource", DatosExcelStore);
                                         gridExcel.option("visible", true);
+                                        btnPreview.option("disabled", false);
                                     }
                                 });
                                 if (options.data.CODTRAMITE != "") {
@@ -910,16 +921,6 @@ $(document).ready(function () {
                                     chkEmail.option("diabled", false);
                                     chkEmail.option("value", true);
                                 }
-                                _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/ObtenerFirmas";
-                                firmasDocumento = [];
-                                $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
-                                    if (data.length > 0) {
-                                        data.forEach(fd => {
-                                            firmasDocumento.push({ CODFUNCIONARIO: fd.CODFUNCIONARIO, FUNCIONARIO: fd.FUNCIONARIO, ORDEN: fd.ORDEN });
-                                        });
-                                        $("#grdFirmas").dxDataGrid({ dataSource: firmasDocumento });
-                                    }
-                                });
                                 DetalleMasivo.option("title", "Generar / Modificar proceso de radicación masiva de COD " + Tema);
                                 DetalleMasivo.show();
                             }
@@ -1007,7 +1008,7 @@ $(document).ready(function () {
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if (options.data.FUNCIONARIOELABORA == CodFunc) {
+                    if (options.data.FUNCIONARIOELABORA == CodFunc && options.data.MENSAJE != "" && options.data.MENSAJE != null) {
                         $('<div/>').dxButton({
                             icon: 'tips',
                             type: 'success',
@@ -1024,7 +1025,6 @@ $(document).ready(function () {
             var data = selectedItems.selectedRowsData[0];
             if (data) {
                 FuncElabora = data.FUNCIONARIOELABORA === CodFunc ? true : false;
-                alert(FuncElabora);
             }
         }
     });
