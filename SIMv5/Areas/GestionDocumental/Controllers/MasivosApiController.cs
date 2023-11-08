@@ -272,14 +272,14 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 {
                     var Firmas = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == Masiva.ID).ToList();
                     PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
-                    FirmarPlantilla(ref _docPdf, Firmas);
-                    var DatosReemplazo = ReemplazoDoc(IdSolicitud, dt.Columns);
+                    var DatosReemplazo = ReemplazoDoc(IdSolicitud, dt.Columns, Firmas.Count);
                     int _correctos = 0;
                     if (DatosReemplazo.Count > 0)
                     {
                         PDFPage _pag = null;
                         bool _continua = true;
                         decimal IdRadicado = -1;
+                        // FirmarPlantilla(ref _docPdf, Firmas);
                         foreach (DataRow fila in dt.Rows)
                         {
                             if (Masiva.CODTRAMITE == "")
@@ -305,28 +305,41 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     ip = _docPdf.ExtractPage(i);
                                     _doc.Pages.Add(ip);
                                 }
+
                                 foreach (var reemp in DatosReemplazo)
                                 {
                                     _pag = _doc.Pages[reemp.Pagina];
-                                    var Campo = fila[reemp.CampoReemplazo].ToString();
-                                    foreach (var dato in reemp.ListReemplazo)
+                                    if (!reemp.CampoReemplazo.Contains("Firma"))
                                     {
-                                        pDFTextRun = dato.TextRuns[0];
-                                        if (pDFTextRun != null)
+                                        var Campo = fila[reemp.CampoReemplazo].ToString();
+                                        foreach (var dato in reemp.ListReemplazo)
                                         {
-                                            Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
-                                            TrueTypeFont _Arial = new TrueTypeFont(_fnt, true);
-                                            PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
-                                            PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
-                                            PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
-                                            PDFTextFormatOptions tfo = new PDFTextFormatOptions();
-                                            PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
-                                            tfo.Align = PDFTextAlign.TopLeft;
-                                            tfo.ClipText = PDFClipText.ClipNone;
+                                            pDFTextRun = dato.TextRuns[0];
+                                            if (pDFTextRun != null)
+                                            {
+                                                Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
+                                                TrueTypeFont _Arial = new TrueTypeFont(_fnt, true);
+                                                PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
+                                                PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
+                                                PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
+                                                PDFTextFormatOptions tfo = new PDFTextFormatOptions();
+                                                PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
+                                                tfo.Align = PDFTextAlign.TopLeft;
+                                                tfo.ClipText = PDFClipText.ClipNone;
 
-                                            _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
-                                            _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
+                                                _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
+                                                _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        pDFTextRun = reemp.ListReemplazo[0].TextRuns[0];
+                                        int f = int.Parse(reemp.CampoReemplazo.Substring(4));
+                                        var _firma = Firmas.Where(w => w.ORDEN_FIRMA == f).FirstOrDefault();
+                                        Bitmap imagenFirma = (Bitmap)Security.ObtenerFirmaElectronicaFuncionario((long)_firma.FUNC_FIRMA, true, "");
+                                        PDFImage img = new PDFImage(imagenFirma);
+                                        _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), imagenFirma.Width, imagenFirma.Height);
                                     }
                                     _doc.Pages[reemp.Pagina] = _pag;
                                 }
@@ -1124,6 +1137,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
 
         private List<ReemplazoDTO> ReemplazoDoc(string Identificador, DataColumnCollection Columns)
         {
+            return ReemplazoDoc(Identificador, Columns, 0);
+        }
+
+        private List<ReemplazoDTO> ReemplazoDoc(string Identificador, DataColumnCollection Columns, int Firmas)
+        {
             List<ReemplazoDTO> _resp = new List<ReemplazoDTO>();
             string _RutaPdf = ObtienePlatillaPdf(Identificador);
             PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
@@ -1140,6 +1158,20 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         {
                             Pagina = i,
                             CampoReemplazo = col.ColumnName,
+                            ListReemplazo = _result
+                        };
+                        _resp.Add(encontrado);
+                    }
+                }
+                for (int j = 1; j <= Firmas; j++)
+                {
+                    PDFSearchTextResultCollection _result = ip.SearchText("[Firma" + j + "]");
+                    if (_result != null && _result.Count > 0)
+                    {
+                        var encontrado = new ReemplazoDTO()
+                        {
+                            Pagina = i,
+                            CampoReemplazo = "Firma" + j,
                             ListReemplazo = _result
                         };
                         _resp.Add(encontrado);
