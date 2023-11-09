@@ -1,11 +1,7 @@
 ﻿namespace SIM.Data
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
-    using System.Data.Entity.Core.Objects;
-    using System.Linq;
     using SIM.Data.Tramites;
+    using System.Data.Entity;
 
     public partial class EntitiesSIMOracle : DbContext
     {
@@ -114,6 +110,10 @@
         public virtual DbSet<QRY_ABOGADOS> QRY_ABOGADOS { get; set; }
         public virtual DbSet<QRY_VERTEMPORALES> VERTEMPORALES { get; set; }
         public virtual DbSet<LOG_TEMPORALES> LOGTEMPORALES { get; set; }
+        public virtual DbSet<RADICACIONMASIVA> RADMASIVA { get; set; }
+        public virtual DbSet<RADMASIVAFIRMAS> RADMASIVAFIRMAS { get; set; }
+        public virtual DbSet<RADMASIVAINDICES> RADMASIVAINDICES { get; set; }
+        public virtual DbSet<RADMASIVARUTA> RADMASIVARUTA { get; set; }
         /*
         public virtual int SP_SET_ITEMVISITA(Nullable<decimal> iDVISITA, Nullable<decimal> iDITEM, Nullable<decimal> iDTRAMITE, ObjectParameter rTAI)
         {

@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
+﻿using DevExpress.BarCodes;
+using DevExpress.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf.IO;
 using SIM.Areas.Seguridad.Models;
-using System.IO;
+using SIM.Data;
+using SIM.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Globalization;
-using DevExpress.BarCodes;
 using System.Drawing.Imaging;
-using SIM.Data;
-using PdfSharp.Pdf.IO;
-using DevExpress.Pdf;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
 using Xceed.Words.NET;
-using PdfSharp.Drawing;
-using System.Data.Entity.Core.Objects;
-using SIM.Models;
 
 namespace SIM.Utilidades
 {
@@ -87,6 +86,7 @@ namespace SIM.Utilidades
         /// </summary>
         /// <param name="_CodFuncionario">Codigo interno del funcionario</param>
         /// <param name="_ConCargo">Especifica si la firma va con el cargo del funcionario</param>
+        /// <param name="textoAdicional"></param>
         /// <returns></returns>
         public static System.Drawing.Image ObtenerFirmaElectronicaFuncionario(long _CodFuncionario, bool _ConCargo, string textoAdicional)
         {
@@ -448,10 +448,10 @@ namespace SIM.Utilidades
         {
             EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
             var funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
-                                           join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                           where uf.ID_USUARIO == idUsuario
-                                           select f.CODFUNCIONARIO).FirstOrDefault());
-            return funcionario; 
+                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                               where uf.ID_USUARIO == idUsuario
+                                               select f.CODFUNCIONARIO).FirstOrDefault());
+            return funcionario;
         }
     }
 }
