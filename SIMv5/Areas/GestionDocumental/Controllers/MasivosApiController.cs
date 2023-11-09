@@ -347,7 +347,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                                 var _firma = Firmas.Where(w => w.ORDEN_FIRMA == f).FirstOrDefault();
                                                 Bitmap imagenFirma = (Bitmap)Security.ObtenerFirmaElectronicaFuncionario((long)_firma.FUNC_FIRMA, true, "");
                                                 PDFImage img = new PDFImage(imagenFirma);
-                                                _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 250, 80);
+                                                // _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 250, 80);
+                                                _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), Convert.ToInt32(img.Width * (240 / Convert.ToDecimal(img.Width))), Convert.ToInt32(img.Height * (240 / Convert.ToDecimal(img.Width))));
                                             }
                                         }
                                     }

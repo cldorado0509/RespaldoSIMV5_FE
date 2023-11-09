@@ -360,24 +360,17 @@ $(document).ready(function () {
                 $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/ObtenerIndicesSerieDocumental', { codSerie: 12 })
                     .done(function (data) {
                         AsignarIndicesDoc(data);
-                        Indices = data;
+                        ArrIndices = data;
                     });
             } else {
                 $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/EditarIndicesMasivo', { IdSolicitud: IdSolicitud })
                     .done(function (data) {
                         if (data.length > 0) {
                             AsignarIndicesDoc(data);
-                            Indices = data;
+                            ArrIndices = data;
                     }
                 });
             }
-            for (const indice of Indices) {
-
-                if ((indice.VALOR !== null && indice.VALOR !== "") && (indice.VALORDEFECTO !== "" && indice.VALORDEFECTO !== null)) {
-                    indice.VALOR = "";
-                }
-            }
-            ArrIndices = Indices;
             columnasExcel = $("#grdExcel").dxDataGrid("instance").option("columns");
             const index = columnasExcel.indexOf("ID");
             if (index > -1) {
@@ -738,8 +731,13 @@ $(document).ready(function () {
             var params = {};
             var result = DevExpress.ui.dialog.confirm('El proceso de radicación masiva esta completo?', 'Confirmación');
             result.done(function (dialogResult) {
-                if (dialogResult) params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: true, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Firmas: firmasDocumento };
-                else params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: false, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Firmas: firmasDocumento };
+                if (dialogResult) {
+                    if (firmasDocumento.length < CantFirmas) {
+                        DevExpress.ui.dialog.alert('La cantidad de firmas es inferior a las etiquetas de firmas de la plantilla!');
+                        return;
+                    }
+                    params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: true, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Firmas: firmasDocumento };
+                } else params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: false, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Firmas: firmasDocumento };
                 var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/MasivosApi/GuardaMasivo";
                 $.ajax({
                     type: "POST",
