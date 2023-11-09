@@ -266,11 +266,15 @@ namespace SIM.Areas.GestionDocumental.Controllers
             dt.Columns.Add("Comentarios", typeof(string));
             string _RutaPdf = ObtienePlatillaPdf(IdSolicitud);
             var Masiva = dbSIM.RADMASIVA.Where(w => w.IDSOLICITUD == IdSolicitud).FirstOrDefault();
+            if (Masiva == null) return new ResponseMassiveDTO() { isSuccess = false, message = "No se ha guardado el proceso de radicación masiva!!" };
             if (_RutaPdf != "")
             {
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     var Firmas = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == Masiva.ID).ToList();
+                    if (Firmas == null || Firmas.Count == 0) return new ResponseMassiveDTO() { isSuccess = false, message = "No se encontraron firmas para la plantilla!!" };
+                    var Indices = dbSIM.RADMASIVAINDICES.Where(w => w.ID_RADMASIVO == Masiva.ID).ToList();
+                    if (Indices == null || Indices.Count == 0) return new ResponseMassiveDTO() { isSuccess = false, message = "No se encontraron indices para los documentos!!" };
                     PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
                     var DatosReemplazo = ReemplazoDoc(IdSolicitud, dt.Columns, Firmas.Count);
                     int _correctos = 0;
@@ -327,19 +331,25 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                                 tfo.Align = PDFTextAlign.TopLeft;
                                                 tfo.ClipText = PDFClipText.ClipNone;
 
-                                                _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
+                                                _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top - 1, 120, pDFTextRun.DisplayBounds.Height + 4, 0);
                                                 _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        pDFTextRun = reemp.ListReemplazo[0].TextRuns[0];
-                                        int f = int.Parse(reemp.CampoReemplazo.Substring(4));
-                                        var _firma = Firmas.Where(w => w.ORDEN_FIRMA == f).FirstOrDefault();
-                                        Bitmap imagenFirma = (Bitmap)Security.ObtenerFirmaElectronicaFuncionario((long)_firma.FUNC_FIRMA, true, "");
-                                        PDFImage img = new PDFImage(imagenFirma);
-                                        _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), imagenFirma.Width, imagenFirma.Height);
+                                        foreach (var dato in reemp.ListReemplazo)
+                                        {
+                                            pDFTextRun = dato.TextRuns[0];
+                                            if (pDFTextRun != null)
+                                            {
+                                                int f = int.Parse(reemp.CampoReemplazo.Substring(5));
+                                                var _firma = Firmas.Where(w => w.ORDEN_FIRMA == f).FirstOrDefault();
+                                                Bitmap imagenFirma = (Bitmap)Security.ObtenerFirmaElectronicaFuncionario((long)_firma.FUNC_FIRMA, true, "");
+                                                PDFImage img = new PDFImage(imagenFirma);
+                                                _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 250, 80);
+                                            }
+                                        }
                                     }
                                     _doc.Pages[reemp.Pagina] = _pag;
                                 }
@@ -355,12 +365,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     IdRadicado = radicadoGenerado.IdRadicado;
                                     _doc.Pages[0] = _pag;
                                 }
-                                decimal CodTramite = Masiva.CODTRAMITE != "" ? decimal.Parse(Masiva.CODTRAMITE) : decimal.Parse(fila["CODTRAMITE"].ToString());
+                                decimal CodTramite = (Masiva.CODTRAMITE != "" && Masiva.CODTRAMITE != null) ? decimal.Parse(Masiva.CODTRAMITE) : decimal.Parse(fila["CODTRAMITE"].ToString());
                                 List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
                                 IndicesDocumento _Index;
                                 var _asunto = "";
                                 var _para = "";
-                                var Indices = dbSIM.RADMASIVAINDICES.Where(w => w.ID_RADMASIVO == Masiva.ID).ToList();
                                 foreach (var Ind in Indices)
                                 {
                                     _Index = new IndicesDocumento();
@@ -408,7 +417,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var _email = fila["EMAIL"].ToString();
                                         if (_email.Length > 0)
                                         {
-                                            if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                            if (!EnviarMailPrueba(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
                                             {
                                                 fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
                                             }
@@ -508,7 +517,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         tfo.Align = PDFTextAlign.TopLeft;
                                         tfo.ClipText = PDFClipText.ClipNone;
 
-                                        _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top, 120, pDFTextRun.DisplayBounds.Height + 2, 0);
+                                        _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top - 1, 120, pDFTextRun.DisplayBounds.Height + 4, 0);
                                         _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
                                     }
                                 }
@@ -841,6 +850,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 dbSIM.SaveChanges();
                             }
                             RadMasiva.S_TEMA = datos.TemaMasivo;
+                            RadMasiva.S_ENVIACORREO = datos.EnviarEmail ? "1" : "0";
                             RadMasiva.S_REALIZADO = "0";
                             if (datos.Completo) RadMasiva.S_VALIDADO = "1";
                             dbSIM.Entry(RadMasiva).State = System.Data.Entity.EntityState.Modified;
@@ -863,6 +873,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         _masiva.CANTIDAD_FILAS = LeeExcel(Excel).Rows.Count;
                         _masiva.D_FECHA = DateTime.Now;
                         _masiva.S_TEMA = datos.TemaMasivo;
+                        _masiva.S_ENVIACORREO = datos.EnviarEmail ? "1" : "0";
                         dbSIM.RADMASIVA.Add(_masiva);
                         dbSIM.SaveChanges();
                         IdMasivo = _masiva.ID;

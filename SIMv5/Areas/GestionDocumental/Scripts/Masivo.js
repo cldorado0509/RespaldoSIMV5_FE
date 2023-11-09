@@ -355,20 +355,22 @@ $(document).ready(function () {
         disabled: true,
         onClick: function () {
             indicesSerieDocumentalStore = null;
+            var Indices = [];
             if (!EnEdicion) {
                 $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/ObtenerIndicesSerieDocumental', { codSerie: 12 })
                     .done(function (data) {
-                        AsignarIndicesDoc(data);                      
+                        AsignarIndicesDoc(data);
+                        Indices = data;
                     });
             } else {
                 $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/EditarIndicesMasivo', { IdSolicitud: IdSolicitud })
                     .done(function (data) {
                         if (data.length > 0) {
-                        AsignarIndicesDoc(data);
+                            AsignarIndicesDoc(data);
+                            Indices = data;
                     }
                 });
             }
-            var Indices = indicesSerieDocumentalStore._array;
             for (const indice of Indices) {
 
                 if ((indice.VALOR !== null && indice.VALOR !== "") && (indice.VALORDEFECTO !== "" && indice.VALORDEFECTO !== null)) {
@@ -479,7 +481,7 @@ $(document).ready(function () {
                 IdSolicitud = obj.IdSolicitud;
                 DevExpress.ui.notify(obj.MensajeExito);
                 ufPlantilla.option("disabled", false);
-                //chkEmail.option("disabled", false);
+                chkEmail.option("disabled", false);
                 btnAsociaInd.option("disabled", false);
                 var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/CargaExcel";
                 $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
@@ -683,6 +685,7 @@ $(document).ready(function () {
                         DevExpress.ui.dialog.alert('Ocurrió un error ' + data.message, 'Radicación Masivos');
                     } else {
                         $("#loadPanel").dxLoadPanel('instance').hide();
+                        DetalleMasivo.hide();
                         DevExpress.ui.dialog.alert(data.message, 'Radicación Masivos');
                         var fileURL = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8;base64,' + data.responseFile;
                         var link = document.createElement('a');
@@ -816,7 +819,7 @@ $(document).ready(function () {
             if (Tema != "") {
                 indicesSerieDocumentalStore = null;
                 ufPlantilla.option("disabled", true);
-                //chkEmail.option("disabled", false);
+                chkEmail.option("disabled", false);
                 btnAsociaInd.option("disabled", true);
                 btnFirmas.option("disabled", true);
                 gridExcel.option("dataSource", null);
@@ -880,7 +883,7 @@ $(document).ready(function () {
                                 IdSolicitud = options.data.IDSOLICITUD;
                                 Tema = options.data.TEMA;
                                 ufPlantilla.option("disabled", false);
-                                //chkEmail.option("disabled", false);
+                                chkEmail.option("disabled", false);
                                 btnAsociaInd.option("disabled", false);
                                 gridExcel.option("dataSource", null);
                                 gridExcel.repaint();
