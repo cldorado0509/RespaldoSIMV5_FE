@@ -26,6 +26,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -418,7 +419,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var _email = fila["EMAIL"].ToString();
                                         if (_email.Length > 0)
                                         {
-                                            if (!EnviarMailPrueba(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                            if (!EnviarMailNet(_email, new MemoryStream(documento.Archivo), _asunto, _para, _Radicado, _FecRad))
                                             {
                                                 fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
                                             }
@@ -1293,6 +1294,53 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 smtp.Disconnect(true);
                 return true;
             }
+        }
+
+        private bool EnviarMailNet(string _email, MemoryStream _MsPdf, string _asunto, string _para, string _radicado, string _fechaRad)
+        {
+            if (_email.Length == 0) return false;
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Areas/GestionDocumental/Plantillas/MasivosCOD.html")))
+            {
+                body = reader.ReadToEnd();
+            }
+            if (body.Length > 0)
+            {
+                body = body.Replace("[Destinatario]", _para);
+                body = body.Replace("[Radicado]", _radicado);
+                body = body.Replace("[FechaRad]", _fechaRad);
+                MailMessage correo = new MailMessage();
+
+                if (_email.Contains(";"))
+                {
+                    string[] _mails = _email.Split(';');
+                    foreach (string _mailPara in _mails) correo.To.Add(new MailAddress(_mailPara));
+                }
+                else correo.To.Add(new MailAddress(_email));
+                correo.Subject = _asunto != "" ? _asunto : "Sin asunto";
+                correo.Body = body;
+                correo.IsBodyHtml = true;
+                correo.Priority = MailPriority.High;
+                _MsPdf.Seek(0, SeekOrigin.Begin);
+                Attachment _File = new Attachment(_MsPdf, _radicado + ".pdf", "application/pdf");
+                correo.Attachments.Add(_File);
+                SmtpClient smtp = new SmtpClient("smtp.office365.com");
+                try
+                {
+                    smtp.Port = 587;
+                    smtp.EnableSsl = true;
+                    System.Net.NetworkCredential SMTPUserInfo = new System.Net.NetworkCredential("codelectronicas@metropol.gov.co", "Area2020");
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = SMTPUserInfo;
+                    smtp.Send(correo);
+                    return true;
+                }
+                catch (SmtpException ex)
+                {
+                    return false;
+                }
+            }
+            else return false;
         }
 
         ///// <summary>

@@ -1,11 +1,16 @@
 ﻿//using DevExpress.Pdf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using SIM.Areas.ControlVigilancia.Controllers;
-using SIM.Areas.ControlVigilancia.Models;
 using SIM.Areas.Seguridad.Models;
+using SIM.Areas.Tramites.Models;
+using SIM.Data;
+using SIM.Data.Control;
+using SIM.Data.Tramites;
+using SIM.Models;
 using SIM.Utilidades;
 using System;
 using System.Collections.Generic;
@@ -14,18 +19,11 @@ using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using SIM.Areas.Tramites.Models;
-using PdfSharp.Drawing;
-using System.Web.Script.Serialization;
-using System.Net;
-using SIM.Data;
-using SIM.Data.Tramites;
-using SIM.Models;
-using SIM.Data.Control;
 
 namespace SIM.Areas.Tramites.Controllers
 {
@@ -393,7 +391,7 @@ namespace SIM.Areas.Tramites.Controllers
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-           // int idTecero = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
+            // int idTecero = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
             int idTecero = 532;
             int idTramite = Convert.ToInt32(Request.Params["idTramite"]);
             try
@@ -533,7 +531,7 @@ namespace SIM.Areas.Tramites.Controllers
                     dbTramites.SP_SET_ITEMVISITA(idVisita1, EstadoItem, idTramite, rTA3);
 
                     dbControl.SP_SET_CARACTERISTICAS_TL(EstadoItem, formulario.TBL_ESTADOS, jsonInfo, rTaA);
-                        return Content("" + rTaA.Value + "|" + modItem.ID + "|" + idVisita1);
+                    return Content("" + rTaA.Value + "|" + modItem.ID + "|" + idVisita1);
 
                 }
                 else if (formulario.ID_FORMULARIO == 4 || formulario.ID_FORMULARIO == 5)
@@ -737,7 +735,7 @@ namespace SIM.Areas.Tramites.Controllers
 
                     //var jsonOutt = Json(jSONOUT.Value);
                     //var jsonxy = Json(jsonOutXY.Value);
-                   //Decimal decUsuario = clsGenerales.Obtener_Codigo_Funcionario(db, idUsuario);
+                    //Decimal decUsuario = clsGenerales.Obtener_Codigo_Funcionario(db, idUsuario);
                     ObjectParameter rTA = new ObjectParameter("rta", typeof(string));
 
                     dbControl.SP_SET_ITEM_L(formulario.ID_FORMULARIO, JSONItemN, jsonGeo, 0, "MANUAL", rTA);
@@ -769,7 +767,7 @@ namespace SIM.Areas.Tramites.Controllers
 
                     rTA = new ObjectParameter("rta", typeof(string));
                     dbControl.SP_SET_ENCUESTAS(EstadoItem, form, jsonInfoEncuesta, rTA);
-                   // db.SP_SET_CARACTERISTICAS_TL(Convert.ToInt32(modItem.ID_ITEM), formulario.TBL_ESTADOS, jsonInfoEncuesta, rTA);
+                    // db.SP_SET_CARACTERISTICAS_TL(Convert.ToInt32(modItem.ID_ITEM), formulario.TBL_ESTADOS, jsonInfoEncuesta, rTA);
 
                     return Content(rTA.Value + "|" + EstadoItem + "|" + idVisita1);
                 }
@@ -1196,168 +1194,168 @@ namespace SIM.Areas.Tramites.Controllers
 
         }
 
-        public string ValidarTramite(int idTramite, int idInstalacion, int idTercero, int? idVisita, int? idRadicado)
-        {
+        //public string ValidarTramite(int idTramite, int idInstalacion, int idTercero, int? idVisita, int? idRadicado)
+        //{
 
-            //GENERAMOS EL REPORTE
-            List<REQUISITOS_TRAMITE> listReqCargados = new List<REQUISITOS_TRAMITE>();
+        //    //GENERAMOS EL REPORTE
+        //    List<REQUISITOS_TRAMITE> listReqCargados = new List<REQUISITOS_TRAMITE>();
 
-            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero) != null)
-            {
-                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
-            }
+        //    if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero) != null)
+        //    {
+        //        idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
+        //    }
 
-            String nombre = "";
-            PdfDocument inputDocument;
-            AppSettingsReader webConfigReader = new AppSettingsReader();
-            var stream = new MemoryStream();
+        //    String nombre = "";
+        //    PdfDocument inputDocument;
+        //    AppSettingsReader webConfigReader = new AppSettingsReader();
+        //    var stream = new MemoryStream();
 
-            var tramite = db.QRY_LISTADOTRAMITES.Where(f => f.ID_TRAMITE == idTramite).FirstOrDefault();
-            string nombreTramite = tramite.TRAMITE;
+        //    var tramite = db.QRY_LISTADOTRAMITES.Where(f => f.ID_TRAMITE == idTramite).FirstOrDefault();
+        //    string nombreTramite = tramite.TRAMITE;
 
-            //var formulario = db.FORMULARIO.Where(f => f.ID_FORMULARIO == idTram).FirstOrDefault();
+        //    //var formulario = db.FORMULARIO.Where(f => f.ID_FORMULARIO == idTram).FirstOrDefault();
 
-            PdfDocument outputDocument = new PdfDocument();
+        //    PdfDocument outputDocument = new PdfDocument();
 
-            var report1 = new SIM.Areas.Tramites.Reportes.R_Principal2();
+        //    var report1 = new SIM.Areas.Tramites.Reportes.R_Principal2();
 
-            DevExpress.XtraReports.Parameters.Parameter paramIdTercero = report1.Parameters["prmIdTerceroPrpal"];
-            DevExpress.XtraReports.Parameters.Parameter paramNombreTramite = report1.Parameters["prm_Nombre_Tramite"];
-            DevExpress.XtraReports.Parameters.Parameter paramIdInstalacion = report1.Parameters["prmIdInstalacionP"];
-            DevExpress.XtraReports.Parameters.Parameter paramIdVisita = report1.Parameters["prmidVisitaP"];
-
-
-            paramIdTercero.Value = idUsuario;
-            paramNombreTramite.Value = nombreTramite;
-            paramIdInstalacion.Value = idInstalacion;
-            paramIdVisita.Value = idVisita;
-
-            //Valido si existen requisitos cargados para ese tramite
-            listReqCargados = db.REQUISITOS_TRAMITE.Where(s => s.ID_INSTALACION == idInstalacion && s.ID_TRAMITE == idTramite && s.ID_TERCERO == idUsuario).OrderBy(r => r.ID_REQUISITO).ToList();
-            report1.ExportToPdf(stream);
-            report1.Dispose();
-
-            PdfDocument docPlanti2 = new PdfDocument();
-            docPlanti2 = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
-            int numPaginas = 0;
-            int countPlant2 = docPlanti2.PageCount;
-            for (int idx = 0; idx < countPlant2; idx++)
-            {
-                PdfPage page = docPlanti2.Pages[idx];
-                outputDocument.AddPage(page);
-                numPaginas++;
-
-                if (idx == 0) // Primera Página, se inserta el radicado
-                {
-                    PdfPage pageRadicado = outputDocument.Pages[idx];
-                    Radicado01Report etiqueta = new Radicado01Report();
-                    MemoryStream imagenEtiqueta = etiqueta.GenerarEtiqueta((int)idRadicado, "png");
-
-                    XGraphics gfx = XGraphics.FromPdfPage(pageRadicado);
-                    DrawImage(gfx, imagenEtiqueta, 300, 60, 700, 100);
-                }
-            }
-
-            if (listReqCargados.Count > 0)
-            {
-                for (int i = 0; i < listReqCargados.Count; i++)
-                {
-
-                    PdfDocument docPlanti = new PdfDocument();
-                    docPlanti = PdfReader.Open(listReqCargados[i].RUTA_DOCUMENTO, PdfDocumentOpenMode.Import);
-
-                    int countPlant = docPlanti.PageCount;
-                    for (int idx = 0; idx < countPlant; idx++)
-                    {
-                        PdfPage page = docPlanti.Pages[idx];
-                        outputDocument.AddPage(page);
-                        numPaginas++;
-                    }
-                }
-            }
-
-            MemoryStream ms = new MemoryStream();
-            outputDocument.Save(ms);
+        //    DevExpress.XtraReports.Parameters.Parameter paramIdTercero = report1.Parameters["prmIdTerceroPrpal"];
+        //    DevExpress.XtraReports.Parameters.Parameter paramNombreTramite = report1.Parameters["prm_Nombre_Tramite"];
+        //    DevExpress.XtraReports.Parameters.Parameter paramIdInstalacion = report1.Parameters["prmIdInstalacionP"];
+        //    DevExpress.XtraReports.Parameters.Parameter paramIdVisita = report1.Parameters["prmidVisitaP"];
 
 
-            //Guardar sistema gestión documental
-            string rutaDocumento;
-            int idCodDocumento;
-            int idproceso = 2521; //Pendiente de definir con jorge
-            int codTramite = 993328; //Pendiente de definir con jorge
+        //    paramIdTercero.Value = idUsuario;
+        //    paramNombreTramite.Value = nombreTramite;
+        //    paramIdInstalacion.Value = idInstalacion;
+        //    paramIdVisita.Value = idVisita;
+
+        //    //Valido si existen requisitos cargados para ese tramite
+        //    listReqCargados = db.REQUISITOS_TRAMITE.Where(s => s.ID_INSTALACION == idInstalacion && s.ID_TRAMITE == idTramite && s.ID_TERCERO == idUsuario).OrderBy(r => r.ID_REQUISITO).ToList();
+        //    report1.ExportToPdf(stream);
+        //    report1.Dispose();
+
+        //    PdfDocument docPlanti2 = new PdfDocument();
+        //    docPlanti2 = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
+        //    int numPaginas = 0;
+        //    int countPlant2 = docPlanti2.PageCount;
+        //    for (int idx = 0; idx < countPlant2; idx++)
+        //    {
+        //        PdfPage page = docPlanti2.Pages[idx];
+        //        outputDocument.AddPage(page);
+        //        numPaginas++;
+
+        //        if (idx == 0) // Primera Página, se inserta el radicado
+        //        {
+        //            PdfPage pageRadicado = outputDocument.Pages[idx];
+        //            Radicado01Report etiqueta = new Radicado01Report();
+        //            MemoryStream imagenEtiqueta = etiqueta.GenerarEtiqueta((int)idRadicado, "png");
+
+        //            XGraphics gfx = XGraphics.FromPdfPage(pageRadicado);
+        //            DrawImage(gfx, imagenEtiqueta, 300, 60, 700, 100);
+        //        }
+        //    }
+
+        //    if (listReqCargados.Count > 0)
+        //    {
+        //        for (int i = 0; i < listReqCargados.Count; i++)
+        //        {
+
+        //            PdfDocument docPlanti = new PdfDocument();
+        //            docPlanti = PdfReader.Open(listReqCargados[i].RUTA_DOCUMENTO, PdfDocumentOpenMode.Import);
+
+        //            int countPlant = docPlanti.PageCount;
+        //            for (int idx = 0; idx < countPlant; idx++)
+        //            {
+        //                PdfPage page = docPlanti.Pages[idx];
+        //                outputDocument.AddPage(page);
+        //                numPaginas++;
+        //            }
+        //        }
+        //    }
+
+        //    MemoryStream ms = new MemoryStream();
+        //    outputDocument.Save(ms);
 
 
-            TBRUTAPROCESO rutaProceso = db.TBRUTAPROCESO.Where(rp => rp.CODPROCESO == idproceso).FirstOrDefault();
-            TBTRAMITEDOCUMENTO ultimoDocumento = db.TBTRAMITEDOCUMENTO.Where(td => td.CODTRAMITE == codTramite).OrderByDescending(td => td.CODDOCUMENTO).FirstOrDefault();
-            RADICADO_DOCUMENTO radicado = db.RADICADO_DOCUMENTO.Where(r => r.ID_RADICADODOC == idRadicado).FirstOrDefault();
-
-            if (ultimoDocumento == null)
-                idCodDocumento = 1;
-            else
-                idCodDocumento = Convert.ToInt32(ultimoDocumento.CODDOCUMENTO) + 1;
-
-            rutaDocumento = rutaProceso.PATH + "\\" + codTramite.ToString() + "-" + idCodDocumento.ToString() + ".pdf";
+        //    //Guardar sistema gestión documental
+        //    string rutaDocumento;
+        //    int idCodDocumento;
+        //    int idproceso = 2521; //Pendiente de definir con jorge
+        //    int codTramite = 993328; //Pendiente de definir con jorge
 
 
+        //    TBRUTAPROCESO rutaProceso = db.TBRUTAPROCESO.Where(rp => rp.CODPROCESO == idproceso).FirstOrDefault();
+        //    TBTRAMITEDOCUMENTO ultimoDocumento = db.TBTRAMITEDOCUMENTO.Where(td => td.CODTRAMITE == codTramite).OrderByDescending(td => td.CODDOCUMENTO).FirstOrDefault();
+        //    RADICADO_DOCUMENTO radicado = db.RADICADO_DOCUMENTO.Where(r => r.ID_RADICADODOC == idRadicado).FirstOrDefault();
 
-            TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
-            TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
-            documento.CODDOCUMENTO = idCodDocumento;
-            documento.CODTRAMITE = codTramite;
-            documento.TIPODOCUMENTO = 1;
-            documento.FECHACREACION = DateTime.Now;
-            documento.CODFUNCIONARIO = codFuncionario;
-            documento.ID_USUARIO = codFuncionario;
-            documento.RUTA = rutaDocumento;
-            documento.MAPAARCHIVO = "M";
-            documento.MAPABD = "M";
-            documento.PAGINAS = numPaginas;
-            documento.CODSERIE = Convert.ToInt32(radicado.CODSERIE);
+        //    if (ultimoDocumento == null)
+        //        idCodDocumento = 1;
+        //    else
+        //        idCodDocumento = Convert.ToInt32(ultimoDocumento.CODDOCUMENTO) + 1;
 
-            db.Entry(documento).State = System.Data.Entity.EntityState.Added;
-            db.SaveChanges();
-            relDocTra.CODTRAMITE = codTramite;
-            relDocTra.CODDOCUMENTO = idCodDocumento;
-            relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
-            db.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
-            db.SaveChanges();
+        //    rutaDocumento = rutaProceso.PATH + "\\" + codTramite.ToString() + "-" + idCodDocumento.ToString() + ".pdf";
 
 
-            //SE AVANZA LA TAREA 
-            //db.SP_AVANZA_TAREA_TRAMITE(codTramite, idUsuario, 4145, "Inicia Tramite TL", 0, idTercero, "", 0);
 
-            //
+        //    TBTRAMITEDOCUMENTO documento = new TBTRAMITEDOCUMENTO();
+        //    TBTRAMITE_DOC relDocTra = new TBTRAMITE_DOC();
+        //    documento.CODDOCUMENTO = idCodDocumento;
+        //    documento.CODTRAMITE = codTramite;
+        //    documento.TIPODOCUMENTO = 1;
+        //    documento.FECHACREACION = DateTime.Now;
+        //    documento.CODFUNCIONARIO = codFuncionario;
+        //    documento.ID_USUARIO = codFuncionario;
+        //    documento.RUTA = rutaDocumento;
+        //    documento.MAPAARCHIVO = "M";
+        //    documento.MAPABD = "M";
+        //    documento.PAGINAS = numPaginas;
+        //    documento.CODSERIE = Convert.ToInt32(radicado.CODSERIE);
+
+        //    db.Entry(documento).State = System.Data.Entity.EntityState.Added;
+        //    db.SaveChanges();
+        //    relDocTra.CODTRAMITE = codTramite;
+        //    relDocTra.CODDOCUMENTO = idCodDocumento;
+        //    relDocTra.ID_DOCUMENTO = documento.ID_DOCUMENTO;
+        //    db.Entry(relDocTra).State = System.Data.Entity.EntityState.Added;
+        //    db.SaveChanges();
 
 
-            //ENVIA CORREO DE NOTIFICACIÓN AL SOLITANTE
-            string emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
-            string emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
-            string emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
-            string emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
-            string asunto = "Prueba";
-            string contenido = "Informe actuación";
-            string resultado = "";
-            string emailDestino = ConfigurationManager.AppSettings["EmailDestino"];
+        //    //SE AVANZA LA TAREA 
+        //    //db.SP_AVANZA_TAREA_TRAMITE(codTramite, idUsuario, 4145, "Inicia Tramite TL", 0, idTercero, "", 0);
 
-            var tercero = db.TERCERO.Where(t => t.ID_TERCERO == idTercero).FirstOrDefault();
-            string direccionEmail = tercero.S_CORREO;
+        //    //
 
-            if (!string.IsNullOrEmpty(direccionEmail))
-            {
-                try
-                {
-                    SIM.Utilidades.Email.EnviarEmail2(emailFrom, emailDestino, asunto, contenido, emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, ms);
-                    resultado = "Ok|" + radicado.S_RADICADO;
-                }
-                catch (Exception ex)
-                {
-                    resultado = ex.Message.ToString();
-                }
-            }
 
-            return resultado;
+        //    //ENVIA CORREO DE NOTIFICACIÓN AL SOLITANTE
+        //    string emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+        //    string emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
+        //    string emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
+        //    string emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+        //    string asunto = "Prueba";
+        //    string contenido = "Informe actuación";
+        //    string resultado = "";
+        //    string emailDestino = ConfigurationManager.AppSettings["EmailDestino"];
 
-        }
+        //    var tercero = db.TERCERO.Where(t => t.ID_TERCERO == idTercero).FirstOrDefault();
+        //    string direccionEmail = tercero.S_CORREO;
+
+        //    if (!string.IsNullOrEmpty(direccionEmail))
+        //    {
+        //        try
+        //        {
+        //            SIM.Utilidades.Email.EnviarEmail2(emailFrom, emailDestino, asunto, contenido, emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, ms);
+        //            resultado = "Ok|" + radicado.S_RADICADO;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            resultado = ex.Message.ToString();
+        //        }
+        //    }
+
+        //    return resultado;
+
+        //}
 
         [HttpGet, ActionName("AbrirDocumento")]
         public ActionResult AbrirDocumento(int idTram, int idReq, int idTerce, int idInst)
