@@ -4,7 +4,6 @@ namespace SIM.Data.General
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("GENERAL.TERCERO_INSTALACION")]
     public partial class TERCERO_INSTALACION
@@ -40,6 +39,11 @@ namespace SIM.Data.General
         public int? N_USUARIO { get; set; }
 
         public DateTime? D_REGISTRO { get; set; }
+
+        public int? ID_EXPEDIENTE_AMBIENTAL { get; set; }
+
+        [NotMapped]
+        public string CM_ASOCIADO { get; set; }
 
         /*[Required]*/
         [StringLength(1)]

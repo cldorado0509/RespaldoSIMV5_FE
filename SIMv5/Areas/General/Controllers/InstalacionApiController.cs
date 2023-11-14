@@ -1,17 +1,12 @@
-﻿using System;
+﻿using SIM.Areas.Seguridad.Models;
+using SIM.Data;
+using SIM.Data.General;
+using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using SIM.Areas.General.Models;
-using SIM.Areas.Seguridad.Models;
-using SIM.Data;
-using Newtonsoft.Json;
 using System.Security.Claims;
-using SIM.Data.General;
+using System.Web.Http;
 
 namespace SIM.Areas.General.Controllers
 {
@@ -142,6 +137,12 @@ namespace SIM.Areas.General.Controllers
         {
             if (id > 0)
             {
+                var expAmb = dbSIM.TERCERO_INSTALACION.Where(f => f.ID_INSTALACION == id).Select(s => s.ID_EXPEDIENTE_AMBIENTAL).FirstOrDefault();
+                var cm = "";
+                if (expAmb != null)
+                {
+                    cm = dbSIM.TEXPAMB_EXPEDIENTEAMBIENTAL.Where(f => f.ID == expAmb).FirstOrDefault().S_CM;
+                }
                 var instalacion = from instalacionConsulta in dbSIM.INSTALACION
                                   where instalacionConsulta.ID_INSTALACION == id
                                   select new
@@ -182,12 +183,16 @@ namespace SIM.Areas.General.Controllers
                                                                 terceroInstalacion.ID_ACTIVIDADECONOMICA,
                                                                 VERSION_AE = terceroInstalacion.ACTIVIDAD_ECONOMICA.S_VERSION,
                                                                 terceroInstalacion.ID_TIPOINSTALACION,
-                                                                terceroInstalacion.D_INICIO
+                                                                terceroInstalacion.D_INICIO,
+                                                                terceroInstalacion.ID_EXPEDIENTE_AMBIENTAL,
                                                             },
                                       INSTALACION_TIPO = from instalacionTipo in dbSIM.INSTALACION_TIPO
                                                          where instalacionTipo.ID_INSTALACION == instalacionConsulta.ID_INSTALACION
-                                                         select instalacionTipo.ID_TIPO
+                                                         select instalacionTipo.ID_TIPO,
+                                      CM = cm
                                   };
+
+
 
                 return instalacion.FirstOrDefault();
             }
