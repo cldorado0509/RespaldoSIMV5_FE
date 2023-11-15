@@ -1341,12 +1341,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                              Final = dbSIM.EXP_DOCUMENTOSEXPEDIENTE.Where(t => t.ID_TOMO == Tom.ID_TOMO).Select(d => d.N_FOLIOFIN).Min(),
                              Tom.S_ABIERTO
                          }).ToList();
-            decimal _Final = 0;
-            foreach (var Tom in Tomos)
-            {
-                if (Tom.Inicia != (_Final + 1) && Tom.Inicia != null && Tom.S_ABIERTO == "0") return new { resp = "Error", mensaje = "El foliado entre carpetas esta mal establecido, se cierra cuando el foliado este correcto!!" };
-                _Final = Tom.Final != null ? Tom.Final.Value : 0;
-            }
+            //decimal _Final = 0;
+            //foreach (var Tom in Tomos)
+            //{
+            //    if (Tom.Inicia != (_Final + 1) && Tom.Inicia != null && Tom.S_ABIERTO == "0") return new { resp = "Error", mensaje = "El foliado entre carpetas esta mal establecido, se cierra cuando el foliado este correcto!!" };
+            //    _Final = Tom.Final != null ? Tom.Final.Value : 0;
+            //}
             var DocFol = (from Doc in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
                           where Doc.ID_TOMO == IdTomo
                           orderby Doc.N_ORDEN
