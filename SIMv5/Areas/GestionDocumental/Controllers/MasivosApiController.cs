@@ -1273,30 +1273,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             else return false;
         }
 
-        private bool EnviarMailPrueba(string email, byte[] documento, string asunto, string para, string radicado, string fechaRad)
-        {
-            if (email.Length == 0) return false;
-            string body = string.Empty;
-            body = body.Replace("[Destinatario]", para);
-            body = body.Replace("[Radicado]", radicado);
-            body = body.Replace("[FechaRad]", fechaRad);
-            var correo = new MimeMessage();
-
-            correo.To.Add(MailboxAddress.Parse(email));
-            correo.Subject = asunto;
-            correo.Priority = MessagePriority.Urgent;
-            correo.Body = new TextPart("hola, esto es una prueba de envio de correo!!!!");
-            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
-            {
-                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("codelectronicas@metropol.gov.co", "Area2020");
-                smtp.Send(correo);
-                smtp.Disconnect(true);
-                return true;
-            }
-        }
-
-        private bool EnviarMailNet(string _email, MemoryStream _MsPdf, string _asunto, string _para, string _radicado, string _fechaRad)
+        private bool EnviarMailSIM(string _email, MemoryStream _MsPdf, string _asunto, string _para, string _radicado, string _fechaRad)
         {
             if (_email.Length == 0) return false;
             string body = string.Empty;
@@ -1327,13 +1304,40 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 SmtpClient smtp = new SmtpClient("smtp.office365.com");
                 try
                 {
+
+                    smtp.Credentials = new System.Net.NetworkCredential("codelectronicas@metropol.gov.co", "Area2020");
                     smtp.Port = 587;
                     smtp.EnableSsl = true;
-                    System.Net.NetworkCredential SMTPUserInfo = new System.Net.NetworkCredential("codelectronicas@metropol.gov.co", "Area2020");
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = SMTPUserInfo;
+                    //smtp.UseDefaultCredentials = false;
                     smtp.Send(correo);
                     return true;
+                }
+                catch (SmtpException ex)
+                {
+                    return false;
+                }
+            }
+            else return false;
+        }
+
+        private bool EnviarMailNet(string _email, MemoryStream _MsPdf, string _asunto, string _para, string _radicado, string _fechaRad)
+        {
+            if (_email.Length == 0) return false;
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Areas/GestionDocumental/Plantillas/MasivosCOD.html")))
+            {
+                body = reader.ReadToEnd();
+            }
+            if (body.Length > 0)
+            {
+                body = body.Replace("[Destinatario]", _para);
+                body = body.Replace("[Radicado]", _radicado);
+                body = body.Replace("[FechaRad]", _fechaRad);
+                var Subject = _asunto != "" ? _asunto : "Sin asunto";
+                try
+                {
+                    var respta = SIM.Utilidades.Email.EnviarEmail("codelectronicas@metropol.gov.co", _email, "", "", Subject, body, "smtp.office365.com", true, "codelectronicas@metropol.gov.co", "Area2020", _MsPdf, _radicado + ".pdf");
+                    if (respta.StartsWith("[")) return false; else return true;
                 }
                 catch (SmtpException ex)
                 {
