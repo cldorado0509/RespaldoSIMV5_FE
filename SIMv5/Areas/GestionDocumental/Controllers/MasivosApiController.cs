@@ -15,6 +15,7 @@ using PdfSharp.Drawing;
 using SIM.Areas.GestionDocumental.Models;
 using SIM.Data;
 using SIM.Data.Tramites;
+using SIM.Models;
 using SIM.Services;
 using SIM.Utilidades;
 using System;
@@ -30,6 +31,7 @@ using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web.Hosting;
 using System.Web.Http;
 
@@ -51,6 +53,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
     public class MasivosApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+        private string urlApiGeneral = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioGeneral").ToString();
+
 
         /// <summary>
         /// 
@@ -419,7 +423,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var _email = fila["EMAIL"].ToString();
                                         if (_email.Length > 0)
                                         {
-                                            if (!EnviarMailNet(_email, new MemoryStream(documento.Archivo), _asunto, _para, _Radicado, _FecRad))
+                                            if (!EnviarMailSIM(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad).Result)
                                             {
                                                 fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
                                             }
@@ -1015,6 +1019,23 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
         }
 
+        [HttpPost]
+        [ActionName("Correo")]
+        public async Task<object> PostCorreo(mailDTO dato)
+        {
+            if (dato.to.Length == 0) return new { resp = false };
+            ApiService apiService = new ApiService();
+            try
+            {
+                Response response = await apiService.PostAsync<mailDTO>(urlApiGeneral, "api/", "MailSender/EnviarCorreo", dato);
+                if (!response.IsSuccess) return new { resp = false };
+                return new { resp = true };
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         #region Metodos Privados de la clase
         private DataTable LeeExcel(string _ruta)
@@ -1273,10 +1294,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
             else return false;
         }
 
-        private bool EnviarMailSIM(string _email, MemoryStream _MsPdf, string _asunto, string _para, string _radicado, string _fechaRad)
+        private async Task<bool> EnviarMailSIM(string _email, byte[] _MsPdf, string _asunto, string _para, string _radicado, string _fechaRad)
         {
             if (_email.Length == 0) return false;
             string body = string.Empty;
+            ApiService apiService = new ApiService();
             using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Areas/GestionDocumental/Plantillas/MasivosCOD.html")))
             {
                 body = reader.ReadToEnd();
@@ -1286,33 +1308,23 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 body = body.Replace("[Destinatario]", _para);
                 body = body.Replace("[Radicado]", _radicado);
                 body = body.Replace("[FechaRad]", _fechaRad);
-                MailMessage correo = new MailMessage();
-
-                if (_email.Contains(";"))
-                {
-                    string[] _mails = _email.Split(';');
-                    foreach (string _mailPara in _mails) correo.To.Add(new MailAddress(_mailPara));
-                }
-                else correo.To.Add(new MailAddress(_email));
-                correo.Subject = _asunto != "" ? _asunto : "Sin asunto";
-                correo.Body = body;
-                correo.IsBodyHtml = true;
-                correo.Priority = MailPriority.High;
-                _MsPdf.Seek(0, SeekOrigin.Begin);
-                Attachment _File = new Attachment(_MsPdf, _radicado + ".pdf", "application/pdf");
-                correo.Attachments.Add(_File);
-                SmtpClient smtp = new SmtpClient("smtp.office365.com");
                 try
                 {
-
-                    smtp.Credentials = new System.Net.NetworkCredential("codelectronicas@metropol.gov.co", "Area2020");
-                    smtp.Port = 587;
-                    smtp.EnableSsl = true;
-                    //smtp.UseDefaultCredentials = false;
-                    smtp.Send(correo);
+                    mailDTO _mail = new mailDTO();
+                    _mail.to = _email;
+                    //_mail.subject = _asunto != "" ? _asunto : "Sin asunto";
+                    //_mail.fromMail = "codelectronicas@metropol.gov.co";
+                    //_mail.smtpServer = "smtp.office365.com";
+                    //_mail.smtpPort = "587";
+                    //_mail.attachement = _MsPdf;
+                    //_mail.attName = _radicado + ".pdf";
+                    //_mail.body = "<b>Prueba de envio de correo</b>";
+                    //_mail.userPass = "Area2020";
+                    Response response = await apiService.PostAsync<mailDTO>(urlApiGeneral, "api/", "MailSender/EnviarCorreo", _mail);
+                    if (!response.IsSuccess) return false;
                     return true;
                 }
-                catch (SmtpException ex)
+                catch
                 {
                     return false;
                 }

@@ -371,7 +371,7 @@ $(document).ready(function () {
                     }
                 });
             }
-            columnasExcel = $("#grdExcel").dxDataGrid("instance").option("columns");
+            columnasExcel = gridExcel.option("columns");
             const index = columnasExcel.indexOf("ID");
             if (index > -1) {
                 columnasExcel.splice(index, 1);
@@ -469,8 +469,8 @@ $(document).ready(function () {
             const obj = JSON.parse(e.request.responseText);
             if (obj.SubidaExitosa) {
                 DatosExcelStore = null;
-                $("#grdExcel").dxDataGrid("instance").option("dataSource", DatosExcelStore);
-                $("#grdExcel").dxDataGrid("instance").option("columns", []);
+                gridExcel.option("dataSource", DatosExcelStore);
+                gridExcel.option("columns", []);
                 IdSolicitud = obj.IdSolicitud;
                 DevExpress.ui.notify(obj.MensajeExito);
                 ufPlantilla.option("disabled", false);
@@ -481,16 +481,16 @@ $(document).ready(function () {
                     if (data.length > 0) {
                         var columnsIn = data[0];
                         for (var key in columnsIn) {
-                            var columns = $("#grdExcel").dxDataGrid("instance").option("columns");
+                            var columns = gridExcel.option("columns");
                             columns.push(key);
                         }
-                        $("#grdExcel").dxDataGrid("instance").option("columns", columns);
+                        gridExcel.option("columns", columns);
                         DatosExcelStore = new DevExpress.data.LocalStore({
                             key: columns[0],
                             data: data,
                             name: 'DatosExcelStore'
                         });
-                        $("#grdExcel").dxDataGrid("instance").option("dataSource", DatosExcelStore);
+                        gridExcel.option("dataSource", DatosExcelStore);
                     }
                 });
             } else {
@@ -515,12 +515,13 @@ $(document).ready(function () {
     var chkEmail = $("#chkEmail").dxCheckBox({
         value: false,
         disabled: true,
-        onValueChanged(data) {
-            var columns = $("#grdExcel").dxDataGrid("instance").option("columns");
-            if (!columns.some(item => item.toLowerCase() == 'email'.toLowerCase())) {
-                DevExpress.ui.notify("Para poder enviar la comunicación por correo electrónico el archivo de Excel debe contener la columna con el dato!");
-                chkEmail.option("value", false);
-
+        onValueChanged(e) {
+            if (!e.component.option('disable')) {
+                var columns = gridExcel.option("columns");
+                if (!columns.some(item => item.toLowerCase() == 'email'.toLowerCase())) {
+                    DevExpress.ui.notify("Para poder enviar la comunicación por correo electrónico el archivo de Excel debe contener la columna con el dato!");
+                    chkEmail.option("value", false);
+                }
             }
         }
     }).dxCheckBox("instance");
@@ -651,7 +652,7 @@ $(document).ready(function () {
             $("#loadPanel").dxLoadPanel('instance').show();
             var _Tramite = txtTramite.option("value");
             if (_Tramite == "") {
-                var columns = $("#grdExcel").dxDataGrid("instance").option("columns");
+                var columns = gridExcel.option("columns");
                 if (!columns.some(item => item.toLowerCase() === 'codtramite')) {
                     $("#loadPanel").dxLoadPanel('instance').hide();
                     DevExpress.ui.notify("Para poder asociar el documento a un trámite debe proporcionar un único código general o por documento!");
@@ -1060,6 +1061,27 @@ $(document).ready(function () {
             return container;
         }
     };
+
+    $("#btnPrueba").dxButton({
+        icon: 'tips',
+        type: 'success',
+        text: 'Prueba comunicacion',
+        onClick: function () {
+            var parametros = { to: "reyblop@hotmail.com"};
+            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/Correo";
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(parametros),
+                contentType: "application/json",
+                success: function (data) {
+                    alert(data.resp);
+                }
+            });
+
+        }
+    });
 
 });
 
