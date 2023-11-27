@@ -364,10 +364,10 @@ $(document).ready(function () {
                     });
             } else {
                 $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/MasivosApi/EditarIndicesMasivo', { IdSolicitud: IdSolicitud })
-                    .done(function (data) {
-                        if (data.length > 0) {
-                            AsignarIndicesDoc(data);
-                            ArrIndices = data;
+                .done(function (data) {
+                    if (data.length > 0) {
+                        AsignarIndicesDoc(data);
+                        ArrIndices = data;
                     }
                 });
             }
@@ -1067,7 +1067,7 @@ $(document).ready(function () {
         type: 'success',
         text: 'Prueba comunicacion',
         onClick: function () {
-            var parametros = { to: "reyblop@hotmail.com"};
+            var parametros = { Email: "reyblop@hotmail.com"};
             var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/Correo";
             $.ajax({
                 type: "POST",

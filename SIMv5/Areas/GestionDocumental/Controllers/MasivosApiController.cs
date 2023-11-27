@@ -53,8 +53,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
     public class MasivosApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
-        private string urlApiGeneral = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioGeneral").ToString();
-
+        private string urlSIMAPI = SIM.Utilidades.Data.ObtenerValorParametro("URLSimapi").ToString();
+        private string urlGeneral = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioGeneral").ToString();
 
         /// <summary>
         /// 
@@ -823,7 +823,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             IdMasivo = RadMasiva.ID;
                             RadMasiva.S_RUTAEXCEL = Excel;
                             RadMasiva.S_RUTAPLANTILLA = Plantilla;
-                            if (datos.Indices != null || datos.Indices.Count > 0)
+                            if (datos.Indices != null && datos.Indices.Count > 0)
                             {
                                 dbSIM.RADMASIVAINDICES.RemoveRange(dbSIM.RADMASIVAINDICES.Where(w => w.ID_RADMASIVO == RadMasiva.ID));
                                 dbSIM.SaveChanges();
@@ -835,6 +835,21 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         ID_RADMASIVO = RadMasiva.ID,
                                         S_VALOREXCEL = ind.VALORDEFECTO != "" ? ind.VALORDEFECTO : "",
                                         S_VALORASIGNADO = ind.VALOR != "" ? ind.VALOR : ""
+                                    };
+                                    dbSIM.RADMASIVAINDICES.Add(newInd);
+                                }
+                            }
+                            else
+                            {
+                                var Indices = GetObtenerIndicesSerieDocumental(12);
+                                foreach (var ind in Indices)
+                                {
+                                    RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                                    {
+                                        CODINDICE = ind.CODINDICE,
+                                        ID_RADMASIVO = RadMasiva.ID,
+                                        S_VALOREXCEL = "",
+                                        S_VALORASIGNADO = ""
                                     };
                                     dbSIM.RADMASIVAINDICES.Add(newInd);
                                 }
@@ -883,16 +898,34 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         dbSIM.RADMASIVA.Add(_masiva);
                         dbSIM.SaveChanges();
                         IdMasivo = _masiva.ID;
-                        foreach (var ind in datos.Indices)
+                        if (datos.Indices != null && datos.Indices.Count > 0)
                         {
-                            RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                            foreach (var ind in datos.Indices)
                             {
-                                ID_RADMASIVO = _masiva.ID,
-                                CODINDICE = ind.CODINDICE,
-                                S_VALOREXCEL = ind.VALORDEFECTO != "" ? ind.VALORDEFECTO : "",
-                                S_VALORASIGNADO = ind.VALOR != "" ? ind.VALOR : ""
-                            };
-                            dbSIM.RADMASIVAINDICES.Add(newInd);
+                                RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                                {
+                                    ID_RADMASIVO = _masiva.ID,
+                                    CODINDICE = ind.CODINDICE,
+                                    S_VALOREXCEL = ind.VALORDEFECTO != "" ? ind.VALORDEFECTO : "",
+                                    S_VALORASIGNADO = ind.VALOR != "" ? ind.VALOR : ""
+                                };
+                                dbSIM.RADMASIVAINDICES.Add(newInd);
+                            }
+                        }
+                        else
+                        {
+                            var Indices = GetObtenerIndicesSerieDocumental(12);
+                            foreach (var ind in Indices)
+                            {
+                                RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                                {
+                                    CODINDICE = ind.CODINDICE,
+                                    ID_RADMASIVO = RadMasiva.ID,
+                                    S_VALOREXCEL = "",
+                                    S_VALORASIGNADO = ""
+                                };
+                                dbSIM.RADMASIVAINDICES.Add(newInd);
+                            }
                         }
                         foreach (var fir in datos.Firmas)
                         {
@@ -1023,11 +1056,22 @@ namespace SIM.Areas.GestionDocumental.Controllers
         [ActionName("Correo")]
         public async Task<object> PostCorreo(mailDTO dato)
         {
-            if (dato.to.Length == 0) return new { resp = false };
+            if (dato.Email.Length == 0) return new { resp = false };
             ApiService apiService = new ApiService();
             try
             {
-                Response response = await apiService.PostAsync<mailDTO>(urlApiGeneral, "api/", "MailSender/EnviarCorreo", dato);
+                var _asunto = "Un asunto de prueba";
+                var _radicado = "0344568";
+                dato.subject = _asunto != "" ? _asunto : "Sin asunto";
+                dato.fromMail = "codelectronicas@metropol.gov.co";
+                dato.smtpServer = "smtp.office365.com";
+                dato.smtpPort = "587";
+                //dato.attachement = _MsPdf;
+                dato.attName = _radicado + ".pdf";
+                dato.body = "<b>Prueba de envio de correo</b>";
+                dato.userPass = "Area2020";
+
+                Response response = await apiService.PostAsync<mailDTO>(urlSIMAPI, "api/", "Terceros/EnviarCorreo", dato);
                 if (!response.IsSuccess) return new { resp = false };
                 return new { resp = true };
             }
@@ -1311,16 +1355,16 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 try
                 {
                     mailDTO _mail = new mailDTO();
-                    _mail.to = _email;
-                    //_mail.subject = _asunto != "" ? _asunto : "Sin asunto";
-                    //_mail.fromMail = "codelectronicas@metropol.gov.co";
-                    //_mail.smtpServer = "smtp.office365.com";
-                    //_mail.smtpPort = "587";
-                    //_mail.attachement = _MsPdf;
-                    //_mail.attName = _radicado + ".pdf";
-                    //_mail.body = "<b>Prueba de envio de correo</b>";
-                    //_mail.userPass = "Area2020";
-                    Response response = await apiService.PostAsync<mailDTO>(urlApiGeneral, "api/", "MailSender/EnviarCorreo", _mail);
+                    _mail.Email = _email;
+                    _mail.subject = _asunto != "" ? _asunto : "Sin asunto";
+                    _mail.fromMail = "codelectronicas@metropol.gov.co";
+                    _mail.smtpServer = "smtp.office365.com";
+                    _mail.smtpPort = "587";
+                    _mail.attachement = _MsPdf;
+                    _mail.attName = _radicado + ".pdf";
+                    _mail.body = "<b>Prueba de envio de correo</b>";
+                    _mail.userPass = "Area2020";
+                    Response response = await apiService.PostAsync<mailDTO>(urlSIMAPI, "api/", "Terceros/EnviarCorreo", _mail);
                     if (!response.IsSuccess) return false;
                     return true;
                 }
