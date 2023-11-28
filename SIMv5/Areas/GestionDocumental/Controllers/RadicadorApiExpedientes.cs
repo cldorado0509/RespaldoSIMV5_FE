@@ -63,7 +63,7 @@ namespace SIM.Areas.General.Controllers
 
                             var model = (from proyecto in dbSIMTramites.TEXPAMB_EXPEDIENTEAMBIENTAL
                                          join solicitud in dbSIMTramites.TEXPAMB_PUNTOCONTROL on proyecto.ID equals solicitud.EXPEDIENTEAMBIENTAL_ID
-                                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID_MIGRACION
+                                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID
                                          join municipio in dbSIMTramites.TBMUNICIPIO on proyecto.MUNICIPIO_ID equals municipio.CODIGO_MUNICIPIO
                                          select new
                                          {
@@ -95,7 +95,7 @@ namespace SIM.Areas.General.Controllers
 
                             var model = (from proyecto in dbSIMTramites.TEXPAMB_EXPEDIENTEAMBIENTAL
                                          join solicitud in dbSIMTramites.TEXPAMB_PUNTOCONTROL on proyecto.ID equals solicitud.EXPEDIENTEAMBIENTAL_ID
-                                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID_MIGRACION
+                                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID
                                          select new
                                          {
                                              ID_LOOKUP = solicitud.ID,
@@ -147,7 +147,7 @@ namespace SIM.Areas.General.Controllers
 
             var model = (from proyecto in dbSIMTramites.TEXPAMB_EXPEDIENTEAMBIENTAL
                          join solicitud in dbSIMTramites.TEXPAMB_PUNTOCONTROL on proyecto.ID equals solicitud.EXPEDIENTEAMBIENTAL_ID
-                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID_MIGRACION
+                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID
                          where solicitud.ID == id
                          select new
                          {

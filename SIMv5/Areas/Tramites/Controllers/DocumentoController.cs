@@ -19,7 +19,7 @@ namespace SIM.Areas.Tramites.Controllers
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
 
-        public ActionResult ConsultarInformeTecnicoRadicado(int idTramite, int idDocumento)
+        public ActionResult ConsultarInformeTecnicoRadicado(int idTramite, int idDocumento, int descargar = 1)
         {
             string extension;
             TBTRAMITEDOCUMENTO documento = dbSIM.TBTRAMITEDOCUMENTO.Where(td => td.CODTRAMITE == idTramite && td.CODDOCUMENTO == idDocumento).FirstOrDefault();
@@ -28,31 +28,48 @@ namespace SIM.Areas.Tramites.Controllers
             {
                 if (System.IO.File.Exists(documento.RUTA))
                 {
-                    Cryptografia crypt = new Cryptografia();
 
-                    MemoryStream ms = crypt.DesEncriptar(documento.RUTA, UnicodeEncoding.ASCII.GetBytes("ABCDEFGHIJKLMNOQ"), UnicodeEncoding.ASCII.GetBytes("ABCDEFGHIJKLMNOQ"));
-
-                    if (Path.GetExtension(documento.RUTA).ToUpper().Trim() == ".TIFF" || Path.GetExtension(documento.RUTA).ToUpper().Trim() == ".TIF")
+                    if (documento.CIFRADO == "1")
                     {
+                        Cryptografia crypt = new Cryptografia();
+
+                        var ms = crypt.DesEncriptar(documento.RUTA, UnicodeEncoding.ASCII.GetBytes("ABCDEFGHIJKLMNOQ"), UnicodeEncoding.ASCII.GetBytes("ABCDEFGHIJKLMNOQ"));
+
+                        if (Path.GetExtension(documento.RUTA).ToUpper().Trim() == ".TIFF" || Path.GetExtension(documento.RUTA).ToUpper().Trim() == ".TIF")
+                        {
+                            // **** CONVIERTE A PDF
+                            TIFFReader tr = new TIFFReader(ms);
+                            TIFFDocument tdoc = tr.Read(false);
+                            tr.Close();
+                            PDFWriter pdf = new PDFWriter(tdoc);
+
+                            ms = pdf.SavePDF();
+
+                            extension = ".PDF";
+                        }
+                        else
+                        {
+                            extension = Path.GetExtension(documento.RUTA);
+                        }
+
+                        //return pdf.SavePDF();
                         // **** CONVIERTE A PDF
-                        TIFFReader tr = new TIFFReader(ms);
-                        TIFFDocument tdoc = tr.Read(false);
-                        tr.Close();
-                        PDFWriter pdf = new PDFWriter(tdoc);
 
-                        ms = pdf.SavePDF();
-
-                        extension = ".PDF";
+                        if (descargar == 1)
+                            return File(ms.GetBuffer(), "application/" + Path.GetExtension(documento.RUTA).Replace(".", ""), "Documento_" + DateTime.Now.ToString("yyyyMMddHHmm") + extension);
+                        else
+                            return File(ms.GetBuffer(), "application/" + Path.GetExtension(documento.RUTA).Replace(".", ""));
                     }
                     else
                     {
                         extension = Path.GetExtension(documento.RUTA);
-                    }
-                    
-                    //return pdf.SavePDF();
-                    // **** CONVIERTE A PDF
 
-                    return File(ms.GetBuffer(), "application/" + Path.GetExtension(documento.RUTA).Replace(".", ""), "Documento_" + DateTime.Now.ToString("yyyyMMddHHmm") + extension);
+                        if (descargar == 1)
+                            return File(documento.RUTA, "application/" + Path.GetExtension(documento.RUTA).Replace(".", ""), "Documento_" + DateTime.Now.ToString("yyyyMMddHHmm") + extension);
+                        else
+                            return File(documento.RUTA, "application/" + Path.GetExtension(documento.RUTA).Replace(".", ""));
+                    }
+
                 }
                 else
                     return null;

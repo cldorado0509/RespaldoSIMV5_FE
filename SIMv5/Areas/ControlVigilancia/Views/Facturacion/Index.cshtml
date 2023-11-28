@@ -13,6 +13,10 @@
     }
 
     .dx-popup-content {
+        padding: 0px;
+    }
+
+    #registrarFacturaContainer {
         padding: 20px;
     }
 </style>
@@ -33,7 +37,11 @@
     }
 </script>
 
-<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/facturacion.js?v=1.02")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/ControlVigilancia/Scripts/facturacion.js?v=1.03")"></script>
+
+<div id="popDocumento" style="padding: 0px">
+    <iframe src="" id="frmDocumento" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
+</div>
 
 <div id="popRegistrarFactura">
     <div id="registrarFacturaContainer" style="width:100%; height:100%">
