@@ -15,6 +15,11 @@ $(document).ready(function () {
         shadingColor: "rgba(0,0,0,0.4)",
     });
 
+    $("#popDocumento").dxPopup({
+        title: "Documento Radicado",
+        fullScreen: true
+    });
+
     var tabsData = [
         { text: 'PENDIENTES FACTURACION', pos: 0 },
         //{ text: 'HISTÓRICO', pos: 1 }
@@ -156,6 +161,25 @@ $(document).ready(function () {
                 width: '15%',
                 caption: 'TIPO APROV. FORESTAL',
                 dataType: 'string',
+            }, {
+                caption: '',
+                width: '4%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'doc',
+                            type: 'success',
+                            hint: 'Ver Documento Radicado',
+                            onClick: function (params) {
+                                let documento = $("#popDocumento").dxPopup("instance");
+                                documento.show();
+
+                                $('#frmDocumento').attr('src', $('#app').data('url') + 'Tramites/Documento/ConsultarInformeTecnicoRadicado?idTramite=' + cellInfo.data.CODTRAMITE + '&idDocumento=' + cellInfo.data.CODDOCUMENTO + '&descargar=0');
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
             }, {
                 caption: '',
                 width: '4%',
