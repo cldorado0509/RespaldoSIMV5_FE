@@ -15,5 +15,7 @@ namespace SIM.Data.Tramites
         public decimal ORDEN_FIRMA { get; set; }
         public DateTime? D_FECHAFIRMA { get; set; }
         public string S_FIRMADO { get; set; }
+        public string S_TIPOFIRMA { get; set; }
+        public decimal CODCARGO { get; set; }
     }
 }

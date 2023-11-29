@@ -774,9 +774,59 @@ $(document).ready(function () {
         }
     });
 
+    var FirmaPropia = $("#chkFirmaPropia").dxCheckBox({
+        text: "Firma propia",
+        value: false,
+        onValueChanged: function (e) {
+            if (e.value) {
+                Encargo.option("value", !e.value);
+                Adhoc.option("value", !e.value);
+                cargos.option("visible", false);
+            }
+        }
+    }).dxCheckBox("instance");
+
+    var Encargo = $("#chkFirmaEncargo").dxCheckBox({
+        text: "Firmaré con funciones de encargo",
+        value: false,
+        onValueChanged: function (e) {
+            if (e.value) {
+                Adhoc.option("value", !e.value);
+                FirmaPropia.option("value", !e.value);
+                cargos.option("visible", true);
+            }
+        }
+    }).dxCheckBox("instance");
+
+    var Adhoc = $("#chkFirmaAdhoc").dxCheckBox({
+        text: "Ad Hoc",
+        value: false,
+        onValueChanged: function (e) {
+            if (e.value) {
+                FirmaPropia.option("value", !e.value);
+                Encargo.option("value", !e.value);
+                cargos.option("visible", true);
+            }
+        }
+    }).dxCheckBox("instance");
+
+    var cargos = $('#cboCargos').dxLookup({
+        dataSource: cargosDataSource,
+        placeholder: '[Seleccionar Cargo]',
+        title: 'Cargo',
+        displayExpr: 'NOMBRE',
+        valueExpr: 'CODCARGO',
+        cancelButtonText: 'Cancelar',
+        pageLoadingText: 'Cargando...',
+        refreshingText: 'Refrescando...',
+        searchPlaceholder: 'Buscar',
+        noDataText: 'Sin Datos',
+        visible: false,
+    }).dxLookup("instance");
+
     var popFirmar = $("#popupFirmar").dxPopup({
         width: 600,
-        height: 300,
+        height: 350,
         showTitle: true,
         title: "Aprobar/Rechazar firmas de la plantilla COD"
     }).dxPopup("instance");
@@ -1062,50 +1112,6 @@ $(document).ready(function () {
         }
     };
 
-    $("#btnPrueba").dxButton({
-        icon: 'tips',
-        type: 'success',
-        text: 'Prueba comunicacion',
-        onClick: function () {
-            var parametros = { Email: "reyblop@hotmail.com"};
-            var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/Correo";
-            $.ajax({
-                type: "POST",
-                dataType: 'json',
-                url: _Ruta,
-                data: JSON.stringify(parametros),
-                contentType: "application/json",
-                success: function (data) {
-                    alert(data.resp);
-                }
-            });
-
-        }
-    });
-
-    var FirmaPropia = $("#chkFirmaPropia").dxCheckBox({
-        text: 'Firma propia',
-        onValueChanged: function (e) {
-            Encargo.option("value", false);
-            Adhoc.option("value", false);
-        }
-    }).dxCheckBox("instance");
-
-    var Encargo = $("#chkFirmaEncargo").dxCheckBox({
-        text: 'Firmaré con funciones de encargo',
-        onValueChanged: function (e) {
-            Adhoc.option("value", false);
-            FirmaPropia.option("value", false);
-        }
-    }).dxCheckBox("instance");
-
-    var Adhoc = $("#chkFirmaAdhoc").dxCheckBox({
-        text: 'Ad Hoc',
-        onValueChanged: function (e) {
-            FirmaPropia.option("value", false);
-            Encargo.option("value", false);
-        }
-    }).dxCheckBox("instance");
 });
 
 function updateQueryStringParameter(uri, key, value) {
@@ -1142,6 +1148,41 @@ var funcionariosDataSource = new DevExpress.data.CustomStore({
             $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/Funcionarios', {
                 filter: '',
                 sort: '[{"selector":"FUNCIONARIO","desc":false}]',
+                group: '',
+                skip: skip,
+                take: take,
+                searchValue: (searchValueOptions === undefined || searchValueOptions === null ? '' : searchValueOptions),
+                searchExpr: (searchExprOptions === undefined || searchExprOptions === null ? '' : searchExprOptions),
+                comparation: 'contains',
+                tipoData: 'f',
+                noFilterNoRecords: true
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('falla2a: ' + textStatus + ", " + error);
+            });
+            return d.promise();
+        }
+    },
+    byKey: function (key, extra) {
+        return key.toString();
+    },
+});
+
+var cargosDataSource = new DevExpress.data.CustomStore({
+    load: function (loadOptions) {
+        var d = $.Deferred();
+
+        var searchValueOptions = loadOptions.searchValue;
+        var searchExprOptions = loadOptions.searchExpr;
+
+        var skip = (loadOptions.skip ? loadOptions.skip : 0);
+        var take = (loadOptions.take ? loadOptions.take : 0);
+
+        if (take != 0) {
+            $.getJSON($('#SIM').data('url') + 'Tramites/api/ProyeccionDocumentoApi/Cargos', {
+                filter: '',
+                sort: '[{"selector":"NOMBRE","desc":false}]',
                 group: '',
                 skip: skip,
                 take: take,
