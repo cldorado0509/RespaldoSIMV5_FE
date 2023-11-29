@@ -179,11 +179,20 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 BinaryReader b = new BinaryReader(File.InputStream);
                                 byte[] FileData = b.ReadBytes(File.ContentLength);
                                 SIM.Utilidades.Archivos.GrabaMemoryStream(new MemoryStream(FileData), _Excel.FullName);
-
-                                archivoDTO.IdSolicitud = IdSolicitud;
-                                archivoDTO.SubidaExitosa = true;
-                                archivoDTO.MensajeError = "";
-                                archivoDTO.MensajeExito = "Archivo de Excel subido con éxito!";
+                                var ExcelData = LeeExcel(_Excel.FullName);
+                                if (ExcelData != null && ExcelData.Rows.Count >= 5)
+                                {
+                                    archivoDTO.IdSolicitud = IdSolicitud;
+                                    archivoDTO.SubidaExitosa = true;
+                                    archivoDTO.MensajeError = "";
+                                    archivoDTO.MensajeExito = "Archivo de Excel subido con éxito!";
+                                }
+                                else
+                                {
+                                    archivoDTO.IdSolicitud = IdSolicitud;
+                                    archivoDTO.SubidaExitosa = false;
+                                    archivoDTO.MensajeError = "La cantidad mínima de documentos a generar es de 5!!";
+                                }
                             }
                             else
                             {
@@ -575,7 +584,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             var indicesSerieDocumental = from i in dbSIM.TBINDICESERIE
                                          join lista in dbSIM.TBSUBSERIE on (decimal)i.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
                                          from pdis in l.DefaultIfEmpty()
-                                         where i.CODSERIE == codSerie && i.MOSTRAR == "1"
+                                         where i.CODSERIE == codSerie && i.MOSTRAR == "1" && string.IsNullOrEmpty(i.INDICE_RADICADO)
                                          orderby i.ORDEN
                                          select new IndiceCOD
                                          {
@@ -823,6 +832,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             IdMasivo = RadMasiva.ID;
                             RadMasiva.S_RUTAEXCEL = Excel;
                             RadMasiva.S_RUTAPLANTILLA = Plantilla;
+                            var ListaIndices = dbSIM.RADMASIVAINDICES.Where(w => w.ID_RADMASIVO == RadMasiva.ID).ToList();
                             if (datos.Indices != null && datos.Indices.Count > 0)
                             {
                                 dbSIM.RADMASIVAINDICES.RemoveRange(dbSIM.RADMASIVAINDICES.Where(w => w.ID_RADMASIVO == RadMasiva.ID));
@@ -841,20 +851,23 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             }
                             else
                             {
-                                var Indices = GetObtenerIndicesSerieDocumental(12);
-                                foreach (var ind in Indices)
+                                if (ListaIndices == null || ListaIndices.Count <= 0)
                                 {
-                                    RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                                    var Indices = GetObtenerIndicesSerieDocumental(12);
+                                    foreach (var ind in Indices)
                                     {
-                                        CODINDICE = ind.CODINDICE,
-                                        ID_RADMASIVO = RadMasiva.ID,
-                                        S_VALOREXCEL = "",
-                                        S_VALORASIGNADO = ""
-                                    };
-                                    dbSIM.RADMASIVAINDICES.Add(newInd);
+                                        RADMASIVAINDICES newInd = new RADMASIVAINDICES
+                                        {
+                                            CODINDICE = ind.CODINDICE,
+                                            ID_RADMASIVO = RadMasiva.ID,
+                                            S_VALOREXCEL = "",
+                                            S_VALORASIGNADO = ""
+                                        };
+                                        dbSIM.RADMASIVAINDICES.Add(newInd);
+                                    }
                                 }
                             }
-                            if (datos.Firmas != null || datos.Firmas.Count > 0)
+                            if (datos.Firmas != null && datos.Firmas.Count > 0)
                             {
                                 dbSIM.RADMASIVAFIRMAS.RemoveRange(dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == RadMasiva.ID));
                                 dbSIM.SaveChanges();
@@ -883,10 +896,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     {
                         RADICACIONMASIVA _masiva = new RADICACIONMASIVA();
                         _masiva.FUNC_ELABORA = funcionario;
-                        if (datos.Indices.Count > 0) _masiva.S_VALIDADO = "1";
-                        else _masiva.S_VALIDADO = "0";
-                        if (datos.Firmas.Count > 0) _masiva.S_VALIDADO = "1";
-                        else _masiva.S_VALIDADO = "0";
+                        if (datos.Completo) RadMasiva.S_VALIDADO = "1";
                         _masiva.S_RUTAEXCEL = Excel;
                         _masiva.S_RUTAPLANTILLA = Plantilla;
                         _masiva.IDSOLICITUD = datos.IdSolicitud;
@@ -904,7 +914,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             {
                                 RADMASIVAINDICES newInd = new RADMASIVAINDICES
                                 {
-                                    ID_RADMASIVO = _masiva.ID,
+                                    ID_RADMASIVO = IdMasivo,
                                     CODINDICE = ind.CODINDICE,
                                     S_VALOREXCEL = ind.VALORDEFECTO != "" ? ind.VALORDEFECTO : "",
                                     S_VALORASIGNADO = ind.VALOR != "" ? ind.VALOR : ""
@@ -920,7 +930,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 RADMASIVAINDICES newInd = new RADMASIVAINDICES
                                 {
                                     CODINDICE = ind.CODINDICE,
-                                    ID_RADMASIVO = RadMasiva.ID,
+                                    ID_RADMASIVO = IdMasivo,
                                     S_VALOREXCEL = "",
                                     S_VALORASIGNADO = ""
                                 };
@@ -931,7 +941,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         {
                             RADMASIVAFIRMAS newFirm = new RADMASIVAFIRMAS
                             {
-                                ID_RADMASIVO = _masiva.ID,
+                                ID_RADMASIVO = IdMasivo,
                                 FUNC_FIRMA = fir.CodFuncionario,
                                 ORDEN_FIRMA = fir.Orden
 

@@ -474,7 +474,7 @@ $(document).ready(function () {
                 IdSolicitud = obj.IdSolicitud;
                 DevExpress.ui.notify(obj.MensajeExito);
                 ufPlantilla.option("disabled", false);
-               // chkEmail.option("disabled", false);
+                chkEmail.option("disabled", false);
                 btnAsociaInd.option("disabled", false);
                 var _Ruta = $("#SIM").data("url") + "GestionDocumental/api/MasivosApi/CargaExcel";
                 $.getJSON(_Ruta, { IdSolicitud: IdSolicitud }).done(function (data) {
@@ -871,7 +871,7 @@ $(document).ready(function () {
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if ((options.data.FUNCIONARIOELABORA == CodFunc) || PuedeRadicar == "1") {
+                    if ((options.data.FUNCIONARIOELABORA == CodFunc && options.data.ESTADO == "ELABORACION") || PuedeRadicar == "1") {
                         $('<div/>').dxButton({
                             icon: 'edit',
                             type: 'success',
@@ -882,7 +882,7 @@ $(document).ready(function () {
                                 IdSolicitud = options.data.IDSOLICITUD;
                                 Tema = options.data.TEMA;
                                 ufPlantilla.option("disabled", false);
-                               // chkEmail.option("disabled", false);
+                                chkEmail.option("disabled", false);
                                 btnAsociaInd.option("disabled", false);
                                 gridExcel.option("dataSource", null);
                                 gridExcel.repaint();
@@ -1083,6 +1083,29 @@ $(document).ready(function () {
         }
     });
 
+    var FirmaPropia = $("#chkFirmaPropia").dxCheckBox({
+        text: 'Firma propia',
+        onValueChanged: function (e) {
+            Encargo.option("value", false);
+            Adhoc.option("value", false);
+        }
+    }).dxCheckBox("instance");
+
+    var Encargo = $("#chkFirmaEncargo").dxCheckBox({
+        text: 'Firmaré con funciones de encargo',
+        onValueChanged: function (e) {
+            Adhoc.option("value", false);
+            FirmaPropia.option("value", false);
+        }
+    }).dxCheckBox("instance");
+
+    var Adhoc = $("#chkFirmaAdhoc").dxCheckBox({
+        text: 'Ad Hoc',
+        onValueChanged: function (e) {
+            FirmaPropia.option("value", false);
+            Encargo.option("value", false);
+        }
+    }).dxCheckBox("instance");
 });
 
 function updateQueryStringParameter(uri, key, value) {
