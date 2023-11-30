@@ -1000,6 +1000,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     var firmaBD = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == RadMasiva.ID && w.FUNC_FIRMA == firma.CodFuncionario).FirstOrDefault();
                     firmaBD.S_FIRMADO = "1";
                     firmaBD.D_FECHAFIRMA = DateTime.Now;
+                    firmaBD.S_TIPOFIRMA = firma.TipoFirma;
+                    if (firma.Cargo > 0) firmaBD.CODCARGO = firma.Cargo;
                     dbSIM.Entry(firmaBD).State = System.Data.Entity.EntityState.Modified;
                     dbSIM.SaveChanges();
                     var firmas = dbSIM.RADMASIVAFIRMAS.Where(w => w.ID_RADMASIVO == RadMasiva.ID && string.IsNullOrEmpty(w.S_FIRMADO)).OrderBy(o => o.ORDEN_FIRMA).ToList();

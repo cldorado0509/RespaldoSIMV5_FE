@@ -30,7 +30,13 @@ $(document).ready(function () {
         type: "default",
         text: "Firmar Plantilla COD",
         onClick: function () {
-            var params = { CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Comentario: "", Firmado: true };
+            var Propia = FirmaPropia.option("value");
+            var Enc = Encargo.option("value");
+            var Ado = Adhoc.option("value");
+            var TipoFirma = Propia ? "N" : Enc ? "E" : Ado ? "A" : "";
+            var Cargo = -1;
+            if (TipoFirma != "" && TipoFirma != "N") Cargo = cargos.option("value");
+            var params = { CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Comentario: "", Firmado: true, TipoFirma: TipoFirma, Cargo : Cargo };
             var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/MasivosApi/GuardaFirma";
             $.ajax({
                 type: "POST",
@@ -776,7 +782,7 @@ $(document).ready(function () {
 
     var FirmaPropia = $("#chkFirmaPropia").dxCheckBox({
         text: "Firma propia",
-        value: false,
+        value: true,
         onValueChanged: function (e) {
             if (e.value) {
                 Encargo.option("value", !e.value);

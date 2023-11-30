@@ -6,5 +6,7 @@
         public decimal CodFuncionario { get; set; }
         public string Comentario { get; set; }
         public bool Firmado { get; set; }
+        public string TipoFirma { get; set; }
+        public decimal Cargo { get; set; }
     }
 }
