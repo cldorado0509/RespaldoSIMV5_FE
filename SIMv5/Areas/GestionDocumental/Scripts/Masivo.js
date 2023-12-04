@@ -522,11 +522,13 @@ $(document).ready(function () {
         value: false,
         disabled: true,
         onValueChanged(e) {
-            if (!e.component.option('disable')) {
-                var columns = gridExcel.option("columns");
-                if (!columns.some(item => item.toLowerCase() == 'email'.toLowerCase())) {
-                    DevExpress.ui.notify("Para poder enviar la comunicación por correo electrónico el archivo de Excel debe contener la columna con el dato!");
-                    chkEmail.option("value", false);
+            if (e.event) {
+                if (!e.component.option('disable')) {
+                    var columns = gridExcel.option("columns");
+                    if (!columns.some(item => item.toLowerCase() == 'email'.toLowerCase())) {
+                        DevExpress.ui.notify("Para poder enviar la comunicación por correo electrónico el archivo de Excel debe contener la columna con el dato correo electrónico!");
+                        chkEmail.option("value", false);
+                    }
                 }
             }
         }

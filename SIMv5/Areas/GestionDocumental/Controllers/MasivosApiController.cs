@@ -54,7 +54,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
         private string urlSIMAPI = SIM.Utilidades.Data.ObtenerValorParametro("URLSimapi").ToString();
-        private string urlGeneral = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioGeneral").ToString();
 
         /// <summary>
         /// 
@@ -359,10 +358,18 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                             {
                                                 int f = int.Parse(reemp.CampoReemplazo.Substring(5));
                                                 var _firma = Firmas.Where(w => w.ORDEN_FIRMA == f).FirstOrDefault();
-                                                Bitmap imagenFirma = (Bitmap)Security.ObtenerFirmaElectronicaFuncionario((long)_firma.FUNC_FIRMA, true, "");
-                                                PDFImage img = new PDFImage(imagenFirma);
-                                                // _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 250, 80);
-                                                _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), Convert.ToInt32(img.Width * (240 / Convert.ToDecimal(img.Width))), Convert.ToInt32(img.Height * (240 / Convert.ToDecimal(img.Width))));
+                                                Image imagenFirma;
+                                                if (_firma != null)
+                                                {
+                                                    if (_firma.CODCARGO == null || _firma.CODCARGO == 0)
+                                                        imagenFirma = Security.ObtenerFirmaElectronicaFuncionario((long)_firma.FUNC_FIRMA, true, "");
+                                                    else
+                                                        imagenFirma = Security.ObtenerFirmaElectronicaFuncionario((long)_firma.FUNC_FIRMA, true, "", (int)_firma.CODCARGO, (_firma.S_TIPOFIRMA == "E" ? 1 : (_firma.S_TIPOFIRMA == "A" ? 2 : 0)));
+
+                                                    PDFImage img = new PDFImage((Bitmap)imagenFirma);
+                                                    // _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), 250, 80);
+                                                    _pag.Canvas.DrawImage(img, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top), Convert.ToInt32(img.Width * (240 / Convert.ToDecimal(img.Width))), Convert.ToInt32(img.Height * (240 / Convert.ToDecimal(img.Width))));
+                                                }
                                             }
                                         }
                                     }
@@ -390,18 +397,25 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     _Index = new IndicesDocumento();
                                     var TbIndice = dbSIM.TBINDICESERIE.Where(w => w.CODINDICE == Ind.CODINDICE).FirstOrDefault();
                                     _Index.CODINDICE = TbIndice.CODINDICE;
-                                    if (TbIndice.INDICE.ToLower().Contains("radicado") || TbIndice.INDICE.ToLower().Contains("fecha"))
-                                    {
-                                        _Index.VALOR = TbIndice.INDICE.ToLower().Contains("radicado") ? _Radicado : _FecRad;
-                                    }
-                                    else
-                                    {
-                                        if (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") _Index.VALOR = fila[Ind.S_VALOREXCEL].ToString();
-                                        else _Index.VALOR = Ind.S_VALORASIGNADO;
-                                    }
-                                    if (TbIndice.INDICE.ToLower().Contains("asunto")) _asunto = (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") ? Ind.S_VALOREXCEL : Ind.S_VALORASIGNADO;
-                                    if (TbIndice.INDICE.ToLower().Contains("destinatario")) _para = (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") ? Ind.S_VALOREXCEL : Ind.S_VALORASIGNADO;
+                                    if (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") _Index.VALOR = fila[Ind.S_VALOREXCEL].ToString();
+                                    else _Index.VALOR = Ind.S_VALORASIGNADO;
+                                    if (TbIndice.INDICE.ToLower().Contains("asunto")) _asunto = _Index.VALOR;
+                                    if (TbIndice.INDICE.ToLower().Contains("destinatario")) _para = _Index.VALOR;
                                     _Indices.Add(_Index);
+                                }
+                                var TbIndiceRad = dbSIM.TBINDICESERIE.Where(w => (w.INDICE_RADICADO == "R" || w.INDICE_RADICADO == "F") && w.CODSERIE == 12).ToList();
+                                if (TbIndiceRad != null && TbIndiceRad.Count > 0)
+                                {
+                                    foreach (var Ind in TbIndiceRad)
+                                    {
+                                        if (Ind.INDICE.ToLower().Contains("radicado") || Ind.INDICE.ToLower().Contains("fecha"))
+                                        {
+                                            _Index = new IndicesDocumento();
+                                            _Index.CODINDICE = Ind.CODINDICE;
+                                            _Index.VALOR = Ind.INDICE.ToLower().Contains("radicado") ? _Radicado : _FecRad;
+                                            _Indices.Add(_Index);
+                                        }
+                                    }
                                 }
                                 SIM.Utilidades.Documento documento = new Utilidades.Documento();
                                 documento.TipoDocumento = 1;
@@ -900,6 +914,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         _masiva.S_RUTAEXCEL = Excel;
                         _masiva.S_RUTAPLANTILLA = Plantilla;
                         _masiva.IDSOLICITUD = datos.IdSolicitud;
+                        _masiva.S_VALIDADO = "0";
                         _masiva.S_REALIZADO = "0";
                         _masiva.CANTIDAD_FILAS = LeeExcel(Excel).Rows.Count;
                         _masiva.D_FECHA = DateTime.Now;
@@ -1374,7 +1389,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     _mail.smtpPort = "587";
                     _mail.attachement = _MsPdf;
                     _mail.attName = _radicado + ".pdf";
-                    _mail.body = "<b>Prueba de envio de correo</b>";
+                    _mail.body = body;
                     _mail.userPass = "Area2020";
                     Response response = await apiService.PostAsync<mailDTO>(urlSIMAPI, "api/", "Terceros/EnviarCorreo", _mail);
                     if (!response.IsSuccess) return false;
