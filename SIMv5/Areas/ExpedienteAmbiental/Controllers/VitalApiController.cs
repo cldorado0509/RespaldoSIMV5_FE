@@ -51,10 +51,10 @@
         /// </summary>
         public VitalApiController()
         {
-            if (Environment.MachineName == "SISTEMD26")
-            {
-                urlApiGateWay = "https://localhost:5000/";
-            }
+            //if (Environment.MachineName == "SISTEMD26")
+            //{
+            //    urlApiGateWay = "https://localhost:5000/";
+            //}
 
         }
 
@@ -103,6 +103,7 @@
             AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiVITALGateWayS, UserName = this.userApiVITALGateWay });
             if (response.ExpiresIn == 0) return datosConsulta;
             string descargarVital = descargarSolicitudesEnVITAL == "S" ? "true" : "false";
+
 
 
             SIM.Models.Response responseS = await apiService.GetListAsync<SolicitudVITALDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "ObtenerDescargarSolicitudesVITALPorEstado?atendidas=false&descargarEnVITAL=" + descargarVital, response.JwtToken);
@@ -1236,6 +1237,7 @@
 
             return resposeF;
         }
+
 
         /// <summary>
         /// 

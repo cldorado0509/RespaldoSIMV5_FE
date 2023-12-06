@@ -18,7 +18,6 @@ var IdTomo = 0;
 var codFuncionarioSim = $('#SIM').data('codfuncionario')
 
 $(document).ready(function () {
-
    
     $('#asistente').accordion({
         collapsible: true,
