@@ -1,10 +1,8 @@
 namespace SIM.Data.Tramites
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("TRAMITES.TBTARIFAS_CALCULO")]
     public partial class TBTARIFAS_CALCULO
@@ -119,7 +117,7 @@ namespace SIM.Data.Tramites
         [StringLength(1)]
         public string S_EXISTESICOF { get; set; }
 
-        [StringLength(200)]
+        [StringLength(300)]
         public string S_TRAMITE { get; set; }
 
         [StringLength(50)]
