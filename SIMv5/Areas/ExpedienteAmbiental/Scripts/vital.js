@@ -447,7 +447,7 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.resp === "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                     else {
-                        DevExpress.ui.notify({ message: "Se crea el trámite en el SIM : " + data.Result + " para atender la solicitud de VITAL : ", width: 1000, shading: true }, "warning", 2000);
+                        DevExpress.ui.notify({ message: "Se crea el trámite en el SIM : " + data.Message + " para atender la solicitud de VITAL : ", width: 1000, shading: true }, "warning", 2000);
                         $('#GridListado').dxDataGrid({ dataSource: SolicitudesVitalDataSource });
                       
                     }

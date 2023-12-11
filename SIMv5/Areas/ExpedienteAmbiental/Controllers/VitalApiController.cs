@@ -51,10 +51,10 @@
         /// </summary>
         public VitalApiController()
         {
-            //if (Environment.MachineName == "SISTEMD26")
-            //{
-            //    urlApiGateWay = "https://localhost:5000/";
-            //}
+            if (Environment.MachineName == "SISTEMD26")
+            {
+                urlApiGateWay = "https://localhost:5000/";
+            }
 
         }
 
@@ -408,7 +408,7 @@
             {
                 SIM.Utilidades.Radicador radicador = new Radicador();
 
-                if (!radicador.SePuedeGenerarRadicado(DateTime.Now))
+                if (radicador.SePuedeGenerarRadicado(DateTime.Now))
                 {
                     if (string.IsNullOrEmpty(tramiteDTO.NumeroVitalPadre)) tramiteDTO.NumeroVitalPadre = "";
 
@@ -977,7 +977,7 @@
                 SIM.Utilidades.Radicador radicador = new Radicador();
 
 
-                if (!radicador.SePuedeGenerarRadicado(DateTime.Now))
+                if (radicador.SePuedeGenerarRadicado(DateTime.Now))
                 {
 
                     var trmiteSIM = dbSIM.TBTRAMITE.Where(f => f.CODTRAMITE == tramiteDTO.CodTramite && f.ESTADO == 0).FirstOrDefault();
