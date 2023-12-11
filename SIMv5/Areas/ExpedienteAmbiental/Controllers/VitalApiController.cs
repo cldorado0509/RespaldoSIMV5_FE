@@ -105,6 +105,7 @@
             string descargarVital = descargarSolicitudesEnVITAL == "S" ? "true" : "false";
 
 
+
             SIM.Models.Response responseS = await apiService.GetListAsync<SolicitudVITALDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "ObtenerDescargarSolicitudesVITALPorEstado?atendidas=false&descargarEnVITAL=" + descargarVital, response.JwtToken);
             if (!responseS.IsSuccess) return datosConsulta;
             var list = (List<SolicitudVITALDTO>)responseS.Result;
@@ -407,7 +408,7 @@
             {
                 SIM.Utilidades.Radicador radicador = new Radicador();
 
-                if (!radicador.SePuedeGenerarRadicado(DateTime.Now))
+                if (radicador.SePuedeGenerarRadicado(DateTime.Now))
                 {
                     if (string.IsNullOrEmpty(tramiteDTO.NumeroVitalPadre)) tramiteDTO.NumeroVitalPadre = "";
 
@@ -976,7 +977,7 @@
                 SIM.Utilidades.Radicador radicador = new Radicador();
 
 
-                if (!radicador.SePuedeGenerarRadicado(DateTime.Now))
+                if (radicador.SePuedeGenerarRadicado(DateTime.Now))
                 {
 
                     var trmiteSIM = dbSIM.TBTRAMITE.Where(f => f.CODTRAMITE == tramiteDTO.CodTramite && f.ESTADO == 0).FirstOrDefault();
@@ -1236,6 +1237,7 @@
 
             return resposeF;
         }
+
 
         /// <summary>
         /// 
