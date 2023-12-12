@@ -99,7 +99,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         decimal codFuncionario;
         decimal idTerceroUsuario;
         AppSettingsReader webConfigReader = new AppSettingsReader();
-       
+
         public ActionResult Index()
         {
             return View();
@@ -283,7 +283,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         {
             return View();
         }
-        
+
         public ActionResult vigencia()
         {
             string sql = "SELECT NVL(PERMITE_COPIA, 'N') || '-' || NVL(TIPO_TERMINOS, 'V') FROM CONTROL.VIGENCIA WHERE ID_VIGENCIA = " + Request.Params["id"];
@@ -302,10 +302,10 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         {
             int id = Convert.ToInt32(Request.Params["idestado"]);
             ViewBag.idEstado = id;
-          
+
             return View();
         }
-        
+
         public ActionResult AdminEncuestaExterna()
         {
             return View();
@@ -316,7 +316,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             ViewBag.idestado = idestado;
             return View();
         }
-        
+
         public ActionResult GestionarEncUsExterno(int? t)
         {
             System.Web.HttpContext context = System.Web.HttpContext.Current;
@@ -463,9 +463,9 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             return Json(jSONOUT.Value);
         }
 
-        public ActionResult guardarradicadocod(int idestado,String codradicado)
+        public ActionResult guardarradicadocod(int idestado, String codradicado)
         {
-            dbControl.SP_SET_GUARDARRADICADO(idestado,codradicado);
+            dbControl.SP_SET_GUARDARRADICADO(idestado, codradicado);
             return Content("ok");
         }
 
@@ -652,19 +652,19 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         [System.Web.Mvc.Authorize]
         public ActionResult EncuestaEstado(int e, int cr, int t)
         {
-                var encuesta = (from ge in db.FRM_GENERICO_ESTADO
-                               join vs in db.VIGENCIA_SOLUCION on ge.ID_ESTADO equals vs.ID_ESTADO
-                               where ge.ID_ESTADO == e
-                               select new
-                               {
-                                   vs.ID_VIGENCIA,
-                                   ge.NOMBRE
+            var encuesta = (from ge in db.FRM_GENERICO_ESTADO
+                            join vs in db.VIGENCIA_SOLUCION on ge.ID_ESTADO equals vs.ID_ESTADO
+                            where ge.ID_ESTADO == e
+                            select new
+                            {
+                                vs.ID_VIGENCIA,
+                                ge.NOMBRE
 
-                               }).FirstOrDefault();
+                            }).FirstOrDefault();
 
             if (encuesta != null)
             {
-                string data = Cryptografia.EncryptString(encuesta.ID_VIGENCIA.ToString() + "|" + e.ToString() + "|" + t.ToString() + "|" + cr.ToString() + "|" + (encuesta.NOMBRE??"").Replace("|", " "), "*&&%tyU23a2");
+                string data = Cryptografia.EncryptString(encuesta.ID_VIGENCIA.ToString() + "|" + e.ToString() + "|" + t.ToString() + "|" + cr.ToString() + "|" + (encuesta.NOMBRE ?? "").Replace("|", " "), "*&&%tyU23a2");
 
                 return RedirectToAction("EncuestaUsuarioExterno", "EncuestaExterna", new { d = "I" + data });
             }
@@ -684,7 +684,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         }
         //public ActionResult consultarcombohijo(int idpre, int fil)
         //{
-           
+
         //    ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
 
         //    db.SP_GET_COMBOHIJO(idpre,fil, jSONOUT);
@@ -704,7 +704,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             return Json(jSONOUT.Value);
         }*/
 
-                public ActionResult terceroinstalacionunico(int id, int id_v)
+        public ActionResult terceroinstalacionunico(int id, int id_v)
         {
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero) != null)
             {
@@ -733,7 +733,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
         }
-       
+
         public ActionResult consultarEstado(int idEnc)
         {
 
@@ -741,14 +741,14 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             {
                 idTerceroUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
 
-               
+
             }
             String sql = "SELECT ID_ESTADO, ID_ENCUESTA, COD_USURARIO FROM control.FRM_GENERICO_ESTADO where ID_ENCUESTA=" + idEnc + " and COD_USURARIO=" + idTerceroUsuario;
             ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
         }
-       
+
         public ActionResult consultarVigencia()
         {
             String sql = "";
@@ -756,7 +756,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
         }
-       
+
         public ActionResult consultarJsonEncuestas()
         {
             Decimal idEstado = Decimal.Parse(Request.Params["idEstado"]);
@@ -785,16 +785,16 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             //String sql = " select RADICADO from FRM_GENERICO_ESTADO where ID_ESTADO=" + idEstado;
             String sql = "SELECT NVL(v.RADICAR, 0) AS RADICADO FROM CONTROL.FRM_GENERICO_ESTADO ge LEFT OUTER JOIN CONTROL.VIGENCIA_SOLUCION vs ON ge.ID_ESTADO = vs.ID_ESTADO LEFT OUTER JOIN CONTROL.VIGENCIA v ON vs.ID_VIGENCIA = v.ID_VIGENCIA WHERE ge.ID_ESTADO = " + idEstado.ToString();
 
-              ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
-              dbControl.SP_GET_DATOS(sql, jSONOUT);
+            ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
+            dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
-           
+
         }
 
         //public ActionResult guardarUsuarioExterno(int vig, String nombre, int idEncuesta, String fechaini, String fechaFin, String arrEncuesta, int rol, String terminos, int tipoInstalacion, int cardinalidad, int radicar)
         public ActionResult guardarUsuarioExterno(int vig, String nombre, int idEncuesta, String fechaini, String fechaFin, String arrEncuesta, int rol, String terminos, int tipoInstalacion, int cardinalidad, int radicar, String nombreItem)
         {
-           
+
             try
             {
                 //db.SP_SET_ENCUESTA_ROL2(vig, nombre, fechaini, idEncuesta, fechaFin, arrEncuesta, rol, terminos, tipoInstalacion, cardinalidad, radicar);
@@ -802,22 +802,22 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             }
             catch (Exception x)
             {
-                var res = x.Message; 
+                var res = x.Message;
                 throw;
             }
-           
+
             return Content("ok");
         }
         public ActionResult agregarVigencia(int idvig, String vigen, int estado)
         {
 
             dbControl.SP_SET_MODIFICARVIGENCIA(idvig, vigen, estado);
-            
-          
+
+
 
             return Content("ok");
         }
-        public ActionResult crearEstado(int idEncu,int idtercero,int idInstalacion,int rad)
+        public ActionResult crearEstado(int idEncu, int idtercero, int idInstalacion, int rad)
         {
 
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero) != null)
@@ -826,13 +826,13 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
                 idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
             }
-              ObjectParameter rta = new ObjectParameter("rTA", typeof(string));
-              dbControl.SP_SET_CREAR_ESTADO_GENERICO2(idEncu, idUsuario, rta, idtercero, idInstalacion,rad);
-              return Json(rta.Value);
+            ObjectParameter rta = new ObjectParameter("rTA", typeof(string));
+            dbControl.SP_SET_CREAR_ESTADO_GENERICO2(idEncu, idUsuario, rta, idtercero, idInstalacion, rad);
+            return Json(rta.Value);
         }
-        public ActionResult crearEstadoCardinalidad(int idEncu, int idtercero, int idInstalacion, int card,int vigencia,String vige)
+        public ActionResult crearEstadoCardinalidad(int idEncu, int idtercero, int idInstalacion, int card, int vigencia, String vige)
         {
-           
+
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero) != null)
             {
                 idTerceroUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero).Value);
@@ -880,8 +880,8 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
             return Content("" + rTA.Value);
         }
-        
-        public ActionResult consultarEncVigen(int id,int instalacion)
+
+        public ActionResult consultarEncVigen(int id, int instalacion)
         {
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero) != null)
             {
@@ -901,19 +901,19 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
         }
-            public ActionResult consultarTerceroEncuesta()
+        public ActionResult consultarTerceroEncuesta()
         {
-          
+
             List<terc> terceroList = new List<terc>();
             var tercero = (from t in db.VW_TERCERO
-                            
 
 
-                             select new
-                             {
-                                 t.ID,
-                                 t.NOMBRE 
-                             }).ToList();
+
+                           select new
+                           {
+                               t.ID,
+                               t.NOMBRE
+                           }).ToList();
             foreach (var item in tercero)
             {
                 terc terc = new terc();
@@ -927,7 +927,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
             var serializer = new JavaScriptSerializer();
 
-         
+
             serializer.MaxJsonLength = Int32.MaxValue;
 
             var resultData = new { Value = "foo", Text = "var" };
@@ -937,16 +937,16 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 ContentType = "application/json"
             };
             return result;
-           
+
         }
-        
+
         public ActionResult modificarEstado(int idEStado)
         {
 
             dbControl.SP_SET_MODIFICAR_ESTADO(idEStado);
             return Content("ok");
         }
-        public ActionResult enviarEncuesta(int idestado){
+        public ActionResult enviarEncuesta(int idestado) {
             var cardinalidad = (from ge in db.FRM_GENERICO_ESTADO
                                 join vs in db.VIGENCIA_SOLUCION on ge.ID_ESTADO equals vs.ID_ESTADO
                                 join v in db.VIGENCIA on vs.ID_VIGENCIA equals v.ID_VIGENCIA
@@ -996,11 +996,11 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             dbControl.SP_SET_ELI_ENC_CARDINALIAD(idv, val, inst);
             return Content("ok");
         }
-        public ActionResult clonarEncuesta(int idvigencia, String valor, int idestado, int idtercero,int instalacion)
+        public ActionResult clonarEncuesta(int idvigencia, String valor, int idestado, int idtercero, int instalacion)
         {
 
             dbControl.SP_SET_CLONAR_ENCUESTA_EXTERNO(idvigencia, valor, idtercero, idestado, instalacion);
-           return Content("ok");
+            return Content("ok");
         }
         public ActionResult modificarEncuestaCardinalidad(String json)
         {
@@ -1093,7 +1093,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
         }
-        
+
         /*public ActionResult consultarEncuestaCardinalidad(String valor,String idinstalacion)
         {
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(CustomClaimTypes.IdTercero) != null)
@@ -1187,7 +1187,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
         public ActionResult HabilitarEncuesta(int idInstalacion, int idVigencia, string valor)
         {
-            var sql = 
+            var sql =
                 "UPDATE CONTROL.FRM_GENERICO_ESTADO " +
                 "SET TIPO_GUARDADO = 0 " +
                 "WHERE ID_ESTADO IN ( " +
@@ -1203,11 +1203,24 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         }
 
         public ActionResult reportEncuesta(int idestado, int idRadicado)
-           
+        {
+            byte[] memStream = ReporteEncuesta(idestado);
+
+            var cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = "encuestaSitio.pdf",
+                Inline = true,
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+
+            return File(memStream, "application/pdf");
+        }
+
+        private byte[] ReporteEncuesta(int idestado)
         {
             var url_rencabezado = (string)webConfigReader.GetValue("url_rps_encabesado", typeof(string));
             var url_piepagina = (string)webConfigReader.GetValue("url_rps_piepagina", typeof(string));
-            
+
             var boldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
             DateTime localDate = DateTime.Now;
             string newstrDate = localDate.ToString("M/d/yyyy");
@@ -1215,7 +1228,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             ObjectParameter jSONOUT3 = new ObjectParameter("jSONOUT", typeof(string));
             ObjectParameter jSONOUT5 = new ObjectParameter("jSONOUT", typeof(string));
             dbControl.SP_GET_DATOS(sql3, jSONOUT3);
-          
+
             var emp = JsonConvert.DeserializeObject<List<empresa>>(jSONOUT3.Value.ToString());
             String sqlencuesta = "select * from control.VWR_ENCUESTASUSUARIOEXTERNO where id_estado=" + idestado;
             ObjectParameter jSONOUT4 = new ObjectParameter("jSONOUT", typeof(string));
@@ -1232,13 +1245,13 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             doc.Open();
             Image imgEncabezado = Image.GetInstance(new Uri(url_rencabezado));
             imgEncabezado.ScalePercent(90f);
-           
+
             doc.Add(imgEncabezado);
             Image imgPiePagina = Image.GetInstance(new Uri(url_piepagina));
             imgPiePagina.ScalePercent(25f);
             imgPiePagina.SetAbsolutePosition(0f, 0f);
             doc.Add(imgPiePagina);
-            
+
             //iTextSharp.text.Image bannerImage = iTextSharp.text.Image.GetInstance("~/Content/imagenes/logoTala.png");
 
             var parr = new Paragraph(newstrDate.ToString());
@@ -1253,13 +1266,13 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             String vigencia = "";
             String tercero = "";
             String instalacion = "";
-            if(emp.Count>0)
+            if (emp.Count > 0)
             {
                 vigencia = emp[0].VIGENCIA;
                 tercero = emp[0].TERCERO;
                 instalacion = emp[0].S_NOMBRE;
             }
-          
+
             // Configuramos el título de las columnas de la tabla
             PdfPCell clVigencia = new PdfPCell(new Phrase("VIGENCIA:       " + vigencia));
             clVigencia.BorderWidth = 0;
@@ -1276,8 +1289,8 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             doc.Add(tblEmpresa);
             var parr2 = new Paragraph("Encuesta");
             doc.Add(parr2);
-            
-            for (int i = 0; i < encJson.Count;i++ )
+
+            for (int i = 0; i < encJson.Count; i++)
             {
                 var parrafo = new Paragraph(encJson[i].NOMBRE, boldFont);
                 doc.Add(parrafo);
@@ -1294,9 +1307,9 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 tblPregunta.AddCell(clpregunta);
                 tblPregunta.AddCell(clrespuesta);
                 tblPregunta.AddCell(clobservacion);
-                for(int p=0;p<pregJson.Count;p++)
+                for (int p = 0; p < pregJson.Count; p++)
                 {
-                    if(pregJson[p].ID_ENCUESTA==encJson[i].ID_ENCUESTA)
+                    if (pregJson[p].ID_ENCUESTA == encJson[i].ID_ENCUESTA)
                     {
                         PdfPCell clpreguntar;
 
@@ -1310,28 +1323,23 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                         tblPregunta.AddCell(clrespuestar);
                         tblPregunta.AddCell(clobservacionr);
                     }
-                    
+
                 }
                 doc.Add(tblPregunta);
-                
+
             }
-                doc.Close();
+            doc.Close();
 
+            /*var cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = "encuestaSitio.pdf",
+                Inline = true,
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString());*/
 
-
-                
-                var cd = new System.Net.Mime.ContentDisposition
-                {
-                    FileName = "encuestaSitio.pdf",
-                    Inline = true,
-                };
-                Response.AppendHeader("Content-Disposition", cd.ToString());
-
-                return File(memStream.GetBuffer(), "application/pdf");
-            //return File(memStream.GetBuffer(), "application/pdf", "encuestaSitio.pdf");
-            
-
+            return memStream.GetBuffer();
         }
+
         private void DrawImage2(XGraphics gfx, System.Drawing.Image imageFirma, int x, int y, int width, int height)
         {
             var stream = new System.IO.MemoryStream();
@@ -1602,7 +1610,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             var datosEncuesta = db.Database.SqlQuery<DatosBaseEncuesta>(sql).FirstOrDefault();
 
             string tituloEncuesta = "";
-            
+
             if (datosEncuesta != null)
             {
                 tituloEncuesta = datosEncuesta.ENCUESTA_TITULO;
@@ -1635,7 +1643,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
             var usuario = (from Rdocumt in db.USUARIO
                            where (Rdocumt.ID_USUARIO == idUsuario)
-                                     select new { Rdocumt.S_NOMBRES, Rdocumt.S_APELLIDOS }).FirstOrDefault();
+                           select new { Rdocumt.S_NOMBRES, Rdocumt.S_APELLIDOS }).FirstOrDefault();
 
             var boldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
             DateTime localDate = DateTime.Now;
@@ -1666,17 +1674,17 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 dbControl.SP_GET_DATOS(sqlobser, jSONobser);
                 observ = JsonConvert.DeserializeObject<List<doc>>(jSONobser.Value.ToString());
             }
-         
+
             var radicadodocumento = (from Rdocumt in db.RADICADO_DOCUMENTO
                                      where (Rdocumt.ID_RADICADODOC == idRadicado)
                                      select new { Rdocumt.D_RADICADO, Rdocumt.S_RADICADO }).FirstOrDefault();
             Cryptografia crypt = new Cryptografia();
             MemoryStream ms = new MemoryStream();
-         
+
             Document doc = new Document(PageSize.LETTER);
             MemoryStream memStream = new MemoryStream();
             PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream("C://Temp/plantilla.pdf", FileMode.Create));
-            PdfWriter writer2 = PdfWriter.GetInstance(doc,memStream);
+            PdfWriter writer2 = PdfWriter.GetInstance(doc, memStream);
             int pageNumber = writer.PageNumber - 1;
             doc.Open();
 
@@ -1751,16 +1759,16 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             //var asunto = new Paragraph("Asunto " + strTitulo + " Vigencia " + valor);
             var asunto = new Paragraph("Asunto " + strTitulo);
             doc.Add(asunto);
-             doc.Add(saltolinea1);
-             doc.Add(saltolinea1);
-             var obs = new Paragraph(cuerpo);
-             doc.Add(obs);
-             doc.Add(saltolinea1);
-             doc.Add(saltolinea1);
-             var atentamente = new Paragraph("Atentamente,");
-             doc.Add(atentamente);
-             doc.Add(saltolinea1);
-             doc.Add(saltolinea1);
+            doc.Add(saltolinea1);
+            doc.Add(saltolinea1);
+            var obs = new Paragraph(cuerpo);
+            doc.Add(obs);
+            doc.Add(saltolinea1);
+            doc.Add(saltolinea1);
+            var atentamente = new Paragraph("Atentamente,");
+            doc.Add(atentamente);
+            doc.Add(saltolinea1);
+            doc.Add(saltolinea1);
             // Creamos una tabla que contendrá el nombre, apellido y país
             // de nuestros visitante.
             PdfPTable tblEmpresa = new PdfPTable(1);
@@ -1774,7 +1782,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 tercero = emp[0].TERCERO;
                 instalacion = emp[0].S_NOMBRE;
             }
-          
+
             String razonSocila = "";
             try
             {
@@ -1823,7 +1831,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             catch (Exception e)
             {
             }
-         
+
 
             PdfPCell clTercero = new PdfPCell(new Phrase(tercero));
             clTercero.BorderWidth = 0;
@@ -1843,16 +1851,16 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             PdfPCell clTELEFONO = new PdfPCell(new Phrase("TELÉFONO: " + telefono));
             clTELEFONO.BorderWidth = 0;
             tblEmpresa.AddCell(clTELEFONO);
-         
-            
+
+
             doc.Add(tblEmpresa);
-       
-     
-          
+
+
+
             doc.Close();
             documento docrtp = new documento();
 
-            
+
             var cd = new System.Net.Mime.ContentDisposition
             {
                 //FileName = "encuestaTrabajadores.pdf",
@@ -1881,14 +1889,40 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             string path = (string)webConfigReader.GetValue("ruta_base_Documentos", typeof(string));
 
             var datosEstado = (from vs in db.VIGENCIA_SOLUCION
+                               join v in db.VIGENCIA on vs.ID_VIGENCIA equals v.ID_VIGENCIA
                                join ge in db.FRM_GENERICO_ESTADO on vs.ID_ESTADO equals ge.ID_ESTADO
                                where ge.ID_ESTADO == ID_ESTADO
                                select new
                                {
                                    ID_TERCERO = ge.ID_TERCERO,
                                    ID_VIGENCIA = vs.ID_VIGENCIA,
-                                   VALOR = vs.VALOR
+                                   VALOR = vs.VALOR,
+                                   ID_VIGENCIA_RELACIOANDA_DOC = v.ID_VIGENCIA_RELACIOANDA_DOC ?? 0
                                }).FirstOrDefault();
+
+            if (datosEstado.ID_VIGENCIA_RELACIOANDA_DOC > 0)
+            {
+                var estadosEncuestaRelacionadas = from vs in db.VIGENCIA_SOLUCION
+                                             join ge in db.FRM_GENERICO_ESTADO on vs.ID_ESTADO equals ge.ID_ESTADO
+                                             where vs.ID_VIGENCIA == datosEstado.ID_VIGENCIA_RELACIOANDA_DOC && ge.ID_TERCERO == datosEstado.ID_TERCERO && vs.VALOR == datosEstado.VALOR
+                                             select ge.ID_ESTADO;
+
+                foreach (var estadoEncuesta in estadosEncuestaRelacionadas)
+                {
+                    var reporteEncuestaRelacionada = ReporteEncuesta(Convert.ToInt32(estadoEncuesta));
+                    var memStreamEncuestaRelacionada = new MemoryStream(reporteEncuestaRelacionada);
+
+                    PdfSharp.Pdf.PdfDocument docAjt = new PdfSharp.Pdf.PdfDocument();
+                    docAjt = PdfSharp.Pdf.IO.PdfReader.Open(memStreamEncuestaRelacionada, PdfDocumentOpenMode.Import);
+                    int countDocAj = docAjt.PageCount;
+                    for (int idx = 0; idx < countDocAj; idx++)
+                    {
+                        PdfSharp.Pdf.PdfPage page = docAjt.Pages[idx];
+                        outputDocument.AddPage(page);
+                        numPaginas++;
+                    }
+                }
+            }
 
             foreach (var item in anexo)
             {
@@ -1955,7 +1989,6 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
             return File(ms.GetBuffer(), "application/pdf");
         }
-
 
         public ActionResult reportEncuestaCardRadicadoTerceroTest(int idEstado, int encriptado, int registrarDocumento, int crearTramite, int x, int y)
         {

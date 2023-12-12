@@ -53,5 +53,7 @@ namespace SIM.Data.Control
 
         [StringLength(250)]
         public string URL_PERSONALIZADA { get; set; }
+
+        public int? ID_VIGENCIA_RELACIOANDA_DOC { get; set; }
     }
 }

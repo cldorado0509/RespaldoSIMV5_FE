@@ -52,7 +52,6 @@
         public virtual DbSet<INSTALACION_TIPO> INSTALACION_TIPO { get; set; }
         public virtual DbSet<INSTALACION_VISITA> INSTALACION_VISITA { get; set; }
         public virtual DbSet<MAESTRO_TIPO> MAESTRO_TIPO { get; set; }
-        public virtual DbSet<PMES_ESTRATEGIAS_TERCERO> PMES_ESTRATEGIAS_TERCERO { get; set; }
         public virtual DbSet<PREGUNTA> PREGUNTA { get; set; }
         public virtual DbSet<RESPUESTA> RESPUESTA { get; set; }
         public virtual DbSet<ROL_VISITA> ROL_VISITA { get; set; }
@@ -99,6 +98,19 @@
         public virtual DbSet<INFORMACION_INDUSTRIA> INFORMACION_INDUSTRIA { get; set; }
         public virtual DbSet<V_REPOCISIONES> V_REPOCISIONES { get; set; }
         public virtual DbSet<V_SEGUIMIENTO_TRAMITES_NUEVOS> V_SEGUIMIENTO_TRAMITES_NUEVOS { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS> PMES_ESTRATEGIAS { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_ACTIVIDADES> PMES_ESTRATEGIAS_ACTIVIDADES { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_ENCABEZADO> PMES_ESTRATEGIAS_ENCABEZADO { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_GRUPO> PMES_ESTRATEGIAS_GRUPO { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_METAS> PMES_ESTRATEGIAS_METAS { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_METAS_T> PMES_ESTRATEGIAS_METAS_T { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_PERIODICIDAD> PMES_ESTRATEGIAS_PERIODICIDAD { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_PREGUNTA> PMES_ESTRATEGIAS_PREGUNTA { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_PREGUNTA_GRUPO> PMES_ESTRATEGIAS_PREGUNTA_GRUPO { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_TERCERO> PMES_ESTRATEGIAS_TERCERO { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_TF> PMES_ESTRATEGIAS_TF { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_TIPOEVIDENCIA> PMES_ESTRATEGIAS_TIPOEVIDENCIA { get; set; }
+        public virtual DbSet<PMES_ESTRATEGIAS_TP> PMES_ESTRATEGIAS_TP { get; set; }
 
         /*
         public virtual int SP_CREATE_ITEM(Nullable<decimal> iDTERCERO, Nullable<decimal> iDINSTALACION, Nullable<decimal> iDFORM, string nOMBRE, ObjectParameter rESPIDITEM, ObjectParameter rESPMSG)

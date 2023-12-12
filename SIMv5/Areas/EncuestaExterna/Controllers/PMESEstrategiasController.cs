@@ -54,13 +54,29 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
                             }).FirstOrDefault();
 
-            if (encuesta == null)
+            var estrategiaTercero = (from et in dbSIM.PMES_ESTRATEGIAS_TERCERO
+                                     where et.ID_ESTADO == e
+                                     select et).FirstOrDefault();
+
+            if (estrategiaTercero == null)
             {
-                var estrategiaTercero = new PMES_ESTRATEGIAS_TERCERO();
+                estrategiaTercero = new PMES_ESTRATEGIAS_TERCERO();
                 estrategiaTercero.ID_ESTADO = e;
+
+                dbSIM.Entry(estrategiaTercero).State = EntityState.Added;
+
+                dbSIM.SaveChanges();
             }
 
             ViewBag.Vigencia = encuesta.VIGENCIA;
+            ViewBag.Estado = e;
+            ViewBag.EstrategiasTercero = estrategiaTercero.ID;
+
+            var encabezados = (from pe in dbSIM.PMES_ESTRATEGIAS_ENCABEZADO select pe).ToList();
+            var grupos = (from gr in dbSIM.PMES_ESTRATEGIAS_GRUPO select gr).ToList();
+            
+            ViewBag.Encabezados = encabezados;
+            ViewBag.Grupos = grupos;
 
             return View();
         }

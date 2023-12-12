@@ -644,6 +644,22 @@ namespace SIM.Utilidades
                                         var posFinal = palabras[1].IndexOf('-');
                                         if (posFinal > 0)
                                             indices.Add(new INDICE { CODINDICE = 380, VALOR = palabras[1].Substring(7, posFinal - 7).Trim(), TIPO = 0 });
+                                        else
+                                        {
+                                            var centroCostos = palabras[1].Substring(7);
+
+                                            for (int i = 0; i < centroCostos.Length; i++)
+                                            {
+                                                if (centroCostos[i] < '0' || centroCostos[i] > '9')
+                                                {
+                                                    centroCostos = centroCostos.Substring(0, i);
+                                                    break;
+                                                }
+                                            }
+
+                                            if (centroCostos != "")
+                                                indices.Add(new INDICE { CODINDICE = 380, VALOR = palabras[1].Substring(7, posFinal - 7).Trim(), TIPO = 0 });
+                                        }
                                     }
                                     break;
                                 case "DE":
