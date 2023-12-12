@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "Radicación Masiva COD";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+<script>
+    var PuedeRadicar = @(ViewBag.PuedeRadicar);
+    var CodFunc = @(ViewBag.CodFuncionario);
+</script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/Masivo.js?V=" + DateTime.Now.ToString("yyyyddMMHHmmss"))"></script>
+<style>
+    #BotonExp {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .divEncabezado {
+        border: 1px outset blue;
+        background-color: lightblue;
+        text-align: left;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Radicación Masiva COD</label>
+            </h3>
+        </div>
+        <div id="loadPanel"></div>
+        <div id="grdListaMasivos"></div>
+        <br />
+        <div id="BotonExp">
+            <div class="col-sm-1">&nbsp;</div>
+            <label class="control-label col-md-3" for="txtTemaMasivo">Tema del proceso de radicación masiva : </label>
+            <div class="col-md-3" id="txtTemaMasivo"></div>
+            <div id="btnNuevoMasivo"></div>
+            <div class="col-sm-3">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div id="btnPrueba"></div>
+        </div>
+        <div id="popDetalleMasivo">
+            <div id="divEncabezado" class="divEncabezado">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="control-label col-md-1" for="fuListaExcel">Listado Excel : </label>
+                        <div class="col-md-5" id="fuListaExcel"></div>
+                        <label class="control-label col-md-2" for="fuPlantilla">Documento a combinar : </label>
+                        <div class="col-sm-4" id="fuPlantilla"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="control-label col-md-2" for="txtTramite">Asociar al trámite : </label>
+                        <div class="col-md-2" id="txtTramite"></div>
+                        <div class="col-md-1" id="btnBuscaTra"></div>
+                        <label class="control-label col-md-2" for="chkEmail">Se debe enviar por email? : </label>
+                        <div class="col-md-1" id="chkEmail"></div>
+                        <div class="col-md-2" id="btnAsociaIndices"></div>
+                        <div class="col-md-1" id="btnFirmas"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="grdExcel"></div>
+            </div>
+            <div id="BotonExp">
+                <div id="btnGuardar"></div>
+                @if (ViewBag.PuedeRadicar == "1")
+                {
+                    <div id="btnRadicar"></div>
+                }
+                <div id="btnPreview"></div>
+            </div>
+            <br />
+        </div>
+        <div id="popupBuscaTra">
+            <iframe src="" id="BuscarTra" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+        </div>
+        <div id="popupIndices">
+            <div class="row">
+                <div class="control-label">ASOCIAR INDICES PARA EL DOCUMENTO</div>
+            </div>
+            <div id="scrollView">
+                <div class="row">
+                    <div id="grdAsociaIndices"></div>
+                </div>
+                <div class="row">
+                    <h5 style="text-align:center;font-weight:bold;">Para cada índice se debe seleccionar un dato como índice o una columna del archivo de Excel o dejarlo en blanco, pero no seleccione varias opciones para el mismo índice. <br /> Si esto ocurre se tomará el dato de la columna de Excel.</h5>
+                </div>
+                <br />
+                <div class="row">
+                    <div id="btnGuardaIndicesDoc"></div>
+                    <div id="btnCancelIndDoc"></div>
+                </div>
+            </div>
+        </div>
+        <div id="popupFirmas">
+            <div class="row">
+                <div class="control-label">FUNCIONARIOS QUE FIRMAN EL DOCUMENTO  <b>(<span id="CantFirmas"></span>)</b></div>
+            </div>
+            <div class="row">
+                <div id="txtCantFirmas"></div>
+            </div>
+            <div class="row" style="width: 100%;">
+                <div class="col-md-7"><div id="cboFuncionario"></div></div>
+                <div class="col-md-5"><div id="agregarFuncionario"></div></div>
+            </div>
+            <div class="row">
+                <div id="grdFirmas"></div>
+            </div>
+            <br />
+            <div class="row" id="BotonExp">
+                <div id="btnGuardaFirmas"></div>
+            </div>
+        </div>
+        <div id="popupFirmar">
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-md-10" for="txtComentario">Comentario del motivo de rechazar firmar la plantilla COD : </label>
+                    <div class="col-md-12" id="txtComentario"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-3" id="chkFirmaPropia"></div>
+                    <div class="col-md-6" id="chkFirmaEncargo"></div>
+                    <div class="col-md-3" id="chkFirmaAdhoc"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12" id="cboCargos"></div>
+                </div>
+            </div>
+            <div class="row col-md-12" id="BotonExp">
+                <div class="col-md-5" id="btnAceptaFirma"></div>
+                <div class="col-md-5" id="btnRechazaFirma"></div>
+            </div>
+        </div>
+        <div id="PopupMensaje"></div>
+    </div>
+</div>
+
+

@@ -1,4 +1,5 @@
-﻿using SIM.Areas.Seguridad.Models;
+﻿using DocumentFormat.OpenXml.EMMA;
+using SIM.Areas.Seguridad.Models;
 using SIM.Data;
 using SIM.Data.Documental;
 using SIM.Data.General;
@@ -312,6 +313,24 @@ namespace SIM.Areas.General.Controllers
 
             idPrestamo = modelPrestamos.ID_PRESTAMO;
 
+            DateTime fechaEntrega;
+            int diasTotales;
+            int diasNoLaborales;
+            int diasPrestamo = Convert.ToInt32(SIM.Utilidades.Data.ObtenerValorParametro("PrestamosDias"));
+
+            fechaEntrega = DateTime.Today.AddDays(diasPrestamo);
+
+            diasTotales = (fechaEntrega - DateTime.Today).Days;
+            diasNoLaborales = dbSIM.DIAS_NOLABORABLES.Where(dnl => dnl.D_DIA >= DateTime.Today && dnl.D_DIA <= fechaEntrega).Count();
+
+            while (diasTotales - diasNoLaborales < diasPrestamo)
+            {
+                fechaEntrega = fechaEntrega.AddDays(diasPrestamo - (diasTotales - diasNoLaborales));
+
+                diasTotales = (fechaEntrega - DateTime.Today).Days;
+                diasNoLaborales = dbSIM.DIAS_NOLABORABLES.Where(dnl => dnl.D_DIA >= DateTime.Today && dnl.D_DIA <= fechaEntrega).Count();
+            }
+
             foreach (string idDocumento in datosPrestamoTercero.documentosIDs.Split('^'))
             {
                 try
@@ -323,7 +342,7 @@ namespace SIM.Areas.General.Controllers
                     modelPrestamosDetalle.ID_PRESTAMO = idPrestamo;
                     modelPrestamosDetalle.ID_RADICADO = idDocumentoSel;
                     modelPrestamosDetalle.S_DESCRIPCION = observacionDocumento;
-                    modelPrestamosDetalle.D_HASTA = DateTime.Today.AddDays(8);
+                    modelPrestamosDetalle.D_HASTA = fechaEntrega;
 
                     dbSIM.Entry(modelPrestamosDetalle).State = EntityState.Added;
                     dbSIM.SaveChanges();
@@ -706,6 +725,148 @@ namespace SIM.Areas.General.Controllers
 
                 return resultado;
             }
+        }
+
+        /// <summary>
+        /// Envía correo notificando que la fecha de devolución está próxima
+        /// </summary>
+        [HttpGet, ActionName("NotificacionDevolucion")]
+        public datosRespuesta GetNotificacionDevolucion()
+        {
+            datosRespuesta resultado;
+            int numErrores = 0;
+
+            StringBuilder prestamoExpedientesAnexos = new StringBuilder();
+
+            int diasNotificacionDevolucion = Convert.ToInt32(SIM.Utilidades.Data.ObtenerValorParametro("PrestamosDiasNotificacionDevolucion"));
+            DateTime fechaDevolucion = DateTime.Today.AddDays(diasNotificacionDevolucion);
+
+            var prestamosPorVencer = from p in dbSIM.PRESTAMOS
+                                            join t in dbSIM.TERCERO on p.ID_TERCEROPRESTA equals t.ID_TERCERO
+                                            join pr in dbSIM.PROPIETARIO on p.ID_TERCEROPRESTA equals pr.ID_TERCERO
+                                            join uf in dbSIM.USUARIO_FUNCIONARIO on pr.ID_USUARIO equals uf.ID_USUARIO
+                                            join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                            join pd in dbSIM.PRESTAMO_DETALLE on p.ID_PRESTAMO equals pd.ID_PRESTAMO
+                                            join re in dbSIM.RADICADOS_ETIQUETAS on pd.ID_RADICADO equals re.ID_RADICADO
+                                        where pd.D_DEVOLUCION == null && pd.D_HASTA <= fechaDevolucion && pd.D_NOTIFICACION == null
+                                        orderby new { p.ID_TERCEROPRESTA, pd.D_HASTA }
+                                        select new {
+                                            t.ID_TERCERO,
+                                            pd.ID_PRESTAMODETALLE,
+                                            pd.D_HASTA,
+                                            re.S_TIPO,
+                                            re.S_CONSECUTIVOTIPO,
+                                            re.S_TEXTO,
+                                            pd.S_DESCRIPCION,
+                                            EMAIL1 = f.EMAIL,
+                                            EMAIL2 = t.S_CORREO
+                                        };
+
+            int idTercero = -1;
+            string email = "";
+            string idsPrestamosDetalle = "";
+
+            foreach (var prestamo in prestamosPorVencer)
+            {
+                if (prestamo.ID_TERCERO != idTercero)
+                {
+                    if (idTercero != -1) // Enviamos el correo al usuario con los documentos prestados de forma consolidada
+                    {
+                        var retorno = EnviarEmailNotificacionFechaDevolucion(email, prestamoExpedientesAnexos.ToString());
+
+                        if (retorno.tipoRespuesta == "OK")
+                        {
+                            dbSIM.Database.ExecuteSqlCommand(
+                                "UPDATE DOCUMENTAL.PRESTAMO_DETALLE " +
+                                "SET D_NOTIFICACION = SYSDATE  " +
+                                "WHERE ID_PRESTAMODETALLE IN (" + idsPrestamosDetalle + ")"
+                            );
+                        }
+                        else
+                        {
+                            numErrores++;
+                        }
+                    }
+
+                    prestamoExpedientesAnexos.Clear();
+                    idTercero = prestamo.ID_TERCERO;
+                    email = prestamo.EMAIL1 ?? prestamo.EMAIL2;
+                    idsPrestamosDetalle = "";
+                }
+
+                if (idsPrestamosDetalle == "")
+                    idsPrestamosDetalle = prestamo.ID_PRESTAMODETALLE.ToString();
+                else
+                    idsPrestamosDetalle += "," + prestamo.ID_PRESTAMODETALLE.ToString();
+
+                prestamoExpedientesAnexos.AppendLine("<tr><td>" + ((DateTime)prestamo.D_HASTA).ToString("dd/MM/yyyy") + "</td><td>" + prestamo.S_TIPO + prestamo.S_CONSECUTIVOTIPO + "</td>" + "<td>" + prestamo.S_TEXTO + "</td>" + "<td>" + prestamo.S_DESCRIPCION + "</td></tr>");
+            }
+
+            if (idTercero != -1) // Enviamos el correo al usuario con los documentos prestados de forma consolidada
+            {
+                var retorno = EnviarEmailNotificacionFechaDevolucion(email, prestamoExpedientesAnexos.ToString());
+
+                if (retorno.tipoRespuesta == "OK")
+                {
+                    dbSIM.Database.ExecuteSqlCommand(
+                        "UPDATE DOCUMENTAL.PRESTAMO_DETALLE " +
+                        "SET D_NOTIFICACION = SYSDATE  " +
+                        "WHERE ID_PRESTAMODETALLE IN (" + idsPrestamosDetalle + ")"
+                    );
+                }
+                else
+                {
+                    numErrores++;
+                }
+            }
+
+            resultado = new datosRespuesta();
+
+            if (numErrores > 0)
+            {
+                resultado.tipoRespuesta = "Error";
+                resultado.detalleRespuesta = "Por lo menos una notificación de fecha de devolución no pudo enviarse satisfactoriamente.";
+            }
+            else
+            {
+                resultado.tipoRespuesta = "OK";
+                resultado.detalleRespuesta = "Notificaciones de Fecha de Devolución enviadas satisfactoriamente.";
+            }
+
+            return resultado;
+        }
+
+        private datosRespuesta EnviarEmailNotificacionFechaDevolucion(string email, string documentos)
+        {
+            StringBuilder emailHtml;
+
+            var emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+            var emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
+            var emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
+            var emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+
+            try
+            {
+                emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoPrestamoNotificacionDevolucion.html")));
+                emailHtml.Replace("[ExpedientesAnexos]", documentos);
+
+            }
+            catch (Exception error)
+            {
+                return new datosRespuesta { tipoRespuesta = "Error", detalleRespuesta = "Error Generando Correo de Notificación de Préstamo" };
+            }
+
+            try
+            {
+                Utilidades.Email.EnviarEmail(emailFrom, email, "Notificación Fecha de Devolución de Tomos y/o Anexos", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), Utilidades.LogErrores.ObtenerError(error));
+                return new datosRespuesta { tipoRespuesta = "Error", detalleRespuesta = "Error Enviando Correo de Notificación de Fecha de Devolución de Tomos y/o Anexos" };
+            }
+
+            return new datosRespuesta { tipoRespuesta = "OK", detalleRespuesta = "" };
         }
     }
 }

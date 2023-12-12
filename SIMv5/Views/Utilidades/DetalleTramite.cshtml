@@ -15,13 +15,14 @@
     var Orden = @Model.Orden;
     var CodFuncionario = @Model.CodFuncionario;
     var Propietario = @Json.Encode(Model.Propietario);
+    var TramitePadre = @Model.TramitePadre;
 </script>
 <style>
     .dx-tabs {
         table-layout: fixed;
     }
 </style>
-<script type="text/javascript" src="~/Scripts/Utilidades/Detalle.js?V=0.2"></script>
+<script type="text/javascript" src="~/Scripts/Utilidades/Detalle.js?V=@DateTime.Now.ToString("yyyyMMddHHmmss")"></script>
 <div style="padding: 0px;">
     <div data-url="@Url.Content("~")" ID="SIM" resizable>
         <div id="loadPanel"></div>
@@ -54,6 +55,13 @@
                 <div class="row">
                     <label class="col-sm-3">Número VITAL</label>
                     <label class="col-sm-4" id="NumVital">@Model.Vital</label>
+                </div>
+            }
+            @if (Model.TramitePadre > 0)
+            {
+                <div class="row">
+                    <label class="col-sm-3">Trámite que dió orígen trámite actual</label>
+                    <div id="btnTramitePadre" class="col-sm-4"></div>
                 </div>
             }
             <div id="sebDetalleTramite" class="col-12"></div>

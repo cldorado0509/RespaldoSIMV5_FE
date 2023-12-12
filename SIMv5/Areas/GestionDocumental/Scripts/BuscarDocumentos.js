@@ -6,7 +6,7 @@ var txtFechas = "";
 var UnidadDoc = -1;
 
 const fechas = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-
+DevExpress.localization.locale(navigator.language);
 $(document).ready(function () {
     $("#rdbTipoBusca").dxRadioGroup({
         dataSource: [{ value: 0, text: "Por trámite" }, { value: 1, text: "Por Unidad Documental" }, { value: 2, text: "Full Text" }, { value: 3, text: "Por Fecha Digitalización" }],
@@ -305,7 +305,7 @@ $(document).ready(function () {
         columns: [
             { dataField: "ID_DOCUMENTO", visible: false },
             { dataField: "CODTRAMITE", width: '10%', caption: 'Trámite', dataType: 'number' },
-            { dataField: "CODDOCUMENTO", width: '7%', caption: 'Documento', dataType: 'number' },
+            { dataField: "CODDOCUMENTO", width: '7%', caption: 'Documento', dataType: 'number', visible: false  },
             { dataField: 'FECHACREACION', width: '15%', caption: 'Fecha Digitaliza', dataType: 'date', format: 'MMM dd yyyy HH: mm' },
             { dataField: "NOMBRE", width: '30%', caption: 'Unidad Documental', dataType: 'string' },
            /* { dataField: 'INDICES', width: '25%', caption: 'Indices', dataType: 'string' },*/
@@ -468,7 +468,10 @@ $(document).ready(function () {
                             $.getJSON(_Ruta, function (result, status) {
                                 if (status === "success") {
                                     if (result.returnvalue) {
-                                        window.open($('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + options.data.ID_DOCUMENTO, "Documento " + options.data.ID_DOCUMENTO, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
+                                        var pdfWindow = window.open("");
+                                        pdfWindow.document.write("'<html><head><title>Tramite: " + options.data.CODTRAMITE + " Documento: " + options.data.CODDOCUMENTO + "</title></head><body height='100%' width='100%'><iframe width='100%' height='100%' src='" + $('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + options.data.ID_DOCUMENTO + "'></iframe></body></html>")
+
+                                       // window.open($('#SIM').data('url') + "Utilidades/LeeDoc?IdDocumento=" + options.data.ID_DOCUMENTO, "Documento " + options.data.ID_DOCUMENTO, "width= 100%,height=100%,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
                                     }
                                     else {
                                         DevExpress.ui.notify("No posee permiso para ver este tipo de documento");

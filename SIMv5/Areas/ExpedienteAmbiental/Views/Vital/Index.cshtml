@@ -9,7 +9,7 @@
 <br />
 
 
-<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/vital.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/ExpedienteAmbiental/Scripts/vital.js?v=" + @DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
 
 <style>
     .dx-button .dx-icon {
@@ -104,78 +104,134 @@
                 <div id="asistente">
                     <h3>Listado de documentos requeridos por el AMVA Y aportados por el usuario</h3>
                     <div class="divDetalle">
+
                         <div class="row">
                             <div class="col-md-6">
-                                <h3 class="panelSIM-title">
-                                    <label class="header">Listado de documentos requeridos por la entidad</label>
-                                </h3>
-                                <div id="GridListadoDocumentosRequeridos"></div>
+                                <div class="card text-white bg-success mb-3" style="height:500px">
+                                    <div class="card-body">
+                                        <h3 class="panelSIM-title">
+                                            <label class="header">Listado de documentos requeridos por la entidad</label>
+                                        </h3>
+                                        <div id="GridListadoDocumentosRequeridos"></div>
+                                        <br />
+                                        <br />
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <h3 class="panelSIM-title">
-                                    <label class="header">Listado de documentos aportados por el usuario</label>
-                                </h3>
-                                <div id="GridListadoDocumentosAportados"></div>
+                                <div class="card text-white bg-warning mb-3" style="height:500px">
+                                    <div class="card-body">
+                                        <h3 class="panelSIM-title">
+                                            <label class="header">Listado de documentos aportados por el usuario</label>
+                                        </h3>
+                                        <div id="GridListadoDocumentosAportados"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <h3>Iniciar o avanzar el trámite</h3>
                     <div class="divTramite">
                         <div class="row">
-                            <div class="col-md-4">
-                                <div class="col-md-4">Proceso:</div>
+                            <div class="col-md-8">
+                                <div class="card text-white bg-success mb-3">
+                                    <div class="card-header">
+                                        <p style="font-weight:bold">Nueva Solicitud : Generar trámite nuevo en el SIM</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <p class="card-text" style="font-weight: bold; font-size: x-small">Instanciar un nuevo trámite en el SIM para atender la solicitud que ingresa desde VITAL.</p>
+                                            <br />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">Proceso:</div>
+                                            <div class="col-md-4" id="cboProceso"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">Actividad:</div>
+                                            <div class="col-md-4" id="cboActividad"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">Responsable:</div>
+                                            <div class="col-md-4" id="cboResponsable"></div>
+                                        </div>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-sm-2" id="btnIniciarTramite"></div>
+                                            <div class="col-sm-1" id="espacio"></div>
+                                            <div class="col-sm-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card text-white bg-warning mb-3">
+                                    <div class="card-header">
+                                        <p style="font-weight:bold"> Solicitud de VITAL en curso en el SIM : Asignar a trámite existente en el SIM</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <p class="card-text" style="font-weight: bold; font-size: x-small">La información y documentación aportada por el usurio en la Plataforma de VITAL se debe anexar a un trámite ya existente en el SIM.</p>
+                                            <br />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">Código Trámite:</div>
+                                            <div class="col-sm-4" id="txtTramiteSIM"></div>
+                                            <div class="col-sm-2 col-lg-offset-1" id="btnBuscarTramite"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">Actividad:</div>
+                                            <div class="col-md-4" id="cboActividadUserE"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">Responsable:</div>
+                                            <div class="col-md-4" id="cboResponsableUserE"></div>
+                                        </div>
+                                        <br />
+                                        <div class=" row">
+                                            <div class="col-sm-2" id="btnAsignarATramite"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card text-white bg-danger mb-3">
+                                    <div class="card-header">
+                                        <p style="font-weight:bold"> Rechazar</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <h6 class="card-text" style="font-weight:bold; font-size:x-small">Se rechaza la solicitud que ingresa desde VITAL : Se responde al usuario por medio de una COD el motivo del rechazo de la solicitud.</h6>
+                                            <br />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">Causa/Motivo:</div>
+                                            <div class="col-sm-4" id="cboCausaNoAtencion"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-2" id="btnDescartarTramite"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="col-md-4">Actividad:</div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="col-md-4">Responsable:</div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="col-md-4" id="cboProceso"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="col-md-4" id="cboActividad"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="col-md-4" id="cboResponsable"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10">Comentario</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-11" id="txtComentario"></div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-sm-2"></div>
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-2"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-2" id="btnIniciarTramite"></div>
-                            <div class="col-sm-1" id="espacio"></div>
-                            <div class="col-sm-2"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-2" id="btnAsignarATramite"></div>
-                            <div class="col-sm-1">Código Trámite:</div>
-                            <div class="col-sm-1" id="txtTramiteSIM"></div>
-                            <div class="col-sm-1"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-2" id="btnDescartarTramite"></div>
-                            <div class="col-sm-1">Causa/Motivo:</div>
-                            <div class="col-sm-2" id="cboCausaNoAtencion"></div>
+                                <div class="card text-white bg-info mb-3" style="height:500px">
+                                    <div class="card-body">
+                                        <br />
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-md-10 col-lg-offset-1">Comentario</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-10 col-lg-offset-1" id="txtComentario"></div>
+                                        </div>
+                                    </div>
+                                 </div>
+                             </div>
+                      
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+   </div>
 </div>
 
 
+<div id="PopupDetalle"></div>

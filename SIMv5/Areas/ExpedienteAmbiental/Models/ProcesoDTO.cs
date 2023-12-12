@@ -55,5 +55,11 @@
         [JsonProperty("colorMarca")]
         [StringLength(20)]
         public string S_COLORMARCA { get; set; }
+
+        /// <summary>
+        /// Establece si el proceso se muestra como proceso por defecto a la hora de inciar un trámite
+        /// </summary>
+        [JsonProperty("defecto")]
+        public int S_DEFECTO { get; set; }
     }
 }

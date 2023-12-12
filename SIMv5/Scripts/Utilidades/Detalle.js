@@ -290,8 +290,8 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         columns: [
             { dataField: "ID_DOCUMENTO", visible: false },
-            { dataField: "CODDOC", width: '5%', caption: 'Orden', dataType: 'number' },
-            { dataField: 'SERIE', width: '35%', caption: 'Unidad Documental', dataType: 'string' },
+            { dataField: "CODDOC", width: '0%', caption: 'Orden', dataType: 'number', visible: false },
+            { dataField: 'SERIE', width: '40%', caption: 'Unidad Documental', dataType: 'string' },
             { dataField: 'FECHA', width: '25%', caption: 'Fecha Digitalización', dataType: 'date', format: 'MMM dd yyyy HH:mm' },
             {
                 dataField: 'ESTADO', width: '15%', caption: 'Anulado', dataType: 'string',
@@ -1129,6 +1129,16 @@ $(document).ready(function () {
         icon: 'folder',
         onClick: function () {
             popupTemp.show();
+        }
+    });
+
+    $("#btnTramitePadre").dxButton({
+        text: TramitePadre,
+        type: 'normal',
+        onClick: function (e) {
+            var left = (screen.width / 2) - 550;
+            var top = (screen.height / 2) - 300;
+            window.open($('#SIM').data('url') + "Utilidades/DetalleTramite?popup=true&CodTramite=" + TramitePadre + "&Orden=" + Orden, "Documento ", "width= 1100,height=600,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no, top" + top + ",left=" + left);
         }
     });
 

@@ -64,6 +64,5 @@
         [JsonProperty("archivado")]
         public int Archivado { get; set; }
 
-
     }
 }

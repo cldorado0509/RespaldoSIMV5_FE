@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DevExpress.Pdf;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
 using SIM.Areas.ControlVigilancia.Models;
@@ -1200,6 +1201,109 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="ListaIdDocumentos"></param>
+        /// <param name="IdExp"></param>
+        /// <returns></returns>
+        [System.Web.Http.HttpGet, System.Web.Http.ActionName("AsociaDocumento")]
+        [Authorize(Roles = "VEXPEDIENTES")]
+        public async Task<object> AsociaDocumento(string ListaIdDocumentos, string IdExp)
+        {
+            decimal codFuncionario = -1;
+            decimal IdExpediente = decimal.Parse(IdExp);
+            List<string> arrIdDocs = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<string[]>(ListaIdDocumentos).ToList();
+            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                int idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                codFuncionario = clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario);
+            }
+            if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Error asociando el documento" };
+            try
+            {
+                var IdTomo = dbSIM.EXP_TOMOS.Where(w => w.ID_EXPEDIENTE.Equals(IdExpediente) && w.S_ABIERTO == "1").Select(s => s.ID_TOMO).FirstOrDefault();
+                if (IdTomo > 0)
+                {
+                    if (arrIdDocs.Count > 0)
+                    {
+                        var Docs = dbSIM.TBTRAMITEDOCUMENTO.Where(w => arrIdDocs.Contains(w.ID_DOCUMENTO.ToString())).OrderBy(o => o.FECHACREACION).Select(s => s.ID_DOCUMENTO).ToList();
+                        if (Docs.Count > 0)
+                        {
+                            foreach (var idDoc in Docs)
+                            {
+                                decimal IdDocumento = idDoc;
+                                if (IdDocumento > 0)
+                                {
+                                    var Documentos = (from Doc in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                                                      where Doc.ID_TOMO == IdTomo && Doc.ID_DOCUMENTO == IdDocumento
+                                                      select Doc).Count();
+                                    if (Documentos > 0) return new { resp = "Error", mensaje = $"El documento {IdDocumento} ya se encuentra asociado a la carpeta" };
+                                    var Expe = dbSIM.EXP_TOMOS.Where(e => e.ID_TOMO == IdTomo).Select(s => s.ID_EXPEDIENTE).FirstOrDefault();
+                                    Documentos = (from Doc in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                                                  join Tom in dbSIM.EXP_TOMOS on Doc.ID_TOMO equals Tom.ID_TOMO
+                                                  where Tom.ID_EXPEDIENTE == Expe && Doc.ID_DOCUMENTO == IdDocumento
+                                                  select Doc).Count();
+                                    if (Documentos > 0) return new { resp = "Error", mensaje = $"El documento {IdDocumento} ya se encuentra asociado al expediente" };
+                                    Documentos = (from Doc in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                                                  where Doc.ID_TOMO == IdTomo
+                                                  select Doc).Count();
+                                    decimal _UltimoFolio = 0;
+                                    int _UltOrden = 0;
+                                    if (Documentos > 0)
+                                    {
+                                        var FolioMax = (from Fol in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                                                        where Fol.ID_TOMO == IdTomo
+                                                        orderby Fol.N_ORDEN
+                                                        select Fol.N_FOLIOFIN).Max();
+                                        if (FolioMax > 0) _UltimoFolio = FolioMax.Value;
+                                        var OrdenMax = (from Fol in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                                                        where Fol.ID_TOMO == IdTomo
+                                                        orderby Fol.N_ORDEN
+                                                        select Fol.N_ORDEN).Max();
+                                        if (OrdenMax > 0) _UltOrden = OrdenMax;
+                                    }
+                                    try
+                                    {
+                                        MemoryStream _DocPdf = await Utilidades.Archivos.AbrirDocumento((long)IdDocumento);
+                                        PDFDocument Origen = new PDFDocument(_DocPdf);
+                                        Origen.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
+                                        int _Paginas = Origen.Pages.Count();
+                                        int _PagFol = (int)Math.Ceiling((decimal)Origen.Pages.Count() / 2);
+                                        Origen.Dispose();
+
+                                        EXP_DOCUMENTOSEXPEDIENTE _Doc = new EXP_DOCUMENTOSEXPEDIENTE();
+                                        _Doc.ID_DOCUMENTO = IdDocumento;
+                                        _Doc.ID_TOMO = IdTomo;
+                                        _Doc.N_ORDEN = _UltOrden + 1;
+                                        _Doc.N_FOLIOINI = _UltimoFolio + 1;
+                                        _Doc.N_FOLIOFIN = _Doc.N_FOLIOINI + _PagFol;
+                                        _Doc.N_IMAGENES = _Paginas;
+                                        _Doc.ID_FUNCASOCIA = codFuncionario;
+                                        _Doc.D_FECHA = DateTime.Now;
+                                        dbSIM.EXP_DOCUMENTOSEXPEDIENTE.Add(_Doc);
+                                        dbSIM.SaveChanges();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        return new { resp = "Error", mensaje = $"Ocurrió un error abriendo el documento {IdDocumento}. " + ex.Message };
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else return new { resp = "Error", mensaje = "No se ha seleccionado documentos para adicionar a la carpeta!!" };
+                }
+                else return new { resp = "Error", mensaje = "No se encontró una carpeta abierta para adicionar los documentos!!" };
+            }
+            catch (Exception e)
+            {
+                return new { resp = "Error", mensaje = "Error Almacenando Expediente: " + e.Message };
+            }
+            return new { resp = "OK", mensaje = "Expediente eliminado correctamente!!" };
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="IdTomo"></param>
         /// <returns></returns>
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("CerrarTomo")]
@@ -1237,12 +1341,12 @@ namespace SIM.Areas.GestionDocumental.Controllers
                              Final = dbSIM.EXP_DOCUMENTOSEXPEDIENTE.Where(t => t.ID_TOMO == Tom.ID_TOMO).Select(d => d.N_FOLIOFIN).Min(),
                              Tom.S_ABIERTO
                          }).ToList();
-            decimal _Final = 0;
-            foreach (var Tom in Tomos)
-            {
-                if (Tom.Inicia != (_Final + 1) && Tom.Inicia != null && Tom.S_ABIERTO == "0") return new { resp = "Error", mensaje = "El foliado entre carpetas esta mal establecido, se cierra cuando el foliado este correcto!!" };
-                _Final = Tom.Final != null ? Tom.Final.Value : 0;
-            }
+            //decimal _Final = 0;
+            //foreach (var Tom in Tomos)
+            //{
+            //    if (Tom.Inicia != (_Final + 1) && Tom.Inicia != null && Tom.S_ABIERTO == "0") return new { resp = "Error", mensaje = "El foliado entre carpetas esta mal establecido, se cierra cuando el foliado este correcto!!" };
+            //    _Final = Tom.Final != null ? Tom.Final.Value : 0;
+            //}
             var DocFol = (from Doc in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
                           where Doc.ID_TOMO == IdTomo
                           orderby Doc.N_ORDEN
@@ -1322,21 +1426,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
         [Authorize(Roles = "VEXPEDIENTES")]
         public object FoliarDocumento(int IdTomo, decimal IdDocumento, int Orden, int FolioIni, int FolioFin, int Imagenes)
         {
-            int idUsuario = 0;
-            decimal funcionario = 0;
             bool _Accion = false;
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
-
-            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
-            {
-                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
-
-                funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
-                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                               where uf.ID_USUARIO == idUsuario
-                                               select f.CODFUNCIONARIO).FirstOrDefault());
-            }
             if (FolioIni > FolioFin) return new { resp = "Error", mensaje = "El rango de folios inical y final esta mal establecido!!" };
             if (IdTomo <= 0) return new { resp = "Error", mensaje = "No se ingresó un número de carpeta para foliar!!" };
             if (IdDocumento <= 0) return new { resp = "Error", mensaje = "No se ingresó un número de documento para foliar!!" };
@@ -1393,6 +1483,63 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 return new { resp = "Error", mensaje = "Error Almacenando el foliado del documento: " + ex.Message };
             }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdTomo"></param>
+        /// <returns></returns>
+        [System.Web.Http.HttpPostAttribute, System.Web.Http.ActionName("FoliarCarpeta")]
+        [Authorize(Roles = "VEXPEDIENTES")]
+        public async Task<object> FoliarCarpeta(int IdTomo)
+        {
+            if (IdTomo <= 0) return new { resp = "Error", mensaje = "No se seleccionó una carpeta para verificar el foliado!!" };
+            try
+            {
+                var ListaDocs = (from D in dbSIM.EXP_DOCUMENTOSEXPEDIENTE
+                                 join DF in dbSIM.TBTRAMITEDOCUMENTO on D.ID_DOCUMENTO equals DF.ID_DOCUMENTO
+                                 where D.ID_TOMO == IdTomo
+                                 orderby D.N_ORDEN
+                                 select D).ToList();
+                decimal _FolioFin = -1;
+                bool _primero = true;
+                MemoryStream _msDoc;
+                foreach (EXP_DOCUMENTOSEXPEDIENTE _doc in ListaDocs)
+                {
+                    _msDoc = new MemoryStream();
+                    _msDoc = await SIM.Utilidades.Archivos.AbrirDocumento((long)_doc.ID_DOCUMENTO);
+                    if (_msDoc != null)
+                    {
+                        try
+                        {
+                            PdfDocumentProcessor Pdf = new PdfDocumentProcessor();
+                            Pdf.LoadDocument(_msDoc, true);
+                            _doc.N_IMAGENES = Pdf.Document.Pages.Count;
+                            Pdf.CloseDocument();
+                            Pdf.Dispose();
+                        }
+                        catch { _doc.N_IMAGENES = 1; }
+                    }
+                    else _doc.N_IMAGENES = 1;
+                    if (!_primero) _doc.N_FOLIOINI = _FolioFin + 1;
+                    else _doc.N_FOLIOINI = 1;
+                    _doc.N_FOLIOFIN = _doc.N_FOLIOINI + _doc.N_IMAGENES;
+                    _primero = false;
+                    _FolioFin = _doc.N_FOLIOFIN.Value;
+                    dbSIM.Entry(_doc).State = EntityState.Modified;
+                }
+                dbSIM.SaveChanges();
+                return new { resp = "Ok", mensaje = "Se modificó correctamnete el foliado del documento!" };
+
+            }
+            catch (Exception ex)
+            {
+                return new { resp = "Error", mensaje = "Error Almacenando el foliado del documento: " + ex.Message };
+            }
+        }
+
+
 
         /// <summary>
         /// 

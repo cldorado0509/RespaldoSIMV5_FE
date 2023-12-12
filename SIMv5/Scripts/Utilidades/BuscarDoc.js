@@ -188,7 +188,7 @@ $(document).ready(function () {
         },
         selection: {
             mode: 'multiple',
-            allowSelectAll: false,
+            allowSelectAll: true,
             showCheckBoxesMode: 'always'
         },
         hoverStateEnabled: true,
@@ -196,10 +196,10 @@ $(document).ready(function () {
         columns: [
             { dataField: "ID_DOCUMENTO", visible: false},
             { dataField: "CODTRAMITE", width: '10%', caption: 'Trámite', dataType: 'number' },
-            { dataField: "CODDOCUMENTO", width: '5%', caption: 'Documento', dataType: 'number' },
-            { dataField: 'FECHACREACION', width: '10%', caption: 'Fecha Digitaliza', dataType: 'date', format: 'MMM dd yyyy' },
-            { dataField: "NOMBRE", width: '20%', caption: 'Unidad Documental', dataType: 'string' },
-            { dataField: 'INDICES', width: '25%', caption: 'Indices', dataType: 'string' },
+            { dataField: "CODDOCUMENTO", width: '0%', caption: 'Documento', dataType: 'number', visible: false },
+            { dataField: 'FECHACREACION', width: '15%', caption: 'Fecha Digitaliza', dataType: 'date', format: 'MMM dd yyyy' },
+            { dataField: "NOMBRE", width: '25%', caption: 'Unidad Documental', dataType: 'string' },
+            { dataField: 'INDICES', width: '30%', caption: 'Indices', dataType: 'string' },
             {
                 alignment: 'center',
                 cellTemplate: function (container, options) {

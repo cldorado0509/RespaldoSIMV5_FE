@@ -1,23 +1,9 @@
-﻿using System;
+﻿using SIM.Data;
+using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using SIM.Areas.General.Models;
-using SIM.Areas.Seguridad.Models;
-using SIM.Areas.GestionDocumental.Models;
-using SIM.Data;
-using System.IO;
-using System.Net.Http.Headers;
 using System.Data;
-using System.Transactions;
-using System.Xml.Linq;
-using System.Drawing.Imaging;
-using System.Data.Entity.SqlServer;
-using System.Reflection;
-using SIM.Areas.Tramites.Models;
+using System.Linq;
+using System.Web.Http;
 
 namespace SIM.Areas.General.Controllers
 {
@@ -57,7 +43,7 @@ namespace SIM.Areas.General.Controllers
                 {
                     case "f": // full
                         {
-                            var model = (from proyecto in dbSIMTramites.TBPROYECTO
+                            /*var model = (from proyecto in dbSIMTramites.TBPROYECTO
                                          join solicitud in dbSIMTramites.TBSOLICITUD on proyecto.CODIGO_PROYECTO equals solicitud.CODIGO_PROYECTO
                                          join tipoSolicitud in dbSIMTramites.TBTIPO_SOLICITUD on solicitud.CODIGO_TIPO_SOLICITUD equals tipoSolicitud.CODIGO_TIPO_SOLICITUD
                                          join municipio in dbSIMTramites.TBMUNICIPIO on proyecto.CODIGO_MUNICIPIO equals municipio.CODIGO_MUNICIPIO
@@ -73,20 +59,49 @@ namespace SIM.Areas.General.Controllers
                                              CONEXO = solicitud.CONEXO,
                                              FECHA_CM = solicitud.FECHA_ARCHIVO,
                                              MUNICIPIO = municipio.NOMBRE
+                                         });*/
+
+                            var model = (from proyecto in dbSIMTramites.TEXPAMB_EXPEDIENTEAMBIENTAL
+                                         join solicitud in dbSIMTramites.TEXPAMB_PUNTOCONTROL on proyecto.ID equals solicitud.EXPEDIENTEAMBIENTAL_ID
+                                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID
+                                         join municipio in dbSIMTramites.TBMUNICIPIO on proyecto.MUNICIPIO_ID equals municipio.CODIGO_MUNICIPIO
+                                         select new
+                                         {
+                                             ID_POPUP = solicitud.ID,
+                                             CM = proyecto.S_CM,
+                                             NOMBRE_POPUP = proyecto.S_NOMBRE,
+                                             CODIGO_TIPO_SOLICITUD = tipoSolicitud.ID_MIGRACION,
+                                             TIPOSOLICITUD = tipoSolicitud.S_NOMBRE,
+                                             //solicitud.NUMERO,
+                                             TRAMO = solicitud.S_NOMBRE,
+                                             CONEXO = solicitud.S_CONEXO,
+                                             FECHA_CM = solicitud.D_REGISTRO,
+                                             MUNICIPIO = municipio.NOMBRE
                                          });
+
                             modelData = model;
                         }
                         break;
                     default: // lookup o reduced
                         {
-                            var model = (from proyecto in dbSIMTramites.TBPROYECTO
+                            /*var model = (from proyecto in dbSIMTramites.TBPROYECTO
                                          join solicitud in dbSIMTramites.TBSOLICITUD on proyecto.CODIGO_PROYECTO equals solicitud.CODIGO_PROYECTO
                                          join tipoSolicitud in dbSIMTramites.TBTIPO_SOLICITUD on solicitud.CODIGO_TIPO_SOLICITUD equals tipoSolicitud.CODIGO_TIPO_SOLICITUD
                                          select new
                                          {
                                              ID_LOOKUP = solicitud.CODIGO_SOLICITUD,
                                              S_NOMBRE_LOOKUP = tipoSolicitud.NOMBRE + " - " + proyecto.NOMBRE
+                                         });*/
+
+                            var model = (from proyecto in dbSIMTramites.TEXPAMB_EXPEDIENTEAMBIENTAL
+                                         join solicitud in dbSIMTramites.TEXPAMB_PUNTOCONTROL on proyecto.ID equals solicitud.EXPEDIENTEAMBIENTAL_ID
+                                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID
+                                         select new
+                                         {
+                                             ID_LOOKUP = solicitud.ID,
+                                             S_NOMBRE_LOOKUP = tipoSolicitud.S_NOMBRE + " - " + proyecto.S_NOMBRE
                                          });
+
                             modelData = model;
                         }
                         break;
@@ -112,7 +127,7 @@ namespace SIM.Areas.General.Controllers
         {
             Dictionary<string, datosDocumentosAsociados> resultado = null;
 
-            var model = (from proyecto in dbSIMTramites.TBPROYECTO
+            /*var model = (from proyecto in dbSIMTramites.TBPROYECTO
                          join solicitud in dbSIMTramites.TBSOLICITUD on proyecto.CODIGO_PROYECTO equals solicitud.CODIGO_PROYECTO
                          join tipoSolicitud in dbSIMTramites.TBTIPO_SOLICITUD on solicitud.CODIGO_TIPO_SOLICITUD equals tipoSolicitud.CODIGO_TIPO_SOLICITUD
                          where solicitud.CODIGO_SOLICITUD == id
@@ -128,6 +143,24 @@ namespace SIM.Areas.General.Controllers
                             TRAMO = solicitud.NOMBRE,
                             CONEXO = solicitud.CONEXO,
                             FECHA_CM = solicitud.FECHA_ARCHIVO,
+                         }).FirstOrDefault();*/
+
+            var model = (from proyecto in dbSIMTramites.TEXPAMB_EXPEDIENTEAMBIENTAL
+                         join solicitud in dbSIMTramites.TEXPAMB_PUNTOCONTROL on proyecto.ID equals solicitud.EXPEDIENTEAMBIENTAL_ID
+                         join tipoSolicitud in dbSIMTramites.DEXPAMB_TIPOSOLICITUDAMBIENTAL on solicitud.TIPOSOLICITUDAMBIENTAL_ID equals tipoSolicitud.ID
+                         where solicitud.ID == id
+                         select new
+                         {
+                             CODIGO_SOLICITUD = solicitud.ID,
+                             CODIGO_MUNICIPIO = proyecto.MUNICIPIO_ID,
+                             CM = proyecto.S_CM,
+                             PROYECTO = proyecto.S_NOMBRE,
+                             ASUNTO = tipoSolicitud.ID_MIGRACION,
+                             TIPOSOLICITUD = tipoSolicitud.S_NOMBRE,
+                             OBJETO = 1,
+                             TRAMO = solicitud.S_NOMBRE,
+                             CONEXO = solicitud.S_CONEXO,
+                             FECHA_CM = solicitud.D_REGISTRO,
                          }).FirstOrDefault();
 
             if (model != null)
@@ -316,12 +349,12 @@ namespace SIM.Areas.General.Controllers
             Dictionary<string, datosDocumentosAsociados> resultado = null;
 
             var model = (from contrato in dbSIM.CONTRATO
-                        join contratoTercero in dbSIM.CONTRATO_TERCERO on contrato.ID_CONTRATO equals contratoTercero.ID_CONTRATO
-                        join tercero in dbSIM.TERCERO on contratoTercero.ID_TERCERO equals tercero.ID_TERCERO
-                        join asociacion in dbSIM.TIPO_ASOCIACION on contrato.ID_TIPOASOCIACION equals asociacion.ID_TIPOASOCIACION
-                        join conveniomarco in dbSIM.CONTRATO on contrato.ID_CONVENIO equals conveniomarco.ID_CONTRATO into contratoConvenio
-                        from conveniomarco in contratoConvenio.DefaultIfEmpty()
-                        where contratoTercero.ID_TIPOTERCEROCONTRATO == 2 && contrato.ID_CONTRATO == id
+                         join contratoTercero in dbSIM.CONTRATO_TERCERO on contrato.ID_CONTRATO equals contratoTercero.ID_CONTRATO
+                         join tercero in dbSIM.TERCERO on contratoTercero.ID_TERCERO equals tercero.ID_TERCERO
+                         join asociacion in dbSIM.TIPO_ASOCIACION on contrato.ID_TIPOASOCIACION equals asociacion.ID_TIPOASOCIACION
+                         join conveniomarco in dbSIM.CONTRATO on contrato.ID_CONVENIO equals conveniomarco.ID_CONTRATO into contratoConvenio
+                         from conveniomarco in contratoConvenio.DefaultIfEmpty()
+                         where contratoTercero.ID_TIPOTERCEROCONTRATO == 2 && contrato.ID_CONTRATO == id
                          select new
                          {
                              contrato.ID_CONTRATO,

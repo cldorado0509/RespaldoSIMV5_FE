@@ -1,18 +1,18 @@
 ﻿namespace SIM.Areas.ExpedienteAmbiental.Controllers
 {
-    using System;
-    using System.Security.Claims;
-    using System.Web.Mvc;
-    using System.Collections.Generic;
+    using DevExpress.Pdf;
+    using SIM.Areas.Seguridad.Class;
+    using SIM.Areas.Seguridad.Models;
     using SIM.Data;
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
-    using System.Web;
+    using System.Security.Claims;
     using System.Text;
-    using DevExpress.Pdf;
-    using System.Drawing;
-    using SIM.Areas.Seguridad.Models;
-    using SIM.Areas.Seguridad.Class;
+    using System.Web;
+    using System.Web.Mvc;
 
     /// <summary>
     ///Controller Expedientes
@@ -32,7 +32,7 @@
             int idUsuario = 0;
             if (((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
             {
-                 idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
             }
             codFuncionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
@@ -44,13 +44,13 @@
 
             var idForma = 0;
             int.TryParse(SIM.Utilidades.Data.ObtenerValorParametro("IdFormaExpedientesAmbientales").ToString(), out idForma);
-            
-            
+
+
             PermisosRolModel permisosRolModel = new PermisosRolModel { CanDelete=false, CanInsert=false, CanPrint=false, CanRead= false, CanUpdate = false, IdRol = 0 };
 
             Permisos permisos = new Permisos();
             permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, idUsuario);
-           
+
             ViewBag.CodFuncionario = codFuncionario;
             return View(permisosRolModel);
 
@@ -73,7 +73,7 @@
                 {
                     int idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
                     EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
-                    codFuncionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO 
+                    codFuncionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
                                                       join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
                                                       where uf.ID_USUARIO == idUsuario
                                                       select f.CODFUNCIONARIO).FirstOrDefault());
@@ -159,8 +159,8 @@
                                     System.IO.MemoryStream oStreamSal = new MemoryStream();
 
                                     // Save the bitmaps.
-                                    image.Save(oStreamSal,System.Drawing.Imaging.ImageFormat.Jpeg);
-                                    oStream.Seek(0, SeekOrigin.Begin); 
+                                    image.Save(oStreamSal, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                    oStream.Seek(0, SeekOrigin.Begin);
                                     SIM.Utilidades.Archivos.GrabaMemoryStream(oStreamSal, Server.MapPath($"~/Content/ConsultaExpedientesDoc/{fecha}/{id}/doc{doc}.jpg"));
 
                                     listadoSal.Add($"/Content/ConsultaExpedientesDoc/{fecha}/{id}/doc{doc}.jpg");
@@ -175,7 +175,7 @@
                     }
                 }
             }
-            catch(Exception exp)
+            catch (Exception exp)
             {
                 throw exp;
             }

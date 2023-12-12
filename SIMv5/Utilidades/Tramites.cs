@@ -1,22 +1,14 @@
 ﻿namespace SIM.Utilidades
 {
-    using DevExpress.CodeParser;
-    using DevExpress.DataProcessing.InMemoryDataProcessor;
-    using DevExpress.XtraScheduler.Native;
-    using DocumentFormat.OpenXml.Spreadsheet;
-    using SIM.Areas.Tramites.Models;
-    using SIM.Controllers;
     using SIM.Data;
-    using SIM.Data.General;
-    using SIM.Data.Seguridad;
     using SIM.Data.Tramites;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
-    using System.Threading.Tasks;
-    using System.Web;
 
-    public class DatosTarea {
+    public class DatosTarea
+    {
         public decimal CODTAREA { get; set; }
         public decimal CODFUNCIONARIO { get; set; }
         public decimal? ORDEN { get; set; }
@@ -30,6 +22,22 @@
         public string VALOR { get; set; }
     }
 
+    public class Documento
+    {
+        public int TipoDocumento { get; set; }
+        public decimal Codfuncionario { get; set; }
+        public decimal IdUsuario { get; set; }
+        public decimal CodSerie { get; set; }
+        public int Paginas { get; set; }
+        public byte[] Archivo { get; set; }
+        public string Extension { get; set; }
+    }
+
+    public class IndicesDocumento
+    {
+        public int CODINDICE { get; set; }
+        public string VALOR { get; set; }
+    }
 
     public class Tramites
     {
@@ -41,8 +49,8 @@
             try
             {
                 decimal? TarAnt = (from Utar in dbSIM.TBTRAMITETAREA
-                              where Utar.CODTRAMITE == codTramite && Utar.CODTAREA == codTarea && Utar.ORDEN == orden
-                              select Utar.CODTAREA_ANTERIOR).FirstOrDefault();
+                                   where Utar.CODTRAMITE == codTramite && Utar.CODTAREA == codTarea && Utar.ORDEN == orden
+                                   select Utar.CODTAREA_ANTERIOR).FirstOrDefault();
                 return long.Parse(TarAnt.ToString());
             }
             catch
@@ -79,10 +87,9 @@
         {
             try
             {
-
                 var TarAnt = (from Tta in dbSIM.TBTRAMITETAREA
                               where Tta.CODTRAMITE == codTramite
-                              && Tta.COPIA == 0 
+                              && Tta.COPIA == 0
                               && Tta.ORDEN == (from TT in dbSIM.TBTRAMITETAREA where TT.CODTRAMITE == codTramite && TT.COPIA == 0 select TT.ORDEN).Max() - 1
                               orderby Tta.ORDEN
                               select new DatosTarea
@@ -103,7 +110,7 @@
         {
             try
             {
-                var Proceso = (from Tar in dbSIM.TBTAREA 
+                var Proceso = (from Tar in dbSIM.TBTAREA
                                join Pro in dbSIM.TBPROCESO on Tar.CODPROCESO equals Pro.CODPROCESO
                                where Tar.CODTAREA == CodTarea
                                select Pro.CODPROCESO).FirstOrDefault();
@@ -113,11 +120,13 @@
                 if (EsSub > 0)
                 {
                     return true;
-                }else
+                }
+                else
                 {
                     return false;
                 }
-            }catch
+            }
+            catch
             {
                 return false;
             }
@@ -147,6 +156,16 @@
             else return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CodigoTramite"></param>
+        /// <param name="CodigoTarea"></param>
+        /// <param name="Funcionario"></param>
+        /// <param name="Orden"></param>
+        /// <param name="Comentario"></param>
+        /// <param name="ArrayMotivos"></param>
+        /// <returns></returns>
         public string DevolverTramite(long CodigoTramite, long CodigoTarea, string Funcionario, int Orden, string Comentario, string ArrayMotivos)
         {
             string _Rpta = "";
@@ -161,10 +180,10 @@
                         if (SePuedeDevolver(TareaAnterior.CODTAREA, TareaActual.CODTAREA))
                         {
                             var _TareaFinal = (from tar in dbSIM.TBTRAMITETAREA
-                                                            where tar.CODTRAMITE == CodigoTramite
-                                                            && tar.COPIA == 0
-                                                            && tar.ORDEN == (from TT in dbSIM.TBTRAMITETAREA where TT.CODTRAMITE == CodigoTramite && TT.COPIA == 0 select TT.ORDEN).Max()
-                                                            select tar).FirstOrDefault();
+                                               where tar.CODTRAMITE == CodigoTramite
+                                               && tar.COPIA == 0
+                                               && tar.ORDEN == (from TT in dbSIM.TBTRAMITETAREA where TT.CODTRAMITE == CodigoTramite && TT.COPIA == 0 select TT.ORDEN).Max()
+                                               select tar).FirstOrDefault();
                             if (_TareaFinal != null)
                             {
                                 // ArrayMotivos = ArrayMotivos.Trim().EndsWith(",") ? ArrayMotivos.Trim().Substring(0, ArrayMotivos.Length - 1) : ArrayMotivos;
@@ -185,7 +204,6 @@
                                             dev.ORDEN = Orden;
                                             dev.ID_MOTIVODEV = long.Parse(_ArrayMotivo[0]);
                                             dbSIM.DEVOLUCION_TAREA.Add(dev);
-                                            dbSIM.SaveChanges();
                                             _TxtMotivos += _ArrayMotivo[1] + ", ";
                                         }
                                     }
@@ -196,7 +214,6 @@
                                 _TareaFinal.ESTADO = 1;
                                 _TareaFinal.COMENTARIO = Comentario;
                                 dbSIM.Entry(_TareaFinal).State = System.Data.Entity.EntityState.Modified;
-                                dbSIM.SaveChanges();
                                 TBTRAMITETAREA tta = new TBTRAMITETAREA();
                                 tta.CODTRAMITE = CodigoTramite;
                                 tta.CODTAREA = TareaAnterior.CODTAREA;
@@ -211,7 +228,6 @@
                                 tta.RECIBIDA = 0;
                                 tta.DEVOLUCION = "1";
                                 dbSIM.TBTRAMITETAREA.Add(tta);
-                                dbSIM.SaveChanges();
                                 TBTAREACOMENTARIO tac = new TBTAREACOMENTARIO();
                                 tac.CODTRAMITE = CodigoTramite;
                                 tac.CODTAREA = TareaActual.CODTAREA;
@@ -234,40 +250,46 @@
             return _Rpta;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_TareaAnterior"></param>
+        /// <param name="_TareaActual"></param>
+        /// <returns></returns>
         public bool SePuedeDevolver(decimal _TareaAnterior, decimal _TareaActual)
         {
             bool _Rpta = true;
             if (_TareaAnterior == 0 || _TareaActual == 0) return false;
-            var TareaAnt = (from Tar in dbSIM.TBTAREA
-                            where Tar.CODTAREA == _TareaAnterior
-                            select Tar.CODPROCESO).FirstOrDefault();
-            var TareaAct = (from Tar in dbSIM.TBTAREA
-                            where Tar.CODTAREA == _TareaActual
-                            select Tar.CODPROCESO).FirstOrDefault();
-            if (TareaAnt == 0 || TareaAct == 0) return false;
-            if (TareaAct == TareaAnt) _Rpta = true; else _Rpta = false;
+            var ProcesoAnt = (from Tar in dbSIM.TBTAREA
+                              where Tar.CODTAREA == _TareaAnterior
+                              select Tar.CODPROCESO).FirstOrDefault();
+            var ProcesoAct = (from Tar in dbSIM.TBTAREA
+                              where Tar.CODTAREA == _TareaActual
+                              select Tar.CODPROCESO).FirstOrDefault();
+            if (ProcesoAnt == 0 || ProcesoAct == 0) return false;
+            if (ProcesoAct == ProcesoAnt) _Rpta = true; else _Rpta = false;
             return _Rpta;
         }
 
         public static decimal ObtenerFuncMenosCargaTarea(int _IdTarea)
         {
             decimal _resp = -1;
-            try 
+            try
             {
                 var Carga = (from Tres in dbSIM.TBTAREARESPONSABLE
-                                where Tres.CODTAREA == _IdTarea
-                                select new
-                                {
-                                    Tres.CODFUNCIONARIO,
-                                    CANTIDAD = (from Tta in dbSIM.TBTRAMITETAREA where Tta.COPIA == 0 && Tta.ESTADO == 0 && Tta.CODFUNCIONARIO == Tres.CODFUNCIONARIO select Tta).Count()
-                                }
+                             where Tres.CODTAREA == _IdTarea
+                             select new
+                             {
+                                 Tres.CODFUNCIONARIO,
+                                 CANTIDAD = (from Tta in dbSIM.TBTRAMITETAREA where Tta.COPIA == 0 && Tta.ESTADO == 0 && Tta.CODFUNCIONARIO == Tres.CODFUNCIONARIO select Tta).Count()
+                             }
                             ).ToList();
                 if (Carga.Count > 0)
                 {
                     var CargaOrd = Carga.OrderBy(o => o.CANTIDAD);
                     _resp = CargaOrd.First().CODFUNCIONARIO;
                 }
-            
+
             }
             catch (Exception e)
             {
@@ -291,7 +313,7 @@
                                 }).ToList();
                 if (FuncResp.Count > 0)
                 {
-                    foreach (var item in FuncResp) _Resp.Add(item.CODFUNCIONARIO.ToString() + ";" + item.NOMBRES); 
+                    foreach (var item in FuncResp) _Resp.Add(item.CODFUNCIONARIO.ToString() + ";" + item.NOMBRES);
                     return _Resp;
                 }
                 else return null;
@@ -437,6 +459,124 @@
             }
 
             return new int[] { Convert.ToInt32(codNuevoTramite), codTareaSiguiente };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CodTramite"></param>
+        /// <returns></returns>
+        public static bool ExisteTramite(decimal CodTramite)
+        {
+            var _Resp = false;
+            try
+            {
+                var Tramite = (from Tra in dbSIM.TBTRAMITE where Tra.CODTRAMITE == CodTramite select Tra).FirstOrDefault();
+                if (Tramite != null) return _Resp = true;
+            }
+            catch (Exception e)
+            {
+                _Resp = false;
+            }
+            return _Resp;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdUsuario"></param>
+        /// <returns></returns>
+        public static decimal ObtenerCodiogoFuncionario(decimal IdUsuario)
+        {
+            var resp = -1;
+            try
+            {
+                resp = dbSIM.USUARIO_FUNCIONARIO.Where(w => w.ID_USUARIO == IdUsuario).Select(s => s.CODFUNCIONARIO).FirstOrDefault();
+            }
+            catch
+            {
+                return resp;
+            }
+            return resp;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CodTramite"></param>
+        /// <param name="_doc"></param>
+        /// <param name="_indices"></param>
+        /// <param name="IdRadicado"></param>
+        /// <returns></returns>
+        public static bool AdicionaDocRadicadoTramite(decimal CodTramite, decimal IdRadicado, Documento _doc, List<IndicesDocumento> _indices)
+        {
+            bool _resp = false;
+            try
+            {
+                var Codproceso = dbSIM.TBTRAMITE.Where(w => w.CODTRAMITE == CodTramite).Select(s => s.CODPROCESO).FirstOrDefault();
+                if (Codproceso > 0)
+                {
+                    var CodDocumento = dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == CodTramite).Select(s => s.CODDOCUMENTO).Max() + 1;
+                    var Ruta = dbSIM.TBRUTAPROCESO.Where(w => w.CODPROCESO == Codproceso).Select(s => s.PATH).FirstOrDefault();
+                    var RutaDoc = Ruta += "\\" + SIM.Utilidades.Archivos.GetRutaDocumento((ulong)CodTramite, 100);
+                    if (!File.Exists(Ruta)) Directory.CreateDirectory(Ruta);
+                    RutaDoc += CodTramite.ToString() + "-" + CodDocumento.ToString().Trim() + "." + _doc.Extension;
+                    if (File.Exists(RutaDoc)) File.Delete(RutaDoc);
+                    if (_doc.Archivo.Length > 0) Cryptografia.GrabaMemoryStream(new MemoryStream(_doc.Archivo), RutaDoc);
+                    TBTRAMITEDOCUMENTO _NuevoDoc = new TBTRAMITEDOCUMENTO();
+                    _NuevoDoc.CODTRAMITE = CodTramite;
+                    _NuevoDoc.CODDOCUMENTO = CodDocumento;
+                    _NuevoDoc.CODSERIE = _doc.CodSerie;
+                    _NuevoDoc.CODFUNCIONARIO = _doc.Codfuncionario;
+                    _NuevoDoc.TIPODOCUMENTO = 1;
+                    _NuevoDoc.RUTA = RutaDoc;
+                    _NuevoDoc.MAPAARCHIVO = "M";
+                    _NuevoDoc.MAPABD = "M";
+                    _NuevoDoc.PAGINAS = _doc.Paginas;
+                    _NuevoDoc.ID_USUARIO = _doc.IdUsuario;
+                    _NuevoDoc.CIFRADO = "0";
+                    _NuevoDoc.FECHACREACION = DateTime.Now;
+                    dbSIM.TBTRAMITEDOCUMENTO.Add(_NuevoDoc);
+                    dbSIM.SaveChanges();
+                    TBTRAMITE_DOC _RelTraDoc = new TBTRAMITE_DOC();
+                    _RelTraDoc.CODTRAMITE = _NuevoDoc.CODTRAMITE;
+                    _RelTraDoc.CODDOCUMENTO = _NuevoDoc.CODDOCUMENTO;
+                    _RelTraDoc.ID_DOCUMENTO = _NuevoDoc.ID_DOCUMENTO;
+                    dbSIM.TBTRAMITE_DOC.Add(_RelTraDoc);
+                    dbSIM.SaveChanges();
+                    var Rad = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).FirstOrDefault();
+                    Rad.CODTRAMITE = _NuevoDoc.CODTRAMITE;
+                    Rad.CODDOCUMENTO = _NuevoDoc.CODDOCUMENTO;
+                    Rad.S_ESTADO = "A";
+                    dbSIM.Entry(Rad).State = System.Data.Entity.EntityState.Modified;
+                    dbSIM.SaveChanges();
+                    if (_indices.Count > 0)
+                    {
+                        foreach (var i in _indices)
+                        {
+                            TBINDICEDOCUMENTO _Ind = new TBINDICEDOCUMENTO();
+                            _Ind.CODTRAMITE = _NuevoDoc.CODTRAMITE;
+                            _Ind.CODDOCUMENTO = _NuevoDoc.CODDOCUMENTO;
+                            _Ind.CODINDICE = i.CODINDICE;
+                            _Ind.CODSERIE = _NuevoDoc.CODSERIE;
+                            _Ind.VALOR = i.VALOR;
+                            _Ind.ID_DOCUMENTO = _NuevoDoc.ID_DOCUMENTO;
+                            dbSIM.TBINDICEDOCUMENTO.Add(_Ind);
+                            dbSIM.SaveChanges();
+                        }
+                        string _Sql = $"INSERT INTO TRAMITES.BUSQUEDA_DOCUMENTO (COD_SERIE,COD_DOCUMENTO,S_INDICE,COD_TRAMITE,FECHADIGITALIZA,ID_DOCUMENTO) SELECT DOC.CODSERIE AS COD_SERIE,DOC.CODDOCUMENTO AS COD_DOCUMENTO,'TRAMITE: ' || DOC.CODTRAMITE || ' ' || (SELECT LISTAGG(IND.INDICE || ': ' || IDO.valor, ' - ') WITHIN GROUP(ORDER BY IDO.CODDOCUMENTO) AS valor FROM TRAMITES.TBINDICEDOCUMENTO IDO INNER JOIN TRAMITES.TBINDICESERIE IND ON IDO.CODINDICE = IND.CODINDICE WHERE DOC.CODTRAMITE = IDO.CODTRAMITE AND DOC.CODDOCUMENTO = IDO.CODDOCUMENTO GROUP BY DOC.CODTRAMITE) AS S_INDICE,DOC.CODTRAMITE AS COD_TRAMITE,DOC.FECHACREACION AS FECHADIGITALIZA, DOC.ID_DOCUMENTO FROM TRAMITES.TBTRAMITEDOCUMENTO DOC WHERE DOC.CODTRAMITE ={CodTramite} AND DOC.CODDOCUMENTO ={CodDocumento}";
+                        dbSIM.Database.ExecuteSqlCommandAsync(_Sql);
+                    }
+                    _resp = true;
+                }
+                else _resp = false;
+            }
+            catch (Exception e)
+            {
+
+                _resp = false;
+            }
+
+            return _resp;
         }
     }
 }

@@ -86,7 +86,7 @@ namespace SIM.Areas.Dynamics.Controllers
                             {
                                 if (dato.TERCERO != nit)
                                 {
-                                    _Sql = $"SELECT DISTINCT * FROM (SELECT V.ACCOUNTNUM AS TERCERO, DT.NAME FROM VENDTABLE V  INNER JOIN DIRPARTYTABLE DT ON V.PARTY=DT.RECID LEFT JOIN DIRPERSONNAME P ON DT.RECID = P.PERSON) QRY WHERE TERCERO ='{dato.TERCERO}'";
+                                    _Sql = $"SELECT DISTINCT * FROM (SELECT V.ACCOUNTNUM AS TERCERO, DT.NAME FROM VENDTABLE V INNER JOIN DIRPARTYTABLE DT ON V.PARTY=DT.RECID LEFT JOIN DIRPERSONNAME P ON DT.RECID = P.PERSON) QRY WHERE TERCERO ='{dato.TERCERO}'";
                                     var Persona = dbDynamics.Database.SqlQuery<TercerosModel>(_Sql).FirstOrDefault();
                                     if (Persona != null)
                                     {

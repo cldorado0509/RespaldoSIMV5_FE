@@ -43,5 +43,7 @@ namespace SIM.Data.Documental
         public int? ID_ANEXO { get; set; }
 
         public int ID_RADICADO { get; set; }
+
+        public DateTime? D_NOTIFICACION { get; set; }
     }
 }

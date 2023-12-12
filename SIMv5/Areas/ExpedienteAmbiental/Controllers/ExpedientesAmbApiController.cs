@@ -504,8 +504,11 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             SIM.Models.Response resposeF = new SIM.Models.Response();
             try
             {
+                decimal Id = 0;
+                Id = objData.IdPuntoControl;
                 int idUsuario = 0;
                 int funcionario = 0;
+
                 System.Web.HttpContext context = System.Web.HttpContext.Current;
                 ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
 
@@ -523,43 +526,48 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
 
                 objData.IndicesSerieDocumentalDTO = new List<IndiceSerieDocumentalDTO>();
                 objData.UnidadDocumentalId =  int.Parse(SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString());
-                foreach (var item in objData.Indices)
+
+                if (Id <= 0)
                 {
-
-                    var indE = new IndiceSerieDocumentalDTO();
-                    indE.IndiceSerieDocumentaId = item.CODINDICE;
-                    indE.ValorString = item.VALOR;
-                    switch (item.TIPO)
+                    foreach (var item in objData.Indices)
                     {
-                        case 0: //Texto
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 8:
-                            indE.ValorString = item.VALOR ?? "";
-                            break;
-                        case 1: //Numero
-                        case 6:
-                        case 7:
-                            indE.ValorNumerico = decimal.Parse(item.VALOR);
-                            break;
-                        case 2: //Fecha
-                            indE.ValorFecha = DateTime.Parse(item.VALOR);
-                            break;
-                    }
 
-                    objData.IndicesSerieDocumentalDTO.Add(indE);
-                };
+                        var indE = new IndiceSerieDocumentalDTO();
+                        indE.IndiceSerieDocumentaId = item.CODINDICE;
+                        indE.ValorString = item.VALOR;
+                        switch (item.TIPO)
+                        {
+                            case 0: //Texto
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 8:
+                                indE.ValorString = item.VALOR ?? "";
+                                break;
+                            case 1: //Numero
+                            case 6:
+                            case 7:
+                                indE.ValorNumerico = decimal.Parse(item.VALOR);
+                                break;
+                            case 2: //Fecha
+                                indE.ValorFecha = DateTime.Parse(item.VALOR);
+                                break;
+                        }
+
+                        objData.IndicesSerieDocumentalDTO.Add(indE);
+                    };
+                }
+
                 objData.FechaRegistro = DateTime.Now;
                 objData.Conexo = ".";
+                objData.ObservacionEstado = "";
                 objData.FuncionarioId = funcionario;
 
 
                 AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
                 if (response.ExpiresIn == 0) return null;
 
-                decimal Id = 0;
-                Id = objData.IdPuntoControl;
+
                 if (Id > 0)
                 {
                     resposeF = await apiService.PutAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", "ActualizarPuntoControl", objData, response.JwtToken);
@@ -569,6 +577,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 {
                     resposeF = await apiService.PostAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", "GuardarPuntoControl", objData, response.JwtToken);
                     if (!resposeF.IsSuccess) return resposeF;
+
                 }
             }
             catch (Exception e)
@@ -781,6 +790,33 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
             catch (Exception e)
             {
                 return new SIM.Models.Response { IsSuccess= false, Message = "Error Vinculando el Expediente: " + e.Message };
+            }
+
+            return resposeF;
+        }
+
+        /// <summary>
+        /// Permite desvincular el expediente documental asociado al punto de control
+        /// </summary>
+        /// <param name="Id">Identifica el Punto de Control</param>
+        /// <returns></returns>
+        [HttpPost, ActionName("DesvincularExpedienteDocumentalAsync")]
+        public async Task<object> DesvincularExpedienteDocumentalAsync(int Id)
+        {
+            SIM.Models.Response resposeF = new SIM.Models.Response();
+            try
+            {
+                ApiService apiService = new ApiService();
+
+                AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiExpAGateWayS, UserName = this.userApiExpAGateWay });
+                if (response.ExpiresIn == 0) return null;
+
+                resposeF = await apiService.PutAsync(this.urlApiGateWay, "ExpA/PuntoControl/", "DesvincularExpedienteDocumentalAPuntoControl", Id, response.JwtToken);
+                if (!resposeF.IsSuccess) return new SIM.Models.Response { IsSuccess= false, Message = "Error desvinculando el Expediente!" };
+            }
+            catch (Exception e)
+            {
+                return new SIM.Models.Response { IsSuccess= false, Message = "Error desvinculando el Expediente: " + e.Message };
             }
 
             return resposeF;

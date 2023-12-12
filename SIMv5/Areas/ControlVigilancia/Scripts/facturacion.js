@@ -1,6 +1,7 @@
-﻿let aceptarFactura = false;
-let codTramiteSel = -1;
-let codDocumentoSel = -1;
+﻿'use strict'
+
+let aceptarFactura = false;
+let tramitesSel = null;
 
 $(document).ready(function () {
     var historicoCargado = false;
@@ -12,6 +13,11 @@ $(document).ready(function () {
         showIndicator: true,
         shading: true,
         shadingColor: "rgba(0,0,0,0.4)",
+    });
+
+    $("#popDocumento").dxPopup({
+        title: "Documento Radicado",
+        fullScreen: true
     });
 
     var tabsData = [
@@ -29,8 +35,7 @@ $(document).ready(function () {
                 $("#loadPanel").dxLoadPanel('instance').show();
 
                 $.getJSON($('#app').data('url') + 'ControlVigilancia/api/FacturacionApi/RegistrarFactura', {
-                    Tramite: codTramiteSel,
-                    Documento: codDocumentoSel,
+                    Tramites: tramitesSel,
                     Factura: $('#factura').dxTextBox('instance').option('value')
                 }).done(function (data) {
                     $("#loadPanel").dxLoadPanel('instance').hide();
@@ -102,6 +107,10 @@ $(document).ready(function () {
         },
         columns: [
             {
+                dataField: "TRAMITES",
+                dataType: 'string',
+                visible: false
+            }, {
                 dataField: "CODTRAMITE",
                 width: '8%',
                 caption: 'TRAMITE',
@@ -159,14 +168,32 @@ $(document).ready(function () {
                 cellTemplate: function (cellElement, cellInfo) {
                     $('<div />').dxButton(
                         {
+                            icon: 'doc',
+                            type: 'success',
+                            hint: 'Ver Documento Radicado',
+                            onClick: function (params) {
+                                let documento = $("#popDocumento").dxPopup("instance");
+                                documento.show();
+
+                                $('#frmDocumento').attr('src', $('#app').data('url') + 'Tramites/Documento/ConsultarInformeTecnicoRadicado?idTramite=' + cellInfo.data.CODTRAMITE + '&idDocumento=' + cellInfo.data.CODDOCUMENTO + '&descargar=0');
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            }, {
+                caption: '',
+                width: '4%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
                             icon: 'check',
                             type: 'success',
                             hint: 'Marcar Como Facturado',
                             onClick: function (params) {
                                 aceptarFactura = false;
 
-                                codTramiteSel = cellInfo.data.CODTRAMITE;
-                                codDocumentoSel = cellInfo.data.CODDOCUMENTO;
+                                tramitesSel = cellInfo.data.TRAMITES;
 
                                 var registrarFacuturaPopup = $("#popRegistrarFactura").dxPopup("instance");
                                 registrarFacuturaPopup.show();
