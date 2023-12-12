@@ -1146,6 +1146,8 @@
     <Compile Include="Areas\Dynamics\Data\ResponsableModel.cs" />
     <Compile Include="Areas\Dynamics\Data\TercerosModel.cs" />
     <Compile Include="Areas\Dynamics\DynamicsAreaRegistration.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESEstrategiasApiController.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESEstrategiasController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionApiController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\PMESEvaluacionController.cs" />
     <Compile Include="Areas\EncuestaExterna\Controllers\EncuestaExternaController.cs">
@@ -1556,7 +1558,19 @@
     <Compile Include="Data\Control\INFORMATIVO_DOC_ARCHIVOS.cs" />
     <Compile Include="Data\Control\INFORMATIVO_DOC_DET_ARCH.cs" />
     <Compile Include="Data\Control\INFORMATIVO_TIPOCOM.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_ENCABEZADO.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_GRUPO.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_METAS.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_METAS_T.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_ACTIVIDADES.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_PERIODICIDAD.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_PREGUNTA.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_PREGUNTA_GRUPO.cs" />
     <Compile Include="Data\Control\PMES_ESTRATEGIAS_TERCERO.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_TF.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_TIPOEVIDENCIA.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_TP.cs" />
     <Compile Include="Data\Control\TBDERECHOS_PETICION.cs" />
     <Compile Include="Data\Control\TBDETALLE_REPOSICION.cs" />
     <Compile Include="Data\Control\TBREPOSICION.cs" />
@@ -2443,6 +2457,7 @@
     <Content Include="Areas\Dynamics\Scripts\Etiquetas.js" />
     <Content Include="Areas\Dynamics\Scripts\PazSalvoBienes.js" />
     <Content Include="Areas\EnCicla\Scripts\testexterno.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESEstrategias\estrategias.js" />
     <Content Include="Areas\EtiquetasAmbientales\Scripts\Monitoreo.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\expedienteAmbiental.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\basic.css" />
@@ -2570,6 +2585,10 @@
     <Content Include="Content\ContentV5\dx.spa.css" />
     <Content Include="Content\ContentV5\Site.css" />
     <Content Include="Content\dashboard\PMES.xml" />
+    <Content Include="Content\dashboard\PMES_2021.xml" />
+    <Content Include="Content\dashboard\PMES_2023.xml" />
+    <Content Include="Content\dashboard\PMES_2022.xml" />
+    <Content Include="Content\dashboard\SPMES_2021.xml" />
     <Content Include="Content\imagenes\cabezoteVisitas.jpg" />
     <Content Include="Content\imagenes\cabezoteVisitas.png" />
     <Content Include="Content\imagenes\desasignar.png" />
@@ -2751,6 +2770,9 @@
     <Content Include="Content\recursos\pmes_individual.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\recursos\pmes_instalacion_2.txt" />
+    <Content Include="Content\recursos\pmes_instalacion_4.txt" />
+    <Content Include="Content\recursos\pmes_instalacion_3.txt" />
     <Content Include="Content\stylesV5\Principal.css" />
     <Content Include="Content\TramitesLinea.css" />
     <Content Include="Content\visitas.css" />
@@ -3181,6 +3203,7 @@
     <Content Include="Areas\Dynamics\Views\PazsalvoBienes\Index.cshtml" />
     <Content Include="Areas\Dynamics\Plantilla\Plantilla_Paz_y_Salvo_Bienes.pdf" />
     <Content Include="Areas\GestionDocumental\Views\Masivos\EditarMasivo.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESEstrategias\PMESEstrategias.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />

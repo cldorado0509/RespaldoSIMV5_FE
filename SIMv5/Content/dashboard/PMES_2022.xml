@@ -1,0 +1,800 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-CO">
+  <Title Text="PLAN DE MOVILIDAD EMPRESARIAL SOSTENIBLE" />
+  <DataSources>
+    <ObjectDataSource Name="PMES" ComponentName="dataSource1">
+      <DataSource Type="System.Data.DataTable, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    </ObjectDataSource>
+    <ObjectDataSource Name="PMES_RAZONES_TELETRABAJO" ComponentName="dataSource2">
+      <DataSource Type="System.Data.DataTable, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    </ObjectDataSource>
+    <ObjectDataSource Name="PMES_DIAS_TELETRABAJO" ComponentName="dataSource3">
+      <DataSource Type="System.Data.DataTable, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    </ObjectDataSource>
+    <ObjectDataSource Name="PMES_RAZONES_ELECCION_MODO" ComponentName="dataSource4">
+      <DataSource Type="System.Data.DataTable, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    </ObjectDataSource>
+  </DataSources>
+  <Items>
+    <Pie ComponentName="pieDashboardItem1" Name="C. SEXO Y EDAD" Group="dashboardItemGroup2" DataSource="dataSource1" FilterString="[DataItem1] Is Not Null And [DataItem0] Is Not Null" ContentArrangementMode="FixedColumnCount" ContentLineCount="2">
+      <DataItems>
+        <Dimension DataMember="SEXO" DefaultId="DataItem0" />
+        <Dimension DataMember="EDAD" DefaultId="DataItem1" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" DefaultId="DataItem2">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem2" />
+      </Values>
+    </Pie>
+    <Pie ComponentName="pieDashboardItem2" Name="A. ESTRATO" Group="dashboardItemGroup2" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" ShowPieCaptions="false">
+	<InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="ESTRATO" ColoringMode="Hue" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem1" />
+      </Values>
+    </Pie>
+    <Chart ComponentName="chartDashboardItem4" Name="A. HORARIO DE INGRESO" Group="dashboardItemGroup3" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+      <DataItems>
+        <Dimension DataMember="N_HORAINGRESO" ColoringMode="Hue" DefaultId="DataItem0">
+          <NumericFormat FormatType="General" />
+        </Dimension>
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+          <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="% DE COLABORADORES" SeriesType="Line">
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem5" Name="B. HORARIO DE SALIDA" Group="dashboardItemGroup3" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+      <DataItems>
+        <Dimension DataMember="N_HORASALIDA" ColoringMode="Hue" DefaultId="DataItem0">
+          <NumericFormat FormatType="General" />
+        </Dimension>
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="2" Unit="Ones" />
+          <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY TitleVisible="false" />
+          <Series>
+            <Simple SeriesType="Line">
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem9" Name="I. TIPO COLABORADOR" Group="dashboardItemGroup1" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="TIPOTRABAJADOR" ColoringMode="Hue" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="% DE COLABORADORES" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="0" Unit="Ones" />
+          <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions Position="Inside" ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem10" Name="F. DISTRIBUCIÓN MODAL" Group="dashboardItemGroup1" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="MODOP" ColoringMode="Hue" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="% DE COLABORADORES" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="0" Unit="Ones" />
+          <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="% DE COLABORADORES">
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions Position="Inside" ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem11" Name="D. TIEMPO DE VIAJE POR MODO" Group="dashboardItemGroup4" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOP" Name="MODO" ColoringMode="Hue" DefaultId="DataItem0" />
+        <Measure DataMember="N_TIEMPOM" Name="PROMEDIO EN MINUTOS" Expression="Sum([N_TIEMPOM]) / Count() * 60" DefaultId="DataItem1">
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem1" Name="H. ÁREAS DE LA ORGANIZACIÓN" Group="dashboardItemGroup1" DataSource="dataSource1" Rotated="true">
+      <ColoringOptions MeasuresColoringMode="Hue" />
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="AREA" Name="ÁREAS" ColoringMode="Hue" TopNShowOthers="true" TopNCount="12" TopNMeasure="DataItem1" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="NÚMERO DE COLABORADORES" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" />
+          <Calculation>
+            <PercentOfTotal />
+          </Calculation>
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 2">
+          <Series>
+            <Simple Name="% DE COLABORADORES">
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions Position="Inside" ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Card ComponentName="cardDashboardItem1" Name="G. DISTANCIAS RECORRIDAS POR LOS COLABORADORES" Group="dashboardItemGroup1" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" ContentArrangementMode="FixedColumnCount" ContentLineCount="2">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="S_DISTANCIA" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" Expression="ToDouble(Sum([N_CANTIDADP])) / Total(Sum([N_CANTIDADP]))" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" Precision="0" Unit="Ones" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem2" Name="B. NÚMERO DE CELDAS DISPONIBLES" Group="dashboardItemGroup5" DataSource="dataSource1">
+      <ColoringOptions MeasuresColoringMode="Hue" />
+      <DataItems>
+        <Measure DataMember="N_CARRO" Name="CARRO" SummaryType="Sum" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="N_MOTO" Name="MOTO" SummaryType="Sum" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Measure DataMember="N_BICICLETA" Name="BICICLETA" SummaryType="Sum" DefaultId="DataItem2">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem0" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem3" Name="F. DISPOSICIÓN DE CAMBIO MODAL" Group="dashboardItemGroup4" DataSource="dataSource1" Rotated="true">
+      <ColoringOptions MeasuresColoringMode="None" />
+      <DataItems>
+        <Dimension DataMember="MODOCAMBIO" ColoringMode="Hue" DefaultId="DataItem2" />
+        <Dimension DataMember="MODOP" ColoringMode="None" DefaultId="DataItem0" />
+        <Measure DataMember="MODOCAMBIO" Name="% COLABORADORES" SummaryType="Count" DefaultId="DataItem1" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple SeriesType="FullStackedBar">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem6" Name="E. RAZONES ELECCIÓN DE MODO" Group="dashboardItemGroup4" DataSource="dataSource4" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="RAZON" DefaultId="DataItem0" />
+        <Dimension DataMember="MODOP" DefaultId="DataItem2" />
+        <Measure DataMember="RAZONES_ELECCION_MODO" Name="NÚMERO DE COLABORADORES" DefaultId="DataItem1" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem2" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple SeriesType="StackedBar">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem12" Name="A. EMISIONES DE CO2 / DÍA POR MODO" Group="dashboardItemGroup4" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOP" Name="MODO" ColoringMode="Hue" DefaultId="DataItem0" />
+        <Measure DataMember="N_CO2P" Name="CO2" Expression="Sum([N_CO2P]) / 1000000" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="TONELADAS DE CO2">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Chart ComponentName="chartDashboardItem13" Name="B. EMISIONES DE CO2 / DÍA POR ÁREA" Group="dashboardItemGroup4" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="AREA" Name="ÁREA" ColoringMode="Hue" TopNCount="10" TopNMeasure="DataItem1" DefaultId="DataItem0" />
+        <Measure DataMember="N_CO2P" Name="CO2" Expression="Sum([N_CO2P]) / 1000000" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <ChartWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="TONELADAS CO2">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Card ComponentName="cardDashboardItem3" Name="A. POBLACIÓN" Group="dashboardItemGroup1" DataSource="dataSource1" ContentArrangementMode="FixedColumnCount">
+      <DataItems>
+        <Measure DataMember="N_CANTIDADP" Name=" " DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <Card ShowStartEndValues="false">
+        <ActualValue DefaultId="DataItem0" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate Type="Stretched">
+          <TopValue Visible="false" ValueType="ActualValue" DimensionIndex="0" />
+          <MainValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomValue1 Visible="false" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomValue2 Visible="false" ValueType="ActualValue" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Chart ComponentName="chartDashboardItem14" Name="D. SEDES DE LA ORGANIZACIÓN" Group="dashboardItemGroup1" DataSource="dataSource1" IsMasterFilterCrossDataSource="true">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Measure DataMember="N_CANTIDADP" Name="NÚMERO DE COLABORADORES POR SEDE" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+        <Dimension DataMember="INSTALACION" Name="SEDES" ColoringMode="Hue" SortByMeasure="DataItem1" DefaultId="DataItem0" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="NÚMERO DE COLABORADORES POR SEDE">
+              <Value DefaultId="DataItem1" />
+              <PointLabelOptions Position="Inside" ContentType="Value" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Pie ComponentName="pieDashboardItem3" Name="B. SEXO" Group="dashboardItemGroup2" DataSource="dataSource1" FilterString="[DataItem0] Is Not Null" ShowPieCaptions="false">
+      <DataItems>
+        <Dimension DataMember="SEXO" Name="SEXO" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="Cantidad" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem1" />
+      </Values>
+    </Pie>
+    <TextBox ComponentName="textBoxDashboardItem1" Name="Cuadro de Texto 1" ShowCaption="false" Group="dashboardItemGroup1">
+      <Text>{\rtf1\deff0{\fonttbl{\f0 Calibri;}{\f1 Times New Roman;}{\f2 Verdana;}}{\colortbl ;\red0\green0\blue255 ;\red0\green0\blue0 ;}{\*\defchp \f1\fs24}{\stylesheet {\ql\f1\fs24 Normal;}{\*\cs1\f1\fs24 Default Paragraph Font;}{\*\cs2\sbasedon1\f1\fs24 Line Number;}{\*\cs3\ul\f1\fs24\cf1 Hyperlink;}{\*\ts4\tsrowd\f1\fs24\ql\tscellpaddfl3\tscellpaddl108\tscellpaddfb3\tscellpaddfr3\tscellpaddr108\tscellpaddft3\tsvertalt\cltxlrtb Normal Table;}{\*\ts5\tsrowd\sbasedon4\f1\fs24\ql\trbrdrt\brdrs\brdrw10\trbrdrl\brdrs\brdrw10\trbrdrb\brdrs\brdrw10\trbrdrr\brdrs\brdrw10\trbrdrh\brdrs\brdrw10\trbrdrv\brdrs\brdrw10\tscellpaddfl3\tscellpaddl108\tscellpaddfr3\tscellpaddr108\tsvertalt\cltxlrtb Table Simple 1;}}{\*\listoverridetable}\nouicompat\splytwnine\htmautsp\sectd\pard\plain\ql{\lang9226\langfe9226\b\f2\fs20\cf2 NOTA}{\lang9226\langfe9226\f2\fs20\cf2 : Los datos estimados y reportados por la plataforma PMES-SIM corresponden a los viajes de la casa al trabajo en un d\u237\'eda regular laboral.}\f1\fs24\par{\*\themedata 
+504b03041400020008000000210201159325ae000000270100000b0000005f72656c732f2e72656c738d8f310ec2300c45af1279a76e1910424dbbb07460415c204a9d34a24da224457036068ec415c8d82206164b5ffe7efffbfd7cd5ed7d1ad98d4234
+ce72a88a121859e97a63358739a9cd1edaa63ed3285276c4c1f8c8f2898d1c8694fc0131ca8126110be7c9e68d72611229cba0d10b79159a705b963b0c4b06ac99aceb3984aeaf805d1e9efe613ba58ca4a393f34436fd88f87264b2089a12879499848b
+791236b70c454e00864d8dab779b0f504b0304140002000800000021027f624aeb730000007b0000001c0000007468656d652f7468656d652f7468656d654d616e616765722e786d6c0d8cc10d83300c005789fc2f4e7954554460820e61810991888392
+b465b73e3a5257a89fa7d3ddeff31da633ede6c5a5c62c1eae9d05c332e7254af0f06cebe50ed338906b1b277e9050e062b491eac8c3d6dae110ebac966a970f16756b2e899a6209b8147aeb2bedd85b7bc34451c0e0f807504b03041400020008000000
+21020a5d705ea60000000c010000270000007468656d652f7468656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c738dcf3d0ec2300c05e0ab44dea95b068450d32e2c5d11178852278d687e94a408cec6c091b8021113951818
+9fecf7597e3d9e6d7fb333bb524cc63b0e4d55032327fd689ce6b064b5d943dfb5279a452e1b693221b1527189c39473382026399115a9f2815c99281fadc825468d41c88bd084dbbade61fc36606db261e41087b10176be07fac7f64a1949472f174b2e
+ff3881b974a980226aca1c3eb1a90a030cbb16573f756f504b0304140002000800000021020b868735b9050000e71b0000160000007468656d652f7468656d652f7468656d65312e786d6ced594f6fdb3614ff2a84eead2cdb4a9da06e113b76bbb56983
+c4ebd0232dd3121b4a14483aa96f437b1c30605837ec3260b71d866d055a608775d887c9d661eb807c853dd1b245d9549ab429b661f1c116a9dfeffde57b22e5e39f7eb97afd61ccd0011192f2a4ed78976b0e2249c0473409dbce448d2fb59cebd7aee2
+0d1591982000277203b79d48a974c3756500d3585ee62949e0de988b182b188ad01d097c084262e6d66bb53537c63471508263d276ee8ec734206890897416c27b0cbe1225b3898089bd406b34191a3bdaf7b21f39955d26d001666d07f48cf8e1803c54
+0e62582ab8d1766afae320f7da5577c162aa826c10fbfa3327e68cd17e5d1345385c30bd7e73fdca56a1a13ed3b00aecf57add9e5748d4081c04e0adb7026ef65b5e6721d540cd2e57a5776b7eadb9443034345608eb9d4ec75f2f131a05a1b94268d5d6
+9a9bf532a15910fc551f3a9bddee5a99e01784b51542ffcafa5a7389a05111a3c9fe0a3ccb6c91a20566ccd94d2bbe05f8d6622d1430d75869330189aa5a77317ec0451f003acb58d104a9694ac638005c17c74341b1d6803708366ee573815c9dcbd421
+19089aaab6f37e8aa1400accf18bef8e5f3c43c72f9e1e3d7a7ef4e8c7a3c78f8f1efd6063dec44968325f7df3e95f5f7d84fe7cf6f5ab279f5710a449f8edfb8f7ffdf9b30aa432912fbf78fafbf3a72fbffce48f6f9fd8f09b020f4dfc80c644a23be4
+10edf238f3cfa2820cc519298308d312054700b5217b2a2a21ef4c31b3023ba41cc37b02da82157963f2a064ef5e24268ada90b7a2b884dce69c75b8b0fb744bab337c9a2461857e313181bb181f58d57797b2dc9ba4b0b2a95568372225537718241e87
+24210a65f7f83e2136de7d4a4bf1dda681e0928f15ba4f5107537b600674a8ecac9b3486044dad3642d64b11dabe873a9c59156c918332142a0433ab50c24ad1bc81270ac776ab71cc4ce86dac22aba17b531194022f15243d248ca3de88486925dd15d3
+92c9b730b428fb0ad866d3b80c158aee5ba1b731e726748bef77231ca776bb691299e0f7e43eac588c76b8b2dbc1cb35938d212138a9cefc3d4ad4198bfd031a46f6c592dd99086b8d105eaed1291b6392cc1f00a5561ed3e4a4bece2834f68bbebed4d7
+37e16167ada7e56e5e09fc8ff6f02d3c4976485627172dfca2855fb4f0132afc5d34eea257bbe66e5dcb892bb7ee63cad89e9a32725bea2e2fc1c5511f26f5409316478534824b67a6ae840b05d6d74870f52155d15e845350e3690da1cc458712a55cc2
+09c5a994ad0fbc149cd673be3ea5ea4848acb6f96836dda8cde75d438c1e85d254d4c8049c5659e3cadb29f366c0536af37cbb36ff446dae114da81f84b31711de5a3d3fcecb003332cae23e13304fcbb9a748467844f21c795647bcc629c3d67a7dd40c
+6deb8db7d3769a2499ea9a15eafc73c8526d254bee6a39b2a43c428760955ff71d14e0b4ed8c61530697710af264d6ae300b93b613a8dc95d716f3b2c3f665e9d52a1d2ea94885545b58463396be95935852d85ff79b591ccec7014b373a9d158d96f70f
+5ae12ea7968cc724501533c530bfc7278a88bd687488866c227631d8dd9cadae1195f0aca8cf07022ab4992fbc72e5e755b0fcea28af0eccd208e73da965e47e06d7d70b1bf4c830cfadb0fd0d5d699ca32bfeffd7956ce5c286b731d22733d806088cb2
+35da76b85011872e944634e80bd838685d601782b2c84c422c7bff9dd94a0e8abe3593316b7261a476698804854ea72241c88ecafd7c8d30af6e3e5fe782f23eb33057a6b3df2139206c9055ef5ae6bf83a27937c903a171cb49736dd5350cfbffe29d4f
+b362e773f2f6a050d43ccb5ea469347de351b0fe76269cf1515bb77b5cf74ffda84de1c082b22f68dc5404acd8df0ef82e641f2d76940816e2a5565e7e8bc921d8dc329ccb44bddb6d5491825645becf73f36904bb5111ec93d5bd79b07d4bacfd9343ed
+ae96a86b1c64f468e5af313e7c00bab7e08034614ae62fa61ec2f1b43bff270304e5e7254dbef637504b030414000200080000002102e9278183ee00000010020000130000005b436f6e74656e745f54797065735d2e786d6cad914d4ec3301085af6279
+5bc54e5920849274012cf959708191334e2ce21fd993aa9c8d0547e20a4cd382102a48486c2cd9efcdfb66c66f2fafcd66e727b1c55c5c0cad5cab5a0a0c26f62e0cad9cc9561772d3358fcf098b606b28ad1c89d2a5d6c58ce8a1a89830b06263f6407c
+cd834e609e60407d56d7e7dac44018a8a27d86ec9a6bb4304f246e76fc7cc0669c8a145707e39ed54a486972068875bd0dfd374a752428ae5c3c6574a9acd820853e8958a41f091f85f7bc89ec7a140f90e90e3cdb34f198f8f55cabdfc34eb41bad7506
+fb6866cf256a8959fd097a0b81e7cdff833e867d76a097ffedde01504b010214001400020008000000210201159325ae000000270100000b00000000000000000000000000000000005f72656c732f2e72656c73504b0102140014000200080000002102
+7f624aeb730000007b0000001c00000000000000000000000000d70000007468656d652f7468656d652f7468656d654d616e616765722e786d6c504b01021400140002000800000021020a5d705ea60000000c0100002700000000000000000000000000
+840100007468656d652f7468656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c73504b01021400140002000800000021020b868735b9050000e71b000016000000000000000000000000006f0200007468656d652f7468656d65
+2f7468656d65312e786d6c504b0102140014000200080000002102e9278183ee0000001002000013000000000000000000000000005c0800005b436f6e74656e745f54797065735d2e786d6c504b050600000000050005005d0100007b0900000000}{\*\colorschememapping 
+3c3f786d6c2076657273696f6e3d22312e302220656e636f64696e673d227574662d38223f3e3c613a636c724d617020786d6c6e733a613d22687474703a2f2f736368656d61732e6f70656e786d6c666f726d6174732e6f72672f64726177696e676d6c
+2f323030362f6d61696e22206267313d226c743122207478313d22646b3122206267323d226c743222207478323d22646b322220616363656e74313d22616363656e74312220616363656e74323d22616363656e74322220616363656e74333d22616363
+656e74332220616363656e74343d22616363656e74342220616363656e74353d22616363656e74352220616363656e74363d22616363656e74362220686c696e6b3d22686c696e6b2220666f6c486c696e6b3d22666f6c486c696e6b22202f3e}}</Text>
+    </TextBox>
+    <Pie ComponentName="pieDashboardItem4" Name="E. MUNICIPIOS" Group="dashboardItemGroup1" DataSource="dataSource1" ShowPieCaptions="false">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="S_MUNICIPIO" DefaultId="DataItem0" />
+        <Measure DataMember="N_CANTIDADP" Name="% DE COLABORADORES" Expression="ToDouble(Sum([N_CANTIDADP])) / Total(Sum([N_CANTIDADP]))" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+          <WindowDefinition>
+            <PieWindowDefinition DefinitionMode="Arguments" />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem1" />
+      </Values>
+    </Pie>
+    <Card ComponentName="cardDashboardItem4" Name="B. EMISIONES ATMOSFÉRICAS/DÍA" ShowCaption="false" Group="dashboardItemGroup1" DataSource="dataSource1" ContentArrangementMode="FixedColumnCount">
+      <DataItems>
+        <Measure DataMember="N_PM25P" Name="Gramos PM2,5/día" DefaultId="DataItem2">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <Card Name="GRAMOS PM2,5">
+        <ActualValue DefaultId="DataItem2" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <TextBox ComponentName="textBoxDashboardItem2" Name="Cuadro de Texto 2" ShowCaption="false" Group="dashboardItemGroup1">
+      <Text>{\rtf1\deff0{\fonttbl{\f0 Calibri;}{\f1 Times New Roman;}{\f2 Verdana;}}{\colortbl ;\red0\green0\blue255 ;\red127\green127\blue127 ;}{\*\defchp \f1\fs24}{\stylesheet {\ql\f1\fs24 Normal;}{\*\cs1\f1\fs24 Default Paragraph Font;}{\*\cs2\sbasedon1\f1\fs24 Line Number;}{\*\cs3\ul\f1\fs24\cf1 Hyperlink;}{\*\ts4\tsrowd\f1\fs24\ql\tscellpaddfl3\tscellpaddl108\tscellpaddfb3\tscellpaddfr3\tscellpaddr108\tscellpaddft3\tsvertalt\cltxlrtb Normal Table;}{\*\ts5\tsrowd\sbasedon4\f1\fs24\ql\trbrdrt\brdrs\brdrw10\trbrdrl\brdrs\brdrw10\trbrdrb\brdrs\brdrw10\trbrdrr\brdrs\brdrw10\trbrdrh\brdrs\brdrw10\trbrdrv\brdrs\brdrw10\tscellpaddfl3\tscellpaddl108\tscellpaddfr3\tscellpaddr108\tsvertalt\cltxlrtb Table Simple 1;}}{\*\listoverridetable}\nouicompat\splytwnine\htmautsp\sectd\pard\plain\ql{\lang9226\langfe9226\b\f2\fs20\cf2 NOTA: Las distancias son producto del desplazamiento del colaborador desde la casa al trabajo.}\f1\fs24\par{\*\themedata 
+504b03041400020008000000210201159325ae000000270100000b0000005f72656c732f2e72656c738d8f310ec2300c45af1279a76e1910424dbbb07460415c204a9d34a24da224457036068ec415c8d82206164b5ffe7efffbfd7cd5ed7d1ad98d4234
+ce72a88a121859e97a63358739a9cd1edaa63ed3285276c4c1f8c8f2898d1c8694fc0131ca8126110be7c9e68d72611229cba0d10b79159a705b963b0c4b06ac99aceb3984aeaf805d1e9efe613ba58ca4a393f34436fd88f87264b2089a12879499848b
+791236b70c454e00864d8dab779b0f504b0304140002000800000021027f624aeb730000007b0000001c0000007468656d652f7468656d652f7468656d654d616e616765722e786d6c0d8cc10d83300c005789fc2f4e7954554460820e61810991888392
+b465b73e3a5257a89fa7d3ddeff31da633ede6c5a5c62c1eae9d05c332e7254af0f06cebe50ed338906b1b277e9050e062b491eac8c3d6dae110ebac966a970f16756b2e899a6209b8147aeb2bedd85b7bc34451c0e0f807504b03041400020008000000
+21020a5d705ea60000000c010000270000007468656d652f7468656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c738dcf3d0ec2300c05e0ab44dea95b068450d32e2c5d11178852278d687e94a408cec6c091b8021113951818
+9fecf7597e3d9e6d7fb333bb524cc63b0e4d55032327fd689ce6b064b5d943dfb5279a452e1b693221b1527189c39473382026399115a9f2815c99281fadc825468d41c88bd084dbbade61fc36606db261e41087b10176be07fac7f64a1949472f174b2e
+ff3881b974a980226aca1c3eb1a90a030cbb16573f756f504b0304140002000800000021020b868735b9050000e71b0000160000007468656d652f7468656d652f7468656d65312e786d6ced594f6fdb3614ff2a84eead2cdb4a9da06e113b76bbb56983
+c4ebd0232dd3121b4a14483aa96f437b1c30605837ec3260b71d866d055a608775d887c9d661eb807c853dd1b245d9549ab429b661f1c116a9dfeffde57b22e5e39f7eb97afd61ccd0011192f2a4ed78976b0e2249c0473409dbce448d2fb59cebd7aee2
+0d1591982000277203b79d48a974c3756500d3585ee62949e0de988b182b188ad01d097c084262e6d66bb53537c63471508263d276ee8ec734206890897416c27b0cbe1225b3898089bd406b34191a3bdaf7b21f39955d26d001666d07f48cf8e1803c54
+0e62582ab8d1766afae320f7da5577c162aa826c10fbfa3327e68cd17e5d1345385c30bd7e73fdca56a1a13ed3b00aecf57add9e5748d4081c04e0adb7026ef65b5e6721d540cd2e57a5776b7eadb9443034345608eb9d4ec75f2f131a05a1b94268d5d6
+9a9bf532a15910fc551f3a9bddee5a99e01784b51542ffcafa5a7389a05111a3c9fe0a3ccb6c91a20566ccd94d2bbe05f8d6622d1430d75869330189aa5a77317ec0451f003acb58d104a9694ac638005c17c74341b1d6803708366ee573815c9dcbd421
+19089aaab6f37e8aa1400accf18bef8e5f3c43c72f9e1e3d7a7ef4e8c7a3c78f8f1efd6063dec44968325f7df3e95f5f7d84fe7cf6f5ab279f5710a449f8edfb8f7ffdf9b30aa432912fbf78fafbf3a72fbffce48f6f9fd8f09b020f4dfc80c644a23be4
+10edf238f3cfa2820cc519298308d312054700b5217b2a2a21ef4c31b3023ba41cc37b02da82157963f2a064ef5e24268ada90b7a2b884dce69c75b8b0fb744bab337c9a2461857e313181bb181f58d57797b2dc9ba4b0b2a95568372225537718241e87
+24210a65f7f83e2136de7d4a4bf1dda681e0928f15ba4f5107537b600674a8ecac9b3486044dad3642d64b11dabe873a9c59156c918332142a0433ab50c24ad1bc81270ac776ab71cc4ce86dac22aba17b531194022f15243d248ca3de88486925dd15d3
+92c9b730b428fb0ad866d3b80c158aee5ba1b731e726748bef77231ca776bb691299e0f7e43eac588c76b8b2dbc1cb35938d212138a9cefc3d4ad4198bfd031a46f6c592dd99086b8d105eaed1291b6392cc1f00a5561ed3e4a4bece2834f68bbebed4d7
+37e16167ada7e56e5e09fc8ff6f02d3c4976485627172dfca2855fb4f0132afc5d34eea257bbe66e5dcb892bb7ee63cad89e9a32725bea2e2fc1c5511f26f5409316478534824b67a6ae840b05d6d74870f52155d15e845350e3690da1cc458712a55cc2
+09c5a994ad0fbc149cd673be3ea5ea4848acb6f96836dda8cde75d438c1e85d254d4c8049c5659e3cadb29f366c0536af37cbb36ff446dae114da81f84b31711de5a3d3fcecb003332cae23e13304fcbb9a748467844f21c795647bcc629c3d67a7dd40c
+6deb8db7d3769a2499ea9a15eafc73c8526d254bee6a39b2a43c428760955ff71d14e0b4ed8c61530697710af264d6ae300b93b613a8dc95d716f3b2c3f665e9d52a1d2ea94885545b58463396be95935852d85ff79b591ccec7014b373a9d158d96f70f
+5ae12ea7968cc724501533c530bfc7278a88bd687488866c227631d8dd9cadae1195f0aca8cf07022ab4992fbc72e5e755b0fcea28af0eccd208e73da965e47e06d7d70b1bf4c830cfadb0fd0d5d699ca32bfeffd7956ce5c286b731d22733d806088cb2
+35da76b85011872e944634e80bd838685d601782b2c84c422c7bff9dd94a0e8abe3593316b7261a476698804854ea72241c88ecafd7c8d30af6e3e5fe782f23eb33057a6b3df2139206c9055ef5ae6bf83a27937c903a171cb49736dd5350cfbffe29d4f
+b362e773f2f6a050d43ccb5ea469347de351b0fe76269cf1515bb77b5cf74ffda84de1c082b22f68dc5404acd8df0ef82e641f2d76940816e2a5565e7e8bc921d8dc329ccb44bddb6d5491825645becf73f36904bb5111ec93d5bd79b07d4bacfd9343ed
+ae96a86b1c64f468e5af313e7c00bab7e08034614ae62fa61ec2f1b43bff270304e5e7254dbef637504b030414000200080000002102e9278183ee00000010020000130000005b436f6e74656e745f54797065735d2e786d6cad914d4ec3301085af6279
+5bc54e5920849274012cf959708191334e2ce21fd993aa9c8d0547e20a4cd382102a48486c2cd9efcdfb66c66f2fafcd66e727b1c55c5c0cad5cab5a0a0c26f62e0cad9cc9561772d3358fcf098b606b28ad1c89d2a5d6c58ce8a1a89830b06263f6407c
+cd834e609e60407d56d7e7dac44018a8a27d86ec9a6bb4304f246e76fc7cc0669c8a145707e39ed54a486972068875bd0dfd374a752428ae5c3c6574a9acd820853e8958a41f091f85f7bc89ec7a140f90e90e3cdb34f198f8f55cabdfc34eb41bad7506
+fb6866cf256a8959fd097a0b81e7cdff833e867d76a097ffedde01504b010214001400020008000000210201159325ae000000270100000b00000000000000000000000000000000005f72656c732f2e72656c73504b0102140014000200080000002102
+7f624aeb730000007b0000001c00000000000000000000000000d70000007468656d652f7468656d652f7468656d654d616e616765722e786d6c504b01021400140002000800000021020a5d705ea60000000c0100002700000000000000000000000000
+840100007468656d652f7468656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c73504b01021400140002000800000021020b868735b9050000e71b000016000000000000000000000000006f0200007468656d652f7468656d65
+2f7468656d65312e786d6c504b0102140014000200080000002102e9278183ee0000001002000013000000000000000000000000005c0800005b436f6e74656e745f54797065735d2e786d6c504b050600000000050005005d0100007b0900000000}{\*\colorschememapping 
+3c3f786d6c2076657273696f6e3d22312e302220656e636f64696e673d227574662d38223f3e3c613a636c724d617020786d6c6e733a613d22687474703a2f2f736368656d61732e6f70656e786d6c666f726d6174732e6f72672f64726177696e676d6c
+2f323030362f6d61696e22206267313d226c743122207478313d22646b3122206267323d226c743222207478323d22646b322220616363656e74313d22616363656e74312220616363656e74323d22616363656e74322220616363656e74333d22616363
+656e74332220616363656e74343d22616363656e74342220616363656e74353d22616363656e74352220616363656e74363d22616363656e74362220686c696e6b3d22686c696e6b2220666f6c486c696e6b3d22666f6c486c696e6b22202f3e}}</Text>
+    </TextBox>
+    <Chart ComponentName="chartDashboardItem16" Name="C. EMISIONES DE PM2,5 / DÍA POR MODO" Group="dashboardItemGroup4" DataSource="dataSource1" Rotated="true">
+      <DataItems>
+        <Dimension DataMember="MODOP" Name="MODO" ColoringMode="Hue" DefaultId="DataItem0" />
+        <Measure DataMember="N_PM25P" Name="PM2,5" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="GRAMOS DE PM2,5">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend Visible="false" />
+    </Chart>
+    <Card ComponentName="cardDashboardItem5" Name="NÚMERO DE DUCHAS" ShowCaption="false" Group="dashboardItemGroup5" DataSource="dataSource1" ContentArrangementMode="FixedRowCount" ContentLineCount="2">
+      <DataItems>
+        <Measure DataMember="N_DUCHAS" Name="A. NÚMERO DE DUCHAS DISPONIBLES" SummaryType="Sum" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+      </Card>
+    </Card>
+    <Card ComponentName="cardDashboardItem6" Name="C. INDICADORES" Group="dashboardItemGroup1" DataSource="dataSource1" ContentArrangementMode="FixedColumnCount">
+      <DataItems>
+        <Measure DataMember="N_HENP" Name="HUELLA ENERGÉTICA (Gal)" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+        <Measure DataMember="N_HECP" Name="HUELLA ECONÓMICA (COP)" Expression="ToDouble(Sum([N_HECP])) / Sum([N_CANTIDADP])" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+		  <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+        <Measure DataMember="N_TMP" Name="TIEMPO DEDICADO A LA MOVILIDAD (Min)" DefaultId="DataItem2">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+        <Measure DataMember="N_SEDP" Name="HUELLA DE SEDENTARISMO" Expression="ToDouble(Sum([N_SEDP])) / Sum([N_CANTIDADP])" DefaultId="DataItem3">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+		  <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+		<LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+      <Card>
+        <ActualValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+		<LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+      <Card>
+        <ActualValue DefaultId="DataItem2" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+		<LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+      <Card>
+        <ActualValue DefaultId="DataItem3" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+		<LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Card ComponentName="cardDashboardItem7" Name="B. EMISIONES ATMOSFÉRICAS/DÍA" ShowCaption="false" Group="dashboardItemGroup1" DataSource="dataSource1" ContentArrangementMode="FixedColumnCount">
+      <DataItems>
+        <Measure DataMember="N_CO2P" Name="Ton. de CO2/día" Expression="ToDouble(Sum([N_CO2P])) / 1000000" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card Name="TONELADAS DE CO2">
+        <ActualValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Card ComponentName="cardDashboardItem8" Name="B. EMISIONES ATMOSFÉRICAS/DÍA" ShowCaption="false" Group="dashboardItemGroup1" DataSource="dataSource1" ContentArrangementMode="FixedColumnCount">
+      <DataItems>
+        <Measure DataMember="N_CO2P" Name="CO2 PERCÁPITA" Expression="ToDouble(Sum([N_CO2P])) / Sum([N_CANTIDADP]) / 1000" DefaultId="DataItem3">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card Name="KILOGRAMOS DE CO2 / PERCÁPITA">
+        <ActualValue DefaultId="DataItem3" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Card ComponentName="cardDashboardItem9" Name="B. EMISIONES ATMOSFÉRICAS/DÍA" ShowCaption="false" Group="dashboardItemGroup1" DataSource="dataSource1" ContentArrangementMode="FixedColumnCount">
+      <DataItems>
+        <Measure DataMember="N_PM25P" Expression="ToDouble(Sum([N_PM25P])) / Sum([N_CANTIDADP])" DefaultId="DataItem4">
+          <NumericFormat FormatType="Number" Precision="4" Unit="Ones" IncludeGroupSeparator="true" />
+          <WindowDefinition>
+            <CardWindowDefinition />
+          </WindowDefinition>
+        </Measure>
+      </DataItems>
+      <Card Name="GRAMOS DE PM2,5 / PERCÁPITA">
+        <ActualValue DefaultId="DataItem4" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate MinWidth="270" Type="Centered">
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="false" ValueType="Title" DimensionIndex="0" />
+          <BottomValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <BottomSubValue1 Visible="false" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <BottomSubValue2 Visible="false" ValueType="PercentVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="false" />
+          <Sparkline Visible="false" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+  </Items>
+  <Groups>
+    <Group ComponentName="dashboardItemGroup1" Name="1. DATOS GENERALES"><InteractivityOptions IsMasterFilter="true"/></Group>
+    <Group ComponentName="dashboardItemGroup2" Name="2. INFORMACIÓN SOCIO-ECONÓMICA"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
+    <Group ComponentName="dashboardItemGroup3" Name="3. HORARIO DE TRABAJO"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
+    <Group ComponentName="dashboardItemGroup4" Name="4. DATOS DE DESPLAZAMIENTO"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
+    <Group ComponentName="dashboardItemGroup5" Name="5. INFRAESTRUCTURA ORGANIZACIONAL"><InteractivityOptions IgnoreMasterFilters="false"/></Group>
+  </Groups>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical">
+      <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup1" Weight="35">
+        <LayoutItem DashboardItem="textBoxDashboardItem1" Weight="2" />
+        <LayoutGroup Weight="15">
+          <LayoutItem DashboardItem="cardDashboardItem3" Weight="24.876847290640395" />
+          <LayoutGroup Orientation="Vertical" Weight="34.975369458128078">
+            <LayoutItem DashboardItem="cardDashboardItem7" Weight="50" />
+            <LayoutItem DashboardItem="cardDashboardItem8" Weight="50" />
+          </LayoutGroup>
+          <LayoutGroup Orientation="Vertical" Weight="40.14778325123153">
+            <LayoutItem DashboardItem="cardDashboardItem4" Weight="50" />
+            <LayoutItem DashboardItem="cardDashboardItem9" Weight="50" />
+          </LayoutGroup>
+        </LayoutGroup>
+        <LayoutItem DashboardItem="cardDashboardItem6" Weight="20" />
+        <LayoutGroup Weight="20">
+          <LayoutItem DashboardItem="chartDashboardItem14" Weight="28.940886699507388" />
+          <LayoutItem DashboardItem="pieDashboardItem4" Weight="71.059113300492612" />
+        </LayoutGroup>
+        <LayoutGroup Weight="23">
+          <LayoutItem DashboardItem="chartDashboardItem10" Weight="66.7487684729064" />
+          <LayoutGroup Orientation="Vertical" Weight="33.251231527093594">
+            <LayoutItem DashboardItem="cardDashboardItem1" Weight="80" />
+            <LayoutItem DashboardItem="textBoxDashboardItem2" Weight="20" />
+          </LayoutGroup>
+        </LayoutGroup>
+        <LayoutGroup Weight="20">
+          <LayoutItem DashboardItem="chartDashboardItem1" Weight="58.497536945812811" />
+          <LayoutItem DashboardItem="chartDashboardItem9" Weight="41.502463054187189" />
+        </LayoutGroup>
+      </LayoutGroup>
+      <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup2" Weight="15">
+        <LayoutGroup Weight="45">
+          <LayoutItem DashboardItem="pieDashboardItem2" Weight="60" />
+          <LayoutItem DashboardItem="pieDashboardItem3" Weight="40" />
+        </LayoutGroup>
+        <LayoutItem DashboardItem="pieDashboardItem1" Weight="55" />
+      </LayoutGroup>
+      <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup3" Weight="5">
+        <LayoutGroup Weight="100">
+          <LayoutItem DashboardItem="chartDashboardItem4" Weight="50" />
+          <LayoutItem DashboardItem="chartDashboardItem5" Weight="50" />
+        </LayoutGroup>
+      </LayoutGroup>
+      <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup4" Weight="26">
+        <LayoutGroup Weight="33.333333333333336">
+          <LayoutItem DashboardItem="chartDashboardItem12" Weight="46.921182266009851" />
+          <LayoutItem DashboardItem="chartDashboardItem13" Weight="53.078817733990149" />
+        </LayoutGroup>
+        <LayoutGroup Weight="33.333333333333336">
+          <LayoutItem DashboardItem="chartDashboardItem16" Weight="46.921182266009851" />
+          <LayoutItem DashboardItem="chartDashboardItem11" Weight="53.078817733990149" />
+        </LayoutGroup>
+        <LayoutGroup Weight="33.333333333333336">
+          <LayoutItem DashboardItem="chartDashboardItem6" Weight="46.921182266009851" />
+          <LayoutItem DashboardItem="chartDashboardItem3" Weight="53.078817733990149" />
+        </LayoutGroup>
+      </LayoutGroup>
+      <LayoutGroup DashboardItem="dashboardItemGroup5" Weight="5">
+        <LayoutGroup Orientation="Vertical" Weight="49.876847290640391">
+          <LayoutItem DashboardItem="cardDashboardItem5" Weight="50" />
+        </LayoutGroup>
+        <LayoutItem DashboardItem="chartDashboardItem2" Weight="50.123152709359609" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

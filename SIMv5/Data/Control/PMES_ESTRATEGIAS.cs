@@ -6,25 +6,32 @@ namespace SIM.Data.Control
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("CONTROL.PMES_ESTRATEGIAS_TERCERO")]
-    public partial class PMES_ESTRATEGIAS_TERCERO
+    [Table("CONTROL.PMES_ESTRATEGIAS")]
+    public partial class PMES_ESTRATEGIAS
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PMES_ESTRATEGIAS_TERCERO()
+        public PMES_ESTRATEGIAS()
         {
-            PMES_ESTRATEGIAS_TF = new HashSet<PMES_ESTRATEGIAS_TF>();
             PMES_ESTRATEGIAS_TP = new HashSet<PMES_ESTRATEGIAS_TP>();
+            PMES_ESTRATEGIAS_TF = new HashSet<PMES_ESTRATEGIAS_TF>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
-        public int ID_ESTADO { get; set; }
+        public int ID_GRUPO { get; set; }
+
+        [Required]
+        [StringLength(250)]
+        public string S_NOMBRE { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PMES_ESTRATEGIAS_TP> PMES_ESTRATEGIAS_TP { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PMES_ESTRATEGIAS_TF> PMES_ESTRATEGIAS_TF { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PMES_ESTRATEGIAS_TP> PMES_ESTRATEGIAS_TP { get; set; }
+        [ForeignKey("ID_GRUPO")]
+        public virtual PMES_ESTRATEGIAS_GRUPO PMES_ESTRATEGIAS_GRUPO { get; set; }
     }
 }

@@ -756,6 +756,41 @@ namespace SIM.Areas.Tramites.Controllers
             return "OK";
         }
 
+        [HttpGet, ActionName("MarcaAguaAnulacionDocumento")]
+        public string GetMarcaAguaAnulacionDocumento(int id) // ict = 1 Insertar Comentarios Trámite
+        {
+            try
+            {
+                ANULACION_DOC anulacionDocumento = (from ad in dbSIM.ANULACION_DOC
+                                                    where ad.ID_ANULACION_DOC == id
+                                                    select ad).FirstOrDefault();
+
+                if (anulacionDocumento.S_FORMULARIO != "54")
+                    return "ERROR:Anulación aun pendiente por finalizar.";
+
+                var proyeccion = dbSIM.PROYECCION_DOC.Where(p => p.ID_PROYECCION_DOC == anulacionDocumento.ID_PROYECCION_DOC).FirstOrDefault();
+
+                TramitesLibrary tramitesAnular = new TramitesLibrary();
+
+                // Se ingresa el comentario a cada trámite en la tarea en la que actualmente se encuentan
+                foreach (var tramiteProyeccion in proyeccion.TRAMITES_PROYECCION)
+                {
+                    var tramiteDocumento = (from td in dbSIM.TBTRAMITEDOCUMENTO
+                                            where td.CODTRAMITE == tramiteProyeccion.CODTRAMITE && td.CODDOCUMENTO == tramiteProyeccion.CODDOCUMENTO
+                                            select td).FirstOrDefault();
+
+                    tramitesAnular.DocumentoMarcaAgua(tramiteDocumento.RUTA, "ANULADO", true);
+                }
+            }
+            catch (Exception error)
+            {
+                Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "AnulacionDocumento [GetGenerarAnulacionDocumento (" + id.ToString() + "] : Se presentó un error generando el documento de anulación.\r\n" + Utilidades.LogErrores.ObtenerError(error));
+                return "ERROR: " + id.ToString() + "<br/>Se presentó un error con la marca de agua.";
+            }
+
+            return "OK";
+        }
+
         [Authorize]
         [HttpGet, ActionName("RechazarDocumento")]
         public string GetRechazarDocumento(int id)

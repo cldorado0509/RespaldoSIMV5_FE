@@ -2581,6 +2581,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 var sql1 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion.txt"));
                 var sql2 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_2.txt"));
                 var sql3 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_3.txt"));
+                var sql4 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_4.txt"));
 
                 var pendientesActualizar = dbSIM.Database.SqlQuery<ACTUALIZACIONPMES>("SELECT ID, ID_ENCUESTA, ID_TERCERO, ID_INSTALACION, S_VALOR_VIGENCIA FROM CONTROL.ENC_DATOS_MODIFICADOS WHERE D_FECHA_INICIO IS NULL AND NVL(N_ERROR, 0) = 0 AND D_FECHA <= TO_DATE('" + fechaActual.ToString("yyyyMMdd HH:mm:ss") + "', 'YYYYMMDD HH24:MI:SS') ORDER BY ID").ToList<ACTUALIZACIONPMES>();
 
@@ -2610,6 +2611,9 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                                     break;
                                 case 3:
                                     sqlInstalacion = sql3.Replace("#ID#", actualizacion.ID.ToString());
+                                    break;
+                                case 4:
+                                    sqlInstalacion = sql4.Replace("#ID#", actualizacion.ID.ToString());
                                     break;
                                 default:
                                     sqlInstalacion = sql1.Replace("#ID#", actualizacion.ID.ToString());
@@ -2697,6 +2701,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 var sql1 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion.txt"));
                 var sql2 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_2.txt"));
                 var sql3 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_3.txt"));
+                var sql4 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_4.txt"));
 
                 var pendientesActualizar = dbSIM.Database.SqlQuery<ACTUALIZACIONPMES>("SELECT ID, ID_ENCUESTA, ID_TERCERO, ID_INSTALACION, S_VALOR_VIGENCIA FROM CONTROL.ENC_DATOS_MODIFICADOS WHERE ID = " + id.ToString()).ToList<ACTUALIZACIONPMES>();
 
@@ -2726,6 +2731,9 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                                     break;
                                 case 3:
                                     sqlInstalacion = sql3.Replace("#ID#", actualizacion.ID.ToString());
+                                    break;
+                                case 4:
+                                    sqlInstalacion = sql4.Replace("#ID#", actualizacion.ID.ToString());
                                     break;
                                 default:
                                     sqlInstalacion = sql1.Replace("#ID#", actualizacion.ID.ToString());

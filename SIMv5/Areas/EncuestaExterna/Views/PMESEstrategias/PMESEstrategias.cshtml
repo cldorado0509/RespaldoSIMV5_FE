@@ -1,4 +1,6 @@
 ﻿@using SIM.Properties
+@using SIM.Data.Control
+@using System.Linq;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -22,57 +24,130 @@
     .dx-list-item, .dx-list .dx-empty-message {
         border-top: unset;
     }
+
+    .mergecells {
+        display: table-cell;
+        vertical-align: middle !important;
+        border-color: rgba(61, 70, 109, 0.5) !important;
+        border-style: solid !important;
+        border-width: 0.2px 0.2px 0.2px 0.2px !important;
+        background: white !important;
+        color: black !important;
+    }
+
+    .mergecellselected {
+        background: rgba(175, 21, 30, 0.8) !important;
+        color: white !important;
+    }  
 </style>
 
 <script type="text/javascript" src="@Url.Content("~/Areas/EncuestaExterna/Scripts/PMESEstrategias/estrategias.js?v=1.00")"></script>
 
-<div id="popDetallePreguntaPEMS" style="padding: 0px">
-    <div style="height: calc(100% - 50px); ">
-        <div id="lstDetallePregunta" style="height: unset; margin-bottom: 20px"></div>
-        <div id="txtTextoComplementarioPregunta" style="height: 100px"></div>
-    </div>
-    <div style="height: 50px; text-align: center">
-        <div id="btnAceptarOpciones" style="height: 40px; margin-bottom: 10px"></div>
-        <div id="btnCancelarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+<div id="popEstrategia" style="padding: 0px">
+    <div id="frmDatosEstrategia"></div>
+    <div style="height: 50px; width: 100%; position: absolute; bottom: 0; left: 0;">
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <div id="aceptarEstrategia"></div>
+            </div>
+            <div class="col-md-3">
+                <div id="cancelarEstrategia"></div>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
     </div>
 </div>
 
-<div id="popDetallePreguntaPEPC" style="padding: 0px">
-    <div style="height: calc(100% - 50px); ">
-        <div id="lstDetallePregunta" style="height: unset; margin-bottom: 20px"></div>
-        <div id="txtTextoComplementarioPregunta" style="height: 100px"></div>
-    </div>
-    <div style="height: 50px; text-align: center">
-        <div id="btnAceptarOpciones" style="height: 40px; margin-bottom: 10px"></div>
-        <div id="btnCancelarOpciones" style="height: 40px; margin-bottom: 10px"></div>
+<div id="popActividad" style="padding: 0px">
+    <div id="frmDatosActividad"></div>
+    <div style="height: 50px; width: 100%; position: absolute; bottom: 0; left: 0;">
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <div id="aceptarActividad"></div>
+            </div>
+            <div class="col-md-3">
+                <div id="cancelarActividad"></div>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
     </div>
 </div>
 
 <div style="padding: 0px;">
-    <div data-url="@Url.Content("~")" id="app" resizable>
+    <div data-url="@Url.Content("~")" data-e="@ViewBag.Estado"  data-et="@ViewBag.EstrategiasTercero" id="app" resizable>
         <div class="panelSIM-default">
             <div id="loadPanel"></div>
-            <div class="panelSIM panelSIM-default" id="pnlContenedor">
-                <div class="col-md-8" />
-                <div class="col-md-4">Vigencia: @ViewBag.Vigencia</div>
-                <div id="pnlGridEstrategias">
-                    <div>
-                        <div id="grdPreguntas"></div>
-                    </div>
-                    <div class="row" style="height: 50px;">
-                        <div class="col-md-6">
-                            <div class="dx-field">
-                                <div id="tipoTramites"></div>
+            <div class="panelSIM" id="pnlContenedor">
+                <div class="col-md-12">Vigencia: @ViewBag.Vigencia</div>
+                @foreach (PMES_ESTRATEGIAS_ENCABEZADO encabezado in ViewBag.Encabezados)
+                {
+                    <div class="dx-datagrid">
+                        <div class="dx-datagrid-rowsview dx-scrollable dx-scrollable-customizable-scrollbars dx-scrollable-both dx-scrollable-simulated dx-visibility-change-handler" tabindex="0" style="height: auto;">
+                            <div class="dx-scrollable-container" style="">
+                                <div class="dx-scrollable-content" style="transform: translate(0px, 0px);">
+                                    <div class="dx-datagrid-content">
+                                        <table class="dx-datagrid-table dx-datagrid-table-fixed" role="grid">
+                                            <colgroup><col style="width: 10px;"></colgroup>
+                                            <tbody>
+                                                <tr class="dx-row" role="rowgroup" aria-expanded="true" aria-selected="false" style="background:#006DB6">
+                                                    <td role="gridcell" class="dx-command-expand dx-datagrid-group-space" style="text-align: left;"></td>
+                                                    <td role="gridcell" colspan="2" style="text-align: left; color:white"><span style="font-weight: bold; font-size: large;">@encabezado.S_NOMBRE</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="dx-field">
-                                <div id="noAvanzaTramites" style="float: left"></div>
-                                <div style="float: left; font-weight: bold; margin-left: 10px">Se requiere adicionar otro documento. No avanzar tr&aacute;mite.</div>
+                    </div>
+                    foreach (PMES_ESTRATEGIAS_GRUPO grupo in ((List<PMES_ESTRATEGIAS_GRUPO>)ViewBag.Grupos).Where(gr => gr.ID_ENCABEZADO == encabezado.ID))
+                    {
+                        <div class="dx-datagrid">
+                            <div class="dx-datagrid-rowsview dx-scrollable dx-scrollable-customizable-scrollbars dx-scrollable-both dx-scrollable-simulated dx-visibility-change-handler" tabindex="0" style="height: auto;">
+                                <div class="dx-scrollable-container" style="">
+                                    <div class="dx-scrollable-content" style="transform: translate(0px, 0px);">
+                                        <div class="dx-datagrid-content">
+                                            <table class="dx-datagrid-table dx-datagrid-table-fixed" role="grid">
+                                                <colgroup><col style="width: 90%;"><col style="width:30px;"></colgroup>
+                                                <tbody>
+                                                    <tr class="dx-row dx-column-lines dx-group-row" role="rowgroup" aria-expanded="true" aria-selected="false">
+                                                        <td role="gridcell" colspan="2" style="text-align: left;"><span style="font-weight: bold;">@grupo.S_TITULO</span></td>
+                                                        <td style="padding-top: 2px !important; padding-bottom: 2px !important; float: right;"><div name="btnNuevo_@grupo.ID_ENCABEZADO" idGrupo="@grupo.ID" titulo="@grupo.S_TITULO"  id="btnNuevo_@grupo.ID"></div></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        <div class="dx-datagrid" style="margin-left: 30px;">
+                            <div name="grdEstrategiasGrupo_@grupo.ID_ENCABEZADO" idGrupo="@grupo.ID" id="grdEstrategiasGrupo_@grupo.ID" titulo="@grupo.S_TITULO"></div>
+                            <div class="dx-datagrid-rowsview dx-scrollable dx-scrollable-customizable-scrollbars dx-scrollable-both dx-scrollable-simulated dx-visibility-change-handler" tabindex="0" style="height: auto;">
+                                <div class="dx-scrollable-container" style="">
+                                    <div class="dx-scrollable-content" style="transform: translate(0px, 0px);">
+                                        <div class="dx-datagrid-content">
+                                            <table class="dx-datagrid-table dx-datagrid-table-fixed" role="grid">
+                                                <tbody>
+                                                    <tr class="dx-row dx-column-lines dx-group-row" role="rowgroup" aria-expanded="true" aria-selected="false">
+                                                        <td role="gridcell" colspan="2" style="text-align: left;"><span style="font-weight: bold;">DEFINICI&Oacute;N DE METAS</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div name="grdMetasGrupo" idGrupo="@grupo.ID" id="grdMetasGrupo_@grupo.ID"></div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>

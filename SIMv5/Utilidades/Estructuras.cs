@@ -487,6 +487,12 @@ namespace SIM.Utilidades
             public string json { set; get; }
         }
 
+        public class OPCIONES_RESPUESTA_DOM
+        {
+            public int ID_OPCION_RESPUESTA_DOM { set; get; }
+            public string S_SQL { set; get; }
+        }
+
         private EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
 
         public DatosJson ObtenerJsonEncuesta(int idEstado, int idFormulario, int idVigencia)
@@ -625,7 +631,7 @@ namespace SIM.Utilidades
                         "FROM CONTROL.ENC_OPCION_RESPUESTA_DOM " +
                         "WHERE ID_OPCION_RESPUESTA_DOM in (" + opcionesDom + ")";
 
-            var listaOpciones = dbSIM.Database.SqlQuery<dynamic>(sqlListaOpciones).ToList<dynamic>();
+            var listaOpciones = dbSIM.Database.SqlQuery<OPCIONES_RESPUESTA_DOM>(sqlListaOpciones).ToList<OPCIONES_RESPUESTA_DOM>();
 
             foreach (var lista in listaOpciones)
             {
@@ -646,7 +652,7 @@ namespace SIM.Utilidades
 
                 foreach (PREGUNTA pregunta in preguntas.Where(p => p.ID_OPCION_RESPUESTA_DOM == lista.ID_OPCION_RESPUESTA_DOM))
                 {
-                    var sqlOpcionesSeleccionadas = "SELECT ID_PREGUNTA, ID_VALOR FROM CONTROL.ENC_SOLUCION_PREGUNTAS WHERE ID_PREGUNTA = " + pregunta.ID_PREGUNTA.ToString() + " AND sp.ID_SOLUCION_PREGUNTAS IN (" + listaSoluciones + ") ";
+                    var sqlOpcionesSeleccionadas = "SELECT ID_PREGUNTA, ID_VALOR FROM CONTROL.ENC_SOLUCION_PREGUNTAS WHERE ID_PREGUNTA = " + pregunta.ID_PREGUNTA.ToString() + " AND ID_SOLUCION_PREGUNTAS IN (" + listaSoluciones + ") ";
                     var opcionesSeleccionadas = dbSIM.Database.SqlQuery<dynamic>(sqlOpcionesSeleccionadas).ToList<dynamic>();
 
                     var opcionesPregunta = (from o in opciones

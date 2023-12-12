@@ -250,6 +250,12 @@ namespace SIM.Areas.Dashboard.Controllers
                             "WHERE ID_PREGUNTA = 4047 " +
                             "ORDER BY N_ORDEN";
                     break;
+                case 4:
+                    sql = "SELECT ID_RESPUESTA AS ID_MODO, TRIM(S_VALOR) AS MODO " +
+                            "FROM CONTROL.ENC_OPCION_RESPUESTA " +
+                            "WHERE ID_PREGUNTA = 5436 " +
+                            "ORDER BY N_ORDEN";
+                    break;
             }
 
             var modos = dbSIM.Database.SqlQuery<ModoTransporte>(sql).ToList();
@@ -566,6 +572,9 @@ namespace SIM.Areas.Dashboard.Controllers
                         break;*/
                     case 3:
                         model.DashboardSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Content/Dashboard/PMES_2022.xml");
+                        break;
+                    case 4:
+                        model.DashboardSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Content/Dashboard/PMES_2023.xml");
                         break;
                     case 100:
                         model.DashboardSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Content/Dashboard/SPMES_2021.xml");
