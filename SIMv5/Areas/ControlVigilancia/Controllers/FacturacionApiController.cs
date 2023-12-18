@@ -1,28 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using SIM.Data;
+using SIM.Data.Seguridad;
+using SIM.Data.Tramites;
 using System;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using SIM.Areas.Models;
 using System.Security.Claims;
-using SIM.Areas.Tramites.Models;
-using SIM.Utilidades;
-using System.IO;
-using System.Web.Hosting;
-using SIM.Data;
-using SIM.Data.Tramites;
-using SIM.Models;
-using co.com.certicamara.encryption3DES.code;
-using SIM.Utilidades.FirmaDigital;
-using System.Text;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using SIM.Data.Seguridad;
+using System.Web.Http;
 
 namespace SIM.Areas.ControlVigilancia.Controllers
 {
@@ -90,8 +74,8 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                 idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
 
                 usuario = (from u in dbSIM.USUARIO
-                            where u.ID_USUARIO == idUsuario
-                            select u).FirstOrDefault();
+                           where u.ID_USUARIO == idUsuario
+                           select u).FirstOrDefault();
             }
             else
             {
@@ -223,7 +207,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
 
                     dbSIM.Entry(indiceFacturaDocumento).State = EntityState.Modified;
                 }
-
+                indiceFacturaDocumento.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(Tramite) && w.CODDOCUMENTO.Equals(Documento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                 dbSIM.SaveChanges();
             }
         }

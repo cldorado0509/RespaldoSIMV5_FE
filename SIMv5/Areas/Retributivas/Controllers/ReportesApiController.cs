@@ -1,31 +1,24 @@
 ﻿
 namespace SIM.Areas.Retributivas.Controllers
 {
+    using DevExpress.XtraRichEdit;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SIM.Areas.Retributivas.Models;
-    using System.Security.Claims;
-    using DevExpress.XtraRichEdit;
-    using DevExpress.XtraPrinting;
+    using SIM.Data;
+    using SIM.Data.Agua;
+    using SIM.Data.Tramites;
+    using SIM.Models;
+    using SIM.Utilidades;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Web.Http;
-    using SIM.Data.Agua;
-    using SIM.Data.Seguridad;
-    using SIM.Data;
-    using DevExpress.UnitConversion;
-    using SIM.Models;
     using System.Globalization;
     using System.IO;
-    using System.Web.Hosting;
-    using SIM.Data.Tramites;
-    using DevExpress.Utils.Filtering;
-    using SIM.Utilidades;
-    using SIM.Areas.ControlVigilancia.Models;
+    using System.Linq;
+    using System.Security.Claims;
     using System.Text;
+    using System.Web.Hosting;
+    using System.Web.Http;
 
     public class ReportesApiController : ApiController
     {
@@ -190,7 +183,7 @@ namespace SIM.Areas.Retributivas.Controllers
                                      trn.TSIMTASA_TIPO_CUENCAS_ID,
                                      trn.LONGITUD,
                                      trn.ID_MUNICIPIO,
-                                     CuencaMunicipio = trn.NOMBRE + " - " + M.NOMBRE 
+                                     CuencaMunicipio = trn.NOMBRE + " - " + M.NOMBRE
                                  });
 
                 return JArray.FromObject(modelData, Js);
@@ -300,7 +293,7 @@ namespace SIM.Areas.Retributivas.Controllers
                                  trn.LONGITUD,
                                  trn.TSIMTASA_TIPO_CUENCAS_ID,
                                  trn.ID_MUNICIPIO
-                                
+
 
                              }).FirstOrDefault();
 
@@ -334,7 +327,7 @@ namespace SIM.Areas.Retributivas.Controllers
                                  {
                                      Vertimiento_Id = cu.ID,
                                      Vertimiento = cu.NOMBRE + " - " + M.NOMBRE,
-                                     
+
 
                                  });
 
@@ -629,11 +622,11 @@ namespace SIM.Areas.Retributivas.Controllers
 
                         #region Genera el radicado para la Comunicación Oficial Recibida
                         Radicador radicador = new Radicador();
-                        var radicado = radicador.GenerarRadicado(this.dbSIM, 10,421,DateTime.Now);
+                        var radicado = radicador.GenerarRadicado(this.dbSIM, 10, 421, DateTime.Now);
                         var radicadoReport = new Radicado01Report();
                         var etiquetaradicado = radicadoReport.GenerarEtiqueta(radicado.IdRadicado, "PNG");
 
-                     
+
                         #endregion
 
                         server.ExportToPdf(corPDF);
@@ -655,7 +648,7 @@ namespace SIM.Areas.Retributivas.Controllers
 
                         TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
                         {
-                            CODTRAMITE =  1026775,
+                            CODTRAMITE = 1026775,
                             CODDOCUMENTO = codmaxDoc,
                             TIPODOCUMENTO = 2,
                             FECHACREACION = DateTime.Now,
@@ -684,7 +677,8 @@ namespace SIM.Areas.Retributivas.Controllers
                         {
                             CODTRAMITE = 1026775,
                             CODINDICE = int.Parse(IdIndiceRadicado),
-                            CODDOCUMENTO =codmaxDoc,
+                            CODDOCUMENTO = codmaxDoc,
+                            ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                             VALOR = radicado.Radicado
                         };
 
@@ -696,6 +690,7 @@ namespace SIM.Areas.Retributivas.Controllers
                             CODTRAMITE = 1026775,
                             CODINDICE = int.Parse(IdIndiceAsunto),
                             CODDOCUMENTO = codmaxDoc,
+                            ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                             VALOR = "Autodeclaración de Vertimientos de Tasas Retributivas"
                         };
 
@@ -707,6 +702,7 @@ namespace SIM.Areas.Retributivas.Controllers
                             CODTRAMITE = 1026775,
                             CODINDICE = int.Parse(IdIndiceFechaRadicado),
                             CODDOCUMENTO = codmaxDoc,
+                            ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                             VALOR = radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy")
                         };
 
@@ -718,6 +714,7 @@ namespace SIM.Areas.Retributivas.Controllers
                             CODTRAMITE = 1026775,
                             CODINDICE = int.Parse(IdIndiceRemitente),
                             CODDOCUMENTO = codmaxDoc,
+                            ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                             VALOR = "Remite XXX"
                         };
 
@@ -1030,7 +1027,7 @@ namespace SIM.Areas.Retributivas.Controllers
                     var _Id_Tercero = get_Id_Tercero();
 
                     int estadoReporteIncompleto = 4;
-                    int.TryParse(Utilidades.Data.ObtenerValorParametro("TasaRetributivaEstadoReporteIncompleto"),out estadoReporteIncompleto);
+                    int.TryParse(Utilidades.Data.ObtenerValorParametro("TasaRetributivaEstadoReporteIncompleto"), out estadoReporteIncompleto);
 
                     int tipoReporteCalculado = 1;
                     int.TryParse(Utilidades.Data.ObtenerValorParametro("TasaRetributivaTipoReporteCalculado"), out tipoReporteCalculado);
@@ -1080,7 +1077,7 @@ namespace SIM.Areas.Retributivas.Controllers
                         }
                     }
                     //else if (Id <= 0  && contadorReportes.Count() < contadorCuencas.Count())   /no entiendo esta validación
-                    else if (Id <= 0  && contadorReportes.Count() == 0)
+                    else if (Id <= 0 && contadorReportes.Count() == 0)
                     {
 
                         TSIMTASA_REPORTES _newTurn = new TSIMTASA_REPORTES
