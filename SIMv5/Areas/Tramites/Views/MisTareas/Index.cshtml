@@ -50,11 +50,13 @@
                 <label class="header">Mis tareas</label>
             </h3>
         </div>
-        <div id="TabPanel"></div>
-        <br>
-        <div class="row col-md-12">
-            <div class="col-md-6"></div>
-            <div class="col-md-6">
+        @if (Model.CodFuncionario > 0)
+        {
+            <div id="TabPanel"></div>
+            <br>
+            <div class="row col-md-12">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
                     <table cellpadding=0 cellspacing=0 border=1 width="100%">
                         <tr>
                             <td align="center" bgcolor="gainsboro" colspan="3" width="50%" style="border-style: solid; border-width: 1px; border-color: #000000;">
@@ -73,18 +75,22 @@
                             <td align="center" bgcolor="whitesmoke"><Label Font-Names="Arial" Font-Size="8pt" Width="100%">No abiertas: @Model.NroTareasCopiaNoAbiertas</Label></td>
                         </tr>
                     </table>
+                </div>
             </div>
-        </div>
             <div class="panelSIM-footer" style="width: 100%;">
                 <h2 class="panelSIM-title"><label class="header" style="width: 100%; text-align: center">Convenciones</label></h2>
                 <div class="col-md-12" style="text-align: center;"><img src="~/Content/Images/convenciones.png" /></div>
             </div>
-            <script id="MisTareasTemplate" type="text/html">
-            </script>
-            <script id="tareasDepTemplate" type="text/html">
-            </script>
             <div id="popAvanzaTareaTramite" style="padding: 0px">
                 <iframe src="" id="frmAvanzaTareaTramite" style="width:100%; height:100%" frameborder="0" scrolling="no"></iframe>
             </div>
-        </div>
+        }
+        else
+        {
+            <span class="col-md-12 text-center"><b>El usuario no tiene un funcionario asociado para mostrar las tareas</b></span>
+            <br />
+        }
+    </div>
+    <script id="MisTareasTemplate" type="text/html"></script>
+    <script id="tareasDepTemplate" type="text/html"></script>
 </div>
