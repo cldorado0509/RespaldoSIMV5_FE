@@ -1,13 +1,8 @@
 ﻿using SIM.Data;
-using SIM.Areas.Facturacion.Models;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using System.Data.Entity.SqlServer;
 
 namespace SIM.Areas.Facturacion.Controllers
 {
@@ -101,7 +96,7 @@ namespace SIM.Areas.Facturacion.Controllers
             else
             {
                 var model = (from Inf in dbSIM.QRY_INFORMEFACTURA
-                             where Inf.CONTROL_SEGUIMIENTO_AMBIENTAL == "S" && string.IsNullOrEmpty(Inf.FACTURA_ASIGNADA) 
+                             where Inf.CONTROL_SEGUIMIENTO_AMBIENTAL == "S" && string.IsNullOrEmpty(Inf.FACTURA_ASIGNADA)
                              select Inf);
 
                 modelData = model;

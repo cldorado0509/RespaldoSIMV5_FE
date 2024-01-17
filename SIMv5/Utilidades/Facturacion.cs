@@ -1,21 +1,17 @@
 ﻿using O2S.Components.PDF4NET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using SIM.Areas.Facturacion.Models;
-using O2S.Components.PDF4NET.Graphics.Shapes;
-using O2S.Components.PDF4NET.Graphics.Fonts;
 using O2S.Components.PDF4NET.Graphics;
+using O2S.Components.PDF4NET.Graphics.Fonts;
+using O2S.Components.PDF4NET.Graphics.Shapes;
+using SIM.Areas.Facturacion.Models;
 using SIM.Data;
-using SIM.Areas.Tramites.Models;
-using System.Data;
-using System.IO;
-using System.Web.Hosting;
-using System.Drawing;
-using AreaMetro.Utilidades;
 using SIM.Data.Facturacion;
 using SIM.Data.Tramites;
+using System;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Web.Hosting;
 
 namespace SIM.Utilidades
 {
@@ -38,7 +34,7 @@ namespace SIM.Utilidades
             MemoryStream oStream = new MemoryStream();
             var _ModFact = (from Fact in dbSIM.FACTURA
                             where Fact.ID_FACTURA == _IdFact
-                            select  Fact).FirstOrDefault();
+                            select Fact).FirstOrDefault();
             if (_ModFact != null)
             {
                 PDFPage Pagina = _Doc.AddPage();
@@ -385,8 +381,8 @@ namespace SIM.Utilidades
             if (_Dig > 0) _NitN = long.Parse(_Nit.ToString() + _Dig.ToString()); else _NitN = _Nit;
 
             var _IdTercSIM = (from Tercero in dbSIM.TERCERO
-                             where Tercero.N_DOCUMENTO == _NitN || Tercero.N_DOCUMENTON == _Nit
-                             select Tercero.ID_TERCERO).FirstOrDefault();
+                              where Tercero.N_DOCUMENTO == _NitN || Tercero.N_DOCUMENTON == _Nit
+                              select Tercero.ID_TERCERO).FirstOrDefault();
             return _IdTercSIM;
         }
         /// <summary>
@@ -498,6 +494,7 @@ namespace SIM.Utilidades
             if (Indices != null)
             {
                 Indices.VALOR = _Factura + "-" + _Ano;
+                Indices.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_CodTramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                 dbSIM.SaveChanges();
                 _Respuesta = "Factura asociada correctamente";
             }
@@ -509,6 +506,7 @@ namespace SIM.Utilidades
                 IndiceNew.CODINDICE = Convert.ToInt32(_IdIndiceFacturaInforme);
                 IndiceNew.VALOR = _Factura + "-" + _Ano;
                 IndiceNew.FECHAREGISTRO = DateTime.Now;
+                IndiceNew.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_CodTramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                 dbSIM.TBINDICEDOCUMENTO.Add(IndiceNew);
                 dbSIM.SaveChanges();
                 _Respuesta = "Factura asociada correctamente";
@@ -539,6 +537,7 @@ namespace SIM.Utilidades
                 if (Indices != null)
                 {
                     Indices.VALOR = _Factura + "-" + _Ano;
+                    Indices.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_CodTramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.SaveChanges();
                     _Respuesta = "Factura asociada correctamente";
                 }
@@ -551,6 +550,7 @@ namespace SIM.Utilidades
                     IndiceNew.CODSERIE = TipoDc;
                     IndiceNew.VALOR = _Factura + "-" + _Ano;
                     IndiceNew.FECHAREGISTRO = DateTime.Now;
+                    IndiceNew.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_CodTramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(IndiceNew);
                     dbSIM.SaveChanges();
                     _Respuesta = "Factura asociada correctamente";
@@ -581,6 +581,7 @@ namespace SIM.Utilidades
                 if (Indices != null)
                 {
                     Indices.VALOR = Valor.ToString();
+                    Indices.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(Codtramite) && w.CODDOCUMENTO.Equals(CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.SaveChanges();
                     _Respuesta = "Valor de Factura guardado correctamente";
                 }
@@ -593,6 +594,7 @@ namespace SIM.Utilidades
                     IndiceNew.CODSERIE = TipoDc;
                     IndiceNew.VALOR = Valor.ToString();
                     IndiceNew.FECHAREGISTRO = DateTime.Now;
+                    IndiceNew.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(Codtramite) && w.CODDOCUMENTO.Equals(CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(IndiceNew);
                     dbSIM.SaveChanges();
                     _Respuesta = "Valor de Factura guardado correctamente";

@@ -13,7 +13,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Web;
+using System.Security.Claims;
 using System.Web.Hosting;
 using System.Web.Mvc;
 
@@ -52,7 +52,7 @@ namespace SIM.Areas.Facturacion.Controllers
                              }).FirstOrDefault();
             if (Parametro != null)
             {
-                 resp = (JObject)JToken.FromObject(Parametro);
+                resp = (JObject)JToken.FromObject(Parametro);
             }
             return resp;
         }
@@ -98,6 +98,18 @@ namespace SIM.Areas.Facturacion.Controllers
         [Route("CalcularSeguimiento")]
         public JObject CalcularSeguimiento(DatosCalculo datosCalculo)
         {
+            int idUsuario = 0;
+            string _usuario = "";
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+                _usuario = dbSIM.USUARIO.Where(w => w.ID_USUARIO == idUsuario).Select(s => s.S_NOMBRES + " " + s.S_APELLIDOS).FirstOrDefault();
+
+            }
+
             Seguimiento RetCalculo = new Seguimiento();
             CalculoSeguimiento Calculo = new CalculoSeguimiento();
             //string Ano = DateTime.Now.Year.ToString();
@@ -146,7 +158,7 @@ namespace SIM.Areas.Facturacion.Controllers
                 if (Factor > 0)
                 {
                     TotalHTecnicoS = (HorasInforme + DuracionVisita);
-                    TotalHTecnicoSS = (HorasInforme * Factor ) + DuracionVisita;
+                    TotalHTecnicoSS = (HorasInforme * Factor) + DuracionVisita;
                 }
                 else TotalHTecnicoS = HorasInforme + DuracionVisita;
                 //  double TotalHAbogadoS = (double)tarifaS;
@@ -187,10 +199,10 @@ namespace SIM.Areas.Facturacion.Controllers
             Calculo.HorasInforme = (decimal)HorasInforme;
             Calculo.DuracionVisita = (decimal)DuracionVisita;
             Calculo.Observaciones = datosCalculo.Observaciones;
-            Calculo.IdTramite = int.Parse( _IdTipoTramite);
+            Calculo.IdTramite = int.Parse(_IdTipoTramite);
             Calculo.CantNormas = datosCalculo.CantNormas;
             Calculo.CantLineas = datosCalculo.CantLineas;
-            RetCalculo.Soporte = SoportePdfSeguimiento(Calculo);
+            RetCalculo.Soporte = SoportePdfSeguimiento(Calculo, _usuario);
             JObject resp = (JObject)JToken.FromObject(RetCalculo);
             return resp;
         }
@@ -227,7 +239,7 @@ namespace SIM.Areas.Facturacion.Controllers
             return ret;
         }
 
-        private byte[] SoportePdfSeguimiento(CalculoSeguimiento datosCalculo)
+        private byte[] SoportePdfSeguimiento(CalculoSeguimiento datosCalculo, string Usuario)
         {
             PDFDocument _Doc = new PDFDocument();
             MemoryStream oStream = new MemoryStream();
@@ -288,7 +300,7 @@ namespace SIM.Areas.Facturacion.Controllers
                 PDFTextFormatOptions tfo = new PDFTextFormatOptions();
                 tfo.Align = PDFTextAlign.TopJustified;
                 tfo.ClipText = PDFClipText.ClipNone;
-                Pagina.Canvas.DrawTextBox(datosCalculo.Observaciones != null ? datosCalculo.Observaciones.Trim().ToUpper(): "", _Arial, brush, 200, 1100, 2000, 200, tfo);
+                Pagina.Canvas.DrawTextBox(datosCalculo.Observaciones != null ? datosCalculo.Observaciones.Trim().ToUpper() : "", _Arial, brush, 200, 1100, 2000, 200, tfo);
                 Pagina.Canvas.DrawRectangle(_Pen, null, (Pagina.Width / 2) - 800, 1350, 1500, 100, 0);
                 Pagina.Canvas.DrawText("CALCULO DEL VALOR DEL SEGUIMIENTO", _Arial, null, brush, 1000, 1360);
                 Pagina.Canvas.DrawText("ITEM                                                                                   VALOR", _Arial, null, brush, 900, 1400);
@@ -307,6 +319,7 @@ namespace SIM.Areas.Facturacion.Controllers
                 Pagina.Canvas.DrawText(datosCalculo.TopeDeterminado.ToString("C", cultureInfo), _Arial, null, brush, 1700, 1670);
                 Pagina.Canvas.DrawText("VALOR A CANCELAR POR TRÁMITE :                                          ", _Arial, null, brush, 500, 1710);
                 Pagina.Canvas.DrawText(datosCalculo.TotalPagar, _Arial, null, brush, 1700, 1710);
+                Pagina.Canvas.DrawText("Cálculo realizado por: " + Usuario.ToUpper().Trim(), _Arial, null, brush, 110, 1900);
             }
             _Doc.Save(oStream);
             oStream.Seek(0, SeekOrigin.Begin);
@@ -389,8 +402,8 @@ namespace SIM.Areas.Facturacion.Controllers
         private string ObtenerNombreTramite(decimal TipoTramite)
         {
             var Tramite = (from Tra in dbSIM.TBTARIFAS_TRAMITE
-                                where Tra.CODIGO_TRAMITE == TipoTramite && Tra.TIPO_ACTUACION == "S"
-                                select Tra.NOMBRE).FirstOrDefault();
+                           where Tra.CODIGO_TRAMITE == TipoTramite && Tra.TIPO_ACTUACION == "S"
+                           select Tra.NOMBRE).FirstOrDefault();
             if (Tramite != null) return Tramite;
             else return "";
         }
@@ -398,8 +411,8 @@ namespace SIM.Areas.Facturacion.Controllers
         private string UnidadMedidaItems(decimal TipoTramite)
         {
             var Unidad = (from Tra in dbSIM.TBTARIFAS_TRAMITE
-                           where Tra.CODIGO_TRAMITE == TipoTramite 
-                           select Tra.S_UNIDAD).FirstOrDefault();
+                          where Tra.CODIGO_TRAMITE == TipoTramite
+                          select Tra.S_UNIDAD).FirstOrDefault();
             if (Unidad != null) return Unidad;
             else return "";
         }
@@ -407,8 +420,8 @@ namespace SIM.Areas.Facturacion.Controllers
         private decimal ObtenerRelacionSeguimiento(decimal TipoTramite)
         {
             var Relacion = (from Rel in dbSIM.TBTARIFAS_TRAMITE
-                                where Rel.CODIGO_TRAMITE == TipoTramite && Rel.TIPO_ACTUACION == "S"
-                                select new { Valor = Rel.N_RELACION }).FirstOrDefault();
+                            where Rel.CODIGO_TRAMITE == TipoTramite && Rel.TIPO_ACTUACION == "S"
+                            select new { Valor = Rel.N_RELACION }).FirstOrDefault();
             if (Relacion.Valor >= 0) return Relacion.Valor.Value;
             else return 0;
         }

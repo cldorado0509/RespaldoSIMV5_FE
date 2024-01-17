@@ -1,25 +1,20 @@
 ﻿namespace SIM.Areas.Contratos.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Web.Http;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using O2S.Components.PDF4NET;
-    using SIM.Utilidades;
-    using System.Text;
-    using SIM.Areas.Models;
-    using SIM.Areas.Tramites.Models;
-    using System.Threading.Tasks;
     using SIM.Data;
     using SIM.Data.Contrato;
     using SIM.Data.Tramites;
+    using SIM.Utilidades;
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Web.Http;
 
     [Authorize]
     public class PropuestaApiController : ApiController
@@ -266,7 +261,7 @@
                 DatosProceso.Funcionario = Proceso.Funcionario;
                 DatosProceso.Propuestas = Propuestas.ToString();
                 DatosProceso.Subidas = PropSubidas.ToString();
-                DatosProceso.FechaSIM = Proceso.D_PASOSIM != null? Proceso.D_PASOSIM.Value.ToString("yyyy-MM-dd HH:mm:ss") : "";
+                DatosProceso.FechaSIM = Proceso.D_PASOSIM != null ? Proceso.D_PASOSIM.Value.ToString("yyyy-MM-dd HH:mm:ss") : "";
                 return JObject.FromObject(DatosProceso, Js);
             }
             catch (Exception exp)
@@ -670,7 +665,8 @@
                             Rpta.SubirCorrecto = "Error";
                             Rpta.Mensaje = "Ocurrió un problema leyendo el documento de la propuesta";
                         }
-                    }else
+                    }
+                    else
                     {
                         Rpta.SubirCorrecto = "Ok";
                     }
@@ -904,7 +900,7 @@
             relaDocTra.CODTRAMITE = _Codtramite;
             relaDocTra.ID_DOCUMENTO = tramiteDocumento.ID_DOCUMENTO;
             dbSIM.TBTRAMITE_DOC.Add(relaDocTra);
-            dbSIM.SaveChanges();    
+            dbSIM.SaveChanges();
             return tramiteDocumento.CODDOCUMENTO;
         }
 
@@ -943,6 +939,7 @@
                     indiceDocumento.CODINDICE = (int)_IndiceRadicado;
                     indiceDocumento.CODSERIE = (int)UnidadDoc;
                     indiceDocumento.VALOR = _Radicado;
+                    indiceDocumento.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_Codtramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(indiceDocumento);
                 }
                 if (_IndiceFecha > 0 && _Fecha.Year > 1900)
@@ -953,6 +950,7 @@
                     indiceDocumento.CODINDICE = (int)_IndiceFecha;
                     indiceDocumento.VALOR = _Fecha.ToString("dd-MM-yyyy"); ;
                     indiceDocumento.CODSERIE = (int)UnidadDoc;
+                    indiceDocumento.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_Codtramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(indiceDocumento);
                 }
                 if (_IdIndiceHora > 0 && _Fecha.Year > 1900)
@@ -963,6 +961,7 @@
                     indiceDocumento.CODINDICE = (int)_IdIndiceHora;
                     indiceDocumento.VALOR = _Fecha.ToString("HH:mm"); ;
                     indiceDocumento.CODSERIE = (int)UnidadDoc;
+                    indiceDocumento.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_Codtramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(indiceDocumento);
                 }
                 if (_IndiceAsunto > 0 && _Asunto.Length > 0)
@@ -973,6 +972,7 @@
                     indiceDocumento.CODINDICE = (int)_IndiceAsunto;
                     indiceDocumento.CODSERIE = (int)UnidadDoc;
                     indiceDocumento.VALOR = _Asunto.ToUpper();
+                    indiceDocumento.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_Codtramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(indiceDocumento);
                 }
                 if (_IndiceRemite > 0 && Proponente.Length > 0)
@@ -983,6 +983,7 @@
                     indiceDocumento.CODINDICE = (int)_IndiceRemite;
                     indiceDocumento.CODSERIE = (int)UnidadDoc;
                     indiceDocumento.VALOR = Proponente.ToUpper();
+                    indiceDocumento.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_Codtramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(indiceDocumento);
                 }
                 if (_IdIndiceMail > 0 && Correo.Length > 0)
@@ -993,6 +994,7 @@
                     indiceDocumento.CODINDICE = (int)_IdIndiceMail;
                     indiceDocumento.CODSERIE = (int)UnidadDoc;
                     indiceDocumento.VALOR = Correo.ToUpper();
+                    indiceDocumento.ID_DOCUMENTO = dbSIM.TBTRAMITEDOCUMENTO.Where(w => w.CODTRAMITE.Equals(_Codtramite) && w.CODDOCUMENTO.Equals(_CodDocumento)).Select(s => s.ID_DOCUMENTO).FirstOrDefault();
                     dbSIM.TBINDICEDOCUMENTO.Add(indiceDocumento);
                 }
                 dbSIM.SaveChanges();

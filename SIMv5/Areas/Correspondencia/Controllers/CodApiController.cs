@@ -1,40 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web.Mvc;
-using System.Security.Claims;
-using System.Data.Entity.Core.Objects;
-using System.IO;
-using System.Configuration;
-using SIM.Areas.Seguridad.Controllers;
-using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
-using Newtonsoft.Json;
-using SIM.Data;
-using System.Web.Http;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
-using DevExpress.XtraPrinting;
+﻿using DevExpress.XtraPrinting;
 using DevExpress.XtraRichEdit;
-using System.Net.Http.Headers;
-using SIM.Areas.Tramites.Models;
-using System.Text;
-
-
-using SIM.Areas.General.Models;
-using SIM.Areas.Seguridad.Models;
-using SIM.Areas.GestionDocumental.Models;
-using System.Transactions;
-using System.Xml.Linq;
-using System.Drawing.Imaging;
-using System.Collections;
-using System.Web.Hosting;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SIM.Data;
 using SIM.Data.Tramites;
 using SIM.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace SIM.Areas.Correspondencia.Controllers
 {
@@ -89,7 +68,8 @@ namespace SIM.Areas.Correspondencia.Controllers
             else
             {
                 var model = (from Cod in dbSIM.QRY_INDICESDESPACHADOS
-                             select new {
+                             select new
+                             {
                                  Cod.CODTRAMITE,
                                  Cod.CODDOCUMENTO,
                                  Cod.RADICADO,
@@ -101,7 +81,8 @@ namespace SIM.Areas.Correspondencia.Controllers
                                  SERVICIOSEL = dbSIM.CORRESPONDENCIASELECCION.Where(w => w.CODTRAMITE == Cod.CODTRAMITE && w.CODDOCUMENTO == Cod.CODDOCUMENTO).Select(s => s.S_TIPOSERVICIO).FirstOrDefault(),
                                  SERVICIO = (from Ser in dbSIM.CORRESPONDENCIAENV_DET
                                              join Ord in dbSIM.CORRESPONDENCIAENVIADA on Ser.ID_COD equals Ord.ID_COD
-                                             where Ser.CODTRAMITE == Cod.CODTRAMITE && Ser.CODDOCUMENTO == Cod.CODDOCUMENTO select Ord.S_TIPOSERVICIO).FirstOrDefault(),
+                                             where Ser.CODTRAMITE == Cod.CODTRAMITE && Ser.CODDOCUMENTO == Cod.CODDOCUMENTO
+                                             select Ord.S_TIPOSERVICIO).FirstOrDefault(),
                                  DEVOLUCION = (from Ser in dbSIM.CORRESPONDENCIAENV_DET
                                                where Ser.CODTRAMITE == Cod.CODTRAMITE && Ser.CODDOCUMENTO == Cod.CODDOCUMENTO
                                                select Ser.S_DEVOLUCION == "1" ? "Si" : "").FirstOrDefault(),
@@ -305,8 +286,8 @@ namespace SIM.Areas.Correspondencia.Controllers
             if (ID > 0)
             {
                 DateTime FechaOrden = (from ModOrden in dbSIM.CORRESPONDENCIAENVIADA
-                                where ModOrden.ID_COD == ID
-                                select ModOrden.D_FECHA).FirstOrDefault();
+                                       where ModOrden.ID_COD == ID
+                                       select ModOrden.D_FECHA).FirstOrDefault();
                 if (FechaOrden.Year > 1900)
                 {
                     try
@@ -332,9 +313,10 @@ namespace SIM.Areas.Correspondencia.Controllers
                     {
                         return new { resp = "Error", mensaje = "Ocurrio un problema al subir uno de los archivos " + e.Message };
                     }
-                }else return new { resp = "Error", mensaje = "Ocurrio un problema al subir uno de los archivos... No se encontró la orden de servicio" };
+                }
+                else return new { resp = "Error", mensaje = "Ocurrio un problema al subir uno de los archivos... No se encontró la orden de servicio" };
             }
-            else return new { resp = "Error", mensaje = "Ocurrio un problema al subir uno de los archivos... No ha seleccionado la orden de servicio"};
+            else return new { resp = "Error", mensaje = "Ocurrio un problema al subir uno de los archivos... No ha seleccionado la orden de servicio" };
         }
         /// <summary>
         /// Obtiene las ordenes filtradas
@@ -569,7 +551,8 @@ namespace SIM.Areas.Correspondencia.Controllers
             {
                 idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
                 codFuncionario = SIM.Utilidades.Security.Obtener_Codigo_Funcionario(dbControl, idUsuario);
-            }else codFuncionario = SIM.Utilidades.Security.Obtener_Codigo_Funcionario(dbControl, idUsuario);
+            }
+            else codFuncionario = SIM.Utilidades.Security.Obtener_Codigo_Funcionario(dbControl, idUsuario);
 
             if (Codtramite > 0)
             {
@@ -577,11 +560,11 @@ namespace SIM.Areas.Correspondencia.Controllers
                 {
                     string _Ruta = "";
                     var modelPro = (from ModTra in dbSIM.TBTRAMITE
-                                 where ModTra.CODTRAMITE == Codtramite
-                                 select new
-                                 {
-                                    ModTra.CODPROCESO
-                                 }).FirstOrDefault();
+                                    where ModTra.CODTRAMITE == Codtramite
+                                    select new
+                                    {
+                                        ModTra.CODPROCESO
+                                    }).FirstOrDefault();
                     if (modelPro.CODPROCESO > 0)
                     {
                         var modelRuta = (from ModRuta in dbSIM.TBRUTAPROCESO
@@ -592,7 +575,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                          }).FirstOrDefault();
                         _Ruta = modelRuta.PATH;
                     }
-                    
+
                     if (_Ruta != "")
                     {
                         await Request.Content.ReadAsMultipartAsync(provider);
@@ -603,7 +586,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                             string _RutaOrigen = _RutaBase + _File.Headers.ContentDisposition.FileName.Replace("\"", string.Empty);
                             _Extension = Path.GetExtension(_RutaOrigen);
                             _FileContent = SIM.Utilidades.Archivos.LeeArchivo(_RutaOrigen);
-                            System.IO.File.Delete(_RutaOrigen);                           
+                            System.IO.File.Delete(_RutaOrigen);
                         }
                         if (_FileContent.Length > 0)
                         {
@@ -672,6 +655,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -682,6 +666,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -693,6 +678,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -703,6 +689,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -713,6 +700,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -723,6 +711,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -733,6 +722,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -743,6 +733,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -753,6 +744,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                             IndDev.CODSERIE = int.Parse(_CodSerieDev);
                                             IndDev.CODTRAMITE = (int)Codtramite;
                                             IndDev.CODDOCUMENTO = idCodDocumento;
+                                            IndDev.ID_DOCUMENTO = documento.ID_DOCUMENTO;
                                             dbSIM.Entry(IndDev).State = EntityState.Added;
                                             dbSIM.SaveChanges();
                                             break;
@@ -764,8 +756,8 @@ namespace SIM.Areas.Correspondencia.Controllers
                                                      {
                                                          EstTra.ESTADO
                                                      }).FirstOrDefault();
-                                var EstadoTarea =  dbSIM.TBTRAMITETAREA.Where(tt => tt.CODTRAMITE == Codtramite).OrderByDescending(tt => tt.FECHAINI).FirstOrDefault();
-                                 
+                                var EstadoTarea = dbSIM.TBTRAMITETAREA.Where(tt => tt.CODTRAMITE == Codtramite).OrderByDescending(tt => tt.FECHAINI).FirstOrDefault();
+
                                 if (EstadoTramite != null && EstadoTramite.ESTADO.Value == 0 && EstadoTarea != null && EstadoTarea.ESTADO.Value == 0)
                                 {
                                     TBTRAMITES_BLOQUEADOS ttbloqueados = new TBTRAMITES_BLOQUEADOS();
@@ -820,7 +812,7 @@ namespace SIM.Areas.Correspondencia.Controllers
                                  PESO = Cod.N_PESO,
                                  OBSERVACIONES = Cod.S_OBSERVACIONES,
                                  REFERENCIA = Cod.S_REFERENCIA,
-                                 CONTENIDO= Cod.S_CONTENIDO,
+                                 CONTENIDO = Cod.S_CONTENIDO,
                                  FECHATIPOSERV = Corresp.D_FECHA,
                                  TIPOSERVICIO = Corresp.S_TIPOSERVICIO,
                                  ORDENSERVICIO = Corresp.ID_COD
@@ -963,7 +955,7 @@ namespace SIM.Areas.Correspondencia.Controllers
         public override string GetLocalFileName(System.Net.Http.Headers.HttpContentHeaders headers)
         {
             var name = !string.IsNullOrWhiteSpace(headers.ContentDisposition.FileName) ? headers.ContentDisposition.FileName : "NoName";
-            return name.Replace("\"", string.Empty); 
+            return name.Replace("\"", string.Empty);
         }
     }
 }
