@@ -223,8 +223,10 @@ $(document).ready(function () {
     $('[name^="grdEstrategiasGrupo_2"]').each(function () {
         let titulo = $(this).attr('titulo');
 
+        let grdEstrategiasGrupoDataSource = EstrategiasGrupoDataSource($(this).attr('idGrupo'));
+
         $(this).dxDataGrid({
-            dataSource: null,
+            dataSource: grdEstrategiasGrupoDataSource,
             allowColumnResizing: true,
             allowSorting: false,
             height: '100%',
@@ -407,8 +409,222 @@ $(document).ready(function () {
                     width: '150px',
                     dataType: 'number',
                     visible: true,
+                    validationRules: [
+                        {
+                            type: 'compare',
+                            comparisonType: '<=',
+                            comparisonTarget: function () {
+                                return 100;
+                            },
+                            message: 'El valor debe estar entre 0 y 100',
+                        }
+                    ]
                 }
             ]
+        });
+    });
+
+    $('[name^="grdPreguntasEncabezado"]').each(function () {
+        let idGrid = 'grdPreguntasEncabezado' + $(this).attr('idEncabezado');
+        let dataSourcePreguntasEncabezado = PreguntasEncabezadoDataSource($(this).attr('idEncabezado'));
+
+        $(this).dxDataGrid({
+            dataSource: dataSourcePreguntasEncabezado,
+            allowColumnResizing: true,
+            allowSorting: false,
+            height: '100%',
+            noDataText: 'Sin Datos',
+            loadPanel: { text: 'Cargando Datos...' },
+            paging: {
+                pageSize: 0,
+            },
+            pager: {
+                showPageSizeSelector: false,
+            },
+            filterRow: {
+                visible: false,
+            },
+            groupPanel: {
+                visible: false,
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: true,
+                allowAdding: false,
+                allowDeleting: false
+
+            },
+            selection: {
+                mode: 'single'
+            },
+            wordWrapEnabled: true,
+            columns: [
+                {
+                    dataField: "ID",
+                    dataType: 'number',
+                    visible: false,
+                }, {
+                    dataField: "ID_PREGUNTA",
+                    dataType: 'number',
+                    visible: false,
+                }, {
+                    dataField: "S_PREGUNTA",
+                    caption: 'PREGUNTA',
+                    width: '80%',
+                    dataType: 'string',
+                    visible: true,
+                    allowEditing: false,
+                }, {
+                    dataField: 'RESPUESTA',
+                    caption: 'RESPUESTA',
+                    width: '20%',
+                    dataType: 'string',
+                    allowEditing: true,
+                    cellTemplate: function (cellElement, cellInfo) {
+                        cellElement.css('text-align', 'center');
+
+                        if (cellInfo.data.N_RESPUESTA == null && cellInfo.data.S_RESPUESTA == null) {
+                            cellElement.html('-');
+                        } else {
+                            switch (cellInfo.data.N_TIPO_RESPUESTA) {
+                                case 1: // SI/NO
+                                    if (cellInfo.data.N_RESPUESTA != null) {
+                                        cellElement.html(cellInfo.data.N_RESPUESTA == 1 ? 'SI' : 'NO');
+                                    }
+                                    break;
+                                case 10: // PERIODO
+                                    if (cellInfo.data.N_RESPUESTA != null)
+                                        cellElement.html(cellInfo.data.N_RESPUESTA == 1 ? 'PRIMERO' : 'SEGUNDO');
+                                    break;
+                                case 2: // CUMPLE/NO CUMPLE
+                                    if (cellInfo.data.N_RESPUESTA != null) {
+                                        cellElement.html(cellInfo.data.N_RESPUESTA == 1 ? 'CUMPLE' : 'NO CUMPLE');
+
+                                        if (cellInfo.data.N_RESPUESTA == 1) {
+                                            cellElement.css('background-color', 'limegreen');
+                                            cellElement.css('color', 'white');
+                                        } else {
+                                            cellElement.css('background-color', 'red');
+                                            cellElement.css('color', 'white');
+                                        }
+                                    }
+                                    break;
+                                case 3: // NUMERO
+                                    if (cellInfo.data.N_RESPUESTA != null)
+                                        cellElement.html(cellInfo.data.N_RESPUESTA);
+                                    break;
+                                case 4: // %
+                                    if (cellInfo.data.N_RESPUESTA != null)
+                                        cellElement.html(Math.round(cellInfo.data.N_RESPUESTA * 100 * 100) / 100 + '%');
+                                    break;
+                                case 5: // TEXTO
+                                    if (cellInfo.data.S_RESPUESTA != null)
+                                        cellElement.html(cellInfo.data.S_RESPUESTA);
+                                    break;
+                            }
+                        }
+                    },
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        switch (cellInfo.data.N_TIPO_RESPUESTA) {
+                            case 1: // SI/NO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxSelectBox({
+                                    dataSource: siNoOpciones,
+                                    displayExpr: "Nombre",
+                                    valueExpr: "ID",
+                                    placeholder: "[SI/NO]",
+                                    value: cellInfo.data.N_RESPUESTA,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                        $('#' + idGrid).dxDataGrid("saveEditData");
+                                    },
+                                });
+                                break;
+                            case 10: // PERIODO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxSelectBox({
+                                    dataSource: periodoOpciones,
+                                    displayExpr: "Nombre",
+                                    valueExpr: "ID",
+                                    placeholder: "[PERIODO]",
+                                    value: cellInfo.data.N_RESPUESTA,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                        $('#' + idGrid).dxDataGrid("saveEditData");
+                                    },
+                                });
+                                break;
+                            case 2: // CUMPLE/NO CUMPLE
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxSelectBox({
+                                    dataSource: cumpleNoCumpleOpciones,
+                                    displayExpr: "Nombre",
+                                    valueExpr: "ID",
+                                    placeholder: "[CUMPLE/NO CUMPLE]",
+                                    value: cellInfo.data.N_RESPUESTA,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                            case 3: // NUMERO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxNumberBox({
+                                    value: cellInfo.data.N_RESPUESTA,
+                                    showSpinButtons: false,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                            case 4: // %
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxNumberBox({
+                                    value: cellInfo.data.N_RESPUESTA,
+                                    showSpinButtons: false,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                            case 5: // TEXTO
+                                var div = document.createElement("div");
+                                cellElement.get(0).appendChild(div);
+
+                                $(div).dxTextBox({
+                                    value: cellInfo.data.S_RESPUESTA,
+                                    onValueChanged: function (e) {
+                                        cellInfo.setValue(e.value);
+                                    },
+                                });
+                                break;
+                        }
+                    }
+                }
+            ]
+        });
+    });
+
+    $('#btnEnviar').click(function () {
+        var result = DevExpress.ui.dialog.confirm("Desea enviar los datos diligenciados ? (Después de enviado no se pueden modificar los datos)", "Confirmar Envío");
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                $.getJSON($('#app').data('url') + 'EncuestaExterna/api/PMESEstrategiasApi/MarcarEnviado', {
+                    et: $('#app').data('et')
+                }).done(function (data) {
+                    window.open($('#app').data('url') + 'EncuestaExterna/EncuestaExterna/GestionarEncUsExterno?idestado=0', '_self');
+                });
+            }
         });
     });
 });
@@ -881,6 +1097,36 @@ function MetasGrupoDataSource(idGrupo) {
     return grdMetasGrupoDataSource;
 }
 
+function PreguntasEncabezadoDataSource(idEncabezado) {
+    let grdPreguntasEncabezadoDataSource = new DevExpress.data.CustomStore({
+        load: function (loadOptions) {
+            var d = $.Deferred();
+
+            $.getJSON($('#app').data('url') + 'EncuestaExterna/api/PMESEstrategiasApi/PreguntasEncabezado', {
+                idEstrategiasTercero: $('#app').data('et'),
+                idEncabezado: idEncabezado
+            }).done(function (data) {
+                d.resolve(data.datos, { totalCount: data.numRegistros });
+            });
+            return d.promise();
+        },
+        byKey: function (key) {
+            return { id: key };
+        },
+        update: function (key, values) {
+            $.postJSON(
+                $('#app').data('url') + 'EncuestaExterna/api/PMESEstrategiasApi/PreguntasEncabezadoActualizar', { idEstrategiaTercero: $('#app').data('et'), id: key.ID, idPregunta: key.ID_PREGUNTA, tipoRespuesta: key.N_TIPO_RESPUESTA, valor: values.RESPUESTA }
+            ).done(function (data) {
+                var grid = $('#grdPreguntasEncabezado' + idEncabezado).dxDataGrid('instance');
+
+                grid.option("dataSource", PreguntasEncabezadoDataSource(idEncabezado));
+            });
+        }
+    });
+
+    return grdPreguntasEncabezadoDataSource;
+}
+
 $.postJSON = function (url, data) {
     var o = {
         url: url,
@@ -896,7 +1142,7 @@ $.postJSON = function (url, data) {
 
 function MostrarNotificacion(typeDialog, typeMsg, msg) {
     if (typeDialog === 'alert') {
-        DevExpress.ui.dialog.alert(msg, 'Evaluación PMES');
+        DevExpress.ui.dialog.alert(msg, 'Estrategias PMES');
     } else {
         DevExpress.ui.notify(msg, typeMsg, 3000);
     }

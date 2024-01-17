@@ -12,7 +12,7 @@ namespace SIM.Data.Control
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
-        public int? ID_GRUPO { get; set; }
+        public int? ID_ENCABEZADO { get; set; }
 
         [Required]
         [StringLength(250)]
@@ -23,16 +23,6 @@ namespace SIM.Data.Control
         public int? N_ORDEN { get; set; }
 
         [StringLength(1)]
-        public string S_CALCULADO { get; set; }
-
-        public int? N_VALOR_COMPLEMENTO { get; set; }
-
-        public int? ID_GRUPO_COMPLEMENTO { get; set; }
-
-        [StringLength(1)]
         public string S_VERSION { get; set; }
-
-        [StringLength(1)]
-        public string S_TIPO { get; set; }
     }
 }

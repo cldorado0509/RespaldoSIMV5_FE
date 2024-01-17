@@ -29,6 +29,7 @@ using SIM.Data;
 using SIM.Data.Control;
 using SIM.Data.Tramites;
 using SIM.Models;
+using SIM.Data.General;
 
 namespace SIM.Areas.EncuestaExterna.Controllers
 {
@@ -79,6 +80,31 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             ViewBag.Grupos = grupos;
 
             return View();
+        }
+
+        public ActionResult ReporteEstrategias(int idEstado, int? d)
+        {
+            d = d ?? 0;
+
+            var reporteEvaluacion = new PMESEstrategias();
+            reporteEvaluacion.CargarDatos(idEstado);
+            MemoryStream ms = new MemoryStream();
+            reporteEvaluacion.ExportToPdf(ms);
+
+            if (d == 0)
+            {
+                var cd = new System.Net.Mime.ContentDisposition
+                {
+                    FileName = "ReporteEstrategias.pdf",
+                    Inline = true,
+                };
+                Response.AppendHeader("Content-Disposition", cd.ToString());
+
+
+                return File(ms.GetBuffer(), "application/pdf");
+            }
+            else
+                return File(ms.GetBuffer(), "application/pdf", "ReporteEstrategias.pdf");
         }
     }
 }
