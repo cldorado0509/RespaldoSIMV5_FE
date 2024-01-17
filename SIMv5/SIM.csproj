@@ -1153,8 +1153,46 @@
     <Compile Include="Areas\EncuestaExterna\Controllers\EncuestaExternaController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESInformativoApiController.cs" />
+    <Compile Include="Areas\EncuestaExterna\Controllers\PMESInformativoController.cs" />
     <Compile Include="Areas\EncuestaExterna\empresa.cs" />
     <Compile Include="Areas\EncuestaExterna\encuesta.cs" />
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategias.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategias.Designer.cs">
+      <DependentUpon>PMESEstrategias.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasDetalleTF.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasDetalleTF.Designer.cs">
+      <DependentUpon>PMESEstrategiasDetalleTF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasDetalleTP.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasDetalleTP.Designer.cs">
+      <DependentUpon>PMESEstrategiasDetalleTP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasGrupo.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasGrupo.Designer.cs">
+      <DependentUpon>PMESEstrategiasGrupo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasMetas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasMetas.Designer.cs">
+      <DependentUpon>PMESEstrategiasMetas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasRespuestas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasRespuestas.Designer.cs">
+      <DependentUpon>PMESEstrategiasRespuestas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Areas\EncuestaExterna\Utilidades\CargaMasiva.cs" />
     <Compile Include="Areas\EncuestaExterna\Utilidades\EvaluacionEncuesta.cs" />
     <Compile Include="Areas\EtiquetasAmbientales\Controllers\RevisionAPIController.cs" />
@@ -1553,6 +1591,7 @@
     <Compile Include="Data\Control\EVALUACION_ESTRATEGIAS.cs" />
     <Compile Include="Data\Control\EVALUACION_ESTRATEGIAS_GRUPO.cs" />
     <Compile Include="Data\Control\EVALUACION_ESTRATEGIAS_T.cs" />
+    <Compile Include="Data\Control\PMES_ESTRATEGIAS_RESPUESTA.cs" />
     <Compile Include="Data\Control\INFORMACION _INDUSTRIA.cs" />
     <Compile Include="Data\Control\INFORMATIVO_DOC.cs" />
     <Compile Include="Data\Control\INFORMATIVO_DOC_ARCHIVOS.cs" />
@@ -2458,6 +2497,9 @@
     <Content Include="Areas\Dynamics\Scripts\PazSalvoBienes.js" />
     <Content Include="Areas\EnCicla\Scripts\testexterno.js" />
     <Content Include="Areas\EncuestaExterna\Scripts\PMESEstrategias\estrategias.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESInformativo\documentos.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESInformativo\informativo.js" />
+    <Content Include="Areas\EncuestaExterna\Scripts\PMESInformativo\informativotercero.js" />
     <Content Include="Areas\EtiquetasAmbientales\Scripts\Monitoreo.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\expedienteAmbiental.js" />
     <Content Include="Areas\ExpedienteAmbiental\Scripts\turnjs4\basic.css" />
@@ -3204,6 +3246,9 @@
     <Content Include="Areas\Dynamics\Plantilla\Plantilla_Paz_y_Salvo_Bienes.pdf" />
     <Content Include="Areas\GestionDocumental\Views\Masivos\EditarMasivo.cshtml" />
     <Content Include="Areas\EncuestaExterna\Views\PMESEstrategias\PMESEstrategias.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\Documentos.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\Index.cshtml" />
+    <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\InformativoTercero.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -4698,6 +4743,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\EvaluacionEncuesta.resx">
       <DependentUpon>EvaluacionEncuesta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\PMESEstrategias.resx">
+      <DependentUpon>PMESEstrategias.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasDetalleTF.resx">
+      <DependentUpon>PMESEstrategiasDetalleTF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasDetalleTP.resx">
+      <DependentUpon>PMESEstrategiasDetalleTP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasGrupo.resx">
+      <DependentUpon>PMESEstrategiasGrupo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasMetas.resx">
+      <DependentUpon>PMESEstrategiasMetas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\PMESEstrategiasRespuestas.resx">
+      <DependentUpon>PMESEstrategiasRespuestas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Areas\EncuestaExterna\Reporte\preguntaUsuarioExterno.resx">
       <DependentUpon>preguntaUsuarioExterno.cs</DependentUpon>

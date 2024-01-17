@@ -80,7 +80,7 @@
 </div>
 
 <div style="padding: 0px;">
-    <div data-url="@Url.Content("~")" data-e="@ViewBag.Estado"  data-et="@ViewBag.EstrategiasTercero" id="app" resizable>
+    <div data-url="@Url.Content("~")" data-e="@ViewBag.Estado" data-et="@ViewBag.EstrategiasTercero" id="app" resizable>
         <div class="panelSIM-default">
             <div id="loadPanel"></div>
             <div class="panelSIM" id="pnlContenedor">
@@ -118,7 +118,7 @@
                                                 <tbody>
                                                     <tr class="dx-row dx-column-lines dx-group-row" role="rowgroup" aria-expanded="true" aria-selected="false">
                                                         <td role="gridcell" colspan="2" style="text-align: left;"><span style="font-weight: bold;">@grupo.S_TITULO</span></td>
-                                                        <td style="padding-top: 2px !important; padding-bottom: 2px !important; float: right;"><div name="btnNuevo_@grupo.ID_ENCABEZADO" idGrupo="@grupo.ID" titulo="@grupo.S_TITULO"  id="btnNuevo_@grupo.ID"></div></td>
+                                                        <td style="padding-top: 2px !important; padding-bottom: 2px !important; float: right;"><div name="btnNuevo_@grupo.ID_ENCABEZADO" idGrupo="@grupo.ID" titulo="@grupo.S_TITULO" id="btnNuevo_@grupo.ID"></div></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -147,7 +147,21 @@
                             <div name="grdMetasGrupo" idGrupo="@grupo.ID" id="grdMetasGrupo_@grupo.ID"></div>
                         </div>
                     }
+
+                    if (encabezado.ID == 3)
+                    {
+                        <div name="grdPreguntasEncabezado" idEncabezado="@encabezado.ID" id="grdPreguntasEncabezado_@encabezado.ID"></div>
+                    }
                 }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 10px;">
+                <div class="col-sm-9">
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-default" id="btnEnviar" style="width:100%">Enviar</button>
+                </div>
             </div>
         </div>
     </div>

@@ -103,6 +103,8 @@
         <p style="color: #000000; font-size: 14px; font-weight: bold; margin-top: 10px; margin-left: 38px;" id="msTextConf"></p>
     </div>
 
+    <iframe src="" id="archivo" style="display:none"></iframe>
+
     <script>
             var idestado = 0;
             radicado=0;
@@ -249,6 +251,7 @@
                     },
                     columns: [
                         { dataField: 'ID_VIGENCIA_GRUPO', visible: false },
+                        { dataField: 'TIPO_FORMULARIO', visible: false },
                         {
                             dataField: 'VIGENCIA_GRUPO',
                             caption: 'Grupo',
@@ -320,32 +323,42 @@
                                 var tipoBoton = e.columnIndex;
 
                                 switch (tipoBoton) {
-
                                     case 9:
-                                        if (e.data.CARDINALIDAD == 2) {
-                                            if (e.data.TIPO_GUARDADO == 0){
-                                                window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + e.data.VIGENCIA.replace("-","") + "&tercero=" + e.data.ID_TERCERO + "&instalacion=" + e.data.ID_INSTALACION + "&vigencia=" +e.data.ID_VIGENCIA , '_self');
-                                            }else
-                                                //validarGenerarRadicado(e.data.ID_INSTALACION,e.data.VIGENCIA,e.data.ID_ESTADO)
-                                                generarPdfCard(e.data.ID_INSTALACION,e.data.VIGENCIA,0);
-                                            //alert("La Encuesta ya se envió")
-                                        } else {
-                                            if (e.data.TIPO_GUARDADO == 0)
-                                            {
-                                                abrirEncuesta(e.data.ID_ESTADO,e.data.ID_ENCUESTA,e.data.ID_VIGENCIA, e.data.URL_ENCUESTA);
-                                            } else {
-                                                onload();
-                                                //alert(e.data.ID_INSTALACION);
-                                                //alert(e.data.VIGENCIA);
-                                                //alert(e.data.ID_ESTADO);
-                                                validarGenerarRadicado(e.data.ID_INSTALACION,e.data.VIGENCIA,e.data.ID_ESTADO)
+                                        switch (e.data.TIPO_FORMULARIO) {
+                                            case 1:
+                                                if (e.data.CARDINALIDAD == 2) {
+                                                    if (e.data.TIPO_GUARDADO == 0) {
+                                                        window.open('@Url.Content("~/EncuestaExterna/EncuestaExterna/EncuestaCardinalidad?valor=")' + e.data.VIGENCIA.replace("-", "") + "&tercero=" + e.data.ID_TERCERO + "&instalacion=" + e.data.ID_INSTALACION + "&vigencia=" + e.data.ID_VIGENCIA, '_self');
+                                                    } else
+                                                        //validarGenerarRadicado(e.data.ID_INSTALACION,e.data.VIGENCIA,e.data.ID_ESTADO)
+                                                        generarPdfCard(e.data.ID_INSTALACION, e.data.VIGENCIA, 0);
+                                                    //alert("La Encuesta ya se envió")
+                                                } else {
+                                                    if (e.data.TIPO_GUARDADO == 0) {
+                                                        abrirEncuesta(e.data.ID_ESTADO, e.data.ID_ENCUESTA, e.data.ID_VIGENCIA, e.data.URL_ENCUESTA);
+                                                    } else {
+                                                        onload();
+                                                        //alert(e.data.ID_INSTALACION);
+                                                        //alert(e.data.VIGENCIA);
+                                                        //alert(e.data.ID_ESTADO);
+                                                        validarGenerarRadicado(e.data.ID_INSTALACION, e.data.VIGENCIA, e.data.ID_ESTADO)
 
-                                        //generarPdf(e.data.ID_ESTADO,0)
+                                                        //generarPdf(e.data.ID_ESTADO,0)
 
-                                            }
+                                                    }
+                                                }
+                                                break;
+                                            case 2:
+                                                $("#pantallaReporte").dialog(
+                                                    {
+                                                        width: 800,
+                                                        height: 500,
+
+                                                    });
+
+                                                $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/PMESEstrategias/ReporteEstrategias?idEstado=")" + e.data.ID_ESTADO);
+                                                break;
                                         }
-
-
                                         break;
                                     case 10:
                                         if (e.data.TIPO_GUARDADO == 1)
@@ -358,7 +371,14 @@
 
                                         break;
                                     case 11:
-                                        window.open('@Url.Content("~/Reporte/Encuesta/DetalleRespuestas?idTercero=")' + e.data.ID_TERCERO + '&idInstalacion=' + e.data.ID_INSTALACION + '&idVigencia=' + e.data.ID_VIGENCIA + '&valorVigencia=' + e.data.VIGENCIA);
+                                        switch (e.data.TIPO_FORMULARIO) {
+                                            case 1:
+                                                window.open('@Url.Content("~/Reporte/Encuesta/DetalleRespuestas?idTercero=")' + e.data.ID_TERCERO + '&idInstalacion=' + e.data.ID_INSTALACION + '&idVigencia=' + e.data.ID_VIGENCIA + '&valorVigencia=' + e.data.VIGENCIA);
+                                                break;
+                                            case 2:
+                                                window.open('@Url.Content("~/EncuestaExterna/PMESEstrategias/ReporteEstrategias?idEstado=")' + e.data.ID_ESTADO + '&d=1', 'archivo');
+                                                break;
+                                        }
                                         break;
                                     case 12:
                                         if (e.data.ESTADOENCUESTA == 'Enviada') {

@@ -493,7 +493,7 @@
         $.ajax({
             type: "POST",
             url: '@Url.Action("GuardarInformacionEncuesta", "EncuestaExterna")',
-            data: { jsonInfo: jsonOficial, idCapEstado: $("#txtIdEstado").val(), idform: 14},
+            data: { jsonInfo: jsonOficial, idCapEstado: $("#txtIdEstado").val(), idform: 14, mm: (silencio ? "0" : "1")},
             beforeSend: function () { },
             success: function (response) {
                 if (tipoGuardado == 1)

@@ -30,6 +30,8 @@ using DevExpress.Utils.Extensions;
 using DevExpress.Utils.Serializing;
 using Org.BouncyCastle.Utilities;
 using static System.Net.WebRequestMethods;
+using Independentsoft.Office.Odf.Styles;
+using static SIM.Areas.EncuestaExterna.Controllers.PMESEvaluacionApiController;
 
 namespace SIM.Areas.EncuestaExterna.Controllers
 {
@@ -39,6 +41,15 @@ namespace SIM.Areas.EncuestaExterna.Controllers
         {
             public int numRegistros;
             public IEnumerable<dynamic> datos;
+        }
+
+        public struct DATOSREGISTRO
+        {
+            public int idEstrategiaTercero;
+            public int id;
+            public int idPregunta;
+            public int tipoRespuesta;
+            public string valor;
         }
 
         public class META
@@ -123,7 +134,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
             if (tipoDatos.ID_ENCABEZADO == 1)
             {
-                var estrategiasGrupo = (from etp in dbSIM.PMES_ESTRATEGIAS_TP
+                var estrategiasGrupo = (from etp in dbSIM.PMES_ESTRATEGIAS_TP.Where(eti => eti.ID_ESTRATEGIA_TERCERO == idEstrategiasTercero)
                                         join a in dbSIM.PMES_ESTRATEGIAS_ACTIVIDADES on etp.ID equals a.ID_ESTRATEGIA_TP into ealj
                                         from eava in ealj.DefaultIfEmpty()
                                         join p in dbSIM.PMES_ESTRATEGIAS_PERIODICIDAD on eava.ID_PERIODICIDAD equals p.ID into eplj
@@ -171,7 +182,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             }
             else
             {
-                var estrategiasGrupo = from etf in dbSIM.PMES_ESTRATEGIAS_TF
+                var estrategiasGrupo = from etf in dbSIM.PMES_ESTRATEGIAS_TF.Where(eti => eti.ID_ESTRATEGIA_TERCERO == idEstrategiasTercero)
                                        join e in dbSIM.PMES_ESTRATEGIAS on etf.ID_ESTRATEGIA equals e.ID
                                        join g in dbSIM.PMES_ESTRATEGIAS_GRUPO on e.ID_GRUPO equals g.ID
                                        join et in dbSIM.PMES_ESTRATEGIAS_TERCERO.Where(eti => eti.ID == idEstrategiasTercero) on etf.ID_ESTRATEGIA_TERCERO equals et.ID
@@ -203,7 +214,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             DATOSCONSULTA resultado = new DATOSCONSULTA();
 
             var metasGrupo = from em in dbSIM.PMES_ESTRATEGIAS_METAS
-                             join emv in dbSIM.PMES_ESTRATEGIAS_METAS_T on em.ID equals emv.ID_ESTRATEGIAS_METAS into emlj
+                             join emv in dbSIM.PMES_ESTRATEGIAS_METAS_T.Where(eti => eti.ID_ESTRATEGIA_TERCERO == idEstrategiasTercero) on em.ID equals emv.ID_ESTRATEGIAS_METAS into emlj
                              from emva in emlj.DefaultIfEmpty()
                              join et in dbSIM.PMES_ESTRATEGIAS_TERCERO.Where(eti => eti.ID == idEstrategiasTercero) on emva.ID_ESTRATEGIA_TERCERO equals et.ID into etlj
                              from eta in etlj.DefaultIfEmpty()
@@ -255,6 +266,124 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                         N_VALOR = valor
                     };
                 dbSIM.Entry(meta).State = EntityState.Added;
+
+                dbSIM.SaveChanges();
+            }
+        }
+
+        [HttpGet]
+        [ActionName("PreguntasEncabezado")]
+        public DATOSCONSULTA GetPreguntasEncabezado(int idEstrategiasTercero, int idEncabezado)
+        {
+            DATOSCONSULTA resultado = new DATOSCONSULTA();
+
+            var PreguntasEncabezado = from ep in dbSIM.PMES_ESTRATEGIAS_PREGUNTA
+                             join er in dbSIM.PMES_ESTRATEGIAS_RESPUESTA.Where(r => r.ID_ESTRATEGIA_TERCERO == idEstrategiasTercero) on ep.ID equals er.ID_PREGUNTA into erlj
+                             from erva in erlj.DefaultIfEmpty()
+                             where ep.ID_ENCABEZADO == idEncabezado
+                             orderby ep.N_ORDEN
+                             select new 
+                             {
+                                 ID = erva == null ? 0 : erva.ID,
+                                 ID_PREGUNTA = ep.ID,
+                                 S_PREGUNTA = ep.S_DESCRIPCION,
+                                 ep.N_TIPO_RESPUESTA, // 1 Si/No, 2 Cumple/No Cumple, 3 Número, 4 % , 5 String
+                                 erva.N_RESPUESTA,
+                                 erva.S_RESPUESTA
+                             };
+
+            resultado.numRegistros = PreguntasEncabezado.Count();
+            resultado.datos = PreguntasEncabezado.ToList();
+
+            return resultado;
+        }
+
+        //[HttpPost]
+        [HttpGet]
+        [ActionName("PreguntasEncabezadoActualizar")]
+        //public void PostPreguntasEncabezadoActualizar(int idEstrategiasTercero, int idEstrategiasMeta, int? id, decimal? valor)
+        public void GetPreguntasEncabezadoActualizar(int idEstrategiasTercero, int idEstrategiasMeta, int? id, decimal? valor)
+        {
+            if (id != null)
+            {
+                var meta = (from em in dbSIM.PMES_ESTRATEGIAS_METAS_T
+                            where em.ID == id
+                            select em).FirstOrDefault();
+
+                if (meta != null)
+                {
+                    meta.N_VALOR = valor;
+
+                    dbSIM.Entry(meta).State = EntityState.Modified;
+
+                    dbSIM.SaveChanges();
+                }
+            }
+            else
+            {
+
+                var meta = new PMES_ESTRATEGIAS_METAS_T
+                {
+                    ID_ESTRATEGIA_TERCERO = idEstrategiasTercero,
+                    ID_ESTRATEGIAS_METAS = idEstrategiasMeta,
+                    N_VALOR = valor
+                };
+                dbSIM.Entry(meta).State = EntityState.Added;
+
+                dbSIM.SaveChanges();
+            }
+        }
+
+        [HttpPost]
+        [ActionName("PreguntasEncabezadoActualizar")]
+        public void PostPreguntasEncabezadoActualizar(DATOSREGISTRO respuestaEstrategia)
+        {
+            PMES_ESTRATEGIAS_RESPUESTA estrategiaRespuesta = null;
+            CultureInfo culture = new CultureInfo("en-US");
+
+            if (respuestaEstrategia.id != 0)
+            {
+                estrategiaRespuesta = (from er in dbSIM.PMES_ESTRATEGIAS_RESPUESTA
+                                       where er.ID_ESTRATEGIA_TERCERO == respuestaEstrategia.idEstrategiaTercero && er.ID_PREGUNTA == respuestaEstrategia.idPregunta
+                                       select er).FirstOrDefault();
+            }
+
+            if (estrategiaRespuesta == null) // No existe la respuesta de la pregunta, por lo tanto se crea
+            {
+                estrategiaRespuesta = new PMES_ESTRATEGIAS_RESPUESTA();
+                estrategiaRespuesta.ID_ESTRATEGIA_TERCERO = respuestaEstrategia.idEstrategiaTercero;
+                estrategiaRespuesta.ID_PREGUNTA = respuestaEstrategia.idPregunta;
+                estrategiaRespuesta.N_RESPUESTA = null;
+                estrategiaRespuesta.S_RESPUESTA = null;
+
+                if (respuestaEstrategia.tipoRespuesta <= 4)
+                {
+                    estrategiaRespuesta.N_RESPUESTA = Convert.ToDecimal(respuestaEstrategia.valor.Replace(",", culture.NumberFormat.NumberDecimalSeparator).Replace(".", culture.NumberFormat.NumberDecimalSeparator), culture);
+                }
+                else
+                {
+                    estrategiaRespuesta.S_RESPUESTA = respuestaEstrategia.valor;
+                }
+
+                dbSIM.Entry(estrategiaRespuesta).State = EntityState.Added;
+
+                dbSIM.SaveChanges();
+            }
+            else
+            {
+                estrategiaRespuesta.N_RESPUESTA = null;
+                estrategiaRespuesta.S_RESPUESTA = null;
+
+                if (respuestaEstrategia.tipoRespuesta <= 4 && respuestaEstrategia.valor != null)
+                {
+                    estrategiaRespuesta.N_RESPUESTA = Convert.ToDecimal(respuestaEstrategia.valor.Replace(",", culture.NumberFormat.NumberDecimalSeparator).Replace(".", culture.NumberFormat.NumberDecimalSeparator), culture);
+                }
+                else
+                {
+                    estrategiaRespuesta.S_RESPUESTA = respuestaEstrategia.valor;
+                }
+
+                dbSIM.Entry(estrategiaRespuesta).State = EntityState.Modified;
 
                 dbSIM.SaveChanges();
             }
@@ -741,6 +870,31 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             catch (Exception error)
             {
                 SIM.Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Estrategias PMES [PostInsertarEstrategia] : " + SIM.Utilidades.LogErrores.ObtenerError(error));
+            }
+        }
+
+        [HttpGet]
+        [ActionName("MarcarEnviado")]
+        public void GetMarcarEnviado(int et)
+        {
+            try
+            {
+                var encuesta = (from pet in dbSIM.PMES_ESTRATEGIAS_TERCERO
+                         join ge in dbSIM.FRM_GENERICO_ESTADO on pet.ID_ESTADO equals ge.ID_ESTADO
+                         where pet.ID == et
+                         select ge).FirstOrDefault();
+
+                if (encuesta != null)
+                {
+                    encuesta.TIPO_GUARDADO = 1;
+                    dbSIM.Entry(encuesta).State = EntityState.Modified;
+
+                    dbSIM.SaveChanges();
+                }
+            }
+            catch (Exception error)
+            {
+                SIM.Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Estrategias PMES [GetMarcarEnviado(" + et.ToString() + ")] : " + SIM.Utilidades.LogErrores.ObtenerError(error));
             }
         }
     }
