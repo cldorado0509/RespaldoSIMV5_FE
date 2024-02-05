@@ -310,11 +310,20 @@ namespace SIM.Areas.Tramites
                         {
                             // Dibujo Firmas
                             Image imagenFirma;
-                            if (firma.CODCARGO == null)
-                                imagenFirma = Security.ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""));
+                            if (!watermark)
+                            {
+                                if (firma.CODCARGO == null)
+                                    imagenFirma = Security.ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""));
+                                else
+                                    imagenFirma = Security.ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""), firma.CODCARGO, (firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
+                            }
                             else
-                                imagenFirma = Security.ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""), firma.CODCARGO, (firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
-
+                            {
+                                if (firma.CODCARGO == null)
+                                    imagenFirma = Security.ObtenerNombreFuncionario(firma.CODFUNCIONARIO, true, null, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""),(firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
+                                else
+                                    imagenFirma = Security.ObtenerNombreFuncionario(firma.CODFUNCIONARIO, true, firma.CODCARGO, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""),(firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
+                            }
                             //Image imagenFirma = (new AreaMetro.Seguridad.FuncionarioC()).ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true);
 
                             if (imagenFirma != null)
