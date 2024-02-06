@@ -1,38 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Configuration;
-using System.Linq;
-using System.Linq.Dynamic;
-using System.Web;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
-using System.Linq.Expressions;
-using System.Text;
-using System.Drawing;
-using SIM.Data;
-using SIM.Areas.Tramites.Models;
-using System.Data.Entity;
-using System.IO;
-using System.Data.Entity.Core.Objects;
-using SIM.Utilidades;
-using PdfSharp.Pdf.IO;
+﻿using co.com.certicamara.encryption3DES.code;
 using DevExpress.Pdf;
-using O2S.Components.PDF4NET.PDFFile;
-using AreaMetro.Seguridad;
-using DevExpress.BarCodes;
-using System.Globalization;
-using System.Drawing.Text;
-using System.Drawing.Drawing2D;
-using System.Web.Hosting;
-using System.Drawing.Imaging;
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Layout;
+using PdfSharp.Pdf.IO;
+using SIM.Data;
 using SIM.Data.Tramites;
 using SIM.Models;
-using PdfSharp.Drawing.Layout;
+using SIM.Utilidades;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Drawing.Text;
+using System.IO;
+using System.Linq;
+using System.Linq.Dynamic;
 using System.Security.Claims;
-using co.com.certicamara.encryption3DES.code;
+using System.Web.Hosting;
 
 namespace SIM.Areas.Tramites
 {
@@ -310,7 +296,8 @@ namespace SIM.Areas.Tramites
                         {
                             // Dibujo Firmas
                             Image imagenFirma;
-                            if (!watermark)
+
+                            if (firma.S_ESTADO == "S" && firma.D_FECHA_FIRMA != null)
                             {
                                 if (firma.CODCARGO == null)
                                     imagenFirma = Security.ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""));
@@ -320,9 +307,9 @@ namespace SIM.Areas.Tramites
                             else
                             {
                                 if (firma.CODCARGO == null)
-                                    imagenFirma = Security.ObtenerNombreFuncionario(firma.CODFUNCIONARIO, true, null, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""),(firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
+                                    imagenFirma = Security.ObtenerNombreFuncionario(firma.CODFUNCIONARIO, true, null, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""), (firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
                                 else
-                                    imagenFirma = Security.ObtenerNombreFuncionario(firma.CODFUNCIONARIO, true, firma.CODCARGO, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""),(firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
+                                    imagenFirma = Security.ObtenerNombreFuncionario(firma.CODFUNCIONARIO, true, firma.CODCARGO, (textoFirma.Trim() != "" ? textoFirma.Trim() + " el " + ((DateTime)firma.D_FECHA_FIRMA).ToString("dd/MM/yyyy") : "") + (firma.S_APRUEBA == "S" ? "\r\nAprobó" : "") + (firma.S_REVISA == "S" ? "\r\nRevisó" : ""), (firma.S_TIPOFIRMA == "E" ? 1 : (firma.S_TIPOFIRMA == "A" ? 2 : 0)));
                             }
                             //Image imagenFirma = (new AreaMetro.Seguridad.FuncionarioC()).ObtenerFirmaElectronicaFuncionario(firma.CODFUNCIONARIO, true);
 
