@@ -327,7 +327,7 @@ namespace SIM.Utilidades
         /// <param name="textoAdicional"></param>
         /// <param name="_TipoFirma">0 Normal, 1 Encargado, 2 Adhoc</param>
         /// <returns></returns>
-        public static System.Drawing.Image ObtenerNombreFuncionario(long _CodFuncionario,bool _ConCargo, int? _CodCargo, string textoAdicional, int _TipoFirma = 0)
+        public static System.Drawing.Image ObtenerNombreFuncionario(long _CodFuncionario, bool _ConCargo, int? _CodCargo, string textoAdicional, int _TipoFirma = 0)
         {
             EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
             float _TamañoFuente = 12;
@@ -392,8 +392,11 @@ namespace SIM.Utilidades
             canvas.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             string _Funcionario = nombreFuncionario;
-            Font drawFont = new Font("Arial", _TamañoFuente);
+            Font drawFont = new Font("Arial", _TamañoFuente, FontStyle.Bold);
             SolidBrush _Writer = new SolidBrush(Color.Black);
+            canvas.DrawString("Firma pendiente", drawFont, _Writer, new PointF(30, 40));
+            canvas.DrawString(" de aprobación ", drawFont, _Writer, new PointF(30, 55));
+            drawFont = new Font("Arial", _TamañoFuente);
             canvas.DrawString(_Funcionario, drawFont, _Writer, new PointF(0, 95));
             if (_ConCargo)
             {
