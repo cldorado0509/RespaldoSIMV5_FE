@@ -3249,6 +3249,7 @@
     <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\Documentos.cshtml" />
     <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\Index.cshtml" />
     <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\InformativoTercero.cshtml" />
+    <Content Include="Areas\Dynamics\Plantilla\Formulario_220_2023.pdf" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
