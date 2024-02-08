@@ -1254,7 +1254,7 @@ namespace SIM.Areas.Tramites
 
                 foreach (var page in document.Pages)
                 {
-                    var gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Prepend);
+                    var gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Append);
                     // Get the size (in points) of the text.
                     var size = gfx.MeasureString(text, font);
                     // Define a rotation transformation at the center of the page.
@@ -1268,7 +1268,8 @@ namespace SIM.Areas.Tramites
                     format.LineAlignment = XLineAlignment.Near;
                     // Create a dimmed red brush.
                     //XBrush brush = new XSolidBrush(XColor.FromArgb(128, 255, 0, 0));
-                    XBrush brush = new XSolidBrush(XColor.FromKnownColor(KnownColor.LightGray));
+                    XBrush brush = new XSolidBrush(XColor.FromArgb(128, 255, 0, 0));
+                    //XBrush brush = new XSolidBrush(XColor.FromKnownColor(KnownColor.LightGray));
                     // Draw the string.
                     gfx.DrawString(text, font, brush, new XPoint((page.Width - size.Width) / 2, (page.Height - size.Height) / 2), format);
                 }
