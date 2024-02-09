@@ -311,7 +311,7 @@ namespace SIM.Utilidades
             canvas.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             string _Funcionario = "Proyectado por: " + nombreFuncionario + " (" + cargoFuncionario + ")";
-            Font drawFont = new Font("Arial", 6);
+            Font drawFont = new Font("Arial", 8);
             SolidBrush _Writer = new SolidBrush(Color.Black);
             canvas.DrawString(_Funcionario, drawFont, _Writer, new PointF(0, 10));
             canvas.Save();
