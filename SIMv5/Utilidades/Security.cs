@@ -121,6 +121,7 @@ namespace SIM.Utilidades
         /// <param name="_ConCargo">Tamaño de la fuente</param>
         /// <param name="_TamanoFuente">Especifica si la firma va con el cargo del funcionario</param>
         /// <param name="_FuncEncargo">Especifica si el cargo del funcionario es en encargo (E)</param>
+        /// <param name="textoAdicional"></param>
         /// <param name="_TipoFirma">0 Normal, 1 Encargado, 2 Adhoc</param>
         /// <returns></returns>
         public static System.Drawing.Image ObtenerFirmaElectronicaFuncionario(long _CodFuncionario, bool _ConCargo, float _TamanoFuente, bool _FuncEncargo, string textoAdicional, int? _CodCargo, int _TipoFirma = 0)
@@ -135,6 +136,9 @@ namespace SIM.Utilidades
         /// <param name="_ConCargo">Especifica si la firma va con el cargo del funcionario</param>
         /// <param name="_ConCodigo">Especifica si se incluye el codigo QR en la firma</param>
         /// <param name="_TipoFirma">0 Normal, 1 Encargado, 2 Adhoc</param>
+        /// <param name="textoAdicional"></param>
+        /// <param name="_CodCargo"></param>
+        /// <param name="_FuncionarioEncargo"></param>
         /// <returns></returns>
         public static System.Drawing.Image ObtenerFirmaElectronicaFuncionario(long _CodFuncionario, bool _ConCargo, float _TamañoFuente, bool _ConCodigo, bool _FuncionarioEncargo, string textoAdicional, int? _CodCargo, int _TipoFirma = 0)
         {
@@ -264,6 +268,11 @@ namespace SIM.Utilidades
             else return null;
         }
 
+        /// <summary>
+        /// Obtiene una imagen con el nombre del funcionario
+        /// </summary>
+        /// <param name="_CodFuncionario">Codigo interno del funcionario</param>
+        /// <returns></returns>
         public static System.Drawing.Image ObtenerNombreFuncionario(long _CodFuncionario)
         {
             EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
@@ -302,12 +311,113 @@ namespace SIM.Utilidades
             canvas.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             string _Funcionario = "Proyectado por: " + nombreFuncionario + " (" + cargoFuncionario + ")";
-            Font drawFont = new Font("Arial", 6);
+            Font drawFont = new Font("Arial", 8);
             SolidBrush _Writer = new SolidBrush(Color.Black);
             canvas.DrawString(_Funcionario, drawFont, _Writer, new PointF(0, 10));
             canvas.Save();
             return _ImgNombreFuncionario;
         }
+
+        /// <summary>
+        /// Obtiene una imagen con el nombre del funcionario
+        /// </summary>
+        /// <param name="_CodFuncionario">Codigo interno del funcionario</param>
+        /// <param name="_ConCargo">Especifica si la firma va con el cargo del funcionario</param>
+        /// <param name="_CodCargo">Codigo del cargo del funcionario</param>
+        /// <param name="textoAdicional"></param>
+        /// <param name="_TipoFirma">0 Normal, 1 Encargado, 2 Adhoc</param>
+        /// <returns></returns>
+        public static System.Drawing.Image ObtenerNombreFuncionario(long _CodFuncionario, bool _ConCargo, int? _CodCargo, string textoAdicional, int _TipoFirma = 0)
+        {
+            EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+            float _TamañoFuente = 12;
+            var rutaFirmas = dbSIM.Database.SqlQuery<string>("SELECT VALOR FROM GENERAL.PARAMETROS WHERE CLAVE = 'RutaFirmaFuncionario'").FirstOrDefault();
+            var nombreFuncionario = dbSIM.Database.SqlQuery<string>(
+                "SELECT S_NOMBRES || ' ' || S_APELLIDOS " +
+                "FROM SEGURIDAD.USUARIO u INNER JOIN " +
+                "SEGURIDAD.USUARIO_FUNCIONARIO uf ON u.ID_USUARIO = uf.ID_USUARIO " +
+                "WHERE uf.CODFUNCIONARIO = " + _CodFuncionario.ToString()).FirstOrDefault();
+            var cedulaFuncionario = dbSIM.Database.SqlQuery<int>(
+                "SELECT t.N_DOCUMENTON " +
+                "FROM SEGURIDAD.USUARIO_FUNCIONARIO uf INNER JOIN " +
+                "SEGURIDAD.PROPIETARIO p ON uf.ID_USUARIO = p.ID_USUARIO INNER JOIN " +
+                "GENERAL.TERCERO t ON p.ID_TERCERO = t.ID_TERCERO " +
+                "WHERE uf.CODFUNCIONARIO = " + _CodFuncionario.ToString()).FirstOrDefault().ToString();
+
+            string cargoFuncionario;
+
+            if (_CodCargo == null)
+            {
+                cargoFuncionario = dbSIM.Database.SqlQuery<string>(
+                    "SELECT CAR.NOMBRE " +
+                    "FROM TRAMITES.TBFUNCIONARIO FUN INNER JOIN " +
+                    "   TRAMITES.TBCARGO CAR ON FUN.CODCARGO = CAR.CODCARGO " +
+                    "WHERE FUN.CODFUNCIONARIO = " + _CodFuncionario.ToString() + "AND ROWNUM = 1").FirstOrDefault();
+            }
+            else
+            {
+                if (_TipoFirma == 1)
+                {
+                    cargoFuncionario = dbSIM.Database.SqlQuery<string>(
+                        "SELECT CAR.NOMBRE_ENCARGO " +
+                        "FROM TRAMITES.TBCARGO CAR " +
+                        "WHERE CAR.CODCARGO = " + _CodCargo.ToString()).FirstOrDefault();
+                }
+                else
+                {
+                    cargoFuncionario = dbSIM.Database.SqlQuery<string>(
+                        "SELECT CAR.NOMBRE " +
+                        "FROM TRAMITES.TBCARGO CAR " +
+                        "WHERE CAR.CODCARGO = " + _CodCargo.ToString()).FirstOrDefault();
+                }
+            }
+
+            if (_CodFuncionario < 0) return null;
+
+            Bitmap _ImgFirma;
+            if (textoAdicional != null && textoAdicional.Trim() != "")
+            {
+                int numLineas = textoAdicional.Count(t => t == '\r');
+                //_ImgFirma = new Bitmap(400, 150 + (textoAdicional.IndexOf('\r') >= 0 ? 20 : 0));
+                _ImgFirma = new Bitmap(400, 150 + (numLineas == 1 ? 20 : (numLineas > 1 ? 40 : 0)));
+            }
+            else
+                _ImgFirma = new Bitmap(400, 130);
+
+            _ImgFirma.SetResolution(96, 96);
+
+            Graphics canvas = Graphics.FromImage(_ImgFirma);
+            Pen blackPen = new Pen(Color.Black, 1);
+            canvas.Clear(Color.White);
+            canvas.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            string _Funcionario = nombreFuncionario;
+            Font drawFont = new Font("Arial", _TamañoFuente, FontStyle.Bold);
+            SolidBrush _Writer = new SolidBrush(Color.Black);
+            canvas.DrawString("Firma pendiente", drawFont, _Writer, new PointF(30, 40));
+            canvas.DrawString(" de aprobación ", drawFont, _Writer, new PointF(30, 55));
+            drawFont = new Font("Arial", _TamañoFuente);
+            canvas.DrawString(_Funcionario, drawFont, _Writer, new PointF(0, 95));
+            if (_ConCargo)
+            {
+                TextInfo texto = new CultureInfo("es-CO", false).TextInfo;
+                string _Cargo = cargoFuncionario;
+                //_Cargo = _FuncionarioEncargo ? _Cargo + " (E)" : _Cargo;
+                //_Cargo = (_CodCargo != null) ? _Cargo + (_TipoFirma == 1 ? " (E)" : " Ad Hoc") : _Cargo;
+                _Cargo = (_CodCargo != null) ? _Cargo + (_TipoFirma == 2 ? " Ad Hoc" : "") : _Cargo;
+                canvas.DrawString(texto.ToTitleCase(_Cargo.ToLower()), drawFont, _Writer, new PointF(0, 110));
+            }
+
+            if (textoAdicional != null && textoAdicional.Trim() != "")
+            {
+                Font drawFontAdicional = new Font("Arial", 10);
+
+                canvas.DrawString(textoAdicional, drawFontAdicional, _Writer, new PointF(0, 130));
+            }
+            canvas.Save();
+            return _ImgFirma;
+        }
+
 
         /// <summary>
         /// Redimensiona la imágen especificada al ancho y alto.
