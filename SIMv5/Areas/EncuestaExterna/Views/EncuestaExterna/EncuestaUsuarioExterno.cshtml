@@ -99,7 +99,7 @@
     <div id="divUbicacionUrbana" title="Ubicación Urbana/Rural" style="display: none; overflow: hidden; padding: 0px">
         <iframe src="" id="frm_UbicacionUrbana" name="frm_UbicacionUrbana" width="100%" height="100%"></iframe>
     </div>
-    <div id="app" data-url="@Url.Content("~")" data-vd="@ViewBag.Dependencias" data-tc="@ViewBag.TipoTerminos" class="row">
+    <div id="app" data-url="@Url.Content("~")" data-vd="@ViewBag.Dependencias" data-tc="@ViewBag.TipoTerminos" data-tf="@ViewBag.TipoFormulario" data-urlf="@ViewBag.urlFormulario" class="row">
         <div class="row col-md-12" id="divNombre" style="margin-bottom: 10px;display:none;">
             <h4 class="col-md-2" style="height: 30px; line-height: 29px; width: 185px;">
                 Nombre Encuesta
@@ -377,7 +377,9 @@
             }
         });
     }
-            function crearEstadoNuevo(idVigencia, valor,idtercero,idInstalacion,radicado) {
+
+    function crearEstadoNuevo(idVigencia, valor, idtercero, idInstalacion, radicado)
+    {
         card=1;
         $.ajax({
             type: "POST",
@@ -426,9 +428,13 @@
 
             success: function (response) {
                 mensajeAlmacenamiento("Almacenamiento exitoso");
-                consultarJsonEncuesta($("#txtIdEstado").val());
 
-                apagarload();
+                if ($('#app').data('tf') == '1') {
+                    consultarJsonEncuesta($("#txtIdEstado").val());
+                    apagarload();
+                } else {
+                    window.open('@Url.Content("~/EncuestaExterna/")' + $('#app').data('urlf') + '?e=' + idestado + '&t=1&cr=1', '_self');
+                }
             }
         });
     }
@@ -459,7 +465,7 @@
 
 
         });
-        $("#frVigencia").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/vigencia?id=")" + $("#txtIdVgen").val()+"&tipo="+tipo);
+        $("#frVigencia").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/vigencia?id=")" + $("#txtIdVgen").val() + "&tipo=" + tipo + "&tf=" + tipo);
 
     }
 
@@ -473,7 +479,7 @@
             modal: true
         });
 
-        $("#frVigencia").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/vigencia?id=")" + $("#txtIdVgen").val()+"&tipo="+tipo);
+        $("#frVigencia").attr("src", "@Url.Content("~/EncuestaExterna/EncuestaExterna/vigencia?id=")" + $("#txtIdVgen").val()+"&tipo="+tipo+"&v=1.0");
     }
 
     function guardarEncuesta(tipoGuardado, silencio = false) {

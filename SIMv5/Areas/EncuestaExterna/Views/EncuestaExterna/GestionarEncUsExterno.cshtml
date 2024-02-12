@@ -349,14 +349,18 @@
                                                 }
                                                 break;
                                             case 2:
-                                                $("#pantallaReporte").dialog(
-                                                    {
-                                                        width: 800,
-                                                        height: 500,
+                                                if (e.data.TIPO_GUARDADO == 0) {
+                                                    abrirEncuesta(e.data.ID_ESTADO, e.data.ID_ENCUESTA, e.data.ID_VIGENCIA, e.data.URL_ENCUESTA);
+                                                } else {
+                                                    $("#pantallaReporte").dialog(
+                                                        {
+                                                            width: 800,
+                                                            height: 500,
 
-                                                    });
+                                                        });
 
-                                                $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/PMESEstrategias/ReporteEstrategias?idEstado=")" + e.data.ID_ESTADO);
+                                                    $("#frEncuestaPDF").attr("src", "@Url.Content("~/EncuestaExterna/PMESEstrategias/ReporteEstrategias?idEstado=")" + e.data.ID_ESTADO);
+                                                }
                                                 break;
                                         }
                                         break;
