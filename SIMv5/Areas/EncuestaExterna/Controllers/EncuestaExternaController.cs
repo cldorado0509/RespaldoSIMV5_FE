@@ -286,7 +286,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
 
         public ActionResult vigencia()
         {
-            string sql = "SELECT NVL(PERMITE_COPIA, 'N') || '-' || NVL(TIPO_TERMINOS, 'V') FROM CONTROL.VIGENCIA WHERE ID_VIGENCIA = " + Request.Params["id"];
+            string sql = "SELECT NVL(PERMITE_COPIA, 'N') || '-' || NVL(TIPO_TERMINOS, 'V') || '-' || NVL(TIPO_FORMULARIO, '1') || '-' || NVL(URL_PERSONALIZADA, '') FROM CONTROL.VIGENCIA WHERE ID_VIGENCIA = " + Request.Params["id"];
 
             string datosVigencia = db.Database.SqlQuery<string>(sql).FirstOrDefault();
 
@@ -295,7 +295,9 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             int tipo = Convert.ToInt32(Request.Params["tipo"]);
             ViewBag.tipo = tipo;
             ViewBag.permiteCopia = (datosVigencia.Split('-')[0] == "S");
-            ViewBag.TipoTerminos = (datosVigencia.Split('-')[1]);
+            ViewBag.TipoTerminos = datosVigencia.Split('-')[1];
+            ViewBag.TipoFormulario = datosVigencia.Split('-')[2];
+            ViewBag.urlFormulario = datosVigencia.Split('-')[3];
             return View();
         }
         public ActionResult ModificaEncuesta()
@@ -485,13 +487,15 @@ namespace SIM.Areas.EncuestaExterna.Controllers
             ViewBag.card = card;
             ViewBag.old = old;
 
-            var tipoTerminos = db.VIGENCIA.Where(v => v.ID_VIGENCIA == idVigen).FirstOrDefault();
+            var vigencia = db.VIGENCIA.Where(v => v.ID_VIGENCIA == idVigen).FirstOrDefault();
 
-            ViewBag.TipoTerminos = (tipoTerminos.TIPO_TERMINOS ?? "V");
+            ViewBag.TipoTerminos = (vigencia.TIPO_TERMINOS ?? "V");
+            ViewBag.TipoFormulario = (vigencia.TIPO_FORMULARIO ?? 1);
+            ViewBag.urlFormulario = (vigencia.URL_PERSONALIZADA ?? "");
 
-            if (tipoTerminos.TIPO_TERMINOS == "E")
+            if (vigencia.TIPO_TERMINOS == "E")
             {
-                ViewBag.TerminosCondiciones = tipoTerminos.TERMINO;
+                ViewBag.TerminosCondiciones = vigencia.TERMINO;
             }
 
             int numDependencias = db.Database.SqlQuery<int>("SELECT COUNT(0) FROM CONTROL.ENC_VIGENCIA_DEPENDENCIA WHERE ID_VIGENCIA = " + idVigen.ToString()).FirstOrDefault();

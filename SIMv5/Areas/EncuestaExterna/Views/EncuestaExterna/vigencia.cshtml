@@ -522,35 +522,38 @@
                     parent.crearEstadoNuevoCardinalidad($("#txtIdVgen").val(), valor,idTercero,idInstalacion,$("#txtCantidad").val());
                 }
 
+                @if (ViewBag.TipoFormulario == "1")
+                {
+                    @Html.Raw("parent.$('#pantallaVigencia').dialog('close');");
+                }
 
-                parent.$("#pantallaVigencia").dialog('close');
                 break;
             case 3:
                 if (parent.cardinalidad == "1") {
-                    consultarTerceroInstalacionUnico(idInstalacion, idTercero, intIdVigencia);
-                } else {
-                    parent.crearEstadoNuevoCardinalidad(intIdVigencia, "0", idTercero, idInstalacion, $("#txtCantidad").val());
-                }
+                        consultarTerceroInstalacionUnico(idInstalacion, idTercero, intIdVigencia);
+                    } else {
+                        parent.crearEstadoNuevoCardinalidad(intIdVigencia, "0", idTercero, idInstalacion, $("#txtCantidad").val());
+                    }
 
 
-                break;
+                    break;
             case 4:
                 if ($("#cmbPeriodo").val() == "-1")
                 {
-                    mensajeAlmacenamiento("Seleccione la vigencia")
+                        mensajeAlmacenamiento("Seleccione la vigencia")
                     return;
-                }
-                var valor2 = $("#cmbPeriodo").val();
-                for (var i = 0; i < arrVigenValidar.length; i++) {
-                    if (arrVigenValidar[i].VALOR == valor2) {
-                        mensajeAlmacenamiento("La vigencia seleccionada ya fue diligenciada");
-                        return;
                     }
+                    var valor2 = $("#cmbPeriodo").val();
+                    for (var i = 0; i < arrVigenValidar.length; i++) {
+                        if (arrVigenValidar[i].VALOR == valor2) {
+                            mensajeAlmacenamiento("La vigencia seleccionada ya fue diligenciada");
+                            return;
+                        }
+                    }
+                    parent.crearEstadoNuevo($("#txtIdVgen").val(),valor2,idTercero,idInstalacion,0);
+                    parent.$("#pantallaVigencia").dialog('close');
+                    break;
                 }
-                parent.crearEstadoNuevo($("#txtIdVgen").val(),valor2,idTercero,idInstalacion,0);
-                parent.$("#pantallaVigencia").dialog('close');
-                break;
-        }
 
 
 
@@ -624,5 +627,5 @@
         window.open("@Url.Content("~/General/Instalacion/Instalacion/?idTercero=")" +  $("#txtIdTerceroUsuario").val() + "&vistaRetorno=true");
 
     }
-</script>
+    </script>
 </body>
