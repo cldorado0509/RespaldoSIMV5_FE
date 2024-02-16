@@ -1,27 +1,19 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using SIM.Areas.Models;
-using System.Security.Claims;
-using SIM.Areas.Tramites.Models;
-using SIM.Utilidades;
-using System.IO;
-using System.Web.Hosting;
+﻿using co.com.certicamara.encryption3DES.code;
 using SIM.Data;
 using SIM.Data.Tramites;
 using SIM.Models;
-using co.com.certicamara.encryption3DES.code;
+using SIM.Utilidades;
 using SIM.Utilidades.FirmaDigital;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
 using System.Text;
-using SIM.Data.Documental;
-using static SIM.Areas.Tramites.Controllers.ProyeccionDocumentoApiController;
+using System.Web.Hosting;
+using System.Web.Http;
 //using DevExpress.Utils.Extensions;
 
 namespace SIM.Areas.Tramites.Controllers
@@ -285,7 +277,7 @@ namespace SIM.Areas.Tramites.Controllers
                                  S_SERIE = ud.NOMBRE,
                                  pd.S_TRAMITES,
                                  pd.S_PROCESOS,
-                                 pd.D_FECHA_TRAMITE,
+                                 D_FECHA_TRAMITE = pd.D_FECHA_CREACION,
                                  f.CODFUNCIONARIO,
                                  S_FUNCIONARIO = f.NOMBRES + " " + f.APELLIDOS,
                                  S_FUNCIONARIO_ACTUAL = fa.NOMBRES + " " + fa.APELLIDOS,
@@ -571,7 +563,8 @@ namespace SIM.Areas.Tramites.Controllers
                             var codFuncionarioRadica = datos.Firmas.Where(f => f.S_ACTIVO == "S").OrderByDescending(f => f.ORDEN).Select(f => f.CODFUNCIONARIO).FirstOrDefault();
 
                             var cargoFuncionarioRadica = (
-                                    from f in dbSIM.TBFUNCIONARIO join 
+                                    from f in dbSIM.TBFUNCIONARIO
+                                    join
                                         c in dbSIM.TBCARGO on f.CODCARGO equals c.CODCARGO
                                     where f.CODFUNCIONARIO == codFuncionarioRadica
                                     select c
@@ -1066,7 +1059,7 @@ namespace SIM.Areas.Tramites.Controllers
 
             var sql = "SELECT CODFUNCIONARIO AS ID, NOMBRES AS NOMBRE " +
                 "FROM(SELECT * FROM TRAMITES.QRY_FUNCIONARIO WHERE CODFUNCIONARIO = (SELECT CODFUNCIONARIO AS ID FROM TRAMITES.MEMORANDO_FUNCGRUPO WHERE ID_GRUPOMEMO = " + idGrupo.ToString() + " FETCH FIRST 1 ROWS ONLY)) datos";
-           
+
             var resultadoConsulta = dbSIM.Database.SqlQuery<ValorLista>(sql).FirstOrDefault();
             return resultadoConsulta;
         }
@@ -1580,7 +1573,8 @@ namespace SIM.Areas.Tramites.Controllers
                                                 int funcionarioPrincipal = -1;
 
                                                 //dbTramites.SP_NUEVO_TRAMITE(codProceso, codTarea, codFuncionarioTN, documento.S_DESCRIPCION, respCodTramite, respCodTarea, rtaResultado);
-                                                if (documento.ID_GRUPO == null) {
+                                                if (documento.ID_GRUPO == null)
+                                                {
                                                     var sqlFuncionariosCopias = "SELECT CODFUNCIONARIO " +
                                                         "FROM TRAMITES.PROYECCION_DOC_COPIAS " +
                                                         "WHERE ID_PROYECCION_DOC = " + documento.ID_PROYECCION_DOC.ToString();
@@ -1664,7 +1658,7 @@ namespace SIM.Areas.Tramites.Controllers
                                                 }
                                                 else
                                                 {
-                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_PROYECCION_DOC*(-1), (paraProyeccion != null ? paraProyeccion.ID_VALOR : null) , radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
+                                                    EnviarEmailGrupo(serieDocumental, documento.CODFUNCIONARIO, documento.ID_PROYECCION_DOC * (-1), (paraProyeccion != null ? paraProyeccion.ID_VALOR : null), radicado.IdRadicado, (asuntoProyeccion != null ? asuntoProyeccion.S_VALOR : documento.S_DESCRIPCION));
                                                 }
                                             }
 
@@ -1944,7 +1938,7 @@ namespace SIM.Areas.Tramites.Controllers
                         var sqlFuncionariosCopias = "SELECT f.EMAIL " +
                                 "FROM TRAMITES.PROYECCION_DOC_COPIAS pc INNER JOIN " +
                                 "   TRAMITES.TBFUNCIONARIO f ON pc.CODFUNCIONARIO = f.CODFUNCIONARIO " +
-                                "WHERE ID_PROYECCION_DOC = " + (idGrupo*(-1)).ToString();
+                                "WHERE ID_PROYECCION_DOC = " + (idGrupo * (-1)).ToString();
 
                         funcionariosCopias = String.Join(";", dbSIM.Database.SqlQuery<string>(sqlFuncionariosCopias).ToList());
 

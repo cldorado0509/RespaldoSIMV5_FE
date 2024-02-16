@@ -206,21 +206,21 @@
                 </div>
             </div>
         }
-    <div class="container body-content" @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) { <text> style="margin-top: 70px" </text> }>
-        @RenderBody()
+        <div class="container body-content" @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) { <text> style="margin-top: 70px" </text> }>
+            @RenderBody()
+        </div>
         @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
         {
             <text>
                 <br />
                 <footer>
                     <div>
-                        <div style="text-align: center;"><img src="https://www.metropol.gov.co/PublishingImages/imgfuturosostenible.png"></div>
+                        <div style="text-align: center;">&nbsp;</div>
                         <div style="text-align: center;">Copyright &copy; Area Metropolitana del Valle de Aburr&aacute;. Todos los Derechos Reservados</div>
                     </div>
                 </footer>
             </text>
         }
-    </div>
     </div>
 
     @Scripts.Render("~/bundlesv5/bootstrap")

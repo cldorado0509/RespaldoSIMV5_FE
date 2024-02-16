@@ -291,7 +291,7 @@ $(document).ready(function () {
                 width: '10%',
                 caption: 'FECHA',
                 dataType: 'date',
-                format: "dd/MM/yyyy",
+                format: "dd/MM/yyyy HH:mm",
                 visible: true
             }, {
                 dataField: 'S_PROCESOS',
@@ -570,7 +570,7 @@ $(document).ready(function () {
                 width: '10%',
                 caption: 'FECHA',
                 dataType: 'date',
-                format: "dd/MM/yyyy",
+                format: "dd/MM/yyyy HH:mm",
                 visible: true
             }, {
                 dataField: 'S_PROCESOS',
