@@ -222,6 +222,18 @@
                         case ".docx":
                             _Mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
                             break;
+                        case ".xlsx":
+                            _Mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                            break;
+                        case ".xls":
+                            _Mime = "application/vnd.ms-excel";
+                            break;
+                        case ".ppt":
+                            _Mime = "application/vnd.ms-powerpoint";
+                            break;
+                        case ".pptx":
+                            _Mime = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                            break;
                     }
                     System.Net.Mime.ContentDisposition cd = new System.Net.Mime.ContentDisposition
                     {
