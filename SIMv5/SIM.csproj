@@ -1127,6 +1127,7 @@
     <Compile Include="Areas\DesarrolloEconomico\Models\Producto.cs" />
     <Compile Include="Areas\DesarrolloEconomico\Models\UnidadMedida.cs" />
     <Compile Include="Areas\Dynamics\Controllers\CertificadoIngresosApiController.cs" />
+    <Compile Include="Areas\Dynamics\Controllers\FacturaController.cs" />
     <Compile Include="Areas\Dynamics\Controllers\PazsalvoBienesApiController.cs" />
     <Compile Include="Areas\Dynamics\Controllers\PazsalvoBienesController.cs" />
     <Compile Include="Areas\Dynamics\Controllers\CertificadoIngresosController.cs" />
@@ -3250,6 +3251,7 @@
     <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\Index.cshtml" />
     <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\InformativoTercero.cshtml" />
     <Content Include="Areas\Dynamics\Plantilla\Formulario_220_2023.pdf" />
+    <Content Include="Areas\Dynamics\Views\Factura\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
