@@ -1128,6 +1128,7 @@
     <Compile Include="Areas\DesarrolloEconomico\Models\UnidadMedida.cs" />
     <Compile Include="Areas\Dynamics\Controllers\CertificadoIngresosApiController.cs" />
     <Compile Include="Areas\Dynamics\Controllers\FacturaController.cs" />
+    <Compile Include="Areas\Dynamics\Controllers\FacturasApiController.cs" />
     <Compile Include="Areas\Dynamics\Controllers\PazsalvoBienesApiController.cs" />
     <Compile Include="Areas\Dynamics\Controllers\PazsalvoBienesController.cs" />
     <Compile Include="Areas\Dynamics\Controllers\CertificadoIngresosController.cs" />
@@ -2495,6 +2496,7 @@
     <Content Include="Areas\DesarrolloEconomico\Scripts\UnidadMedida.js" />
     <Content Include="Areas\Dynamics\Scripts\CertificadoIng.js" />
     <Content Include="Areas\Dynamics\Scripts\Etiquetas.js" />
+    <Content Include="Areas\Dynamics\Scripts\Factura.js" />
     <Content Include="Areas\Dynamics\Scripts\PazSalvoBienes.js" />
     <Content Include="Areas\EnCicla\Scripts\testexterno.js" />
     <Content Include="Areas\EncuestaExterna\Scripts\PMESEstrategias\estrategias.js" />
