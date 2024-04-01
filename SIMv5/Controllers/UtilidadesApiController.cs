@@ -1305,29 +1305,32 @@
                            select new
                            {
                                CodTramite = Doc.CODTRAMITE,
-                               CodDocumento = Doc.CODDOCUMENTO
+                               CodDocumento = Doc.CODDOCUMENTO,
+                               CodSerie = Doc.CODSERIE
                            }).FirstOrDefault();
             if (Tramite != null)
             {
-                var Indices = (from Ind in dbSIM.TBINDICEDOCUMENTO
-                               join Ise in dbSIM.TBINDICESERIE on Ind.CODINDICE equals Ise.CODINDICE
+                var Indices = (from Ise in dbSIM.TBINDICESERIE
                                join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
                                from pdis in l.DefaultIfEmpty()
-                               where Ind.CODTRAMITE == Tramite.CodTramite && Ind.CODDOCUMENTO == Tramite.CodDocumento
+                               where Ise.CODSERIE == Tramite.CodSerie
                                orderby Ise.ORDEN
                                select new Indice
                                {
-                                   CODINDICE = (int)Ind.CODINDICE,
+                                   CODINDICE = (int)Ise.CODINDICE,
                                    INDICE = Ise.INDICE,
                                    TIPO = (byte)Ise.TIPO,
                                    LONGITUD = (long)Ise.LONGITUD,
                                    OBLIGA = (int)Ise.OBLIGA,
                                    VALORDEFECTO = Ise.VALORDEFECTO,
-                                   VALOR = Ind.VALOR,
+                                   VALOR = (from Ind in dbSIM.TBINDICEDOCUMENTO
+                                            where Ind.CODTRAMITE == Tramite.CodTramite && Ind.CODDOCUMENTO == Tramite.CodDocumento && Ind.CODINDICE == Ise.CODINDICE
+                                            select Ind.VALOR).FirstOrDefault(),
                                    ID_LISTA = (int)Ise.CODIGO_SUBSERIE,
                                    TIPO_LISTA = pdis.TIPO,
                                    CAMPO_NOMBRE = pdis.CAMPO_NOMBRE
-                               }).ToList();
+                               }
+                               );
                 return Indices.ToList();
             }
             else return null;

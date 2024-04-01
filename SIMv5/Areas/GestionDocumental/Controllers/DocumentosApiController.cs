@@ -127,6 +127,10 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         case "endswith":
                             condicion.Add(" LOWER(\"" + filtros[contFiltro].Trim() + "\") LIKE '%" + filtros[contFiltro + 2].Trim().ToLower() + "'");
                             break;
+                        case "between":
+                            if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro].Trim() + "\",'dd-MM-yyyy') " + filtros[contFiltro + 1] + " TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy') AND " + "TO_DATE('" + DateTime.Parse(filtros[contFiltro + 3].Trim().ToLower()).ToString("dd-MM-yyyy") + "', 'dd-MM-yyyy')");
+                            else condicion.Add("TO_NUMBER(LOWER(\"" + filtros[contFiltro].Trim() + "\")) " + filtros[contFiltro + 1] + " " + filtros[contFiltro + 2].Trim().ToLower() + " AND " + filtros[contFiltro + 3].Trim().ToLower());
+                            break;
                         case "=":
                             if (esFecha) condicion.Add("TO_DATE(\"" + filtros[contFiltro].Trim() + "\",'dd-MM-yyyy') = TO_DATE('" + DateTime.Parse(filtros[contFiltro + 2].Trim().ToLower()).ToString("dd-MM-yyyy") + "','dd-MM-yyyy')");
                             else condicion.Add("LOWER(\"" + filtros[contFiltro].Trim() + "\") = '" + filtros[contFiltro + 2].Trim().ToLower() + "'");
