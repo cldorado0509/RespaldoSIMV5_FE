@@ -1313,7 +1313,7 @@
                 var Indices = (from Ise in dbSIM.TBINDICESERIE
                                join lista in dbSIM.TBSUBSERIE on (decimal)Ise.CODIGO_SUBSERIE equals lista.CODIGO_SUBSERIE into l
                                from pdis in l.DefaultIfEmpty()
-                               where Ise.CODSERIE == Tramite.CodSerie
+                               where Ise.CODSERIE == Tramite.CodSerie && Ise.MOSTRAR == "1"
                                orderby Ise.ORDEN
                                select new Indice
                                {
