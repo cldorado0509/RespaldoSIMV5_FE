@@ -1143,6 +1143,7 @@
     <Compile Include="Areas\Dynamics\Data\Dynamics.Context.cs" />
     <Compile Include="Areas\Dynamics\Data\HCMWORKER.cs" />
     <Compile Include="Areas\Dynamics\Data\ListadoBienes.cs" />
+    <Compile Include="Areas\Dynamics\Data\ListadoFacturas.cs" />
     <Compile Include="Areas\Dynamics\Data\ListadoTercero.cs" />
     <Compile Include="Areas\Dynamics\Data\PrefijoModel.cs" />
     <Compile Include="Areas\Dynamics\Data\ResponsableModel.cs" />

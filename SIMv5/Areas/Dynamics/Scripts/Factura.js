@@ -1,5 +1,7 @@
 ﻿var FacturasStore = null;
+
 $(document).ready(function () {
+
     var grdFacturas = $("#gridBienes").dxDataGrid({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -31,7 +33,7 @@ $(document).ready(function () {
         visible: false,
         columns: [
             { dataField: 'FACTURA', width: '10%', caption: 'Factura', dataType: 'string' },
-            { dataField: 'FECHA', width: '10%', caption: 'Fecha', dataType: 'date', , format: 'MM/dd/yyyy' },
+            { dataField: 'FECHA', width: '10%', caption: 'Fecha', dataType: 'date', format: 'MM/dd/yyyy' },
             { dataField: 'IDENTIFICACION', width: '10%', caption: 'Documento', dataType: 'string' },
             { dataField: 'NOMBRE', width: '20%', caption: 'Nombre tercero', dataType: 'string' },
             { dataField: 'EMAIL', width: '12%', caption: 'Correo Elect.', dataType: 'string' },
@@ -93,4 +95,8 @@ $(document).ready(function () {
         }
     });
 
+    var Documento = $("#txtDocumento").dxTextBox({
+        placeholder: "Ingrese el documento",
+        value: ""
+    }).dxTextBox("instance");
 });
