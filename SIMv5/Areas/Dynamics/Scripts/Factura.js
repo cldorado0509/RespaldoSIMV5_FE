@@ -1,11 +1,12 @@
 ﻿var FacturasStore = null;
+var filtros = "";
 
 $(document).ready(function () {
 
-    var grdFacturas = $("#gridBienes").dxDataGrid({
+    var grdFacturas = $("#gridFacturas").dxDataGrid({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
-                key: "DOCUMENTO",
+                key: "FACTURA",
                 loadMode: "raw",
                 load: function () {
                     return $.getJSON($("#Dynamics").data("url") + "Dynamics/api/FacturasApi/ObtenerFacturas", { customFilters: filtros });
@@ -30,12 +31,13 @@ $(document).ready(function () {
         },
         remoteOperations: true,
         hoverStateEnabled: true,
-        visible: false,
+   /*     visible: false,*/
         columns: [
             { dataField: 'FACTURA', width: '10%', caption: 'Factura', dataType: 'string' },
-            { dataField: 'FECHA', width: '10%', caption: 'Fecha', dataType: 'date', format: 'MM/dd/yyyy' },
-            { dataField: 'IDENTIFICACION', width: '10%', caption: 'Documento', dataType: 'string' },
-            { dataField: 'NOMBRE', width: '20%', caption: 'Nombre tercero', dataType: 'string' },
+            { dataField: 'FECHAFACT', width: '10%', caption: 'Fecha', dataType: 'date', format: 'MM/dd/yyyy' },
+            { dataField: 'DOCUMENTO', width: '10%', caption: 'Documento', dataType: 'string' },
+            { dataField: 'TERCERO', width: '20%', caption: 'Nombre tercero', dataType: 'string' },
+            { dataField: 'MUNICIPIO', width: '10%', caption: 'Ciudad', dataType: 'string' },
             { dataField: 'EMAIL', width: '12%', caption: 'Correo Elect.', dataType: 'string' },
             {
               caption: 'Imprimir',
@@ -57,46 +59,104 @@ $(document).ready(function () {
         icon: "filter",
         text: 'Buscar',
         onClick: function () {
-            btnImprimir.option("visible", false);
-            grdFacturas.option("visible", false);
-            if (Tercero.option("value") >= 1) {
-                _docu = Tercero.option("value");
-                Documento.option("value", "");
-            } else if (Documento.option("value") != "") {
-                _docu = Documento.option("value");
-            } else {
-                DevExpress.ui.dialog.alert('No se ha ingresado un dato para buscar', 'Paz y Salvo bienes');
+            filtros = "";
+            if (Documento.option("value") >= 1) {
+                filtros += ";D:" + Documento.option("value");
+            }
+            if (Tercero.option("selectedItem") != null) {
+                filtros += ";T:" + Tercero.option("text");
+            }
+            if (Facturas.option("value") != "") {
+                filtros += ";B:" + Facturas.option("value");
+            }
+            if (FecDesde.option("value") != "")
+            {
+                var _Desde = FecDesde.option("value");
+                var _Hasta = FecHasta.option("value");
+                if (_Desde != "" && _Hasta != "") {
+                    if (_Hasta >= _Desde) {
+                        filtros += ";F:" + _Desde + "," + _Hasta;
+                    } else {
+                        DevExpress.ui.dialog.alert('El rango de fechas esta mal establecido', 'Buscar facturas');
+                        return;
+                    }
+                }
+                else filtros += ";F:" + _Desde;
+            }
+
+            if (filtros == "")
+            {
+                DevExpress.ui.dialog.alert('No se ha ingresado un dato para buscar', 'Buscar facturas');
                 return;
             }
-            $.getJSON($("#Dynamics").data("url") + "Dynamics/api/pazsalvoBienesApi/ExisteTercero", { Documento: _docu })
-                .done(function (data) {
-                    if (data.resp == "Error") {
-                        DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Paz y Salvo bienes');
-                    }
-                    else {
-                        $.getJSON($("#Dynamics").data("url") + "Dynamics/api/pazsalvoBienesApi/ConsultaBienes", { Tercero: _docu })
-                            .done(function (data) {
-                                if (data != null && data.length > 0) {
-                                    grdBienes.option("visible", true);
-                                    BienesStore = new DevExpress.data.LocalStore({
-                                        key: 'CODIGO',
-                                        data: data,
-                                        name: 'BienesStore'
-                                    });
-                                    grdBienes.option("dataSource", BienesStore);
-                                } else {
-                                    btnImprimir.option("visible", true);
-                                    var Persona = Documento.option("value").length > 0 ? Documento.option("value") : Tercero.option("text");
-                                    btnImprimir.option("text", "Imprimir Paz y Salvo para " + Persona);
-                                }
-                            });
-                    }
-                });
+            filtros = filtros.substring(1);
+            grdFacturas.refresh();
+        }
+    });
+
+    $("#btnLimpiar").dxButton({
+        icon: "clearsquare",
+        text: 'Limpiar filtros',
+        onClick: function () {
+            _docu = "";
+            Documento.option("value", null);
+            Tercero.option("value", null);
+            BienesStore = null;
+            grdBienes.option("dataSource", BienesStore);
+            btnImprimir.option("visible", false);
+            grdBienes.option("visible", false);
         }
     });
 
     var Documento = $("#txtDocumento").dxTextBox({
         placeholder: "Ingrese el documento",
+        value: "",
+        onValueChanged: function (e) {
+            var TerceroDs = Tercero.getDataSource();
+            TerceroDs.reload();
+            Tercero.option("value", e.value);
+        }
+    }).dxTextBox("instance");
+
+    var Tercero = $("#cboTercero").dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "TERCERO",
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON($("#Dynamics").data("url") + "Dynamics/api/FacturasApi/Terceros");
+                }
+            })
+        }),
+        displayExpr: "NOMBRE",
+        valueExpr: "TERCERO",
+        searchEnabled: true,
+        noDataText: "No hay datos para mostrar",
+        placeholder: "Seleccione",
+        showClearButton: true,
+        onValueChanged: function (data) {
+            if (data.value != null) {
+                Documento.option("value", data.value);
+            }
+        }
+    }).dxSelectBox("instance");
+
+    var Facturas = $("#txtFacturas").dxTextBox({
+        placeholder: "Ingrese la(s) factura(s) - separadas por ,",
         value: ""
     }).dxTextBox("instance");
+
+    var FecDesde = $("#dpFecFactDesde").dxDateBox({
+        type: 'date',
+        value: '',
+        displayFormat: 'dd/MM/yyyy',
+        dateSerializationFormat: 'yyyy-MM-dd'
+    }).dxDateBox("instance");
+
+    var FecHasta = $("#dpFecFactHasta").dxDateBox({
+        type: 'date',
+        value: '',
+        displayFormat: 'dd/MM/yyyy',
+        dateSerializationFormat: 'yyyy-MM-dd'
+    }).dxDateBox("instance");
 });

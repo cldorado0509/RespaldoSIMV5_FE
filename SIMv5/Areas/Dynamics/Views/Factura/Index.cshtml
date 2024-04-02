@@ -34,7 +34,7 @@
     <style>
         .label {
             float: left;
-            width: 40%;
+            width: 80%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -52,21 +52,20 @@
 </head>
 <body>
     <div data-url="@Url.Content("~")" ID="Dynamics" resizable>
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff; filter: alpha(opacity=40); opacity: 0.95;border:1px red solid;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff; opacity: 0.95;border:1px red solid;">
             <tr>
                 <td class="border d-flex align-items-center" width="15%">
                     <div class="label">Documento</div>
                 </td>
-                <td class="border d-flex align-items-center" width="15%">
+                <td class="border d-flex align-items-center" width="20%">
                     <div id="txtDocumento"></div>
                 </td>
                 <td class="border d-flex align-items-center" width="15%">
                     <div class="label">Nombre</div>
                 </td>
-                <td class="border d-flex align-items-center" width="15%">
+                <td class="border d-flex align-items-center" width="20%">
                     <div id="cboTercero"></div>
                 </td>
-                <td width="15%"></td>
                 <td width="15%"></td>
                 <td class="border d-flex align-items-center" width="15%" align="center">
                     <div id="btnInforme"></div>
@@ -74,35 +73,27 @@
             </tr>
             <tr>
                 <td class="border d-flex align-items-center" width="15%">
-                    <div class="label">Número factura (desde)</div>
+                    <div class="label">Número factura </div>
                 </td>
-                <td class="border d-flex align-items-center" width="15%">
-                    <div id="txtFactDesde"></div>
+                <td colspan="3" class="border d-flex align-items-center">
+                    <div id="txtFacturas"></div>
                 </td>
-                <td class="border d-flex align-items-center" width="15%">
-                    <div class="label">Número factura (hasta)</div>
-                </td>
-                <td class="border d-flex align-items-center" width="15%">
-                    <div id="txtFactHasta"></div>
-                </td>
-                <td width="15%"></td>
                 <td width="15%"></td>
                 <td width="15%"></td>
             </tr>
             <tr>
-                <td class="border d-flex align-items-center" width="15%">
+                <td class="border d-flex align-items-left" width="15%">
                     <div class="label">Fecha factura (desde)</div>
                 </td>
                 <td class="border d-flex align-items-center" width="15%">
                     <div id="dpFecFactDesde"></div>
                 </td>
-                <td class="border d-flex align-items-center" width="15%">
+                <td class="border d-flex align-items-left" width="15%">
                     <div class="label">Fecha factura (hasta)</div>
                 </td>
                 <td class="border d-flex align-items-center" width="15%">
                     <div id="dpFecFactHasta"></div>
                 </td>
-                <td width="15%"></td>
                 <td width="15%"></td>
                 <td class="border d-flex align-items-center" width="15%" align="center">
                     <div id="btnLimpiar"></div>
@@ -110,7 +101,7 @@
             </tr>
         </table>
         <br />
-        <div id="gridCertificados"></div>
+        <div id="gridFacturas"></div>
         <br />
         <div id="btnImprimeSel"></div>
     </div>
