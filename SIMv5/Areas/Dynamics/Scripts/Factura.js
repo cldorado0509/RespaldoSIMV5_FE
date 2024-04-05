@@ -3,6 +3,8 @@ var filtros = "";
 
 $(document).ready(function () {
 
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
     var grdFacturas = $("#gridFacturas").dxDataGrid({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -29,16 +31,42 @@ $(document).ready(function () {
             allowSelectAll: false,
             showCheckBoxesMode: 'always'
         },
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            allowAdding: false,
+            allowDeleting: false
+        },
         remoteOperations: true,
+        repaintChangesOnly: true,
         hoverStateEnabled: true,
-   /*     visible: false,*/
         columns: [
-            { dataField: 'FACTURA', width: '10%', caption: 'Factura', dataType: 'string' },
-            { dataField: 'FECHAFACT', width: '10%', caption: 'Fecha', dataType: 'date', format: 'MM/dd/yyyy' },
-            { dataField: 'DOCUMENTO', width: '10%', caption: 'Documento', dataType: 'string' },
-            { dataField: 'TERCERO', width: '20%', caption: 'Nombre tercero', dataType: 'string' },
-            { dataField: 'MUNICIPIO', width: '10%', caption: 'Ciudad', dataType: 'string' },
-            { dataField: 'EMAIL', width: '12%', caption: 'Correo Elect.', dataType: 'string' },
+            { dataField: 'FACTURA', width: '10%', caption: 'Factura', dataType: 'string', allowEditing: false },
+            { dataField: 'FECHAFACTURA', width: '10%', caption: 'Fecha (d/m/y)', dataType: 'date', format: 'MM/dd/yyyy', allowEditing: false },
+            { dataField: 'DOCUMENTO', width: '10%', caption: 'Documento', dataType: 'string', allowEditing: false },
+            { dataField: 'TERCERO', width: '20%', caption: 'Nombre tercero', dataType: 'string', allowEditing: false },
+            { dataField: 'MUNICIPIO', width: '10%', caption: 'Ciudad', dataType: 'string', allowEditing: false },
+            {
+                dataField: 'EMAIL', width: '25%', caption: 'Correo Electrónico', dataType: 'string',
+                allowEditing: true,
+                cellTemplate: function (cellElement, cellInfo) {
+                    cellElement.html(cellInfo.data.EMAIL);
+                },
+                editCellTemplate: function (cellElement, cellInfo) {
+                    var div = document.createElement("div");
+                    cellElement.get(0).appendChild(div);
+                    $(div).dxTextBox({
+                        placeholder: "Ingrese el email",
+                        value: cellInfo.data.EMAIL,
+                        onValueChanged: function (e) {
+                            if (e.value != null && e.value != "") {
+                                if (emailPattern.test(e.value)) cellInfo.data.EMAIL = e.value;
+                                else DevExpress.ui.dialog.alert('El correo electrónico ' + e.value + ' no posee un formato válido');
+                            }
+                        }
+                    });
+                }
+            },
             {
               caption: 'Imprimir',
               alignment: 'center',
@@ -50,8 +78,24 @@ $(document).ready(function () {
                         window.open($('#Dynamics').data('url') + "Dynamics/Factura/ImprimirFactura?IdFact=" + options.data.FACTURA, "Factura " + options.data.FACTURA, "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
                     }
                 }).appendTo(container);
-            } },
-            {  },
+              }
+            },
+            {
+                caption: 'Enviar',
+                alignment: 'center',
+                cellTemplate: function (container, options) {
+                    $('<div/>').dxButton({
+                        icon: 'email',
+                        hint: 'Enviar factura',
+                        onClick: function (e) {
+                            popMensaje.show();
+                            $("#txtFactura").text(options.data.FACTURA);
+                            Email.option("value", options.data.EMAIL);
+                            Mensaje.reset();                           
+                        }
+                    }).appendTo(container);
+                }
+            },
         ]
     }).dxDataGrid("instance");
 
@@ -73,7 +117,7 @@ $(document).ready(function () {
             {
                 var _Desde = FecDesde.option("value");
                 var _Hasta = FecHasta.option("value");
-                if (_Desde != "" && _Hasta != "") {
+                if (_Desde != "" && _Desde != null && _Hasta != "" && _Hasta != nul) {
                     if (_Hasta >= _Desde) {
                         filtros += ";F:" + _Desde + "," + _Hasta;
                     } else {
@@ -98,15 +142,33 @@ $(document).ready(function () {
         icon: "clearsquare",
         text: 'Limpiar filtros',
         onClick: function () {
-            _docu = "";
+            filtros = "";
             Documento.option("value", null);
             Tercero.option("value", null);
-            BienesStore = null;
-            grdBienes.option("dataSource", BienesStore);
-            btnImprimir.option("visible", false);
-            grdBienes.option("visible", false);
+            grdFacturas.refresh();
+            Facturas.option("value", "");
+            FecDesde.reset();
+            FecHasta.reset();
         }
     });
+
+    var Email = $("#txtCorreoEle").dxTextBox({
+        placeholder: "Ingrese el documento",
+        value: "",
+        onValueChanged: function (e) {
+            if (e.value != null && e.value != "") {
+                if (!emailPattern.test(e.value)) DevExpress.ui.dialog.alert('El correo electrónico ' + e.value + ' no posee un formato válido');
+            }
+        }
+    }).dxTextBox("instance");
+
+    var Mensaje = $("#txtMensaje").dxTextArea({
+        placeholder: "Ingrese el mensaje para el correo electrónico",
+        value: "",
+        minHeight: 50,
+        maxHeight: 150,
+        autoResizeEnabled: true
+    }).dxTextArea("instance");
 
     var Documento = $("#txtDocumento").dxTextBox({
         placeholder: "Ingrese el documento",
@@ -135,7 +197,7 @@ $(document).ready(function () {
         placeholder: "Seleccione",
         showClearButton: true,
         onValueChanged: function (data) {
-            if (data.value != null) {
+            if (data.value != null && data.value != "" ) {
                 Documento.option("value", data.value);
             }
         }
@@ -159,4 +221,60 @@ $(document).ready(function () {
         displayFormat: 'dd/MM/yyyy',
         dateSerializationFormat: 'yyyy-MM-dd'
     }).dxDateBox("instance");
+
+    var popMensaje = $("#popupEnviaCorreo").dxPopup({
+        width: 900,
+        height: 400,
+        hoverStateEnabled: true,
+        title: "Envio factura",
+        dragEnabled: true,
+        toolbarItems: [{
+            widget: 'dxButton',
+            toolbar: 'bottom',
+            location: 'center',
+            options: {
+                icon: 'email',
+                text: 'Enviar correo electrónico',
+                elementAttr: { class: 'dx-popup-content-bottom' },
+                type: 'default',
+                onClick: function (e) {
+                    if (Email.option("value") == null || Email.option("value") == "") {
+                        DevExpress.ui.dialog.alert('El correo electrónico es requerido!!');
+                        return;
+                    } 
+                    var URL = $("#Dynamics").data("url") + "Dynamics/api/FacturasApi/EnviarFactura";
+                    var IdFact = $("#txtFactura").text();
+                    var parametros = { IdFact: IdFact, Mail: Email.option("value"), Mensaje: Mensaje.option("value") };
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        url: URL,
+                        data: JSON.stringify(parametros),
+                        contentType: "application/json",
+                        beforeSend: function () { },
+                        success: function (data) {
+                            if (data.result == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Enviar Facturas');
+                            else {
+                                DevExpress.ui.dialog.alert(data.mensaje, 'Enviar Facturas');
+                                popMensaje.hide();
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Calcular Valor Trámite');
+                        }
+                    });
+                }
+            }
+        }]
+    }).dxPopup("instance");
+
+    $("#btnEnviarFact").dxButton({
+        icon: 'email',
+        text: 'Enviar factura',
+        onClick: function (e) {
+            Email.option("value", options.data.EMAIL);
+            Mensaje.reset();
+            popMensaje.show();
+        }
+    });
 });

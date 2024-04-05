@@ -3,7 +3,11 @@ using Newtonsoft.Json.Linq;
 using SIM.Areas.Dynamics.Data;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Web.Hosting;
 using System.Web.Http;
 
 namespace SIM.Areas.Dynamics.Controllers
@@ -11,7 +15,13 @@ namespace SIM.Areas.Dynamics.Controllers
     public class FacturasApiController : ApiController
     {
         DynamicsContext dbDynamics = new DynamicsContext();
+        FacturaController factura = new FacturaController();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="customFilters"></param>
+        /// <returns></returns>
         [HttpGet]
         [ActionName("ObtenerFacturas")]
         public JArray GetFacturas(string customFilters)
@@ -43,7 +53,7 @@ namespace SIM.Areas.Dynamics.Controllers
                                 string[] _Facturas = _filtro[1].Split(',');
                                 if (_Facturas.Length > 0)
                                 {
-                                    _WhereAux += $" OR  CIT.INVOICEID IN ('";
+                                    _WhereAux += $" OR  CIT.INVOICEID IN (";
                                     foreach (string _factura in _Facturas)
                                     {
                                         _WhereAux += "'" + _factura + "',";
@@ -57,14 +67,14 @@ namespace SIM.Areas.Dynamics.Controllers
                                     string[] _Fechas = _filtro[1].Split(',');
                                     DateTime _dtAuxDesde;
                                     DateTime _dtAuxHasta;
-                                    if (DateTime.TryParse(_Fechas[0], out _dtAuxDesde) && DateTime.TryParse(_Fechas[0], out _dtAuxHasta))
-                                        _WhereAux += $"CIT.INVOICEDATE BETWEEN '{_dtAuxDesde:dd-MM-yyyy}' AND '{_dtAuxHasta:dd-MM-yyyy}'";
+                                    if (DateTime.TryParse(_Fechas[0], out _dtAuxDesde) && DateTime.TryParse(_Fechas[1], out _dtAuxHasta))
+                                        _WhereAux += $" OR CIT.INVOICEDATE BETWEEN '{_dtAuxDesde:yyyy-MM-dd}' AND '{_dtAuxHasta:yyyy-MM-dd}'";
                                 }
                                 else
                                 {
                                     DateTime _dtAux;
                                     if (DateTime.TryParse(_filtro[1], out _dtAux))
-                                        _WhereAux += $" CIT.INVOICEDATE='{_dtAux:dd-MM-yyyy}'";
+                                        _WhereAux += $" OR CIT.INVOICEDATE BETWEEN '{_dtAux:yyyy-MM-dd}' AND '{_dtAux:yyyy-MM-dd}'";
                                 }
                                 break;
                         }
@@ -99,5 +109,106 @@ namespace SIM.Areas.Dynamics.Controllers
                 throw exp;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datos"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("EnviarFactura")]
+        public object PostEnviarFactura(EnvioFactura datos)
+        {
+            if (!ModelState.IsValid) return new { result = "Error", Mensaje = "No se enviaron todos los datos" };
+            MemoryStream pdfFac = factura.GenerarFacturaPdf(datos.IdFact);
+            if (pdfFac != null)
+            {
+                DatosTerceroFactura tercero = factura.ObtenerDatosTercero(datos.IdFact);
+                if (tercero != null)
+                {
+                    string _Mesanje = "";
+                    if (datos.Mensaje != "" && datos.Mensaje != null) _Mesanje = datos.Mensaje;
+                    else _Mesanje = "El Área Metropolitana del Valle de Aburrá remite para lo pertinente.";
+                    if (!EnviarMailFactura(tercero.Tercero, datos.Mail, datos.IdFact, _Mesanje, pdfFac))
+                    {
+                        return new { result = "Error", Mensaje = "No se pudo enviar el correo electrónico!" };
+                    }
+                }
+                else return new { result = "Error", Mensaje = "No se encontraron datos del tercero!" };
+            }
+            else return new { result = "Error", Mensaje = "No se pudo generar la factura " + datos.IdFact };
+            return new { result = "Ok", Mensaje = "Correo enviado correctamente" };
+        }
+
+        private bool EnviarMailFactura(string _Destinatario, string _Para, string _Factura, string _Mensaje, MemoryStream _MsPdf)
+        {
+            if (_Para.Length == 0) return false;
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Content/Plantillas/PlantillaEnvioFactura.html")))
+            {
+                body = reader.ReadToEnd();
+            }
+            if (body.Length > 0)
+            {
+                var hora = DateTime.Now.Hour;
+                string _saludo = "";
+                if (hora >= 6 && hora < 13) _saludo = "Buenos días";
+                if (hora >= 13 && hora < 21) _saludo = "Buenas tardes";
+                if (hora >= 21 && hora < 6) _saludo = "Buenas noches";
+                body = body.Replace("[destinatario]", _Destinatario);
+                body = body.Replace("[saludo]", _saludo);
+                body = body.Replace("[mensaje]", _Mensaje);
+                MailMessage correo = new MailMessage();
+
+                if (_Para.Contains(";"))
+                {
+                    string[] _mails = _Para.Split(';');
+                    foreach (string _para in _mails) correo.To.Add(new MailAddress(_para));
+                }
+                else correo.To.Add(new MailAddress(_Para));
+                correo.Subject = "Remisión fatura " + _Factura + " para " + _Destinatario;
+                correo.Body = body;
+                correo.IsBodyHtml = true;
+                correo.Priority = MailPriority.High;
+                _MsPdf.Seek(0, SeekOrigin.Begin);
+                Attachment _File = new Attachment(_MsPdf, _Factura + ".pdf", "application/pdf");
+                correo.Attachments.Add(_File);
+                var rfstrRemitente = ConfigurationManager.AppSettings["EmailFrom"];
+                if (rfstrRemitente != null)
+                {
+                    correo.From = new MailAddress(rfstrRemitente, null);
+                    var rfstrSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
+                    int puertoSMTP;
+                    string[] configSMTP = rfstrSMTPServer.Split(':');
+                    if (configSMTP.Length > 1)
+                    {
+                        rfstrSMTPServer = configSMTP[0];
+                        puertoSMTP = Convert.ToInt32(configSMTP[1]);
+                        var rfstrUsuario = ConfigurationManager.AppSettings["SMTPUser"];
+                        var rfstrPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+                        SmtpClient smtp = new SmtpClient(rfstrSMTPServer);
+                        smtp.Port = puertoSMTP;
+                        System.Net.NetworkCredential SMTPUserInfo = new System.Net.NetworkCredential(rfstrUsuario, rfstrPwd);
+                        try
+                        {
+                            smtp.EnableSsl = true;
+                            smtp.UseDefaultCredentials = false;
+                            smtp.Credentials = SMTPUserInfo;
+                            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                            smtp.Send(correo);
+                            return true;
+                        }
+                        catch (SmtpException ex)
+                        {
+                            return false;
+                        }
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
     }
 }

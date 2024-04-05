@@ -77,6 +77,7 @@
     <Reference Include="DevExpress.TreeMap.v18.1.Core, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
+    <Reference Include="DevExpress.XtraEditors.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeMap.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
@@ -1138,9 +1139,13 @@
     <Compile Include="Areas\Dynamics\Data\ASSETTABLE.cs" />
     <Compile Include="Areas\Dynamics\Data\BienModel.cs" />
     <Compile Include="Areas\Dynamics\Data\DatosCertificado.cs" />
+    <Compile Include="Areas\Dynamics\Data\DatosFacturaDetalle.cs" />
+    <Compile Include="Areas\Dynamics\Data\DatosFacturaHeader.cs" />
+    <Compile Include="Areas\Dynamics\Data\DatosTerceroFactura.cs" />
     <Compile Include="Areas\Dynamics\Data\DatosTerceroModel.cs" />
     <Compile Include="Areas\Dynamics\Data\DIRPERSONNAME.cs" />
     <Compile Include="Areas\Dynamics\Data\Dynamics.Context.cs" />
+    <Compile Include="Areas\Dynamics\Data\EnvioFactura.cs" />
     <Compile Include="Areas\Dynamics\Data\HCMWORKER.cs" />
     <Compile Include="Areas\Dynamics\Data\ListadoBienes.cs" />
     <Compile Include="Areas\Dynamics\Data\ListadoFacturas.cs" />
@@ -2809,6 +2814,7 @@
     <Content Include="Content\layouts\Split\SplitLayout.js" />
     <Content Include="Content\plantillas\JsonPrueba.txt" />
     <Content Include="Content\plantillas\PlantillaCorreoPrestamoDevolucion.html" />
+    <Content Include="Content\plantillas\PlantillaEnvioFactura.html" />
     <Content Include="Content\plantillas\PlantillaNotificacionProyeccion.html" />
     <Content Include="Content\recursos\pmes_instalacion.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
