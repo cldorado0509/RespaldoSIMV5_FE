@@ -90,13 +90,24 @@ $(document).ready(function () {
                         onClick: function (e) {
                             popMensaje.show();
                             $("#txtFactura").text(options.data.FACTURA);
+                            $("#txtTercero").text(options.data.TERCERO);
                             Email.option("value", options.data.EMAIL);
                             Mensaje.reset();                           
                         }
                     }).appendTo(container);
                 }
             },
-        ]
+        ],
+        onSelectionChanged(selectedItems) {
+            const data = selectedItems.selectedRowsData;
+            if (data.length > 0) {
+                $("#btnImprimeSel").dxButton("instance").option("visible", true);
+                $("#btnEnviarSel").dxButton("instance").option("visible", true);
+            } else {
+                $("#btnImprimeSel").dxButton("instance").option("visible", false);
+                $("#btnEnviarSel").dxButton("instance").option("visible", false);
+            }
+        }
     }).dxDataGrid("instance");
 
     $("#btnInforme").dxButton({
@@ -244,7 +255,8 @@ $(document).ready(function () {
                     } 
                     var URL = $("#Dynamics").data("url") + "Dynamics/api/FacturasApi/EnviarFactura";
                     var IdFact = $("#txtFactura").text();
-                    var parametros = { IdFact: IdFact, Mail: Email.option("value"), Mensaje: Mensaje.option("value") };
+                    var Tercero = $("#txtTercero").text();
+                    var parametros = { IdFact: IdFact, Mail: Email.option("value"), Tercero: Tercero,  Mensaje: Mensaje.option("value") };
                     $.ajax({
                         type: "POST",
                         dataType: 'json',
@@ -260,7 +272,7 @@ $(document).ready(function () {
                             }
                         },
                         error: function (xhr, textStatus, errorThrown) {
-                            DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Calcular Valor Trámite');
+                            DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Enviar Facturas');
                         }
                     });
                 }
@@ -277,4 +289,111 @@ $(document).ready(function () {
             popMensaje.show();
         }
     });
+
+    var MensajeSel = $("#txtMensajeSel").dxTextArea({
+        placeholder: "Ingrese el mensaje para el correo electrónico",
+        value: "",
+        minHeight: 50,
+        maxHeight: 150,
+        autoResizeEnabled: true
+    }).dxTextArea("instance");
+
+    $("#btnImprimeSel").dxButton({
+        icon: 'print',
+        text: 'Imprimir Facturas Seleccionadas',
+        type: 'default',
+        visible: false,
+        onClick: function (e) {
+            var DatosFacturasSel = grdFacturas.getSelectedRowsData();
+            if (DatosFacturasSel.length > 0) {
+                var Facturas = [];
+                for (i = 0; i < DatosFacturasSel.length; i++) {
+                    Facturas.push(DatosFacturasSel[i].FACTURA);
+                }
+                var ArrFacturas = JSON.stringify(Facturas);
+                window.open($('#Dynamics').data('url') + "Dynamics/Factura/ImprimirFactSel?ListFacturas=" + ArrFacturas, "Facturas Seleccionadas", "width= 900,height=800,scrollbars = yes, location = no, toolbar = no, menubar = no, status = no");
+            } else {
+                DevExpress.ui.dialog.alert('No ha seleccionado facturas para imprimir!', 'Imprimir Facturas');
+            }
+        }
+    });
+
+    $("#btnEnviarSel").dxButton({
+        icon: 'email',
+        text: 'Enviar Facturas Seleccionadas',
+        type: 'default',
+        visible: false,
+        onClick: function (e) {
+            var _vacias = false;
+            var DatosFacturasSel = grdFacturas.getSelectedRowsData();
+            if (DatosFacturasSel.length > 0) {
+                for (i = 0; i < DatosFacturasSel.length; i++) {
+                    if (DatosFacturasSel[i].EMAIL == null || DatosFacturasSel[i].EMAIL == "") _vacias = true;
+                }
+                if (_vacias) {
+                    var result = DevExpress.ui.dialog.confirm('Se encontraron registro sin una dirección de correo electrónico y estas serán omitidas, desea continuar?', 'Confirmación');
+                    result.done(function (dialogResult) {
+                        if (dialogResult) {
+                            popMensajeSel.show();
+                            MensajeSel.reset();
+                        } else return;
+                    });
+                } else { 
+                    popMensajeSel.show();
+                    MensajeSel.reset();
+                }
+            } else {
+                DevExpress.ui.dialog.alert('No ha seleccionado facturas para enviar por correo electrónico!', 'Imprimir Facturas');
+            }
+        }
+    });
+
+    var popMensajeSel = $("#popupEnviaCorreoSel").dxPopup({
+        width: 900,
+        height: 350,
+        hoverStateEnabled: true,
+        title: "Envio facturas Seleccionadas",
+        dragEnabled: true,
+        toolbarItems: [{
+            widget: 'dxButton',
+            toolbar: 'bottom',
+            location: 'center',
+            options: {
+                icon: 'email',
+                text: 'Enviar correos electrónicos',
+                elementAttr: { class: 'dx-popup-content-bottom' },
+                type: 'default',
+                onClick: function (e) {
+                    var URL = $("#Dynamics").data("url") + "Dynamics/api/FacturasApi/EnviarFacturasSel";
+                    var DatosFacturasSel = grdFacturas.getSelectedRowsData();
+                    if (DatosFacturasSel.length > 0) {
+                        var Facturas = [];
+                        for (i = 0; i < DatosFacturasSel.length; i++) {
+                            Facturas.push({ IdFact: DatosFacturasSel[i].FACTURA, Mail: DatosFacturasSel[i].EMAIL, Tercero: DatosFacturasSel[i].TERCERO, Mensaje: '' });
+                        }
+                        if (MensajeSel.option("value") ) Facturas[0].Mensaje = MensajeSel.option("value");
+                        $.ajax({
+                            type: "POST",
+                            dataType: 'json',
+                            url: URL,
+                            data: JSON.stringify(Facturas),
+                            contentType: "application/json",
+                            beforeSend: function () { },
+                            success: function (data) {
+                                if (data.result == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Enviar Facturas');
+                                else {
+                                    DevExpress.ui.dialog.alert(data.mensaje, 'Enviar Facturas');
+                                    popMensaje.hide();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Enviar Facturas');
+                            }
+                        });
+                    }
+                }
+            }
+        }]
+    }).dxPopup("instance");
+
 });

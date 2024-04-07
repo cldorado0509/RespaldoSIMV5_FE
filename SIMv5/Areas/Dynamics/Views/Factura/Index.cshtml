@@ -46,7 +46,7 @@
             font-family: "Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
             line-height: 1.35715;
         }
-        #BotonExp {
+        .BotonCentrado {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
@@ -108,13 +108,21 @@
         <br />
         <div id="gridFacturas"></div>
         <br />
-        <div id="btnImprimeSel"></div>
+        <div class="col-md-2"></div>
+        <div id="btnImprimeSel" class="col-sm-3 BotonCentrado"></div>
+        <div class="col-md-2"></div>
+        <div id="btnEnviarSel" class="col-sm-3 BotonCentrado "></div>
+        <div class="col-md-2"></div>
     </div>
     <div id="popupEnviaCorreo">
         <div class="form-horizontal" style="width: 95%;">
             <div class="form-group">
                 <div class="control-label col-sm-3">Factura :</div>
                 <div class="col-sm-9 bold" id="txtFactura"></div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-sm-3">Tercero :</div>
+                <div class="col-sm-9 bold" id="txtTercero"></div>
             </div>
             <div class="form-group">
                 <div class="control-label col-sm-3">Correo electrónico :</div>
@@ -126,6 +134,20 @@
             </div>
             <div id="BotonExp">
                 <div id="btnEnviarFact"></div>
+            </div>
+        </div>
+    </div>
+    <div id="popupEnviaCorreoSel">
+        <div class="form-horizontal" style="width: 95%;">
+            <div class="col-md-12 justified">
+                <p>El texto del cuerpo del mensaje ingresado será común para todos los correos electrónicos, si no ingresa un texto el correo se enviará con texto genérico.</p>
+            </div> 
+            <div class="form-group">
+                <div class="control-label col-md-3">Cuerpo del Mensaje :</div>
+                <div class="col-md-9" id="txtMensajeSel"></div>
+            </div>
+            <div id="BotonExp">
+                <div id="btnEnviarFactSel"></div>
             </div>
         </div>
     </div>

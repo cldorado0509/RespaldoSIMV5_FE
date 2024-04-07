@@ -123,23 +123,46 @@ namespace SIM.Areas.Dynamics.Controllers
             MemoryStream pdfFac = factura.GenerarFacturaPdf(datos.IdFact);
             if (pdfFac != null)
             {
-                DatosTerceroFactura tercero = factura.ObtenerDatosTercero(datos.IdFact);
-                if (tercero != null)
+                string _Mesanje = "";
+                if (datos.Mensaje != "" && datos.Mensaje != null) _Mesanje = datos.Mensaje;
+                else _Mesanje = "El Área Metropolitana del Valle de Aburrá remite para lo pertinente.";
+                if (!EnviarMailFactura(datos.Tercero, datos.Mail, datos.IdFact, _Mesanje, pdfFac))
                 {
-                    string _Mesanje = "";
-                    if (datos.Mensaje != "" && datos.Mensaje != null) _Mesanje = datos.Mensaje;
-                    else _Mesanje = "El Área Metropolitana del Valle de Aburrá remite para lo pertinente.";
-                    if (!EnviarMailFactura(tercero.Tercero, datos.Mail, datos.IdFact, _Mesanje, pdfFac))
-                    {
-                        return new { result = "Error", Mensaje = "No se pudo enviar el correo electrónico!" };
-                    }
+                    return new { result = "Error", Mensaje = "No se pudo enviar el correo electrónico!" };
                 }
-                else return new { result = "Error", Mensaje = "No se encontraron datos del tercero!" };
             }
             else return new { result = "Error", Mensaje = "No se pudo generar la factura " + datos.IdFact };
             return new { result = "Ok", Mensaje = "Correo enviado correctamente" };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datos"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("EnviarFacturasSel")]
+        public object PostEnviarFacturasSel(List<EnvioFactura> datos)
+        {
+            if (!ModelState.IsValid) return new { result = "Error", Mensaje = "No se enviaron todos los datos" };
+            string _Mesanje = "";
+            if (datos[0].Mensaje != "" && datos[0].Mensaje != null) _Mesanje = datos[0].Mensaje;
+            else _Mesanje = "El Área Metropolitana del Valle de Aburrá remite para lo pertinente.";
+            MemoryStream pdfFac = new MemoryStream();
+            foreach (var item in datos)
+            {
+                try
+                {
+                    pdfFac = factura.GenerarFacturaPdf(item.IdFact);
+                    if (pdfFac != null)
+                    {
+                        EnviarMailFactura(item.Tercero, item.Mail, item.IdFact, _Mesanje, pdfFac);
+                    }
+                }
+                catch { }
+            }
+            return new { result = "Ok", Mensaje = "Correo enviado correctamente" };
+        }
         private bool EnviarMailFactura(string _Destinatario, string _Para, string _Factura, string _Mensaje, MemoryStream _MsPdf)
         {
             if (_Para.Length == 0) return false;

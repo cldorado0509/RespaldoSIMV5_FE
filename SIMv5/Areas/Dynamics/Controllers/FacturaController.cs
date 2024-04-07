@@ -2,6 +2,7 @@
 using O2S.Components.PDF4NET.Graphics;
 using O2S.Components.PDF4NET.Graphics.Fonts;
 using O2S.Components.PDF4NET.Graphics.Shapes;
+using O2S.Components.PDF4NET.PDFFile;
 using SIM.Areas.Dynamics.Data;
 using System;
 using System.Collections.Generic;
@@ -249,7 +250,47 @@ namespace SIM.Areas.Dynamics.Controllers
             return _DocSalida;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ListFacturas"></param>
+        /// <returns></returns>
+        [ActionName("ImprimirFactSel")]
+        public FileContentResult GetImprimirFactSel(string ListFacturas)
+        {
+            MemoryStream _DocSalida = new MemoryStream();
+            PDFDocument _result = new PDFDocument();
+            _result.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
+            if (ListFacturas.Length > 0)
+            {
+                List<string> arrFacturas = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<string[]>(ListFacturas).ToList();
 
+                MemoryStream _stream = new MemoryStream();
+                for (var i = 0; i < arrFacturas.Count; i++)
+                {
+                    try
+                    {
+                        _stream = GenerarFacturaPdf(arrFacturas[i]);
+                        if (_stream.Length > 0)
+                        {
+                            PDFImportedPage ip = null;
+                            PDFFile FactFile = PDFFile.FromStream(_stream);
+                            for (var j = 0; j < FactFile.PagesCount; j++)
+                            {
+                                ip = FactFile.ExtractPage(j);
+                                _result.Pages.Add(ip);
+                            }
+                            FactFile.Close();
+                        }
+                    }
+                    catch { }
+                }
+            }
+            _result.Save(_DocSalida);
+            _DocSalida.Position = 0;
+            var Archivo = _DocSalida.ToArray();
+            return File(Archivo, "application/pdf");
+        }
         /// <summary>
         /// 
         /// </summary>
