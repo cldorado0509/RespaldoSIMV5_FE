@@ -31,7 +31,6 @@ namespace SIM.Areas.Dynamics.Controllers
             if (customFilters != "" && customFilters != null)
             {
                 string[] _Buscar = customFilters.Split(':');
-                string _Sql = "";
                 if (_Buscar.Length > 0)
                 {
                     string[] BuscarF;
@@ -55,6 +54,7 @@ namespace SIM.Areas.Dynamics.Controllers
                             Tercero = "";
                             break;
                     }
+                    string _Sql;
                     if (Tercero.Length > 0)
                     {
                         _Sql = $"SELECT DISTINCT * FROM (SELECT V.ACCOUNTNUM AS TERCERO, DT.NAME FROM VENDTABLE V  INNER JOIN DIRPARTYTABLE DT ON V.PARTY=DT.RECID LEFT JOIN DIRPERSONNAME P ON DT.RECID = P.PERSON) QRY WHERE TERCERO ='{Tercero}'";

@@ -1,0 +1,157 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/Content/Images/favico-area.ico?v=1.01")" />
+    <title>Imprimir etiquetas bienes dynamics</title>
+    <link href="@Url.Content("~/Content/ContentV5/bootstrap.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/ScriptsV5/modernizr-2.8.3.js")"></script>
+    <link href="@Url.Content("~/Scripts/ScriptsV5/jquery-ui-1.12.1/themes-1.12.1/themes/sim/jquery-ui.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/ContentV5/dx.common.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/ContentV5/dx.light.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/ScriptsV5/jquery-3.4.1.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/jquery-ui-1.12.1/jquery-ui.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr/event.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr/unresolved.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/jszip.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/dx.all.debug.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/aspnet/dx.aspnet.data.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/aspnet/dx.aspnet.mvc.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/dx.messages.es.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/cldr/supplemental.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/message.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/number.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/currency.js")"></script>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/globalize/date.js")"></script>
+    <style>
+        .label {
+            float: left;
+            width: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #333;
+            cursor: default;
+            padding: 8px 14px 9px 5px;
+            font-weight: 400;
+            font-size: 14px;
+            font-family: "Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
+            line-height: 1.35715;
+        }
+        .BotonCentrado {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+    </style>
+
+    <script type="text/javascript" src="@Url.Content("~/Areas/Dynamics/Scripts/Factura.js?v=" + @DateTime.Now.ToString("yyyyMMddHHmmss") )"></script>
+</head>
+<body>
+    <div data-url="@Url.Content("~")" ID="Dynamics" resizable>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff; opacity: 0.95;border:1px red solid;">
+            <tr>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div class="label">Documento</div>
+                </td>
+                <td class="border d-flex align-items-center" width="20%">
+                    <div id="txtDocumento"></div>
+                </td>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div class="label">Nombre</div>
+                </td>
+                <td class="border d-flex align-items-center" width="20%">
+                    <div id="cboTercero"></div>
+                </td>
+                <td width="15%"></td>
+                <td class="border d-flex align-items-center" width="15%" align="center">
+                    <div id="btnInforme"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div class="label">Número factura </div>
+                </td>
+                <td colspan="3" class="border d-flex align-items-center">
+                    <div id="txtFacturas"></div>
+                </td>
+                <td width="15%"></td>
+                <td width="15%"></td>
+            </tr>
+            <tr>
+                <td class="border d-flex align-items-left" width="15%">
+                    <div class="label">Fecha factura (desde)</div>
+                </td>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div id="dpFecFactDesde"></div>
+                </td>
+                <td class="border d-flex align-items-left" width="15%">
+                    <div class="label">Fecha factura (hasta)</div>
+                </td>
+                <td class="border d-flex align-items-center" width="15%">
+                    <div id="dpFecFactHasta"></div>
+                </td>
+                <td width="15%"></td>
+                <td class="border d-flex align-items-center" width="15%" align="center">
+                    <div id="btnLimpiar"></div>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div id="gridFacturas"></div>
+        <br />
+        <div class="col-md-2"></div>
+        <div id="btnImprimeSel" class="col-sm-3 BotonCentrado"></div>
+        <div class="col-md-2"></div>
+        <div id="btnEnviarSel" class="col-sm-3 BotonCentrado "></div>
+        <div class="col-md-2"></div>
+    </div>
+    <div id="popupEnviaCorreo">
+        <div class="form-horizontal" style="width: 95%;">
+            <div class="form-group">
+                <div class="control-label col-sm-3">Factura :</div>
+                <div class="col-sm-9 bold" id="txtFactura"></div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-sm-3">Tercero :</div>
+                <div class="col-sm-9 bold" id="txtTercero"></div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-sm-3">Correo electrónico :</div>
+                <div class="col-sm-9" id="txtCorreoEle"></div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-md-3">Cuerpo del Mensaje :</div>
+                <div class="col-md-9" id="txtMensaje"></div>
+            </div>
+            <div id="BotonExp">
+                <div id="btnEnviarFact"></div>
+            </div>
+        </div>
+    </div>
+    <div id="popupEnviaCorreoSel">
+        <div class="form-horizontal" style="width: 95%;">
+            <div class="col-md-12 justified">
+                <p>El texto del cuerpo del mensaje ingresado será común para todos los correos electrónicos, si no ingresa un texto el correo se enviará con texto genérico.</p>
+            </div> 
+            <div class="form-group">
+                <div class="control-label col-md-3">Cuerpo del Mensaje :</div>
+                <div class="col-md-9" id="txtMensajeSel"></div>
+            </div>
+            <div id="BotonExp">
+                <div id="btnEnviarFactSel"></div>
+            </div>
+        </div>
+    </div>
+    <script src="@Url.Content("~/Scripts/ScriptsV5/bootstrap.js")"></script>
+</body>
+</html>
+

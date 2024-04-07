@@ -1,4 +1,7 @@
-﻿using O2S.Components.PDF4NET;
+﻿using DevExpress.Utils;
+using DevExpress.XtraEditors;
+using DevExpress.XtraPrinting.BarCode;
+using O2S.Components.PDF4NET;
 using O2S.Components.PDF4NET.Graphics;
 using O2S.Components.PDF4NET.Graphics.Fonts;
 using O2S.Components.PDF4NET.Graphics.Shapes;
@@ -11,6 +14,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Hosting;
 
 namespace SIM.Utilidades
@@ -620,6 +624,62 @@ namespace SIM.Utilidades
                 _Respuesta = Indices;
             }
             return _Respuesta;
+        }
+
+        public static int ObtenerDigitoVerificacion(string numeroDocumento)
+        {
+            StringBuilder ceros = new StringBuilder();
+            int longitud = numeroDocumento.Length;
+            int[] liPeso = { 71, 67, 59, 53, 47, 43, 41, 37, 29, 23, 19, 17, 13, 7, 3 };
+            string numeroDocumentoCompleto;
+            int suma = 0;
+            int digitoVerificacion;
+
+            for (int i = 1; i <= (15 - longitud); i++)
+            {
+                ceros.Append("0");
+            }
+
+            numeroDocumentoCompleto = ceros.ToString() + numeroDocumento;
+
+            for (int i = 0; i < 15; i++)
+            {
+                suma += int.Parse(numeroDocumentoCompleto.Substring(i, 1)) * liPeso[i];
+            }
+
+            digitoVerificacion = suma % 11;
+
+            if (digitoVerificacion >= 2)
+            {
+                digitoVerificacion = 11 - digitoVerificacion;
+            }
+
+            return (int)digitoVerificacion;
+        }
+
+        public static Image CodeBar128Fact(string _strClave, DateTime _FecPago, System.Drawing.Size size)
+        {
+            BarCodeControl _control = new BarCodeControl();
+            _control.Size = size;
+            _control.AutoModule = true;
+            if (!string.IsNullOrEmpty(_strClave))
+            {
+                string _FechaPago = _FecPago.ToString("yyyyMMdd");
+                _control.Text = _strClave;
+                _control.Font = new Font("Arial", 22, FontStyle.Bold);
+                _control.HorizontalTextAlignment = HorzAlignment.Center;
+                _control.BackColor = System.Drawing.Color.White;
+                _control.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+                EAN128Generator symb = new EAN128Generator();
+                _control.Symbology = new EAN128Generator();
+                ((EAN128Generator)_control.Symbology).CharacterSet = Code128Charset.CharsetC;
+                ((EAN128Generator)_control.Symbology).HumanReadableText = true;
+                Bitmap _imgBc = new Bitmap(_control.Size.Width, _control.Size.Height);
+                Rectangle _rect = new Rectangle(0, 0, _imgBc.Width, _imgBc.Height);
+                _control.DrawToBitmap(_imgBc, _rect);
+                return (Image)_imgBc;
+            }
+            else return null;
         }
     }
 }
