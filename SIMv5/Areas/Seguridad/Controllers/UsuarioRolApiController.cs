@@ -1,29 +1,18 @@
-﻿using System;
-using System.Data.Entity;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using Microsoft.AspNet.Identity;
-using AspNet.Identity.Oracle;
-using Microsoft.Owin.Security;
+﻿using Microsoft.AspNet.Identity;
 using SIM.Areas.Seguridad.Models;
 using SIM.Data;
-using Newtonsoft.Json;
-using System.Text;
-using System.IO;
-using System.Web.Hosting;
-using System.Net.Mail;
-using System.Web;
-using SIM.Areas.General.Models;
-using System.Data.Entity.Core.Objects;
-using System.Transactions;
-using SIM.Data.Seguridad;
 using SIM.Data.General;
+using SIM.Data.Seguridad;
 using SIM.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web.Hosting;
+using System.Web.Http;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
@@ -142,8 +131,8 @@ namespace SIM.Areas.Seguridad.Controllers
                 }
 
                 var rolSolicitadoUsuario = (from rolSolicitado in dbSeguridad.ROL_SOLICITADO
-                                           where rolSolicitado.ID_USUARIO == idUsuario && rolSolicitado.S_ESTADO == "V"
-                                           select rolSolicitado).FirstOrDefault();
+                                            where rolSolicitado.ID_USUARIO == idUsuario && rolSolicitado.S_ESTADO == "V"
+                                            select rolSolicitado).FirstOrDefault();
 
                 if (rolSolicitadoUsuario != null)
                 {
@@ -165,7 +154,7 @@ namespace SIM.Areas.Seguridad.Controllers
                     var emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoRolesUsuarioAsignados.html")));
                     emailHtml.Replace("[usuario]", usuarioEmail);
 
-                    Utilidades.Email.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Roles Asignados", emailHtml.ToString());
+                    Utilidades.EmailMK.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Roles Asignados", emailHtml.ToString());
                 }
             }
             catch (Exception e)
@@ -235,8 +224,8 @@ namespace SIM.Areas.Seguridad.Controllers
             int idUsuarioActual = Convert.ToInt32(User.Identity.GetUserId());
 
             var rolSolicitado = (from rs in dbSeguridad.ROL_SOLICITADO
-                                   where rs.ID_ROL_SOLICITADO == idRolSolicitado
-                                   select rs).FirstOrDefault();
+                                 where rs.ID_ROL_SOLICITADO == idRolSolicitado
+                                 select rs).FirstOrDefault();
 
             if (rolSolicitado == null)
             {
@@ -248,120 +237,120 @@ namespace SIM.Areas.Seguridad.Controllers
 
                 //using (var trans = new TransactionScope()) // No funciona aun
                 //{
-                    try
+                try
+                {
+                    idRol = Convert.ToInt32(Utilidades.Data.ObtenerValorParametro("RolAdministradorEmpresa"));
+
+                    var rolUsuarioAdmin = dbSeguridad.USUARIO_ROL.Where(r => r.ID_USUARIO == idUsuario && r.ID_ROL == idRol).FirstOrDefault();
+
+                    if (rolUsuarioAdmin == null)
                     {
-                        idRol = Convert.ToInt32(Utilidades.Data.ObtenerValorParametro("RolAdministradorEmpresa"));
+                        rolUsuarioAdmin = new USUARIO_ROL() { ID_ROL = idRol, ID_USUARIO = idUsuario };
+                        dbSeguridad.Entry(rolUsuarioAdmin).State = EntityState.Added;
+                        dbSeguridad.SaveChanges();
+                    }
 
-                        var rolUsuarioAdmin = dbSeguridad.USUARIO_ROL.Where(r => r.ID_USUARIO == idUsuario && r.ID_ROL == idRol).FirstOrDefault();
-
-                        if (rolUsuarioAdmin == null)
+                    if (rolSolicitado.S_ROLES_SOL != null && rolSolicitado.S_ROLES_SOL.Trim() != "")
+                    {
+                        foreach (string rol in rolSolicitado.S_ROLES_SOL.Split(','))
                         {
-                            rolUsuarioAdmin = new USUARIO_ROL() { ID_ROL = idRol, ID_USUARIO = idUsuario };
-                            dbSeguridad.Entry(rolUsuarioAdmin).State = EntityState.Added;
-                            dbSeguridad.SaveChanges();
-                        }
+                            idRol = Convert.ToInt32(rol);
 
-                        if (rolSolicitado.S_ROLES_SOL != null && rolSolicitado.S_ROLES_SOL.Trim() != "")
-                        {
-                            foreach (string rol in rolSolicitado.S_ROLES_SOL.Split(','))
+                            var rolUsuario = dbSeguridad.USUARIO_ROL.Where(r => r.ID_USUARIO == idUsuario && r.ID_ROL == idRol).FirstOrDefault();
+
+                            if (rolUsuario == null)
                             {
-                                idRol = Convert.ToInt32(rol);
-
-                                var rolUsuario = dbSeguridad.USUARIO_ROL.Where(r => r.ID_USUARIO == idUsuario && r.ID_ROL == idRol).FirstOrDefault();
-
-                                if (rolUsuario == null)
-                                {
-                                    rolUsuario = new USUARIO_ROL() { ID_ROL = idRol, ID_USUARIO = idUsuario };
-                                    dbSeguridad.Entry(rolUsuario).State = EntityState.Added;
-                                    dbSeguridad.SaveChanges();
-                                }
+                                rolUsuario = new USUARIO_ROL() { ID_ROL = idRol, ID_USUARIO = idUsuario };
+                                dbSeguridad.Entry(rolUsuario).State = EntityState.Added;
+                                dbSeguridad.SaveChanges();
                             }
                         }
-
-                        rolSolicitado.S_ESTADO = "A";
-                        rolSolicitado.ID_USUARIO_ADM = idUsuarioActual;
-                        rolSolicitado.S_ROLES_ASIG = rolSolicitado.S_ROLES_SOL;
-                        rolSolicitado.D_FECHA_ASIG_RECHAZO = DateTime.Now;
-
-                        dbSeguridad.Entry(rolSolicitado).State = EntityState.Modified;
-                        dbSeguridad.SaveChanges();
-
-                        var usuario = (from u in dbSeguridad.USUARIO
-                                       where u.ID_USUARIO == rolSolicitado.ID_USUARIO
-                                       select u).FirstOrDefault();
-
-                        if (usuario != null)
-                        {
-                            usuario.S_ESTADO = "A";
-
-                            dbSeguridad.Entry(usuario).State = EntityState.Modified;
-                            dbSeguridad.SaveChanges();
-                        }
-
-                        var usuarioEmail = (from usuarioRolAsignado in dbSeguridad.USUARIO
-                                            where usuarioRolAsignado.ID_USUARIO == idUsuario
-                                            select usuarioRolAsignado.S_EMAIL).FirstOrDefault();
-
-                        if (usuarioEmail != null && usuarioEmail.Trim() != "")
-                        {
-                            var emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoRolesUsuarioAsignados.html")));
-                            emailHtml.Replace("[usuario]", usuarioEmail);
-
-                            Utilidades.Email.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Administrador de Tercero", emailHtml.ToString());
-                        }
-
-                        // Se finaliza el trámite
-                        ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
-                        dbTramites.SP_AVANZA_TAREA(0, rolSolicitado.CODTRAMITE, 0, 0, 0, "0", "", rtaResultado);
-
-                        var dv = Utilidades.Data.ObtenerDigitoVerificacion(((long)rolSolicitado.N_DOCUMENTO).ToString()).ToString();
-                        var documento = Convert.ToInt64(rolSolicitado.N_DOCUMENTO.ToString() + dv);
-
-                        var tercero = (from t in dbSeguridad.TERCERO
-                                       where t.N_DOCUMENTON == rolSolicitado.N_DOCUMENTO || t.N_DOCUMENTO == documento
-                                       select t).FirstOrDefault();
-
-                        if (tercero == null) // Tercero no existe, por lo tanto se crea
-                        {
-                            tercero = new TERCERO();
-
-                            tercero.N_DOCUMENTON = rolSolicitado.N_DOCUMENTO;
-                            tercero.N_DIGITOVER = Convert.ToByte(dv);
-                            tercero.N_DOCUMENTO = documento;
-                            tercero.S_RSOCIAL = rolSolicitado.S_RSOCIAL;
-                            tercero.ID_TIPODOCUMENTO = 2;
-                            tercero.ID_ESTADO = 1;
-                            tercero.D_REGISTRO = DateTime.Now;
-                            tercero.JURIDICA = new JURIDICA();
-                            tercero.JURIDICA.S_RSOCIAL = rolSolicitado.S_RSOCIAL;
-
-                            dbSeguridad.Entry(tercero).State = EntityState.Added;
-                            dbSeguridad.SaveChanges();
-                        }
-
-                        var propietario = (from p in dbSeguridad.PROPIETARIO
-                                           where p.ID_USUARIO == idUsuario && p.ID_TERCERO == tercero.ID_TERCERO
-                                           select p).FirstOrDefault();
-
-                        if (propietario == null) // No existe la relación entre el usuario y el tercero
-                        {
-                            propietario = new PROPIETARIO();
-
-                            propietario.ID_TERCERO = tercero.ID_TERCERO;
-                            propietario.ID_USUARIO = idUsuario;
-                            propietario.D_INICIO = DateTime.Now;
-
-                            dbSeguridad.Entry(propietario).State = EntityState.Added;
-                            dbSeguridad.SaveChanges();
-                        }
-
-                        //trans.Complete();
                     }
-                    catch (Exception error)
+
+                    rolSolicitado.S_ESTADO = "A";
+                    rolSolicitado.ID_USUARIO_ADM = idUsuarioActual;
+                    rolSolicitado.S_ROLES_ASIG = rolSolicitado.S_ROLES_SOL;
+                    rolSolicitado.D_FECHA_ASIG_RECHAZO = DateTime.Now;
+
+                    dbSeguridad.Entry(rolSolicitado).State = EntityState.Modified;
+                    dbSeguridad.SaveChanges();
+
+                    var usuario = (from u in dbSeguridad.USUARIO
+                                   where u.ID_USUARIO == rolSolicitado.ID_USUARIO
+                                   select u).FirstOrDefault();
+
+                    if (usuario != null)
                     {
-                        Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Usuario Rol [GetActivarUsuario - " + idRolSolicitado.ToString() + " ] : Se presentó un error Activando el Usuario.\r\n" + Utilidades.LogErrores.ObtenerError(error));
-                        return new datosRespuesta() { tipoRespuesta = "Error", detalleRespuesta = "Error Activando Usuario. " + error.Message };
+                        usuario.S_ESTADO = "A";
+
+                        dbSeguridad.Entry(usuario).State = EntityState.Modified;
+                        dbSeguridad.SaveChanges();
                     }
+
+                    var usuarioEmail = (from usuarioRolAsignado in dbSeguridad.USUARIO
+                                        where usuarioRolAsignado.ID_USUARIO == idUsuario
+                                        select usuarioRolAsignado.S_EMAIL).FirstOrDefault();
+
+                    if (usuarioEmail != null && usuarioEmail.Trim() != "")
+                    {
+                        var emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoRolesUsuarioAsignados.html")));
+                        emailHtml.Replace("[usuario]", usuarioEmail);
+
+                        Utilidades.EmailMK.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Administrador de Tercero", emailHtml.ToString());
+                    }
+
+                    // Se finaliza el trámite
+                    ObjectParameter rtaResultado = new ObjectParameter("rtaResultado", typeof(string));
+                    dbTramites.SP_AVANZA_TAREA(0, rolSolicitado.CODTRAMITE, 0, 0, 0, "0", "", rtaResultado);
+
+                    var dv = Utilidades.Data.ObtenerDigitoVerificacion(((long)rolSolicitado.N_DOCUMENTO).ToString()).ToString();
+                    var documento = Convert.ToInt64(rolSolicitado.N_DOCUMENTO.ToString() + dv);
+
+                    var tercero = (from t in dbSeguridad.TERCERO
+                                   where t.N_DOCUMENTON == rolSolicitado.N_DOCUMENTO || t.N_DOCUMENTO == documento
+                                   select t).FirstOrDefault();
+
+                    if (tercero == null) // Tercero no existe, por lo tanto se crea
+                    {
+                        tercero = new TERCERO();
+
+                        tercero.N_DOCUMENTON = rolSolicitado.N_DOCUMENTO;
+                        tercero.N_DIGITOVER = Convert.ToByte(dv);
+                        tercero.N_DOCUMENTO = documento;
+                        tercero.S_RSOCIAL = rolSolicitado.S_RSOCIAL;
+                        tercero.ID_TIPODOCUMENTO = 2;
+                        tercero.ID_ESTADO = 1;
+                        tercero.D_REGISTRO = DateTime.Now;
+                        tercero.JURIDICA = new JURIDICA();
+                        tercero.JURIDICA.S_RSOCIAL = rolSolicitado.S_RSOCIAL;
+
+                        dbSeguridad.Entry(tercero).State = EntityState.Added;
+                        dbSeguridad.SaveChanges();
+                    }
+
+                    var propietario = (from p in dbSeguridad.PROPIETARIO
+                                       where p.ID_USUARIO == idUsuario && p.ID_TERCERO == tercero.ID_TERCERO
+                                       select p).FirstOrDefault();
+
+                    if (propietario == null) // No existe la relación entre el usuario y el tercero
+                    {
+                        propietario = new PROPIETARIO();
+
+                        propietario.ID_TERCERO = tercero.ID_TERCERO;
+                        propietario.ID_USUARIO = idUsuario;
+                        propietario.D_INICIO = DateTime.Now;
+
+                        dbSeguridad.Entry(propietario).State = EntityState.Added;
+                        dbSeguridad.SaveChanges();
+                    }
+
+                    //trans.Complete();
+                }
+                catch (Exception error)
+                {
+                    Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Usuario Rol [GetActivarUsuario - " + idRolSolicitado.ToString() + " ] : Se presentó un error Activando el Usuario.\r\n" + Utilidades.LogErrores.ObtenerError(error));
+                    return new datosRespuesta() { tipoRespuesta = "Error", detalleRespuesta = "Error Activando Usuario. " + error.Message };
+                }
                 //}
             }
 
@@ -423,7 +412,7 @@ namespace SIM.Areas.Seguridad.Controllers
                     var emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoRegistroRechazado.html")));
                     emailHtml.Replace("[usuario]", usuarioEmail);
 
-                    Utilidades.Email.EnviarEmail(usuarioEmail, "Registro Rechazado en el SIM - Administrador de Tercero", emailHtml.ToString());
+                    Utilidades.EmailMK.EnviarEmail(usuarioEmail, "Registro Rechazado en el SIM - Administrador de Tercero", emailHtml.ToString());
                 }
             }
 

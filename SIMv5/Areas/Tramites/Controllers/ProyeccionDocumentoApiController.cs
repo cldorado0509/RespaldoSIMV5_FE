@@ -1973,7 +1973,7 @@ namespace SIM.Areas.Tramites.Controllers
 
                 try
                 {
-                    Utilidades.Email.EnviarEmail(emailFrom, funcionarioProyecta.EMAIL, emailPara, "", asunto, emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
+                    Utilidades.EmailMK.EnviarEmail(emailFrom, funcionarioProyecta.EMAIL, emailPara, "", asunto, emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
                 }
                 catch (Exception error)
                 {

@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using SIM.Areas.Seguridad.Models;
+﻿using SIM.Areas.Seguridad.Models;
 using SIM.Data;
 using SIM.Data.Documental;
 using SIM.Data.General;
@@ -388,7 +387,7 @@ namespace SIM.Areas.General.Controllers
 
             try
             {
-                Utilidades.Email.EnviarEmail(emailFrom, emailEntrega + ";" + emailRecibe, "Notificación de Préstamo de Tomos y/o Anexos", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                Utilidades.EmailMK.EnviarEmail(emailFrom, emailEntrega + ";" + emailRecibe, "Notificación de Préstamo de Tomos y/o Anexos", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
             }
             catch (Exception error)
             {
@@ -537,7 +536,7 @@ namespace SIM.Areas.General.Controllers
 
                     try
                     {
-                        Utilidades.Email.EnviarEmail(emailFrom, entry.Value.emailEntrega + ";" + emailRecibe, "Notificación de Devolución de Tomos y/o Anexos", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                        Utilidades.EmailMK.EnviarEmail(emailFrom, entry.Value.emailEntrega + ";" + emailRecibe, "Notificación de Devolución de Tomos y/o Anexos", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
                     }
                     catch (Exception error)
                     {
@@ -742,25 +741,26 @@ namespace SIM.Areas.General.Controllers
             DateTime fechaDevolucion = DateTime.Today.AddDays(diasNotificacionDevolucion);
 
             var prestamosPorVencer = from p in dbSIM.PRESTAMOS
-                                            join t in dbSIM.TERCERO on p.ID_TERCEROPRESTA equals t.ID_TERCERO
-                                            join pr in dbSIM.PROPIETARIO on p.ID_TERCEROPRESTA equals pr.ID_TERCERO
-                                            join uf in dbSIM.USUARIO_FUNCIONARIO on pr.ID_USUARIO equals uf.ID_USUARIO
-                                            join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                            join pd in dbSIM.PRESTAMO_DETALLE on p.ID_PRESTAMO equals pd.ID_PRESTAMO
-                                            join re in dbSIM.RADICADOS_ETIQUETAS on pd.ID_RADICADO equals re.ID_RADICADO
-                                        where pd.D_DEVOLUCION == null && pd.D_HASTA <= fechaDevolucion && pd.D_NOTIFICACION == null
-                                        orderby new { p.ID_TERCEROPRESTA, pd.D_HASTA }
-                                        select new {
-                                            t.ID_TERCERO,
-                                            pd.ID_PRESTAMODETALLE,
-                                            pd.D_HASTA,
-                                            re.S_TIPO,
-                                            re.S_CONSECUTIVOTIPO,
-                                            re.S_TEXTO,
-                                            pd.S_DESCRIPCION,
-                                            EMAIL1 = f.EMAIL,
-                                            EMAIL2 = t.S_CORREO
-                                        };
+                                     join t in dbSIM.TERCERO on p.ID_TERCEROPRESTA equals t.ID_TERCERO
+                                     join pr in dbSIM.PROPIETARIO on p.ID_TERCEROPRESTA equals pr.ID_TERCERO
+                                     join uf in dbSIM.USUARIO_FUNCIONARIO on pr.ID_USUARIO equals uf.ID_USUARIO
+                                     join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                     join pd in dbSIM.PRESTAMO_DETALLE on p.ID_PRESTAMO equals pd.ID_PRESTAMO
+                                     join re in dbSIM.RADICADOS_ETIQUETAS on pd.ID_RADICADO equals re.ID_RADICADO
+                                     where pd.D_DEVOLUCION == null && pd.D_HASTA <= fechaDevolucion && pd.D_NOTIFICACION == null
+                                     orderby new { p.ID_TERCEROPRESTA, pd.D_HASTA }
+                                     select new
+                                     {
+                                         t.ID_TERCERO,
+                                         pd.ID_PRESTAMODETALLE,
+                                         pd.D_HASTA,
+                                         re.S_TIPO,
+                                         re.S_CONSECUTIVOTIPO,
+                                         re.S_TEXTO,
+                                         pd.S_DESCRIPCION,
+                                         EMAIL1 = f.EMAIL,
+                                         EMAIL2 = t.S_CORREO
+                                     };
 
             int idTercero = -1;
             string email = "";
@@ -858,7 +858,7 @@ namespace SIM.Areas.General.Controllers
 
             try
             {
-                Utilidades.Email.EnviarEmail(emailFrom, email, "Notificación Fecha de Devolución de Tomos y/o Anexos", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                Utilidades.EmailMK.EnviarEmail(emailFrom, email, "Notificación Fecha de Devolución de Tomos y/o Anexos", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
             }
             catch (Exception error)
             {

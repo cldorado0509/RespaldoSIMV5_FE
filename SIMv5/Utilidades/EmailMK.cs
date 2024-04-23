@@ -8,6 +8,9 @@ using System.Net.Configuration;
 
 namespace SIM.Utilidades
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class EmailMK
     {
         public static string EnviarEmail(string rfstrDestinatarios, string rfstrAsunto, string rfstrContenido)
