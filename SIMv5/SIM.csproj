@@ -2453,6 +2453,7 @@
     <Compile Include="Utilidades\Archivos.cs" />
     <Compile Include="Utilidades\Data.cs" />
     <Compile Include="Utilidades\Email.cs" />
+    <Compile Include="Utilidades\EmailMK.cs" />
     <Compile Include="Utilidades\Estructuras.cs" />
     <Compile Include="Utilidades\Excel\SLExcelData.cs" />
     <Compile Include="Utilidades\Excel\SLExcelReader.cs" />
