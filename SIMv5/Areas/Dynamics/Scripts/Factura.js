@@ -265,9 +265,9 @@ $(document).ready(function () {
                         contentType: "application/json",
                         beforeSend: function () { },
                         success: function (data) {
-                            if (data.result == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Enviar Facturas');
+                            if (data.result == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Mensaje, 'Enviar Facturas');
                             else {
-                                DevExpress.ui.dialog.alert(data.mensaje, 'Enviar Facturas');
+                                DevExpress.ui.dialog.alert(data.Mensaje, 'Enviar Facturas');
                                 popMensaje.hide();
                             }
                         },
@@ -380,9 +380,9 @@ $(document).ready(function () {
                             contentType: "application/json",
                             beforeSend: function () { },
                             success: function (data) {
-                                if (data.result == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.mensaje, 'Enviar Facturas');
+                                if (data.result == "Error") DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Mensaje, 'Enviar Facturas');
                                 else {
-                                    DevExpress.ui.dialog.alert(data.mensaje, 'Enviar Facturas');
+                                    DevExpress.ui.dialog.alert(data.Mensaje, 'Enviar Facturas');
                                     popMensaje.hide();
                                 }
                             },
