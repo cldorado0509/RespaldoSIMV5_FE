@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Web.Hosting;
 using System.Web.Http;
 
@@ -126,7 +129,8 @@ namespace SIM.Areas.Dynamics.Controllers
                 string _Mesanje = "";
                 if (datos.Mensaje != "" && datos.Mensaje != null) _Mesanje = datos.Mensaje;
                 else _Mesanje = "El Área Metropolitana del Valle de Aburrá remite para lo pertinente.";
-                if (!EnviarMailFactura(datos.Tercero, datos.Mail, datos.IdFact, _Mesanje, pdfFac))
+                //if (!EnviarMailFactura(datos.Tercero, datos.Mail, datos.IdFact, _Mesanje, pdfFac))
+                if (!EnviarMailFacturaMK(datos.Tercero, datos.Mail, datos.IdFact, _Mesanje, pdfFac))
                 {
                     return new { result = "Error", Mensaje = "No se pudo enviar el correo electrónico!" };
                 }
@@ -156,7 +160,8 @@ namespace SIM.Areas.Dynamics.Controllers
                     pdfFac = factura.GenerarFacturaPdf(item.IdFact);
                     if (pdfFac != null)
                     {
-                        EnviarMailFactura(item.Tercero, item.Mail, item.IdFact, _Mesanje, pdfFac);
+                        //EnviarMailFactura(item.Tercero, item.Mail, item.IdFact, _Mesanje, pdfFac);
+                        EnviarMailFacturaMK(item.Tercero, item.Mail, item.IdFact, _Mesanje, pdfFac);
                     }
                 }
                 catch { }
@@ -218,6 +223,7 @@ namespace SIM.Areas.Dynamics.Controllers
                             smtp.UseDefaultCredentials = false;
                             smtp.Credentials = SMTPUserInfo;
                             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                            ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
                             smtp.Send(correo);
                             return true;
                         }
@@ -233,5 +239,34 @@ namespace SIM.Areas.Dynamics.Controllers
             else return false;
         }
 
+        private bool EnviarMailFacturaMK(string _Destinatario, string _Para, string _Factura, string _Mensaje, MemoryStream _MsPdf)
+        {
+            if (_Para.Length == 0) return false;
+
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader(HostingEnvironment.MapPath("~/Content/Plantillas/PlantillaEnvioFactura.html")))
+            {
+                body = reader.ReadToEnd();
+            }
+            if (body.Length > 0)
+            {
+                string _Asunto = "Remisión fatura " + _Factura + " para " + _Destinatario;
+                var hora = DateTime.Now.Hour;
+                string _saludo = "";
+                if (hora >= 6 && hora < 13) _saludo = "Buenos días";
+                if (hora >= 13 && hora < 21) _saludo = "Buenas tardes";
+                if (hora >= 21 && hora < 6) _saludo = "Buenas noches";
+                body = body.Replace("[destinatario]", _Destinatario);
+                body = body.Replace("[saludo]", _saludo);
+                body = body.Replace("[mensaje]", _Mensaje);
+                try
+                {
+                    SIM.Utilidades.EmailMK.EnviarEmail(_Para, _Asunto, body, _MsPdf, _Factura + ".pdf");
+                    return true;
+                }
+                catch { return false; }
+            }
+            else return false;
+        }
     }
 }

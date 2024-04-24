@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using Microsoft.AspNet.Identity;
-using AspNet.Identity.Oracle;
-using Microsoft.Owin.Security;
+﻿using SIM.Areas.ControlVigilancia.Models;
 using SIM.Areas.Seguridad.Models;
 using SIM.Areas.Tramites.Models;
 using SIM.Data;
-using Newtonsoft.Json;
-using System.Text;
-using System.IO;
-using System.Web.Hosting;
-using System.Net.Mail;
-using SIM.Utilidades;
-using System.Transactions;
-using System.Web;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using SIM.Areas.ControlVigilancia.Models;
 using SIM.Data.Seguridad;
 using SIM.Models;
+using SIM.Utilidades;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Hosting;
+using System.Web.Http;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
@@ -93,7 +86,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
             if (rolAdministradorEmpresa == null) // Error de Configuración
             {
-                return new datosRespuesta { codigoRespuesta = -100, tipoRespuesta = "Error", detalleRespuesta = "Error de Configuración. Por favor contactar al administrador del Sistema." + (errorMsg == "" ? "" : "\r\n" + errorMsg)};
+                return new datosRespuesta { codigoRespuesta = -100, tipoRespuesta = "Error", detalleRespuesta = "Error de Configuración. Por favor contactar al administrador del Sistema." + (errorMsg == "" ? "" : "\r\n" + errorMsg) };
             }
 
             // Si es empresa se verifica si ya hay un usuario con perfil administrador, de lo contrario se retorna para que el usuario adjunte archivos y posteriormente se cree el trámite para la creación del usuario
@@ -237,8 +230,8 @@ namespace SIM.Areas.Seguridad.Controllers
                     if (model.Type == 1)
                     {
                         var terceroRegistro = (from tercero in dbSeguridad.TERCERO
-                                                where tercero.N_DOCUMENTON.ToString() == model.Nit
-                                                select tercero).FirstOrDefault();
+                                               where tercero.N_DOCUMENTON.ToString() == model.Nit
+                                               select tercero).FirstOrDefault();
 
                         var codProceso = Convert.ToDecimal(Utilidades.Data.ObtenerValorParametro("IdProcesoRegistro"));
                         var codFuncionario = Convert.ToDecimal(Utilidades.Data.ObtenerValorParametro("CodFuncionarioRegistro"));
@@ -281,7 +274,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                         try
                         {
-                            string listaCorreos  = "";
+                            string listaCorreos = "";
 
                             try
                             {
@@ -290,7 +283,7 @@ namespace SIM.Areas.Seguridad.Controllers
                             }
                             catch { }
 
-                            Utilidades.Email.EnviarEmail(emailFrom, model.Email, "", (listaCorreos == null || listaCorreos.Trim() == "" ? "" : listaCorreos), "Registro Satisfactorio en el SIM - Pendiente Validación para Activación del Usuario", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
+                            Utilidades.EmailMK.EnviarEmail(emailFrom, model.Email, "", (listaCorreos == null || listaCorreos.Trim() == "" ? "" : listaCorreos), "Registro Satisfactorio en el SIM - Pendiente Validación para Activación del Usuario", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
                         }
                         catch (Exception error)
                         {
@@ -329,7 +322,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                         try
                         {
-                            Utilidades.Email.EnviarEmail(emailFrom, propietarioAdministrador.USUARIO.S_EMAIL, "Solicitud de habilitación de permisos en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                            Utilidades.EmailMK.EnviarEmail(emailFrom, propietarioAdministrador.USUARIO.S_EMAIL, "Solicitud de habilitación de permisos en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
                         }
                         catch (Exception error)
                         {
@@ -350,7 +343,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                         try
                         {
-                            Utilidades.Email.EnviarEmail(emailFrom, model.Email, "Registro de Usuario en el SIM - Pendiente activación", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                            Utilidades.EmailMK.EnviarEmail(emailFrom, model.Email, "Registro de Usuario en el SIM - Pendiente activación", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
                         }
                         catch (Exception error)
                         {
@@ -480,7 +473,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                 try
                 {
-                    Utilidades.Email.EnviarEmail(emailFrom, model.Email, "Recuperación de Contraseña para usuario registrado en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                    Utilidades.EmailMK.EnviarEmail(emailFrom, model.Email, "Recuperación de Contraseña para usuario registrado en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
                 }
                 catch (Exception error)
                 {
@@ -691,7 +684,7 @@ namespace SIM.Areas.Seguridad.Controllers
                             var model = (from rs in dbSeguridad.ROL_SOLICITADO
                                          join u in dbSeguridad.USUARIO on rs.ID_USUARIO equals u.ID_USUARIO
                                          join tt in dbSeguridad.TBTRAMITETAREA on (int?)rs.CODTRAMITE equals (int?)tt.CODTRAMITE
-                                         where rs.S_ADMINISTRADOR == "S" && rs.S_ESTADO == "V" && tt.FECHAFIN == null && tt.CODFUNCIONARIO == idFuncionario 
+                                         where rs.S_ADMINISTRADOR == "S" && rs.S_ESTADO == "V" && tt.FECHAFIN == null && tt.CODFUNCIONARIO == idFuncionario
                                          select new
                                          {
                                              rs.ID_ROL_SOLICITADO,

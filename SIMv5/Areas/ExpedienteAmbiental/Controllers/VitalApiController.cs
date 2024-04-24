@@ -645,7 +645,7 @@
 
                             #region Envía correo electrónico al usuario de VITAL
                             var destinatario = datos[4];
-                            SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                            SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                             #endregion
 
                         }
@@ -926,7 +926,7 @@
                             {
                                 #region Envía correo electrónico al usuario de VITAL
                                 string destinatario = datos[4];
-                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                                SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                                 #endregion
                             }
                             catch (Exception ex)
@@ -1221,7 +1221,7 @@
                             try
                             {
                                 string destinatario = datos[4];
-                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                                SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                             }
                             catch (Exception ex)
                             {

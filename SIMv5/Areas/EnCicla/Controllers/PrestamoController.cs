@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SIM.Areas.EnCicla.Models;
+using SIM.Data;
+using SIM.Data.EnCicla;
+using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using SIM.Areas.EnCicla.Models;
-using SIM.Data;
-using SIM.Areas.General.Models;
-using SIM.Data.EnCicla;
 //using System.Data;
 
 namespace SIM.Areas.EnCicla.Controllers
@@ -171,8 +168,8 @@ namespace SIM.Areas.EnCicla.Controllers
                 }
 
                 var prestamoUsuario = (from operacion in dbSIM.OPERACION
-                                     where operacion.ID_USUARIO == terceroCedula.terceroRol.ID_TERCEROROL && operacion.ID_ESTACION == null
-                                     select operacion).FirstOrDefault();
+                                       where operacion.ID_USUARIO == terceroCedula.terceroRol.ID_TERCEROROL && operacion.ID_ESTACION == null
+                                       select operacion).FirstOrDefault();
 
                 if (prestamoUsuario != null)
                 {
@@ -189,11 +186,11 @@ namespace SIM.Areas.EnCicla.Controllers
             if (Datos.codigoBicicleta.Trim() != "")
             {
                 operacionBicileta = (from bicicleta in dbSIM.BICICLETA
-                               join operacion in dbSIM.OPERACION on bicicleta.ID_BICICLETA equals operacion.ID_BICICLETA
-                               join estado in dbSIM.ESTADO_EN on operacion.ID_ESTADO equals estado.ID_ESTADO into JoinedOperacionEstado
-                               from estado in JoinedOperacionEstado.DefaultIfEmpty()
-                               where bicicleta.S_CODIGO == Datos.codigoBicicleta.ToUpper() && operacion.ID_ESTACION == Datos.idEstacion
-                               select operacion).FirstOrDefault();
+                                     join operacion in dbSIM.OPERACION on bicicleta.ID_BICICLETA equals operacion.ID_BICICLETA
+                                     join estado in dbSIM.ESTADO_EN on operacion.ID_ESTADO equals estado.ID_ESTADO into JoinedOperacionEstado
+                                     from estado in JoinedOperacionEstado.DefaultIfEmpty()
+                                     where bicicleta.S_CODIGO == Datos.codigoBicicleta.ToUpper() && operacion.ID_ESTACION == Datos.idEstacion
+                                     select operacion).FirstOrDefault();
 
                 if (operacionBicileta == null)
                 {
@@ -254,23 +251,23 @@ namespace SIM.Areas.EnCicla.Controllers
 
             //if (Datos.cedula == "98640066")
             //{
-                string correoUsuario = (terceroCedula.natural.TERCERO.S_CORREO == null ? "" : terceroCedula.natural.TERCERO.S_CORREO.Trim());
-                string correoMonitor = "";
+            string correoUsuario = (terceroCedula.natural.TERCERO.S_CORREO == null ? "" : terceroCedula.natural.TERCERO.S_CORREO.Trim());
+            string correoMonitor = "";
 
-                var monitor = (from usuarioMonitor in dbSIM.TERCERO_ROL
-                              join tercero in dbSIM.TERCERO on usuarioMonitor.ID_TERCERO equals tercero.ID_TERCERO
-                               where usuarioMonitor.ID_ESTRATEGIA == estrategiaBicicleta && usuarioMonitor.ID_ROL == 1
-                              select tercero).FirstOrDefault();
+            var monitor = (from usuarioMonitor in dbSIM.TERCERO_ROL
+                           join tercero in dbSIM.TERCERO on usuarioMonitor.ID_TERCERO equals tercero.ID_TERCERO
+                           where usuarioMonitor.ID_ESTRATEGIA == estrategiaBicicleta && usuarioMonitor.ID_ROL == 1
+                           select tercero).FirstOrDefault();
 
-                if (monitor != null)
-                    correoMonitor = (monitor.S_CORREO == null ? "" : monitor.S_CORREO.Trim());
+            if (monitor != null)
+                correoMonitor = (monitor.S_CORREO == null ? "" : monitor.S_CORREO.Trim());
 
-                try
-                {
-                    SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", correoUsuario + ";" + correoMonitor, "Préstamo Bicicleta " + Datos.codigoBicicleta.ToUpper(), textoEmail, "172.16.0.5", false, "", "");
-                    //SIM.Utilidades.Email.EnviarEmail("rene.meneses@metropol.gov.co", "rene.meneses@metropol.gov.co", "Prestamo Bicicleta", ViewBag.Texto, "172.16.0.5", true, "rene.meneses@metropol.gov.co", "renemeneses1282");
-                }
-                catch { }
+            try
+            {
+                SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", correoUsuario + ";" + correoMonitor, "Préstamo Bicicleta " + Datos.codigoBicicleta.ToUpper(), textoEmail, "172.16.0.5", false, "", "");
+                //SIM.Utilidades.Email.EnviarEmail("rene.meneses@metropol.gov.co", "rene.meneses@metropol.gov.co", "Prestamo Bicicleta", ViewBag.Texto, "172.16.0.5", true, "rene.meneses@metropol.gov.co", "renemeneses1282");
+            }
+            catch { }
             //}
 
             return PartialView("_VisualizarMensaje");
@@ -404,7 +401,7 @@ namespace SIM.Areas.EnCicla.Controllers
 
                 var novedad = (from estado in dbSIM.ESTADO_EN
                                where estado.ID_ESTADO == idReporteNovedad
-                              select estado).FirstOrDefault();
+                               select estado).FirstOrDefault();
 
                 if (novedad != null && novedad.S_DESCRIPCION != null)
                     textoEmail += " Reporte: " + novedad.S_DESCRIPCION + ".";
@@ -412,23 +409,23 @@ namespace SIM.Areas.EnCicla.Controllers
 
             //if (terceroCedula.natural.TERCERO.N_DOCUMENTON == 98640066)
             //{
-                string correoUsuario = (terceroCedula.natural.TERCERO.S_CORREO == null ? "" : terceroCedula.natural.TERCERO.S_CORREO.Trim());
-                string correoMonitor = "";
+            string correoUsuario = (terceroCedula.natural.TERCERO.S_CORREO == null ? "" : terceroCedula.natural.TERCERO.S_CORREO.Trim());
+            string correoMonitor = "";
 
-                var monitor = (from usuarioMonitor in dbSIM.TERCERO_ROL
-                               join tercero in dbSIM.TERCERO on usuarioMonitor.ID_TERCERO equals tercero.ID_TERCERO
-                               where usuarioMonitor.ID_ESTRATEGIA == operacionBicileta.ESTACION.ID_ESTRATEGIA && usuarioMonitor.ID_ROL == 1
-                               select tercero).FirstOrDefault();
+            var monitor = (from usuarioMonitor in dbSIM.TERCERO_ROL
+                           join tercero in dbSIM.TERCERO on usuarioMonitor.ID_TERCERO equals tercero.ID_TERCERO
+                           where usuarioMonitor.ID_ESTRATEGIA == operacionBicileta.ESTACION.ID_ESTRATEGIA && usuarioMonitor.ID_ROL == 1
+                           select tercero).FirstOrDefault();
 
-                if (monitor != null)
-                    correoMonitor = (monitor.S_CORREO == null ? "" : monitor.S_CORREO.Trim());
+            if (monitor != null)
+                correoMonitor = (monitor.S_CORREO == null ? "" : monitor.S_CORREO.Trim());
 
-                try
-                {
-                    SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", correoUsuario + ";" + correoMonitor, "Devolución Bicicleta " + Datos.codigoBicicleta.ToUpper() + " " , textoEmail, "172.16.0.5", false, "", "");
-                    //SIM.Utilidades.Email.EnviarEmail("rene.meneses@metropol.gov.co", "rene.meneses@metropol.gov.co", "Prestamo Bicicleta", ViewBag.Texto, "172.16.0.5", true, "rene.meneses@metropol.gov.co", "renemeneses1282");
-                }
-                catch { }
+            try
+            {
+                SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", correoUsuario + ";" + correoMonitor, "Devolución Bicicleta " + Datos.codigoBicicleta.ToUpper() + " ", textoEmail, "172.16.0.5", false, "", "");
+                //SIM.Utilidades.Email.EnviarEmail("rene.meneses@metropol.gov.co", "rene.meneses@metropol.gov.co", "Prestamo Bicicleta", ViewBag.Texto, "172.16.0.5", true, "rene.meneses@metropol.gov.co", "renemeneses1282");
+            }
+            catch { }
             //}
 
             return PartialView("_VisualizarMensaje");
@@ -448,5 +445,5 @@ namespace SIM.Areas.EnCicla.Controllers
 
             return VisitorsIPAddr;
         }
-	}
+    }
 }

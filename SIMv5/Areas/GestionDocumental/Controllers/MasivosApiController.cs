@@ -1419,7 +1419,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 var Subject = _asunto != "" ? _asunto : "Sin asunto";
                 try
                 {
-                    var respta = SIM.Utilidades.Email.EnviarEmail("codelectronicas@metropol.gov.co", _email, "", "", Subject, body, "smtp.office365.com", true, "codelectronicas@metropol.gov.co", "Area2020", _MsPdf, _radicado + ".pdf");
+                    var respta = SIM.Utilidades.EmailMK.EnviarEmail("codelectronicas@metropol.gov.co", _email, "", "", Subject, body, "smtp.office365.com", true, "codelectronicas@metropol.gov.co", "Area2020", _MsPdf, _radicado + ".pdf");
                     if (respta.StartsWith("[")) return false; else return true;
                 }
                 catch (SmtpException ex)

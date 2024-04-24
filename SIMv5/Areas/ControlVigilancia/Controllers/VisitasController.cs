@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using SIM.Areas.ControlVigilancia.Models;
-using System.Security.Claims;
-using System.Data.Entity.Core.Objects;
-using System.IO;
-using System.Configuration;
-using SIM.Areas.Seguridad.Controllers;
+﻿using Newtonsoft.Json;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using Newtonsoft.Json;
-using SIM.Utilidades;
+using SIM.Areas.ControlVigilancia.Models;
+using SIM.Areas.Seguridad.Controllers;
 using SIM.Data;
 using SIM.Data.Control;
 using SIM.Models;
+using SIM.Utilidades;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity.Core.Objects;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Web.Mvc;
 
 namespace SIM.Areas.ControlVigilancia.Controllers
 {
-    
+
     public class VisitasController : Controller
     {
         EntitiesSIMOracle db = new EntitiesSIMOracle();
@@ -32,10 +32,10 @@ namespace SIM.Areas.ControlVigilancia.Controllers
 
         public ActionResult Index()
         {
-          
+
             ViewBag.Departments = new SelectList(db.TIPO_VISITA, "ID_TIPOVISITA", "S_NOMBRE");
             return View();
-            
+
         }
         public ActionResult validarUser()
         {
@@ -46,14 +46,14 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             }
             else
             {
-               // session.autoLogin();
+                // session.autoLogin();
 
             }
 
             return Content("1");
         }
 
-        public ActionResult rvisita(int id, string contenido, string mail,int idRadicado)
+        public ActionResult rvisita(int id, string contenido, string mail, int idRadicado)
         {
             //string emailFrom = "amonsalve@hyg.com.co";
             //string emailSMTPServer = "mail.hyg.com.co";
@@ -77,8 +77,8 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                 db.SaveChanges();
             }
 
-          
-            string rutaCertificado = ConfigurationManager.AppSettings["rutacerticadoV"]+id;
+
+            string rutaCertificado = ConfigurationManager.AppSettings["rutacerticadoV"] + id;
             /*if (System.IO.File.Exists(rutaCertificado))
             {
                 System.IO.File.Delete(rutaCertificado);
@@ -90,20 +90,20 @@ namespace SIM.Areas.ControlVigilancia.Controllers
 
                 Directory.CreateDirectory(rutaCertificado);
             }
-              
+
             rutaCertificado += "\\certificado" + id + ".pdf";
             var stream = new MemoryStream();
 
             var report = new SIM.Areas.ControlVigilancia.reporte.visita.contanciaVisita();
             DevExpress.XtraReports.Parameters.Parameter param = report.Parameters["idVisita"];
             DevExpress.XtraReports.Parameters.Parameter url = report.Parameters["prm_radicador"];
-           // url.Value = urlRad;
+            // url.Value = urlRad;
             param.Value = id;
 
             report.ExportToPdf(rutaCertificado);
             report.ExportToPdf(stream);
             report.Dispose();
-         
+
             /*try
             {
                 Utilidades.Email.EnviarEmail(emailFrom, mail, asunto, contenido, emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, rutaCertificado);
@@ -125,7 +125,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         {
             return DevExpress.Web.Mvc.DocumentViewerExtension.ExportTo(new SIM.Areas.ControlVigilancia.reporte.visita.contanciaVisita());
         }
-    
+
         public ActionResult Visitas()
         {
             ViewBag.TipoVisita = new SelectList(db.TIPO_VISITA, "ID_TIPOVISITA", "S_NOMBRE");
@@ -156,7 +156,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         {
             return View();
         }
-        
+
         public ActionResult Menu()
         {
             return View();
@@ -170,7 +170,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         public ActionResult GetGenerarDocumentoRadicadoPreview(int idVisita)
         {
             int codFuncionario1;
-            
+
             var visitaEstado = db.VISITAESTADO.Where(visitaFunc => visitaFunc.ID_VISITA == idVisita && visitaFunc.ID_ESTADOVISITA == 2).FirstOrDefault();
             codFuncionario1 = (visitaEstado == null ? -1 : (int)visitaEstado.ID_TERCERO);
             int codFuncionario2 = Convert.ToInt32(clsGenerales.Obtener_Codigo_Funcionario(dbControl, Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value)));
@@ -180,12 +180,12 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             return File(documento.documentoBinario, "application/pdf");
         }
 
-        public ActionResult previePDF(int id,int tipo ,int idRadicado)
+        public ActionResult previePDF(int id, int tipo, int idRadicado)
         {
             AppSettingsReader webConfigReader = new AppSettingsReader();
             var stream = new MemoryStream();
             String nombre = "";
-            string path = ConfigurationManager.AppSettings["url_radicador"]; 
+            string path = ConfigurationManager.AppSettings["url_radicador"];
             String urlRad = path + idRadicado + "&formatoRetorno=png";
 
             switch (tipo)
@@ -342,7 +342,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                     break;
 
             }
-            return File(stream.GetBuffer(), "application/pdf", nombre);  
+            return File(stream.GetBuffer(), "application/pdf", nombre);
         }
 
         public ActionResult previePDFTipos(int id, string tipos)
@@ -540,13 +540,13 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             return File(ms.GetBuffer(), "application/pdf", "reporte.pdf");
         }
 
-        public ActionResult previeRTF(int id,int tipo,int idRadicado)
+        public ActionResult previeRTF(int id, int tipo, int idRadicado)
         {
             AppSettingsReader webConfigReader = new AppSettingsReader();
-            string path = ConfigurationManager.AppSettings["url_radicador"]; 
-            String nombre="";
+            string path = ConfigurationManager.AppSettings["url_radicador"];
+            String nombre = "";
             var stream = new MemoryStream();
-            String urlRad = path+ idRadicado + "&formatoRetorno=png";
+            String urlRad = path + idRadicado + "&formatoRetorno=png";
 
             switch (tipo)
             {
@@ -681,7 +681,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                     nombre = "industriaForestal.rtf";
                     break;
             }
-            return File(stream.GetBuffer(), "application/rtf", nombre);  
+            return File(stream.GetBuffer(), "application/rtf", nombre);
         }
 
         [HttpGet, ActionName("GenerarPDFActuacion")]
@@ -924,7 +924,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             param_id_encuesta.Value = 125;
             DevExpress.XtraReports.Parameters.Parameter param_id_estado = report.Parameters["prm_id_estado"];
             param_id_estado.Value = 38;
-           
+
             var stream = new MemoryStream();
             report.ExportToPdf(stream);
             report.Dispose();
@@ -958,13 +958,13 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             String Tramites = Request.Params["p_IdsTramite"];
             if (Tramites == "")
                 Tramites = "0";
-     
+
             String Cometario = Request.Params["p_Cometario"];
             String IdsCopias = Request.Params["p_IdsCopias"];
             if (IdsCopias == "")
                 Tramites = "0";
-            
-            Int32 IdTipoVisita =  Int32.Parse(Request.Params["p_IdTipoVisita"]);
+
+            Int32 IdTipoVisita = Int32.Parse(Request.Params["p_IdTipoVisita"]);
             Int32 Id_visita_actual = Int32.Parse(Request.Params["p_IdVisita"]);
 
             dbControl.SP_NEW_VISITA(Asunto, Cx, Cy, TipoUbicacion, Tramites, 1111115377, Cometario, IdsCopias, IdTipoVisita, Id_visita_actual);
@@ -980,7 +980,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         [ValidateInput(false)]
         public ActionResult GrdVisitas()
         {
-         
+
             System.Collections.Generic.List<VW_VISITAS> t = db.VW_VISITAS.ToList();
             return PartialView("_GrdVisitas", t);
         }
@@ -1014,13 +1014,13 @@ namespace SIM.Areas.ControlVigilancia.Controllers
 
             return this.PartialView("_GrdTramiteVisita", s);
 
-            
+
         }
 
         [ValidateInput(false)]
         public ActionResult GrdTramitesVisitas_E()
         {
-            
+
             System.Collections.Generic.List<VW_TRAMITE_A_VISITAR> t = db.VW_TRAMITE_A_VISITAR.Where(p => p.CODFUNCIONARIO == 1111115377).ToList();
             return PartialView("_GrdTramitesVisitas_E", t);
         }
@@ -1054,7 +1054,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                 s = db.VW_FUNCIONARIO.Where(p => p.CODFUNCIONARIO != Codigo).ToList();
             }
 
-            return this.PartialView("_GrdEncargados_E", s);  
+            return this.PartialView("_GrdEncargados_E", s);
         }
 
         [ValidateInput(false)]
@@ -1079,7 +1079,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                 s = db.VW_FUNCIONARIO.Where(p => p.CODFUNCIONARIO == Codigo).ToList();
             }
 
-            return this.PartialView("_GrdDetalleEncargados_E", s);    
+            return this.PartialView("_GrdDetalleEncargados_E", s);
         }
 
         [ValidateInput(false)]
@@ -1102,7 +1102,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             else
             {
                 s = db.VW_TRAMITE_A_VISITAR.Where(p => p.CODTRAMITE == Codigo && p.CODFUNCIONARIO == 1111115377).ToList();
-               
+
             }
 
             return this.PartialView("_GrdDetalleTramitesVisitas", s);
@@ -1163,7 +1163,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         {
             return View();
         }
-        
+
         public ActionResult ConsultarInformacionFormulariosANT()
         {
 
@@ -1195,15 +1195,15 @@ namespace SIM.Areas.ControlVigilancia.Controllers
 
         public ActionResult DetalleVisitas()
         {
-            
+
             return View();
         }
         public ActionResult ConsultarPalabra(int idF)
         {
 
             var foto = from f in db.FOTOGRAFIA
-                       where f.ID_FOTOGRAFIA==idF
-                             select new { f.PALABRA_CLAVE };
+                       where f.ID_FOTOGRAFIA == idF
+                       select new { f.PALABRA_CLAVE };
             return Json(foto);
         }
 
@@ -1236,7 +1236,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         public ActionResult consultarVisitaTramite()
         {
             var model = from p in db.VW_TRAMITE_A_VISITAR
-                       let Vincular=false
+                        let Vincular = false
                         orderby p.CODTRAMITE descending
                         select new { p.CODTRAMITE, p.FECHAINICIOTRAMITE, p.DIRECCION, p.MUNICIPIO, p.X, p.Y, p.ASUNTO, p.STR_CODTRAMITE, Vincular };
             return Json(model);
@@ -1270,20 +1270,20 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             //string emailSMTPUser="amonsalve@hyg.com.co";
             //string emailSMTPPwd="amonsalve@!123";
 
-         //area
+            //area
 
             string emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
             string emailSMTPServer = ConfigurationManager.AppSettings["SMTPServer"];
-            string  emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
+            string emailSMTPUser = ConfigurationManager.AppSettings["SMTPUser"];
             string emailSMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
             string asunto;
             string contenido;
             asunto = "pruebas";
-            contenido="certificado de la visita";
-          
+            contenido = "certificado de la visita";
+
             try
             {
-                Utilidades.Email.EnviarEmail(emailFrom, "", asunto, contenido, emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, "d:\\visitas.pdf");
+                Utilidades.EmailMK.EnviarEmail(emailFrom, "", asunto, contenido, emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, "d:\\visitas.pdf");
 
             }
             catch
@@ -1291,7 +1291,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             }
             return Content("1");
         }
-        public ActionResult asociarTramiteVisita(String tramite,int idVisita)
+        public ActionResult asociarTramiteVisita(String tramite, int idVisita)
         {
 
             dbControl.SP_ASOCIARTRAMITE_VISITA(tramite, idVisita);
@@ -1309,7 +1309,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
-          
+
         }
 
 
@@ -1317,7 +1317,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         {
             decimal p_cx = Convert.ToDecimal(cx.Replace(",", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator).Replace(".", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator));
             decimal p_cy = Convert.ToDecimal(cy.Replace(",", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator).Replace(".", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator));
-            
+
             if (p_IdsTramite == "")
                 p_IdsTramite = "0";
 
@@ -1383,7 +1383,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             return Content("1");
         }
 
-        public ActionResult aprobarTramite(string idTramites, string arrCopias,  decimal codTarea,  decimal idVisita)
+        public ActionResult aprobarTramite(string idTramites, string arrCopias, decimal codTarea, decimal idVisita)
         {
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
             {
@@ -1403,7 +1403,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
             }
             return Content("1");
         }
-        public ActionResult consultarTareaAnt(string  idTramite)
+        public ActionResult consultarTareaAnt(string idTramite)
         {
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
             {
@@ -1423,7 +1423,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
                 idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
                 codFuncionario = clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario);
             }
-            String sql = "SELECT distinct ID_TRAMITE from control.TRAMITE_VISITA where ID_VISITA="+idVisita+"";
+            String sql = "SELECT distinct ID_TRAMITE from control.TRAMITE_VISITA where ID_VISITA=" + idVisita + "";
             ObjectParameter jSONOUT = new ObjectParameter("jSONOUT", typeof(string));
             dbControl.SP_GET_DATOS(sql, jSONOUT);
             return Json(jSONOUT.Value);
@@ -1432,7 +1432,7 @@ namespace SIM.Areas.ControlVigilancia.Controllers
         public ActionResult validar(string usuario, string clav)
         {
             ac.validarLogueo(usuario, clav);
-          return Content("1");
+            return Content("1");
         }
 
         public string Prueba(int idVisita)
@@ -1483,5 +1483,5 @@ namespace SIM.Areas.ControlVigilancia.Controllers
 
             return tipos;
         }
-	}
+    }
 }

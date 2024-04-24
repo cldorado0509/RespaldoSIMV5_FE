@@ -75,7 +75,7 @@
             if (Orden != null)
             {
                 UltFun = (from Tta in dbSIM.TBTRAMITETAREA
-                          where Tta.CODTRAMITE == CodTramite && Tta.ORDEN == Orden && Tta.ESTADO == 0
+                          where Tta.CODTRAMITE == CodTramite && Tta.ORDEN == Orden && Tta.ESTADO == 0 && Tta.COPIA == 0
                           select Tta.CODFUNCIONARIO).FirstOrDefault();
                 if (UltFun <= 0) UltFun = -1;
             }
