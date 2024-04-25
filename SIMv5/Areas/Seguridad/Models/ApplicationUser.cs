@@ -1,8 +1,6 @@
-﻿using System;
+﻿using AspNet.Identity.Oracle;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using AspNet.Identity.Oracle;
 
 namespace SIM.Areas.Seguridad.Models
 {
@@ -19,19 +17,33 @@ namespace SIM.Areas.Seguridad.Models
             Permisos = new List<string>();
             IdRoles = new List<int>();
         }
-
+        [JsonProperty("FirstName")]
         public string FirstName { get; set; }
+        [JsonProperty("LastName")]
         public string LastName { get; set; }
+        [JsonProperty("Email")]
         public string Email { get; set; }
+        [JsonProperty("TipoUsuario")]
         public int? TipoUsuario { get; set; }
+        [JsonProperty("TipoPersonaUsuario")]
         public string TipoPersonaUsuario { get; set; }
+        [JsonProperty("Validador")]
         public string Validador { get; set; }
+        [JsonProperty("Recuperacion")]
         public string Recuperacion { get; set; }
-
+        [JsonProperty("isAuthenticated")]
         public bool isAuthenticated { get; set; }
+        [JsonProperty("errAuthenticate")]
         public string errAuthenticate { get; set; }
+        [JsonProperty("IdTercero")]
         public List<int> IdTercero { get; set; }
+        [JsonProperty("Permisos")]
         public List<string> Permisos { get; set; }
+        [JsonProperty("IdRoles")]
         public List<int> IdRoles { get; set; }
+        [JsonProperty("Token")]
+        public string Token { get; set; }
+        [JsonProperty("ExpiresIn")]
+        public int ExpiresIn { get; set; }
     }
 }

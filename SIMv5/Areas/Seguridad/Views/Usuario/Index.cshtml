@@ -1,11 +1,115 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Usuarios";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
-@using DevExpress.Web.Mvc
-@using System.Web.UI.WebControls
 
-<br />
-<br />
-<br />
-<br />
-@Html.Action("gvwAdministrarUsuario")
+<script type="text/javascript" src="@Url.Content("~/Areas/Seguridad/Scripts/Usuarios.js?V=" + DateTime.Now.ToString("yyyyddMMHHmmss"))"></script>
+<style>
+    #BotonUsr {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    #chkVerPss .dx-checkbox-icon {
+        width: 35px;
+        height: 35px;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Administrar Usuarios del SIM</label>
+            </h3>
+        </div>
+        <div id="grdListaUsuarios"></div>
+        <br />
+        <div id="BotonUsr">
+            <div id="btnNuevoUsr"></div>
+        </div>
+        <br />
+        <div id="PopupNuevoUsr">
+            <div class="form-horizontal" style="width: 95%;">
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Grupo :</div>
+                    <div class="col-sm-9" id="cboGrupo"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Funcionario entidad :</div>
+                    <div class="col-md-9" id="cboFuncionario"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Nombres :</div>
+                    <div class="col-md-9" id="txtNombres"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Apellidos :</div>
+                    <div class="col-sm-9" id="txtApellidos"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Correo electrónico :</div>
+                    <div class="col-sm-9" id="txtMail"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Usuario/Login :</div>
+                    <div class="col-md-4" id="txtLogin"></div>
+                    <div id="lblLogin"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Contraseña :</div>
+                    <div class="col-sm-3" id="txtPassword"></div>
+                    <div class="col-sm-1" id="chkVerPss"></div>
+                    <div class="control-label col-sm-2" id="lblVerPss" hidden>Verifica contraseña :</div>
+                    <div class="col-sm-3" id="txtPasswordVer"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Fecha Registro (d/m/y) :</div>
+                    <div class="col-sm-3" id="txtRegistro"></div>
+                    <div class="control-label col-sm-3">Fecha Vence (d/m/y) :</div>
+                    <div class="col-sm-3" id="fecVence"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-sm-3">Tipo Usuario :</div>
+                    <div class="col-sm-9" id="chkTipoUsr"></div>
+                </div>
+                <div class="form-group">
+                    <div class="control-label col-md-3">Estado :</div>
+                    <div class="col-md-9" id="chkEstado"></div>
+                </div>
+                <br />
+                <div id="BotonUsr">
+                    <div id="btnGuardaUsr"></div>
+                </div>
+            </div>
+        </div>
+        <div id="PopupDetalleUsr"></div>
+        <div id="popupBuscarTercero">
+            <div class="row">
+                <label for="txtDocumento" class="col-md-2 col-form-label">Documento : </label>
+                <div class="col-md-2" id="txtDocumento"></div>
+                <span class="col-md-1" style="text-align: center;font-weight: bold;">- O -</span>
+                <label for="txtNombre" class="col-md-2 col-form-label">Nombre Tercero : </label>
+                <div class="col-md-5" id="txtNombre"></div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-12" id="BotonUsr">
+                    <div id="btnBuscaTercero"></div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-12" id="grdTerceros"></div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-12" id="BotonUsr">
+                    <div id="btnSeleccionaTercero"></div>
+                </div>
+            </div>
+        </div>
+        <div id="LoadingPanel"></div>
+    </div>
+</div>
+

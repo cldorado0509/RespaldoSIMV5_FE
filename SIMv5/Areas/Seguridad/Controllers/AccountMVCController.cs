@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AspNet.Identity.Oracle;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
+using SIM.Areas.Seguridad.Models;
+using SIM.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using AspNet.Identity.Oracle;
-using Microsoft.Owin.Security;
-using SIM.Areas.Seguridad.Models;
-using SIM.Data;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
@@ -90,7 +88,7 @@ namespace SIM.Areas.Seguridad.Controllers
         public ActionResult Register()
         {
             //Carga la variable tipousuario con los grupos activos y vigentes para que el usuario seleccione el perfil que desempeñará en la aplicacion
-            ViewBag.TIPOUSUARIO = new SelectList(dbSeguridad.GRUPO.Where(td => td.D_FIN >= System.DateTime.Now && td.S_VISIBLE=="1"), "ID_GRUPO", "S_NOMBRE");
+            ViewBag.TIPOUSUARIO = new SelectList(dbSeguridad.GRUPO.Where(td => td.D_FIN >= System.DateTime.Now && td.S_VISIBLE == "1"), "ID_GRUPO", "S_NOMBRE");
             return View();
         }
 
@@ -180,7 +178,7 @@ namespace SIM.Areas.Seguridad.Controllers
             // Si hay error se retorna la vista para la administracion de la cuenta de usuario con los errores ocurridos
             return View(model);
         }
-        
+
         /// <summary>
         /// Es llamado cuando se invoca la autenticacion para un provider externo. LLamda POST a la acción.
         /// </summary>
@@ -219,7 +217,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
             // Se verifica si el usuario ya esta registrado en el SIM con ese proveedor externo, si si se inicia sesion,
             // si no es redireccionado para que se registre en el SIM con base a la informacion retornada por el proveedor externo.
-            var user = _idManager.FindUser(loginInfo.Login);      
+            var user = _idManager.FindUser(loginInfo.Login);
             // Usuario ya registrado y esta activo
             if (user.isAuthenticated)
             {
@@ -228,7 +226,7 @@ namespace SIM.Areas.Seguridad.Controllers
                 return RedirectToLocal(returnUrl);
             }
             else
-            {   
+            {
                 // Usuario no registrado, se crea una cuenta de usuario en la aplicacion
                 if (string.IsNullOrEmpty(user.errAuthenticate))
                 {
@@ -319,7 +317,7 @@ namespace SIM.Areas.Seguridad.Controllers
             Session["_Menu"] = null;
             return RedirectToAction("Index", "Home");
         }
-        
+
         /// <summary>
         /// Retorna vista de error de inicio de sesion con el proveedor externo. LLamda GET a la acción.
         /// </summary>
@@ -330,7 +328,7 @@ namespace SIM.Areas.Seguridad.Controllers
         }
 
         #region MetodosNativosNoImplementados
-        
+
         /// <summary>
         /// Permite eliminar un login externo (google, facebook, etc) de la aplicación. Llamada POST
         /// Toca adecuarlo si se ha de implementar en el SIM.
@@ -362,7 +360,7 @@ namespace SIM.Areas.Seguridad.Controllers
         {
             return new ChallengeResult(provider, Url.Action("LinkLoginCallback", "Account"), User.Identity.GetUserId());
         }
-        
+
         /// <summary>
         /// Permite asociar login de proveedor externo al inicio de sesion actual del usuario. Llamada GET
         /// Toca adecuarlo si se ha de implementar en el SIM.
@@ -401,7 +399,7 @@ namespace SIM.Areas.Seguridad.Controllers
             }
             base.Dispose(disposing);
         }
-       
+
 
         #region Helpers
         // Used for XSRF protection when adding external logins

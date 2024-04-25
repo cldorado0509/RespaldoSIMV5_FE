@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using SIM.Areas.Seguridad.Models;
-using DevExpress.Web.Mvc;
+﻿using SIM.Areas.Seguridad.Models;
 using SIM.Data;
 using SIM.Data.Seguridad;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace SIM.Areas.Seguridad.Controllers
 {

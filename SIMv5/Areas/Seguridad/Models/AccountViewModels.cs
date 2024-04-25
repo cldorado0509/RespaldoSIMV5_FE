@@ -1,9 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using System.Web.Security;
-using System;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SIM.Areas.Seguridad.Models
 {
@@ -137,7 +133,7 @@ namespace SIM.Areas.Seguridad.Models
         // Tipo de invocación: 0 Verificación de datos, 1 Administrador Empresa, 2 Roles Empresa
         public int Type { get; set; }
 
-        public string Roles { get; set;}
+        public string Roles { get; set; }
         public string RolesNombres { get; set; }
 
         public int NumFiles { get; set; }

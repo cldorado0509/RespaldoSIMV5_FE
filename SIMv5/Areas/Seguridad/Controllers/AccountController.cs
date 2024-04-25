@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AspNet.Identity.Oracle;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
+using SIM.Areas.ControlVigilancia.Models;
+using SIM.Areas.Seguridad.Models;
+using SIM.Data;
+using SIM.Models;
+using System;
+using System.Data.Entity.Core.Objects;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using AspNet.Identity.Oracle;
-using Microsoft.Owin.Security;
-using SIM.Areas.Seguridad.Models;
-using SIM.Data;
-using Newtonsoft.Json;
-using System.Text;
-using System.Web.Hosting;
-using System.Security.Cryptography;
-using System.IO;
-using System.Data.Entity.Core.Objects;
-using SIM.Areas.ControlVigilancia.Models;
-using System.Globalization;
-using SIM.Models;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
@@ -38,7 +34,7 @@ namespace SIM.Areas.Seguridad.Controllers
         Int32 idUsuario;
         decimal codFuncionario;
         System.Web.HttpContext context = System.Web.HttpContext.Current;
-        
+
         //private SessionActivaController session = new SessionActivaController();
         public AccountController()
             : this(new UserManager<IdentityUser>(new UserStore<IdentityUser>(new OracleDatabase())))
@@ -93,12 +89,14 @@ namespace SIM.Areas.Seguridad.Controllers
             if (ModelState.IsValid)
             {
                 //Valida si el usuario existe en base de datos o en el directorio activo                
-                var user = _idManager.FindUser(model.UserName, model.Password);
+                //    var user = _idManager.FindUser(model.UserName, model.Password);
+                var user = await _idManager.Login(model.UserName, model.Password);
+
                 if (user.isAuthenticated)
                 {
                     crearSessionTabla(model.UserName, model.Password);
                     //Se crea la sesión del usuario
-                   //ses.crearSessionTabla(model.UserName, model.Password);
+                    //ses.crearSessionTabla(model.UserName, model.Password);
                     await SignInAsync(user, model.RememberMe);
                     return RedirectToLocal(returnUrl);
                 }
@@ -133,7 +131,7 @@ namespace SIM.Areas.Seguridad.Controllers
                 SignIn(user, false, context);
             }
         }
-   
+
 
         /// <summary>
         /// Retorna la vista para que los usuarios se puedan registrar en la aplicación. Llamada GET a la acción.
@@ -689,13 +687,13 @@ namespace SIM.Areas.Seguridad.Controllers
                 SignIn(user, false, context);
             }
         }
-        public string validarLogueo(string usuario,string clav)
+        public string validarLogueo(string usuario, string clav)
         {
             if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
             {
                 idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
                 codFuncionario = clsGenerales.Obtener_Codigo_Funcionario(dbControl, idUsuario);
-               
+
             }
             else
             {

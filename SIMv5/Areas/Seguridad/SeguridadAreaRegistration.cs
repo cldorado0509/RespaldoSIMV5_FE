@@ -1,20 +1,19 @@
-﻿using System.Web.Mvc;
-using System.Web.Http;
-using System.Web.Routing;
+﻿using System.Web.Http;
+using System.Web.Mvc;
 
 namespace SIM.Areas.Seguridad
 {
-    public class SeguridadAreaRegistration : AreaRegistration 
+    public class SeguridadAreaRegistration : AreaRegistration
     {
-        public override string AreaName 
+        public override string AreaName
         {
-            get 
+            get
             {
                 return "Seguridad";
             }
         }
 
-        public override void RegisterArea(AreaRegistrationContext context) 
+        public override void RegisterArea(AreaRegistrationContext context)
         {
             /*context.MapRoute(
                 "Seguridad_default",

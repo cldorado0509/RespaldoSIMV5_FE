@@ -1,14 +1,13 @@
 ﻿namespace SIM.Areas.Seguridad.Models
 {
+    using Newtonsoft.Json;
+    using SIM.Data;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using SIM.Data;
     using System.Security.Claims;
     using System.Web;
-
-    using Newtonsoft.Json;
 
     public class OPCIONMENU
     {

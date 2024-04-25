@@ -1,14 +1,13 @@
-﻿using System;
+﻿using DevExpress.Web;
+using SIM.Data;
+using SIM.Data.Seguridad;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.UI.WebControls;
-using System.Security.Claims;
-using DevExpress.Web;
-using SIM.Data;
-using SIM.Data.Seguridad;
 
 namespace SIM.Areas.Seguridad.Models
 {
@@ -42,7 +41,7 @@ namespace SIM.Areas.Seguridad.Models
             var agrMenu = dbSIM.MENU.Where(td => string.IsNullOrEmpty(td.S_RUTA) && td.S_VISIBLE_MENU == "1").ToList();
 
             List<int> rmv = new List<int>();
-            for (int j = agrMenu.Count-1; j >= 0; j--)
+            for (int j = agrMenu.Count - 1; j >= 0; j--)
             {
                 //agrMenu[j].S_RUTA = "javascript:void('" + agrMenu[j].ID_FORMA.ToString() + "')";
                 if (!TieneSubItems(agrMenu[j].ID_FORMA, itemMenu, agrMenu))

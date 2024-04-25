@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Text;
-using System.Security.Cryptography;
+﻿using SIM.Data;
+using System;
 using System.IO;
-using SIM.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
-    public class SessionActivaController 
+    public class SessionActivaController
     {
         EntitiesSIMOracle db = new EntitiesSIMOracle();
         //
         // GET: /Seguridad/SessionActiva/
-         public byte[] IV = Encoding.ASCII.GetBytes("Devjoker7.37hAES");
-         public byte[] Clave = Encoding.ASCII.GetBytes("12EstaClave34es56dificil489ssswf");
-         private IdentityManager _idManager = new IdentityManager();
-         private AccountController ac = new AccountController();
-       
-        public string crearSessionTabla(string usuario,string claveu)
+        public byte[] IV = Encoding.ASCII.GetBytes("Devjoker7.37hAES");
+        public byte[] Clave = Encoding.ASCII.GetBytes("12EstaClave34es56dificil489ssswf");
+        private IdentityManager _idManager = new IdentityManager();
+        private AccountController ac = new AccountController();
+
+        public string crearSessionTabla(string usuario, string claveu)
         {
-           string claveEnc=Encripta(claveu);
+            string claveEnc = Encripta(claveu);
             //string userpass=Desencripta(claveEnc);
-         //  guardarSession(usuario, claveu);
+            //  guardarSession(usuario, claveu);
             return null;
         }
         public string guardarSession(string usuario, string claveu)
@@ -75,7 +71,7 @@ namespace SIM.Areas.Seguridad.Controllers
             }
             return textoLimpio;
         }
-        public string updateLoguin(string usuario,string clave)
+        public string updateLoguin(string usuario, string clave)
         {
 
 
@@ -83,5 +79,5 @@ namespace SIM.Areas.Seguridad.Controllers
 
             return null;
         }
-	}
+    }
 }
