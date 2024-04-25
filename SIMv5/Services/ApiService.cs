@@ -11,6 +11,9 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApiService : IApiService
     {
         public async Task<Response> GetListAsync<T>(string urlBase, string servicePrefix, string controller)
@@ -88,8 +91,6 @@
             }
         }
 
-
-
         public async Task<Response> GetTokenAsync(string urlBase, string servicePrefix, string controller, TokenRequest request)
         {
             try
@@ -130,8 +131,6 @@
                 };
             }
         }
-
-
 
         public async Task<Response> RegisterUserAsync(string urlBase, string servicePrefix, string controller, UserRequest userRequest)
         {
@@ -291,7 +290,6 @@
             }
         }
 
-
         public async Task<Response> PostAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
         {
             try
@@ -333,7 +331,6 @@
                 };
             }
         }
-
 
         public async Task<Response> PostFileAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
         {
@@ -538,6 +535,87 @@
             }
         }
 
+        public async Task<ResponseMicroServicio> GetFilteredDataAsync<T>(string urlBase, string servicePrefix, string controller)
+        {
+            try
+            {
+                //       string requestString = JsonConvert.SerializeObject(filter);
+                //       StringContent content = new StringContent(requestString, Encoding.UTF8, "application/json");
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase)
+                };
+
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.GetAsync(url);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ResponseMicroServicio
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+
+                var model = JsonConvert.DeserializeObject<ResponseMicroServicio>(result);
+                model.Result = JsonConvert.DeserializeObject<List<T>>(model.Result.ToString());
+                return model;
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMicroServicio
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<Response> GetFilteredDataAsync(string urlBase, string servicePrefix, string controller, string token)
+        {
+            try
+            {
+                //       string requestString = JsonConvert.SerializeObject(filter);
+                //       StringContent content = new StringContent(requestString, Encoding.UTF8, "application/json");
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase)
+                };
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.GetAsync(url);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+                //var model = JsonConvert.DeserializeObject<R>(result);
+                //  model.data = JsonConvert.DeserializeObject<List<T>>(result.data.ToString());
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = result
+                };
+                //  model.data = JsonConvert.DeserializeObject<List<T>>(model.data.ToString());
+                // return model;
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
         public async Task<Response> PutAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
         {
             try
@@ -691,6 +769,270 @@
         }
 
         public async Task<Response> DeleteAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
+        {
+            try
+            {
+                string request = JsonConvert.SerializeObject(model);
+                StringContent content = new StringContent(request, Encoding.UTF8, "application/json");
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase)
+                };
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.PostAsync(url, content);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = "Error al consumir los servicios!",
+                        Result = null,
+                    };
+                }
+
+                var item = JsonConvert.DeserializeObject<OperationResponse>(result);
+                return new Response
+                {
+                    Message = item.Message,
+                    IsSuccess = true,
+                    Result = item
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Result = ex
+
+                };
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="urlBase"></param>
+        /// <param name="servicePrefix"></param>
+        /// <param name="controller"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<Response> GetMicroServicioListAsync<T>(string urlBase, string servicePrefix, string controller, string token)
+        {
+            try
+            {
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase),
+                };
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.GetAsync(url);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+
+                var model = JsonConvert.DeserializeObject<Response>(result);
+
+                List<T> list = JsonConvert.DeserializeObject<List<T>>(model.Result.ToString());
+
+
+                model.Result = list;
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="urlBase"></param>
+        /// <param name="servicePrefix"></param>
+        /// <param name="controller"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<Response> GetMicroServicioAsync<T>(string urlBase, string servicePrefix, string controller, string token)
+        {
+            try
+            {
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase),
+                };
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.GetAsync(url);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+
+                var model = JsonConvert.DeserializeObject<Response>(result);
+
+                T obj = JsonConvert.DeserializeObject<T>(model.Result.ToString());
+
+
+                model.Result = obj;
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="urlBase"></param>
+        /// <param name="servicePrefix"></param>
+        /// <param name="controller"></param>
+        /// <param name="model"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<Response> PostMicroServicioAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
+        {
+            try
+            {
+                string request = JsonConvert.SerializeObject(model);
+                StringContent content = new StringContent(request, Encoding.UTF8, "application/json");
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase)
+                };
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.PostAsync(url, content);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+                var item = JsonConvert.DeserializeObject<OperationResponse>(result);
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = item
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="urlBase"></param>
+        /// <param name="servicePrefix"></param>
+        /// <param name="controller"></param>
+        /// <param name="model"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<Response> PutMicroServicioAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
+        {
+            try
+            {
+                string request = JsonConvert.SerializeObject(model);
+                StringContent content = new StringContent(request, Encoding.UTF8, "application/json");
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase)
+                };
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.PutAsync(url, content);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+
+                var item = JsonConvert.DeserializeObject<OperationResponse>(result);
+
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = item
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="urlBase"></param>
+        /// <param name="servicePrefix"></param>
+        /// <param name="controller"></param>
+        /// <param name="model"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<Response> DeleteMicroServicioAsync<T>(string urlBase, string servicePrefix, string controller, T model, string token)
         {
             try
             {

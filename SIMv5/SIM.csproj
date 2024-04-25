@@ -1408,7 +1408,10 @@
     <Compile Include="Areas\Retributivas\Models\modelReports.cs" />
     <Compile Include="Areas\Retributivas\RetributivasAreaRegistration.cs" />
     <Compile Include="Areas\Seguridad\Class\Permisos.cs" />
+    <Compile Include="Areas\Seguridad\Models\DatosUsuarioDTO.cs" />
+    <Compile Include="Areas\Seguridad\Models\ListadoDTO.cs" />
     <Compile Include="Areas\Seguridad\Models\PermisosRolModel.cs" />
+    <Compile Include="Areas\Seguridad\Models\UsuariosDTO.cs" />
     <Compile Include="Areas\ServicioExterno\Controllers\EnCiclaApiController.cs" />
     <Compile Include="Areas\ServicioExterno\ServicioExternoAreaRegistration.cs" />
     <Compile Include="Areas\Documento\Controllers\DocumentoController.cs" />
@@ -2419,6 +2422,7 @@
     <Compile Include="Models\TramiteTarea.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRequest.cs" />
+    <Compile Include="Models\﻿ResponseMicroServicio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

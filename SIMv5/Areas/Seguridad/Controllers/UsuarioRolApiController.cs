@@ -154,7 +154,7 @@ namespace SIM.Areas.Seguridad.Controllers
                     var emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoRolesUsuarioAsignados.html")));
                     emailHtml.Replace("[usuario]", usuarioEmail);
 
-                    Utilidades.EmailMK.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Roles Asignados", emailHtml.ToString());
+                    Utilidades.Email.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Roles Asignados", emailHtml.ToString());
                 }
             }
             catch (Exception e)
@@ -296,7 +296,7 @@ namespace SIM.Areas.Seguridad.Controllers
                         var emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoRolesUsuarioAsignados.html")));
                         emailHtml.Replace("[usuario]", usuarioEmail);
 
-                        Utilidades.EmailMK.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Administrador de Tercero", emailHtml.ToString());
+                        Utilidades.Email.EnviarEmail(usuarioEmail, "Registro Satisfactorio en el SIM - Administrador de Tercero", emailHtml.ToString());
                     }
 
                     // Se finaliza el trámite
@@ -412,7 +412,7 @@ namespace SIM.Areas.Seguridad.Controllers
                     var emailHtml = new StringBuilder(File.ReadAllText(HostingEnvironment.MapPath("~/Content/plantillas/PlantillaCorreoRegistroRechazado.html")));
                     emailHtml.Replace("[usuario]", usuarioEmail);
 
-                    Utilidades.EmailMK.EnviarEmail(usuarioEmail, "Registro Rechazado en el SIM - Administrador de Tercero", emailHtml.ToString());
+                    Utilidades.Email.EnviarEmail(usuarioEmail, "Registro Rechazado en el SIM - Administrador de Tercero", emailHtml.ToString());
                 }
             }
 

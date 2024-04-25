@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using SIM.Areas.Seguridad.Models;
 using SIM.Data;
 using SIM.Data.Seguridad;
+using SIM.Models;
+using SIM.Services;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,7 +13,9 @@ using System.Data.Entity;
 using System.DirectoryServices;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web.Security;
 
 namespace SIM.Areas.Seguridad.Controllers
@@ -22,11 +27,27 @@ namespace SIM.Areas.Seguridad.Controllers
     public class IdentityManager
     {
         private EntitiesSIMOracle dbSeguridad = new EntitiesSIMOracle();
+        private string urlApiSeguridad = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioSeguridad").ToString();
+
 
         public DbConnection Conexion
         {
             get { return dbSeguridad.Database.Connection; }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="certification"></param>
+        /// <param name="chain"></param>
+        /// <param name="sslPolicyErrors"></param>
+        /// <returns></returns>
+        public static bool AcceptAllCertifications(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
+
 
         /// <summary>
         /// Determina si el usuario gestiona su contreña a traves del SIM
@@ -101,6 +122,37 @@ namespace SIM.Areas.Seguridad.Controllers
                 CargarClaimsUsuario(ref usr);
 
             return usr;
+        }
+
+        /// <summary>
+        /// Metodo para realizar el login desde el micrositio retornando los mimso datos del login anterior con la adicion del token
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public async Task<ApplicationUser> Login(string userName, string password)
+        {
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ApplicationUser user = null;
+            try
+            {
+
+                string _controller = $"Login/Login?Username={userName}&Password={password}&RememberMe={false}";
+                Response response = await apiService.GetAsync<Response>(urlApiSeguridad, "api/", _controller);
+                if (!response.IsSuccess) return user;
+                if (response.IsSuccess)
+                {
+                    Response resp = (Response)response.Result;
+                    user = JsonConvert.DeserializeObject<ApplicationUser>(resp.Result.ToString());
+                }
+
+                return user;
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
         }
 
         public ApplicationUser FindUser(string usuario, int idUsuario)
@@ -844,7 +896,10 @@ namespace SIM.Areas.Seguridad.Controllers
             id.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id, "http://www.w3.org/2001/XMLSchema#string"));
             // agrega claims con el login del usuario
             id.AddClaim(new Claim(ClaimTypes.Name, user.UserName, "http://www.w3.org/2001/XMLSchema#string"));
-
+            // agrega claim con el token del usuario
+            id.AddClaim(new Claim(CustomClaimTypes.Token, user.Token, "http://www.w3.org/2001/XMLSchema#string"));
+            // agrega claim con la cantidad de minutos que debe permanecer el token 
+            id.AddClaim(new Claim(CustomClaimTypes.ExpiresIn, user.ExpiresIn.ToString(), "http://www.w3.org/2001/XMLSchema#string"));
             // agrega claims con los permisos sobre los controladores que posee el usuario
             foreach (string rol in user.Permisos)
                 id.AddClaim(new Claim(ClaimTypes.Role, rol, "http://www.w3.org/2001/XMLSchema#string"));

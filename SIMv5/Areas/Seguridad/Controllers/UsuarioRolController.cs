@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
+﻿using Microsoft.AspNet.Identity;
 using SIM.Areas.Seguridad.Models;
-using DevExpress.Web.Mvc;
 using SIM.Data;
-using Newtonsoft.Json;
-using Microsoft.AspNet.Identity;
 using SIM.Data.Seguridad;
+using System;
+using System.Data;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace SIM.Areas.Seguridad.Controllers
 {
