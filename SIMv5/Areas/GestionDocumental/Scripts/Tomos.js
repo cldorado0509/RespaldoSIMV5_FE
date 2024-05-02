@@ -283,6 +283,35 @@ $(document).ready(function () {
             { dataField: 'IMAGENES', width: '5%', caption: 'Imágenes', dataType: 'string' },
             { dataField: 'FOLIOS', width: '5%', caption: 'Folios', dataType: 'string' },
             {
+                dataField: 'ADJUNTO', width: '5%', caption: 'Adjunto', dataType: 'string',
+                alignment: 'center',
+                cellTemplate: function (container, options) {
+                    if (options.data.ADJUNTO == "Si") {
+                        $('<div/>').dxButton({
+                            text: 'Si',
+                            hint: 'Ver Adjuntos',
+                            onClick: function (e) {
+                                var Documento = options.data.ID_DOCUMENTO;
+                                var _Ruta = $('#SIM').data('url') + "Utilidades/FuncionarioPoseePermiso?IdDocumento=" + options.data.ID_DOCUMENTO;
+                                $.getJSON(_Ruta, function (result, status) {
+                                    if (status === "success") {
+                                        if (result.returnvalue) {
+                                            var AdjuntoInstance = $("#popAdjuntosDocumento").dxPopup("instance");
+                                            AdjuntoInstance.option('title', 'Adjunto del documento - ' + Documento);
+                                            AdjuntoInstance.show();
+                                            $('#frmAdjuntoDocumento').attr('src', null);
+                                            $('#frmAdjuntoDocumento').attr('src', 'https://webservices.metropol.gov.co/FileManager/FileManager.aspx?id=.' + Documento);
+                                        } else {
+                                            DevExpress.ui.notify("No posee permiso para ver este tipo de documento");
+                                        }
+                                    }
+                                });
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            },
+            {
                 width: '5%',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
@@ -479,6 +508,11 @@ $(document).ready(function () {
                 });
             }
         }
+    });
+
+    $("#popAdjuntosDocumento").dxPopup({
+        title: "Adjunto del documento",
+        fullScreen: false,
     });
 
     var txtOrden = $("#txtOrden").dxNumberBox({

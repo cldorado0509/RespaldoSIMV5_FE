@@ -190,7 +190,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                  FUNCASOCIA = dbSIM.QRY_FUNCIONARIO_ALL.Where(f => f.CODFUNCIONARIO == Doc.ID_FUNCASOCIA).Select(s => s.NOMBRES).FirstOrDefault(),
                                  TIPODOC = (from Ser in dbSIM.TBSERIE where Ser.CODSERIE == Tdo.CODSERIE select Ser.NOMBRE).FirstOrDefault(),
                                  FOLIOS = Doc.N_FOLIOINI.ToString() + " - " + Doc.N_FOLIOFIN.ToString(),
-                                 IMAGENES = Doc.N_IMAGENES
+                                 IMAGENES = Doc.N_IMAGENES,
+                                 ADJUNTO = Tdo.S_ADJUNTO != "1" ? "No" : "Si"
                              });
                 modelData = model;
                 IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
