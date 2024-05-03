@@ -2456,7 +2456,6 @@
     </Compile>
     <Compile Include="Services\ApiService.cs" />
     <Compile Include="Services\IApiService.cs" />
-    <Compile Include="Services\WSPQ03.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utilidades\Configuracion.cs" />
     <Compile Include="Utilidades\Cryptografia.cs" />
@@ -2475,6 +2474,11 @@
     <Compile Include="Utilidades\Radicador.cs" />
     <Compile Include="Utilidades\Security.cs" />
     <Compile Include="Utilidades\Tramites.cs" />
+    <Compile Include="Web References\vital\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\AdministracionDocumental\Scripts\ClasificacionDoc.js" />
@@ -3943,7 +3947,13 @@
     <Content Include="Views\Utilidades\DetalleTramite.cshtml" />
     <Content Include="Views\Shared\_LayoutExpedienteFlip.cshtml" />
     <Content Include="Views\Utilidades\BuscarTramite.cshtml" />
+    <Content Include="Web References\vital\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <None Include="Web References\vital\wspq03.disco" />
     <Content Include="Web.config" />
+    <None Include="Web References\vital\wspq03.wsdl" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -4972,6 +4982,22 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="https://vital.minambiente.gov.co:8182/wspq03.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\vital\</RelPath>
+      <UpdateFromURL>https://vital.minambiente.gov.co:8182/wspq03.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>SIM_vital_WSPQ03</CachedSettingsPropName>
+    </WebReferenceUrl>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

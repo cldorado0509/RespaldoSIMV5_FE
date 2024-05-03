@@ -27,7 +27,7 @@ namespace SIM.Areas.Seguridad.Controllers
     public class IdentityManager
     {
         private EntitiesSIMOracle dbSeguridad = new EntitiesSIMOracle();
-        private string urlApiSeguridad = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioSeguridad").ToString();
+        private string urlApiSeguridad = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioSeguridadLocal").ToString();
 
 
         public DbConnection Conexion
@@ -139,7 +139,11 @@ namespace SIM.Areas.Seguridad.Controllers
             {
 
                 string _controller = $"Login/Login?Username={userName}&Password={password}&RememberMe={false}";
-                Response response = await apiService.GetAsync<Response>(urlApiSeguridad, "api/", _controller);
+                LoginViewModel _login = new LoginViewModel();
+                _login.UserName = userName;
+                _login.Password = password;
+                _login.RememberMe = true;
+                Response response = await apiService.LoginAsync<Response>(urlApiSeguridad, "api/", _controller, _login);
                 if (!response.IsSuccess) return user;
                 if (response.IsSuccess)
                 {

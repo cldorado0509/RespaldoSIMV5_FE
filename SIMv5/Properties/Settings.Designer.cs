@@ -22,5 +22,15 @@ namespace SIM.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://vital.minambiente.gov.co:8182/wspq03.asmx")]
+        public string SIM_vital_WSPQ03 {
+            get {
+                return ((string)(this["SIM_vital_WSPQ03"]));
+            }
+        }
     }
 }

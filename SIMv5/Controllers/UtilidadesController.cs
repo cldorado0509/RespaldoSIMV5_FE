@@ -370,8 +370,9 @@
             try
             {
                 if (IdRadicadoVital <= 0 || string.IsNullOrEmpty(NombreArchivo)) return null;
-                WSPQ03 ws = new WSPQ03();
-                Byte[] _Documento = ws.ObtenerDocumentoRadicacion(IdRadicadoVital, NombreArchivo);
+                var x = new vital.WSPQ03();
+                //WSPQ03 ws = new WSPQ03();
+                Byte[] _Documento = x.ObtenerDocumentoRadicacion(IdRadicadoVital, NombreArchivo);
                 if (_Documento == null)
                 {
                     throw new Exception("El servicio de VITAL no retornó este Documento!");

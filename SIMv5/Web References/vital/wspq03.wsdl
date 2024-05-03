@@ -1,0 +1,2538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s2="http://tempuri.org/AbstractTypes" xmlns:s1="http://tempuri.org/Notificacion.xsd" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:import namespace="http://tempuri.org/Notificacion.xsd" />
+      <s:element name="RecibirActoAdministrativoEIA-01">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="documentoXML" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RecibirActoAdministrativoEIA-01Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RecibirActoAdministrativoEIA-01Result" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ValidacionRecibirDocumento">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="documentoXML" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ValidacionRecibirDocumentoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ValidacionRecibirDocumentoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitudXml">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="numeroVital" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitudXmlResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SolicitudXmlResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EstructuraFormularioXml">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="numeroVital" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EstructuraFormularioXmlResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EstructuraFormularioXmlResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EjecutoriarActo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="documento" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EjecutoriarActoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EjecutoriarActoResult" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="respuesta" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EmitirDocumento">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" ref="s1:Notificacion" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EmitirDocumentoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EmitirDocumentoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerDatosAdjuntos">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strXmlDatos" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerDatosAdjuntosResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerDatosAdjuntosResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDatosRadicacion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strXmlDatos" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDatosRadicacionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EnviarDatosRadicacionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertarRelacionExpedientes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="expedienteId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="expedienteIdRef" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="numeroVital" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertarRelacionExpedientesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="InsertarRelacionExpedientesResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EliminarRelacionExpedientes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="expedienteId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="expedienteIdRef" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EliminarRelacionExpedientesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="EliminarRelacionExpedientesResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CrearDatoMisTramites">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strParametrosXml" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CrearDatoMisTramitesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CrearDatoMisTramitesResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ModificarDatosExpedienteTramite">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strTramiteAnterior" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strTramiteNuevo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ModificarDatosExpedienteTramiteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ModificarDatosExpedienteTramiteResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AsociarExpedienteNumeroSilpa">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="autoridadId" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="numeroExpediente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="tipoAsociacion" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="numerosSilpa" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AsociarExpedienteNumeroSilpaResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="AsociarInfoExpedienteNumeroSilpa">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="codigoExpediente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="numeroVital" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombreExpediente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="descripcionExpediente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sectorId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ubicacionExpediente" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="localizacionExpediente" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AsociarInfoExpedienteNumeroSilpaResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="ActivatExpedienteNumeroSilpa">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="autoridadId" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="numeroExpediente" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatExpedienteNumeroSilpaResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="ObtenerDocumentosRadicacion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="idRadicacion" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerDocumentosRadicacionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerDocumentosRadicacionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerDocumentosNUR">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strNUR" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerDocumentosNURResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerDocumentosNURResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerDocumentoRadicacion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="idRadicacion" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombreArchivo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerDocumentoRadicacionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerDocumentoRadicacionResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathRadicacion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="idRadicacion" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombreArchivo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathRadicacionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerPathRadicacionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathCorrespondencia">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="NUR" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombreArchivo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathCorrespondenciaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerPathCorrespondenciaResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathFus">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="int_id_radicacion" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathFusResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerPathFusResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathDocumentos">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="int_id_radicacion" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerPathDocumentosResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerPathDocumentosResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDocumentoRadicacion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="idRadicacion" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombreArchivo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="bytesArchivo" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDocumentoRadicacionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EnviarDocumentoRadicacionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDocumentoRadicacionAlterno">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="idRadicacion" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombreArchivo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDocumentoRadicacionAlternoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EnviarDocumentoRadicacionAlternoResult" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="rutaArchivos" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDocumentoCorrespondencia">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="NUR" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombreArchivo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strCarpetaNURs" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnviarDocumentoCorrespondenciaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EnviarDocumentoCorrespondenciaResult" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="rutaArchivos" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RelacionarExpedientesPadreHijo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="codigo_Expediente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="padre" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hijo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="tipoTramite" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RelacionarExpedientesPadreHijoResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="CrearSolicitudManual">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AutoridadID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="ExpedienteID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="CodigoExpediente" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="SectorID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="PersonaID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="NumeroVITAL" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="NumeroRadicado" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="TramiteID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="NombreProyecto" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CrearSolicitudManualResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="ObtenerNumeroVITALPadreSolicitud">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strNumeroVital" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerNumeroVITALPadreSolicitudResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerNumeroVITALPadreSolicitudResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerAutoridadesSolicitud">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="numeroVital" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerAutoridadesSolicitudResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerAutoridadesSolicitudResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerComunidadesSolicitud">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="numeroVital" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerComunidadesSolicitudResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerComunidadesSolicitudResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Test">
+        <s:complexType />
+      </s:element>
+      <s:element name="TestResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="string" nillable="true" type="s:string" />
+      <s:element name="boolean" type="s:boolean" />
+      <s:element name="base64Binary" nillable="true" type="s:base64Binary" />
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/Notificacion.xsd">
+      <s:element name="Notificacion" type="s1:NotificacionType" />
+      <s:complexType name="NotificacionType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoAutoridadAmbiental" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodigoExpediente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="nombreArchivo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="numActoAdministrativo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="fechaActoAdministrativo" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="numProcesoAdministracion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="parteResolutiva" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="tipoIdentificacionFuncionario" type="s1:enumTipoIdentificacion" />
+          <s:element minOccurs="0" maxOccurs="1" name="numeroIdentificacionFuncionario" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="numActoAdministrativoAsociado" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="numSILPA" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="listaPersonas" type="s1:PersonaType" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="listaPersonaComunicar" type="s1:PersonaType" />
+          <s:element minOccurs="1" maxOccurs="1" name="requierePublicacion" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="tipoActoAdministrativo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="requiereNotificacion" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esEjecutoria" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="EntidadPublicaNot" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SistemaEntidadPublicaNot" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IdDependenciaEntidad" type="s:integer" />
+          <s:element minOccurs="0" maxOccurs="1" name="IdPlantillaNotificacion" type="s:integer" />
+          <s:element minOccurs="1" maxOccurs="1" name="esSancionatorio" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esNotificacion" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esAudiencia" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="CorreoAutAmbNotificacion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Tramite" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Solicitante" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="aplicaRecurso" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esComunicacion" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esCumplase" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esNotificacionEdicto" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esNotificacionEstrado" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="esCobro" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="CobroIdentificador" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="datosArchivo" type="s:base64Binary" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="enumTipoIdentificacion">
+        <s:restriction base="s:string">
+          <s:enumeration value="RE" />
+          <s:enumeration value="TI" />
+          <s:enumeration value="CC" />
+          <s:enumeration value="CE" />
+          <s:enumeration value="AS" />
+          <s:enumeration value="MS" />
+          <s:enumeration value="RN" />
+          <s:enumeration value="PA" />
+          <s:enumeration value="CX" />
+          <s:enumeration value="NI" />
+          <s:enumeration value="NU" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="PersonaType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="numeroIdentificacion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ipoIdentificacion" type="s1:enumTipoIdentificacion" />
+          <s:element minOccurs="1" maxOccurs="1" name="tipoPersona" type="s1:enumTipoPersona" />
+          <s:element minOccurs="1" maxOccurs="1" name="numeroNIT" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="digitoVerificacionNIT" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="primerApellido" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="segundoApellido" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="primerNombre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="segundoNombre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="razonSocial" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="estadoNotificado" type="s1:EstadoNotificadoType" />
+          <s:element minOccurs="1" maxOccurs="1" name="fechaEstadoNotificado" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="FechaEstado" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="numeroSilpa" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="enumTipoPersona">
+        <s:restriction base="s:string">
+          <s:enumeration value="1" />
+          <s:enumeration value="2" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="EstadoNotificadoType">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="codigoEstado" type="s1:enumCodigoEstadoNotificacion" />
+          <s:element minOccurs="1" maxOccurs="1" name="nombreEstado" type="s1:enumNombreEstadoNotificacion" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="enumCodigoEstadoNotificacion">
+        <s:restriction base="s:string">
+          <s:enumeration value="1" />
+          <s:enumeration value="2" />
+          <s:enumeration value="3" />
+          <s:enumeration value="4" />
+          <s:enumeration value="5" />
+          <s:enumeration value="6" />
+          <s:enumeration value="7" />
+          <s:enumeration value="8" />
+          <s:enumeration value="9" />
+          <s:enumeration value="-1" />
+          <s:enumeration value="17" />
+          <s:enumeration value="18" />
+          <s:enumeration value="19" />
+          <s:enumeration value="20" />
+          <s:enumeration value="21" />
+          <s:enumeration value="22" />
+          <s:enumeration value="23" />
+          <s:enumeration value="68" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="enumNombreEstadoNotificacion">
+        <s:restriction base="s:string">
+          <s:enumeration value="PENDIENTE_DE_ACUSE_DE_NOTIFICACIÓN" />
+          <s:enumeration value="NOTIFICADA" />
+          <s:enumeration value="EN_EDICTO" />
+          <s:enumeration value="CON_RECURSO_INTERPUESTO" />
+          <s:enumeration value="EJECUTORIADO" />
+          <s:enumeration value="CON_RENUNCIA_A_TÉRMINOS" />
+          <s:enumeration value="SUSPENDIDO" />
+          <s:enumeration value="REVOCADO" />
+          <s:enumeration value="NO_EXISTE" />
+          <s:enumeration value="CON_ERROR" />
+          <s:enumeration value="SIN_INICIAR" />
+          <s:enumeration value="FIN_DE_PROCESO" />
+          <s:enumeration value="NOTIFICACION_POR_AVISO" />
+          <s:enumeration value="NOTIFICACION_ELECTRONICA" />
+          <s:enumeration value="NOTIFICACION_EN_ESTRADO" />
+          <s:enumeration value="NOTIFICACION_CONDUCTA_CONCLUYENTE" />
+          <s:enumeration value="NOTIFICACION_CORREO_ELECTRONICO" />
+          <s:enumeration value="NOTIFICACION_FIRME" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+    <s:schema targetNamespace="http://tempuri.org/AbstractTypes">
+      <s:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <s:complexType name="StringArray">
+        <s:complexContent mixed="false">
+          <s:restriction base="soapenc:Array">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="unbounded" name="String" type="s:string" />
+            </s:sequence>
+          </s:restriction>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="RecibirActoAdministrativoEIA-01SoapIn">
+    <wsdl:part name="parameters" element="tns:RecibirActoAdministrativoEIA-01" />
+  </wsdl:message>
+  <wsdl:message name="RecibirActoAdministrativoEIA-01SoapOut">
+    <wsdl:part name="parameters" element="tns:RecibirActoAdministrativoEIA-01Response" />
+  </wsdl:message>
+  <wsdl:message name="ValidacionRecibirDocumentoSoapIn">
+    <wsdl:part name="parameters" element="tns:ValidacionRecibirDocumento" />
+  </wsdl:message>
+  <wsdl:message name="ValidacionRecibirDocumentoSoapOut">
+    <wsdl:part name="parameters" element="tns:ValidacionRecibirDocumentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudXmlSoapIn">
+    <wsdl:part name="parameters" element="tns:SolicitudXml" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudXmlSoapOut">
+    <wsdl:part name="parameters" element="tns:SolicitudXmlResponse" />
+  </wsdl:message>
+  <wsdl:message name="EstructuraFormularioXmlSoapIn">
+    <wsdl:part name="parameters" element="tns:EstructuraFormularioXml" />
+  </wsdl:message>
+  <wsdl:message name="EstructuraFormularioXmlSoapOut">
+    <wsdl:part name="parameters" element="tns:EstructuraFormularioXmlResponse" />
+  </wsdl:message>
+  <wsdl:message name="EjecutoriarActoSoapIn">
+    <wsdl:part name="parameters" element="tns:EjecutoriarActo" />
+  </wsdl:message>
+  <wsdl:message name="EjecutoriarActoSoapOut">
+    <wsdl:part name="parameters" element="tns:EjecutoriarActoResponse" />
+  </wsdl:message>
+  <wsdl:message name="EmitirDocumentoSoapIn">
+    <wsdl:part name="parameters" element="tns:EmitirDocumento" />
+  </wsdl:message>
+  <wsdl:message name="EmitirDocumentoSoapOut">
+    <wsdl:part name="parameters" element="tns:EmitirDocumentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDatosAdjuntosSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosAdjuntos" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDatosAdjuntosSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosAdjuntosResponse" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDatosRadicacionSoapIn">
+    <wsdl:part name="parameters" element="tns:EnviarDatosRadicacion" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDatosRadicacionSoapOut">
+    <wsdl:part name="parameters" element="tns:EnviarDatosRadicacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="InsertarRelacionExpedientesSoapIn">
+    <wsdl:part name="parameters" element="tns:InsertarRelacionExpedientes" />
+  </wsdl:message>
+  <wsdl:message name="InsertarRelacionExpedientesSoapOut">
+    <wsdl:part name="parameters" element="tns:InsertarRelacionExpedientesResponse" />
+  </wsdl:message>
+  <wsdl:message name="EliminarRelacionExpedientesSoapIn">
+    <wsdl:part name="parameters" element="tns:EliminarRelacionExpedientes" />
+  </wsdl:message>
+  <wsdl:message name="EliminarRelacionExpedientesSoapOut">
+    <wsdl:part name="parameters" element="tns:EliminarRelacionExpedientesResponse" />
+  </wsdl:message>
+  <wsdl:message name="CrearDatoMisTramitesSoapIn">
+    <wsdl:part name="parameters" element="tns:CrearDatoMisTramites" />
+  </wsdl:message>
+  <wsdl:message name="CrearDatoMisTramitesSoapOut">
+    <wsdl:part name="parameters" element="tns:CrearDatoMisTramitesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ModificarDatosExpedienteTramiteSoapIn">
+    <wsdl:part name="parameters" element="tns:ModificarDatosExpedienteTramite" />
+  </wsdl:message>
+  <wsdl:message name="ModificarDatosExpedienteTramiteSoapOut">
+    <wsdl:part name="parameters" element="tns:ModificarDatosExpedienteTramiteResponse" />
+  </wsdl:message>
+  <wsdl:message name="AsociarExpedienteNumeroSilpaSoapIn">
+    <wsdl:part name="parameters" element="tns:AsociarExpedienteNumeroSilpa" />
+  </wsdl:message>
+  <wsdl:message name="AsociarExpedienteNumeroSilpaSoapOut">
+    <wsdl:part name="parameters" element="tns:AsociarExpedienteNumeroSilpaResponse" />
+  </wsdl:message>
+  <wsdl:message name="AsociarInfoExpedienteNumeroSilpaSoapIn">
+    <wsdl:part name="parameters" element="tns:AsociarInfoExpedienteNumeroSilpa" />
+  </wsdl:message>
+  <wsdl:message name="AsociarInfoExpedienteNumeroSilpaSoapOut">
+    <wsdl:part name="parameters" element="tns:AsociarInfoExpedienteNumeroSilpaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivatExpedienteNumeroSilpaSoapIn">
+    <wsdl:part name="parameters" element="tns:ActivatExpedienteNumeroSilpa" />
+  </wsdl:message>
+  <wsdl:message name="ActivatExpedienteNumeroSilpaSoapOut">
+    <wsdl:part name="parameters" element="tns:ActivatExpedienteNumeroSilpaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosRadicacionSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentosRadicacion" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosRadicacionSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentosRadicacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosNURSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentosNUR" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosNURSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentosNURResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentoRadicacionSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentoRadicacion" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentoRadicacionSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentoRadicacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathRadicacionSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerPathRadicacion" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathRadicacionSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerPathRadicacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathCorrespondenciaSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerPathCorrespondencia" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathCorrespondenciaSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerPathCorrespondenciaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathFusSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerPathFus" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathFusSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerPathFusResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathDocumentosSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerPathDocumentos" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathDocumentosSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerPathDocumentosResponse" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionSoapIn">
+    <wsdl:part name="parameters" element="tns:EnviarDocumentoRadicacion" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionSoapOut">
+    <wsdl:part name="parameters" element="tns:EnviarDocumentoRadicacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionAlternoSoapIn">
+    <wsdl:part name="parameters" element="tns:EnviarDocumentoRadicacionAlterno" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionAlternoSoapOut">
+    <wsdl:part name="parameters" element="tns:EnviarDocumentoRadicacionAlternoResponse" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoCorrespondenciaSoapIn">
+    <wsdl:part name="parameters" element="tns:EnviarDocumentoCorrespondencia" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoCorrespondenciaSoapOut">
+    <wsdl:part name="parameters" element="tns:EnviarDocumentoCorrespondenciaResponse" />
+  </wsdl:message>
+  <wsdl:message name="RelacionarExpedientesPadreHijoSoapIn">
+    <wsdl:part name="parameters" element="tns:RelacionarExpedientesPadreHijo" />
+  </wsdl:message>
+  <wsdl:message name="RelacionarExpedientesPadreHijoSoapOut">
+    <wsdl:part name="parameters" element="tns:RelacionarExpedientesPadreHijoResponse" />
+  </wsdl:message>
+  <wsdl:message name="CrearSolicitudManualSoapIn">
+    <wsdl:part name="parameters" element="tns:CrearSolicitudManual" />
+  </wsdl:message>
+  <wsdl:message name="CrearSolicitudManualSoapOut">
+    <wsdl:part name="parameters" element="tns:CrearSolicitudManualResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerNumeroVITALPadreSolicitudSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerNumeroVITALPadreSolicitud" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerNumeroVITALPadreSolicitudSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerNumeroVITALPadreSolicitudResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerAutoridadesSolicitudSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerAutoridadesSolicitud" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerAutoridadesSolicitudSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerAutoridadesSolicitudResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerComunidadesSolicitudSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerComunidadesSolicitud" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerComunidadesSolicitudSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerComunidadesSolicitudResponse" />
+  </wsdl:message>
+  <wsdl:message name="TestSoapIn">
+    <wsdl:part name="parameters" element="tns:Test" />
+  </wsdl:message>
+  <wsdl:message name="TestSoapOut">
+    <wsdl:part name="parameters" element="tns:TestResponse" />
+  </wsdl:message>
+  <wsdl:message name="RecibirActoAdministrativoEIA-01HttpGetIn">
+    <wsdl:part name="documentoXML" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="RecibirActoAdministrativoEIA-01HttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ValidacionRecibirDocumentoHttpGetIn">
+    <wsdl:part name="documentoXML" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ValidacionRecibirDocumentoHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudXmlHttpGetIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudXmlHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="EstructuraFormularioXmlHttpGetIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="EstructuraFormularioXmlHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDatosAdjuntosHttpGetIn">
+    <wsdl:part name="strXmlDatos" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDatosAdjuntosHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDatosRadicacionHttpGetIn">
+    <wsdl:part name="strXmlDatos" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDatosRadicacionHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="InsertarRelacionExpedientesHttpGetIn">
+    <wsdl:part name="expedienteId" type="s:string" />
+    <wsdl:part name="expedienteIdRef" type="s:string" />
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="InsertarRelacionExpedientesHttpGetOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="EliminarRelacionExpedientesHttpGetIn">
+    <wsdl:part name="expedienteId" type="s:string" />
+    <wsdl:part name="expedienteIdRef" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="EliminarRelacionExpedientesHttpGetOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="CrearDatoMisTramitesHttpGetIn">
+    <wsdl:part name="strParametrosXml" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="CrearDatoMisTramitesHttpGetOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="ModificarDatosExpedienteTramiteHttpGetIn">
+    <wsdl:part name="strTramiteAnterior" type="s:string" />
+    <wsdl:part name="strTramiteNuevo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ModificarDatosExpedienteTramiteHttpGetOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="ActivatExpedienteNumeroSilpaHttpGetIn">
+    <wsdl:part name="autoridadId" type="s:string" />
+    <wsdl:part name="numeroExpediente" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ActivatExpedienteNumeroSilpaHttpGetOut" />
+  <wsdl:message name="ObtenerDocumentosRadicacionHttpGetIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosRadicacionHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosNURHttpGetIn">
+    <wsdl:part name="strNUR" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosNURHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentoRadicacionHttpGetIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentoRadicacionHttpGetOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathRadicacionHttpGetIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathRadicacionHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathCorrespondenciaHttpGetIn">
+    <wsdl:part name="NUR" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathCorrespondenciaHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathFusHttpGetIn">
+    <wsdl:part name="int_id_radicacion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathFusHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathDocumentosHttpGetIn">
+    <wsdl:part name="int_id_radicacion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathDocumentosHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionHttpGetIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+    <wsdl:part name="bytesArchivo" type="s2:StringArray" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="RelacionarExpedientesPadreHijoHttpGetIn">
+    <wsdl:part name="codigo_Expediente" type="s:string" />
+    <wsdl:part name="padre" type="s:string" />
+    <wsdl:part name="hijo" type="s:string" />
+    <wsdl:part name="tipoTramite" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="RelacionarExpedientesPadreHijoHttpGetOut" />
+  <wsdl:message name="CrearSolicitudManualHttpGetIn">
+    <wsdl:part name="AutoridadID" type="s:string" />
+    <wsdl:part name="ExpedienteID" type="s:string" />
+    <wsdl:part name="CodigoExpediente" type="s:string" />
+    <wsdl:part name="SectorID" type="s:string" />
+    <wsdl:part name="PersonaID" type="s:string" />
+    <wsdl:part name="NumeroVITAL" type="s:string" />
+    <wsdl:part name="NumeroRadicado" type="s:string" />
+    <wsdl:part name="TramiteID" type="s:string" />
+    <wsdl:part name="NombreProyecto" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="CrearSolicitudManualHttpGetOut" />
+  <wsdl:message name="ObtenerNumeroVITALPadreSolicitudHttpGetIn">
+    <wsdl:part name="strNumeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerNumeroVITALPadreSolicitudHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerAutoridadesSolicitudHttpGetIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerAutoridadesSolicitudHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerComunidadesSolicitudHttpGetIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerComunidadesSolicitudHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="TestHttpGetIn" />
+  <wsdl:message name="TestHttpGetOut" />
+  <wsdl:message name="RecibirActoAdministrativoEIA-01HttpPostIn">
+    <wsdl:part name="documentoXML" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="RecibirActoAdministrativoEIA-01HttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ValidacionRecibirDocumentoHttpPostIn">
+    <wsdl:part name="documentoXML" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ValidacionRecibirDocumentoHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudXmlHttpPostIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudXmlHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="EstructuraFormularioXmlHttpPostIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="EstructuraFormularioXmlHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDatosAdjuntosHttpPostIn">
+    <wsdl:part name="strXmlDatos" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDatosAdjuntosHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDatosRadicacionHttpPostIn">
+    <wsdl:part name="strXmlDatos" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDatosRadicacionHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="InsertarRelacionExpedientesHttpPostIn">
+    <wsdl:part name="expedienteId" type="s:string" />
+    <wsdl:part name="expedienteIdRef" type="s:string" />
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="InsertarRelacionExpedientesHttpPostOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="EliminarRelacionExpedientesHttpPostIn">
+    <wsdl:part name="expedienteId" type="s:string" />
+    <wsdl:part name="expedienteIdRef" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="EliminarRelacionExpedientesHttpPostOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="CrearDatoMisTramitesHttpPostIn">
+    <wsdl:part name="strParametrosXml" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="CrearDatoMisTramitesHttpPostOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="ModificarDatosExpedienteTramiteHttpPostIn">
+    <wsdl:part name="strTramiteAnterior" type="s:string" />
+    <wsdl:part name="strTramiteNuevo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ModificarDatosExpedienteTramiteHttpPostOut">
+    <wsdl:part name="Body" element="tns:boolean" />
+  </wsdl:message>
+  <wsdl:message name="ActivatExpedienteNumeroSilpaHttpPostIn">
+    <wsdl:part name="autoridadId" type="s:string" />
+    <wsdl:part name="numeroExpediente" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ActivatExpedienteNumeroSilpaHttpPostOut" />
+  <wsdl:message name="ObtenerDocumentosRadicacionHttpPostIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosRadicacionHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosNURHttpPostIn">
+    <wsdl:part name="strNUR" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentosNURHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentoRadicacionHttpPostIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerDocumentoRadicacionHttpPostOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathRadicacionHttpPostIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathRadicacionHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathCorrespondenciaHttpPostIn">
+    <wsdl:part name="NUR" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathCorrespondenciaHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathFusHttpPostIn">
+    <wsdl:part name="int_id_radicacion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathFusHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathDocumentosHttpPostIn">
+    <wsdl:part name="int_id_radicacion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerPathDocumentosHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionHttpPostIn">
+    <wsdl:part name="idRadicacion" type="s:string" />
+    <wsdl:part name="nombreArchivo" type="s:string" />
+    <wsdl:part name="bytesArchivo" type="s2:StringArray" />
+  </wsdl:message>
+  <wsdl:message name="EnviarDocumentoRadicacionHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="RelacionarExpedientesPadreHijoHttpPostIn">
+    <wsdl:part name="codigo_Expediente" type="s:string" />
+    <wsdl:part name="padre" type="s:string" />
+    <wsdl:part name="hijo" type="s:string" />
+    <wsdl:part name="tipoTramite" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="RelacionarExpedientesPadreHijoHttpPostOut" />
+  <wsdl:message name="CrearSolicitudManualHttpPostIn">
+    <wsdl:part name="AutoridadID" type="s:string" />
+    <wsdl:part name="ExpedienteID" type="s:string" />
+    <wsdl:part name="CodigoExpediente" type="s:string" />
+    <wsdl:part name="SectorID" type="s:string" />
+    <wsdl:part name="PersonaID" type="s:string" />
+    <wsdl:part name="NumeroVITAL" type="s:string" />
+    <wsdl:part name="NumeroRadicado" type="s:string" />
+    <wsdl:part name="TramiteID" type="s:string" />
+    <wsdl:part name="NombreProyecto" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="CrearSolicitudManualHttpPostOut" />
+  <wsdl:message name="ObtenerNumeroVITALPadreSolicitudHttpPostIn">
+    <wsdl:part name="strNumeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerNumeroVITALPadreSolicitudHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerAutoridadesSolicitudHttpPostIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerAutoridadesSolicitudHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerComunidadesSolicitudHttpPostIn">
+    <wsdl:part name="numeroVital" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerComunidadesSolicitudHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="TestHttpPostIn" />
+  <wsdl:message name="TestHttpPostOut" />
+  <wsdl:portType name="WSPQ03Soap">
+    <wsdl:operation name="RecibirDocumento">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Recibe los datos del Documento (Acto Administrativo u Oficio) de la Autoridad Ambiental para ser expuestos o emitidos según corresponda ]</wsdl:documentation>
+      <wsdl:input name="RecibirActoAdministrativoEIA-01" message="tns:RecibirActoAdministrativoEIA-01SoapIn" />
+      <wsdl:output name="RecibirActoAdministrativoEIA-01" message="tns:RecibirActoAdministrativoEIA-01SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RecibirDocumentoValidacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Recibe los datos del Documento (Acto Administrativo u Oficio) de la Autoridad Ambiental para ser validacion de informacion]</wsdl:documentation>
+      <wsdl:input name="ValidacionRecibirDocumento" message="tns:ValidacionRecibirDocumentoSoapIn" />
+      <wsdl:output name="ValidacionRecibirDocumento" message="tns:ValidacionRecibirDocumentoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudXml">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion en xml de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:SolicitudXmlSoapIn" />
+      <wsdl:output message="tns:SolicitudXmlSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EstructuraFormularioXml">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Estructura individual de formularios diligenciados por los ciudadanos]</wsdl:documentation>
+      <wsdl:input message="tns:EstructuraFormularioXmlSoapIn" />
+      <wsdl:output message="tns:EstructuraFormularioXmlSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EjecutoriarActo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Consume un servicio del sistema de notificación en línea por medio de PDI para entregar los datos para el ejecutoriar el acto administrativo de un proceso de notificación]</wsdl:documentation>
+      <wsdl:input message="tns:EjecutoriarActoSoapIn" />
+      <wsdl:output message="tns:EjecutoriarActoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EmitirDocumento">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Consume un servicio del sistema de notificación en línea por medio de PDI para entregar los datos para el proceso de notificación de un Acto Administrativo]</wsdl:documentation>
+      <wsdl:input message="tns:EmitirDocumentoSoapIn" />
+      <wsdl:output message="tns:EmitirDocumentoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosAdjuntos">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Expone la información y datos enviados por el solicitante, tercero interviniente o quejoso para que la AA correspondiente los consuma]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDatosAdjuntosSoapIn" />
+      <wsdl:output message="tns:ObtenerDatosAdjuntosSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDatosRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[La Autoridad Ambiental Envía la informacion del numero y fecha de radicación para una solicitud o Documento ]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDatosRadicacionSoapIn" />
+      <wsdl:output message="tns:EnviarDatosRadicacionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertarRelacionExpedientes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Asociar un expediente con otro en el sistema el registro se guarda en SILPA para ser utilizado en los reportes de mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:InsertarRelacionExpedientesSoapIn" />
+      <wsdl:output message="tns:InsertarRelacionExpedientesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EliminarRelacionExpedientes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Eliminar un expediente asociado con otro en el sistema el registro se Elimina en SILPA para ser utilizado en los reportes de mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:EliminarRelacionExpedientesSoapIn" />
+      <wsdl:output message="tns:EliminarRelacionExpedientesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CrearDatoMisTramites">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Finalizar una actividad se crean crean datos necesarios para la consulta de Mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:CrearDatoMisTramitesSoapIn" />
+      <wsdl:output message="tns:CrearDatoMisTramitesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ModificarDatosExpedienteTramite">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Modificar la informacion del expediente de un tramite]</wsdl:documentation>
+      <wsdl:input message="tns:ModificarDatosExpedienteTramiteSoapIn" />
+      <wsdl:output message="tns:ModificarDatosExpedienteTramiteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AsociarExpedienteNumeroSilpa">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Asociar Expediente y numero silpa]</wsdl:documentation>
+      <wsdl:input message="tns:AsociarExpedienteNumeroSilpaSoapIn" />
+      <wsdl:output message="tns:AsociarExpedienteNumeroSilpaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AsociarInfoExpedienteNumeroSilpa">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Asociar Info Expediente a un numero silpa]</wsdl:documentation>
+      <wsdl:input message="tns:AsociarInfoExpedienteNumeroSilpaSoapIn" />
+      <wsdl:output message="tns:AsociarInfoExpedienteNumeroSilpaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivatExpedienteNumeroSilpa">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Activar Expediente y numero silpa]</wsdl:documentation>
+      <wsdl:input message="tns:ActivatExpedienteNumeroSilpaSoapIn" />
+      <wsdl:output message="tns:ActivatExpedienteNumeroSilpaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene los documentos de la radicación]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentosRadicacionSoapIn" />
+      <wsdl:output message="tns:ObtenerDocumentosRadicacionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosNUR">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene los documentos de la radicación]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentosNURSoapIn" />
+      <wsdl:output message="tns:ObtenerDocumentosNURSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentoRadicacionSoapIn" />
+      <wsdl:output message="tns:ObtenerDocumentoRadicacionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathRadicacionSoapIn" />
+      <wsdl:output message="tns:ObtenerPathRadicacionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathCorrespondencia">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathCorrespondenciaSoapIn" />
+      <wsdl:output message="tns:ObtenerPathCorrespondenciaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathFus">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el path de radicacion fus]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathFusSoapIn" />
+      <wsdl:output message="tns:ObtenerPathFusSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathDocumentos">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el path de radicacion fus]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathDocumentosSoapIn" />
+      <wsdl:output message="tns:ObtenerPathDocumentosSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDocumentoRadicacionSoapIn" />
+      <wsdl:output message="tns:EnviarDocumentoRadicacionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacionAlterno">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene la ruta de los archivos y si el archivo ya existe]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDocumentoRadicacionAlternoSoapIn" />
+      <wsdl:output message="tns:EnviarDocumentoRadicacionAlternoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoCorrespondencia">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene la ruta de los archivos y si el archivo ya existe]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDocumentoCorrespondenciaSoapIn" />
+      <wsdl:output message="tns:EnviarDocumentoCorrespondenciaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RelacionarExpedientesPadreHijo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Guarda la relacion entre dos expedientes]</wsdl:documentation>
+      <wsdl:input message="tns:RelacionarExpedientesPadreHijoSoapIn" />
+      <wsdl:output message="tns:RelacionarExpedientesPadreHijoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CrearSolicitudManual">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Crear solicitud manual]</wsdl:documentation>
+      <wsdl:input message="tns:CrearSolicitudManualSoapIn" />
+      <wsdl:output message="tns:CrearSolicitudManualSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroVITALPadreSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtener el numero vital padre de una solicitud ]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerNumeroVITALPadreSolicitudSoapIn" />
+      <wsdl:output message="tns:ObtenerNumeroVITALPadreSolicitudSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAutoridadesSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion de las autoridades ambientales de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerAutoridadesSolicitudSoapIn" />
+      <wsdl:output message="tns:ObtenerAutoridadesSolicitudSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerComunidadesSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion de las comunidades de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerComunidadesSolicitudSoapIn" />
+      <wsdl:output message="tns:ObtenerComunidadesSolicitudSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Metodo de test del servicio</wsdl:documentation>
+      <wsdl:input message="tns:TestSoapIn" />
+      <wsdl:output message="tns:TestSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="WSPQ03HttpGet">
+    <wsdl:operation name="RecibirDocumento">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Recibe los datos del Documento (Acto Administrativo u Oficio) de la Autoridad Ambiental para ser expuestos o emitidos según corresponda ]</wsdl:documentation>
+      <wsdl:input name="RecibirActoAdministrativoEIA-01" message="tns:RecibirActoAdministrativoEIA-01HttpGetIn" />
+      <wsdl:output name="RecibirActoAdministrativoEIA-01" message="tns:RecibirActoAdministrativoEIA-01HttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RecibirDocumentoValidacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Recibe los datos del Documento (Acto Administrativo u Oficio) de la Autoridad Ambiental para ser validacion de informacion]</wsdl:documentation>
+      <wsdl:input name="ValidacionRecibirDocumento" message="tns:ValidacionRecibirDocumentoHttpGetIn" />
+      <wsdl:output name="ValidacionRecibirDocumento" message="tns:ValidacionRecibirDocumentoHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudXml">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion en xml de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:SolicitudXmlHttpGetIn" />
+      <wsdl:output message="tns:SolicitudXmlHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EstructuraFormularioXml">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Estructura individual de formularios diligenciados por los ciudadanos]</wsdl:documentation>
+      <wsdl:input message="tns:EstructuraFormularioXmlHttpGetIn" />
+      <wsdl:output message="tns:EstructuraFormularioXmlHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosAdjuntos">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Expone la información y datos enviados por el solicitante, tercero interviniente o quejoso para que la AA correspondiente los consuma]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDatosAdjuntosHttpGetIn" />
+      <wsdl:output message="tns:ObtenerDatosAdjuntosHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDatosRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[La Autoridad Ambiental Envía la informacion del numero y fecha de radicación para una solicitud o Documento ]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDatosRadicacionHttpGetIn" />
+      <wsdl:output message="tns:EnviarDatosRadicacionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertarRelacionExpedientes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Asociar un expediente con otro en el sistema el registro se guarda en SILPA para ser utilizado en los reportes de mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:InsertarRelacionExpedientesHttpGetIn" />
+      <wsdl:output message="tns:InsertarRelacionExpedientesHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EliminarRelacionExpedientes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Eliminar un expediente asociado con otro en el sistema el registro se Elimina en SILPA para ser utilizado en los reportes de mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:EliminarRelacionExpedientesHttpGetIn" />
+      <wsdl:output message="tns:EliminarRelacionExpedientesHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CrearDatoMisTramites">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Finalizar una actividad se crean crean datos necesarios para la consulta de Mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:CrearDatoMisTramitesHttpGetIn" />
+      <wsdl:output message="tns:CrearDatoMisTramitesHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ModificarDatosExpedienteTramite">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Modificar la informacion del expediente de un tramite]</wsdl:documentation>
+      <wsdl:input message="tns:ModificarDatosExpedienteTramiteHttpGetIn" />
+      <wsdl:output message="tns:ModificarDatosExpedienteTramiteHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivatExpedienteNumeroSilpa">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Activar Expediente y numero silpa]</wsdl:documentation>
+      <wsdl:input message="tns:ActivatExpedienteNumeroSilpaHttpGetIn" />
+      <wsdl:output message="tns:ActivatExpedienteNumeroSilpaHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene los documentos de la radicación]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentosRadicacionHttpGetIn" />
+      <wsdl:output message="tns:ObtenerDocumentosRadicacionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosNUR">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene los documentos de la radicación]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentosNURHttpGetIn" />
+      <wsdl:output message="tns:ObtenerDocumentosNURHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentoRadicacionHttpGetIn" />
+      <wsdl:output message="tns:ObtenerDocumentoRadicacionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathRadicacionHttpGetIn" />
+      <wsdl:output message="tns:ObtenerPathRadicacionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathCorrespondencia">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathCorrespondenciaHttpGetIn" />
+      <wsdl:output message="tns:ObtenerPathCorrespondenciaHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathFus">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el path de radicacion fus]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathFusHttpGetIn" />
+      <wsdl:output message="tns:ObtenerPathFusHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathDocumentos">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el path de radicacion fus]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathDocumentosHttpGetIn" />
+      <wsdl:output message="tns:ObtenerPathDocumentosHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDocumentoRadicacionHttpGetIn" />
+      <wsdl:output message="tns:EnviarDocumentoRadicacionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RelacionarExpedientesPadreHijo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Guarda la relacion entre dos expedientes]</wsdl:documentation>
+      <wsdl:input message="tns:RelacionarExpedientesPadreHijoHttpGetIn" />
+      <wsdl:output message="tns:RelacionarExpedientesPadreHijoHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CrearSolicitudManual">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Crear solicitud manual]</wsdl:documentation>
+      <wsdl:input message="tns:CrearSolicitudManualHttpGetIn" />
+      <wsdl:output message="tns:CrearSolicitudManualHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroVITALPadreSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtener el numero vital padre de una solicitud ]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerNumeroVITALPadreSolicitudHttpGetIn" />
+      <wsdl:output message="tns:ObtenerNumeroVITALPadreSolicitudHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAutoridadesSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion de las autoridades ambientales de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerAutoridadesSolicitudHttpGetIn" />
+      <wsdl:output message="tns:ObtenerAutoridadesSolicitudHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerComunidadesSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion de las comunidades de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerComunidadesSolicitudHttpGetIn" />
+      <wsdl:output message="tns:ObtenerComunidadesSolicitudHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Metodo de test del servicio</wsdl:documentation>
+      <wsdl:input message="tns:TestHttpGetIn" />
+      <wsdl:output message="tns:TestHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="WSPQ03HttpPost">
+    <wsdl:operation name="RecibirDocumento">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Recibe los datos del Documento (Acto Administrativo u Oficio) de la Autoridad Ambiental para ser expuestos o emitidos según corresponda ]</wsdl:documentation>
+      <wsdl:input name="RecibirActoAdministrativoEIA-01" message="tns:RecibirActoAdministrativoEIA-01HttpPostIn" />
+      <wsdl:output name="RecibirActoAdministrativoEIA-01" message="tns:RecibirActoAdministrativoEIA-01HttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RecibirDocumentoValidacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Recibe los datos del Documento (Acto Administrativo u Oficio) de la Autoridad Ambiental para ser validacion de informacion]</wsdl:documentation>
+      <wsdl:input name="ValidacionRecibirDocumento" message="tns:ValidacionRecibirDocumentoHttpPostIn" />
+      <wsdl:output name="ValidacionRecibirDocumento" message="tns:ValidacionRecibirDocumentoHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudXml">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion en xml de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:SolicitudXmlHttpPostIn" />
+      <wsdl:output message="tns:SolicitudXmlHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EstructuraFormularioXml">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Estructura individual de formularios diligenciados por los ciudadanos]</wsdl:documentation>
+      <wsdl:input message="tns:EstructuraFormularioXmlHttpPostIn" />
+      <wsdl:output message="tns:EstructuraFormularioXmlHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosAdjuntos">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Expone la información y datos enviados por el solicitante, tercero interviniente o quejoso para que la AA correspondiente los consuma]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDatosAdjuntosHttpPostIn" />
+      <wsdl:output message="tns:ObtenerDatosAdjuntosHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDatosRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[La Autoridad Ambiental Envía la informacion del numero y fecha de radicación para una solicitud o Documento ]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDatosRadicacionHttpPostIn" />
+      <wsdl:output message="tns:EnviarDatosRadicacionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertarRelacionExpedientes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Asociar un expediente con otro en el sistema el registro se guarda en SILPA para ser utilizado en los reportes de mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:InsertarRelacionExpedientesHttpPostIn" />
+      <wsdl:output message="tns:InsertarRelacionExpedientesHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EliminarRelacionExpedientes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Eliminar un expediente asociado con otro en el sistema el registro se Elimina en SILPA para ser utilizado en los reportes de mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:EliminarRelacionExpedientesHttpPostIn" />
+      <wsdl:output message="tns:EliminarRelacionExpedientesHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CrearDatoMisTramites">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Al Finalizar una actividad se crean crean datos necesarios para la consulta de Mis tramites]</wsdl:documentation>
+      <wsdl:input message="tns:CrearDatoMisTramitesHttpPostIn" />
+      <wsdl:output message="tns:CrearDatoMisTramitesHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ModificarDatosExpedienteTramite">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Modificar la informacion del expediente de un tramite]</wsdl:documentation>
+      <wsdl:input message="tns:ModificarDatosExpedienteTramiteHttpPostIn" />
+      <wsdl:output message="tns:ModificarDatosExpedienteTramiteHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivatExpedienteNumeroSilpa">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Activar Expediente y numero silpa]</wsdl:documentation>
+      <wsdl:input message="tns:ActivatExpedienteNumeroSilpaHttpPostIn" />
+      <wsdl:output message="tns:ActivatExpedienteNumeroSilpaHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene los documentos de la radicación]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentosRadicacionHttpPostIn" />
+      <wsdl:output message="tns:ObtenerDocumentosRadicacionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosNUR">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene los documentos de la radicación]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentosNURHttpPostIn" />
+      <wsdl:output message="tns:ObtenerDocumentosNURHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerDocumentoRadicacionHttpPostIn" />
+      <wsdl:output message="tns:ObtenerDocumentoRadicacionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathRadicacionHttpPostIn" />
+      <wsdl:output message="tns:ObtenerPathRadicacionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathCorrespondencia">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathCorrespondenciaHttpPostIn" />
+      <wsdl:output message="tns:ObtenerPathCorrespondenciaHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathFus">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el path de radicacion fus]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathFusHttpPostIn" />
+      <wsdl:output message="tns:ObtenerPathFusHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathDocumentos">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el path de radicacion fus]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerPathDocumentosHttpPostIn" />
+      <wsdl:output message="tns:ObtenerPathDocumentosHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacion">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtiene el documento de una radicacion]</wsdl:documentation>
+      <wsdl:input message="tns:EnviarDocumentoRadicacionHttpPostIn" />
+      <wsdl:output message="tns:EnviarDocumentoRadicacionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RelacionarExpedientesPadreHijo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Guarda la relacion entre dos expedientes]</wsdl:documentation>
+      <wsdl:input message="tns:RelacionarExpedientesPadreHijoHttpPostIn" />
+      <wsdl:output message="tns:RelacionarExpedientesPadreHijoHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CrearSolicitudManual">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Crear solicitud manual]</wsdl:documentation>
+      <wsdl:input message="tns:CrearSolicitudManualHttpPostIn" />
+      <wsdl:output message="tns:CrearSolicitudManualHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroVITALPadreSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Obtener el numero vital padre de una solicitud ]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerNumeroVITALPadreSolicitudHttpPostIn" />
+      <wsdl:output message="tns:ObtenerNumeroVITALPadreSolicitudHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAutoridadesSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion de las autoridades ambientales de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerAutoridadesSolicitudHttpPostIn" />
+      <wsdl:output message="tns:ObtenerAutoridadesSolicitudHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerComunidadesSolicitud">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">[Devuelve la informacion de las comunidades de una solicitud]</wsdl:documentation>
+      <wsdl:input message="tns:ObtenerComunidadesSolicitudHttpPostIn" />
+      <wsdl:output message="tns:ObtenerComunidadesSolicitudHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Metodo de test del servicio</wsdl:documentation>
+      <wsdl:input message="tns:TestHttpPostIn" />
+      <wsdl:output message="tns:TestHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSPQ03Soap" type="tns:WSPQ03Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RecibirDocumento">
+      <soap:operation soapAction="http://tempuri.org/RecibirActoAdministrativoEIA-01" style="document" />
+      <wsdl:input name="RecibirActoAdministrativoEIA-01">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="RecibirActoAdministrativoEIA-01">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecibirDocumentoValidacion">
+      <soap:operation soapAction="http://tempuri.org/ValidacionRecibirDocumento" style="document" />
+      <wsdl:input name="ValidacionRecibirDocumento">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ValidacionRecibirDocumento">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudXml">
+      <soap:operation soapAction="http://tempuri.org/SolicitudXml" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstructuraFormularioXml">
+      <soap:operation soapAction="http://tempuri.org/EstructuraFormularioXml" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EjecutoriarActo">
+      <soap:operation soapAction="http://tempuri.org/EjecutoriarActo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EmitirDocumento">
+      <soap:operation soapAction="http://tempuri.org/EmitirDocumento" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosAdjuntos">
+      <soap:operation soapAction="http://tempuri.org/ObtenerDatosAdjuntos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDatosRadicacion">
+      <soap:operation soapAction="http://tempuri.org/EnviarDatosRadicacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertarRelacionExpedientes">
+      <soap:operation soapAction="http://tempuri.org/InsertarRelacionExpedientes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EliminarRelacionExpedientes">
+      <soap:operation soapAction="http://tempuri.org/EliminarRelacionExpedientes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrearDatoMisTramites">
+      <soap:operation soapAction="http://tempuri.org/CrearDatoMisTramites" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ModificarDatosExpedienteTramite">
+      <soap:operation soapAction="http://tempuri.org/ModificarDatosExpedienteTramite" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsociarExpedienteNumeroSilpa">
+      <soap:operation soapAction="http://tempuri.org/AsociarExpedienteNumeroSilpa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsociarInfoExpedienteNumeroSilpa">
+      <soap:operation soapAction="http://tempuri.org/AsociarInfoExpedienteNumeroSilpa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatExpedienteNumeroSilpa">
+      <soap:operation soapAction="http://tempuri.org/ActivatExpedienteNumeroSilpa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosRadicacion">
+      <soap:operation soapAction="http://tempuri.org/ObtenerDocumentosRadicacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosNUR">
+      <soap:operation soapAction="http://tempuri.org/ObtenerDocumentosNUR" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoRadicacion">
+      <soap:operation soapAction="http://tempuri.org/ObtenerDocumentoRadicacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathRadicacion">
+      <soap:operation soapAction="http://tempuri.org/ObtenerPathRadicacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathCorrespondencia">
+      <soap:operation soapAction="http://tempuri.org/ObtenerPathCorrespondencia" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathFus">
+      <soap:operation soapAction="http://tempuri.org/ObtenerPathFus" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathDocumentos">
+      <soap:operation soapAction="http://tempuri.org/ObtenerPathDocumentos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacion">
+      <soap:operation soapAction="http://tempuri.org/EnviarDocumentoRadicacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacionAlterno">
+      <soap:operation soapAction="http://tempuri.org/EnviarDocumentoRadicacionAlterno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoCorrespondencia">
+      <soap:operation soapAction="http://tempuri.org/EnviarDocumentoCorrespondencia" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RelacionarExpedientesPadreHijo">
+      <soap:operation soapAction="http://tempuri.org/RelacionarExpedientesPadreHijo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrearSolicitudManual">
+      <soap:operation soapAction="http://tempuri.org/CrearSolicitudManual" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroVITALPadreSolicitud">
+      <soap:operation soapAction="http://tempuri.org/ObtenerNumeroVITALPadreSolicitud" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAutoridadesSolicitud">
+      <soap:operation soapAction="http://tempuri.org/ObtenerAutoridadesSolicitud" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerComunidadesSolicitud">
+      <soap:operation soapAction="http://tempuri.org/ObtenerComunidadesSolicitud" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <soap:operation soapAction="http://tempuri.org/Test" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WSPQ03Soap12" type="tns:WSPQ03Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RecibirDocumento">
+      <soap12:operation soapAction="http://tempuri.org/RecibirActoAdministrativoEIA-01" style="document" />
+      <wsdl:input name="RecibirActoAdministrativoEIA-01">
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="RecibirActoAdministrativoEIA-01">
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecibirDocumentoValidacion">
+      <soap12:operation soapAction="http://tempuri.org/ValidacionRecibirDocumento" style="document" />
+      <wsdl:input name="ValidacionRecibirDocumento">
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ValidacionRecibirDocumento">
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudXml">
+      <soap12:operation soapAction="http://tempuri.org/SolicitudXml" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstructuraFormularioXml">
+      <soap12:operation soapAction="http://tempuri.org/EstructuraFormularioXml" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EjecutoriarActo">
+      <soap12:operation soapAction="http://tempuri.org/EjecutoriarActo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EmitirDocumento">
+      <soap12:operation soapAction="http://tempuri.org/EmitirDocumento" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosAdjuntos">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerDatosAdjuntos" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDatosRadicacion">
+      <soap12:operation soapAction="http://tempuri.org/EnviarDatosRadicacion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertarRelacionExpedientes">
+      <soap12:operation soapAction="http://tempuri.org/InsertarRelacionExpedientes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EliminarRelacionExpedientes">
+      <soap12:operation soapAction="http://tempuri.org/EliminarRelacionExpedientes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrearDatoMisTramites">
+      <soap12:operation soapAction="http://tempuri.org/CrearDatoMisTramites" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ModificarDatosExpedienteTramite">
+      <soap12:operation soapAction="http://tempuri.org/ModificarDatosExpedienteTramite" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsociarExpedienteNumeroSilpa">
+      <soap12:operation soapAction="http://tempuri.org/AsociarExpedienteNumeroSilpa" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsociarInfoExpedienteNumeroSilpa">
+      <soap12:operation soapAction="http://tempuri.org/AsociarInfoExpedienteNumeroSilpa" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatExpedienteNumeroSilpa">
+      <soap12:operation soapAction="http://tempuri.org/ActivatExpedienteNumeroSilpa" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosRadicacion">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerDocumentosRadicacion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosNUR">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerDocumentosNUR" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoRadicacion">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerDocumentoRadicacion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathRadicacion">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerPathRadicacion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathCorrespondencia">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerPathCorrespondencia" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathFus">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerPathFus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathDocumentos">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerPathDocumentos" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacion">
+      <soap12:operation soapAction="http://tempuri.org/EnviarDocumentoRadicacion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacionAlterno">
+      <soap12:operation soapAction="http://tempuri.org/EnviarDocumentoRadicacionAlterno" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoCorrespondencia">
+      <soap12:operation soapAction="http://tempuri.org/EnviarDocumentoCorrespondencia" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RelacionarExpedientesPadreHijo">
+      <soap12:operation soapAction="http://tempuri.org/RelacionarExpedientesPadreHijo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrearSolicitudManual">
+      <soap12:operation soapAction="http://tempuri.org/CrearSolicitudManual" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroVITALPadreSolicitud">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerNumeroVITALPadreSolicitud" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAutoridadesSolicitud">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerAutoridadesSolicitud" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerComunidadesSolicitud">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerComunidadesSolicitud" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <soap12:operation soapAction="http://tempuri.org/Test" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WSPQ03HttpGet" type="tns:WSPQ03HttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="RecibirDocumento">
+      <http:operation location="/RecibirActoAdministrativoEIA-01" />
+      <wsdl:input name="RecibirActoAdministrativoEIA-01">
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output name="RecibirActoAdministrativoEIA-01">
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecibirDocumentoValidacion">
+      <http:operation location="/ValidacionRecibirDocumento" />
+      <wsdl:input name="ValidacionRecibirDocumento">
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output name="ValidacionRecibirDocumento">
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudXml">
+      <http:operation location="/SolicitudXml" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstructuraFormularioXml">
+      <http:operation location="/EstructuraFormularioXml" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosAdjuntos">
+      <http:operation location="/ObtenerDatosAdjuntos" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDatosRadicacion">
+      <http:operation location="/EnviarDatosRadicacion" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertarRelacionExpedientes">
+      <http:operation location="/InsertarRelacionExpedientes" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EliminarRelacionExpedientes">
+      <http:operation location="/EliminarRelacionExpedientes" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrearDatoMisTramites">
+      <http:operation location="/CrearDatoMisTramites" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ModificarDatosExpedienteTramite">
+      <http:operation location="/ModificarDatosExpedienteTramite" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatExpedienteNumeroSilpa">
+      <http:operation location="/ActivatExpedienteNumeroSilpa" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosRadicacion">
+      <http:operation location="/ObtenerDocumentosRadicacion" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosNUR">
+      <http:operation location="/ObtenerDocumentosNUR" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoRadicacion">
+      <http:operation location="/ObtenerDocumentoRadicacion" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathRadicacion">
+      <http:operation location="/ObtenerPathRadicacion" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathCorrespondencia">
+      <http:operation location="/ObtenerPathCorrespondencia" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathFus">
+      <http:operation location="/ObtenerPathFus" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathDocumentos">
+      <http:operation location="/ObtenerPathDocumentos" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacion">
+      <http:operation location="/EnviarDocumentoRadicacion" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RelacionarExpedientesPadreHijo">
+      <http:operation location="/RelacionarExpedientesPadreHijo" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+    <wsdl:operation name="CrearSolicitudManual">
+      <http:operation location="/CrearSolicitudManual" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroVITALPadreSolicitud">
+      <http:operation location="/ObtenerNumeroVITALPadreSolicitud" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAutoridadesSolicitud">
+      <http:operation location="/ObtenerAutoridadesSolicitud" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerComunidadesSolicitud">
+      <http:operation location="/ObtenerComunidadesSolicitud" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <http:operation location="/Test" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WSPQ03HttpPost" type="tns:WSPQ03HttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="RecibirDocumento">
+      <http:operation location="/RecibirActoAdministrativoEIA-01" />
+      <wsdl:input name="RecibirActoAdministrativoEIA-01">
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output name="RecibirActoAdministrativoEIA-01">
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecibirDocumentoValidacion">
+      <http:operation location="/ValidacionRecibirDocumento" />
+      <wsdl:input name="ValidacionRecibirDocumento">
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output name="ValidacionRecibirDocumento">
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudXml">
+      <http:operation location="/SolicitudXml" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstructuraFormularioXml">
+      <http:operation location="/EstructuraFormularioXml" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosAdjuntos">
+      <http:operation location="/ObtenerDatosAdjuntos" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDatosRadicacion">
+      <http:operation location="/EnviarDatosRadicacion" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertarRelacionExpedientes">
+      <http:operation location="/InsertarRelacionExpedientes" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EliminarRelacionExpedientes">
+      <http:operation location="/EliminarRelacionExpedientes" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrearDatoMisTramites">
+      <http:operation location="/CrearDatoMisTramites" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ModificarDatosExpedienteTramite">
+      <http:operation location="/ModificarDatosExpedienteTramite" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatExpedienteNumeroSilpa">
+      <http:operation location="/ActivatExpedienteNumeroSilpa" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosRadicacion">
+      <http:operation location="/ObtenerDocumentosRadicacion" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentosNUR">
+      <http:operation location="/ObtenerDocumentosNUR" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoRadicacion">
+      <http:operation location="/ObtenerDocumentoRadicacion" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathRadicacion">
+      <http:operation location="/ObtenerPathRadicacion" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathCorrespondencia">
+      <http:operation location="/ObtenerPathCorrespondencia" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathFus">
+      <http:operation location="/ObtenerPathFus" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPathDocumentos">
+      <http:operation location="/ObtenerPathDocumentos" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnviarDocumentoRadicacion">
+      <http:operation location="/EnviarDocumentoRadicacion" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RelacionarExpedientesPadreHijo">
+      <http:operation location="/RelacionarExpedientesPadreHijo" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+    <wsdl:operation name="CrearSolicitudManual">
+      <http:operation location="/CrearSolicitudManual" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroVITALPadreSolicitud">
+      <http:operation location="/ObtenerNumeroVITALPadreSolicitud" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAutoridadesSolicitud">
+      <http:operation location="/ObtenerAutoridadesSolicitud" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerComunidadesSolicitud">
+      <http:operation location="/ObtenerComunidadesSolicitud" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <http:operation location="/Test" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WSPQ03">
+    <wsdl:port name="WSPQ03Soap" binding="tns:WSPQ03Soap">
+      <soap:address location="https://vital.minambiente.gov.co:8182/wspq03.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WSPQ03Soap12" binding="tns:WSPQ03Soap12">
+      <soap12:address location="https://vital.minambiente.gov.co:8182/wspq03.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WSPQ03HttpGet" binding="tns:WSPQ03HttpGet">
+      <http:address location="https://vital.minambiente.gov.co:8182/wspq03.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WSPQ03HttpPost" binding="tns:WSPQ03HttpPost">
+      <http:address location="https://vital.minambiente.gov.co:8182/wspq03.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -10,7 +10,10 @@
     using System.Data;
     using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Net.Security;
     using System.Security.Claims;
+    using System.Security.Cryptography.X509Certificates;
     using System.Web.Http;
 
 
@@ -1016,10 +1019,17 @@
             return _aux;
         }
 
+        private static bool ValidateRemoteCertificate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors policyErrors)
+        {
+            return true;
+        }
+
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("DocsVital")]
         public JArray GetDocsVital(string Vital)
         {
             JsonSerializer Js = new JsonSerializer();
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             Js = JsonSerializer.CreateDefault();
             if (string.IsNullOrEmpty(Vital) || Vital == "-1") return null;
             List<DocumentosVital> documentosVital = new List<DocumentosVital>();
@@ -1034,8 +1044,9 @@
                     long.TryParse(_datos[0], out long idRadicado);
                     try
                     {
-                        WSPQ03 ws = new WSPQ03();
-                        string xmlData = ws.ObtenerDocumentosRadicacion(idRadicado);
+                        //WSPQ03 ws = new WSPQ03();
+                        var x = new vital.WSPQ03();
+                        string xmlData = x.ObtenerDocumentosRadicacion(idRadicado);
                         string[] Documentos = xmlData.Split(';');
                         foreach (string s in Documentos)
                         {
@@ -1057,7 +1068,7 @@
                                               select Vit.IDENTIFICADOR).FirstOrDefault();
                                 _datos = AuxIdVital.Split('|');
                                 long.TryParse(_datos[0], out idRadicado);
-                                xmlData = ws.ObtenerDocumentosRadicacion(idRadicado);
+                                xmlData = x.ObtenerDocumentosRadicacion(idRadicado);
                                 Documentos = xmlData.Split(';');
                                 foreach (string s in Documentos)
                                 {
@@ -1123,8 +1134,9 @@
                     }
                     if (File.Exists(Ruta)) File.Delete(Ruta);
                     if (Ruta.Contains("..")) Ruta = Ruta.Replace("..", ".");
-                    WSPQ03 ws = new WSPQ03();
-                    Byte[] _Documento = ws.ObtenerDocumentoRadicacion(objData.RadicadoVital, objData.DocumentoVital);
+                    //WSPQ03 ws = new WSPQ03();
+                    var x = new vital.WSPQ03();
+                    Byte[] _Documento = x.ObtenerDocumentoRadicacion(objData.RadicadoVital, objData.DocumentoVital);
                     if (_Documento.Length > 0)
                     {
                         File.WriteAllBytes(Ruta, _Documento);

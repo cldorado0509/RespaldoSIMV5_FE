@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using SIM.Areas.Pqrsd.Models;
+    using SIM.Areas.Seguridad.Models;
     using SIM.Models;
     using System;
     using System.Collections.Generic;
@@ -1074,7 +1075,48 @@
                     IsSuccess = false,
                     Message = ex.Message,
                     Result = ex
+                };
+            }
+        }
 
+        public async Task<Response> LoginAsync<T>(string urlBase, string servicePrefix, string controller, LoginViewModel model)
+        {
+            try
+            {
+                string request = JsonConvert.SerializeObject(model);
+                StringContent content = new StringContent(request, Encoding.UTF8, "application/json");
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(urlBase)
+                };
+
+                string url = $"{servicePrefix}{controller}";
+                HttpResponseMessage response = await client.PostAsync(url, content);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = result,
+                    };
+                }
+
+                T item = JsonConvert.DeserializeObject<T>(result);
+
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = item
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
                 };
             }
         }
