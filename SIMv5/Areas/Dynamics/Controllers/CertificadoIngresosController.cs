@@ -159,6 +159,7 @@ namespace SIM.Areas.Dynamics.Controllers
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 498, 410, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 498, 421, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox(Persona.VALORRETENCION.ToString("N0", CultureInfo.CreateSpecificCulture("es-CO")), _Arial, null, brush, 498, 434, 90, 10, tfoRight);
+                            _Doc.Pages[0].Canvas.DrawTextBox("AREA METROPOLITANA DEL VALLE DE ABURRA", _Arial, null, brush, 160, 434, 300, 30, tfoLeft);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 375, 482, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 375, 494, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 375, 506, 90, 10, tfoRight);
@@ -216,7 +217,7 @@ namespace SIM.Areas.Dynamics.Controllers
                     _Doc.Pages[0].Canvas.DrawTextBox(Agno.ToString(), _Arial, null, brush, 290, 35, 80, 30, tfoCenter);
                     string _mesAgno = DateTime.Now.ToString("MMMM DE yyyy", CultureInfo.GetCultureInfo("es-CO")).ToUpper();
                     _Doc.Pages[0].Canvas.DrawTextBox("890984423  3", _Arial, null, brush, 15, 88, 180, 30, tfoRight);
-                    if (Agno >= 2023) _Doc.Pages[0].Canvas.DrawTextBox("AREA METROPOLITANA DEL VALLE DE ABURRA", _Arial, null, brush, 90, 100, 300, 30, tfoLeft);
+                    _Doc.Pages[0].Canvas.DrawTextBox("AREA METROPOLITANA DEL VALLE DE ABURRA", _Arial, null, brush, 90, 100, 300, 30, tfoLeft);
                     _Sql = $"SELECT TOP(1) * FROM (SELECT V.ACCOUNTNUM AS TERCERO,DT.NAME AS NOMBRE,P.FIRSTNAME,P.MIDDLENAME,P.LASTNAME,P.AP_CO_SECONDLASTNAME,P.RECID FROM VENDTABLE V INNER JOIN DIRPARTYTABLE DT ON V.PARTY=DT.RECID LEFT JOIN DIRPERSONNAME P ON DT.RECID=P.PERSON) QRY WHERE TERCERO ='{IdTer}' ORDER BY RECID DESC";
                     var Persona = dbDynamics.Database.SqlQuery<DatosTerceroModel>(_Sql).FirstOrDefault();
                     if (Persona != null)
@@ -303,6 +304,7 @@ namespace SIM.Areas.Dynamics.Controllers
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 498, 461, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 498, 471, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox(Persona.VALORRETENCION.ToString("N0", CultureInfo.CreateSpecificCulture("es-CO")), _Arial, null, brush, 498, 482, 90, 10, tfoRight);
+                            _Doc.Pages[0].Canvas.DrawTextBox("AREA METROPOLITANA DEL VALLE DE ABURRA", _Arial, null, brush, 160, 484, 300, 30, tfoLeft);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 375, 530, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 375, 542, 90, 10, tfoRight);
                             _Doc.Pages[0].Canvas.DrawTextBox("0", _Arial, null, brush, 375, 554, 90, 10, tfoRight);
