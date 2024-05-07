@@ -92,8 +92,8 @@ namespace SIM.Utilidades
 
                 lcstrDestinatarios.ForEach(i => mm.To.Add(new MailboxAddress("Recipient", i)));
                 mm.Subject = rfstrAsunto;
-                lcstrCopias.ForEach(c => mm.Cc.Add(new MailboxAddress("Cc", c)));
-                lcstrCopiasOcultas.ForEach(o => mm.Bcc.Add(new MailboxAddress("Bcc", o)));
+                if (lcstrCopias != null && lcstrCopias.Length > 0) lcstrCopias.ForEach(c => mm.Cc.Add(new MailboxAddress("Cc", c)));
+                if (lcstrCopiasOcultas != null && lcstrCopiasOcultas.Length > 0) lcstrCopiasOcultas.ForEach(o => mm.Bcc.Add(new MailboxAddress("Bcc", o)));
                 BodyBuilder builder = new BodyBuilder();
                 builder.HtmlBody = rfstrContenido;
                 if (rfstrArchivoAdjunto != null)
