@@ -1,16 +1,18 @@
 ﻿@using Microsoft.AspNet.Identity
 @using SIM.Areas.Seguridad.Models
 @using SIM.Utilidades
+@using System.Security.Claims
 
-@{    
+@{
     if (Request.IsAuthenticated && Session["_Menu"] == null)
     {
         if (Session["_Pendientes"] == null || !Convert.ToBoolean(Session["_Pendientes"]))
         {
             Session["_Menu"] = Security.ObtenerHTMLMenu(ModelsToListSeguridad.GetOpcionesMenu()); //JsonConvert.SerializeObject(ModelsToListSeguridad.GetOpcionesMenu());
         }
-        
-        Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
+        var ClaimNombre = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("givenname")).FirstOrDefault();
+        Session["_UserName"] = ClaimNombre.Value.ToString().Substring(0, 15);
+        //Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
     }
 }
 <!DOCTYPE html>
@@ -81,11 +83,11 @@
 
     <style>
         .pata {
-            position:absolute; /*El div será ubicado con relación a la pantalla*/
-            left:0px; /*A la derecha deje un espacio de 0px*/
-            bottom:0px; /*Abajo deje un espacio de 0px*/
-            height:50px; /*alto del div*/
-            z-index:0;
+            position: absolute; /*El div será ubicado con relación a la pantalla*/
+            left: 0px; /*A la derecha deje un espacio de 0px*/
+            bottom: 0px; /*Abajo deje un espacio de 0px*/
+            height: 50px; /*alto del div*/
+            z-index: 0;
         }
     </style>
 
@@ -285,22 +287,22 @@
                 </div>
             </div>
         }
-    <div class="container body-content" @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) { <text> style="margin-top: 70px" </text> }>
-        @*Html.MvcSiteMap().SiteMapPath()*@
-        @RenderBody()
-        @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
-        {
-            <text>
-                <br />
-                <footer>
-                    <div>
-                        <div style="text-align: left;">&nbsp;</div>
-                        <div style="text-align: center;">Copyright &copy; Area Metropolitana del Valle de Aburr&aacute;. Todos los Derechos Reservados</div>
-                    </div>
-                </footer>
-            </text>
-        }
-    </div>
+        <div class="container body-content" @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) { <text> style="margin-top: 70px" </text> }>
+            @*Html.MvcSiteMap().SiteMapPath()*@
+            @RenderBody()
+            @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+            {
+                <text>
+                    <br />
+                    <footer>
+                        <div>
+                            <div style="text-align: left;">&nbsp;</div>
+                            <div style="text-align: center;">Copyright &copy; Area Metropolitana del Valle de Aburr&aacute;. Todos los Derechos Reservados</div>
+                        </div>
+                    </footer>
+                </text>
+            }
+        </div>
     </div>
     @*@Scripts.Render("~/bundles/jquery")*@
     @*@Scripts.Render("~/bundles/bootstrap")*@

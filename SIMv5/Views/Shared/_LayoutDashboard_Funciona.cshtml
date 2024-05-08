@@ -1,13 +1,16 @@
 ﻿@using Microsoft.AspNet.Identity
 @using SIM.Areas.Seguridad.Models
 @using SIM.Utilidades
+@using System.Security.Claims
 
 @{
     if (Request.IsAuthenticated && Session["_Menu"] == null)
     {
         Session["_Menu"] = Security.ObtenerHTMLMenu(ModelsToListSeguridad.GetOpcionesMenu());
-        Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
-      
+        var ClaimNombre = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("givenname")).FirstOrDefault();
+        Session["_UserName"] = ClaimNombre.Value.ToString().Substring(0, 15);
+        //Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
+
     }
 }
 <!DOCTYPE html>
@@ -43,7 +46,6 @@
     <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Principal.css?v=1.08")" />
     <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/TramitesLinea.css")" />
     <!--Fin Menu-->
-
     <!-- Include jQuery.mmenu .css files -->
     <link type="text/css" href="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/css/jquery.mmenu.all.css")" rel="stylesheet" />
     <link type="text/css" href="@Url.Content("~/Scripts/js/jquery.mmenu-5.0.4/css/extensions/jquery.mmenu.themesim.css")" rel="stylesheet" />
@@ -166,7 +168,7 @@
     </script>
 </head>
 <body>
-    <input value="@Request.IsAuthenticated" id="txtalejo" style="display:none;"/>
+    <input value="@Request.IsAuthenticated" id="txtalejo" style="display:none;" />
     @if (Request.IsAuthenticated)
     {
         if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
@@ -188,7 +190,7 @@
                     {
                         <a id="hamburger" href="#menuSIM"><span></span></a>
                     }
-                    <div class="Logos" id="Logos" @if (!Request.IsAuthenticated) { <text> style="margin-left:0px" </text>   }>
+                    <div class="Logos" id="Logos" @if (!Request.IsAuthenticated) { <text> style="margin-left:0px" </text> }>
                     </div>
                     <p id="tituloLargo">Sistema de Información Metropolitano</p>
                     <p id="tituloCorto">SIM</p>

@@ -1,13 +1,17 @@
 ﻿@using Microsoft.AspNet.Identity
 @using SIM.Areas.Seguridad.Models
 @using SIM.Utilidades
+@using System.Security.Claims
+
 
 @{
     if (Request.IsAuthenticated && Session["_Menu"] == null)
     {
         Session["_Menu"] = Security.ObtenerHTMLMenu(ModelsToListSeguridad.GetOpcionesMenu()); //JsonConvert.SerializeObject(ModelsToListSeguridad.GetOpcionesMenu());
-        Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
-      
+        var ClaimNombre = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("givenname")).FirstOrDefault();
+        Session["_UserName"] = ClaimNombre.Value.ToString().Substring(0, 15);
+        //Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
+
     }
 }
 <!DOCTYPE html>
@@ -59,7 +63,6 @@
     <!--<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.min.js")"></script>-->
     <!--<script type="text/javascript" src="@Url.Content("~/Scripts/dx.mobile.js")"></script>-->
     <!--<script type="text/javascript" src="@Url.Content("~/Scripts/localization/dx.web.es.js")"></script>-->
-
     <!--Css editados-->
     <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EstiloPagina.css")" />
     <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/normalize.css")" />
@@ -245,7 +248,7 @@
     </script>
 </head>
 <body>
-    <input value="@Request.IsAuthenticated" id="txtalejo" style="display:none;"/>
+    <input value="@Request.IsAuthenticated" id="txtalejo" style="display:none;" />
     @if (Request.IsAuthenticated)
     {
         if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
@@ -263,52 +266,53 @@
     <div>
         @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
         {
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="OffLogin" style="display:none">
-                    <div class="flecha"></div>
-                    <button type="button" class="top btn btn-default alingRight">@Html.ActionLink("Administrar Cuenta", "Manage", "Account", routeValues: new { area = "Seguridad" }, htmlAttributes: new { title = "Manage", style = "color:white" })</button>
-                    <button type="button" class="bottom btn btn-default alingRight" onclick="cerrarSesion()"> <span class="glyphicon glyphicon-off" aria-hidden="true"></span>Cerrar Sesion</button>
-                </div>
-                <div class="encabezado">
-                    @if (Request.IsAuthenticated)
-                    {
-                        <a id="hamburger" href="#menuSIM"><span></span></a>
-                    }
-                    <div class="Logos" id="Logos" @if (!Request.IsAuthenticated) { <text> style="margin-left:0px" </text>   }>
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="OffLogin" style="display:none">
+                        <div class="flecha"></div>
+                        <button type="button" class="top btn btn-default alingRight">@Html.ActionLink("Administrar Cuenta", "Manage", "Account", routeValues: new { area = "Seguridad" }, htmlAttributes: new { title = "Manage", style = "color:white" })</button>
+                        <button type="button" class="bottom btn btn-default alingRight" onclick="cerrarSesion()"> <span class="glyphicon glyphicon-off" aria-hidden="true"></span>Cerrar Sesion</button>
                     </div>
-                    <p id="tituloLargo">Sistema de Información Metropolitano</p>
-                    <p id="tituloCorto">SIM</p>
-                    @if (Request.IsAuthenticated)
-                    {
-                        using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    <div class="encabezado">
+                        @if (Request.IsAuthenticated)
                         {
-                            @Html.AntiForgeryToken()
-                            <button type="button" class="btn btn-default alingRight btnGreen Login" onclick="Sesion()"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>@Session["_UserName"]</button>
+                            <a id="hamburger" href="#menuSIM"><span></span></a>
                         }
+                        <div class="Logos" id="Logos" @if (!Request.IsAuthenticated) { <text> style="margin-left:0px" </text> }>
+                        </div>
+                        <p id="tituloLargo">Sistema de Información Metropolitano</p>
+                        <p id="tituloCorto">SIM</p>
+                        @if (Request.IsAuthenticated)
+                        {
+                            using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="button" class="btn btn-default alingRight btnGreen Login" onclick="Sesion()"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>@Session["_UserName"]</button>
+                            }
+                        }
+                    </div>
+                    @if (false)
+                    { //(!Request.IsAuthenticated) {
+                        <span class="navbar-right">
+                            @Html.Partial("_LoginPartial")
+                        </span>
                     }
                 </div>
-                @if (false)
-                { //(!Request.IsAuthenticated) {
-                    <span class="navbar-right">
-                        @Html.Partial("_LoginPartial")
-                    </span>
-                }
             </div>
-        </div>
         }
         <div class="container body-content" @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) { <text> style="margin-top: 70px" </text> }>
-        @*Html.MvcSiteMap().SiteMapPath()*@
-        @RenderBody()
-        @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu) {
-        <text>
-        <hr />
-        <footer>
-            <p>Copyright &copy; Area Metropolitana del Valle de Aburr&aacute;. Todos los Derechos Reservados</p>
-        </footer>
-        </text>
-        }
-    </div>
+            @*Html.MvcSiteMap().SiteMapPath()*@
+            @RenderBody()
+            @if (ViewBag.OcultarMenu == null || !ViewBag.OcultarMenu)
+            {
+                <text>
+                    <hr />
+                    <footer>
+                        <p>Copyright &copy; Area Metropolitana del Valle de Aburr&aacute;. Todos los Derechos Reservados</p>
+                    </footer>
+                </text>
+            }
+        </div>
     </div>
 
     @*@Scripts.Render("~/bundles/jquery")*@

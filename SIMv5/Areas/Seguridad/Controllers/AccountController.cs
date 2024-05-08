@@ -94,7 +94,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                 if (user.isAuthenticated)
                 {
-                    crearSessionTabla(model.UserName, model.Password);
+                    // crearSessionTabla(model.UserName, model.Password);
                     //Se crea la sesión del usuario
                     //ses.crearSessionTabla(model.UserName, model.Password);
                     await SignInAsync(user, model.RememberMe);

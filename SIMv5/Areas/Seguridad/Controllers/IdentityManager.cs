@@ -900,6 +900,10 @@ namespace SIM.Areas.Seguridad.Controllers
             id.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id, "http://www.w3.org/2001/XMLSchema#string"));
             // agrega claims con el login del usuario
             id.AddClaim(new Claim(ClaimTypes.Name, user.UserName, "http://www.w3.org/2001/XMLSchema#string"));
+            // agrega claim con el nombre completo del usuario 
+            id.AddClaim(new Claim(ClaimTypes.GivenName, user.FirstName.ToUpper().Trim() + ' ' + user.LastName.ToUpper().Trim(), "http://www.w3.org/2001/XMLSchema#string"));
+            // agrega claim con el correo electronico del usuario 
+            id.AddClaim(new Claim(ClaimTypes.Email, user.Email, "http://www.w3.org/2001/XMLSchema#string"));
             // agrega claim con el token del usuario
             id.AddClaim(new Claim(CustomClaimTypes.Token, user.Token, "http://www.w3.org/2001/XMLSchema#string"));
             // agrega claim con la cantidad de minutos que debe permanecer el token 
