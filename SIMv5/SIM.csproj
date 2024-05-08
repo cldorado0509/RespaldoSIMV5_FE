@@ -1337,6 +1337,11 @@
     <Compile Include="Areas\Pqrsd\Models\ListadosDTO.cs" />
     <Compile Include="Areas\Pqrsd\Models\VerificaTramiteDTO.cs" />
     <Compile Include="Areas\Pqrsd\PqrsdAreaRegistration.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\Controllers\ProcesosJudicialesApiController.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\Controllers\ProcesosJudicialesController.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\ListadoDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcesosJudicialesDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\ProcesosJudicialesAreaRegistration.cs" />
     <Compile Include="Areas\QuejasAmbientales\Controllers\QuejasApiController.cs" />
     <Compile Include="Areas\QuejasAmbientales\Controllers\QuejasController.cs" />
     <Compile Include="Areas\QuejasAmbientales\Models\CitacionQuejaDTO.cs" />
@@ -2511,6 +2516,7 @@
     <Content Include="Areas\Correspondencia\Scripts\scanner_operation.js" />
     <Content Include="Areas\Correspondencia\Scripts\VintaCfg.js" />
     <Content Include="Areas\Dashboard\Scripts\pmes.js" />
+    <Content Include="Areas\Dashboard\Scripts\pmesmapa.js" />
     <Content Include="Areas\DesarrolloEconomico\Scripts\Categoria.js" />
     <Content Include="Areas\DesarrolloEconomico\Scripts\Empresa.js" />
     <Content Include="Areas\DesarrolloEconomico\Scripts\UnidadMedida.js" />
@@ -2596,6 +2602,7 @@
     <Content Include="Areas\Poeca\Scripts\Vendor\xlsx.full.min.js" />
     <Content Include="Areas\Poeca\Scripts\Vendor\xlsx.mini.min.js" />
     <Content Include="Areas\Pqrsd\Scripts\IngresoPqrsd.js" />
+    <Content Include="Areas\ProcesosJudiciales\Scripts\procesosjudiciales.js" />
     <Content Include="Areas\QuejasAmbientales\Recursos\Plantillas\PlantillaReporteQueja.html" />
     <Content Include="Areas\QuejasAmbientales\Scripts\Quejas.js" />
     <Content Include="Areas\Reporte\Scripts\dinamico.js" />
@@ -3275,6 +3282,12 @@
     <Content Include="Areas\EncuestaExterna\Views\PMESInformativo\InformativoTercero.cshtml" />
     <Content Include="Areas\Dynamics\Plantilla\Formulario_220_2023.pdf" />
     <Content Include="Areas\Dynamics\Views\Factura\Index.cshtml" />
+    <Content Include="Areas\Dashboard\Views\PMES\_PMESDashboardSPartial.cshtml" />
+    <Content Include="Areas\Dashboard\Views\PMES\PMESMapaContainer.cshtml" />
+    <Content Include="Areas\Dashboard\Views\PMES\PMESDashboardS.cshtml" />
+    <Content Include="Areas\ProcesosJudiciales\Views\ProcesosJudiciales\Index.cshtml" />
+    <Content Include="Areas\ProcesosJudiciales\Views\web.config" />
+    <Content Include="Areas\ProcesosJudiciales\Views\_ViewStart.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -4432,6 +4445,8 @@
     <Folder Include="Areas\PlanMes\Models\" />
     <Folder Include="Areas\Poeca\Data\" />
     <Folder Include="Areas\Pqrsd\Views\Shared\" />
+    <Folder Include="Areas\ProcesosJudiciales\Data\" />
+    <Folder Include="Areas\ProcesosJudiciales\Views\Shared\" />
     <Folder Include="Areas\Reporte\Models\" />
     <Folder Include="Areas\Reporte\Views\Encuesta\" />
     <Folder Include="Areas\Reporte\Views\Shared\" />
