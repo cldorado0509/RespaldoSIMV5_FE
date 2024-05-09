@@ -84,6 +84,160 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="loadOptions"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaDemandados")]
+        public async Task<LoadResult> ConsultaDemandados(DataSourceLoadOptions loadOptions)
+        {
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
+                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
+
+
+
+                List<DemandadosDTO> demandadosDTOs = new List<DemandadosDTO>();
+                demandadosDTOs.Add(new DemandadosDTO { DemandadoId = "1", Identificacion = "343562344", Nombre = "Ana María Castaño" });
+                demandadosDTOs.Add(new DemandadosDTO { DemandadoId = "2", Identificacion = "674567889", Nombre = "Pedro Páramo A" });
+
+                SIM.Models.Response response = new SIM.Models.Response();
+                response.IsSuccess = true;
+                response.Result = demandadosDTOs;
+
+                if (!response.IsSuccess) return null;
+                if (response.IsSuccess)
+                {
+                    //dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+                    LoadResult loadResult = new LoadResult()
+                    {
+                        totalCount = 2,
+                        groupCount = 1,
+
+                    };
+
+                    loadResult.data = demandadosDTOs;
+                    return loadResult;
+                }
+                else return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loadOptions"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaDemandantes")]
+        public async Task<LoadResult> ConsultaDemandantes(DataSourceLoadOptions loadOptions)
+        {
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
+                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
+
+
+
+                List<DemandantesDTO> demandantesDTOs = new List<DemandantesDTO>();
+                demandantesDTOs.Add(new DemandantesDTO { demantanteId = "1", Identificacion = "343562344", Nombre = "Ana María Castaño" });
+                demandantesDTOs.Add(new DemandantesDTO { demantanteId = "2", Identificacion = "674567889", Nombre = "Pedro Páramo A" });
+
+                SIM.Models.Response response = new SIM.Models.Response();
+                response.IsSuccess = true;
+                response.Result = demandantesDTOs;
+
+                if (!response.IsSuccess) return null;
+                if (response.IsSuccess)
+                {
+                    //dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+                    LoadResult loadResult = new LoadResult()
+                    {
+                        totalCount = 2,
+                        groupCount = 1,
+
+                    };
+
+                    loadResult.data = demandantesDTOs;
+                    return loadResult;
+                }
+                else return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loadOptions"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaActuaciones")]
+        public async Task<LoadResult> ConsultaActuaciones(DataSourceLoadOptions loadOptions)
+        {
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
+                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
+
+
+
+                List<ActuacionDTO> actuacionesDTOs = new List<ActuacionDTO>();
+                actuacionesDTOs.Add(new ActuacionDTO { ActuacionId = 1, Etapa = "Radicación", Conciliacion = true, ValorConciliado = 23456789, Finalizado = false, ComiteVerificacion = true, Desacato = false });
+                actuacionesDTOs.Add(new ActuacionDTO { ActuacionId = 2, Etapa = "Rechazo", Conciliacion = false, ValorConciliado = 0, Finalizado = false, ComiteVerificacion = true, Desacato = false });
+                actuacionesDTOs.Add(new ActuacionDTO { ActuacionId = 3, Etapa = "Audiencia Inicial", Conciliacion = false, ValorConciliado = 0, Finalizado = false, ComiteVerificacion = true, Desacato = false });
+
+                SIM.Models.Response response = new SIM.Models.Response();
+                response.IsSuccess = true;
+                response.Result = actuacionesDTOs;
+
+                if (!response.IsSuccess) return null;
+                if (response.IsSuccess)
+                {
+                    //dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+                    LoadResult loadResult = new LoadResult()
+                    {
+                        totalCount = 2,
+                        groupCount = 1,
+
+                    };
+
+                    loadResult.data = actuacionesDTOs;
+                    return loadResult;
+                }
+                else return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetJurisdicciones")]

@@ -22,10 +22,6 @@ $(document).ready(function () {
         },
         {
             id: 4,
-            text: 'PARTES',
-        },
-        {
-            id: 5,
             text: 'PRETENSIONES',
         }
     ];
@@ -259,6 +255,358 @@ $(document).ready(function () {
                 $('#loadPanel').dxLoadPanel('instance').hide();
             }
         });
+
+    $("#grdDemandantes").dxDataGrid({
+        dataSource: grdDemandantesDataSource,
+        allowColumnResizing: true,
+        height: '100%',
+        with: '150px',
+        loadPanel: { text: 'Cargando Datos...' },
+        paging: {
+            enabled: true,
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20, 50]
+        },
+        filterRow: {
+            visible: true,
+            applyFilter: 'auto'
+        },
+        groupPanel: {
+            visible: false,
+            allowColumnDragging: false,
+        },
+        editing: {
+            allowUpdating: false,
+            allowDeleting: false,
+            allowAdding: false
+        },
+        selection: {
+            mode: 'single'
+        },
+        columns: [
+            {
+                dataField: "demantanteId",
+                dataType: 'number',
+                visible: false
+            }, {
+                dataField: 'identificacion',
+                width: '20%',
+                caption: 'Identificación',
+                dataType: 'string',
+            }, {
+                dataField: 'nombre',
+                width: '20%',
+                caption: 'Nombre/Razón social',
+                dataType: 'string',
+            }, {
+                caption: '',
+                width: '6%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'edit',
+                            type: 'success',
+                            hint: 'Editar Proceso Judicial',
+                            onClick: function (params) {
+                             
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            }
+        ]
+    });
+
+    $("#grdDemandados").dxDataGrid({
+        dataSource: grdDemandadosDataSource,
+        allowColumnResizing: true,
+        height: '100%',
+        with: '150px',
+        loadPanel: { text: 'Cargando Datos...' },
+        paging: {
+            enabled: true,
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20, 50]
+        },
+        filterRow: {
+            visible: true,
+            applyFilter: 'auto'
+        },
+        groupPanel: {
+            visible: false,
+            allowColumnDragging: false,
+        },
+        editing: {
+            allowUpdating: false,
+            allowDeleting: false,
+            allowAdding: false
+        },
+        selection: {
+            mode: 'single'
+        },
+        columns: [
+            {
+                dataField: "demandadoId",
+                dataType: 'number',
+                visible: false
+            }, {
+                dataField: 'Identificacion',
+                width: '20%',
+                caption: 'Identificación',
+                dataType: 'string',
+            }, {
+                dataField: 'nombre',
+                width: '20%',
+                caption: 'Nombre/Razón social',
+                dataType: 'string',
+            }, {
+                caption: '',
+                width: '6%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'edit',
+                            type: 'success',
+                            hint: 'Editar Proceso Judicial',
+                            onClick: function (params) {
+
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            }
+        ]
+    });
+
+    $("#grdConvocantes").dxDataGrid({
+        dataSource: grdDemandantesDataSource,
+        allowColumnResizing: true,
+        height: '100%',
+        with: '150px',
+        loadPanel: { text: 'Cargando Datos...' },
+        paging: {
+            enabled: true,
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20, 50]
+        },
+        filterRow: {
+            visible: true,
+            applyFilter: 'auto'
+        },
+        groupPanel: {
+            visible: false,
+            allowColumnDragging: false,
+        },
+        editing: {
+            allowUpdating: false,
+            allowDeleting: false,
+            allowAdding: false
+        },
+        selection: {
+            mode: 'single'
+        },
+        columns: [
+            {
+                dataField: "demantanteId",
+                dataType: 'number',
+                visible: false
+            }, {
+                dataField: 'identificacion',
+                width: '20%',
+                caption: 'Identificación',
+                dataType: 'string',
+            }, {
+                dataField: 'nombre',
+                width: '20%',
+                caption: 'Nombre/Razón social',
+                dataType: 'string',
+            }, {
+                caption: '',
+                width: '6%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'edit',
+                            type: 'success',
+                            hint: 'Editar Proceso Judicial',
+                            onClick: function (params) {
+
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            }
+        ]
+    });
+
+    $("#grdConvocados").dxDataGrid({
+        dataSource: grdDemandadosDataSource,
+        allowColumnResizing: true,
+        height: '100%',
+        with: '150px',
+        loadPanel: { text: 'Cargando Datos...' },
+        paging: {
+            enabled: true,
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20, 50]
+        },
+        filterRow: {
+            visible: true,
+            applyFilter: 'auto'
+        },
+        groupPanel: {
+            visible: false,
+            allowColumnDragging: false,
+        },
+        editing: {
+            allowUpdating: false,
+            allowDeleting: false,
+            allowAdding: false
+        },
+        selection: {
+            mode: 'single'
+        },
+        columns: [
+            {
+                dataField: "demandadoId",
+                dataType: 'number',
+                visible: false
+            }, {
+                dataField: 'Identificacion',
+                width: '20%',
+                caption: 'Identificación',
+                dataType: 'string',
+            }, {
+                dataField: 'nombre',
+                width: '20%',
+                caption: 'Nombre/Razón social',
+                dataType: 'string',
+            }, {
+                caption: '',
+                width: '6%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'edit',
+                            type: 'success',
+                            hint: 'Editar Proceso Judicial',
+                            onClick: function (params) {
+
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            }
+        ]
+    });
+
+    $("#grdActuacion").dxDataGrid({
+        dataSource: grdActuacionesDataSource,
+        allowColumnResizing: true,
+        height: '100%',
+        with: '150px',
+        loadPanel: { text: 'Cargando Datos...' },
+        paging: {
+            enabled: true,
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20, 50]
+        },
+        filterRow: {
+            visible: true,
+            applyFilter: 'auto'
+        },
+        groupPanel: {
+            visible: false,
+            allowColumnDragging: false,
+        },
+        editing: {
+            allowUpdating: false,
+            allowDeleting: false,
+            allowAdding: false
+        },
+        selection: {
+            mode: 'single'
+        },
+        columns: [
+            {
+                dataField: "actuacionId",
+                dataType: 'number',
+                visible: false
+            }, {
+                dataField: 'etapa',
+                width: '10%',
+                caption: 'Etapa',
+                dataType: 'string',
+            }, {
+                dataField: 'conciliacion',
+                width: '10%',
+                caption: 'Conciliación',
+                dataType: 'string',
+            }
+            , {
+                dataField: 'valorConciliado',
+                width: '10%',
+                caption: 'Valor conciliado',
+                dataType: 'string',
+            }, {
+                dataField: 'finalizado',
+                width: '10%',
+                caption: 'Finalizado',
+                dataType: 'boolean',
+            }, {
+                dataField: 'fechaFinalizacion',
+                width: '10%',
+                caption: 'Fecha Finalización',
+                dataType: 'datetime',
+            }, {
+                dataField: 'comiteVerificacion',
+                width: '10%',
+                caption: 'Comité Verificación',
+                dataType: 'boolean',
+            },{
+                dataField: 'desacato',
+                width: '10%',
+                caption: 'Desactato',
+                dataType: 'boolean',
+            }
+            , {
+                caption: '',
+                width: '10%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'edit',
+                            type: 'success',
+                            hint: 'Editar Actuación',
+                            onClick: function (params) {
+
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            }
+        ]
+    });
    
 });
 
@@ -420,6 +768,22 @@ function LimpiarCamposDetalle() {
         placeholder: '[Valor económico del proceso]',
         value: null
     });
+
+    $("#recomendacionAbogado").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 70
+    });
+
+    $('#fechaComiteConciliacion').dxDateBox({
+        placeholder: '[Fecha Comité de conciliación]',
+        value: null
+    });
+
+    $('#fechaAudiencia').dxDateBox({
+        placeholder: '[Fecha de Audiencia]',
+        value: null
+    });
     
 
 }
@@ -441,6 +805,7 @@ function CargarCamposDetalle(id) {
         displayExpr: "valor",
         valueExpr: "id",
     });
+
     $('#jurisdiccion').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -458,6 +823,7 @@ function CargarCamposDetalle(id) {
         valueExpr: "id",
         searchEnabled: true
     });
+
     $('#medioControl').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -718,6 +1084,121 @@ var grdProcesosJudicialesDataSource = new DevExpress.data.CustomStore({
         return d.promise();
     }
 });
+
+var grdDemandantesDataSource = new DevExpress.data.CustomStore({
+    key: "demantanteId",
+    load: function (loadOptions) {
+        var d = $.Deferred();
+        var params = {};
+        [
+            "filter",
+            "group",
+            "groupSummary",
+            "parentIds",
+            "requireGroupCount",
+            "requireTotalCount",
+            "searchExpr",
+            "searchOperation",
+            "searchValue",
+            "select",
+            "sort",
+            "skip",
+            "take",
+            "totalSummary",
+            "userData"
+        ].forEach(function (i) {
+            if (i in loadOptions && isNotEmpty(loadOptions[i])) {
+                params[i] = JSON.stringify(loadOptions[i]);
+            }
+        });
+        $.getJSON($('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ConsultaDemandantes', params)
+            .done(function (response) {
+                d.resolve(response.data, {
+                    totalCount: response.totalCount
+                });
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+            });
+        return d.promise();
+    }
+});
+
+var grdDemandadosDataSource = new DevExpress.data.CustomStore({
+    key: "demandadoId",
+    load: function (loadOptions) {
+        var d = $.Deferred();
+        var params = {};
+        [
+            "filter",
+            "group",
+            "groupSummary",
+            "parentIds",
+            "requireGroupCount",
+            "requireTotalCount",
+            "searchExpr",
+            "searchOperation",
+            "searchValue",
+            "select",
+            "sort",
+            "skip",
+            "take",
+            "totalSummary",
+            "userData"
+        ].forEach(function (i) {
+            if (i in loadOptions && isNotEmpty(loadOptions[i])) {
+                params[i] = JSON.stringify(loadOptions[i]);
+            }
+        });
+        $.getJSON($('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ConsultaDemandados', params)
+            .done(function (response) {
+                d.resolve(response.data, {
+                    totalCount: response.totalCount
+                });
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+            });
+        return d.promise();
+    }
+});
+
+var grdActuacionesDataSource = new DevExpress.data.CustomStore({
+    key: "actuacionId",
+    load: function (loadOptions) {
+        var d = $.Deferred();
+        var params = {};
+        [
+            "filter",
+            "group",
+            "groupSummary",
+            "parentIds",
+            "requireGroupCount",
+            "requireTotalCount",
+            "searchExpr",
+            "searchOperation",
+            "searchValue",
+            "select",
+            "sort",
+            "skip",
+            "take",
+            "totalSummary",
+            "userData"
+        ].forEach(function (i) {
+            if (i in loadOptions && isNotEmpty(loadOptions[i])) {
+                params[i] = JSON.stringify(loadOptions[i]);
+            }
+        });
+        $.getJSON($('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ConsultaActuaciones', params)
+            .done(function (response) {
+                d.resolve(response.data, {
+                    totalCount: response.totalCount
+                });
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+            });
+        return d.promise();
+    }
+});
+
 
 function isNotEmpty(value) {
     return value !== undefined && value !== null && value !== "";
