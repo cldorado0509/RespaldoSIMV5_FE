@@ -57,9 +57,94 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-5">
                     <div class="dx-field">
-                        <div class="dx-field-label">Fecha de Radicado</div>
+                        <div class="dx-field-label">Fecha de Radicado Solicitud</div>
                         <div class="dx-field-value">
                             <div id="fechaRadicado"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Fecha de Notificación</div>
+                        <div class="dx-field-value">
+                            <div id="fechaNotificacion"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Procuraduría</div>
+                        <div class="dx-field-value">
+                            <div id="cboProcuraduria"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Comvocantes</div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Convocados</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div id="grdConvocantes"></div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <div id="grdConvocados"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Recomendación del abogado</div>
+                     </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-11">
+                    <div class="dx-field">
+                        <div id="recomendacionAbogado"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Ficha Comité de conciliación</div>
+                        <div class="dx-field-value">
+                            <div id="txtFichaComite"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Fecha comité de conciliación</div>
+                        <div class="dx-field-value">
+                            <div id="fechaComiteConciliacion"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="dx-field">
+                        <div class="dx-field-label">Fecha de Audiencia</div>
+                        <div class="dx-field-value">
+                            <div id="fechaAudiencia"></div>
                         </div>
                     </div>
                 </div>
@@ -87,36 +172,26 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-md-5">
                         <div class="dx-field">
-                            <div class="dx-field-label">Demandante</div>
+                            <div class="dx-field-label">Demandantes</div>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-5">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Demandados</div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-11">
-                        <div class="dx-field">
-                            <div>
-                                <div id="demandante"></div>
-                            </div>
-                        </div>
+                    <div class="col-md-5">
+                        <div id="grdDemandantes"></div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-11">
-                        <div class="dx-field">
-                            <div class="dx-field-label">Demandado</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-11">
-                        <div class="dx-field">
-                            <div>
-                                <div id="demandado"></div>
-                            </div>
-                        </div>
-                    </div>
+                     <div class="col-md-1"></div>
+                     <div class="col-md-5">
+                        <div id="grdDemandados"></div>
+                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-5">
@@ -260,17 +335,6 @@
                 </div>
                 <div style="height: 95%">
                     <div id="grdActuacion"></div>
-                </div>
-            </div>
-        </div>
-        <div id="tab05" style="display: none">
-            <div id="pnlPartes">
-                <div class="row" style="width: 100%; height:5%">
-                    <div class="col-md-7"></div>
-                    <div class="col-md-5"><div id="agregarParte"></div></div>
-                </div>
-                <div style="height: 95%">
-                    <div id="grdParte"></div>
                 </div>
             </div>
         </div>

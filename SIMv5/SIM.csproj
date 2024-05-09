@@ -1339,6 +1339,9 @@
     <Compile Include="Areas\Pqrsd\PqrsdAreaRegistration.cs" />
     <Compile Include="Areas\ProcesosJudiciales\Controllers\ProcesosJudicialesApiController.cs" />
     <Compile Include="Areas\ProcesosJudiciales\Controllers\ProcesosJudicialesController.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\ActuacionDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\DemandadosDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\DemandantesDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ListadoDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcesosJudicialesDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\ProcesosJudicialesAreaRegistration.cs" />
