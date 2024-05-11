@@ -1,8 +1,7 @@
 ﻿using DevExpress.Pdf;
 using DevExpress.Spreadsheet;
-using MailKit.Security;
+using DevExpress.Spreadsheet.Export;
 using Microsoft.AspNet.Identity;
-using MimeKit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
@@ -432,7 +431,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 if (!SIM.Utilidades.Tramites.AdicionaDocRadicadoTramite(CodTramite, IdRadicado, documento, _Indices))
                                 {
                                     _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
-                                    fila["Comentarios"] = $"El documento no se pudo generar ya ocurrió un problema con el documento";
+                                    fila["Comentarios"] = $"El documento no se pudo generar ya que ocurrió un problema con el documento";
                                 }
                                 else
                                 {
@@ -446,7 +445,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var _email = fila["EMAIL"].ToString();
                                         if (_email.Length > 0)
                                         {
-                                            if (!EnviarMailSIM(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad).Result)
+                                            if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
                                             {
                                                 fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
                                             }
@@ -1127,6 +1126,31 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return dt;
         }
 
+        private DataTable LeeExcelToDataTable(string _ruta)
+        {
+            DataTable dt = new DataTable();
+            if (_ruta != null)
+            {
+                try
+                {
+
+                    Workbook wbook = new Workbook();
+                    wbook.LoadDocument(_ruta, DevExpress.Spreadsheet.DocumentFormat.OpenXml);
+                    Worksheet worksheet = wbook.Worksheets[0];
+                    Range range = worksheet.GetDataRange();
+
+                    dt = worksheet.CreateDataTable(range, true);
+                    DataTableExporter exporter = worksheet.CreateDataTableExporter(range, dt, true);
+                    exporter.Options.ConvertEmptyCells = false;
+                    exporter.Options.DefaultCellValueToColumnTypeConverter.EmptyCellValue =
+                    exporter.Options.DefaultCellValueToColumnTypeConverter.SkipErrorValues = true;
+                    exporter.Export();
+                }
+                catch (Exception ex) { }
+            }
+            return dt;
+        }
+
         private DataTable LeeArchivoExcel(string Identificador)
         {
             DataTable dt = new DataTable();
@@ -1332,35 +1356,19 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 body = body.Replace("[Destinatario]", para);
                 body = body.Replace("[Radicado]", radicado);
                 body = body.Replace("[FechaRad]", fechaRad);
-                var correo = new MimeMessage();
-
-                if (email.Contains(";"))
-                {
-                    string[] _mails = email.Split(';');
-                    foreach (string _para in _mails) correo.To.Add(MailboxAddress.Parse(_para));
-                }
-                else correo.To.Add(MailboxAddress.Parse(email));
-                correo.Subject = asunto != "" ? asunto : "Sin asunto";
-                var bodyBuilder = new BodyBuilder();
-                bodyBuilder.HtmlBody = body;
-                correo.Priority = MessagePriority.Urgent;
+                string _NombreArchivo = "COD_" + radicado + ".pdf";
+                asunto = asunto != "" ? asunto : "Sin asunto";
                 if (documento.Length > 0)
                 {
                     MemoryStream _anexo = new MemoryStream(documento);
-                    _anexo.Seek(0, SeekOrigin.Begin);
-                    //Attachment _File = new Attachment(_anexo, "COD_" + radicado + ".pdf", "application/pdf");
-                    //correo.Attachments.Add(_File);
-                    bodyBuilder.Attachments.Add("Receipt.pdf", _anexo);
+                    try
+                    {
+                        SIM.Utilidades.EmailMK.EnviarEmail(email, asunto, body, _anexo, _NombreArchivo);
+                        return true;
+                    }
+                    catch { return false; }
                 }
-                correo.Body = bodyBuilder.ToMessageBody();
-                using (var smtp = new MailKit.Net.Smtp.SmtpClient())
-                {
-                    smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-                    smtp.Authenticate("codelectronicas@metropol.gov.co", "Area2020");
-                    smtp.Send(correo);
-                    smtp.Disconnect(true);
-                    return true;
-                }
+                return false;
             }
             else return false;
         }

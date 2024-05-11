@@ -2615,6 +2615,7 @@
     <Content Include="Areas\Retributivas\Scripts\Reportes.js" />
     <Content Include="Areas\Retributivas\Views\Reportes\ComunicacionOficialRecibida.html" />
     <Content Include="Areas\Seguridad\Scripts\activarUsuarios.js" />
+    <Content Include="Areas\Seguridad\Scripts\Usuarios.js" />
     <Content Include="Areas\Tramites\Css\programadoractuaciones.css" />
     <Content Include="Areas\Tramites\Scripts\anulacion.js" />
     <Content Include="Areas\Tramites\Scripts\anulaciondocumento.js" />

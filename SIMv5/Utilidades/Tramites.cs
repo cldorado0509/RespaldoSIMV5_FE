@@ -515,7 +515,10 @@
                 var Codproceso = dbSIM.TBTRAMITE.Where(w => w.CODTRAMITE == CodTramite).Select(s => s.CODPROCESO).FirstOrDefault();
                 if (Codproceso > 0)
                 {
-                    var CodDocumento = dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == CodTramite).Select(s => s.CODDOCUMENTO).Max() + 1;
+                    decimal _Max = 0;
+                    var _Docs = dbSIM.TBTRAMITEDOCUMENTO.Where(f => f.CODTRAMITE == CodTramite).Select(s => s.CODDOCUMENTO).ToList();
+                    if (_Docs != null && _Docs.Count > 0) _Max = _Docs.Max(m => m);
+                    var CodDocumento = _Max > 0 ? _Max + 1 : 1;
                     var Ruta = dbSIM.TBRUTAPROCESO.Where(w => w.CODPROCESO == Codproceso).Select(s => s.PATH).FirstOrDefault();
                     var RutaDoc = Ruta += "\\" + SIM.Utilidades.Archivos.GetRutaDocumento((ulong)CodTramite, 100);
                     if (!File.Exists(Ruta)) Directory.CreateDirectory(Ruta);

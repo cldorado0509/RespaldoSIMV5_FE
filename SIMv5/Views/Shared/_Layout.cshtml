@@ -11,7 +11,7 @@
             Session["_Menu"] = Security.ObtenerHTMLMenu(ModelsToListSeguridad.GetOpcionesMenu()); //JsonConvert.SerializeObject(ModelsToListSeguridad.GetOpcionesMenu());
         }
         var ClaimNombre = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("givenname")).FirstOrDefault();
-        Session["_UserName"] = ClaimNombre.Value.ToString().Substring(0, 15);
+        Session["_UserName"] = ClaimNombre.Value.ToString().Length > 15 ? ClaimNombre.Value.ToString().Substring(0, 15) : ClaimNombre.Value.ToString();
         //Session["_UserName"] = ModelsToListSeguridad.ObtenerNombreUsuario(User.Identity.GetUserId());
     }
 }

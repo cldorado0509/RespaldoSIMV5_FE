@@ -563,5 +563,68 @@ namespace SIM.Utilidades
                                                select f.CODFUNCIONARIO).FirstOrDefault());
             return funcionario;
         }
+
+        /// <summary>
+        /// Retorna el objeto con los permisos del usuario especifico del formulario especificado
+        /// </summary>
+        /// <param name="Area"></param>
+        /// <param name="Controller"></param>
+        /// <param name="Action"></param>
+        /// <param name="IdUsuario"></param>
+        /// <returns></returns>
+        public static PermisosRolModel PermisosFormulario(string Area, string Controller, string Action, decimal IdUsuario)
+        {
+            if (string.IsNullOrEmpty(Area) || string.IsNullOrEmpty(Controller) || IdUsuario <= 0) return null;
+            EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+
+            PermisosRolModel permisosRolModel = new PermisosRolModel
+            {
+                IdRol = 0,
+                CanRead = false,
+                CanInsert = false,
+                CanUpdate = false,
+                CanDelete = false,
+                CanPrint = false,
+            };
+            var Formas = dbSIM.MENU.Where(w => w.S_CONTROLADOR.ToUpper() == Controller.ToUpper()).Select(s => new { s.ID_FORMA, s.S_RUTA, s.S_VERSION }).ToList();
+            int IdForma = 0;
+            if (Formas.Count > 0)
+            {
+                foreach (var f in Formas)
+                {
+                    string[] partes = f.S_RUTA.Split('/');
+                    if (partes.Length > 3)
+                    {
+                        if (partes[1].ToUpper() == Area.ToUpper() && partes[2].ToUpper() == Controller.ToUpper() && partes[3].ToUpper() == Action.ToUpper() && f.S_VERSION == "5") IdForma = f.ID_FORMA;
+                    }
+                    else if (partes[1].ToUpper() == Area.ToUpper() && partes[2].ToUpper() == Controller.ToUpper() && f.S_VERSION == "5") IdForma = f.ID_FORMA;
+                }
+            }
+
+            if (IdForma > 0)
+            {
+                var rolesForma = dbSIM.ROL_FORMA.Where(f => f.ID_FORMA == IdForma).ToList();
+                if (rolesForma != null && rolesForma.Count > 0)
+                {
+                    foreach (var role in rolesForma)
+                    {
+                        var usuarioRol = dbSIM.USUARIO_ROL.Where(f => f.ID_USUARIO == IdUsuario && f.ID_ROL == role.ID_ROL).FirstOrDefault();
+                        if (usuarioRol != null)
+                        {
+                            var permisosRolForma = dbSIM.ROL_FORMA.Where(f => f.ID_ROL == role.ID_ROL && f.ID_FORMA == IdForma).FirstOrDefault();
+                            if (permisosRolForma != null)
+                            {
+                                if (permisosRolForma.S_BUSCAR == "1") permisosRolModel.CanRead = true;
+                                if (permisosRolForma.S_NUEVO == "1") permisosRolModel.CanInsert = true;
+                                if (permisosRolForma.S_EDITAR == "1") permisosRolModel.CanUpdate = true;
+                                if (permisosRolForma.S_ELIMINAR == "1") permisosRolModel.CanDelete = true;
+                                if (permisosRolForma.S_BUSCAR == "1") permisosRolModel.CanPrint = true;
+                            }
+                        }
+                    }
+                }
+            }
+            return permisosRolModel;
+        }
     }
 }

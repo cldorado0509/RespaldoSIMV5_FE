@@ -77,6 +77,7 @@ $(document).ready(function () {
                 alignment: 'center',
                 caption: 'Editar',
                 width: '60',
+                visible: canEdit,
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'edit',
@@ -116,6 +117,7 @@ $(document).ready(function () {
                 alignment: 'center',
                 caption: 'Asociar tercero',
                 width: '60',
+                visible: canInsert && canEdit,
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'tags',
@@ -192,7 +194,8 @@ $(document).ready(function () {
         valueExpr: "id",
         searchEnabled: true,
         noDataText: "No hay datos para mostrar",
-        placeholder: "Seleccione"
+        placeholder: "Seleccione",
+        disabled: !canInsert,
     }).dxSelectBox("instance");
 
     var Funcionarios = $("#cboFuncionario").dxSelectBox({
@@ -209,12 +212,14 @@ $(document).ready(function () {
         valueExpr: "id",
         searchEnabled: true,
         noDataText: "No hay datos para mostrar",
-        placeholder: "Seleccione"
+        placeholder: "Seleccione",
+        disabled: !canInsert
     }).dxSelectBox("instance");
 
     var Nombres = $("#txtNombres").dxTextBox({
         placeholder: "Ingrese el nombre del usuario...",
-        value: ""
+        value: "",
+        disabled: !canInsert
         }).dxValidator({
             validationGroup: "UsuarioGroup",
             validationRules: [{
@@ -226,6 +231,7 @@ $(document).ready(function () {
     var Apellidos = $("#txtApellidos").dxTextBox({
         placeholder: "Ingrese el apellido del usuario...",
         value: "",
+        disabled: !canInsert
     }).dxValidator({
         validationGroup: "UsuarioGroup",
         validationRules: [{
@@ -237,6 +243,7 @@ $(document).ready(function () {
     var Login = $("#txtLogin").dxTextBox({
         placeholder: "Ingrese el usuario/login...",
         value: "",
+        disabled: !canInsert,
         onFocusIn: function () {
             if (!editar)  $("#lblLogin").text("");
         },
@@ -265,7 +272,8 @@ $(document).ready(function () {
 
     var Correo = $("#txtMail").dxTextBox({
         placeholder: "Ingrese el correo electrónico...",
-        value: ""
+        value: "",
+        disabled: !canInsert,
     }).dxValidator({
         validationRules: [{ type: 'email', message: 'El formato del correo electrónico no es válido' }]
     }).dxTextBox("instance");
@@ -352,13 +360,15 @@ $(document).ready(function () {
     var chkTipoUsr = $("#chkTipoUsr").dxCheckBox({
         value: false,
         width: 200,
-        text: "Superusuario"
+        text: "Superusuario",
+        disabled: !canInsert,
     }).dxCheckBox("instance");
 
     var chkEstado = $("#chkEstado").dxCheckBox({
         value: false,
         width: 200,
-        text: "Activo"
+        text: "Activo",
+        disabled: !canInsert,
     }).dxCheckBox("instance");
 
     $("#btnNuevoUsr").dxButton({
@@ -367,6 +377,7 @@ $(document).ready(function () {
         type: "success",
         width: 200,
         icon: 'user',
+        visible: canInsert,
         onClick: function () {
             editar = false;
             IdUsuario = -1;
@@ -393,6 +404,7 @@ $(document).ready(function () {
         type: "success",
         width: 200,
         icon: 'save',
+        visible: canInsert || canEdit,
         onClick: function () {
             DevExpress.validationEngine.validateGroup("UsuarioGroup");
             var params = {
@@ -404,8 +416,8 @@ $(document).ready(function () {
                 Nombres: Nombres.option("value"),
                 Apellidos: Apellidos.option("value"),
                 Email: Correo.option("value") ? Correo.option("value") : "" ,
-                Login: !editar ? Login.option("value") : "",
-                Password: !editar ? Password.option("value") : "",
+                Login: Login.option("value"),
+                Password: Password.option("value") != null ? Password.option("value") : "",
                 FechaRegistro: new Date().toISOString(),
                 FechaVence: fecVence.option("value"),
                 Tipo: chkTipoUsr.option("value") ? "S": "G",
@@ -528,6 +540,7 @@ $(document).ready(function () {
         icon: "search",
         type: "default",
         width: "170",
+        enabled: canRead && canInsert && canEdit,
         onClick: function () {           
             if (txtDocumento.option("value").length > 0 || txtNombre.option("value").length > 0) {
                 filtroTercero = txtDocumento.option("value") + ";" + txtNombre.option("value");

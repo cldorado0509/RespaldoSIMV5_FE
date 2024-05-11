@@ -1,9 +1,11 @@
 ﻿using DevExpress.Web.Mvc;
+using SIM.Areas.Seguridad.Models;
 using SIM.Data;
 using SIM.Data.Seguridad;
 using System;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Web.Mvc;
 
 namespace SIM.Areas.Seguridad.Controllers
@@ -25,7 +27,14 @@ namespace SIM.Areas.Seguridad.Controllers
         [Authorize(Roles = "VUSUARIO")]
         public ActionResult Index()
         {
-            return View();
+            string actionName = RouteData.Values["action"].ToString();
+            string controllerName = RouteData.Values["controller"].ToString();
+            string areaName = RouteData.DataTokens["area"].ToString();
+            var _IdUsuario = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("nameidentifier")).FirstOrDefault();
+            decimal IdUsuario = 0;
+            decimal.TryParse(_IdUsuario.Value, out IdUsuario);
+            PermisosRolModel permisos = SIM.Utilidades.Security.PermisosFormulario(areaName, controllerName, actionName, IdUsuario);
+            return View(permisos);
         }
 
         /// <summary>
