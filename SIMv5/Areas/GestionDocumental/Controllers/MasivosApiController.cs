@@ -177,7 +177,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 BinaryReader b = new BinaryReader(File.InputStream);
                                 byte[] FileData = b.ReadBytes(File.ContentLength);
                                 SIM.Utilidades.Archivos.GrabaMemoryStream(new MemoryStream(FileData), _Excel.FullName);
-                                var ExcelData = LeeExcel(_Excel.FullName);
+                                var ExcelData = LeeExcelToDataTable(_Excel.FullName);
                                 if (ExcelData != null && ExcelData.Rows.Count >= 5)
                                 {
                                     archivoDTO.IdSolicitud = IdSolicitud;
@@ -247,7 +247,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 }
                 if (_ExcelEncontrado != "")
                 {
-                    dt = LeeExcel(_ExcelEncontrado);
+                    dt = LeeExcelToDataTable(_ExcelEncontrado);
                 }
             }
             return JArray.FromObject(dt, Js);
@@ -298,13 +298,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         // FirmarPlantilla(ref _docPdf, Firmas);
                         foreach (DataRow fila in dt.Rows)
                         {
-                            if (Masiva.CODTRAMITE == "")
+                            decimal CodTramite = (Masiva.CODTRAMITE != "" && Masiva.CODTRAMITE != null) ? decimal.Parse(Masiva.CODTRAMITE) : decimal.Parse(fila["CODTRAMITE"].ToString());
+                            if (!SIM.Utilidades.Tramites.ExisteTramite(CodTramite))
                             {
-                                if (!SIM.Utilidades.Tramites.ExisteTramite(decimal.Parse(fila["CODTRAMITE"].ToString())))
-                                {
-                                    _continua = false;
-                                    _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya que el Codtramite {fila["CODTRAMITE"]} no se encontró <br />";
-                                }
+                                _continua = false;
+                                _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya que el Codtramite {CodTramite} no se encontró <br />";
                             }
                             else _continua = true;
                             if (_continua)
@@ -386,7 +384,6 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     IdRadicado = radicadoGenerado.IdRadicado;
                                     _doc.Pages[0] = _pag;
                                 }
-                                decimal CodTramite = (Masiva.CODTRAMITE != "" && Masiva.CODTRAMITE != null) ? decimal.Parse(Masiva.CODTRAMITE) : decimal.Parse(fila["CODTRAMITE"].ToString());
                                 List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
                                 IndicesDocumento _Index;
                                 var _asunto = "";
@@ -915,7 +912,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         _masiva.IDSOLICITUD = datos.IdSolicitud;
                         _masiva.S_VALIDADO = "0";
                         _masiva.S_REALIZADO = "0";
-                        _masiva.CANTIDAD_FILAS = LeeExcel(Excel).Rows.Count;
+                        _masiva.CANTIDAD_FILAS = LeeExcelToDataTable(Excel).Rows.Count;
                         _masiva.D_FECHA = DateTime.Now;
                         _masiva.S_TEMA = datos.TemaMasivo;
                         _masiva.S_ENVIACORREO = datos.EnviarEmail ? "1" : "0";
@@ -1141,7 +1138,21 @@ namespace SIM.Areas.GestionDocumental.Controllers
 
                     dt = worksheet.CreateDataTable(range, true);
                     DataTableExporter exporter = worksheet.CreateDataTableExporter(range, dt, true);
-                    exporter.Options.ConvertEmptyCells = false;
+                    for (int col = 0; col < range.ColumnCount; col++)
+                    {
+                        CellValueType cellType = range[0, col].Value.Type;
+                        for (int r = 1; r < range.RowCount; r++)
+                        {
+                            if (cellType != range[r, col].Value.Type)
+                            {
+                                dt.Columns[col].DataType = typeof(string);
+                                break;
+                            }
+                        }
+                    }
+                    exporter.CellValueConversionError += exporter_CellValueConversionError;
+                    exporter.Options.ConvertEmptyCells = true;
+                    exporter.Options.SkipEmptyRows = true;
                     exporter.Options.DefaultCellValueToColumnTypeConverter.EmptyCellValue =
                     exporter.Options.DefaultCellValueToColumnTypeConverter.SkipErrorValues = true;
                     exporter.Export();
@@ -1151,6 +1162,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
             return dt;
         }
 
+        void exporter_CellValueConversionError(object sender, CellValueConversionErrorEventArgs e)
+        {
+            e.DataTableValue = null;
+            e.Action = DataTableExporterAction.Continue;
+        }
         private DataTable LeeArchivoExcel(string Identificador)
         {
             DataTable dt = new DataTable();
@@ -1166,7 +1182,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 }
                 if (_ExcelEncontrado != "")
                 {
-                    dt = LeeExcel(_ExcelEncontrado);
+                    dt = LeeExcelToDataTable(_ExcelEncontrado);
                 }
             }
             return dt;
@@ -1195,7 +1211,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
             if (_ExcelEncontrado != "")
             {
-                dtExcel = LeeExcel(_ExcelEncontrado);
+                dtExcel = LeeExcelToDataTable(_ExcelEncontrado);
             }
             if (dtExcel.Rows.Count > 0)
             {

@@ -745,6 +745,13 @@ $(document).ready(function () {
                         DevExpress.ui.dialog.alert('La cantidad de firmas es inferior a las etiquetas de firmas de la plantilla!');
                         return;
                     }
+                    if (_Tramite == "") {
+                        var columns = gridExcel.option("columns");
+                        if (!columns.some(item => item.toLowerCase() == 'codtramite'.toLowerCase())) {
+                            DevExpress.ui.dialog.alert("El proceso de envío masivo de correspondencia requiere de un código de trámite para asociar los documentos, ya se como columna del archivo de Excel o un código de trámite para todo el proceso!");
+                            return;
+                        }
+                    }
                     params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: true, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Firmas: firmasDocumento };
                 } else params = { TemaMasivo: Tema, CodFuncionario: CodFunc, IdSolicitud: IdSolicitud, Completo: false, Indices: ArrIndices, CodTramite: _Tramite, EnviarEmail: _EnviarEmail, Firmas: firmasDocumento };
                 var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/MasivosApi/GuardaMasivo";
