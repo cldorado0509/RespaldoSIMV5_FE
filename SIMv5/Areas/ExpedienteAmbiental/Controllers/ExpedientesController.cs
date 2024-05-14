@@ -1,7 +1,6 @@
 ﻿namespace SIM.Areas.ExpedienteAmbiental.Controllers
 {
     using DevExpress.Pdf;
-    using SIM.Areas.Seguridad.Class;
     using SIM.Areas.Seguridad.Models;
     using SIM.Data;
     using System;
@@ -28,31 +27,34 @@
         public ActionResult Index()
         {
             System.Web.HttpContext context = System.Web.HttpContext.Current;
+            var _IdUsuario = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("nameidentifier")).FirstOrDefault();
+            decimal IdUsuario = 0;
+            decimal.TryParse(_IdUsuario.Value, out IdUsuario);
+
             decimal codFuncionario = -1;
-            int idUsuario = 0;
-            if (((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
-            {
-                idUsuario = Convert.ToInt32(((ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
-            }
             codFuncionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
-                                              where uf.ID_USUARIO == idUsuario
+                                              where uf.ID_USUARIO == IdUsuario
                                               select f.CODFUNCIONARIO).FirstOrDefault());
+            string actionName = RouteData.Values["action"].ToString();
+            string controllerName = RouteData.Values["controller"].ToString();
+            string areaName = RouteData.DataTokens["area"].ToString();
+            PermisosRolModel permisos = SIM.Utilidades.Security.PermisosFormulario(areaName, controllerName, actionName, IdUsuario);
 
             ViewBag.CodFuncionario = codFuncionario;
             ViewBag.CodigoUnidadDocumental = SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString();
 
-            var idForma = 0;
-            int.TryParse(SIM.Utilidades.Data.ObtenerValorParametro("IdFormaExpedientesAmbientales").ToString(), out idForma);
+            //var idForma = 0;
+            //int.TryParse(SIM.Utilidades.Data.ObtenerValorParametro("IdFormaExpedientesAmbientales").ToString(), out idForma);
 
 
-            PermisosRolModel permisosRolModel = new PermisosRolModel { CanDelete=false, CanInsert=false, CanPrint=false, CanRead= false, CanUpdate = false, IdRol = 0 };
+            //PermisosRolModel permisosRolModel = new PermisosRolModel { CanDelete=false, CanInsert=false, CanPrint=false, CanRead= false, CanUpdate = false, IdRol = 0 };
 
-            Permisos permisos = new Permisos();
-            permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, idUsuario);
+            //Permisos permisos = new Permisos();
+            //permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, idUsuario);
 
             ViewBag.CodFuncionario = codFuncionario;
-            return View(permisosRolModel);
+            return View(permisos);
 
         }
 
