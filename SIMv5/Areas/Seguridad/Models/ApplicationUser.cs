@@ -45,6 +45,5 @@ namespace SIM.Areas.Seguridad.Models
         public string Token { get; set; }
         [JsonProperty("ExpiresIn")]
         public int ExpiresIn { get; set; }
-        public byte[] Foto { get; set; }
     }
 }
