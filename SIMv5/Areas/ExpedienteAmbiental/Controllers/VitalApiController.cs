@@ -5,7 +5,6 @@
     using DevExpress.XtraRichEdit;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using SIM.Areas.ExpedienteAmbiental.Clases;
     using SIM.Areas.ExpedienteAmbiental.Models;
     using SIM.Data;
     using SIM.Data.Tramites;
@@ -25,6 +24,7 @@
     using System.Threading.Tasks;
     using System.Web.Hosting;
     using System.Web.Http;
+    using datosConsulta = Clases.datosConsulta;
     using Response = SIM.Models.Response;
     using TramiteDTO = Models.TramiteDTO;
 

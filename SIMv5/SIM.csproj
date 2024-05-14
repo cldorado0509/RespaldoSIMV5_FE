@@ -2486,6 +2486,7 @@
     <Compile Include="Utilidades\Cryptografia.cs" />
     <Compile Include="Utilidades\Archivos.cs" />
     <Compile Include="Utilidades\Data.cs" />
+    <Compile Include="Utilidades\DatosConsulta.cs" />
     <Compile Include="Utilidades\Email.cs" />
     <Compile Include="Utilidades\EmailMK.cs" />
     <Compile Include="Utilidades\Estructuras.cs" />
