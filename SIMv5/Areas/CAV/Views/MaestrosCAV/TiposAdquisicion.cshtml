@@ -1,0 +1,79 @@
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@{
+    ViewBag.Title = "Tipos de Adquisición de Fauna";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+
+</script>
+
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var CodigoUnidadDocumental = @(ViewBag.CodigoUnidadDocumental);
+</script>
+<br />
+
+<script type="text/javascript" src="@Url.Content("~/Areas/CAV/Scripts/tipoAdquisicion.js?v=" + @DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
+
+<link href="~/Content/ContentV5/V5DevEXpress.css" rel="stylesheet" />
+
+<h2>Tipos de Adquisición de Fauna</h2>
+
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Listado de Tipos de Adquisición de Fauna</label>
+            </h3>
+        </div>
+        <div>
+            @{
+                if (Model.CanInsert)
+                {
+                    <div id="btnNuevo"></div>
+                }
+            }
+
+            <div id="GridListado"></div>
+            <br />
+            <div id="popupNewRecord">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Nombre:</div>
+                        <div class="col-sm-9" id="txtNombre"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-sm-3" style="align-content:end">Descripción :</div>
+                        <div class="col-sm-9" id="txtDescripcion"></div>
+                    </div>
+                    <div class="row">
+                        <div class="control-label col-md-3">Eliminado :</div>
+                        <div class="col-md-3" id="chkEliminado"></div>
+                        <div class="control-label col-md-3">Activo :</div>
+                        <div class="col-md-3" id="chkActivo"></div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-3" id="btnSaveRecord"></div>
+                        <div class="col-sm-1" id="spinLoadBusqueda"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,415 @@
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@{
+    ViewBag.Title = "Ingreso CAV";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+</script>
+
+<script>
+    var CodigoFuncionario = @(ViewBag.CodFuncionario);
+    var CodigoUnidadDocumental = @(ViewBag.CodigoUnidadDocumental);
+</script>
+<br />
+
+<script type="text/javascript" src="@Url.Content("~/Areas/CAV/Scripts/registro.js?v=" + @DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
+<link href="~/Content/ContentV5/V5DevEXpress.css" rel="stylesheet" />
+
+<h2>Ingreso CAV</h2>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default" id="pnlContenedor">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Listado Registro de Ingresos CAV</label>
+            </h3>
+        </div>
+        <div>
+            @{
+                if (Model.CanInsert)
+                {
+                    <div id="btnNuevoIngresoCAV"></div>
+                }
+            }
+
+            <div id="GridListado"></div>
+            <br />
+            <div id="popupRegistro">
+                <div class="form-horizontal">
+                    <div id="asistente">
+                        <h3>Procedencia</h3>
+                        <div class="divProcedencia">
+                            <div class="card text-white mb-1" style="height:250px">
+                                <div class="card-header">
+                                    <p style="font-weight:bold">Información relacionada con la procedencia de los individuos</p>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                        </div>
+                                        <div class="col-md-2" style="text-align:right">
+                                            Consecutivo de acta
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div id="txtActoAdmin"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Dirección
+                                        </div>
+                                        <div class="col-md-11" style="align-content:start">
+                                            <div id="txtDireccionProcedencia"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Barrio
+                                        </div>
+                                        <div class="col-md-11" style="align-content:start">
+                                            <div id="txtBarrioProcedencia"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">Departamento</div>
+                                        <div class="col-md-6">
+                                            <div class="row" style="margin:0px; padding:0px">
+                                                <div class="col-md-5" style="align-content: start; margin: 0px; padding: 0px"><div id="cboDepartamentoProcedencia"></div></div>
+                                                <div class="col-md-2" style="align-content: start; margin: 0px; padding: 0px,20px">Municipio</div>
+                                                <div class="col-md-5" style="align-content: start; margin: 0px; padding: 0px,20px"><div id="cboMunicipioProcedencia"></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="row" style="margin:0px; padding:0px">
+                                                <div class="col-md-3"> Coordenadas</div>
+                                                <div class="col-md-9">
+                                                    <div class="row" style="margin:0px; padding:0px">
+                                                        <div class="col-md-4" style="align-content: start; margin: 0px; padding: 0px"> Latitud(N)</div>
+                                                        <div class="col-md-8" style="align-content: start; margin: 0px; padding: 0px">
+                                                            <div id="txtLatitud"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content: start">Fecha</div>
+                                        <div class="col-md-6">
+                                            <div class="row" style="margin:0px; padding:0px">
+                                                <div class="col-md-5" style="align-content: start; margin: 0px; padding: 0px"><div id="txtFechaProcedencia"></div></div>
+                                                <div class="col-md-2" style="align-content: start; margin: 0px; padding: 0px,20px">Hora</div>
+                                                <div class="col-md-5" style="align-content: start; margin: 0px; padding: 0px,20px"><div id="txtHoraProcedencia"></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="row" style="margin:0px; padding:0px">
+                                                <div class="col-md-3"> </div>
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        <div class="col-md-4" style="align-content: start; margin: 0px; padding: 0px"> Longitud(W)</div>
+                                                        <div class="col-md-8" style="align-content: start; margin: 0px; padding: 0px">
+                                                            <div id="txtLongitud"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-7" style="align-content: start"></div>
+                                        <div class="col-md-5" style="align-content: start">
+                                            <div class="row" style="margin:0px; padding:0px">
+                                                <div class="col-md-3"> </div>
+                                                <div class="col-md-9-">
+                                                    <div class="row">
+                                                        <div class="col-md-4" style="align-content: start; margin: 0px; padding: 0px"> Altitud(m.s.n.m)</div>
+                                                        <div class="col-md-8" style="align-content: start; margin: 0px; padding: 0px">
+                                                            <div id="txtAltidud"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h3>Identificación de quien entrega</h3>
+                        <div class="divQuienEntrega">
+                            <div class="card text-white mb-3" style="height:370px">
+                                <div class="card-header">
+                                    <p style="font-weight:bold">Información relacionada con la persona que realiza la entrega de los individuos</p>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Nombre
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtNombreEntrega"></div>
+                                        </div>
+                                        <div class="col-md-1" style="align-content:start">
+                                            Cédula
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtCedulaEntrega"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Dirección
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtDireccionEntrega"></div>
+                                        </div>
+                                        <div class="col-md-1" style="align-content:start">
+                                            Teléfono
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtTelefonoEntrega"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        ¿Cómo lo encontró? ¿Dónde lo encontró/Consigió? ¿Lo alimentó? ¿Qué alimentos le brindó? ¿Cuánto tiempo estuvo con el animal?
+                                    </div>
+                                    <div class="row">
+                                        Observaciones
+                                    </div>
+                                    <div class="row">
+                                        <div id="txtObservacionEntrega"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">Se realiza sensibilización?</div>
+                                        <div class="col-md-10"><div id="optSensiblizacion"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h3>Información de la Fauna</h3>
+                        <div class="divInformacionFauna">
+                            <div class="card text-white mb-3" style="height:370px">
+                                <div class="card-header">
+                                    <p style="font-weight:bold">Información relacionada con los individuos recibidos</p>
+                                </div>
+                                <div class="card-body">
+                                    <table border="1" class="table" id="tblIndividuos">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th style="width:250px">Causa de Ingreso</th>
+                                                <th style="width:250px">Familia</th>
+                                                <th style="width:250px">Especie</th>
+                                                <th style="width:50px">Prefijo</th>
+                                                <th style="width:120px">Número Identificación</th>
+                                                <th style="width:120px">Cantidad</th>
+                                                <th style="width:120px">Tiempo en cautiverio</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <div id="btnAddRow"></div>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+                        </div>
+                        <h3>Procedimiento</h3>
+                        <div class="divProcedimiento">
+                            <div class="card text-white mb-3">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <b>Funcionario de la Autoridad Ambiental/Fuerza Pública que realiza el Procedimiento</b>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Nombre
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtNombreFuncionario"></div>
+                                        </div>
+                                        <div class="col-md-1" style="align-content:start">
+                                            Cédula
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtCedulaFuncionario"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Entidad
+                                        </div>
+                                        <div class="col-md-11" style="align-content:start">
+                                            <div id="cboEntidadProcedimiento"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <b>Responsable emergencias/Estación de paso</b>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Nombre
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtNombreResponsable"></div>
+                                        </div>
+                                        <div class="col-md-1" style="align-content:start">
+                                            Cédula
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtCedulaResponsable"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Cargo
+                                        </div>
+                                        <div class="col-md-11" style="align-content:start">
+                                            <div id="txtCargoResponsable"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <b>Constancia CAV</b>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Nombre
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtNombreConstancia"></div>
+                                        </div>
+                                        <div class="col-md-1" style="align-content:start">
+                                            Cédula
+                                        </div>
+                                        <div class="col-md-5" style="align-content:start">
+                                            <div id="txtCedulaConstancia"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1" style="align-content:start">
+                                            Cargo
+                                        </div>
+                                        <div class="col-md-11" style="align-content:start">
+                                            <div id="txtCargoConstancia"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <b>Disposición del individuo</b>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6"><div id="cboDisposicionIndividuo"></div></div>
+                                    </div>
+                                    <div class="row">Observación</div>
+                                    <div class="row">
+                                        <div id="txtObservacion"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+
+                        </div>
+                    </div>
+                    <br />
+                    <div id="btnGuardarIngresoCAV"></div>
+                </div>
+            </div>
+            <div id="popupHistoria">
+                <div class="form-horizontal" style="padding:40px">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <br />
+                            <div class="row border-2">
+                                <div class="col-sm-2 text-right"><b>Número de identificación:</b></div>
+                                <div class="col-sm-2" id="txtNumeroIdentificacion"></div>
+                                <div class="col-sm-2 text-right"><b>Nombre común de la especie:</b></div>
+                                <div class="col-sm-2" id="txtNombreComunEspecie"></div>
+                                <div class="col-md-2 text-right"><b>Nombre científico de la especie:</b></div>
+                                <div class="col-md-2" id="txtNombreCientificoEspecie"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 text-right"><b>Fecha de llegada:</b></div>
+                                <div class="col-md-2" id="txtFechaLlegadaIndividuo"></div>
+                                <div class="col-md-2 text-right"><b>Sexo:</b></div>
+                                <div class="col-sm-2" id="txtSexoIndividuo"></div>
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card text-white bg-success mb-1">
+                        <div class="card-header">
+                            <p style="font-weight:bold;font-size:18pt">Información básica de la Historia Clínica</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12"><b>Observaciones</b></div>
+                                <div class="col-sm-12" id="txtObservacionHistoria"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1 text-right"><b>Funcionario:</b></div>
+                                <div class="col-md-2" id="cboFuncionarioResponsable"></div>
+                                <div class="col-md-1 text-right"><b>Estudiante:</b></div>
+                                <div class="col-sm-2" id="txtEstudiante"></div>
+                                <div class="col-sm-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-1 text-center" style="margin-left:10px" id="btnGuardarHistoria"></div>
+                            </div>
+                            <br />
+                            <hr />
+                            <p style="font-weight:bold;font-size:18pt">Exámenes de Laboratorio asociados a la Historía Clínica</p>
+                            <div id="btnNuevoExamen"></div>
+                            <div id="gridExamenes"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="popupEntrega">
+            </div>
+            <div id="popupEspecie">
+            </div>
+            <div id="popupExamen">
+                <div class="form-horizontal" style="padding:40px">
+                    <div class="card text-white bg-success mb-1">
+                        <div class="card-header">
+                            <p style="font-weight:bold;font-size:18pt">Exámen de Laboratorio</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-2"><b>Número del Exámen</b></div>
+                                <div class="col-sm-2" id="txtNroExamen"></div>
+                                <div class="col-sm-2"><b>Fecha del Exámen</b></div>
+                                <div class="col-sm-2" id="txtFechaExamen"></div>
+                                <div class="col-sm-4"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12"><b>Observaciones</b></div>
+                                <div class="col-sm-12" id="txtObservacionesExamen"></div>
+                            </div>
+                            <br />
+                            <hr />
+                            <p style="font-weight:bold;font-size:18pt">Pruebas de Laboratorio asociados al Exámen</p>
+                            <div id="btnNuevaPrueba"></div>
+                            <div id="gridPruebasExamenes"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
