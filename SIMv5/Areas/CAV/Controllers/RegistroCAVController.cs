@@ -23,7 +23,7 @@ namespace SIM.Areas.CAV.Controllers
         public ActionResult Index()
         {
             var controller = RouteData.Values["controller"].ToString();
-            var area = "CAV";
+            var area = RouteData.DataTokens["area"].ToString();
             var action = RouteData.Values["action"].ToString();
 
             System.Web.HttpContext context = System.Web.HttpContext.Current;
