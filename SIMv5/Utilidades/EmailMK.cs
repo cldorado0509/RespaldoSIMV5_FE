@@ -88,12 +88,12 @@ namespace SIM.Utilidades
 
             using (MimeMessage mm = new MimeMessage())
             {
-                mm.From.Add(new MailboxAddress("Sender", rfstrRemitente));
+                mm.From.Add(new MailboxAddress(rfstrRemitente, rfstrRemitente));
 
-                lcstrDestinatarios.ForEach(i => mm.To.Add(new MailboxAddress("Recipient", i)));
+                lcstrDestinatarios.ForEach(i => mm.To.Add(new MailboxAddress(i, i)));
                 mm.Subject = rfstrAsunto;
-                if (lcstrCopias != null && lcstrCopias.Length > 0) lcstrCopias.ForEach(c => mm.Cc.Add(new MailboxAddress("Cc", c)));
-                if (lcstrCopiasOcultas != null && lcstrCopiasOcultas.Length > 0) lcstrCopiasOcultas.ForEach(o => mm.Bcc.Add(new MailboxAddress("Bcc", o)));
+                if (lcstrCopias != null && lcstrCopias.Length > 0) lcstrCopias.ForEach(c => mm.Cc.Add(new MailboxAddress(c, c)));
+                if (lcstrCopiasOcultas != null && lcstrCopiasOcultas.Length > 0) lcstrCopiasOcultas.ForEach(o => mm.Bcc.Add(new MailboxAddress(o, o)));
                 BodyBuilder builder = new BodyBuilder();
                 builder.HtmlBody = rfstrContenido;
                 if (rfstrArchivoAdjunto != null)
@@ -167,7 +167,7 @@ namespace SIM.Utilidades
             {
                 mm.From.Add(new MailboxAddress(rfstrRemitente, rfstrRemitente));
 
-                lcstrDestinatarios.ForEach(i => mm.To.Add(new MailboxAddress("Recipient", i)));
+                lcstrDestinatarios.ForEach(i => mm.To.Add(new MailboxAddress(i, i)));
                 mm.Subject = rfstrAsunto;
                 if (lcstrCopias != null && lcstrCopias.Length > 0) lcstrCopias.ForEach(c => mm.Cc.Add(new MailboxAddress(c, c)));
                 if (lcstrCopiasOcultas != null && lcstrCopiasOcultas.Length > 0) lcstrCopiasOcultas.ForEach(o => mm.Bcc.Add(new MailboxAddress(o, o)));
@@ -232,9 +232,9 @@ namespace SIM.Utilidades
 
             using (MimeMessage mm = new MimeMessage())
             {
-                mm.From.Add(new MailboxAddress("Sender", rfstrRemitente));
+                mm.From.Add(new MailboxAddress(rfstrRemitente, rfstrRemitente));
 
-                lcstrDestinatarios.ForEach(i => mm.To.Add(new MailboxAddress("Recipient", i)));
+                lcstrDestinatarios.ForEach(i => mm.To.Add(new MailboxAddress(i, i)));
                 mm.Subject = rfstrAsunto;
                 BodyBuilder builder = new BodyBuilder();
                 builder.HtmlBody = rfstrContenido;

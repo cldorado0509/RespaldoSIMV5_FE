@@ -283,7 +283,7 @@ namespace SIM.Areas.Seguridad.Controllers
                             }
                             catch { }
 
-                            Utilidades.Email.EnviarEmail(emailFrom, model.Email, "", (listaCorreos == null || listaCorreos.Trim() == "" ? "" : listaCorreos), "Registro Satisfactorio en el SIM - Pendiente Validación para Activación del Usuario", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
+                            Utilidades.EmailMK.EnviarEmail(emailFrom, model.Email, "", (listaCorreos == null || listaCorreos.Trim() == "" ? "" : listaCorreos), "Registro Satisfactorio en el SIM - Pendiente Validación para Activación del Usuario", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd, null);
                         }
                         catch (Exception error)
                         {
@@ -322,7 +322,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                         try
                         {
-                            Utilidades.Email.EnviarEmail(emailFrom, propietarioAdministrador.USUARIO.S_EMAIL, "Solicitud de habilitación de permisos en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                            Utilidades.EmailMK.EnviarEmail(emailFrom, propietarioAdministrador.USUARIO.S_EMAIL, "Solicitud de habilitación de permisos en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
                         }
                         catch (Exception error)
                         {
@@ -343,7 +343,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                         try
                         {
-                            Utilidades.Email.EnviarEmail(emailFrom, model.Email, "Registro de Usuario en el SIM - Pendiente activación", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                            Utilidades.EmailMK.EnviarEmail(emailFrom, model.Email, "Registro de Usuario en el SIM - Pendiente activación", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
                         }
                         catch (Exception error)
                         {
@@ -473,7 +473,7 @@ namespace SIM.Areas.Seguridad.Controllers
 
                 try
                 {
-                    Utilidades.Email.EnviarEmail(emailFrom, model.Email, "Recuperación de Contraseña para usuario registrado en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
+                    Utilidades.EmailMK.EnviarEmail(emailFrom, model.Email, "Recuperación de Contraseña para usuario registrado en el SIM", emailHtml.ToString(), emailSMTPServer, true, emailSMTPUser, emailSMTPPwd);
                 }
                 catch (Exception error)
                 {

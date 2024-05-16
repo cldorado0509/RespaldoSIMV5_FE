@@ -586,7 +586,8 @@ namespace SIM.Utilidades
                 CanDelete = false,
                 CanPrint = false,
             };
-            var Formas = dbSIM.MENU.Where(w => w.S_CONTROLADOR.ToUpper() == Controller.ToUpper()).Select(s => new { s.ID_FORMA, s.S_RUTA, s.S_VERSION }).ToList();
+            string _buscar = @"~/" + Area.ToUpper();
+            var Formas = dbSIM.MENU.Where(w => w.S_RUTA.ToUpper().StartsWith(_buscar) && !string.IsNullOrEmpty(w.S_RUTA)).Select(s => new { s.ID_FORMA, s.S_RUTA, s.S_VERSION }).ToList();
             int IdForma = 0;
             if (Formas.Count > 0)
             {

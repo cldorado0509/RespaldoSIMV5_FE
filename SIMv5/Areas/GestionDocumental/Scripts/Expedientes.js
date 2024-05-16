@@ -35,7 +35,7 @@ $(document).ready(function () {
         hoverStateEnabled: true,
         remoteOperations: true,
         columns: [
-            { dataField: 'ID_EXPEDIENTE', width: '5%', caption: 'Identificador', alignment: 'center' },
+            { dataField: 'ID_EXPEDIENTE', width: '5%', caption: 'Identificador', alignment: 'center', dataType: 'number', sortOrder: 'desc' },
             { dataField: 'TIPO', width: '20%', caption: 'Tipo de Expediente', dataType: 'string' },
             { dataField: 'NOMBRE', width: '25%', caption: 'Nombre del Expediente', dataType: 'string' },
             { dataField: 'CODIGO', width: '10%', caption: 'Código Asignado', dataType: 'string' },
@@ -68,6 +68,7 @@ $(document).ready(function () {
                     $('<div/>').dxButton({
                         icon: 'edit',
                         hint: 'Editar datos del expediente',
+                        visible: canEdit,
                         onClick: function (e) {
                             var _Ruta = $('#SIM').data('url') + "GestionDocumental/api/ExpedientesApi/EditarExpediente";
                             $.getJSON(_Ruta,
@@ -111,6 +112,7 @@ $(document).ready(function () {
                     $('<div/>').dxButton({
                         icon: 'bookmark',
                         hint: 'Administrar estado del expediente',
+                        visible: canEdit,
                         onClick: function (e) {
                             IdExpediente = options.data.ID_EXPEDIENTE;
                             //$('#grdEstado').dxDataGrid({ dataSource: EstadoExpDataSource });
@@ -125,6 +127,7 @@ $(document).ready(function () {
                     $('<div/>').dxButton({
                         icon: 'trash',
                         hint: 'Eliminar expediente',
+                        visible: canDelete,
                         onClick: function (e) {
                             var result = DevExpress.ui.dialog.confirm('Desea eliminar el expediente de tipo ' + options.data.TIPO + ' con el nombre ' + options.data.NOMBRE + '?', 'Confirmación');
                             result.done(function (dialogResult) {
@@ -153,6 +156,7 @@ $(document).ready(function () {
                     $('<div/>').dxButton({
                         icon: 'folder',
                         hint: 'Administrar carpetas del expediente',
+                        visible: canEdit,
                         onClick: function (e) {
                             IdExpediente = options.data.ID_EXPEDIENTE;
                             var Tomos = $("#popTomos").dxPopup("instance");
@@ -619,6 +623,7 @@ $(document).ready(function () {
     $("#btnGuarda").dxButton({
         text: "Guardar",
         type: "default",
+        visible: canEdit || canInsert,
         onClick: function () {
             DevExpress.validationEngine.validateGroup("ExpedienteGroup");
             var UnidadDoc = cboUnidadDoc.option("value");
@@ -661,6 +666,7 @@ $(document).ready(function () {
         width: 200,
         height: 30,
         icon: '../Content/Images/new.png',
+        visible: canInsert,
         onClick: function () {
             indicesSerieDocumentalStore = null;
             IdExpediente = -1;
@@ -793,30 +799,40 @@ $(document).ready(function () {
 });
 
 var ExpedientesDataSource = new DevExpress.data.CustomStore({
+    key: "ID_EXPEDIENTE",
     load: function (loadOptions) {
         var d = $.Deferred();
-        var filterOptions = loadOptions.filter ? loadOptions.filter.join(",") : "";
-        var sortOptions = loadOptions.sort ? JSON.stringify(loadOptions.sort) : '[{"selector":"FECHACREA","desc":true}]';
-        var groupOptions = loadOptions.group ? JSON.stringify(loadOptions.group) : "";
-
-        var skip = (typeof loadOptions.skip != 'undefined' && loadOptions.skip != null ? loadOptions.skip : 0);
-        var take = (typeof loadOptions.take != 'undefined' && loadOptions.take != null ? loadOptions.take : 0);
-        $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/ExpedientesApi/ObtieneExpedientes', {
-            filter: loadOptions.filter ? JSON.stringify(filterOptions) : '',
-            sort: sortOptions,
-            group: JSON.stringify(groupOptions),
-            skip: skip,
-            take: take,
-            searchValue: '',
-            searchExpr: '',
-            comparation: '',
-            tipoData: 'f',
-            noFilterNoRecords: false,
-        }).done(function (data) {
-            d.resolve(data.datos, { totalCount: data.numRegistros });
-        }).fail(function (jqxhr, textStatus, error) {
-            alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+        var params = {};
+        [
+            "filter",
+            "group",
+            "groupSummary",
+            "parentIds",
+            "requireGroupCount",
+            "requireTotalCount",
+            "searchExpr",
+            "searchOperation",
+            "searchValue",
+            "select",
+            "sort",
+            "skip",
+            "take",
+            "totalSummary",
+            "userData"
+        ].forEach(function (i) {
+            if (i in loadOptions && isNotEmpty(loadOptions[i])) {
+                params[i] = JSON.stringify(loadOptions[i]);
+            }
         });
+
+        $.getJSON($('#SIM').data('url') + 'GestionDocumental/api/ExpedientesApi/ObtieneExpedientes', params)
+            .done(function (response) {
+                d.resolve(response.data, {
+                    totalCount: response.totalCount
+                });
+            }).fail(function (jqxhr, textStatus, error) {
+                alert('error cargando datos: ' + textStatus + ", " + jqxhr.responseText);
+            });
         return d.promise();
     }
 });
@@ -861,3 +877,7 @@ var EstadoExpDataSource = new DevExpress.data.CustomStore({
         });   
     }
 });
+
+function isNotEmpty(value) {
+    return value !== undefined && value !== null && value !== "";
+}

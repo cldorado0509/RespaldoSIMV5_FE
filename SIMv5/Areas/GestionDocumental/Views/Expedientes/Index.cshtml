@@ -3,7 +3,19 @@
     ViewBag.Title = "Expedientes";
     Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
+<script>
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
 
+</script>
 <script type="text/javascript" src="@Url.Content("~/Areas/GestionDocumental/Scripts/Expedientes.js?V=" + DateTime.Now.ToString("yyyyddMMHHmmsss"))"></script>
 <style>
     #BotonExp {

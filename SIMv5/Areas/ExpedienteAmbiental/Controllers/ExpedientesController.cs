@@ -39,7 +39,7 @@
             string actionName = RouteData.Values["action"].ToString();
             string controllerName = RouteData.Values["controller"].ToString();
             string areaName = RouteData.DataTokens["area"].ToString();
-            PermisosRolModel permisos = SIM.Utilidades.Security.PermisosFormulario(areaName, controllerName, actionName, IdUsuario);
+            PermisosRolModel permisosRolModel = SIM.Utilidades.Security.PermisosFormulario(areaName, controllerName, actionName, IdUsuario);
 
             ViewBag.CodFuncionario = codFuncionario;
             ViewBag.CodigoUnidadDocumental = SIM.Utilidades.Data.ObtenerValorParametro("IdCodSerieHistoriasAmbientales").ToString();
@@ -48,13 +48,13 @@
             //int.TryParse(SIM.Utilidades.Data.ObtenerValorParametro("IdFormaExpedientesAmbientales").ToString(), out idForma);
 
 
-            //PermisosRolModel permisosRolModel = new PermisosRolModel { CanDelete=false, CanInsert=false, CanPrint=false, CanRead= false, CanUpdate = false, IdRol = 0 };
+            //PermisosRolModel permisosRolModel = new PermisosRolModel { CanDelete = false, CanInsert = false, CanPrint = false, CanRead = false, CanUpdate = false, IdRol = 0 };
 
             //Permisos permisos = new Permisos();
-            //permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, idUsuario);
+            //permisosRolModel = permisos.ObtenerPermisosRolForma(idForma, (int)IdUsuario);
 
             ViewBag.CodFuncionario = codFuncionario;
-            return View(permisos);
+            return View(permisosRolModel);
 
         }
 

@@ -1,4 +1,7 @@
 ﻿using DevExpress.Pdf;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
+using DevExtreme.AspNet.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using O2S.Components.PDF4NET;
@@ -37,59 +40,93 @@ namespace SIM.Areas.GestionDocumental.Controllers
         System.Web.HttpContext context = System.Web.HttpContext.Current;
 
 
+        ///// <summary>
+        ///// Obtiene los procesos para cargar el grid de la ventana principal
+        ///// </summary>
+        ///// <param name="filter"></param>
+        ///// <param name="sort"></param>
+        ///// <param name="group"></param>
+        ///// <param name="skip"></param>
+        ///// <param name="take"></param>
+        ///// <param name="searchValue"></param>
+        ///// <param name="searchExpr"></param>
+        ///// <param name="comparation"></param>
+        ///// <param name="tipoData"></param>
+        ///// <param name="noFilterNoRecords"></param>
+        ///// <param name="CodFuncionario"></param>
+        ///// <returns></returns>
+        //[System.Web.Http.HttpGet, System.Web.Http.ActionName("ObtieneExpedientes")]
+        //[Authorize(Roles = "VEXPEDIENTES")]
+        //public datosConsulta ObtieneExpedientes(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords)
+        //{
+        //    dynamic modelData;
+        //    datosConsulta resultado = new datosConsulta();
+        //    if (((filter == null || filter == "") && (searchValue == "" || searchValue == null) && noFilterNoRecords)) // || (!administrador && idTerceroUsuario == null))
+        //    {
+        //        resultado.numRegistros = 0;
+        //        resultado.datos = null;
+
+        //        return resultado;
+        //    }
+        //    else
+        //    {
+        //        var model = (from Exp in dbSIM.EXP_EXPEDIENTES
+        //                     join Ser in dbSIM.TBSERIE on Exp.ID_UNIDADDOC equals Ser.CODSERIE
+        //                     orderby Exp.D_FECHACREACION
+        //                     select new
+        //                     {
+        //                         Exp.ID_EXPEDIENTE,
+        //                         TIPO = Ser.NOMBRE,
+        //                         NOMBRE = Exp.S_NOMBRE,
+        //                         CODIGO = Exp.S_CODIGO,
+        //                         FECHACREA = Exp.D_FECHACREACION,
+        //                         ANULADO = Exp.S_ESTADO == "A" ? "No" : Exp.S_ESTADO == "N" ? "Si" : "N/A",
+        //                         ESTADO = (from ee in dbSIM.EXP_ESTADOSEXPEDIENTE
+        //                                   join te in dbSIM.EXP_TIPOESTADO on ee.ID_ESTADO equals te.ID_ESTADO
+        //                                   where ee.ID_EXPEDIENTE == Exp.ID_EXPEDIENTE
+        //                                   orderby ee.D_INICIA descending
+        //                                   select te.S_NOMBRE).FirstOrDefault()
+        //                     });
+        //        modelData = model;
+        //        IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
+        //        resultado.numRegistros = modelFiltered.Count();
+        //        resultado.datos = modelFiltered.Skip(skip).Take(take).ToList();
+
+        //        return resultado;
+        //    }
+        //}
+
         /// <summary>
         /// Obtiene los procesos para cargar el grid de la ventana principal
         /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="sort"></param>
-        /// <param name="group"></param>
-        /// <param name="skip"></param>
-        /// <param name="take"></param>
-        /// <param name="searchValue"></param>
-        /// <param name="searchExpr"></param>
-        /// <param name="comparation"></param>
-        /// <param name="tipoData"></param>
-        /// <param name="noFilterNoRecords"></param>
-        /// <param name="CodFuncionario"></param>
+        /// <param name="loadOptions"></param>
         /// <returns></returns>
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("ObtieneExpedientes")]
-        [Authorize(Roles = "VEXPEDIENTES")]
-        public datosConsulta ObtieneExpedientes(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords)
+        public LoadResult ObtieneExpedientes(DataSourceLoadOptions loadOptions)
         {
-            dynamic modelData;
-            datosConsulta resultado = new datosConsulta();
-            if (((filter == null || filter == "") && (searchValue == "" || searchValue == null) && noFilterNoRecords)) // || (!administrador && idTerceroUsuario == null))
+            try
             {
-                resultado.numRegistros = 0;
-                resultado.datos = null;
-
-                return resultado;
+                return DataSourceLoader.Load((from Exp in dbSIM.EXP_EXPEDIENTES
+                                              join Ser in dbSIM.TBSERIE on Exp.ID_UNIDADDOC equals Ser.CODSERIE
+                                              orderby Exp.ID_EXPEDIENTE descending
+                                              select new
+                                              {
+                                                  Exp.ID_EXPEDIENTE,
+                                                  TIPO = Ser.NOMBRE,
+                                                  NOMBRE = Exp.S_NOMBRE,
+                                                  CODIGO = Exp.S_CODIGO,
+                                                  FECHACREA = Exp.D_FECHACREACION,
+                                                  ANULADO = Exp.S_ESTADO == "A" ? "No" : Exp.S_ESTADO == "N" ? "Si" : "N/A",
+                                                  ESTADO = (from ee in dbSIM.EXP_ESTADOSEXPEDIENTE
+                                                            join te in dbSIM.EXP_TIPOESTADO on ee.ID_ESTADO equals te.ID_ESTADO
+                                                            where ee.ID_EXPEDIENTE == Exp.ID_EXPEDIENTE
+                                                            orderby ee.D_INICIA descending
+                                                            select te.S_NOMBRE).FirstOrDefault()
+                                              }), loadOptions);
             }
-            else
+            catch
             {
-                var model = (from Exp in dbSIM.EXP_EXPEDIENTES
-                             join Ser in dbSIM.TBSERIE on Exp.ID_UNIDADDOC equals Ser.CODSERIE
-                             orderby Exp.D_FECHACREACION
-                             select new
-                             {
-                                 Exp.ID_EXPEDIENTE,
-                                 TIPO = Ser.NOMBRE,
-                                 NOMBRE = Exp.S_NOMBRE,
-                                 CODIGO = Exp.S_CODIGO,
-                                 FECHACREA = Exp.D_FECHACREACION,
-                                 ANULADO = Exp.S_ESTADO == "A" ? "No" : Exp.S_ESTADO == "N" ? "Si" : "N/A",
-                                 ESTADO = (from ee in dbSIM.EXP_ESTADOSEXPEDIENTE
-                                           join te in dbSIM.EXP_TIPOESTADO on ee.ID_ESTADO equals te.ID_ESTADO
-                                           where ee.ID_EXPEDIENTE == Exp.ID_EXPEDIENTE
-                                           orderby ee.D_INICIA descending
-                                           select te.S_NOMBRE).FirstOrDefault()
-                             });
-                modelData = model;
-                IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
-                resultado.numRegistros = modelFiltered.Count();
-                resultado.datos = modelFiltered.Skip(skip).Take(take).ToList();
-
-                return resultado;
+                return null;
             }
         }
 

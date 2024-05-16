@@ -1,6 +1,5 @@
 ﻿using DevExpress.Pdf;
-using DevExpress.XtraReports.UI;
-using Newtonsoft.Json;
+using SIM.Areas.Seguridad.Models;
 using SIM.Data;
 using System;
 using System.Collections.Generic;
@@ -11,12 +10,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SIM.Areas.GestionDocumental.Controllers
 {
-    [Authorize(Roles = "VEXPEDIENTES")]
+    [Authorize]
     public class ExpedientesController : Controller
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
@@ -25,7 +23,14 @@ namespace SIM.Areas.GestionDocumental.Controllers
         // GET: Capacitacion/Capacitacion
         public ActionResult Index()
         {
-            return View();
+            var _IdUsuario = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("nameidentifier")).FirstOrDefault();
+            decimal IdUsuario = 0;
+            decimal.TryParse(_IdUsuario.Value, out IdUsuario);
+            string actionName = RouteData.Values["action"].ToString();
+            string controllerName = RouteData.Values["controller"].ToString();
+            string areaName = RouteData.DataTokens["area"].ToString();
+            PermisosRolModel permisosRolModel = SIM.Utilidades.Security.PermisosFormulario(areaName, controllerName, actionName, IdUsuario);
+            return View(permisosRolModel);
         }
 
         /// <summary>
@@ -35,12 +40,14 @@ namespace SIM.Areas.GestionDocumental.Controllers
         /// <returns></returns>
         public ActionResult Tomos(int? IdExp)
         {
-            if (IdExp > 0) {
+            if (IdExp > 0)
+            {
                 var Expediente = (from Exp in dbSIM.EXP_EXPEDIENTES where Exp.ID_EXPEDIENTE == IdExp select Exp.S_NOMBRE).FirstOrDefault();
                 ViewBag.Expediente = Regex.Replace(Expediente.Trim(), "[^0-9A-Za-z _-]", "");
                 ViewBag.IdExpediente = IdExp;
                 return View();
-            } else return null;
+            }
+            else return null;
         }
 
         /// <summary>
