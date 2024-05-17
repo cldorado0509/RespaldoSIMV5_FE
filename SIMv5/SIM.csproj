@@ -2427,6 +2427,7 @@
     </Compile>
     <Compile Include="Models\OperationResponse.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\ResponseMicroServicio.cs" />
     <Compile Include="Models\TokenRequest.cs" />
     <Compile Include="Models\TokenResponse.cs" />
     <Compile Include="Models\Tramites.Context.cs">
