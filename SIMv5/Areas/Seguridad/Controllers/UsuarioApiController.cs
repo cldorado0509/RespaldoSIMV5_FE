@@ -287,16 +287,18 @@ namespace SIM.Areas.Seguridad.Controllers
                 if (objData.IdUsuario > 0)
                 {
                     _controller = $"Usuarios/ActualizarUsuario";
-                    response = await apiService.PostAsync<DatosUsuarioDTO>(urlApiSeguridad, "api/", _controller, objData, token);
-                    if (!response.IsSuccess) return new { resp = "Error", mensaje = "Error Almacenando el usuario" };
+                    response = await apiService.PostMicroServicioAsync<DatosUsuarioDTO>(urlApiSeguridad, "api/", _controller, objData, token);
+                    if (!response.IsSuccess) return new { resp = "Error", mensaje = "Error Almacenando el usuario - " + response.Message };
                 }
                 else if (objData.IdUsuario <= 0)
                 {
                     _controller = $"Usuarios/CrearUsuario";
-                    response = await apiService.PostAsync<DatosUsuarioDTO>(urlApiSeguridad, "api/", _controller, objData, token);
-                    if (!response.IsSuccess) return new { resp = "Error", mensaje = "Error Almacenando el usuario" };
+                    response = await apiService.PostMicroServicioAsync<DatosUsuarioDTO>(urlApiSeguridad, "api/", _controller, objData, token);
+                    if (!response.IsSuccess) return new { resp = "Error", mensaje = "Error Almacenando el usuario - " + response.Message };
                 }
-                return new { resp = "Ok", mensaje = "Datos Almacenados correctamente" };
+                var result = JsonConvert.DeserializeObject<Response>(response.Result.ToString());
+                if (result.IsSuccess) return new { resp = "Ok", mensaje = "Datos Almacenados correctamente" };
+                else return new { resp = "Error", mensaje = "Error Almacenando el usuario : " + result.Message };
             }
             catch (Exception ex)
             {
