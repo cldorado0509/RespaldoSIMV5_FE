@@ -562,7 +562,6 @@ namespace SIM.Areas.CAV.Controllers
 
             if (!ModelState.IsValid) return response;
 
-            this.urlApiMicoservicio = "https://localhost:7067/";
             try
             {
                 JsonSerializer Js = new JsonSerializer();
