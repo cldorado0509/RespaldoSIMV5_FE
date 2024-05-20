@@ -290,7 +290,7 @@ $(document).ready(function () {
             { dataField: 'ExamenLaboratorioId', width: '5%', caption: 'Id', alignment: 'center' },
             { dataField: 'NumeroPrueba', width: '10%', caption: 'Número de Prueba', alignment: 'center' },
             { dataField: 'Fecha', width: '5%', caption: 'Fecha', dataType: 'date' },
-            { dataField: 'Observacion', width: '10%', caption: 'Observación' },
+            { dataField: 'Observacion', width: '60%', caption: 'Observación' },
             {
                 visible: canEdit,
                 width: 60,
@@ -335,7 +335,7 @@ $(document).ready(function () {
                             var result = DevExpress.ui.dialog.confirm('Desea eliminar el registro seleccionado?', 'Confirmación');
                             result.done(function (dialogResult) {
                                 if (dialogResult) {
-                                    var _Ruta = $('#SIM').data('url') + "CAV/api/CAVApi/EliminarTipoAdquisicionAsync?Id=" + options.data.RegistroCAVId;
+                                    var _Ruta = $('#SIM').data('url') + "CAV/api/CAVApi/EliminarTipoAdquisicionAsync?Id=" + options.data.registroCAVId;
                                     $.ajax({
                                         type: 'DELETE',
                                         url: _Ruta,
@@ -364,17 +364,15 @@ $(document).ready(function () {
             var data = selectedItems.selectedRowsData[0];
             if (data) {
                 idRecord = data.RegistroCAVId;
-                _consecutivoActa = data.actoAdministrativo;
             }
         }
     });
         
     $("#btnGuardarIngresoCAV").dxButton({
-        text: "Guardar",
         type: "default",
         height: 30,
         width: 100,
-        icon: 'add',
+        icon: 'save',
         onClick: function () {
 
             DevExpress.validationEngine.validateGroup("ProcesoGroup");
@@ -423,15 +421,20 @@ $(document).ready(function () {
                 
                 var oCells = tbl.rows[i].cells;
                 var cellLength = oCells.length;
-                var tot = totalr + i;
+                var tot = 3;
+                if (totalr > 2) tot = totalr + i;
                 var idFamilia = "cboFamilia" + tot; 
                 var idEspecie = "cboEspecie" + tot;
                 var idPrefijo = "txtPrefijo" + tot;
                 var idNumero = "txtNumero" + tot;
                 var idCantidad = "txtCantidad" + tot;
+                var idEdad = "cboEdad" + tot;
+                var idEstado = "cboEstadoInd" + tot;
                 var idTiempoCautiverio = "cboTiempoCautiverio" + tot;
                 var cbofamilia = $("#" + idFamilia).dxSelectBox("instance");
                 var cboEspecieR = $("#" + idEspecie).dxSelectBox("instance");
+                var cboEdad = $("#" + idEdad).dxSelectBox("instance");
+                var cboEstado = $("#" + idEstado).dxSelectBox("instance");
                 var txtPrefijo = $("#" + idPrefijo).dxTextBox("instance");
                 var txtNroIdentificacion = $("#" + idNumero).dxTextBox("instance");
                 var txtCantidad = $("#" + idCantidad).dxNumberBox("instance");
@@ -453,6 +456,8 @@ $(document).ready(function () {
                 item["nombreComun"] = nombreComun;
                 item["nombreCientifico"] = nombreCientifico;
                 item["especieFaunaId"] = cboEspecieR.option("value");
+                item["tipoEdadId"] = cboEdad.option("value");
+                item["tipoEstadoIndividuoId"] = cboEstado.option("value");
                 item["prefijo"] = txtPrefijo.option("value");
                 item["numeroIdentificacion"] = txtNroIdentificacion.option("value");
                 item["cantidad"] = txtCantidad.option("value");
@@ -496,9 +501,9 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.IsSuccess === false && data.Resul === '') return;
                     else {
-                        DevExpress.ui.dialog.alert('Expediente Ambiental Creado/Actualizado correctamente con el CM:' + data.Result.IdGenerated, 'Guardar Datos');
+                        DevExpress.ui.dialog.alert('Registros almacenados correctamente!');
                         $('#GidListado').dxDataGrid({ dataSource: ExpedientesDataSource });
-                        $('#popupNuevoExpediente').dxPopup("instance").hide();
+                        $('#popupRegistro').dxPopup("instance").hide();
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
@@ -513,7 +518,6 @@ $(document).ready(function () {
     }).dxButton("instance");
 
     $("#btnNuevoExamen").dxButton({
-        text: "Nuevo",
         type: "success",
         height: 30,
         width: 100,
@@ -523,6 +527,21 @@ $(document).ready(function () {
             appendRow();
         }
     }).dxButton("instance");
+
+
+    $("#btnNuevaPrueba").dxButton({
+        type: "add",
+        height: 30,
+        width: 100,
+        icon: 'add',
+        onClick: function () {
+
+
+
+
+        }
+    }).dxButton("instance");
+        
          
     var txtActoAdmin = $("#txtActoAdmin").dxTextBox({
         value: "",
@@ -903,11 +922,10 @@ $(document).ready(function () {
     }).dxTextBox("instance");
     
     var btnGuardarHistoria = $("#btnGuardarHistoria").dxButton({
-        text: "Guardar",
         type: "success",
         height: 30,
         width: 100,
-        icon: 'add',
+        icon: 'save',
         onClick: function () {
             DevExpress.validationEngine.validateGroup("ProcesoGroup");
             var id = idRecord;
@@ -993,7 +1011,6 @@ $(document).ready(function () {
     }).dxPopup("instance");
     
     $("#btnNuevoIngresoCAV").dxButton({
-        text: "Nuevo",
         type: "success",
         height: 30,
         width: 100,
@@ -1016,11 +1033,13 @@ function appendRow() {
     createCellCausaIngreso(row.insertCell(0), "cboCausaIngreso" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
     createCellFamilia(row.insertCell(1), "cboFamilia" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
     createCellEspecie(row.insertCell(2), "cboEspecie" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
-    createCellPrefijo(row.insertCell(3), "txtPrefijo" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
-    createCellNumero(row.insertCell(4), "txtNumero" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
-    createCellCantidad(row.insertCell(5), "txtCantidad" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
-    createCellTiempoCautiverio(row.insertCell(6), "cboTiempoCautiverio" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
-    createCellbtnEliminar(row.insertCell(7), "btnEliminar" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
+    createCellEdad(row.insertCell(3), "cboEdad" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
+    createCellPrefijo(row.insertCell(4), "txtPrefijo" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
+    createCellNumero(row.insertCell(5), "txtNumero" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
+    createCellCantidad(row.insertCell(6), "txtCantidad" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
+    createCellTiempoCautiverio(row.insertCell(7), "cboTiempoCautiverio" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
+    createCellEstado(row.insertCell(8), "cboEstadoInd" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
+    createCellbtnEliminar(row.insertCell(9), "btnEliminar" + (tbl.rows.length + 1), 'row', (tbl.rows.length + 1));
 }
 
 const eliminarFila = (key) => {
@@ -1131,6 +1150,66 @@ function createCellEspecie(cell, id, style, key) {
         validationRules: [{
             type: "required",
             message: "Debe seleccionar la Especie!"
+        }]
+    }).dxSelectBox("instance");
+
+}
+
+function createCellEdad(cell, id, style, key) {
+    var div = document.createElement('div');
+    div.id = id;
+    cell.appendChild(div);
+
+    var cboEdad = $("#" + id).dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "tipoEdadId",
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON($("#SIM").data("url") + "CAV/api/CAVApi/ObtenerEdadesAsync");
+                }
+            })
+        }),
+        displayExpr: "nombre",
+        valueExpr: "tipoEdadId",
+        width: 200,
+
+        searchEnabled: true,
+    }).dxValidator({
+        validationGroup: "ProcesoGroup",
+        validationRules: [{
+            type: "required",
+            message: "Debe seleccionar la Edad!"
+        }]
+    }).dxSelectBox("instance");
+
+}
+
+function createCellEstado(cell, id, style, key) {
+    var div = document.createElement('div');
+    div.id = id;
+    cell.appendChild(div);
+
+    var cboEstado = $("#" + id).dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "tipoEstadoIndividuoId",
+                loadMode: "raw",
+                load: function () {
+                    return $.getJSON($("#SIM").data("url") + "CAV/api/CAVApi/ObtenerEstadosAsync");
+                }
+            })
+        }),
+        displayExpr: "nombre",
+        valueExpr: "tipoEstadoIndividuoId",
+        width: 200,
+
+        searchEnabled: true,
+    }).dxValidator({
+        validationGroup: "ProcesoGroup",
+        validationRules: [{
+            type: "required",
+            message: "Debe seleccionar el estado!"
         }]
     }).dxSelectBox("instance");
 
@@ -1315,9 +1394,7 @@ gridExamenesDataSource = new DevExpress.data.CustomStore({
 
         });
        
-
-       
-        $.getJSON($('#SIM').data('url') + 'CAV/api/CAVApi/GetExamenesHistoriaAsync', { params, historiaId: _historiaId }).done(function (data) {
+        $.getJSON($('#SIM').data('url') + 'CAV/api/CAVApi/GetExamenesHistoriaAsync?historiaId=' + _historiaId ,  params ).done(function (data) {
             if (data === null) {
                 alert('La consulta no retornó ningún dato!');
                 return;

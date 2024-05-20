@@ -136,6 +136,21 @@ namespace SIM.Areas.CAV.Models
         [JsonProperty("especieFaunaId")]
         public decimal EspecieFaunaId { get; set; }
 
+
+        /// <summary>
+        /// Identifica la Especie
+        /// </summary>
+        [Required]
+        [JsonProperty("tipoEdadId")]
+        public decimal TipoEdadId { get; set; }
+
+
+        /// <summary>
+        /// Identifica el Tipo de Estado del Individuo
+        /// </summary>
+        [JsonProperty("tipoEstadoIndividuoId")]
+        public decimal TipoEstadoIndividuoId { get; set; }
+
         /// <summary>
         /// Nombre Comun
         /// </summary>

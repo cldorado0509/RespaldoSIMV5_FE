@@ -298,7 +298,7 @@ namespace SIM.Areas.CAV.Controllers
             Js = JsonSerializer.CreateDefault();
             try
             {
-                var responseF = await apiService.GetListAsync<FamiliaFaunaDTO>(this.urlApiMicoservicio, "api/FamiliaFaunaEndPoint/", $"GetFamiliasFaunaAsync", token);
+                var responseF = await apiService.GetMicroServicioListAsync<FamiliaFaunaDTO>(this.urlApiMicoservicio, "api/FamiliaFaunaEndPoint/", $"GetFamiliasFaunaAsync", token);
                 if (!responseF.IsSuccess) return null;
                 var list = (List<FamiliaFaunaDTO>)responseF.Result;
                 return JArray.FromObject(list, Js);
@@ -324,6 +324,52 @@ namespace SIM.Areas.CAV.Controllers
                 response = await apiService.GetMicroServicioListAsync<EspecieFaunaDTO>(this.urlApiMicoservicio, "api/EspecieFaunaEndPoint/", $"GetEspeciesFaunaByFamilyIdAsync?familiaId=" + idFamilia, token);
                 if (!response.IsSuccess) return null;
                 var list = (List<EspecieFaunaDTO>)response.Result;
+                return JArray.FromObject(list, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Retorna el listado de las edades de los individuos
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, ActionName("ObtenerEdadesAsync")]
+        public async Task<JArray> ObtenerEdadesAsync()
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                var responseF = await apiService.GetMicroServicioListAsync<TipoEdadDTO>(this.urlApiMicoservicio, "api/TipoEdadEndPoint/", $"GetTiposEdadAsync", token);
+                if (!responseF.IsSuccess) return null;
+                var list = (List<TipoEdadDTO>)responseF.Result;
+                return JArray.FromObject(list, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+        /// <summary>
+        /// Retorna el listado de los estados de los individuos
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, ActionName("ObtenerEstadosAsync")]
+        public async Task<JArray> ObtenerEstadosAsync()
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                var responseF = await apiService.GetMicroServicioListAsync<TipoEstadoIndividuoDTO>(this.urlApiMicoservicio, "api/TipoEstadoIndividuoEndPoint/", $"GetTiposEstadoIndividuoAsync", token);
+                if (!responseF.IsSuccess) return null;
+                var list = (List<TipoEstadoIndividuoDTO>)responseF.Result;
                 return JArray.FromObject(list, Js);
             }
             catch (Exception exp)
@@ -516,6 +562,7 @@ namespace SIM.Areas.CAV.Controllers
 
             if (!ModelState.IsValid) return response;
 
+            this.urlApiMicoservicio = "https://localhost:7067/";
             try
             {
                 JsonSerializer Js = new JsonSerializer();
@@ -561,17 +608,9 @@ namespace SIM.Areas.CAV.Controllers
                 summary = result.summary,
                 groupCount = result.groupCount
             };
-            var t = result.data.ToObject<List<RegistroCAVDTO>>();
-            if (t.Count > 0)
-            {
-                ret.data = t;
-            }
-            else
-            {
-                List<RegistroCAVDTO> list = new List<RegistroCAVDTO>();
-                ret.totalCount = 0;
-                ret.data = list;
-            }
+
+            ret.data = result.data.ToObject<List<ExamenLaboratorioDTO>>();
+
             return ret;
 
         }

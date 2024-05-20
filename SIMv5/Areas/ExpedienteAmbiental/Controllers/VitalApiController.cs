@@ -3,6 +3,8 @@
     using DevExpress.Pdf;
     using DevExpress.XtraPrinting;
     using DevExpress.XtraRichEdit;
+    using DevExtreme.AspNet.Data.ResponseModel;
+    using DevExtreme.AspNet.Mvc;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SIM.Areas.ExpedienteAmbiental.Models;
@@ -24,7 +26,7 @@
     using System.Threading.Tasks;
     using System.Web.Hosting;
     using System.Web.Http;
-    using datosConsulta = Clases.datosConsulta;
+    using datosConsulta = Utilidades.datosConsulta;
     using Response = SIM.Models.Response;
     using TramiteDTO = Models.TramiteDTO;
 
@@ -43,8 +45,10 @@
         private string userApiVITALGateWayS = SecurityLibraryNetFramework.ToolsSecurity.Decrypt(SIM.Utilidades.Data.ObtenerValorParametro("UserApiVITALGateWayS").ToString());
         private string urlApiSecurity = SIM.Utilidades.Data.ObtenerValorParametro("urlApiSecurity").ToString();
         private string descargarSolicitudesEnVITAL = SIM.Utilidades.Data.ObtenerValorParametro("DescargarSolitudesEnVITAL").ToString().ToUpper();
-
-
+        private string urlApiMicoservicio = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioCAV").ToString();
+        private string token = string.Empty;
+        private ApiService apiService;
+        private Response response = new Response();
 
         /// <summary>
         /// Constructor de la Clase
@@ -55,6 +59,10 @@
             {
                 urlApiGateWay = "https://localhost:5000/";
             }
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+            token = _token.Value;
+            apiService = new ApiService();
 
         }
 
@@ -72,25 +80,17 @@
             return true;
         }
 
+
         /// <summary>
-        /// Retorna el Listado de los Expedientes Ambientales
+        /// Retorna el Listado de los Tipos de Adquisición de FAUNA
         /// </summary>
-        /// <param name="filter">Criterio de Búsqueda dado por el usuario</param>
-        /// <param name="sort"></param>
-        /// <param name="group"></param>
-        /// <param name="skip"></param>
-        /// <param name="take"></param>
-        /// <param name="searchValue"></param>
-        /// <param name="searchExpr"></param>
-        /// <param name="comparation"></param>
-        /// <param name="tipoData"></param>
-        /// <param name="noFilterNoRecords"></param>
+        /// <param name="opciones"></param>
         /// <returns></returns>
         [HttpGet, ActionName("GetSolicitudesVITALenSIMAsync")]
-        public async Task<datosConsulta> GetSolicitudesVITALenSIMAsync(string filter, string sort, string group, int skip, int take, string searchValue, string searchExpr, string comparation, string tipoData, bool noFilterNoRecords)
+        public async Task<LoadResult> GetSolicitudesVITALenSIMAsync(DataSourceLoadOptions opciones)
         {
-            dynamic model = null;
-            dynamic modelData;
+            var opcionesSerialize = JsonConvert.SerializeObject(opciones);
+
             ApiService apiService = new ApiService();
             datosConsulta datosConsulta = new datosConsulta
             {
@@ -98,31 +98,24 @@
                 numRegistros = 0,
             };
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
-
-            AuthenticationResponse response = await apiService.GetTokenMicroServiciosAsync(this.urlApiGateWay, "api/", "Account", new AuthenticationRequest { Password = this.userApiVITALGateWayS, UserName = this.userApiVITALGateWay });
-            if (response.ExpiresIn == 0) return datosConsulta;
             string descargarVital = descargarSolicitudesEnVITAL == "S" ? "true" : "false";
 
+            this.urlApiMicoservicio = "https://localhost:7068/";
 
+            response = await apiService.GetFilteredDataAsync(this.urlApiMicoservicio, "api/VITAL/SolicitudVITAL/", "ObtenerDescargarSolicitudesVITALPorEstado?Opciones=" + opcionesSerialize + "&atendidas=false&descargarEnVITAL=" + descargarVital, token);
+            if (!response.IsSuccess) return null;
+            dynamic result = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+            LoadResult ret = new LoadResult()
+            {
+                totalCount = result.totalCount,
+                summary = result.summary,
+                groupCount = result.groupCount
+            };
 
-            SIM.Models.Response responseS = await apiService.GetListAsync<SolicitudVITALDTO>(this.urlApiGateWay, "VITAL/SolicitudVITAL/", "ObtenerDescargarSolicitudesVITALPorEstado?atendidas=false&descargarEnVITAL=" + descargarVital, response.JwtToken);
-            if (!responseS.IsSuccess) return datosConsulta;
-            var list = (List<SolicitudVITALDTO>)responseS.Result;
-            if (list == null || list.Count == 0) return datosConsulta;
+            ret.data = result.data.ToObject<List<SolicitudVITALDTO>>();
+            return ret;
 
-            model = list.AsQueryable();
-            modelData = model;
-
-            IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
-
-            datosConsulta.numRegistros = modelFiltered.Count();
-            if (take == 0 && skip == 0) datosConsulta.datos = modelFiltered.ToList();
-            else datosConsulta.datos = modelFiltered.Skip(skip).Take(take).ToList();
-
-            return datosConsulta;
         }
-
 
         /// <summary>
         /// Retorna el Listado de los documentos requeridos para un tipo de trámite ambiental
@@ -541,7 +534,7 @@
 
                             TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
                             {
-                                CODTRAMITE = decimal.Parse(tramiteSIMId),
+                                CODTRAMITE =  decimal.Parse(tramiteSIMId),
                                 CODDOCUMENTO = codmaxDoc,
                                 TIPODOCUMENTO = 2,
                                 FECHACREACION = DateTime.Now,
@@ -576,8 +569,7 @@
                             {
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceRadicado),
-                                CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tBTRAMITEDOCUMENTO.ID_DOCUMENTO,
+                                CODDOCUMENTO =codmaxDoc,
                                 VALOR = radicado.Radicado
                             };
 
@@ -589,7 +581,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceAsunto),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tBTRAMITEDOCUMENTO.ID_DOCUMENTO,
                                 VALOR = "Solicitud de trámite desde la plataforma VITAL"
                             };
 
@@ -601,7 +592,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceFechaRadicado),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tBTRAMITEDOCUMENTO.ID_DOCUMENTO,
                                 VALOR = radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy")
                             };
 
@@ -613,7 +603,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceRemitente),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tBTRAMITEDOCUMENTO.ID_DOCUMENTO,
                                 VALOR = "Remite XXX"
                             };
 
@@ -645,7 +634,7 @@
 
                             #region Envía correo electrónico al usuario de VITAL
                             var destinatario = datos[4];
-                            SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                            SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                             #endregion
 
                         }
@@ -659,7 +648,7 @@
             }
             catch (Exception e)
             {
-                return new Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return responseF;
@@ -697,7 +686,7 @@
                                                   where uf.ID_USUARIO == idUsuario
                                                   select f.CODFUNCIONARIO).FirstOrDefault());
 
-                var Funcionario = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO == codFuncionario).FirstOrDefault();
+                var Funcionario = dbSIM.TBFUNCIONARIO.Where(f => f.CODFUNCIONARIO ==codFuncionario).FirstOrDefault();
                 if (Funcionario == null) Funcionario = new SIM.Data.Tramites.TBFUNCIONARIO();
 
 
@@ -821,7 +810,7 @@
 
                             TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
                             {
-                                CODTRAMITE = decimal.Parse(tramiteSIMId),
+                                CODTRAMITE =  decimal.Parse(tramiteSIMId),
                                 CODDOCUMENTO = codmaxDoc,
                                 TIPODOCUMENTO = 2,
                                 FECHACREACION = DateTime.Now,
@@ -856,8 +845,7 @@
                             {
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceRadicado),
-                                CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
+                                CODDOCUMENTO =codmaxDoc,
                                 VALOR = radicado.Radicado
                             };
 
@@ -869,7 +857,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceAsunto),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                                 VALOR = "Solicitud de trámite desde la plataforma VITAL"
                             };
 
@@ -881,7 +868,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceFechaRadicado),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                                 VALOR = radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy")
                             };
 
@@ -893,8 +879,7 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceRemitente),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
-                                VALOR = datos[3]
+                                VALOR =  datos[3]
                             };
 
                             this.dbSIM.TBINDICEDOCUMENTO.Add(tBINDICEDOCUMENTO);
@@ -926,7 +911,7 @@
                             {
                                 #region Envía correo electrónico al usuario de VITAL
                                 string destinatario = datos[4];
-                                SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                                 #endregion
                             }
                             catch (Exception ex)
@@ -964,7 +949,7 @@
             }
             catch (Exception e)
             {
-                return new Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return resposeF;
@@ -990,7 +975,7 @@
 
                     var trmiteSIM = dbSIM.TBTRAMITE.Where(f => f.CODTRAMITE == tramiteDTO.CodTramite && f.ESTADO == 0).FirstOrDefault();
 
-                    if (trmiteSIM == null) return new Response { IsSuccess = false, Result = "Trámite no encontrado", Message = "El Trámite dado no existe en el SIM! " };
+                    if (trmiteSIM == null) return new Response { IsSuccess = false, Result  = "Trámite no encontrado", Message = "El Trámite dado no existe en el SIM! " };
 
                     ApiService apiService = new ApiService();
                     tramiteDTO.FechaIni = DateTime.Now;
@@ -1115,7 +1100,7 @@
 
                             TBTRAMITEDOCUMENTO tBTRAMITEDOCUMENTO = new TBTRAMITEDOCUMENTO
                             {
-                                CODTRAMITE = decimal.Parse(tramiteSIMId),
+                                CODTRAMITE =  decimal.Parse(tramiteSIMId),
                                 CODDOCUMENTO = codmaxDoc,
                                 TIPODOCUMENTO = 2,
                                 FECHACREACION = DateTime.Now,
@@ -1150,8 +1135,7 @@
                             {
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceRadicado),
-                                CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
+                                CODDOCUMENTO =codmaxDoc,
                                 VALOR = radicado.Radicado
                             };
 
@@ -1163,7 +1147,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceAsunto),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                                 VALOR = "Autodeclaración de Vertimientos de Tasas Retributivas"
                             };
 
@@ -1175,7 +1158,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceFechaRadicado),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                                 VALOR = radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy")
                             };
 
@@ -1187,7 +1169,6 @@
                                 CODTRAMITE = decimal.Parse(tramiteSIMId),
                                 CODINDICE = int.Parse(IdIndiceRemitente),
                                 CODDOCUMENTO = codmaxDoc,
-                                ID_DOCUMENTO = tramiteDocu.ID_DOCUMENTO,
                                 VALOR = "Remite XXX"
                             };
 
@@ -1221,7 +1202,7 @@
                             try
                             {
                                 string destinatario = datos[4];
-                                SIM.Utilidades.EmailMK.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " + radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
+                                SIM.Utilidades.Email.EnviarEmail("metropol@metropol.gov.co", destinatario, "", "", "Solicitud VITAL:" + solicitudVITALDTO.NumeroVITAL, "El Área Metropolitana del Valle de Aburrá recibió su solicitud desde la plataforma VITAL con número de VITAL : " + tramiteDTO.NumeroVital + ". Le informamos que damos inicio al proceso de atención de la misma con número de trámite AMVA: " + tramiteSIMId + " Se anexa la comunicación oficial recibida generada desde la solicitud hecha en VITAL y que fué radicada con el número: " + IdIndiceRadicado + " del " +  radicado.Fecha.ToString("dd 'de ' MMMM ' de' yyyy"), "172.16.0.5", false, "", "", _DocRad, "ComunicacionOficialRecibida.pdf");
                             }
                             catch (Exception ex)
                             {
@@ -1244,7 +1225,7 @@
             catch (Exception e)
             {
                 Utilidades.Log.EscribirRegistro(HostingEnvironment.MapPath("~/LogErrores/" + DateTime.Today.ToString("yyyyMMdd") + ".txt"), "Atención Trámite VITAL - " + tramiteDTO.NumeroVital + " Comunicación Oficial Recibidad con Radicado : " + radicadoCOR + " Se presentó un error. Se pudo haber almacenado parcialmente la Información.\r\n" + Utilidades.LogErrores.ObtenerError(e));
-                return new Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
             }
 
             return resposeF;
@@ -1269,24 +1250,24 @@
 
                 var trmiteSIM = dbSIM.TBTRAMITE.Where(f => f.CODTRAMITE == codt && f.ESTADO == 0).FirstOrDefault();
 
-                if (trmiteSIM == null) return new Response { IsSuccess = false, Result = "Trámite no encontrado", Message = "El Trámite dado no existe en el SIM! " };
+                if (trmiteSIM == null) return new Response { IsSuccess = false, Result  = "Trámite no encontrado", Message = "El Trámite dado no existe en el SIM! " };
 
                 var tareaActual = dbSIM.TBTRAMITETAREA.Where(f => f.CODTRAMITE == codt && f.ESTADO == 0).FirstOrDefault();
-                if (tareaActual == null) return new Response { IsSuccess = false, Result = "No existen tareas vigentes", Message = "El Trámite dado no posee tareas vigentes en el SIM! " };
+                if (tareaActual == null) return new Response { IsSuccess = false, Result  = "No existen tareas vigentes", Message = "El Trámite dado no posee tareas vigentes en el SIM! " };
 
                 if (tareaActual.CODFUNCIONARIO == 1111111914)
                 {
-                    return new Response { IsSuccess = true, Message = "usuario externo" };
+                    return new Response { IsSuccess = true, Message ="usuario externo" };
                 }
                 else
                 {
-                    return new Response { IsSuccess = true, Message = "usuario no externo" };
+                    return new Response { IsSuccess = true, Message ="usuario no externo" };
                 }
 
             }
             catch (Exception e)
             {
-                return new Response { IsSuccess = false, Result = "", Message = "Error Almacenando el registro : " + e.Message };
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
             }
         }
 
@@ -1325,7 +1306,7 @@
             var list = (List<CausaNoAtencionVITALDTO>)responseS.Result;
             if (list == null || list.Count == 0) return null;
 
-            list.Add(new CausaNoAtencionVITALDTO { CausaNoAtencionVITALId = 0, Nombre = "", Habilitado = "1" });
+            list.Add(new CausaNoAtencionVITALDTO { CausaNoAtencionVITALId= 0, Nombre = "", Habilitado = "1" });
 
             model = list.AsQueryable().OrderBy(o => o.Nombre);
 
