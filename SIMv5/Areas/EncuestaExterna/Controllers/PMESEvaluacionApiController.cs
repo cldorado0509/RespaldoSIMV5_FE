@@ -1,28 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using SIM.Areas.General.Models;
+﻿using Oracle.ManagedDataAccess.Client;
 using SIM.Areas.Seguridad.Models;
-using SIM.Areas.Models;
-using Newtonsoft.Json;
-using System.Data.Entity.SqlServer;
-using System.Security.Claims;
-using System.Data.Entity;
-using System.IO;
-using System.Web;
-using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using SIM.Utilidades;
-using System.Globalization;
-using System.Text;
-using System.Web.Hosting;
-using Oracle.ManagedDataAccess.Client;
 using SIM.Data;
 using SIM.Data.Control;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Web.Hosting;
+using System.Web.Http;
 
 namespace SIM.Areas.EncuestaExterna.Controllers
 {
@@ -2581,7 +2569,7 @@ namespace SIM.Areas.EncuestaExterna.Controllers
                 var sql1 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion.txt"));
                 var sql2 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_2.txt"));
                 var sql3 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_3.txt"));
-                var sql4 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_4.txt"));
+                var sql4 = File.ReadAllText(HostingEnvironment.MapPath("~/Content/recursos/pmes_instalacion_5.txt"));
 
                 var pendientesActualizar = dbSIM.Database.SqlQuery<ACTUALIZACIONPMES>("SELECT ID, ID_ENCUESTA, ID_TERCERO, ID_INSTALACION, S_VALOR_VIGENCIA FROM CONTROL.ENC_DATOS_MODIFICADOS WHERE D_FECHA_INICIO IS NULL AND NVL(N_ERROR, 0) = 0 AND D_FECHA <= TO_DATE('" + fechaActual.ToString("yyyyMMdd HH:mm:ss") + "', 'YYYYMMDD HH24:MI:SS') ORDER BY ID").ToList<ACTUALIZACIONPMES>();
 

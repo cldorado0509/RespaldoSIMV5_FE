@@ -2869,6 +2869,7 @@
     <Content Include="Content\recursos\pmes_instalacion_2.txt" />
     <Content Include="Content\recursos\pmes_instalacion_4.txt" />
     <Content Include="Content\recursos\pmes_instalacion_3.txt" />
+    <Content Include="Content\recursos\pmes_instalacion_5.txt" />
     <Content Include="Content\stylesV5\Principal.css" />
     <Content Include="Content\TramitesLinea.css" />
     <Content Include="Content\visitas.css" />
