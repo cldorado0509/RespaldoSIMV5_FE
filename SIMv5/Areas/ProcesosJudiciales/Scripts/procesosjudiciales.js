@@ -26,6 +26,8 @@ $(document).ready(function () {
         }
     ];
 
+    LimpiarCamposDetalle();
+
     $("#loadPanel").dxLoadPanel({
         message: 'Procesando...',
         showIndicator: true,
@@ -131,7 +133,12 @@ $(document).ready(function () {
             {
                 dataField: "procesoId",
                 dataType: 'number',
-                visible: false
+                visible: true
+            }, {
+                dataField: 'radicado',
+                width: '15%',
+                caption: 'RADICADO',
+                dataType: 'string',
             }, {
                 dataField: 'medioControl',
                 width: '20%',
@@ -146,11 +153,6 @@ $(document).ready(function () {
                 dataField: 'juridiccion',
                 width: '20%',
                 caption: 'JURISDICCION',
-                dataType: 'string',
-            }, {
-                dataField: 'radicado',
-                width: '15%',
-                caption: 'RADICADO',
                 dataType: 'string',
             }, {
                 dataField: 'demanda',
@@ -213,8 +215,8 @@ $(document).ready(function () {
         },
         onClick: function (params) {
             $('#loadPanel').dxLoadPanel('instance').show();
-            $('#detalleProcesos').show();
             LimpiarCamposDetalle();
+            $('#detalleProcesos').show();
             $('#listaProcesos').hide();
             CargarCamposDetalle(0);
             $('#loadPanel').dxLoadPanel('instance').hide();
@@ -236,7 +238,51 @@ $(document).ready(function () {
                     }
                 });
         }
-    });
+        });
+
+    $('#agregarConvocante').dxButton(
+        {
+            icon: 'plus',
+            text: '',
+            width: '30x',
+            hint: 'Adicionar convocante',
+            type: 'success',
+            elementAttr: {
+                style: "float: right;"
+            },
+            onClick: function (params) {
+                popupConvocante.show();
+            }
+        });
+
+    $('#agregarConvocado').dxButton(
+        {
+            icon: 'plus',
+            text: '',
+            width: '30x',
+            type: 'success',
+            hint: 'Adicionar convocado',
+            elementAttr: {
+                style: "float: right;"
+            },
+            onClick: function (params) {
+            }
+        });
+    
+    $('#abrirFichaPejudicial').dxButton(
+        {
+            icon: 'startswith',
+            text: '',
+            width: '30x',
+            hint: 'Ficha Comité de Conciliación',
+            type: 'danger',
+            elementAttr: {
+                style: "float: right;"
+            },
+            onClick: function (params) {
+                popupFichaPre.show();
+            }
+        });
 
     $('#guardarProcesoJudicial').dxButton(
         {
@@ -293,12 +339,12 @@ $(document).ready(function () {
                 visible: false
             }, {
                 dataField: 'identificacion',
-                width: '20%',
+                width: '10%',
                 caption: 'Identificación',
                 dataType: 'string',
             }, {
                 dataField: 'nombre',
-                width: '20%',
+                width: '70%',
                 caption: 'Nombre/Razón social',
                 dataType: 'string',
             }, {
@@ -310,9 +356,26 @@ $(document).ready(function () {
                         {
                             icon: 'edit',
                             type: 'success',
-                            hint: 'Editar Proceso Judicial',
+                            hint: 'Editar Demandante',
                             onClick: function (params) {
                              
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            },
+            , {
+                caption: '',
+                width: '6%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'delete',
+                            type: 'danger',
+                            hint: 'Eliminar demandante',
+                            onClick: function (params) {
+
                             }
                         }
                     ).appendTo(cellElement);
@@ -358,12 +421,12 @@ $(document).ready(function () {
                 visible: false
             }, {
                 dataField: 'Identificacion',
-                width: '20%',
+                width: '10%',
                 caption: 'Identificación',
                 dataType: 'string',
             }, {
                 dataField: 'nombre',
-                width: '20%',
+                width: '70%',
                 caption: 'Nombre/Razón social',
                 dataType: 'string',
             }, {
@@ -376,6 +439,23 @@ $(document).ready(function () {
                             icon: 'edit',
                             type: 'success',
                             hint: 'Editar Proceso Judicial',
+                            onClick: function (params) {
+
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            },
+            , {
+                caption: '',
+                width: '6%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'delete',
+                            type: 'danger',
+                            hint: 'Eliminar demandado',
                             onClick: function (params) {
 
                             }
@@ -428,12 +508,12 @@ $(document).ready(function () {
                 dataType: 'string',
             }, {
                 dataField: 'nombre',
-                width: '20%',
+                width: '40%',
                 caption: 'Nombre/Razón social',
                 dataType: 'string',
             }, {
                 caption: '',
-                width: '6%',
+                width: '10%',
                 alignment: 'center',
                 cellTemplate: function (cellElement, cellInfo) {
                     $('<div />').dxButton(
@@ -441,6 +521,23 @@ $(document).ready(function () {
                             icon: 'edit',
                             type: 'success',
                             hint: 'Editar Proceso Judicial',
+                            onClick: function (params) {
+                                popupConvocante.show();
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            },
+            {
+                caption: '',
+                width: '10%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'clear',
+                            type: 'danger',
+                            hint: 'Eliminar demandado',
                             onClick: function (params) {
 
                             }
@@ -493,12 +590,12 @@ $(document).ready(function () {
                 dataType: 'string',
             }, {
                 dataField: 'nombre',
-                width: '20%',
+                width: '40%',
                 caption: 'Nombre/Razón social',
                 dataType: 'string',
             }, {
                 caption: '',
-                width: '6%',
+                width: '10%',
                 alignment: 'center',
                 cellTemplate: function (cellElement, cellInfo) {
                     $('<div />').dxButton(
@@ -506,6 +603,23 @@ $(document).ready(function () {
                             icon: 'edit',
                             type: 'success',
                             hint: 'Editar Proceso Judicial',
+                            onClick: function (params) {
+
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            }
+            , {
+                caption: '',
+                width: '10%',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            icon: 'clear',
+                            type: 'danger',
+                            hint: 'Eliminar demandado',
                             onClick: function (params) {
 
                             }
@@ -607,15 +721,137 @@ $(document).ready(function () {
             }
         ]
     });
+
+    $('#verSolicitud').dxButton(
+        {
+            icon: 'exportpdf',
+            text: '',
+            width: '40px',
+            hint: 'Ver la solicitud',
+            type: 'normal',
+            onClick: function (params) {
+                window.open('../content/imagenes/certificado.pdf');
+            }
+        });
+
+    $('#verNotificacion').dxButton(
+        {
+            icon: 'exportpdf',
+            text: '',
+            hint: 'Ver citación audiencia',
+            width: '40px',
+            type: 'normal',
+            onClick: function (params) {
+                window.open('../content/imagenes/certificado.pdf');
+            }
+        });
+
+    $('#btnGuardarFichaPre').dxButton(
+        {
+            icon: 'save',
+            text: 'Guadar',
+            hint: 'Guadar Ficha',
+            width: '240px',
+            type: 'success',
+            onClick: function (params) {
+                popupFichaPre.hide();
+            }
+        });
+
+    $('#btnImprimirFichaPre').dxButton(
+        {
+            icon: 'print',
+            text: 'Imprimir/Exportar',
+            hint: 'Imprimir / Exportar Ficha',
+            width: '240px',
+            type: 'danger',
+            onClick: function (params) {
+                popupFichaPre.hide();
+            }
+        });
+    
+    $('#btnGuardarConvocante').dxButton(
+        {
+            icon: 'save',
+            text: '',
+            hint: 'Asignar Comvocante',
+            width: '340px',
+            type: 'danger',
+            onClick: function (params) {
+                popupConvocante.hide();
+            }
+        });
+
+
+    var popupFichaPre = $("#PopupFichaPrejudicial").dxPopup({
+        width: 900,
+        height: "auto",
+        hoverStateEnabled: true,
+        title: "Ficha"
+    }).dxPopup("instance");
+
+    var popupConvocante = $("#popupConvocante").dxPopup({
+        width: 700,
+        height: "auto",
+        hoverStateEnabled: true,
+        title: "Convocante"
+    }).dxPopup("instance");
+
+
+    $('#verComiteConciliacion').dxButton(
+        {
+            icon: 'exportpdf',
+            text: '',
+            hint: 'Ver Ficha Comité',
+            width: '40px',
+            type: 'normal',
+            onClick: function (params) {
+                window.open('../content/imagenes/certificado.pdf');
+            }
+        });
+
+    $('#verActaAudiencia').dxButton(
+        {
+            icon: 'exportpdf',
+            text: '',
+            hint: 'Ver  acta de la audiencia',
+            width: '40px',
+            type: 'normal',
+            onClick: function (params) {
+                window.open('../content/imagenes/certificado.pdf');
+            }
+        });
    
 });
 
 function LimpiarCamposDetalle() {
+        
+    $('#procuraduria').dxSelectBox({
+        dataSource: null,
+        placeholder: '[Procuraduría]',
+        value: null
+    });
 
     $('#jurisdiccion').dxSelectBox({
         dataSource: null,
         placeholder: '[Calidad de la Entidad]',
         value: null
+    });
+
+    $("#file-uploader").dxFileUploader({
+        selectButtonText: "...",
+        labelText: "",
+        with: '10px',
+        accept: "pdf/*",
+        uploadMode: "useForm"
+    });
+
+    $("#file-uploader2").dxFileUploader({
+        selectButtonText: "...",
+        labelText: "",
+        with:'10px',
+        accept: "pdf/*",
+        uploadMode: "useForm"
     });
 
     $('#medioControl').dxSelectBox({
@@ -645,12 +881,15 @@ function LimpiarCamposDetalle() {
     $('#radicado').dxTextBox({
         placeholder: '#####################',
         format: '#####################',
-        value: '000000000000000000000' 
+        value: '000000000000000000000',
+        with: '80px'
     });
+
     $('#demandante').dxTextBox({
         placeholder: '[Demandante]',
         value: null
     });
+
     $('#demandado').dxTextBox({
         placeholder: '[Demandado]',
         value: null
@@ -658,6 +897,7 @@ function LimpiarCamposDetalle() {
 
     $('#fechaRadicado').dxDateBox({
         placeholder: '[Fecha Radicado]',
+        with:'180pt',
         value: null
     });
 
@@ -667,7 +907,7 @@ function LimpiarCamposDetalle() {
     });
 
     $('#fechaNotificacion').dxDateBox({
-        placeholder: '[Fecha Notificación]',
+        placeholder: '[F.Notificación]',
         value: null
     });
 
@@ -769,22 +1009,141 @@ function LimpiarCamposDetalle() {
         value: null
     });
 
-    $("#recomendacionAbogado").dxTextArea({
+    $('#apoderado').dxSelectBox({
+        dataSource: null,
+        placeholder: '[Apoderado]',
+        value: null
+    });
+
+
+
+    $("#hechos").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 70
+    });
+
+    $("#pretenciones").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 70
+    });
+
+    $("#fundamentoJuridicoConvocante").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 70
+    });
+
+    $("#fundamentoDefensa").dxTextArea({
         value: "",
         readOnly: false,
         height: 70
     });
 
     $('#fechaComiteConciliacion').dxDateBox({
-        placeholder: '[Fecha Comité de conciliación]',
+        placeholder: '[F.Comité]',
         value: null
     });
 
     $('#fechaAudiencia').dxDateBox({
-        placeholder: '[Fecha de Audiencia]',
+        placeholder: '[F.Audiencia]',
         value: null
     });
-    
+
+
+
+    $('#txtAsuntoFichaPre').dxTextBox({
+        placeholder: '[Asunto]',
+        value: null
+    });
+
+    $('#txtDespachoFichaPre').dxTextBox({
+        placeholder: '[Despacho]',
+        value: null
+    });
+
+    $('#txtMedioControlPre').dxTextBox({
+        placeholder: '[Medio de control]',
+        value: null
+    });
+
+    $('#txtRadicadoPre').dxTextBox({
+        placeholder: '[radicado]',
+        value: null
+    });
+
+    $('#txtInstanciaPre').dxTextBox({
+        placeholder: '[Instancia]',
+        value: null
+    });
+
+    $('#txtConvocantePre').dxTextBox({
+        placeholder: '[Convocante]',
+        value: null
+    });
+
+    $('#txtFechaNotPre').dxTextBox({
+        placeholder: '[F.Notación]',
+        value: null
+    });
+
+    $('#txtRiesgoProcesalPre').dxTextBox({
+        placeholder: '[Riesgo Procesal]',
+        value: null
+    });
+
+    $('#txtFechaAudienciaPre').dxTextBox({
+        placeholder: '[F.Audiencia]',
+        value: null
+    });
+
+    $('#txtCuantiaPre').dxTextBox({
+        placeholder: '[Cuantía]',
+        value: null
+    });
+
+    $('#txtPoliticaInstitucionalPre').dxTextBox({
+        placeholder: '[Política Institucional]',
+        value: null
+    });
+
+    $('#txllamagarantiaPre').dxTextBox({
+        placeholder: '[Llama en garantía]',
+        value: null
+    });
+
+    $('#txlApoderadoPre').dxTextBox({
+        placeholder: '[Apoderado]',
+        value: null
+    });
+
+    $("#decisionComite").dxCheckBox({
+        text: 'Decisión del Comité. Acoge?'  
+    });
+
+    $("#huboAcuerdoConciliatorio").dxCheckBox({
+        text: 'Hubo acuerdo conciliatorio',
+        onValueChanged: function (e) {
+            if (e.value) {
+                $('#apoderado').dxSelectBox('instance').option('disabled', false);
+            } else {
+                $('#apoderado').dxSelectBox('instance').option('disabled', true);
+            }
+        }
+    });
+
+
+    $('#txtIdentidicacionConvocante').dxTextBox({
+        placeholder: '[Identificación]',
+        value: null
+    });
+
+    $('#txtNombreConvocante').dxTextBox({
+        placeholder: '[Nombre /Razón social]',
+        value: null
+    });
+
 
 }
 
@@ -804,6 +1163,40 @@ function CargarCamposDetalle(id) {
         disabled: false,
         displayExpr: "valor",
         valueExpr: "id",
+    });
+
+    $('#apoderado').dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                }
+            })
+        }),
+        placeholder: '[Apoderado]',
+        value: null,
+        disabled: false,
+        displayExpr: "valor",
+        valueExpr: "id",
+    });
+
+    $('#procuraduria').dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetProcuradurias');
+                }
+            })
+        }),
+        placeholder: '[Procuraduría]',
+        value: null,
+        disabled: false,
+        displayExpr: "valor",
+        valueExpr: "id",
+        searchEnabled: true
     });
 
     $('#jurisdiccion').dxSelectBox({
@@ -1198,7 +1591,6 @@ var grdActuacionesDataSource = new DevExpress.data.CustomStore({
         return d.promise();
     }
 });
-
 
 function isNotEmpty(value) {
     return value !== undefined && value !== null && value !== "";

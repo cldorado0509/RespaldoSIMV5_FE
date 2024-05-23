@@ -15,7 +15,6 @@
     .dx-popup-content {
         padding: 0px;
     }
-   
 </style>
 
 <script type="text/javascript" src="@Url.Content("~/Areas/ProcesosJudiciales/Scripts/procesosjudiciales.js?v=" + DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
@@ -46,110 +45,151 @@
         <div id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
         <div id="tab01" style="display: block">
             <div class="row">
-                <div class="col-md-5">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Radicado</div>
-                        <div class="dx-field-value">
-                            <div id="radicado"></div>
-                        </div>
-                    </div>
+                <div class="col-md-1" style="font-size:10pt">
+                    <p><b>Radicado</b></p>
+                </div>
+                <div class="col-md-2">
+                    <div id="radicado"></div>
+                </div>
+                <div class="col-md-2" style="font-size:10pt; text-align:end">
+                </div>
+                <div class="col-md-1" style="align-content:end">
+                    <div id="abrirFichaPejudicial"></div>
+                </div>
+                <div class="col-md-1" style="font-size:10pt">
+                    <p><b>Procuraduría</b></p>
+                </div>
+                <div class="col-md-4">
+                    <div id="procuraduria"></div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-1" style="font-size:10pt">
+                    <p><b>F.Rad Solicitud</b></p>
+                </div>
+                <div class="col-md-1" id="fechaRadicado"></div>
+                <div class="col-md-1" id="verSolicitud"></div>
+                <div class="col-md-3">
+                    <input type="file" class="form-control" id="customFile" />
                 </div>
                 <div class="col-md-1"></div>
-                <div class="col-md-5">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Fecha de Radicado Solicitud</div>
-                        <div class="dx-field-value">
-                            <div id="fechaRadicado"></div>
-                        </div>
-                    </div>
+                <div class="col-md-1" style="font-size:10pt">
+                    <p><b>F.Comité Conciliación</b></p>
+                </div>
+                <div class="col-md-1" id="fechaComiteConciliacion"></div>
+                <div class="col-md-1" id="verComiteConciliacion"></div>
+                <div class="col-md-3">
+                    <input type="file" class="form-control" id="customFile2" />
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-5">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Fecha de Notificación</div>
-                        <div class="dx-field-value">
-                            <div id="fechaNotificacion"></div>
-                        </div>
-                    </div>
+                <div class="col-md-1" style="font-size:10pt">
+                    <p><b>F.Notificación</b></p>
+                </div>
+                <div class="col-md-1" id="fechaNotificacion"></div>
+                <div class="col-md-1" id="verNotificacion"></div>
+                <div class="col-md-3" id="fileuploader-container3">
+                    <input type="file" class="form-control" id="customFile3" />
                 </div>
                 <div class="col-md-1"></div>
-                <div class="col-md-5">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Procuraduría</div>
-                        <div class="dx-field-value">
-                            <div id="cboProcuraduria"></div>
-                        </div>
-                    </div>
+                <div class="col-md-1" style="font-size:10pt">
+                    <p><b>F.Audiencia</b></p>
+                </div>
+                <div class="col-md-1" id="fechaAudiencia"></div>
+                <div class="col-md-1" id="verActaAudiencia"></div>
+                <div class="col-md-3">
+                    <input type="file" class="form-control" id="customFile4" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-5" style="font-size:16pt">
+                    <p><b>Convocantes</b></p>
+                </div>
+                <div class="col-md-1">
+                    <div id="agregarConvocante"></div>
+                </div>
+                <div class="col-md-5" style="font-size:16pt">
+                    <p><b>Convocados</b></p>
+                </div>
+                <div class="col-md-1">
+                    <div id="agregarConvocado"></div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-5">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Comvocantes</div>
-                    </div>
-                </div>
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Convocados</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div id="grdConvocantes"></div>
                 </div>
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
+
+                <div class="col-md-6">
                     <div id="grdConvocados"></div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-10">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Recomendación del abogado</div>
-                     </div>
-                </div>
-                <div class="col-md-1"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-11">
-                    <div class="dx-field">
-                        <div id="recomendacionAbogado"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-5">
-                    <div class="dx-field">
-                        <div class="dx-field-label">Ficha Comité de conciliación</div>
-                        <div class="dx-field-value">
-                            <div id="txtFichaComite"></div>
-                        </div>
-                    </div>
+                    <p><b>Hechos (breve resumen)</b></p>
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-5">
+                    <p><b>Pretenciones (breve resumen)</b></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                     <div class="dx-field">
-                        <div class="dx-field-label">Fecha comité de conciliación</div>
-                        <div class="dx-field-value">
-                            <div id="fechaComiteConciliacion"></div>
-                        </div>
+                        <div id="hechos"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div id="pretenciones"></div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-5">
+                    <div class="dx-field-label">
+                        <p><b>Fundamento jurídico del convocante</b></p>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <p><b>Fundamentos de la defensa propuestos y excepciones</b></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                     <div class="dx-field">
-                        <div class="dx-field-label">Fecha de Audiencia</div>
-                        <div class="dx-field-value">
-                            <div id="fechaAudiencia"></div>
-                        </div>
+                        <div id="fundamentoJuridicoConvocante"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div id="fundamentoDefensa"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="dx-field">
+                        <div id="decisionComite"></div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="dx-field">
+                        <div id="huboAcuerdoConciliatorio"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="dx-field">
+                        <div id="apoderado"></div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div id="tab02" style="display: none">
             <div class="dx-fieldset">
                 <div class="row">
@@ -188,10 +228,10 @@
                     <div class="col-md-5">
                         <div id="grdDemandantes"></div>
                     </div>
-                     <div class="col-md-1"></div>
-                     <div class="col-md-5">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-5">
                         <div id="grdDemandados"></div>
-                     </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-5">
@@ -431,5 +471,95 @@
                 <div id="guardarProcesoJudicial" />
             </div>
         </div>
-    </div>
+        <div id="PopupFichaPrejudicial">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="control-label col-sm-2">Asunto :</div>
+                    <div class="col-sm-9" id="txtAsuntoFichaPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Despacho :</div>
+                    <div class="col-sm-9" id="txtDespachoFichaPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Medio de control :</div>
+                    <div class="col-sm-3" id="txtMedioControlPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Radicado :</div>
+                    <div class="col-sm-4" id="txtRadicadoPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Instancia :</div>
+                    <div class="col-sm-9" id="txtInstanciaPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Convocante :</div>
+                    <div class="col-sm-9" id="txtConvocantePre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">F.Notación:</div>
+                    <div class="col-sm-9" id="txtFechaNotPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">F. Audiencia :</div>
+                    <div class="col-sm-9" id="txtFechaAudienciaPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Riesgo Procesal :</div>
+                    <div class="col-sm-9" id="txtRiesgoProcesalPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Cuantía :</div>
+                    <div class="col-sm-9" id="txtCuantiaPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Política Institucional:</div>
+                    <div class="col-sm-9" id="txtPoliticaInstitucionalPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Llama en garantía:</div>
+                    <div class="col-sm-9" id="txllamagarantiaPre"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Apoderado:</div>
+                    <div class="col-sm-9" id="txlApoderadoPre"></div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-1">
+                        <div id="BotonSaveFichaPre">
+                            <div id="btnGuardarFichaPre"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div id="BotonPrintFichaPre">
+                            <div id="btnImprimirFichaPre"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="popupConvocante">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="control-label col-sm-2">Identificación :</div>
+                    <div class="col-sm-9" id="txtIdentidicacionConvocante"></div>
+                </div>
+                <div class="row">
+                    <div class="control-label col-sm-2">Nombre/Razón social :</div>
+                    <div class="col-sm-9" id="txtNombreConvocante"></div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-2">
+                        <div id="BotonSaveFichaPre">
+                            <div id="btnGuardarConvocante"></div>
+                        </div>
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+     </div>
 </div>

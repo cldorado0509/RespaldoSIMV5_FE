@@ -275,6 +275,42 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [ActionName("GetProcuradurias")]
+        public async Task<JArray> GetProcuradurias()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string _controller = $"Listados/Procuradurias";
+
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+
+                var list = (List<ListadoDTO>)response.Result;
+                var listDto = JArray.FromObject(list, Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         [ActionName("GetMediosControl")]
         public async Task<JArray> GetMediosControl()
         {
