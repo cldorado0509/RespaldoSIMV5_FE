@@ -282,7 +282,7 @@ $(document).ready(function () {
                 dataField: 'VALORDEFECTO', caption: 'COLUMNA EXCEL', dataType: 'string', allowEditing: true,
                 cellTemplate: function (cellElement, cellInfo) {
                     cellElement.css('text-align', 'center');
-                    if (cellInfo.data.VALORDEFECTO != null) cellElement.html(cellInfo.data.VALORDEFECTO);
+                    if (cellInfo.data.VALORDEFECTO != null) cellElement.html("");
                 },
                 editCellTemplate: function (cellElement, cellInfo) {
                     var div = document.createElement("div");
@@ -745,7 +745,7 @@ $(document).ready(function () {
                         DevExpress.ui.dialog.alert('La cantidad de firmas es inferior a las etiquetas de firmas de la plantilla!');
                         return;
                     }
-                    if (_Tramite == "") {
+                    if (_Tramite == "" || _Tramite == null) {
                         var columns = gridExcel.option("columns");
                         if (!columns.some(item => item.toLowerCase() == 'codtramite'.toLowerCase())) {
                             DevExpress.ui.dialog.alert("El proceso de envío masivo de correspondencia requiere de un código de trámite para asociar los documentos, ya se como columna del archivo de Excel o un código de trámite para todo el proceso!");
