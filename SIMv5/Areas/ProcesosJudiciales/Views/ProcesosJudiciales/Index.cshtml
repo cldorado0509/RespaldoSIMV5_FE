@@ -53,9 +53,6 @@
                 </div>
                 <div class="col-md-2" style="font-size:10pt; text-align:end">
                 </div>
-                <div class="col-md-1" style="align-content:end">
-                    <div id="abrirFichaPejudicial"></div>
-                </div>
                 <div class="col-md-1" style="font-size:10pt">
                     <p><b>Procuraduría</b></p>
                 </div>
@@ -172,7 +169,10 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-1" style="align-content:end">
+                    <div id="abrirFichaPejudicial"></div>
+                </div>
+                <div class="col-md-5">
                     <div class="dx-field">
                         <div id="decisionComite"></div>
                     </div>
@@ -472,73 +472,8 @@
             </div>
         </div>
         <div id="PopupFichaPrejudicial">
-            <div class="form-horizontal">
-                <div class="row">
-                    <div class="control-label col-sm-2">Asunto :</div>
-                    <div class="col-sm-9" id="txtAsuntoFichaPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Despacho :</div>
-                    <div class="col-sm-9" id="txtDespachoFichaPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Medio de control :</div>
-                    <div class="col-sm-3" id="txtMedioControlPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Radicado :</div>
-                    <div class="col-sm-4" id="txtRadicadoPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Instancia :</div>
-                    <div class="col-sm-9" id="txtInstanciaPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Convocante :</div>
-                    <div class="col-sm-9" id="txtConvocantePre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">F.Notación:</div>
-                    <div class="col-sm-9" id="txtFechaNotPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">F. Audiencia :</div>
-                    <div class="col-sm-9" id="txtFechaAudienciaPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Riesgo Procesal :</div>
-                    <div class="col-sm-9" id="txtRiesgoProcesalPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Cuantía :</div>
-                    <div class="col-sm-9" id="txtCuantiaPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Política Institucional:</div>
-                    <div class="col-sm-9" id="txtPoliticaInstitucionalPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Llama en garantía:</div>
-                    <div class="col-sm-9" id="txllamagarantiaPre"></div>
-                </div>
-                <div class="row">
-                    <div class="control-label col-sm-2">Apoderado:</div>
-                    <div class="col-sm-9" id="txlApoderadoPre"></div>
-                </div>
-                <hr />
-                <div class="row">
-                    <div class="col-md-1">
-                        <div id="BotonSaveFichaPre">
-                            <div id="btnGuardarFichaPre"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <div id="BotonPrintFichaPre">
-                            <div id="btnImprimirFichaPre"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @*<iframe src="https://sim.metropol.gov.co/editor/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI" style="width:900px; height:700px; margin:0px"></iframe>*@
+            <iframe src="https://localhost:7292/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI" style="width:900px; height:700px; margin:0px"></iframe>
         </div>
         <div id="popupConvocante">
             <div class="form-horizontal">
