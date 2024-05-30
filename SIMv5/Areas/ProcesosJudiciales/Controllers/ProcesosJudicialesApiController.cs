@@ -26,23 +26,6 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="certificate"></param>
-        /// <param name="chain"></param>
-        /// <param name="sslPolicyErrors"></param>
-        /// <returns></returns>
-        public static bool AcceptAllCertifications(
-            object sender,
-            System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-            System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet]
@@ -50,7 +33,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
             ApiService apiService = new ApiService();
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -91,7 +74,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<LoadResult> ConsultaDemandados(DataSourceLoadOptions loadOptions)
         {
             ApiService apiService = new ApiService();
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -142,7 +125,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<LoadResult> ConsultaDemandantes(DataSourceLoadOptions loadOptions)
         {
             ApiService apiService = new ApiService();
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -193,7 +176,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<LoadResult> ConsultaActuaciones(DataSourceLoadOptions loadOptions)
         {
             ApiService apiService = new ApiService();
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -248,7 +231,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -283,7 +266,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -319,7 +302,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -354,7 +337,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -389,7 +372,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -424,7 +407,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -459,7 +442,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
             try
             {
                 var list = new List<ListadoDTO>();
@@ -494,7 +477,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var list = new List<ListadoDTO>();
@@ -523,7 +506,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var list = new List<ListadoDTO>();
@@ -554,7 +537,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var list = new List<ListadoDTO>();
@@ -583,7 +566,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
             try
             {
                 var list = new List<ListadoDTO>();
@@ -616,7 +599,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
@@ -650,7 +633,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();

@@ -785,7 +785,8 @@ $(document).ready(function () {
 
     var popupFichaPre = $("#PopupFichaPrejudicial").dxPopup({
         width: 900,
-        height: "auto",
+        height: "600",
+        resizeEnabled: true,
         hoverStateEnabled: true,
         title: "Ficha"
     }).dxPopup("instance");
