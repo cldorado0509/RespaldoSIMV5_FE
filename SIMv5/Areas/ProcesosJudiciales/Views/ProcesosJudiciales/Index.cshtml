@@ -19,10 +19,6 @@
 
 <script type="text/javascript" src="@Url.Content("~/Areas/ProcesosJudiciales/Scripts/procesosjudiciales.js?v=" + DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
 
-<!--div id="popDetalleProcesoJudicial" style="padding: 0px">
-    <iframe src="" id="frmDetalleProcesoJudicial" style="width:100%; height:100%" frameborder="0" scrolling="yes"></iframe>
-<div-->
-
 <div data-url="@Url.Content("~")" id="app" class="panelSIM panelSIM-default">
     <div id="loadPanel"></div>
     <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
@@ -44,37 +40,68 @@
         <div id="regresar"></div>
         <div id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
         <div id="tab01" style="display: block">
+            <br />
+
             <div class="row">
-                <div class="col-md-1" style="font-size:10pt">
-                    <p><b>Radicado</b></p>
+                <div class="col-md-2" style="font-size:9pt">
+                    <p><b>Radicado de solicitud</b></p>
                 </div>
+                <div class="col-md-2" style="font-size:9pt">
+                    <p style="align-content:end"><b>Procuraduría</b></p>
+                </div>
+                <div class="col-md-2" style="font-size:9pt">
+                    <p><b>Fecha Radicado Solicitud</b></p>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-2">
                     <div id="radicado"></div>
                 </div>
-                <div class="col-md-2" style="font-size:10pt; text-align:end">
-                </div>
-                <div class="col-md-1" style="font-size:10pt">
-                    <p><b>Procuraduría</b></p>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div id="procuraduria"></div>
-                </div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-md-1" style="font-size:10pt">
-                    <p><b>F.Rad Solicitud</b></p>
                 </div>
                 <div class="col-md-1" id="fechaRadicado"></div>
                 <div class="col-md-1" id="verSolicitud"></div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="file" class="form-control" id="customFile" />
                 </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-2" style="font-size:9pt">
+                    <p><b>Apoderado</b></p>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="dx-field">
+                        <div id="apoderado"></div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+            </div>
+            <hr />
+            <div class="row">
+               
+               
                 <div class="col-md-1"></div>
                 <div class="col-md-1" style="font-size:10pt">
-                    <p><b>F.Comité Conciliación</b></p>
+                    <p><b>Solicitud de conciliación</b></p>
                 </div>
-                <div class="col-md-1" id="fechaComiteConciliacion"></div>
+                @*<div class="col-md-1" id="fechaComiteConciliacion"></div>*@
                 <div class="col-md-1" id="verComiteConciliacion"></div>
                 <div class="col-md-3">
                     <input type="file" class="form-control" id="customFile2" />
@@ -82,7 +109,7 @@
             </div>
             <div class="row">
                 <div class="col-md-1" style="font-size:10pt">
-                    <p><b>F.Notificación</b></p>
+                    <p><b></b></p>
                 </div>
                 <div class="col-md-1" id="fechaNotificacion"></div>
                 <div class="col-md-1" id="verNotificacion"></div>
@@ -91,9 +118,8 @@
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-1" style="font-size:10pt">
-                    <p><b>F.Audiencia</b></p>
                 </div>
-                <div class="col-md-1" id="fechaAudiencia"></div>
+                @*<div class="col-md-1" id="fechaAudiencia"></div>*@
                 <div class="col-md-1" id="verActaAudiencia"></div>
                 <div class="col-md-3">
                     <input type="file" class="form-control" id="customFile4" />
@@ -180,11 +206,6 @@
                 <div class="col-md-2">
                     <div class="dx-field">
                         <div id="huboAcuerdoConciliatorio"></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="dx-field">
-                        <div id="apoderado"></div>
                     </div>
                 </div>
             </div>
@@ -473,7 +494,7 @@
         </div>
         <div id="PopupFichaPrejudicial">
             @*<iframe src="https://sim.metropol.gov.co/editor/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI" style="width:900px; height:700px; margin:0px"></iframe>*@
-            <iframe src="https://localhost:7292/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI" style="width:900px; height:700px; margin:0px"></iframe>
+            <iframe src="https://sim.metropol.gov.co/editor/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI" style="width:900px; height:700px; margin:0px"></iframe>
         </div>
         <div id="popupConvocante">
             <div class="form-horizontal">

@@ -803,7 +803,7 @@ $(document).ready(function () {
         {
             icon: 'exportpdf',
             text: '',
-            hint: 'Ver Ficha Comité',
+            hint: 'Ver la solicitud ...',
             width: '40px',
             type: 'normal',
             onClick: function (params) {
@@ -815,7 +815,7 @@ $(document).ready(function () {
         {
             icon: 'exportpdf',
             text: '',
-            hint: 'Ver  acta de la audiencia',
+            hint: 'Ver  admisión',
             width: '40px',
             type: 'normal',
             onClick: function (params) {
