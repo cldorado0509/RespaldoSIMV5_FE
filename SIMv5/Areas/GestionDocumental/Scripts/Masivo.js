@@ -282,7 +282,7 @@ $(document).ready(function () {
                 dataField: 'VALORDEFECTO', caption: 'COLUMNA EXCEL', dataType: 'string', allowEditing: true,
                 cellTemplate: function (cellElement, cellInfo) {
                     cellElement.css('text-align', 'center');
-                    if (cellInfo.data.VALORDEFECTO != null) cellElement.html("");
+                    if (cellInfo.data.VALORDEFECTO != null) cellElement.html(cellInfo.data.VALORDEFECTO);
                 },
                 editCellTemplate: function (cellElement, cellInfo) {
                     var div = document.createElement("div");
@@ -779,9 +779,15 @@ $(document).ready(function () {
         }
     }).dxButton("instance");
 
+    $('#scrollView').dxScrollView({
+        scrollByContent: true,
+        scrollByThumb: true,
+        showScrollbar: 'always'
+    });
+
     $("#popupIndices").dxPopup({
         width: 900,
-        height: 800,
+        height: 850,
         showTitle: true,
         title: "Asociar indices del documeno",
         onShown: function () {
