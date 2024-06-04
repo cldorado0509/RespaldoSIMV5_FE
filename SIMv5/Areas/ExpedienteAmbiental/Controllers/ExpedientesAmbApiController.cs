@@ -758,7 +758,7 @@ namespace SIM.Areas.ExpedienteAmbiental.Controllers
                 if (response.ExpiresIn == 0) return null;
 
 
-                var resp = await apiService.PostAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", $"BorrarPuntoControll/", puntoControl, response.JwtToken);
+                var resp = await apiService.PostAsync<PuntoControlDTO>(this.urlApiGateWay, "ExpA/PuntoControl/", $"BorrarPuntoControl/", puntoControl, response.JwtToken);
                 return resp.Result;
             }
             catch (Exception e)
