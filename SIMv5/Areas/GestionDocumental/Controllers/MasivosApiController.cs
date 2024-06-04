@@ -1402,7 +1402,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     MemoryStream _anexo = new MemoryStream(documento);
                     try
                     {
-                        SIM.Utilidades.EmailMK.EnviarEmail(email, asunto, body, _anexo, _NombreArchivo);
+                        SIM.Utilidades.EmailMK.EnviarEmail("codelectronicas@metropol.gov.co", email, "codelectronicas@metropol.gov.co", "", asunto, body, "smtp.sendgrid.net", true, "apikey", "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", _anexo, _NombreArchivo);
                         return true;
                     }
                     catch { return false; }

@@ -189,6 +189,7 @@ namespace SIM.Utilidades
             }
             return string.Join("\r\n", lcstrDestinatarios);
         }
+
         public static string EnviarEmail2(string rfstrRemitente, string rfstrDestinatarios, string rfstrAsunto, string rfstrContenido, string rfstrSMTPServer, bool vlbolRequiereAutenticacion, string rfstrUsuario, string rfstrPwd, Stream rfstrArchivoAdjunto)
         {
             int puertoSMTP = -1;
