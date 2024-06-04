@@ -41,12 +41,12 @@
 
 
         [JsonProperty("expedienteDocumentalLabel")]
-        public string ExpedienteDocumentalLabel { get; set; }
+        public string ExpedienteDocumentalLabel { get; set; } = string.Empty;
 
 
 
         [JsonProperty("expedienteDocumentalCodigo")]
-        public string ExpedienteDocumentalCodigo { get; set; }
+        public string ExpedienteDocumentalCodigo { get; set; } = string.Empty;
 
         /// <summary>
         /// Establece el tipo de solicitud ambiental asociada al punto de control
@@ -59,7 +59,7 @@
         /// Nombre del Tipo de Solicitud Ambiental
         /// </summary>
         [JsonProperty("tipoSolicitudAmbiental")]
-        public string TipoSolicitudAmbiental { get; set; }
+        public string TipoSolicitudAmbiental { get; set; } = string.Empty;
 
         /// <summary>
         /// Identifica el Expediente ambiental en la estructura anterior del SIM v4
@@ -73,7 +73,7 @@
         [MaxLength(254)]
         [Required]
         [JsonProperty("nombre")]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         /// <summary>
         /// nombre del tipo de Componenteambiental
@@ -81,19 +81,19 @@
         [MaxLength(60)]
         [Required]
         [JsonProperty("conexo")]
-        public string Conexo { get; set; }
+        public string Conexo { get; set; } = string.Empty;
 
         /// <summary>
         /// Observación relacionada con el punto de control
         /// </summary>
         [JsonProperty("observacion")]
-        public string Observacion { get; set; }
+        public string Observacion { get; set; } = string.Empty;
 
         /// <summary>
         /// Observación relacionada con el estado del punto de control
         /// </summary>
         [JsonProperty("observacionEstado")]
-        public string ObservacionEstado { get; set; }
+        public string ObservacionEstado { get; set; } = string.Empty;
 
         [JsonProperty("fechaOrigen")]
         public DateTime? FechaOrigen { get; set; }
