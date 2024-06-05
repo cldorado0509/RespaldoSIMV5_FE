@@ -917,6 +917,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 dbSIM.SaveChanges();
                             }
                             RadMasiva.S_TEMA = datos.TemaMasivo;
+                            RadMasiva.CODTRAMITE = datos.CodTramite;
                             RadMasiva.S_ENVIACORREO = datos.EnviarEmail ? "1" : "0";
                             RadMasiva.S_REALIZADO = "0";
                             if (datos.Completo) RadMasiva.S_VALIDADO = "1";
@@ -939,6 +940,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         _masiva.D_FECHA = DateTime.Now;
                         _masiva.S_TEMA = datos.TemaMasivo;
                         _masiva.S_ENVIACORREO = datos.EnviarEmail ? "1" : "0";
+                        _masiva.CODTRAMITE = datos.CodTramite;
                         dbSIM.RADMASIVA.Add(_masiva);
                         dbSIM.SaveChanges();
                         IdMasivo = _masiva.ID;

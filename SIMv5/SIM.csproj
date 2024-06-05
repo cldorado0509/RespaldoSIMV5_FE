@@ -2708,6 +2708,7 @@
     <Content Include="Content\imagenes\mapa\Vertimientos.png" />
     <Content Include="Content\imagenes\mapa\v_s_Informe.png" />
     <Content Include="Content\imagenes\pata.jpg" />
+    <Content Include="Content\images\areaFirmaMail.png" />
     <Content Include="Content\images\asignaractividadeconomica.svg" />
     <Content Include="Content\images\asignarrepresentantelegal.svg" />
     <Content Include="Content\images\Atras.png" />
@@ -2736,6 +2737,7 @@
     <Content Include="Content\images\Logo_Area.png" />
     <Content Include="Content\images\Logo_AreaRad.png" />
     <Content Include="Content\images\Logo_Area_Soporte.png" />
+    <Content Include="Content\images\MedioAmbMail.png" />
     <Content Include="Content\images\mensaje.png" />
     <Content Include="Content\images\newLogoV5.png" />
     <Content Include="Content\images\PasarGrid.png" />
