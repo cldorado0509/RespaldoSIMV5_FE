@@ -3,6 +3,14 @@ let idProcesoActual = -1;
 let _departamentoId = 0;
 
 $(document).ready(function () {
+
+    $('#asistente').accordion({
+        collapsible: true,
+        animationDuration: 500,
+        multiple: false
+    });
+
+
     const tabsData = [
         {
             id: 0,
@@ -181,21 +189,21 @@ $(document).ready(function () {
                                 $('#loadPanel').dxLoadPanel('instance').hide();
 
                                 $('#regresar').dxButton(
-                                {
-                                    icon: 'arrowleft',
-                                    text: '',
-                                    width: '30x',
-                                    type: 'success',
-                                    elementAttr: {
-                                        style: "float: right;"
-                                    },
-                                    onClick: function (params) {
-                                        $('#loadPanel').dxLoadPanel('instance').show();
-                                        $('#listaProcesos').show();
-                                        $('#detalleProcesos').hide();
-                                        $('#loadPanel').dxLoadPanel('instance').hide();
-                                    }
-                                });
+                                    {
+                                        icon: 'arrowleft',
+                                        text: '',
+                                        width: '30x',
+                                        type: 'success',
+                                        elementAttr: {
+                                            style: "float: right;"
+                                        },
+                                        onClick: function (params) {
+                                            $('#loadPanel').dxLoadPanel('instance').show();
+                                            $('#listaProcesos').show();
+                                            $('#detalleProcesos').hide();
+                                            $('#loadPanel').dxLoadPanel('instance').hide();
+                                        }
+                                    });
                             }
                         }
                     ).appendTo(cellElement);
@@ -205,39 +213,39 @@ $(document).ready(function () {
     });
 
     $('#agregarProcesoJudicial').dxButton(
-    {
-        icon: 'plus',
-        text: '',
-        width: '30x',
-        type: 'success',
-        elementAttr: {
-            style: "float: right;"
-        },
-        onClick: function (params) {
-            $('#loadPanel').dxLoadPanel('instance').show();
-            LimpiarCamposDetalle();
-            $('#detalleProcesos').show();
-            $('#listaProcesos').hide();
-            CargarCamposDetalle(0);
-            $('#loadPanel').dxLoadPanel('instance').hide();
+        {
+            icon: 'plus',
+            text: '',
+            width: '30x',
+            type: 'success',
+            elementAttr: {
+                style: "float: right;"
+            },
+            onClick: function (params) {
+                $('#loadPanel').dxLoadPanel('instance').show();
+                LimpiarCamposDetalle();
+                $('#detalleProcesos').show();
+                $('#listaProcesos').hide();
+                CargarCamposDetalle(0);
+                $('#loadPanel').dxLoadPanel('instance').hide();
 
-            $('#regresar').dxButton(
-                {
-                    icon: 'arrowleft',
-                    text: '',
-                    width: '30x',
-                    type: 'success',
-                    elementAttr: {
-                        style: "float: right;"
-                    },
-                    onClick: function (params) {
-                        $('#loadPanel').dxLoadPanel('instance').show();
-                        $('#listaProcesos').show();
-                        $('#detalleProcesos').hide();
-                        $('#loadPanel').dxLoadPanel('instance').hide();
-                    }
-                });
-        }
+                $('#regresar').dxButton(
+                    {
+                        icon: 'arrowleft',
+                        text: '',
+                        width: '30x',
+                        type: 'success',
+                        elementAttr: {
+                            style: "float: right;"
+                        },
+                        onClick: function (params) {
+                            $('#loadPanel').dxLoadPanel('instance').show();
+                            $('#listaProcesos').show();
+                            $('#detalleProcesos').hide();
+                            $('#loadPanel').dxLoadPanel('instance').hide();
+                        }
+                    });
+            }
         });
 
     $('#agregarConvocante').dxButton(
@@ -268,19 +276,21 @@ $(document).ready(function () {
             onClick: function (params) {
             }
         });
-    
-    $('#abrirFichaPejudicial').dxButton(
+
+    $('#abrirCertificado').dxButton(
         {
             icon: 'startswith',
             text: '',
             width: '30x',
-            hint: 'Ficha Comité de Conciliación',
+            hint: 'Certificado del Comité',
             type: 'danger',
             elementAttr: {
-                style: "float: right;"
+                style: "float:left;"
             },
             onClick: function (params) {
-                popupFichaPre.show();
+                var datos = '';
+                window.open("https://sim.metropol.gov.co/editor/procesosjudiciales/Certificado?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI");
+                //popupFichaPre.show();
             }
         });
 
@@ -358,7 +368,7 @@ $(document).ready(function () {
                             type: 'success',
                             hint: 'Editar Demandante',
                             onClick: function (params) {
-                             
+
                             }
                         }
                     ).appendTo(cellElement);
@@ -420,7 +430,7 @@ $(document).ready(function () {
                 dataType: 'number',
                 visible: false
             }, {
-                dataField: 'Identificacion',
+                dataField: 'identificacion',
                 width: '10%',
                 caption: 'Identificación',
                 dataType: 'string',
@@ -696,7 +706,7 @@ $(document).ready(function () {
                 width: '10%',
                 caption: 'Comité Verificación',
                 dataType: 'boolean',
-            },{
+            }, {
                 dataField: 'desacato',
                 width: '10%',
                 caption: 'Desactato',
@@ -769,7 +779,7 @@ $(document).ready(function () {
                 popupFichaPre.hide();
             }
         });
-    
+
     $('#btnGuardarConvocante').dxButton(
         {
             icon: 'save',
@@ -791,6 +801,7 @@ $(document).ready(function () {
         title: "Ficha"
     }).dxPopup("instance");
 
+
     var popupConvocante = $("#popupConvocante").dxPopup({
         width: 700,
         height: "auto",
@@ -800,6 +811,18 @@ $(document).ready(function () {
 
 
     $('#verComiteConciliacion').dxButton(
+        {
+            icon: 'exportpdf',
+            text: '',
+            hint: 'Ver acta del comité de conciliación ...',
+            width: '40px',
+            type: 'normal',
+            onClick: function (params) {
+                window.open('../content/imagenes/certificado.pdf');
+            }
+        });
+
+    $('#verSolicitudConsiliacion').dxButton(
         {
             icon: 'exportpdf',
             text: '',
@@ -815,18 +838,30 @@ $(document).ready(function () {
         {
             icon: 'exportpdf',
             text: '',
-            hint: 'Ver  admisión',
+            hint: 'Ver el acta de la audiciencia',
             width: '40px',
             type: 'normal',
             onClick: function (params) {
                 window.open('../content/imagenes/certificado.pdf');
             }
         });
-   
+
+    $('#verAdmision').dxButton(
+        {
+            icon: 'exportpdf',
+            text: '',
+            hint: 'Ver admisión',
+            width: '40px',
+            type: 'normal',
+            onClick: function (params) {
+                window.open('../content/imagenes/certificado.pdf');
+            }
+        });
+
 });
 
 function LimpiarCamposDetalle() {
-        
+
     $('#procuraduria').dxSelectBox({
         dataSource: null,
         placeholder: '[Procuraduría]',
@@ -850,7 +885,7 @@ function LimpiarCamposDetalle() {
     $("#file-uploader2").dxFileUploader({
         selectButtonText: "...",
         labelText: "",
-        with:'10px',
+        with: '10px',
         accept: "pdf/*",
         uploadMode: "useForm"
     });
@@ -866,7 +901,7 @@ function LimpiarCamposDetalle() {
         placeholder: '[Calidad de la Entidad]',
         value: null
     });
-   
+
     $('#calidadEntidad').dxSelectBox({
         dataSource: null,
         placeholder: '[Calidad de la Entidad]',
@@ -879,12 +914,12 @@ function LimpiarCamposDetalle() {
         value: null
     });
 
-    $('#radicado').dxTextBox({
+   var radicado = $('#radicado').dxTextBox({
         placeholder: '#####################',
         format: '#####################',
         value: '000000000000000000000',
         with: '80px'
-    });
+   }).dxTextBox("instance");
 
     $('#demandante').dxTextBox({
         placeholder: '[Demandante]',
@@ -896,28 +931,23 @@ function LimpiarCamposDetalle() {
         value: null
     });
 
-    $('#fechaRadicado').dxDateBox({
+    var fechaRadicado = $('#fechaRadicado').dxDateBox({
         placeholder: '[Fecha Radicado]',
-        with:'180pt',
+        with: '180pt',
         value: null
-    });
+    }).dxDateBox("instance");
 
     $('#fechaAdmision').dxDateBox({
         placeholder: '[Fecha Admisión]',
         value: null
     });
 
-    $('#fechaNotificacion').dxDateBox({
+    var fechaNotificacion = $('#fechaNotificacion').dxDateBox({
         placeholder: '[F.Notificación]',
         value: null
-    });
+    }).dxDateBox("instance");
 
-    $('#apoderado').dxTextBox({
-        placeholder: '[Apoderado CC y TP]',
-        readOnly: true,
-        value: null
-    });
-
+  
     $('#codigoContable').dxTextBox({
         placeholder: '[Código Contable]',
         readOnly: true,
@@ -929,8 +959,8 @@ function LimpiarCamposDetalle() {
         readOnly: true,
         value: null
     });
-    
-  
+
+
     $('#generaErogacion').dxSelectBox({
         dataSource: null,
         placeholder: '[Genera Erogación Económica]',
@@ -987,7 +1017,7 @@ function LimpiarCamposDetalle() {
         height: 380,
         value: null
     });
-    
+
     $('#caducidadHechos').dxTextBox({
         placeholder: '[Caducidad o Prescripción]',
         value: null
@@ -1021,25 +1051,33 @@ function LimpiarCamposDetalle() {
     $("#hechos").dxTextArea({
         value: "",
         readOnly: false,
-        height: 70
+        height: 160
     });
 
-    $("#pretenciones").dxTextArea({
+    $("#recomencionAbogado").dxTextArea({
         value: "",
         readOnly: false,
-        height: 70
+        height: 280
+    });
+
+
+
+    $("#pretensiones").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 160
     });
 
     $("#fundamentoJuridicoConvocante").dxTextArea({
         value: "",
         readOnly: false,
-        height: 70
+        height: 160
     });
 
     $("#fundamentoDefensa").dxTextArea({
         value: "",
         readOnly: false,
-        height: 70
+        height: 160
     });
 
     $('#fechaComiteConciliacion').dxDateBox({
@@ -1047,10 +1085,10 @@ function LimpiarCamposDetalle() {
         value: null
     });
 
-    $('#fechaAudiencia').dxDateBox({
+    var fechaAudiencia = $('#fechaAudiencia').dxDateBox({
         placeholder: '[F.Audiencia]',
         value: null
-    });
+    }).dxDateBox("instance");
 
 
 
@@ -1094,10 +1132,11 @@ function LimpiarCamposDetalle() {
         value: null
     });
 
-    $('#txtFechaAudienciaPre').dxTextBox({
+    var txtfechaAudiencia = $('#txtFechaAudienciaPre').dxTextBox({
         placeholder: '[F.Audiencia]',
         value: null
-    });
+    }).dxTextBox("instance");
+
 
     $('#txtCuantiaPre').dxTextBox({
         placeholder: '[Cuantía]',
@@ -1119,19 +1158,30 @@ function LimpiarCamposDetalle() {
         value: null
     });
 
-    $("#decisionComite").dxCheckBox({
-        text: 'Decisión del Comité. Acoge?'  
+
+
+    $("#decisionComite").dxRadioGroup({
+        dataSource: [{ text: "Aprueba", valor: 1 }, { text: "Desaprueba", valor: 2 }],
+        displayExpr: "text",
+        valueExpr: "valor",
+        value: 1
     });
 
-    $("#huboAcuerdoConciliatorio").dxCheckBox({
-        text: 'Hubo acuerdo conciliatorio',
-        onValueChanged: function (e) {
-            if (e.value) {
-                $('#apoderado').dxSelectBox('instance').option('disabled', false);
-            } else {
-                $('#apoderado').dxSelectBox('instance').option('disabled', true);
-            }
-        }
+    $("#decisionAudiencia").dxRadioGroup({
+        dataSource: [{ text: "Aprueba", valor: 1 }, { text: "Desaprueba", valor: 2 }],
+        displayExpr: "text",
+        valueExpr: "valor",
+        value: 1
+    });
+
+
+    
+
+    $("#huboAcuerdoConciliatorio").dxRadioGroup({
+        dataSource: [{ text: "Si", valor: 1 }, { text: "No", valor: 2 }],
+        displayExpr: "text",
+        valueExpr: "valor",
+        value: 1
     });
 
 
@@ -1166,12 +1216,21 @@ function CargarCamposDetalle(id) {
         valueExpr: "id",
     });
 
-    $('#apoderado').dxSelectBox({
+
+    var radicado = $('#radicado').dxTextBox({
+        placeholder: '#####################',
+        format: '#####################',
+        value: '000000000000000000000',
+        with: '80px'
+    }).dxTextBox("instance");
+
+    var apoderado = $('#apoderado').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
                 key: "id",
                 loadMode: "raw",
                 load: function (loadOptions) {
+                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetApoderados');
                 }
             })
         }),
@@ -1180,9 +1239,32 @@ function CargarCamposDetalle(id) {
         disabled: false,
         displayExpr: "valor",
         valueExpr: "id",
+    }).dxSelectBox("instance");
+
+
+    var fechaRadicado = $('#fechaRadicado').dxDateBox({
+        placeholder: '[Fecha Radicado]',
+        with: '180pt',
+        value: null
+    }).dxDateBox("instance");
+
+    $('#fechaAdmision').dxDateBox({
+        placeholder: '[Fecha Admisión]',
+        value: null
     });
 
-    $('#procuraduria').dxSelectBox({
+    var fechaNotificacion = $('#fechaNotificacion').dxDateBox({
+        placeholder: '[F.Notificación]',
+        value: null
+    }).dxDateBox("instance");
+
+
+    var fechaAudiencia = $('#fechaAudiencia').dxDateBox({
+        placeholder: '[F.Audiencia]',
+        value: null
+    }).dxDateBox("instance");
+
+    var procuraduria = $('#procuraduria').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
                 key: "id",
@@ -1198,7 +1280,7 @@ function CargarCamposDetalle(id) {
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
-    });
+    }).dxSelectBox("instance");
 
     $('#jurisdiccion').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -1330,23 +1412,23 @@ function CargarCamposDetalle(id) {
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
-   }).dxSelectBox("instance");
+    }).dxSelectBox("instance");
     var cboMunicipios = $('#municipioHechos').dxSelectBox({
-            dataSource: new DevExpress.data.DataSource({
-                store: new DevExpress.data.CustomStore({
-                    key: "id",
-                    loadMode: "raw",
-                    load: function (loadOptions) {
-                        return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetMunicipios', { departamentoId: _departamentoId });
-                    }
-                })
-            }),
-            placeholder: '[Municipio]',
-            value: null,
-            disabled: false,
-            displayExpr: "valor",
-            valueExpr: "id",
-            searchEnabled: true
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetMunicipios', { departamentoId: _departamentoId });
+                }
+            })
+        }),
+        placeholder: '[Municipio]',
+        value: null,
+        disabled: false,
+        displayExpr: "valor",
+        valueExpr: "id",
+        searchEnabled: true
     }).dxSelectBox("instance");
     var valorEconomico = $('#valorEconomico').dxNumberBox({
         placeholder: '[Valor Económico del Proceso]',
@@ -1368,7 +1450,7 @@ function CargarCamposDetalle(id) {
                         valorEconomico.option('disabled', false);
                     }
                     else {
-                         valorEconomico.option('disabled', true);
+                        valorEconomico.option('disabled', true);
                     }
                 }
             },
@@ -1407,6 +1489,40 @@ function CargarCamposDetalle(id) {
         displayExpr: "valor",
         valueExpr: "id",
     });
+
+    $('#abrirFichaPejudicial').dxButton(
+        {
+            icon: 'startswith',
+            text: '',
+            width: '30x',
+            hint: 'Ficha Comité de Conciliación',
+            type: 'danger',
+            elementAttr: {
+                style: "float:left;"
+            },
+            onClick: function (params) {
+                var datos = '';
+                const _asunto = '';
+                const _despacho =  procuraduria.option("value");
+                const _medioControl = '';
+                const _radicado = radicado.option("value");
+                const _instancia = '';
+                const _convocante = 'Pedro Páramo A';
+                const _convocado = 'Ana María Castaño';
+                const _fechaNotificacion = fechaNotificacion.option("value");
+                const _fechaAudiencia = fechaAudiencia.option("value");
+                const _riesgoProcesal = '';
+                const _cuantia = '0';
+                const _politicaInstitucional = '';
+                const _llamaGarantia = '';
+                const _apoderado = apoderado.option("text");
+
+                var datos = _asunto + '|' + _despacho + ' |' + _medioControl + '|' + _radicado + '|' + _instancia + '|' + _convocante + '|' + _convocado + '|' + _fechaNotificacion + '|' + _fechaAudiencia + '|' + _riesgoProcesal + '|' + _cuantia + '|' + _politicaInstitucional + '|' + _llamaGarantia + '|' + _apoderado;
+                window.open("https://sim.metropol.gov.co/editor/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI&datos=" + datos);
+                //popupFichaPre.show();
+            }
+        });
+
 }
 
 var grdHechosDataSource = new DevExpress.data.CustomStore({
