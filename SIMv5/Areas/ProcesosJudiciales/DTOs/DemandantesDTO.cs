@@ -9,7 +9,7 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
     public class DemandantesDTO
     {
         [JsonProperty("demantanteId")]
-        public string demantanteId { get; set; }
+        public string DemantanteId { get; set; }
 
         [JsonProperty("identificacion")]
         public string Identificacion { get; set; } = String.Empty;

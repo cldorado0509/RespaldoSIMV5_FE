@@ -86,7 +86,6 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
                 List<DemandadosDTO> demandadosDTOs = new List<DemandadosDTO>();
                 demandadosDTOs.Add(new DemandadosDTO { DemandadoId = "1", Identificacion = "343562344", Nombre = "Ana María Castaño" });
-                demandadosDTOs.Add(new DemandadosDTO { DemandadoId = "2", Identificacion = "674567889", Nombre = "Pedro Páramo A" });
 
                 SIM.Models.Response response = new SIM.Models.Response();
                 response.IsSuccess = true;
@@ -136,8 +135,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
 
                 List<DemandantesDTO> demandantesDTOs = new List<DemandantesDTO>();
-                demandantesDTOs.Add(new DemandantesDTO { demantanteId = "1", Identificacion = "343562344", Nombre = "Ana María Castaño" });
-                demandantesDTOs.Add(new DemandantesDTO { demantanteId = "2", Identificacion = "674567889", Nombre = "Pedro Páramo A" });
+                demandantesDTOs.Add(new DemandantesDTO { DemantanteId = "2", Identificacion = "674567889", Nombre = "Pedro Páramo A" });
 
                 SIM.Models.Response response = new SIM.Models.Response();
                 response.IsSuccess = true;
@@ -452,6 +450,44 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 list.Add(new ListadoDTO { Id = "G", Valor = "Llamada en garantías" });
                 list.Add(new ListadoDTO { Id = "TV", Valor = "Tercero vinculado" });
                 list.Add(new ListadoDTO { Id = "O", Valor = "Otros" });
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetApoderados")]
+        public JArray GetApoderados()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1111114074", Valor = "ANDRES FELIPE CADAVID METRIO" });
+                list.Add(new ListadoDTO { Id = "1111115234", Valor = "CARLOS ANDRES ACEVEDO MESA" });
+                list.Add(new ListadoDTO { Id = "1111115896", Valor = "DARIO RINCON JARAMILLO" });
+                list.Add(new ListadoDTO { Id = "1111116716", Valor = "ANGELA PATRICIA QUINTERO OROZCO" });
+                list.Add(new ListadoDTO { Id = "1111120174", Valor = "JOSE NICOLAS ZAPATA CASTRILLON" });
+                list.Add(new ListadoDTO { Id = "1111123845", Valor = "MARGARITA MARIA ORTIZ CANO" });
+                list.Add(new ListadoDTO { Id = "1111122733", Valor = "GERMAN ANTONIO GIRALDO MEJIA" });
+                list.Add(new ListadoDTO { Id = "1111122760", Valor = "LUISA FERNANDA VARGAS MORALES" });
+                list.Add(new ListadoDTO { Id = "1111122968", Valor = "NORMAN DARIO GOMEZ CAÑAS" });
+                list.Add(new ListadoDTO { Id = "1111126166", Valor = "JENNIFER CASTAÑEDA SERRANO" });
                 var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
 
                 return listDto;
