@@ -583,7 +583,6 @@ $(document).ready(function () {
                 }
             });
 
-
         }
     });
 
