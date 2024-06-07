@@ -1503,7 +1503,7 @@ function CargarCamposDetalle(id) {
             onClick: function (params) {
                 var datos = '';
                 const _asunto = '';
-                const _despacho =  procuraduria.option("value");
+                const _despacho =  procuraduria.option("text");
                 const _medioControl = '';
                 const _radicado = radicado.option("value");
                 const _instancia = '';

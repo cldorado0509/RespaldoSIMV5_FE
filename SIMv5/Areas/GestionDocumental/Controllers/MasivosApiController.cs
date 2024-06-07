@@ -460,13 +460,18 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         fila["Código Tramite"] = CodTramite;
                                         if (Masiva.S_ENVIACORREO == "1")
                                         {
-                                            var _email = fila["EMAIL"].ToString();
+                                            var _email = fila["EMAIL"].ToString().Trim().ToLower();
                                             if (_email.Length > 0)
                                             {
-                                                if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                                if (IsValidMail(_email))
                                                 {
-                                                    fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                                    if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                                    {
+                                                        fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                                    }
+                                                    else fila["Comentarios"] = $"Se generó el documento, se radicó y se envió el correo electrónico a {_email}";
                                                 }
+                                                else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
                                             }
                                             else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se encontró un email para el envío";
                                         }
@@ -1568,6 +1573,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
         }
 
+        private bool IsValidMail(string email)
+        {
+            string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+            return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
+        }
         #endregion
     }
 
