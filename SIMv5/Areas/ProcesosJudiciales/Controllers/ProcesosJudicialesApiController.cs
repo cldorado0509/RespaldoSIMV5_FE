@@ -4,7 +4,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SIM.Areas.ProcesosJudiciales.DTOs;
 using SIM.Data;
+using SIM.Models;
 using SIM.Services;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -64,105 +66,6 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="loadOptions"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [ActionName("ConsultaDemandados")]
-        public async Task<LoadResult> ConsultaDemandados(DataSourceLoadOptions loadOptions)
-        {
-            ApiService apiService = new ApiService();
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            try
-            {
-                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
-                string token = _token.Value;
-                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
-                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
-
-
-
-                List<DemandadosDTO> demandadosDTOs = new List<DemandadosDTO>();
-                demandadosDTOs.Add(new DemandadosDTO { DemandadoId = "1", Identificacion = "343562344", Nombre = "Ana María Castaño" });
-
-                SIM.Models.Response response = new SIM.Models.Response();
-                response.IsSuccess = true;
-                response.Result = demandadosDTOs;
-
-                if (!response.IsSuccess) return null;
-                if (response.IsSuccess)
-                {
-                    //dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
-                    LoadResult loadResult = new LoadResult()
-                    {
-                        totalCount = 2,
-                        groupCount = 1,
-
-                    };
-
-                    loadResult.data = demandadosDTOs;
-                    return loadResult;
-                }
-                else return null;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="loadOptions"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [ActionName("ConsultaDemandantes")]
-        public async Task<LoadResult> ConsultaDemandantes(DataSourceLoadOptions loadOptions)
-        {
-            ApiService apiService = new ApiService();
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            try
-            {
-                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
-                string token = _token.Value;
-                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
-                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
-
-
-
-                List<DemandantesDTO> demandantesDTOs = new List<DemandantesDTO>();
-                demandantesDTOs.Add(new DemandantesDTO { DemantanteId = "2", Identificacion = "674567889", Nombre = "Pedro Páramo A" });
-
-                SIM.Models.Response response = new SIM.Models.Response();
-                response.IsSuccess = true;
-                response.Result = demandantesDTOs;
-
-                if (!response.IsSuccess) return null;
-                if (response.IsSuccess)
-                {
-                    //dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
-                    LoadResult loadResult = new LoadResult()
-                    {
-                        totalCount = 2,
-                        groupCount = 1,
-
-                    };
-
-                    loadResult.data = demandantesDTOs;
-                    return loadResult;
-                }
-                else return null;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
 
         /// <summary>
         /// 
@@ -180,7 +83,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
                 string token = _token.Value;
                 string serloadOptions = JsonConvert.SerializeObject(loadOptions);
-                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
+                string _controller = $"Listados/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
 
 
 
@@ -427,6 +330,84 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="idProceso"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaDemandados")]
+        public async Task<JArray> ConsultaDemandados(int idProceso)
+        {
+
+            urlApiJudicial = "https://localhost:7171/";
+
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string _controller = $"Listados/Demandados?idProceso=" + idProceso;
+
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<DemandadosDTO>(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+
+                var list = (List<DemandadosDTO>)response.Result;
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Nombre), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="idProceso"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaDemandantes")]
+        public async Task<JArray> ConsultaDemandantes(int idProceso)
+        {
+            urlApiJudicial = "https://localhost:7171/";
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string _controller = $"Listados/Demandantes?idProceso=" + idProceso;
+
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<DemandantesDTO>(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+
+                var list = (List<DemandantesDTO>)response.Result;
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Nombre), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -656,6 +637,50 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             }
 
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loadOptions"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaTerceros")]
+        public async Task<LoadResult> GetConsultaTerceros(DataSourceLoadOptions loadOptions)
+        {
+            urlApiJudicial = "https://localhost:7171/";
+
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
+                string _controller = $"Listados/Terceros?Opciones={serloadOptions}";
+                Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+                if (response.IsSuccess)
+                {
+                    dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+                    LoadResult loadResult = new LoadResult()
+                    {
+                        totalCount = dynamicResponse.totalCount,
+                        groupCount = dynamicResponse.groupCount,
+                        summary = dynamicResponse.summary
+                    };
+                    loadResult.data = dynamicResponse.data.ToObject<List<TerceroDTO>>();
+                    return loadResult;
+                }
+                else return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -676,7 +701,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/ObtenerCiudad?IdDepto=" + departamentoId;
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
                 var list = (List<ListadoDTO>)response.Result;
@@ -690,5 +715,48 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             }
 
         }
+
+
+        /// <summary>
+        /// Almacena la Información de la Historia clínica de un Individuo
+        /// </summary>
+        /// <param name="objData"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("GuardarProcesoJudicialAsync")]
+        public async Task<Response> GuardarProcesoJudicialAsync(ProcesoJudicialDTO objData)
+        {
+
+            Response response = new Response();
+            ApiService apiService = new ApiService();
+            try
+            {
+
+                decimal Id = 0;
+                if (objData.ProcesoId == -1) objData.ProcesoId = 0;
+                Id = objData.ProcesoId;
+
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+
+                if (Id > 0)
+                {
+                    response = await apiService.PutMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/GuardarProcesoJudicial", objData, token);
+                    if (!response.IsSuccess) return response;
+                }
+                else if (Id <= 0)
+                {
+                    objData.ProcesoId = 0;
+                    response = await apiService.PostMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/ActualizarProcesoJudicial", objData, token);
+                    if (!response.IsSuccess) return response;
+                }
+            }
+            catch (Exception e)
+            {
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+            }
+
+            return response;
+        }
+
     }
 }
