@@ -1842,7 +1842,7 @@ $(document).ready(function () {
         hint: 'Ver el Expediente Documental',
         visible: false,
         onClick: function () {
-            verExpediente($('#SIM').data('url') + 'ExpedienteAmbiental/Expedientes/FlipExpediente?id=' + idExpedienteDoc);
+            verExpediente($('#SIM').data('url') + 'GestionDocumental/Expedientes/FlipExpediente?idExp=' + idExpedienteDoc + '&IdTomo=' + IdTomo);
         }
     });
 
@@ -2244,8 +2244,6 @@ function SeleccionaExpPunto(ExpedienteDocId) {
                     $("#lblExpediente").text(NomExpediente);
                     $("#btnIndices").dxButton("instance").option("visible", true);
                     $("#btnDocumentos").dxButton("instance").option("visible", true);
-                    $("#cmdShowExpedienteFlip").removeClass("hidden");
-                    $("#cmdShowExpedienteFlip").dxButton("instance").option("visible", true);
                     $("#dxTreeView").dxTreeView({
                         dataSource: new DevExpress.data.DataSource({
                             store: new DevExpress.data.CustomStore({
@@ -2263,6 +2261,7 @@ function SeleccionaExpPunto(ExpedienteDocId) {
                         width: '100%',
                         onItemClick: function (e) {
                             var item = e.itemData;
+                            $("#cmdShowExpedienteFlip").dxButton("instance").option("visible", false);
                             if (item.DOCS) {
                                 var valores = item.ID.split(".");
                                 IdTomo = valores[2];
@@ -2321,6 +2320,7 @@ function SeleccionaExpPunto(ExpedienteDocId) {
                             } else if (item.TOMO) {
                                 var valores = item.ID.split(".");
                                 IdTomo = valores[2];
+                                $("#cmdShowExpedienteFlip").dxButton("instance").option("visible", true);
                                 $("#ListaDocs").dxList({
                                     dataSource: new DevExpress.data.DataSource({
                                         store: new DevExpress.data.CustomStore({
@@ -2392,8 +2392,6 @@ function SeleccionaExpPunto(ExpedienteDocId) {
         $("#dxTreeView").dxTreeView("instance").option("visible", false);
         $("#btnIndices").dxButton("instance").option("visible", false);
         $("#lblExpediente").text("No se encuentra vinculado un Expediente Documental con el Punto de Control!");
-        $("#cmdShowExpedienteFlip").dxButton("instance").option("visible", false);
-        $("#cmdShowExpedienteFlip").addClass("hidden");
         alert("No se ha vinculado un Expediente Documental al Punto de Control seleccionado!");
         $("#PanelDer").addClass("hidden");
 

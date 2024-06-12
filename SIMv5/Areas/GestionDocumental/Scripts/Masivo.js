@@ -745,7 +745,7 @@ $(document).ready(function () {
                         DevExpress.ui.dialog.alert('La cantidad de firmas es inferior a las etiquetas de firmas de la plantilla!');
                         return;
                     }
-                    if (_Tramite == "") {
+                    if (_Tramite == "" || _Tramite == null) {
                         var columns = gridExcel.option("columns");
                         if (!columns.some(item => item.toLowerCase() == 'codtramite'.toLowerCase())) {
                             DevExpress.ui.dialog.alert("El proceso de envío masivo de correspondencia requiere de un código de trámite para asociar los documentos, ya se como columna del archivo de Excel o un código de trámite para todo el proceso!");
@@ -779,9 +779,15 @@ $(document).ready(function () {
         }
     }).dxButton("instance");
 
+    $('#scrollView').dxScrollView({
+        scrollByContent: true,
+        scrollByThumb: true,
+        showScrollbar: 'always'
+    });
+
     $("#popupIndices").dxPopup({
         width: 900,
-        height: 800,
+        height: 850,
         showTitle: true,
         title: "Asociar indices del documeno",
         onShown: function () {

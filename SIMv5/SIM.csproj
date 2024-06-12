@@ -351,8 +351,8 @@
     <Reference Include="System.Formats.Asn1, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Formats.Asn1.8.0.0\lib\net462\System.Formats.Asn1.dll</HintPath>
     </Reference>
-    <Reference Include="System.Linq.Dynamic">
-      <HintPath>..\packages\System.Linq.Dynamic.1.0.4\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.8\lib\net40\System.Linq.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -2711,6 +2711,7 @@
     <Content Include="Content\imagenes\mapa\Vertimientos.png" />
     <Content Include="Content\imagenes\mapa\v_s_Informe.png" />
     <Content Include="Content\imagenes\pata.jpg" />
+    <Content Include="Content\images\areaFirmaMail.png" />
     <Content Include="Content\images\asignaractividadeconomica.svg" />
     <Content Include="Content\images\asignarrepresentantelegal.svg" />
     <Content Include="Content\images\Atras.png" />
@@ -2739,6 +2740,7 @@
     <Content Include="Content\images\Logo_Area.png" />
     <Content Include="Content\images\Logo_AreaRad.png" />
     <Content Include="Content\images\Logo_Area_Soporte.png" />
+    <Content Include="Content\images\MedioAmbMail.png" />
     <Content Include="Content\images\mensaje.png" />
     <Content Include="Content\images\newLogoV5.png" />
     <Content Include="Content\images\PasarGrid.png" />

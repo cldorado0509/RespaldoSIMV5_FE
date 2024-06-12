@@ -297,84 +297,53 @@ $(document).ready(function () {
                 dataField: 'ESTADO', width: '15%', caption: 'Anulado', dataType: 'string',
                 alignment: 'center',
                 cellTemplate: function (container, options) {
-                    if (options.data.ESTADO == "Anulado") {
-                        $('<div/>').dxButton({
-                            text: 'Si',
-                            hint: 'Documento Anulado',
-                            onClick: function (e) {
-                                var Documento = options.data.ID_DOCUMENTO;
-                                var _Ruta = $('#SIM').data('url') + "Utilidades/MotivoDevolucion?IdDocumento=" + options.data.ID_DOCUMENTO;
-                                $.getJSON(_Ruta, function (data, status) {
-                                    if (status === "success") {
-                                        popupOpcAnu = {
-                                            width: 500,
-                                            height: 300,
-                                            contentTemplate: function () {
-                                                return $("<div>").append(
-                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
-                                                    $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
-                                                );
-                                            },
-                                            showTitle: true,
-                                            title: "Motivo de la anulación",
-                                            visible: false,
-                                            dragEnabled: false,
-                                            closeOnOutsideClick: true
-                                        };
-                                        popup = $("#PopupAnula").dxPopup(popupOpcAnu).dxPopup("instance");
-                                        $('#PopupAnula').css({ 'visibility': 'visible' });
-                                        $("#PopupAnula").fadeTo("slow", 1);
-                                        popup.show();
+                    var _RutaDoc = $("#SIM").data("url") + "GestionDocumental/api/DocumentosApi/ObtieneDocumento?IdDocumento=" + options.data.ID_DOCUMENTO;
+                    $.getJSON(_RutaDoc, function (data, status) {
+                        if (status === "success") {
+                            if (data.ESTADO == "Anulado" || data.ESTADO == "En proceso") {
+                                var _Text = data.ESTADO == "Anulado" ? "Si" : data.ESTADO == "En proceso" ? "Proceso" : "";
+                                var _hint = data.ESTADO == "Anulado" ? "Documento Anulado" : data.ESTADO == "En proceso" ? "En proceso de Anulación" : "";
+                                $('<div/>').dxButton({
+                                    text: _Text,
+                                    hint: _hint,
+                                    onClick: function (e) {
+                                        var Documento = options.data.ID_DOCUMENTO;
+                                        var _Ruta = $('#SIM').data('url') + "Utilidades/MotivoDevolucion?IdDocumento=" + options.data.ID_DOCUMENTO;
+                                        $.getJSON(_Ruta, function (data, status) {
+                                            if (status === "success") {
+                                                popupOpcAnu = {
+                                                    width: 500,
+                                                    height: 300,
+                                                    contentTemplate: function () {
+                                                        return $("<div>").append(
+                                                            $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
+                                                            $("<br />"),
+                                                            $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
+                                                            $("<br />"),
+                                                            $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
+                                                            $("<br />"),
+                                                            $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
+                                                        );
+                                                    },
+                                                    showTitle: true,
+                                                    title: "Motivo de la anulación",
+                                                    visible: false,
+                                                    dragEnabled: false,
+                                                    closeOnOutsideClick: true
+                                                };
+                                                popup = $("#PopupAnula").dxPopup(popupOpcAnu).dxPopup("instance");
+                                                $('#PopupAnula').css({ 'visibility': 'visible' });
+                                                $("#PopupAnula").fadeTo("slow", 1);
+                                                popup.show();
+                                            }
+                                        });
                                     }
-                                });
+                                }).appendTo(container);
+                            } else {
+                                $('<div/>').append(data.ESTADO).appendTo(container);
                             }
-                        }).appendTo(container);
-                    } else if (options.data.ESTADO == "En proceso") {
-                        $('<div/>').dxButton({
-                            text: 'Proceso',
-                            hint: 'En proceso de Anulación',
-                            onClick: function (e) {
-                                var Documento = options.data.ID_DOCUMENTO;
-                                var _Ruta = $('#SIM').data('url') + "Utilidades/MotivoDevolucion?IdDocumento=" + options.data.ID_DOCUMENTO;
-                                $.getJSON(_Ruta, function (data, status) {
-                                    if (status === "success") {
-                                        popupOpcAnu = {
-                                            width: 500,
-                                            height: 300,
-                                            contentTemplate: function () {
-                                                return $("<div>").append(
-                                                    $("<p>Motivo de la anulación:  <strong>" + data.Motivo + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Solicitud inicial:  " + data.Causa + "</p>"),
-                                                    $("<br />"),
-                                                    $("<p>Fecha Anulación:  <strong>" + ((data.Fecha == "N") ? '' : new Date(data.Fecha).toLocaleDateString('es-CO', fechas)) + "</strong></p>"),
-                                                    $("<br />"),
-                                                    $("<p>Trámite Anulación:  <strong>" + data.TraAnula + "</strong></p>")
-                                                );
-                                            },
-                                            showTitle: true,
-                                            title: "Motivo de la anulación",
-                                            visible: false,
-                                            dragEnabled: false,
-                                            closeOnOutsideClick: true
-                                        };
-                                        popup = $("#PopupAnula").dxPopup(popupOpcAnu).dxPopup("instance");
-                                        $('#PopupAnula').css({ 'visibility': 'visible' });
-                                        $("#PopupAnula").fadeTo("slow", 1);
-                                        popup.show();
-                                    }
-                                });
-                            }
-                        }).appendTo(container);
-                    }
-                    else {
-                        $('<div/>').append(options.data.ESTADO).appendTo(container);
-                    }
+                        }
+                    });
                 }
             },
             {

@@ -8,12 +8,15 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Data;
+    using System.Data.Entity;
     using System.IO;
     using System.Linq;
+    using System.Linq.Dynamic;
     using System.Net;
     using System.Net.Security;
     using System.Security.Claims;
     using System.Security.Cryptography.X509Certificates;
+    using System.Threading.Tasks;
     using System.Web.Http;
 
 
@@ -430,41 +433,27 @@
         /// <param name="CodTramite">Codigo del trámite</param>
         /// <returns></returns>
         [System.Web.Http.HttpGet, System.Web.Http.ActionName("DocsTra")]
-        public JArray GetDocumentosTramite(int CodTramite)
+        public async Task<JArray> GetDocumentosTramite(int CodTramite)
         {
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
             if (CodTramite < 0) return null;
             try
             {
-                var model = (from Doc in dbSIM.TBTRAMITEDOCUMENTO
-                             join Ser in dbSIM.TBSERIE on Doc.CODSERIE equals Ser.CODSERIE
-                             where Doc.CODTRAMITE == CodTramite
-                             orderby Doc.FECHACREACION descending
-                             select new Documento
-                             {
-                                 ID_DOCUMENTO = Doc.ID_DOCUMENTO,
-                                 CODDOC = Doc.CODDOCUMENTO,
-                                 SERIE = Ser.NOMBRE,
-                                 FECHA = Doc.FECHACREACION.Value,
-                                 ESTADO = Doc.S_ESTADO == "N" ? "Anulado" : "",
-                                 ADJUNTO = Doc.S_ADJUNTO != "1" ? "No" : "Si",
-                                 CODTRAMITE = Doc.CODTRAMITE
-                             }).ToList();
-                if (model != null)
-                {
-                    foreach (var doc in model)
-                    {
-                        if (doc.ESTADO != "Anulado")
-                        {
-                            var estDoc = (from A in dbSIM.ANULACION_DOC
-                                          join D in dbSIM.TRAMITES_PROYECCION on A.ID_PROYECCION_DOC equals D.ID_PROYECCION_DOC
-                                          where D.CODTRAMITE == doc.CODTRAMITE && D.CODDOCUMENTO == doc.CODDOC && A.S_ESTADO == "P"
-                                          select A.ID_ANULACION_DOC).FirstOrDefault();
-                            if (estDoc > 0) doc.ESTADO = "En proceso";
-                        }
-                    }
-                }
+                var model = await (from Doc in dbSIM.TBTRAMITEDOCUMENTO
+                                   join Ser in dbSIM.TBSERIE on Doc.CODSERIE equals Ser.CODSERIE
+                                   where Doc.CODTRAMITE == CodTramite
+                                   orderby Doc.FECHACREACION descending
+                                   select new Documento
+                                   {
+                                       ID_DOCUMENTO = Doc.ID_DOCUMENTO,
+                                       CODDOC = Doc.CODDOCUMENTO,
+                                       SERIE = Ser.NOMBRE,
+                                       FECHA = Doc.FECHACREACION.Value,
+                                       ESTADO = "",
+                                       ADJUNTO = Doc.S_ADJUNTO != "1" ? "No" : "Si",
+                                       CODTRAMITE = Doc.CODTRAMITE
+                                   }).ToListAsync();
                 return JArray.FromObject(model, Js);
             }
             catch (Exception exp)

@@ -373,83 +373,111 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                     _doc.Pages[reemp.Pagina] = _pag;
                                 }
                                 var fechaCreacion = DateTime.Now;
-                                DatosRadicado radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
-                                var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
-                                if (imagenRadicado != null)
+                                DatosRadicado radicadoGenerado = new DatosRadicado();
+                                if (dt.Columns.Contains("ID_RADICADO"))
                                 {
-                                    _pag = _doc.Pages[0];
-                                    _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
-                                    _Radicado = radicadoGenerado.Radicado;
-                                    _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
-                                    IdRadicado = radicadoGenerado.IdRadicado;
-                                    _doc.Pages[0] = _pag;
-                                }
-                                List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
-                                IndicesDocumento _Index;
-                                var _asunto = "";
-                                var _para = "";
-                                foreach (var Ind in Indices)
-                                {
-                                    _Index = new IndicesDocumento();
-                                    var TbIndice = dbSIM.TBINDICESERIE.Where(w => w.CODINDICE == Ind.CODINDICE).FirstOrDefault();
-                                    _Index.CODINDICE = TbIndice.CODINDICE;
-                                    if (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") _Index.VALOR = fila[Ind.S_VALOREXCEL].ToString();
-                                    else _Index.VALOR = Ind.S_VALORASIGNADO;
-                                    if (TbIndice.INDICE.ToLower().Contains("asunto")) _asunto = _Index.VALOR;
-                                    if (TbIndice.INDICE.ToLower().Contains("destinatario")) _para = _Index.VALOR;
-                                    _Indices.Add(_Index);
-                                }
-                                var TbIndiceRad = dbSIM.TBINDICESERIE.Where(w => (w.INDICE_RADICADO == "R" || w.INDICE_RADICADO == "F") && w.CODSERIE == 12).ToList();
-                                if (TbIndiceRad != null && TbIndiceRad.Count > 0)
-                                {
-                                    foreach (var Ind in TbIndiceRad)
+                                    decimal _IdRadicado = decimal.Parse(fila["ID_RADICADO"].ToString());
+                                    var _DatRadicado = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == _IdRadicado).FirstOrDefault();
+                                    if (_DatRadicado != null)
                                     {
-                                        if (Ind.INDICE.ToLower().Contains("radicado") || Ind.INDICE.ToLower().Contains("fecha"))
-                                        {
-                                            _Index = new IndicesDocumento();
-                                            _Index.CODINDICE = Ind.CODINDICE;
-                                            _Index.VALOR = Ind.INDICE.ToLower().Contains("radicado") ? _Radicado : _FecRad;
-                                            _Indices.Add(_Index);
-                                        }
+                                        radicadoGenerado.IdRadicado = (int)_DatRadicado.ID_RADICADODOC;
+                                        radicadoGenerado.Radicado = _DatRadicado.S_RADICADO;
+                                        radicadoGenerado.Fecha = _DatRadicado.D_RADICADO;
+                                        radicadoGenerado.Etiqueta = _DatRadicado.S_ETIQUETA;
                                     }
                                 }
-                                SIM.Utilidades.Documento documento = new Utilidades.Documento();
-                                documento.TipoDocumento = 1;
-                                documento.Extension = "pdf";
-                                documento.Codfuncionario = SIM.Utilidades.Tramites.ObtenerCodiogoFuncionario(userId);
-                                documento.CodSerie = 12;
-                                documento.IdUsuario = userId;
-                                documento.Paginas = _paginas;
-                                MemoryStream streamDoc = new MemoryStream();
-                                _doc.Save(streamDoc);
-
-
-                                documento.Archivo = streamDoc.ToArray();
-                                if (!SIM.Utilidades.Tramites.AdicionaDocRadicadoTramite(CodTramite, IdRadicado, documento, _Indices))
-                                {
-                                    _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
-                                    fila["Comentarios"] = $"El documento no se pudo generar ya que ocurrió un problema con el documento";
-                                }
+                                else radicadoGenerado = radicador.GenerarRadicado(dbSIM, 12, userId, fechaCreacion);
+                                if (radicadoGenerado.IdRadicado > 0) _continua = true;
                                 else
                                 {
-                                    _correctos++;
-                                    var CodDoc = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).Select(s => s.CODDOCUMENTO).FirstOrDefault();
-                                    fila["Radicado Generado"] = _Radicado;
-                                    fila["Código Documento"] = CodDoc;
-                                    fila["Código Tramite"] = CodTramite;
-                                    if (Masiva.S_ENVIACORREO == "1")
+                                    fila["Comentarios"] = "No se encontró o no se pudo generar el radicado, no se generó el documento";
+                                    _continua = false;
+                                }
+                                if (_continua)
+                                {
+                                    var imagenRadicado = radicador.ObtenerImagenRadicadoArea(radicadoGenerado.IdRadicado);
+                                    if (imagenRadicado != null)
                                     {
-                                        var _email = fila["EMAIL"].ToString();
-                                        if (_email.Length > 0)
+                                        _pag = _doc.Pages[0];
+                                        _pag.Canvas.DrawImage(imagenRadicado, 300, 30, 288, 72);
+                                        _Radicado = radicadoGenerado.Radicado;
+                                        _FecRad = radicadoGenerado.Fecha.ToString("dd/MM/yyyy");
+                                        IdRadicado = radicadoGenerado.IdRadicado;
+                                        _doc.Pages[0] = _pag;
+                                    }
+                                    List<IndicesDocumento> _Indices = new List<IndicesDocumento>();
+                                    IndicesDocumento _Index;
+                                    var _asunto = "";
+                                    var _para = "";
+                                    foreach (var Ind in Indices)
+                                    {
+                                        _Index = new IndicesDocumento();
+                                        var TbIndice = dbSIM.TBINDICESERIE.Where(w => w.CODINDICE == Ind.CODINDICE).FirstOrDefault();
+                                        _Index.CODINDICE = TbIndice.CODINDICE;
+                                        if (Ind.S_VALOREXCEL != null && Ind.S_VALOREXCEL != "") _Index.VALOR = fila[Ind.S_VALOREXCEL].ToString();
+                                        else _Index.VALOR = Ind.S_VALORASIGNADO;
+                                        if (TbIndice.INDICE.ToLower().Contains("asunto")) _asunto = _Index.VALOR;
+                                        if (TbIndice.INDICE.ToLower().Contains("destinatario")) _para = _Index.VALOR;
+                                        _Indices.Add(_Index);
+                                    }
+                                    var TbIndiceRad = dbSIM.TBINDICESERIE.Where(w => (w.INDICE_RADICADO == "R" || w.INDICE_RADICADO == "F") && w.CODSERIE == 12).ToList();
+                                    if (TbIndiceRad != null && TbIndiceRad.Count > 0)
+                                    {
+                                        foreach (var Ind in TbIndiceRad)
                                         {
-                                            if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                            if (Ind.INDICE.ToLower().Contains("radicado") || Ind.INDICE.ToLower().Contains("fecha"))
                                             {
-                                                fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                                _Index = new IndicesDocumento();
+                                                _Index.CODINDICE = Ind.CODINDICE;
+                                                _Index.VALOR = Ind.INDICE.ToLower().Contains("radicado") ? _Radicado : _FecRad;
+                                                _Indices.Add(_Index);
                                             }
                                         }
-                                        else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se encontró un email para el envío";
                                     }
-                                    else fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                    SIM.Utilidades.Documento documento = new Utilidades.Documento();
+                                    documento.TipoDocumento = 1;
+                                    documento.Extension = "pdf";
+                                    documento.Codfuncionario = SIM.Utilidades.Tramites.ObtenerCodiogoFuncionario(userId);
+                                    documento.CodSerie = 12;
+                                    documento.IdUsuario = userId;
+                                    documento.Paginas = _paginas;
+                                    MemoryStream streamDoc = new MemoryStream();
+                                    _doc.Save(streamDoc);
+
+
+                                    documento.Archivo = streamDoc.ToArray();
+                                    if (!SIM.Utilidades.Tramites.AdicionaDocRadicadoTramite(CodTramite, IdRadicado, documento, _Indices))
+                                    {
+                                        _mensaje += $"El documento de la fila {fila["ID"]} no se pudo generar ya ocurrió un problema con el documento <br />";
+                                        fila["Comentarios"] = $"El documento no se pudo generar ya que ocurrió un problema con el documento";
+                                    }
+                                    else
+                                    {
+                                        _correctos++;
+                                        var CodDoc = dbSIM.RADICADO_DOCUMENTO.Where(w => w.ID_RADICADODOC == IdRadicado).Select(s => s.CODDOCUMENTO).FirstOrDefault();
+                                        fila["Radicado Generado"] = _Radicado;
+                                        fila["Código Documento"] = CodDoc;
+                                        fila["Código Tramite"] = CodTramite;
+                                        if (Masiva.S_ENVIACORREO == "1")
+                                        {
+                                            var _email = fila["EMAIL"].ToString().Trim().ToLower();
+                                            if (_email.Length > 0)
+                                            {
+                                                if (IsValidMail(_email))
+                                                {
+                                                    if (!EnviarMailMk(_email, documento.Archivo, _asunto, _para, _Radicado, _FecRad))
+                                                    {
+                                                        fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                                    }
+                                                    else fila["Comentarios"] = $"Se generó el documento, se radicó y se envió el correo electrónico a {_email}";
+                                                }
+                                                else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se pudo enviar el email";
+                                            }
+                                            else fila["Comentarios"] = "Se generó el documento y se radicó, pero no se encontró un email para el envío";
+                                        }
+                                        else fila["Comentarios"] = "Radicado y documento generado correctamente";
+                                    }
+
                                 }
                             }
                             else fila["Comentarios"] = $"El documento no se pudo generar ya que el Cotramite {fila["CODTRAMITE"]} no se encontró";
@@ -668,7 +696,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                                  TIPO = i.TIPO,
                                                  LONGITUD = i.LONGITUD,
                                                  OBLIGA = i.OBLIGA,
-                                                 VALORDEFECTO = i.VALORDEFECTO,
+                                                 VALORDEFECTO = "",
                                                  VALOR = "",
                                                  ID_VALOR = null,
                                                  ID_LISTA = i.CODIGO_SUBSERIE,
@@ -894,6 +922,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 dbSIM.SaveChanges();
                             }
                             RadMasiva.S_TEMA = datos.TemaMasivo;
+                            RadMasiva.CODTRAMITE = datos.CodTramite;
                             RadMasiva.S_ENVIACORREO = datos.EnviarEmail ? "1" : "0";
                             RadMasiva.S_REALIZADO = "0";
                             if (datos.Completo) RadMasiva.S_VALIDADO = "1";
@@ -916,6 +945,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         _masiva.D_FECHA = DateTime.Now;
                         _masiva.S_TEMA = datos.TemaMasivo;
                         _masiva.S_ENVIACORREO = datos.EnviarEmail ? "1" : "0";
+                        _masiva.CODTRAMITE = datos.CodTramite;
                         dbSIM.RADMASIVA.Add(_masiva);
                         dbSIM.SaveChanges();
                         IdMasivo = _masiva.ID;
@@ -1379,7 +1409,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     MemoryStream _anexo = new MemoryStream(documento);
                     try
                     {
-                        SIM.Utilidades.EmailMK.EnviarEmail(email, asunto, body, _anexo, _NombreArchivo);
+                        SIM.Utilidades.EmailMK.EnviarEmail("codelectronicas@metropol.gov.co", email, "codelectronicas@metropol.gov.co", "", asunto, body, "smtp.sendgrid.net", true, "apikey", "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", _anexo, _NombreArchivo);
                         return true;
                     }
                     catch { return false; }
@@ -1543,6 +1573,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
             }
         }
 
+        private bool IsValidMail(string email)
+        {
+            string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+            return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
+        }
         #endregion
     }
 
