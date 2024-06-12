@@ -660,19 +660,57 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string _controller = $"Listados/Terceros?Opciones={serloadOptions}";
                 Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
-                if (response.IsSuccess)
+
+                dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+                LoadResult loadResult = new LoadResult()
                 {
-                    dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
-                    LoadResult loadResult = new LoadResult()
-                    {
-                        totalCount = dynamicResponse.totalCount,
-                        groupCount = dynamicResponse.groupCount,
-                        summary = dynamicResponse.summary
-                    };
-                    loadResult.data = dynamicResponse.data.ToObject<List<TerceroDTO>>();
-                    return loadResult;
-                }
-                else return null;
+                    totalCount = dynamicResponse.totalCount,
+                    groupCount = dynamicResponse.groupCount,
+                    summary = dynamicResponse.summary
+                };
+                loadResult.data = dynamicResponse.data.ToObject<List<TerceroDTO>>();
+                return loadResult;
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loadOptions"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaTercerosC")]
+        public async Task<LoadResult> GetConsultaTercerosC(DataSourceLoadOptions loadOptions)
+        {
+            urlApiJudicial = "https://localhost:7171/";
+
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
+                string _controller = $"Listados/Terceros?Opciones={serloadOptions}";
+                Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+
+                dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+                LoadResult loadResult = new LoadResult()
+                {
+                    totalCount = dynamicResponse.totalCount,
+                    groupCount = dynamicResponse.groupCount,
+                    summary = dynamicResponse.summary
+                };
+                loadResult.data = dynamicResponse.data.ToObject<List<TerceroDTO>>();
+                return loadResult;
+
             }
             catch
             {
@@ -730,6 +768,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ApiService apiService = new ApiService();
             try
             {
+                urlApiJudicial = "https://localhost:7171/";
 
                 decimal Id = 0;
                 if (objData.ProcesoId == -1) objData.ProcesoId = 0;
@@ -740,13 +779,13 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
                 if (Id > 0)
                 {
-                    response = await apiService.PutMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/GuardarProcesoJudicial", objData, token);
+                    response = await apiService.PutMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/ActualizarProcesoJudicial", objData, token);
                     if (!response.IsSuccess) return response;
                 }
                 else if (Id <= 0)
                 {
                     objData.ProcesoId = 0;
-                    response = await apiService.PostMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/ActualizarProcesoJudicial", objData, token);
+                    response = await apiService.PostMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/GuardarProcesoJudicial", objData, token);
                     if (!response.IsSuccess) return response;
                 }
             }

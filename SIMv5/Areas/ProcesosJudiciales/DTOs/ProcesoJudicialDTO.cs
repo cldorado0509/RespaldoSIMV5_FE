@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 namespace SIM.Areas.ProcesosJudiciales.DTOs
 {
@@ -105,7 +106,11 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [StringLength(1)]
         public string DecisionAudiencia { get; set; }
 
+        [JsonProperty("demandantes")]
+        public List<DemandantesDTO> Demandantes { get; set; } = new List<DemandantesDTO>();
 
+        [JsonProperty("demandados")]
+        public List<DemandadosDTO> Demandados { get; set; } = new List<DemandadosDTO>();
 
     }
 }

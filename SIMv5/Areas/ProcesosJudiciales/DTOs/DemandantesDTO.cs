@@ -16,5 +16,8 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
 
         [JsonProperty("nombre")]
         public string Nombre { get; set; } = String.Empty;
+
+        [JsonProperty("isNew")]
+        public string IsNew { get; set; }
     }
 }
