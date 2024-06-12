@@ -341,7 +341,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> ConsultaDemandados(int idProceso)
         {
 
-            urlApiJudicial = "https://localhost:7171/";
+            //urlApiJudicial = "https://localhost:7171/";
 
             ApiService apiService = new ApiService();
 
@@ -380,7 +380,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaDemandantes")]
         public async Task<JArray> ConsultaDemandantes(int idProceso)
         {
-            urlApiJudicial = "https://localhost:7171/";
+            //urlApiJudicial = "https://localhost:7171/";
             ApiService apiService = new ApiService();
 
             JsonSerializer Js = new JsonSerializer();
@@ -648,7 +648,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaTerceros")]
         public async Task<LoadResult> GetConsultaTerceros(DataSourceLoadOptions loadOptions)
         {
-            urlApiJudicial = "https://localhost:7171/";
+            //urlApiJudicial = "https://localhost:7171/";
 
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
@@ -688,7 +688,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaTercerosC")]
         public async Task<LoadResult> GetConsultaTercerosC(DataSourceLoadOptions loadOptions)
         {
-            urlApiJudicial = "https://localhost:7171/";
+            //urlApiJudicial = "https://localhost:7171/";
 
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
@@ -768,7 +768,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ApiService apiService = new ApiService();
             try
             {
-                urlApiJudicial = "https://localhost:7171/";
+                //urlApiJudicial = "https://localhost:7171/";
 
                 decimal Id = 0;
                 if (objData.ProcesoId == -1) objData.ProcesoId = 0;
