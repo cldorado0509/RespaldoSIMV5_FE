@@ -601,8 +601,6 @@ $(document).ready(function () {
                                 $('#detalleProcesos').show();
                             
                                 idProcesoActual = cellInfo.data.procesoId;
-
-
                                 var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerProcesoJudicial"
                                 $.getJSON(_Ruta,
                                     {
