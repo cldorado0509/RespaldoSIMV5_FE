@@ -728,6 +728,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         {
             //urlApiJudicial = "https://localhost:7171/"; 
 
+
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
