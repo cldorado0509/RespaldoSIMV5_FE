@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SIM.Areas.ProcesosJudiciales.DTOs;
 using SIM.Data;
-using SIM.Models;
 using SIM.Services;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Response = SIM.Models.Response;
 
 namespace SIM.Areas.ProcesosJudiciales.Controllers
 {
@@ -34,6 +34,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaProcesosJudiciales")]
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
+            urlApiJudicial= "https://localhost:7171/";
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
@@ -66,7 +67,44 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         }
 
 
+        /// <summary>
+        /// Obtiene un proceso judicial
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ObtenerProcesoJudicial")]
+        public async Task<JObject> ObtenerProcesoJudicialAsync(int Id)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
 
+            urlApiJudicial= "https://localhost:7171/";
+
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+
+                ApiService apiService = new ApiService();
+
+                ProcesoJudicialDTO proceso = new ProcesoJudicialDTO();
+
+
+                Response response = await apiService.GetMicroServicioAsync<ProcesoJudicialDTO>(this.urlApiJudicial, "api/ProcesosJudiciales/", $"ObtenerProcesoJudicial?idProceso={Id}", token);
+                if (!response.IsSuccess) return JObject.FromObject(proceso, Js);
+                proceso = (ProcesoJudicialDTO)response.Result;
+                return JObject.FromObject(proceso, Js);
+
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+
+        ///
         /// <summary>
         /// 
         /// </summary>
