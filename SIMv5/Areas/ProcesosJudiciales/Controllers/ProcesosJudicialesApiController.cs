@@ -34,7 +34,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaProcesosJudiciales")]
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
@@ -463,12 +463,13 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             try
             {
                 var list = new List<ListadoDTO>();
-                list.Add(new ListadoDTO { Id = "8120", Valor = "Entidad demandada" });
-                list.Add(new ListadoDTO { Id = "9120", Valor = "Demanda la entidad" });
-                list.Add(new ListadoDTO { Id = "C", Valor = "Entidad citada" });
-                list.Add(new ListadoDTO { Id = "G", Valor = "Llamada en garantías" });
-                list.Add(new ListadoDTO { Id = "TV", Valor = "Tercero vinculado" });
-                list.Add(new ListadoDTO { Id = "O", Valor = "Otros" });
+                list.Add(new ListadoDTO { Id = "8120", Valor = "Demandado" });
+                list.Add(new ListadoDTO { Id = "9120", Valor = "Demandante" });
+                list.Add(new ListadoDTO { Id = "C", Valor = "Vinculado" });
+                list.Add(new ListadoDTO { Id = "G", Valor = "Litis Consorte" });
+                list.Add(new ListadoDTO { Id = "TV", Valor = "Vinculado" });
+                list.Add(new ListadoDTO { Id = "O", Valor = "Tercero en Garantías" });
+                list.Add(new ListadoDTO { Id = "V", Valor = "Víctimas" });
                 var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
 
                 return listDto;
@@ -497,16 +498,14 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             try
             {
                 var list = new List<ListadoDTO>();
-                list.Add(new ListadoDTO { Id = "1111114074", Valor = "ANDRES FELIPE CADAVID METRIO" });
+                list.Add(new ListadoDTO { Id = "1111114074", Valor = "ORLANDO CARRILLO OCHOA" });
                 list.Add(new ListadoDTO { Id = "1111115234", Valor = "CARLOS ANDRES ACEVEDO MESA" });
-                list.Add(new ListadoDTO { Id = "1111115896", Valor = "DARIO RINCON JARAMILLO" });
-                list.Add(new ListadoDTO { Id = "1111116716", Valor = "ANGELA PATRICIA QUINTERO OROZCO" });
-                list.Add(new ListadoDTO { Id = "1111120174", Valor = "JOSE NICOLAS ZAPATA CASTRILLON" });
-                list.Add(new ListadoDTO { Id = "1111123845", Valor = "MARGARITA MARIA ORTIZ CANO" });
-                list.Add(new ListadoDTO { Id = "1111122733", Valor = "GERMAN ANTONIO GIRALDO MEJIA" });
-                list.Add(new ListadoDTO { Id = "1111122760", Valor = "LUISA FERNANDA VARGAS MORALES" });
-                list.Add(new ListadoDTO { Id = "1111122968", Valor = "NORMAN DARIO GOMEZ CAÑAS" });
-                list.Add(new ListadoDTO { Id = "1111126166", Valor = "JENNIFER CASTAÑEDA SERRANO" });
+                list.Add(new ListadoDTO { Id = "1111115896", Valor = "LILIANA MARCELA CARMONA GRANDA" });
+                list.Add(new ListadoDTO { Id = "1111116716", Valor = "JIMMY ALEXANDER MORENO DUARTE" });
+                list.Add(new ListadoDTO { Id = "1111120174", Valor = "LUIS ALEJANDRO RUIZ" });
+                list.Add(new ListadoDTO { Id = "1111123845", Valor = "CLAUDIA MILENA POSADA" });
+                list.Add(new ListadoDTO { Id = "1111122733", Valor = "CLAUDIA PATRICIA BERNAL" });
+                list.Add(new ListadoDTO { Id = "1111122760", Valor = "DANIEL ACOSTA" });
                 var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
 
                 return listDto;
