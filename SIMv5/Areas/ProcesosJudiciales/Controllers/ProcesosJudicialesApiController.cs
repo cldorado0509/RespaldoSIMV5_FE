@@ -34,7 +34,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaProcesosJudiciales")]
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
