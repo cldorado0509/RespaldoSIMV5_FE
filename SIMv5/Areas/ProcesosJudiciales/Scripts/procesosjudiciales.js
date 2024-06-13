@@ -21,7 +21,7 @@ $(document).ready(function () {
     const tabsData = [
         {
             id: 0,
-            text: 'PREJUDICALES',
+            text: 'EXTRAJUDICIAL',
         },
         {
             id: 1,
@@ -142,6 +142,10 @@ $(document).ready(function () {
             e.component._popup.option('width', 500);
         }
     }).dxSelectBox("instance");
+
+    var radicado = $("#radicado").dxTextBox({
+        value: '000000000000000000000',
+    }).dxTextBox("instance");
 
     var radicado21 = $("#radicado21").dxTextBox({
         value: '000000000000000000000',
