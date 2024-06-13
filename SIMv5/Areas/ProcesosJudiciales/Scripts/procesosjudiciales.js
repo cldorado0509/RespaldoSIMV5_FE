@@ -602,6 +602,75 @@ $(document).ready(function () {
                             
                                 idProcesoActual = cellInfo.data.procesoId;
 
+
+                                var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerProcesoJudicial"
+                                $.getJSON(_Ruta,
+                                    {
+                                        Id: idProcesoActual
+                                    }).done(function (data) {
+                                        if (data !== null) {
+                                            juzgado.option("value", data.procesoJuzgadoId);
+
+                                            var procuraduriads = procuraduria.getDataSource();
+                                            procuraduriads.reload();
+                                            procuraduria.option("value", data.procuraduriasId);
+                                            radicado21.option("value", data.radicado21);
+                                            fechaRadicado.option("value", data.fechaRadicado);
+                                            hechos.option("value", data.hechos);
+                                            fechaNotificacion.option("value", data.fechaNotificacion);
+                                            recomencionAbogado.option("value", data.recomendacionesAbogado);
+                                            fundamentoJuridicoConvocante.option("value", data.fundamentoJuridicoConvocante);
+                                            fundamentoDefensa.option("value", data.fundamentoDefensa);
+                                            fechaComiteConciliacion.option("value", data.fechaComiteConciliacion);
+                                            decisionComite.option("value", data.decisionComite);
+                                            huboAcuerdoConciliatorio.option("value", data.hayAcuerdo);
+                                            decisionAudiencia.option("value", data.decisionAudiencia);
+
+                                            var _demandantes = data.demandantes;
+                                            for (i = 0; i < _demandantes.length; i++) {
+                                                const demandante = _demandantes[i];
+                                                const idt = demandante.demandanteId;
+                                                const identificacion = demandante.identificacion;
+                                                const nombre = demandante.nombre;
+                                                const data = {
+                                                    demantanteId: idt,
+                                                    identificacion: identificacion,
+                                                    nombre: nombre.toUpperCase(),
+                                                    isNew: 0
+                                                };
+                                                grdConvocantesDataSource.insert(data);
+                                             } 
+                                            $("#grdConvocantes").dxDataGrid({ dataSource: grdConvocantesDataSource });
+
+                                            var _demandados = data.demandados;
+
+                                            for (i = 0; i < _demandados.length; i++) {
+                                                const demandado = _demandados[i];
+                                                const idt = demandado.demandadoId;
+                                                const identificacion = demandado.identificacion;
+                                                const nombre = demandado.nombre;
+                                                const data = {
+                                                    demandadoId: idt,
+                                                    identificacion: identificacion,
+                                                    nombre: nombre.toUpperCase(),
+                                                    isNew: 0
+                                                };
+                                                grdConvocadosDataSource.insert(data);
+                                                
+                                            }
+                                            $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
+
+
+
+                                        }
+                                    }).fail(function (jqxhr, textStatus, error) {
+                                        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
+                                    });
+
+
+
+
+
                                 $('#listaProcesos').hide();
                                 $('#loadPanel').dxLoadPanel('instance').hide();
 
