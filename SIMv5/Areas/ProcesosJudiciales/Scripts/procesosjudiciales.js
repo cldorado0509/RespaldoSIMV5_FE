@@ -144,11 +144,11 @@ $(document).ready(function () {
     }).dxSelectBox("instance");
 
     var radicado = $("#radicado").dxTextBox({
-        value: '000000000000000000000',
+        value: '00000000000000000000',
     }).dxTextBox("instance");
 
     var radicado21 = $("#radicado21").dxTextBox({
-        value: '000000000000000000000',
+        value: '00000000000000000000',
     }).dxTextBox("instance");
 
     var fechaRadicado = $('#fechaRadicado').dxDateBox({
@@ -444,7 +444,6 @@ $(document).ready(function () {
                 var datos = '';
                 const _asunto = '';
                 const _despacho = procuraduria.option("text");
-                const _medioControl = '';
                 const _radicado = radicado21.option("value");
                 const _instancia = '';
                 const _convocante = 'Pedro Páramo A';
@@ -455,7 +454,8 @@ $(document).ready(function () {
                 const _cuantia = '0';
                 const _politicaInstitucional = '';
                 const _llamaGarantia = '';
-                const _apoderado = apoderado.option("text");
+                const _apoderado = apoderado.option("value");
+                const _medioControl = medioControl.option("value");
 
                 var datos = _asunto + '|' + _despacho + ' |' + _medioControl + '|' + _radicado + '|' + _instancia + '|' + _convocante + '|' + _convocado + '|' + _fechaNotificacion + '|' + _fechaAudiencia + '|' + _riesgoProcesal + '|' + _cuantia + '|' + _politicaInstitucional + '|' + _llamaGarantia + '|' + _apoderado;
                 window.open("https://sim.metropol.gov.co/editor/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI&datos=" + datos);
@@ -1437,14 +1437,12 @@ $(document).ready(function () {
                 var _procesoJuzgadoId = juzgado.option("value");
                 var _procuraduriasId = procuraduria.option("value");
                 var _contrato = "";
-                var _terceroId = 0;
-                var _radicado = radicado21.option("value");
+                var _radicado = radicado.option("value");
                 var _radicado21 =  radicado21.option("value");
                 var _fechaRadicado = fechaRadicado.option("value");
                 var _cuantia = "";
                 var _hechos = hechos.option("value");
                 var _fechaNotificacion = fechaNotificacion.option("value");
-                var _procesoCodigoId = 0;
                 var _instanciaId = 0;
                 var _eliminado = "0";
                 var _recomendacionesAbogado = recomencionAbogado.option("value");
@@ -1458,14 +1456,16 @@ $(document).ready(function () {
                 var _decisionComite = decisionComite.option("value");
                 var _hayAcuerdo = huboAcuerdoConciliatorio.option("value");
                 var _decisionAudiencia = decisionAudiencia.option("value");
+                var _apoderado = apoderado.option("value");
+                var _medioControlId = medioControl.option("value");
        
                 var params = {
-                    id: id, procesoJuzgadoId: _procesoJuzgadoId, procuraduriasId: _procuraduriasId, contrato: _contrato, terceroId: _terceroId, radicado: _radicado, radicado21: _radicado21,
-                    fechaRadicado: _fechaRadicado, cuantia: _cuantia, hechos: _hechos, fechaNotificacion: _fechaNotificacion, procesoCodigoId: _procesoCodigoId, instanciaId: _instanciaId,
+                    procesoId: id, procesoJuzgadoId: _procesoJuzgadoId, procuraduriasId: _procuraduriasId, contrato: _contrato, terceroId: _apoderado, radicado: _radicado, radicado21: _radicado21,
+                    fechaRadicado: _fechaRadicado, cuantia: _cuantia, hechos: _hechos, fechaNotificacion: _fechaNotificacion, instanciaId: _instanciaId,
                     eliminado: _eliminado, recomendacionesAbogado: _recomendacionesAbogado, tipoDemanda: _tipoDemanda, sincronizado: _sincronizado, terminado: _terminado,
                     mensajeSincronizacion: _mensajeSincronizacion, fundamentoJuridicoConvocante: _fundamentoJuridicoConvocante, fundamentoDefensa: _fundamentoDefensa,
                     fechaComiteConciliacion: _fechaComiteConciliacion, decisionComite: _decisionComite, hayAcuerdo: _hayAcuerdo, decisionAudiencia: _decisionAudiencia,
-                    demandantes: demandantesArray, demandados: demandadosArray
+                    procesoCodigoId : _medioControlId, demandantes: demandantesArray, demandados: demandadosArray
                 };
 
                 var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/GuardarProcesoJudicialAsync";

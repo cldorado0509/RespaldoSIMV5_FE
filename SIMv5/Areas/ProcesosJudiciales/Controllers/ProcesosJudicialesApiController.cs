@@ -487,25 +487,26 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetApoderados")]
-        public JArray GetApoderados()
+        public async Task<JArray> GetApoderados()
         {
+            urlApiJudicial = "https://localhost:7171/";
+
             ApiService apiService = new ApiService();
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
-                var list = new List<ListadoDTO>();
-                list.Add(new ListadoDTO { Id = "1111114074", Valor = "ORLANDO CARRILLO OCHOA" });
-                list.Add(new ListadoDTO { Id = "1111115234", Valor = "CARLOS ANDRES ACEVEDO MESA" });
-                list.Add(new ListadoDTO { Id = "1111115896", Valor = "LILIANA MARCELA CARMONA GRANDA" });
-                list.Add(new ListadoDTO { Id = "1111116716", Valor = "JIMMY ALEXANDER MORENO DUARTE" });
-                list.Add(new ListadoDTO { Id = "1111120174", Valor = "LUIS ALEJANDRO RUIZ" });
-                list.Add(new ListadoDTO { Id = "1111123845", Valor = "CLAUDIA MILENA POSADA" });
-                list.Add(new ListadoDTO { Id = "1111122733", Valor = "CLAUDIA PATRICIA BERNAL" });
-                list.Add(new ListadoDTO { Id = "1111122760", Valor = "DANIEL ACOSTA" });
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string _controller = $"Listados/Apoderados";
+
+                Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+
+                var list = (List<ListadoDTO>)response.Result;
                 var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
 
                 return listDto;
@@ -806,7 +807,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ApiService apiService = new ApiService();
             try
             {
-                //urlApiJudicial = "https://localhost:7171/";
+                urlApiJudicial = "https://localhost:7171/";
 
                 decimal Id = 0;
                 if (objData.ProcesoId == -1) objData.ProcesoId = 0;
