@@ -1838,8 +1838,9 @@ $(document).ready(function () {
     });
 
     $("#cmdShowExpedienteFlip").dxButton({
-        text: "Ver Carpeta seleccionada del Expediente ...",
+        text: "Ver documentos Carpeta",
         hint: 'Ver el Expediente Documental',
+        icon: "fields",
         visible: false,
         onClick: function () {
             verExpediente($('#SIM').data('url') + 'GestionDocumental/Expedientes/FlipExpediente?idExp=' + idExpedienteDoc + '&IdTomo=' + IdTomo);
