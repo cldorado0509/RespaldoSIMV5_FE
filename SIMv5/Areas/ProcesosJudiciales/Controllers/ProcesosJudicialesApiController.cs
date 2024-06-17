@@ -79,7 +79,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
 
             try
             {
@@ -167,6 +167,8 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         {
             ApiService apiService = new ApiService();
 
+            urlApiJudicial= "https://localhost:7171/";
+
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
@@ -177,10 +179,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/Jurisdicciones";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ProcesoCodigoDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
+                var list = (List<ProcesoCodigoDTO>)response.Result;
                 var listDto = JArray.FromObject(list, Js);
 
                 return listDto;
@@ -201,6 +203,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetProcuradurias()
         {
             ApiService apiService = new ApiService();
+            urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -212,10 +215,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/Procuradurias";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ProcuraduriaDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
+                var list = (List<ProcuraduriaDTO>)response.Result;
                 var listDto = JArray.FromObject(list, Js);
 
                 return listDto;
@@ -237,6 +240,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetMediosControl()
         {
             ApiService apiService = new ApiService();
+            urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -248,10 +252,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/MediosControl";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ProcesoCodigoDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
+                var list = (List<ProcesoCodigoDTO>)response.Result;
                 var listDto = JArray.FromObject(list, Js);
 
                 return listDto;
@@ -503,11 +507,11 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/Apoderados";
 
-                Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                Response response = await apiService.GetMicroServicioListAsync<ApoderadoDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
-                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+                var list = (List<ApoderadoDTO>)response.Result;
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Nombre), Js);
 
                 return listDto;
             }

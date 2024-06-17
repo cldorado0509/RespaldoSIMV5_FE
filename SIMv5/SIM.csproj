@@ -1356,12 +1356,15 @@
     <Compile Include="Areas\ProcesosJudiciales\Controllers\ProcesosJudicialesApiController.cs" />
     <Compile Include="Areas\ProcesosJudiciales\Controllers\ProcesosJudicialesController.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ActuacionDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\ApoderadoDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\DemandadosDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\DemandantesDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\FichaComiteDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ListadoDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcesoCodigoDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcesoJudicialDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcesosJudicialesDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcuraduriaDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\TerceroDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\ProcesosJudicialesAreaRegistration.cs" />
     <Compile Include="Areas\QuejasAmbientales\Controllers\QuejasApiController.cs" />

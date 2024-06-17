@@ -21,6 +21,9 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("terceroId")]
         public int? TerceroId { get; set; }
 
+        [JsonProperty("apoderado")]
+        public string Apoderado { get; set; } = string.Empty;
+
         [JsonProperty("radicado")]
         public string Radicado { get; set; }
 
