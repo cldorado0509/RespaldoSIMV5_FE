@@ -608,6 +608,7 @@ jQuery(function () {
         valueExpr: "id",
     });
 
+
     $('#abrirFichaPejudicial').dxButton(
         {
             icon: 'startswith',
