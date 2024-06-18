@@ -620,24 +620,51 @@ jQuery(function () {
             },
             onClick: function (params) {
                 var datos = '';
-                const _asunto = '';
+                const _asunto = 'Prueba';
                 const _despacho = procuraduria.option("text");
-                const _radicado = radicado21.option("value");
+                const _radicado = radicado.option("value");
                 const _instancia = '';
-                const _convocante = 'Pedro Páramo A';
-                const _convocado = 'Ana María Castaño';
-                const _fechaNotificacion = fechaNotificacion.option("value");
                 const _fechaAudiencia = fechaAudiencia.option("value");
-                const _riesgoProcesal = '';
                 const _cuantia = '0';
                 const _politicaInstitucional = '';
                 const _llamaGarantia = '';
-                const _apoderado = apoderado.option("value");
-                const _medioControl = medioControl.option("value");
+                const _apoderado = apoderado.option("text");
+                const _medioControl = medioControl.option("text");
 
-                var datos = _asunto + '|' + _despacho + ' |' + _medioControl + '|' + _radicado + '|' + _instancia + '|' + _convocante + '|' + _convocado + '|' + _fechaNotificacion + '|' + _fechaAudiencia + '|' + _riesgoProcesal + '|' + _cuantia + '|' + _politicaInstitucional + '|' + _llamaGarantia + '|' + _apoderado;
-                window.open("https://sim.metropol.gov.co/editor/procesosjudiciales/fichacomite?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI&datos=" + datos);
-                //popupFichaPre.show();
+                var _fechaRadicado = fechaRadicado.option("value");
+                var _hechos = hechos.option("value");
+                var _recomendacionesAbogado = recomencionAbogado.option("value");
+                var _fundamentoJuridicoConvocante = fundamentoJuridicoConvocante.option("value");
+                var _fundamentoDefensa = fundamentoDefensa.option("value");
+                var _fechaComiteConciliacion = fechaComiteConciliacion.option("value");
+                var _decisionComite = decisionComite.option("value");
+                var _hayAcuerdo = huboAcuerdoConciliatorio.option("value");
+                var _decisionAudiencia = decisionAudiencia.option("value");
+                
+                var arraydata = grdConvocantesDataSource._array;
+                var demandantesArray = "";
+
+                for (i = 0; i < arraydata.length; i++) {
+                    demandantesArray = demandantesArray + arraydata[i].nombre + ","
+                }
+
+                var arraydatad = grdConvocadosDataSource._array;
+                var demandadosArray = "";
+
+                for (i = 0; i < arraydatad.length; i++) {
+                    demandadosArray = demandadosArray + arraydatad[i].nombre + ","
+                }
+
+
+                var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxODcyODc4NywiZXhwIjoxNzE4NzMxMTg3LCJpYXQiOjE3MTg3Mjg3ODd9.86GMK8-98BLLdTFe0JF4gCS0pxAsc8J-CH4jRdnenQs";
+           
+                var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"idProceso":' + idProcesoActual + ',"etiquetas":';
+
+                var etiquetas = '[{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicado + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia + '"}]}';
+                var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
+
+                window.open(url);
+                
             }
         });
 
