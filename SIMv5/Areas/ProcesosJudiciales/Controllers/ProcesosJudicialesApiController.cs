@@ -24,6 +24,8 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
         string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicial").ToString();
+        string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencial").ToString();
+
 
         /// <summary>
         /// 
@@ -34,7 +36,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaProcesosJudiciales")]
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
@@ -79,7 +81,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             try
             {
@@ -167,7 +169,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         {
             ApiService apiService = new ApiService();
 
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -203,7 +205,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetProcuradurias()
         {
             ApiService apiService = new ApiService();
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -240,7 +242,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetMediosControl()
         {
             ApiService apiService = new ApiService();
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -493,7 +495,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("GetApoderados")]
         public async Task<JArray> GetApoderados()
         {
-            urlApiJudicial = "https://localhost:7171/";
+            //urlApiJudicial = "https://localhost:7171/";
 
             ApiService apiService = new ApiService();
 
@@ -811,7 +813,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ApiService apiService = new ApiService();
             try
             {
-                urlApiJudicial = "https://localhost:7171/";
+                //urlApiJudicial = "https://localhost:7171/";
 
                 decimal Id = 0;
                 if (objData.ProcesoId == -1) objData.ProcesoId = 0;
@@ -830,6 +832,24 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                     objData.ProcesoId = 0;
                     response = await apiService.PostMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/GuardarProcesoJudicial", objData, token);
                     if (!response.IsSuccess) return response;
+
+                    var result = (Response)response.Result;
+                    int procesoJudicialId = 0;
+                    int.TryParse(result.Result.ToString(), out procesoJudicialId);
+
+                    DocumentoProcesoDTO documentoProcesoDTO = new DocumentoProcesoDTO
+                    {
+                        DocumentoBase64 = "erere",
+                        DocumentoProcesolId = 0,
+                        PlantillaDocumentalId = 21,
+                        Identificador = "_"+ objData.Radicado,
+                        ProcesoJudicialId = procesoJudicialId,
+                        Version = 1,
+                    };
+
+                    response = await apiService.PostMicroServicioAsync<DocumentoProcesoDTO>(urlApiGerencial, "api", "/DocumentoProceso/PostActualizarDocumentoProceso", documentoProcesoDTO, token);
+                    if (!response.IsSuccess) return response;
+
                 }
             }
             catch (Exception e)

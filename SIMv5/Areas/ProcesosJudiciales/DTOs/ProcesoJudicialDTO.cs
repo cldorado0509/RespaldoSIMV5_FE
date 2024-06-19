@@ -115,5 +115,9 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("demandados")]
         public List<DemandadosDTO> Demandados { get; set; } = new List<DemandadosDTO>();
 
+        [JsonProperty("resumen")]
+        [StringLength(4000)]
+        public string Resumen { get; set; } = String.Empty;
+
     }
 }

@@ -77,7 +77,7 @@ jQuery(function () {
             {
                 dataField: "procesoId",
                 dataType: 'number',
-                visible: true
+                visible: false
             }, {
                 dataField: 'radicado',
                 width: '15%',
@@ -128,6 +128,13 @@ jQuery(function () {
                                     }).done(function (data) {
                                         if (data !== null) {
 
+                                            grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                                            grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                                            grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
+
+                                            $("#grdConvocantes").dxDataGrid({ dataSource: grdConvocantesDataSource });
+                                            $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
+
                                             var juzgadoId = data.procesoJuzgadoId;
                                             juzgado.option("value", juzgadoId);
 
@@ -150,6 +157,7 @@ jQuery(function () {
                                             fundamentoDefensa.option("value", data.fundamentoDefensa);
                                             fechaComiteConciliacion.option("value", data.fechaComiteConciliacion);
                                             decisionComite.option("value", data.decisionComite);
+                                            pretensiones.option("value", data.resumen);
 
                                             var hayAcuerdo = data.hayAcuerdo;
                                             huboAcuerdoConciliatorio.option("value", hayAcuerdo);
@@ -659,10 +667,12 @@ jQuery(function () {
 
                 var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxODcyODc4NywiZXhwIjoxNzE4NzMxMTg3LCJpYXQiOjE3MTg3Mjg3ODd9.86GMK8-98BLLdTFe0JF4gCS0pxAsc8J-CH4jRdnenQs";
            
-                var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"idProceso":' + idProcesoActual + ',"etiquetas":';
+                var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
                 var etiquetas = '[{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicado + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia + '"}]}';
                 var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
+
+                //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
 
                 window.open(url);
                 
@@ -754,6 +764,7 @@ jQuery(function () {
                 fechaRadicado.reset();
                 hechos.reset();
                 fechaNotificacion.reset();
+                pretensiones.reset();
                 recomencionAbogado.reset();
                 fundamentoJuridicoConvocante.reset();
                 fundamentoDefensa.reset();
@@ -841,8 +852,48 @@ jQuery(function () {
             },
             onClick: function (params) {
                 var datos = '';
-                window.open("https://sim.metropol.gov.co/editor/procesosjudiciales/Certificado?procesoJudicialId=1&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxNzA3NTcyOSwiZXhwIjoxNzE3MDc4MTI5LCJpYXQiOjE3MTcwNzU3Mjl9.6z4DhaW5whNk5f-Pk15UzTs-8dAAeGKbtC-N23m_JKI");
-                //popupFichaPre.show();
+
+                var arraydata = grdConvocantesDataSource._array;
+                var demandantesArray = "";
+
+                for (i = 0; i < arraydata.length; i++) {
+                    demandantesArray = demandantesArray + arraydata[i].nombre + ","
+                }
+
+                var arraydatad = grdConvocadosDataSource._array;
+                var demandadosArray = "";
+
+
+                for (i = 0; i < arraydatad.length; i++) {
+                    demandadosArray = demandadosArray + arraydatad[i].nombre + ","
+                }
+
+                const _despacho = "";
+                const _etapa = "";
+                const _radicado = radicado.option("value");
+                const _convocante = demandantesArray;
+                const _convocado = demandadosArray;
+                const _diaDada = "";
+                const _mesDada = "";
+                const _anioDada = "";
+                const _funcionario = "ORLANDO CARRILLO OCHOA";
+                const _cargo = "SECRETARIO TÉCNICO COMITÉ DE CONCILIACIÓN";
+                const _nroSesion = "";
+                const _diaSesion = "";
+                const _mesSesion = "";
+                const _anioSesion = "";
+                const _recomendacion = recomencionAbogado.option("value");
+
+                var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxODcyODc4NywiZXhwIjoxNzE4NzMxMTg3LCJpYXQiOjE3MTg3Mjg3ODd9.86GMK8-98BLLdTFe0JF4gCS0pxAsc8J-CH4jRdnenQs";
+
+                var json = '{ "bytes":null, "name":"Certificado", "idPlantilla":22,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
+
+                var etiquetas = '[{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[Etapa]","value":"' + _etapa + '"},{"label":"[Radicado]","value":"' + _radicado + '"},{"label":"[Convocante]","value":"' + _convocante + '"},{"label":"[Convocado]","value":"' + _convocado + '"},{"label":"[DiaDada]","value":"' + _diaDada + '"},{"label":"[MesDada]","value":"' + _mesDada + '"},{"label":"[AñoDada]","value":"' + _anioDada + '"},{"label":"[Funcionario]","value":"' + _funcionario + '"},{"label":"[Cargo]","value":"' + _cargo + '"},{"label":"[NroSesion]","value":"' + _nroSesion + '"},{"label":"[DiaSesion]","value":"' + _diaSesion + '"},{"label":"[MesSesion]","value":"' + _mesSesion + '"},{"label":"[AñoSesion]","value":"' + _anioSesion + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacion + '"}]}';
+                //var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
+
+                var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
+
+                window.open(url);
             }
         });
          
@@ -1513,6 +1564,7 @@ jQuery(function () {
                 var _decisionAudiencia = decisionAudiencia.option("value");
                 var _apoderado = apoderado.option("value");
                 var _medioControlId = medioControl.option("value");
+                var _pretenciones = pretensiones.option("value");
        
                 var params = {
                     procesoId: id, procesoJuzgadoId: _procesoJuzgadoId, procuraduriasId: _procuraduriasId, contrato: _contrato, terceroId: _apoderado, radicado: _radicado, radicado21: _radicado21,
@@ -1520,7 +1572,7 @@ jQuery(function () {
                     eliminado: _eliminado, recomendacionesAbogado: _recomendacionesAbogado, tipoDemanda: _tipoDemanda, sincronizado: _sincronizado, terminado: _terminado,
                     mensajeSincronizacion: _mensajeSincronizacion, fundamentoJuridicoConvocante: _fundamentoJuridicoConvocante, fundamentoDefensa: _fundamentoDefensa,
                     fechaComiteConciliacion: _fechaComiteConciliacion, decisionComite: _decisionComite, hayAcuerdo: _hayAcuerdo, decisionAudiencia: _decisionAudiencia,
-                    procesoCodigoId : _medioControlId, demandantes: demandantesArray, demandados: demandadosArray
+                    procesoCodigoId: _medioControlId, resumen: _pretenciones, demandantes: demandantesArray, demandados: demandadosArray
                 };
 
                 var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/GuardarProcesoJudicialAsync";
