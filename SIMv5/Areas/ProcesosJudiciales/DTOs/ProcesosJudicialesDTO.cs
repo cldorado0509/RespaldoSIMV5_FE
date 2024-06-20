@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace SIM.Areas.ProcesosJudiciales.DTOs
 {
@@ -27,6 +28,9 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
 
         [JsonProperty("demandadoDemandante")]
         public string DemandadoDemandante { get; set; }
+
+        [JsonProperty("fechaRegistro")]
+        public DateTime? FechaRegistro { get; set; }
 
 
     }

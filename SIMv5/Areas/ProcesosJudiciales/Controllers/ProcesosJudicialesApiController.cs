@@ -36,7 +36,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaProcesosJudiciales")]
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
@@ -646,6 +646,171 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 return null;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEspecialidadJuzgados")]
+        public JArray GetEspecialidadJuzgados()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "ADMINISTRATIVOS " });
+                list.Add(new ListadoDTO { Id = "2", Valor = "CIVILES CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "JUZGADO CIVIL CIRCUITO EJECUCIÓN SENTENCIAS " });
+                list.Add(new ListadoDTO { Id = "4", Valor = "CIVIL CIRCUITO DE RESTITUCION DE TIERRAS" });
+                list.Add(new ListadoDTO { Id = "5", Valor = "EJECUCION DE PENAS Y MEDIDAS DE SEGURIDAD DEL CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "6", Valor = "LABORAL" });
+                list.Add(new ListadoDTO { Id = "7", Valor = "FAMILIA" });
+                list.Add(new ListadoDTO { Id = "8", Valor = "PENAL CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "9", Valor = "PENAL CIRCUITO ESPECIALIZADO" });
+                list.Add(new ListadoDTO { Id = "10", Valor = "PENAL ESPECIALIZADO EN EXTINCION DE DOMINIO" });
+                list.Add(new ListadoDTO { Id = "11", Valor = "PENAL CIRCUITO PARA ADOLECENTES" });
+                list.Add(new ListadoDTO { Id = "12", Valor = "PEQUEÑAS CAUSAS DE COMPETENCIA MÚLTIPLE" });
+                list.Add(new ListadoDTO { Id = "13", Valor = "PEQUEÑAS CAUSAS LABORAL" });
+                list.Add(new ListadoDTO { Id = "14", Valor = "CIVIL MUNICIPAL " });
+                list.Add(new ListadoDTO { Id = "15", Valor = "PENAL MUNICIPAL CON FUNCION DE CONOCIMIENTO" });
+                list.Add(new ListadoDTO { Id = "16", Valor = "PENAL MUNICIPAL CON FUNCION DE CONTROL DE GARANTÍAS" });
+                list.Add(new ListadoDTO { Id = "17", Valor = "PENAL MUNICIPAL CON FUNCION DE CONTROL DE GARANTIAS PARA ADOLESCENTES" });
+                list.Add(new ListadoDTO { Id = "18", Valor = "TRIBUNAL ADMINISTRATIVO" });
+                list.Add(new ListadoDTO { Id = "19", Valor = "TRIBUNAL SUPERIOR" });
+                list.Add(new ListadoDTO { Id = "20", Valor = "INSPECCION MUNICIPAL" });
+
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetDerechosTutela")]
+        public JArray GetDerechosTutela()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "DEBIDO PROCESO" });
+                list.Add(new ListadoDTO { Id = "2", Valor = "DERECHO A LA HONRA" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "DERECHO A LA PAZ" });
+                list.Add(new ListadoDTO { Id = "4", Valor = "DERECHO A LA REPARACION A POBLACION VICTIMA DEL DESPLAZAMIENTO" });
+                list.Add(new ListadoDTO { Id = "5", Valor = "DERECHO AL BUEN NOMBRE" });
+                list.Add(new ListadoDTO { Id = "6", Valor = "DERECHO DE PETICION" });
+                list.Add(new ListadoDTO { Id = "7", Valor = "DIGNIDAD HUMANA" });
+                list.Add(new ListadoDTO { Id = "8", Valor = "EDUCACION" });
+                list.Add(new ListadoDTO { Id = "9", Valor = "ELEGIR Y SER ELEGIDO" });
+                list.Add(new ListadoDTO { Id = "10", Valor = "ESTABILIDAD LABORAL REFORZADA" });
+                list.Add(new ListadoDTO { Id = "11", Valor = "FAMILIA" });
+                list.Add(new ListadoDTO { Id = "12", Valor = "HABEAS DATA" });
+                list.Add(new ListadoDTO { Id = "13", Valor = "IDENTIDAD CULTURAL" });
+                list.Add(new ListadoDTO { Id = "14", Valor = "IDENTIDAD SEXUAL Y DE GENERO" });
+                list.Add(new ListadoDTO { Id = "15", Valor = "IGUALDAD" });
+                list.Add(new ListadoDTO { Id = "16", Valor = "INTEGRIDAD PERSONAL FISICA Y PSICOLOGICA" });
+                list.Add(new ListadoDTO { Id = "17", Valor = "INTERRUPCION VOLUNTARIA DEL EMBARAZO" });
+                list.Add(new ListadoDTO { Id = "18", Valor = "INTIMIDAD" });
+                list.Add(new ListadoDTO { Id = "19", Valor = "INTIMIDAD FAMILIAR" });
+                list.Add(new ListadoDTO { Id = "20", Valor = "LIBERTAD" });
+                list.Add(new ListadoDTO { Id = "21", Valor = "LIBERTAD DE CULTO" });
+                list.Add(new ListadoDTO { Id = "22", Valor = "LIBERTAD DE ENSEÑANZA" });
+                list.Add(new ListadoDTO { Id = "23", Valor = "LIBERTAD DE EXPRESION" });
+
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetDerechosAccionPupular")]
+        public JArray GetDerechosAccionPupular()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "El goce de un ambiente sano, de conformidad con lo establecido en la Constitución, la ley y las disposiciones reglamentarias " });
+                list.Add(new ListadoDTO { Id = "2", Valor = "La moralidad administrativa" });
+
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCategoriasJuzgados")]
+        public JArray GetCategoriasJuzgados()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "MUNICIPAL " });
+                list.Add(new ListadoDTO { Id = "2", Valor = "CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "TRIBUNAL" });
+                list.Add(new ListadoDTO { Id = "4", Valor = "CORTE" });
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 
