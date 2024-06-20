@@ -24,6 +24,8 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
         string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicial").ToString();
+        string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencial").ToString();
+
 
         /// <summary>
         /// 
@@ -167,6 +169,8 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         {
             ApiService apiService = new ApiService();
 
+            //urlApiJudicial= "https://localhost:7171/";
+
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
@@ -177,10 +181,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/Jurisdicciones";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ProcesoCodigoDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
+                var list = (List<ProcesoCodigoDTO>)response.Result;
                 var listDto = JArray.FromObject(list, Js);
 
                 return listDto;
@@ -201,6 +205,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetProcuradurias()
         {
             ApiService apiService = new ApiService();
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -212,10 +217,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/Procuradurias";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ProcuraduriaDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
+                var list = (List<ProcuraduriaDTO>)response.Result;
                 var listDto = JArray.FromObject(list, Js);
 
                 return listDto;
@@ -237,6 +242,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetMediosControl()
         {
             ApiService apiService = new ApiService();
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -248,10 +254,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/MediosControl";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ProcesoCodigoDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
+                var list = (List<ProcesoCodigoDTO>)response.Result;
                 var listDto = JArray.FromObject(list, Js);
 
                 return listDto;
@@ -487,26 +493,27 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetApoderados")]
-        public JArray GetApoderados()
+        public async Task<JArray> GetApoderados()
         {
+            //urlApiJudicial = "https://localhost:7171/";
+
             ApiService apiService = new ApiService();
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
-                var list = new List<ListadoDTO>();
-                list.Add(new ListadoDTO { Id = "1111114074", Valor = "ORLANDO CARRILLO OCHOA" });
-                list.Add(new ListadoDTO { Id = "1111115234", Valor = "CARLOS ANDRES ACEVEDO MESA" });
-                list.Add(new ListadoDTO { Id = "1111115896", Valor = "LILIANA MARCELA CARMONA GRANDA" });
-                list.Add(new ListadoDTO { Id = "1111116716", Valor = "JIMMY ALEXANDER MORENO DUARTE" });
-                list.Add(new ListadoDTO { Id = "1111120174", Valor = "LUIS ALEJANDRO RUIZ" });
-                list.Add(new ListadoDTO { Id = "1111123845", Valor = "CLAUDIA MILENA POSADA" });
-                list.Add(new ListadoDTO { Id = "1111122733", Valor = "CLAUDIA PATRICIA BERNAL" });
-                list.Add(new ListadoDTO { Id = "1111122760", Valor = "DANIEL ACOSTA" });
-                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string _controller = $"Listados/Apoderados";
+
+                Response response = await apiService.GetMicroServicioListAsync<ApoderadoDTO>(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+
+                var list = (List<ApoderadoDTO>)response.Result;
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Nombre), Js);
 
                 return listDto;
             }
@@ -639,6 +646,171 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 return null;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEspecialidadJuzgados")]
+        public JArray GetEspecialidadJuzgados()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "ADMINISTRATIVOS " });
+                list.Add(new ListadoDTO { Id = "2", Valor = "CIVILES CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "JUZGADO CIVIL CIRCUITO EJECUCIÓN SENTENCIAS " });
+                list.Add(new ListadoDTO { Id = "4", Valor = "CIVIL CIRCUITO DE RESTITUCION DE TIERRAS" });
+                list.Add(new ListadoDTO { Id = "5", Valor = "EJECUCION DE PENAS Y MEDIDAS DE SEGURIDAD DEL CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "6", Valor = "LABORAL" });
+                list.Add(new ListadoDTO { Id = "7", Valor = "FAMILIA" });
+                list.Add(new ListadoDTO { Id = "8", Valor = "PENAL CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "9", Valor = "PENAL CIRCUITO ESPECIALIZADO" });
+                list.Add(new ListadoDTO { Id = "10", Valor = "PENAL ESPECIALIZADO EN EXTINCION DE DOMINIO" });
+                list.Add(new ListadoDTO { Id = "11", Valor = "PENAL CIRCUITO PARA ADOLECENTES" });
+                list.Add(new ListadoDTO { Id = "12", Valor = "PEQUEÑAS CAUSAS DE COMPETENCIA MÚLTIPLE" });
+                list.Add(new ListadoDTO { Id = "13", Valor = "PEQUEÑAS CAUSAS LABORAL" });
+                list.Add(new ListadoDTO { Id = "14", Valor = "CIVIL MUNICIPAL " });
+                list.Add(new ListadoDTO { Id = "15", Valor = "PENAL MUNICIPAL CON FUNCION DE CONOCIMIENTO" });
+                list.Add(new ListadoDTO { Id = "16", Valor = "PENAL MUNICIPAL CON FUNCION DE CONTROL DE GARANTÍAS" });
+                list.Add(new ListadoDTO { Id = "17", Valor = "PENAL MUNICIPAL CON FUNCION DE CONTROL DE GARANTIAS PARA ADOLESCENTES" });
+                list.Add(new ListadoDTO { Id = "18", Valor = "TRIBUNAL ADMINISTRATIVO" });
+                list.Add(new ListadoDTO { Id = "19", Valor = "TRIBUNAL SUPERIOR" });
+                list.Add(new ListadoDTO { Id = "20", Valor = "INSPECCION MUNICIPAL" });
+
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetDerechosTutela")]
+        public JArray GetDerechosTutela()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "DEBIDO PROCESO" });
+                list.Add(new ListadoDTO { Id = "2", Valor = "DERECHO A LA HONRA" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "DERECHO A LA PAZ" });
+                list.Add(new ListadoDTO { Id = "4", Valor = "DERECHO A LA REPARACION A POBLACION VICTIMA DEL DESPLAZAMIENTO" });
+                list.Add(new ListadoDTO { Id = "5", Valor = "DERECHO AL BUEN NOMBRE" });
+                list.Add(new ListadoDTO { Id = "6", Valor = "DERECHO DE PETICION" });
+                list.Add(new ListadoDTO { Id = "7", Valor = "DIGNIDAD HUMANA" });
+                list.Add(new ListadoDTO { Id = "8", Valor = "EDUCACION" });
+                list.Add(new ListadoDTO { Id = "9", Valor = "ELEGIR Y SER ELEGIDO" });
+                list.Add(new ListadoDTO { Id = "10", Valor = "ESTABILIDAD LABORAL REFORZADA" });
+                list.Add(new ListadoDTO { Id = "11", Valor = "FAMILIA" });
+                list.Add(new ListadoDTO { Id = "12", Valor = "HABEAS DATA" });
+                list.Add(new ListadoDTO { Id = "13", Valor = "IDENTIDAD CULTURAL" });
+                list.Add(new ListadoDTO { Id = "14", Valor = "IDENTIDAD SEXUAL Y DE GENERO" });
+                list.Add(new ListadoDTO { Id = "15", Valor = "IGUALDAD" });
+                list.Add(new ListadoDTO { Id = "16", Valor = "INTEGRIDAD PERSONAL FISICA Y PSICOLOGICA" });
+                list.Add(new ListadoDTO { Id = "17", Valor = "INTERRUPCION VOLUNTARIA DEL EMBARAZO" });
+                list.Add(new ListadoDTO { Id = "18", Valor = "INTIMIDAD" });
+                list.Add(new ListadoDTO { Id = "19", Valor = "INTIMIDAD FAMILIAR" });
+                list.Add(new ListadoDTO { Id = "20", Valor = "LIBERTAD" });
+                list.Add(new ListadoDTO { Id = "21", Valor = "LIBERTAD DE CULTO" });
+                list.Add(new ListadoDTO { Id = "22", Valor = "LIBERTAD DE ENSEÑANZA" });
+                list.Add(new ListadoDTO { Id = "23", Valor = "LIBERTAD DE EXPRESION" });
+
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetDerechosAccionPupular")]
+        public JArray GetDerechosAccionPupular()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "El goce de un ambiente sano, de conformidad con lo establecido en la Constitución, la ley y las disposiciones reglamentarias " });
+                list.Add(new ListadoDTO { Id = "2", Valor = "La moralidad administrativa" });
+
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCategoriasJuzgados")]
+        public JArray GetCategoriasJuzgados()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "MUNICIPAL " });
+                list.Add(new ListadoDTO { Id = "2", Valor = "CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "TRIBUNAL" });
+                list.Add(new ListadoDTO { Id = "4", Valor = "CORTE" });
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 
@@ -825,6 +997,24 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                     objData.ProcesoId = 0;
                     response = await apiService.PostMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/GuardarProcesoJudicial", objData, token);
                     if (!response.IsSuccess) return response;
+
+                    var result = (Response)response.Result;
+                    int procesoJudicialId = 0;
+                    int.TryParse(result.Result.ToString(), out procesoJudicialId);
+
+                    DocumentoProcesoDTO documentoProcesoDTO = new DocumentoProcesoDTO
+                    {
+                        DocumentoBase64 = "erere",
+                        DocumentoProcesolId = 0,
+                        PlantillaDocumentalId = 21,
+                        Identificador = "_"+ objData.Radicado,
+                        ProcesoJudicialId = procesoJudicialId,
+                        Version = 1,
+                    };
+
+                    response = await apiService.PostMicroServicioAsync<DocumentoProcesoDTO>(urlApiGerencial, "api", "/DocumentoProceso/PostActualizarDocumentoProceso", documentoProcesoDTO, token);
+                    if (!response.IsSuccess) return response;
+
                 }
             }
             catch (Exception e)

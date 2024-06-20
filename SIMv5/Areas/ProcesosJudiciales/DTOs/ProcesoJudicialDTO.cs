@@ -21,6 +21,9 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("terceroId")]
         public int? TerceroId { get; set; }
 
+        [JsonProperty("apoderado")]
+        public string Apoderado { get; set; } = string.Empty;
+
         [JsonProperty("radicado")]
         public string Radicado { get; set; }
 
@@ -111,6 +114,10 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
 
         [JsonProperty("demandados")]
         public List<DemandadosDTO> Demandados { get; set; } = new List<DemandadosDTO>();
+
+        [JsonProperty("resumen")]
+        [StringLength(4000)]
+        public string Resumen { get; set; } = String.Empty;
 
     }
 }
