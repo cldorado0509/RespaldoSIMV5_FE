@@ -340,6 +340,34 @@ jQuery(function () {
     }).dxTextBox("instance");
 
 
+
+    $("#fileUploaderSolicitud").dxFileUploader({
+        allowedFileExtensions: [".doc", ".docx", ".pdf", ".xls", ".ppt", ".pptx"],
+        multiple: true,
+        selectButtonText: 'Seleccionar Archivo Temporal',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudiciales/CargarArchivoTemp?Tra=1',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+            var url = e.component.option('uploadUrl');
+            url = updateQueryStringParameter(url, 'Version', VersionTemp.option("value"));
+            e.component.option('uploadUrl', url);
+        }
+        
+    });
+
+  
+
+
     var radicado21 = $("#radicado21").dxTextBox({
         value: '00000000000000000000',
     }).dxTextBox("instance");
@@ -1747,6 +1775,8 @@ jQuery(function () {
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = [];
 
+
+
                 for (i = 0; i < arraydata.length; i++) {
                     demandantesArray.push({ demantanteId: arraydata[i].demantanteId, identificacion: arraydata[i].identificacion, nombre: arraydata[i].nombre, isNew: arraydata[i].isNew });
                 } 
@@ -1806,7 +1836,7 @@ jQuery(function () {
                     success: function (data) {
                         if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                         else {
-                            DevExpress.ui.dialog.alert('Historian Creada/Actualizada correctamente', 'Guardar Datos');
+                            DevExpress.ui.dialog.alert('Proceso Judicial Creado/Actualizado correctamente', 'Guardar Datos');
                             $('#gridExamenes').dxDataGrid({ dataSource: gridExamenesDataSource });
                             $("#btnNuevoExamen").dxButton("instance").option("visible", true);
                         }

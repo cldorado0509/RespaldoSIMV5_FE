@@ -8,6 +8,7 @@ using SIM.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -973,12 +974,30 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [HttpPost, ActionName("GuardarProcesoJudicialAsync")]
         public async Task<Response> GuardarProcesoJudicialAsync(ProcesoJudicialDTO objData)
         {
+            int idUsuario = 0;
+            decimal funcionario = 0;
+
+            if (!ModelState.IsValid) return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + "Datos incompletos!" };
 
             Response response = new Response();
             ApiService apiService = new ApiService();
             try
             {
-                //urlApiJudicial = "https://localhost:7171/";
+                urlApiJudicial = "https://localhost:7171/";
+
+
+                System.Web.HttpContext context = System.Web.HttpContext.Current;
+                ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+                if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+                {
+                    idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                    funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
+                                                   join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                                   where uf.ID_USUARIO == idUsuario
+                                                   select f.CODFUNCIONARIO).FirstOrDefault());
+                }
 
                 decimal Id = 0;
                 if (objData.ProcesoId == -1) objData.ProcesoId = 0;
@@ -1014,8 +1033,24 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
                     response = await apiService.PostMicroServicioAsync<DocumentoProcesoDTO>(urlApiGerencial, "api", "/DocumentoProceso/PostActualizarDocumentoProceso", documentoProcesoDTO, token);
                     if (!response.IsSuccess) return response;
-
                 }
+
+
+                #region Sube documentos
+                string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
+                string _Ruta = _RutaBase + @"\" + DateTime.Now.ToString("yyyyMM");
+
+                DirectoryInfo dir = new DirectoryInfo(_Ruta);
+                string _NomParc = _Ruta + @"\ProcesoJudicial-1" + "-" + idUsuario.ToString() + "-";
+
+                FileInfo[] files = dir.GetFiles(_NomParc + "*", SearchOption.TopDirectoryOnly);
+
+
+                if (files.Length > 0)
+                {
+                    var file = files[0];
+                }
+                #endregion
             }
             catch (Exception e)
             {
