@@ -1020,6 +1020,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                     var result = (Response)response.Result;
                     int procesoJudicialId = 0;
                     int.TryParse(result.Result.ToString(), out procesoJudicialId);
+                    objData.ProcesoId = procesoJudicialId;
 
                     DocumentoProcesoDTO documentoProcesoDTO = new DocumentoProcesoDTO
                     {
@@ -1037,18 +1038,35 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
 
                 #region Sube documentos
+
+
+
                 string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
-                string _Ruta = _RutaBase + @"\" + DateTime.Now.ToString("yyyyMM");
+                string _Ruta = _RutaBase + DateTime.Now.ToString("yyyyMM");
 
                 DirectoryInfo dir = new DirectoryInfo(_Ruta);
-                string _NomParc = _Ruta + @"\ProcesoJudicial-1" + "-" + idUsuario.ToString() + "-";
+                string _NomParc = @"ProcesoJudicial-1" + "-" + idUsuario.ToString();
 
                 FileInfo[] files = dir.GetFiles(_NomParc + "*", SearchOption.TopDirectoryOnly);
-
-
                 if (files.Length > 0)
                 {
                     var file = files[0];
+                    if (Id <= 0)
+                    {
+                        byte[] byteArray = File.ReadAllBytes(file.FullName);
+
+                        DocumentoAnexoDTO documentoAnexoDTO = new DocumentoAnexoDTO
+                        {
+                            Documento = Convert.ToBase64String(byteArray),
+                            ProcesoJudicialId = objData.ProcesoId,
+                            Tipo = 1
+                        };
+
+
+                        response = await apiService.PostMicroServicioAsync<DocumentoAnexoDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/AdicionarDocumentoAnexo", documentoAnexoDTO, token);
+                        if (!response.IsSuccess) return response;
+
+                    }
                 }
                 #endregion
             }
@@ -1060,5 +1078,45 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             return response;
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="tipo"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ObtenerDocumentoAnexo")]
+        public async Task<string> ObtenerDocumentoAnexoAsync(int id, int tipo)
+        {
+            urlApiJudicial = "https://localhost:7171/";
+
+
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string _controller = $"ProcesosJudiciales/GetDocumentoAnexo?procesoId={id}&tipo={tipo}";
+
+
+
+
+                DocumentoAnexoDTO documentoA = new DocumentoAnexoDTO();
+
+
+                Response response = await apiService.GetMicroServicioAsync<DocumentoAnexoDTO>(this.urlApiJudicial, "api/ProcesosJudiciales/", $"GetDocumentoAnexo?procesoId={id}&tipo={tipo}", token);
+                if (!response.IsSuccess) return "";
+
+                documentoA = (DocumentoAnexoDTO)response.Result;
+                return documentoA.Documento;
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

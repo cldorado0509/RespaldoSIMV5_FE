@@ -336,18 +336,18 @@ jQuery(function () {
     }).dxSelectBox("instance");
 
     var radicado = $("#radicado").dxTextBox({
-        value: '00000000000000000000',
+        value: '00000000000000000000', fileUploaderSolicitud
     }).dxTextBox("instance");
 
 
 
     $("#fileUploaderSolicitud").dxFileUploader({
-        allowedFileExtensions: [".doc", ".docx", ".pdf", ".xls", ".ppt", ".pptx"],
+        allowedFileExtensions: [".pdf"],
         multiple: true,
         selectButtonText: 'Seleccionar Archivo Temporal',
         labelText: 'o arrastre un archivo aquí',
         uploadMode: "instantly",
-        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudiciales/CargarArchivoTemp?Tra=1',
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=1',
         inputAttr: { 'aria-label': 'Select a file' },
         onUploadAborted: (e) => removeFile(e.file.name),
         onUploaded: function (e) {
@@ -358,9 +358,7 @@ jQuery(function () {
             DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
         },
         onValueChanged: function (e) {
-            var url = e.component.option('uploadUrl');
-            url = updateQueryStringParameter(url, 'Version', VersionTemp.option("value"));
-            e.component.option('uploadUrl', url);
+         
         }
         
     });
@@ -1645,7 +1643,18 @@ jQuery(function () {
             hint: 'Ver la solicitud',
             type: 'normal',
             onClick: function (params) {
-                window.open('../content/imagenes/certificado.pdf');
+                var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=1';
+                 $.getJSON(_Ruta).done(function (data)
+                {
+                     if (data) {
+
+                         var docWindow = window.open("");
+                         docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data.documento + "'></iframe>")
+                    }       
+                }).fail(function (jqxhr, textStatus, error) {
+                        loadIndicator.option("visible", false);
+                        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
+                });
             }
         });
 
