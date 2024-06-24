@@ -259,7 +259,6 @@ jQuery(function () {
         shading: true,
         shadingColor: "rgba(0,0,0,0.4)",
     });
-
           
     var calidadEntidad = $('#calidadEntidad').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -338,9 +337,7 @@ jQuery(function () {
     var radicado = $("#radicado").dxTextBox({
         value: '00000000000000000000', fileUploaderSolicitud
     }).dxTextBox("instance");
-
-
-
+        
     $("#fileUploaderSolicitud").dxFileUploader({
         allowedFileExtensions: [".pdf"],
         multiple: true,
@@ -362,10 +359,7 @@ jQuery(function () {
         }
         
     });
-
-  
-
-
+    
     var radicado21 = $("#radicado21").dxTextBox({
         value: '00000000000000000000',
     }).dxTextBox("instance");
