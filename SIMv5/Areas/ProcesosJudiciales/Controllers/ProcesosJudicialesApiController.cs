@@ -987,7 +987,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ApiService apiService = new ApiService();
             try
             {
-                urlApiJudicial = "https://localhost:7171/";
+                //urlApiJudicial = "https://localhost:7171/";
 
 
                 System.Web.HttpContext context = System.Web.HttpContext.Current;
@@ -1097,7 +1097,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ObtenerDocumentoAnexo")]
         public async Task<byte[]> ObtenerDocumentoAnexoAsync(int id, int tipo)
         {
-            urlApiJudicial = "https://localhost:7171/";
+            //urlApiJudicial = "https://localhost:7171/";
 
 
             ApiService apiService = new ApiService();
