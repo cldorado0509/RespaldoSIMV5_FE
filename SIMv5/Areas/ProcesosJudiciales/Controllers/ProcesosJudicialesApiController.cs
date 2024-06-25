@@ -1010,6 +1010,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
                 string token = _token.Value;
 
+
                 if (Id > 0)
                 {
                     response = await apiService.PutMicroServicioAsync<ProcesoJudicialDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/ActualizarProcesoJudicial", objData, token);
