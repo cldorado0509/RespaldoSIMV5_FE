@@ -979,7 +979,11 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
             if (!ModelState.IsValid) return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + "Datos incompletos!" };
 
-            Response response = new Response();
+            Response response = new Response
+            {
+                IsSuccess = true,
+                Message = ""
+            };
             ApiService apiService = new ApiService();
             try
             {
@@ -1024,7 +1028,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
                     DocumentoProcesoDTO documentoProcesoDTO = new DocumentoProcesoDTO
                     {
-                        DocumentoBase64 = "erere",
+                        DocumentoBase64 = "actualizando idproceso al documento...",
                         DocumentoProcesolId = 0,
                         PlantillaDocumentalId = 21,
                         Identificador = "_"+ objData.Radicado,
@@ -1045,26 +1049,29 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string _Ruta = _RutaBase + DateTime.Now.ToString("yyyyMM");
 
                 DirectoryInfo dir = new DirectoryInfo(_Ruta);
-                string _NomParc = @"ProcesoJudicial-1" + "-" + idUsuario.ToString();
+                string _NomParc = @"ProcesoJudicial-" + idUsuario.ToString();
 
                 FileInfo[] files = dir.GetFiles(_NomParc + "*", SearchOption.TopDirectoryOnly);
                 if (files.Length > 0)
                 {
-                    var file = files[0];
-                    if (Id <= 0)
+                    foreach (var file in files)
                     {
+                        var tipo = 0;
+                        int.TryParse(file.Name.Substring(16, 1), out tipo);
                         byte[] byteArray = File.ReadAllBytes(file.FullName);
 
                         DocumentoAnexoDTO documentoAnexoDTO = new DocumentoAnexoDTO
                         {
                             Documento = Convert.ToBase64String(byteArray),
                             ProcesoJudicialId = objData.ProcesoId,
-                            Tipo = 1
+                            Tipo = tipo
                         };
-
-
                         response = await apiService.PostMicroServicioAsync<DocumentoAnexoDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/AdicionarDocumentoAnexo", documentoAnexoDTO, token);
-                        if (!response.IsSuccess) return response;
+                        if (!response.IsSuccess)
+                        {
+
+                            response.Message = $"{response.Message} No se pudo almacenar el documento {file.Name}!";
+                        }
 
                     }
                 }
@@ -1087,7 +1094,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <returns></returns>
         [HttpGet]
         [ActionName("ObtenerDocumentoAnexo")]
-        public async Task<string> ObtenerDocumentoAnexoAsync(int id, int tipo)
+        public async Task<byte[]> ObtenerDocumentoAnexoAsync(int id, int tipo)
         {
             urlApiJudicial = "https://localhost:7171/";
 
@@ -1107,10 +1114,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
 
                 Response response = await apiService.GetMicroServicioAsync<DocumentoAnexoDTO>(this.urlApiJudicial, "api/ProcesosJudiciales/", $"GetDocumentoAnexo?procesoId={id}&tipo={tipo}", token);
-                if (!response.IsSuccess) return "";
+                if (!response.IsSuccess) return null;
 
                 documentoA = (DocumentoAnexoDTO)response.Result;
-                return documentoA.Documento;
+                return documentoA.BytesDoc;
 
             }
             catch

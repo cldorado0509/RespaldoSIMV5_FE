@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace SIM.Areas.ProcesosJudiciales.DTOs
 {
@@ -15,6 +14,9 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         public int Tipo { get; set; }
 
         [JsonProperty("documento")]
-        public string Documento { get; set; } = String.Empty;
+        public string Documento { get; set; }
+
+        [JsonProperty("bytesDoc")]
+        public byte[] BytesDoc { get; set; } = new byte[0];
     }
 }

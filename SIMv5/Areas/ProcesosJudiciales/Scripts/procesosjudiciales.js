@@ -340,8 +340,8 @@ jQuery(function () {
         
     $("#fileUploaderSolicitud").dxFileUploader({
         allowedFileExtensions: [".pdf"],
-        multiple: true,
-        selectButtonText: 'Seleccionar Archivo Temporal',
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
         labelText: 'o arrastre un archivo aquí',
         uploadMode: "instantly",
         uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=1',
@@ -359,7 +359,74 @@ jQuery(function () {
         }
         
     });
-    
+
+    $("#fileUploaderNotificacion").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=2',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+
+        }
+
+    });
+
+    $("#fileUploaderComiteConciliacion").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=3',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+
+        }
+
+    });
+
+    $("#fileUploaderActaAudiencia").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=4',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+
+        }
+
+    });
+
+        
     var radicado21 = $("#radicado21").dxTextBox({
         value: '00000000000000000000',
     }).dxTextBox("instance");
@@ -1643,7 +1710,7 @@ jQuery(function () {
                      if (data) {
 
                          var docWindow = window.open("");
-                         docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data.documento + "'></iframe>")
+                         docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
                     }       
                 }).fail(function (jqxhr, textStatus, error) {
                         loadIndicator.option("visible", false);
