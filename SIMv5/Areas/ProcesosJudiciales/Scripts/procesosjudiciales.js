@@ -259,7 +259,6 @@ jQuery(function () {
         shading: true,
         shadingColor: "rgba(0,0,0,0.4)",
     });
-
           
     var calidadEntidad = $('#calidadEntidad').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -336,10 +335,98 @@ jQuery(function () {
     }).dxSelectBox("instance");
 
     var radicado = $("#radicado").dxTextBox({
-        value: '00000000000000000000',
+        value: '00000000000000000000', fileUploaderSolicitud
     }).dxTextBox("instance");
+        
+    $("#fileUploaderSolicitud").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=1',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+         
+        }
+        
+    });
 
+    $("#fileUploaderNotificacion").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=2',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
 
+        }
+
+    });
+
+    $("#fileUploaderComiteConciliacion").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=3',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+
+        }
+
+    });
+
+    $("#fileUploaderActaAudiencia").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=4',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+
+        }
+
+    });
+
+        
     var radicado21 = $("#radicado21").dxTextBox({
         value: '00000000000000000000',
     }).dxTextBox("instance");
@@ -1617,7 +1704,18 @@ jQuery(function () {
             hint: 'Ver la solicitud',
             type: 'normal',
             onClick: function (params) {
-                window.open('../content/imagenes/certificado.pdf');
+                var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=1';
+                 $.getJSON(_Ruta).done(function (data)
+                {
+                     if (data) {
+
+                         var docWindow = window.open("");
+                         docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
+                    }       
+                }).fail(function (jqxhr, textStatus, error) {
+                        loadIndicator.option("visible", false);
+                        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
+                });
             }
         });
 
@@ -1747,6 +1845,8 @@ jQuery(function () {
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = [];
 
+
+
                 for (i = 0; i < arraydata.length; i++) {
                     demandantesArray.push({ demantanteId: arraydata[i].demantanteId, identificacion: arraydata[i].identificacion, nombre: arraydata[i].nombre, isNew: arraydata[i].isNew });
                 } 
@@ -1806,7 +1906,7 @@ jQuery(function () {
                     success: function (data) {
                         if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                         else {
-                            DevExpress.ui.dialog.alert('Historian Creada/Actualizada correctamente', 'Guardar Datos');
+                            DevExpress.ui.dialog.alert('Proceso Judicial Creado/Actualizado correctamente', 'Guardar Datos');
                             $('#gridExamenes').dxDataGrid({ dataSource: gridExamenesDataSource });
                             $("#btnNuevoExamen").dxButton("instance").option("visible", true);
                         }

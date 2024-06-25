@@ -1359,6 +1359,7 @@
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ApoderadoDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\DemandadosDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\DemandantesDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\DocumentoAnexoDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\DocumentoProcesoDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\FichaComiteDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ListadoDTO.cs" />
