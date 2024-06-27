@@ -119,5 +119,9 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [StringLength(4000)]
         public string Resumen { get; set; } = String.Empty;
 
+        [JsonProperty("asunto")]
+        [StringLength(4000)]
+        public string Asunto { get; set; } = String.Empty;
+
     }
 }

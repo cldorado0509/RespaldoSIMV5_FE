@@ -32,6 +32,20 @@
         overflow-y: scroll;
     }
 
+    .divCausasP {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divPretencionesP {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
     .divRecomendaciones {
         border: 1px outset blue;
         text-align: left;
@@ -54,6 +68,13 @@
     }
 
     .divInfoBasica2 {
+        border: 1px outset blue;
+        text-align: left;
+        height: 200px;
+        overflow-y: scroll;
+    }
+
+    .divInfoBasica3 {
         border: 1px outset blue;
         text-align: left;
         height: 200px;
@@ -168,7 +189,6 @@
                             </div>
                         </div>
                         <br />
-                     
                         <div class="row">
                             <div class="col-md-3" style="font-size:9pt">
                                 <p><b>Fecha Notificación</b></p>
@@ -184,6 +204,19 @@
                                 <div class="col-md-1" id="verNotificacion"></div>
                                 <div class="col-md-4">
                                     <div id="fileUploaderNotificacion"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Asunto</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="dx-field">
+                                    <div id="asunto"></div>
                                 </div>
                             </div>
                         </div>
@@ -426,44 +459,128 @@
                     <h3>Información básica</h3>
                     <div class="divInfoBasica2">
                         <div class="row">
-                            <div class="col-md-6" style="font-size:9pt">
+                            <div class="col-md-3" style="font-size:9pt">
                                 <p><b>Calidad de la Entidad</b></p>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div id="calidadEntidad"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6" style="font-size:9pt">
+                            <div class="col-md-4" style="font-size:9pt">
                                 <p><b>Jurisdicci&oacute;n</b></p>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                <div id="calidadEntidad"></div>
+                            </div>
+                            <div class="col-md-4">
                                 <div id="jurisdiccion"></div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-2" style="font-size:9pt">
+                                <p><b>Departamento</b></p>
+                            </div>
+                            <div class="col-md-2" style="font-size:9pt">
+                                <p><b>Municipio</b></p>
+                            </div>
+                            <div class="col-md-3" style="font-size:9pt">
+                                <p><b>Categoría</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div id="cboDepartamento"></div>
+                            </div>
+                            <div class="col-md-2">
+                                <div id="cboMunicipios"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <div id="cboCategoriaJuzgado"></div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4" style="font-size:9pt">
-                                <p><b>Radicado de solicitud</b></p>
+                                <p><b>Especialidad</b></p>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div id="radicado21"></div>
+                            <div class="col-md-3" style="font-size:9pt">
+                                <p><b>Número Juzgado</b></p>
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div id="cboEspecialidadJuzgado"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <div id="numeroJuzgado"></div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="row">
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p style="color: sandybrown"><b>Código Único del Proceso</b></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-1" style="font-size:9pt">
+                                <p><b>Cód DANE</b></p>
+                            </div>
+                            <div class="col-md-1" style="font-size:9pt">
+                                <p><b>Cód Juzgado </b></p>
+                            </div>
+                            <div class="col-md-1" style="font-size:9pt">
+                                <p><b>Cód Especialidad </b></p>
+                            </div>
+                            <div class="col-md-1" style="font-size:9pt">
+                                <p><b>Consec. Despacho </b></p>
+                            </div>
+                            <div class="col-md-1" style="font-size:9pt">
+                                <p><b>Año  </b></p>
+                            </div>
+                            <div class="col-md-1" style="font-size:9pt">
+                                <p><b>Cons. Radicación </b></p>
+                            </div>
+                            <div class="col-md-1" style="font-size:9pt">
+                                <p><b>Cons. Recursos </b></p>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div id="codDaneDepRad"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="codJuzgadoRad"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="codEspecialidadRad"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="codDespachoRad"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="anioRad"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="consecutivoRad"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="consecutivoRecRad"></div>
+                            </div>
+                        </div>
+                        <div id="radicado21"></div>
+                        <hr />
                         <div class="row">
                             <div class="col-md-4" style="font-size:9pt">
                                 <p><b>Apoderado</b></p>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <div id="apoderadotxt"></div>
                             </div>
                         </div>
@@ -491,43 +608,6 @@
                             </div>
                             <div class="col-md-6">
                                 <div id="grdDemandados"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <h3>Juzgado/Tribunal</h3>
-                    <div class="divJuzgadoTribunal">
-                        <div class="row">
-                            <div class="col-md-2" style="font-size:10pt">
-                                <p><b>Número</b></p>
-                            </div>
-                            <div class="col-md-4" style="font-size:10pt">
-                                <p><b>Especialidad</b></p>
-                            </div>
-                            <div class="col-md-2" style="font-size:10pt">
-                                <p><b>Categoría</b></p>
-                            </div>
-                            <div class="col-md-2" style="font-size:10pt">
-                                <p><b>Departamento</b></p>
-                            </div>
-                            <div class="col-md-2" style="font-size:10pt">
-                                <p><b>Municipio</b></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div id="numeroJuzgado"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div id="cboEspecialidadJuzgado"></div>
-                            </div>
-                            <div class="col-md-2">
-                                <div id="cboCategoriaJuzgado"></div>
-                            </div>
-                            <div class="col-md-2">
-                                <div id="cboDepartamento"></div>
-                            </div>
-                            <div class="col-md-2">
-                                <div id="cboMunicipios"></div>
                             </div>
                         </div>
                     </div>
@@ -567,7 +647,7 @@
                                 <div class="dx-field">
                                     <div class="dx-field-label">Fecha de Notificaci&oacute;n</div>
                                     <div class="dx-field-value">
-                                        <div id="fechaNotificacion"></div>
+                                        <div id="fechaNotificacionJ"></div>
                                     </div>
                                 </div>
                             </div>
@@ -579,79 +659,99 @@
 
         </div>
         <div id="tab03" style="display: none">
-            <label class="header" style="padding: 5px">HECHOS, CAUSAS Y PRETENSIONES DEL PROCESO</label>
-            <br />
-            <div class="dx-fieldset">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="dx-field">
-                            <div class="dx-field-label">Fecha</div>
-                            <div class="dx-field-value">
-                                <div id="fechaHechos"></div>
+            <div id="container3">
+                <div id="asistente3">
+                    <h3>Hechos</h3>
+                    <div class="divInfoBasica3">
+                        <div class="dx-fieldset">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label">Fecha</div>
+                                        <div class="dx-field-value">
+                                            <div id="fechaHechosP"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-5">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label">Departamento</div>
+                                        <div class="dx-field-value">
+                                            <div id="departamentoHechosP"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label">Municipio</div>
+                                        <div class="dx-field-value">
+                                            <div id="municipioHechosP"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="dx-field-label">Descripción de los Hechos</div>
+                                <div class="col-md-11">
+                                    <div id="descripcionHechos"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label">Caducidad</div>
+                                        <div class="dx-field-value">
+                                            <div id="caducidadHechos"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1"></div>
+                                <div class="col-md-5">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label">Fecha Caducidad</div>
+                                        <div class="dx-field-value">
+                                            <div id="fechaCaducidadHechos"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4"></div>
-                    <div class="col-md-5">
-                        <div class="dx-field">
-                            <div class="dx-field-label">Departamento</div>
-                            <div class="dx-field-value">
-                                <div id="departamentoHechos"></div>
+                    <h3>Pretenciones</h3>
+                    <div class="divPretencionesP">
+                        <div class="row">
+                            <div class="dx-field-label">Pretenciones (Breve resumen)</div>
+                            <div class="col-md-11">
+                                <div id="pretensionesDeclarativasHechos"></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="dx-field">
-                            <div class="dx-field-label">Municipio</div>
-                            <div class="dx-field-value">
-                                <div id="municipioHechos"></div>
+                        <div class="row">
+                            <div class="dx-field-label">Cuantía</div>
+                            <div class="col-md-11">
+                                <div id="cboCuantia"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="dx-field-label">Juramento estimatorio</div>
+                            <div class="col-md-11">
+                                <div id="cboJuramenteoEstimatorio"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <label class="header" style="padding: 5px">DESCRIPCI&Oacute;N DE LOS HECHOS</label>
-                    <div class="col-md-11">
-                        <div id="descripcionHechos"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="dx-field">
-                            <div class="dx-field-label">Caducidad o Prescripci&oacute;n</div>
-                            <div class="dx-field-value">
-                                <div id="caducidadHechos"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1"></div>
-                    <div class="col-md-5">
-                        <div class="dx-field">
-                            <div class="dx-field-label">Llamamiento en Garant&iacute;a</div>
-                            <div class="dx-field-value">
-                                <div id="llamamientoHechos"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class="header" style="padding: 5px">PRETENSIONES DECLARATIVAS</label>
-                    <div class="col-md-11">
-                        <div id="pretensionesDeclarativasHechos"></div>
-                    </div>
-                </div>
-            </div>
+             </div>
         </div>
         <div id="tab04" style="display: none">
-            <div id="pnlActuaciones">
-                <div class="row" style="width: 100%; height:5%">
-                    <div class="col-md-7"></div>
-                    <div class="col-md-5"><div id="agregarActuacion"></div></div>
-                </div>
-                <div style="height: 95%">
-                    <div id="grdActuacion"></div>
-                </div>
+          <div id="pnlActuaciones">
+            <div class="row" style="width: 100%; height:5%">
+                <div class="col-md-7"></div>
+                <div class="col-md-5"><div id="agregarActuacion"></div></div>
             </div>
+            <div style="height: 95%">
+                <div id="grdActuacion"></div>
+            </div>
+        </div>
         </div>
         <div id="tab06" style="display: none">
             <div class="dx-fieldset">
