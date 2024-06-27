@@ -968,7 +968,7 @@ jQuery(function () {
     }).dxDateBox("instance");
 
     var decisionComite = $("#decisionComite").dxRadioGroup({
-        dataSource: [{ text: "Aprueba", valor: 1 }, { text: "Desaprueba", valor: 2 }],
+        dataSource: [{ text: "Conciliar", valor: 1 }, { text: "No conciliar", valor: 2 }],
         displayExpr: "text",
         valueExpr: "valor",
         value: 1
