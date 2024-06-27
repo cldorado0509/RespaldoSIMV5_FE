@@ -648,6 +648,73 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             }
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCuantias")]
+        public JArray GetCuantias()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "MENOR" });
+                list.Add(new ListadoDTO { Id = "2", Valor = "MEDIA" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "MAYOR" });
+                list.Add(new ListadoDTO { Id = "4", Valor = "SIN CUANTÍA" });
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetJuramentosEstimatorio")]
+        public JArray GetJuramentosEstimatorio()
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+                list.Add(new ListadoDTO { Id = "1", Valor = "RADICACIÓN" });
+                list.Add(new ListadoDTO { Id = "2", Valor = "INADMISIÓN" });
+                list.Add(new ListadoDTO { Id = "3", Valor = "RECHAZO" });
+                list.Add(new ListadoDTO { Id = "4", Valor = "ADMISION" });
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -821,6 +888,8 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("GetDepartamentos")]
         public async Task<JArray> GetDepartamentos()
         {
+            //urlApiJudicial= "https://localhost:7171/";
+
             ApiService apiService = new ApiService();
 
             JsonSerializer Js = new JsonSerializer();
@@ -833,11 +902,11 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/Departamentos";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<DepartamentoDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
-                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+                var list = (List<DepartamentoDTO>)response.Result;
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Nombre), Js);
 
                 return listDto;
             }
@@ -938,6 +1007,8 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("GetMunicipios")]
         public async Task<JArray> GetMunicipios(int departamentoId)
         {
+            //urlApiJudicial= "https://localhost:7171/";
+
             ApiService apiService = new ApiService();
 
             JsonSerializer Js = new JsonSerializer();
@@ -950,11 +1021,11 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string _controller = $"Listados/ObtenerCiudad?IdDepto=" + departamentoId;
 
-                Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                Response response = await apiService.GetMicroServicioListAsync<MunicipioDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
-                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+                var list = (List<MunicipioDTO>)response.Result;
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Nombre), Js);
 
                 return listDto;
             }

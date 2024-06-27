@@ -4,15 +4,13 @@ namespace SIM.Areas.Retributivas.Controllers
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using SIM.Areas.Retributivas.Models;
-    using System.Security.Claims;
+    using SIM.Data;
+    using SIM.Data.Agua;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
-    using System.Net.Http;
+    using System.Security.Claims;
     using System.Web.Http;
-    using SIM.Data.Agua;
-    using SIM.Data;
 
     //[Authorize]
     public class AdministradorApiController : ApiController
@@ -66,21 +64,21 @@ namespace SIM.Areas.Retributivas.Controllers
                              join P in dbSIM.MUNICIPIOS on trn.ID_MUNICIPIO equals P.ID_MUNI
                              join T in dbSIM.TSIMTASA_TRAMOS on trn.TSIMTASA_TRAMOS_ID equals T.ID
                              join C in dbSIM.TSIMTASA_TIPO_CUENCAS on trn.TSIMTASA_TIPO_CUENCAS_ID equals C.ID
-                             
+
                              select new
                              {
-                                 ID= trn.ID,
-                                 CODIGO =trn.CODIGO,
+                                 ID = trn.ID,
+                                 CODIGO = trn.CODIGO,
                                  NOMBRE = trn.NOMBRE,
                                  AREA = trn.AREA,
                                  CAUDAL = trn.CAUDAL,
-                                 TSIMTASA_TIPO_CUENCAS_ID= trn.TSIMTASA_TIPO_CUENCAS_ID,
-                                 TIPO= C.NOMBRE,
+                                 TSIMTASA_TIPO_CUENCAS_ID = trn.TSIMTASA_TIPO_CUENCAS_ID,
+                                 TIPO = C.NOMBRE,
                                  LONGITUD = trn.LONGITUD,
                                  ID_MUNICIPIO = trn.ID_MUNICIPIO,
                                  TSIMTASA_TRAMOS_ID = trn.TSIMTASA_TRAMOS_ID,
                                  TRAMO = T.NOMBRE,
-                                 MUNICIPIO =P.NOMBRE,
+                                 MUNICIPIO = P.NOMBRE,
                              });
                 IQueryable<dynamic> modelFiltered = SIM.Utilidades.Data.ObtenerConsultaDinamica(modelData, (searchValue != null && searchValue != "" ? searchExpr + "," + comparation + "," + searchValue : filter), sort, group);
                 resultado.numRegistros = modelFiltered.Count();
@@ -432,7 +430,7 @@ namespace SIM.Areas.Retributivas.Controllers
                              {
                                  ID_FACTOR_REGIONAL = R.ID,
                                  R.ANO,
-                                 R.FACTOR,      
+                                 R.FACTOR,
                                  R.CARGA_OBTENIDA,
                                  R.RESOLUCION,
                                  R.CUMPLE_META,
@@ -485,11 +483,11 @@ namespace SIM.Areas.Retributivas.Controllers
         [Authorize(Roles = "VADMINISTRADOR")]
         public JArray RegionalFactorSingle()
         {
-                JsonSerializer Js = new JsonSerializer();
-                Js = JsonSerializer.CreateDefault();
-                try
-                {
-                 var model = (from R in dbSIM.TSIMTASA_FACTOR_REGIONAL
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                var model = (from R in dbSIM.TSIMTASA_FACTOR_REGIONAL
                              select new
                              {
                                  ID_FACTOR_REGIONAL = R.ID,
@@ -503,12 +501,12 @@ namespace SIM.Areas.Retributivas.Controllers
                                  R.TSIMTASA_PERIODOS_ID,
                              });
 
-                    return JArray.FromObject(model, Js);
-                }
-                catch (Exception exp)
-                {
-                    throw exp;
-                }
+                return JArray.FromObject(model, Js);
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
         }
 
 
@@ -546,20 +544,20 @@ namespace SIM.Areas.Retributivas.Controllers
 
 
                 var reportes1 = (from R in dbSIM.TSIMTASA_REPORTES
-                                join C in dbSIM.TSIMTASA_CUENCAS on R.TSIMTASA_CUENCAS_TERCERO_ID equals C.ID
-                                where C.TSIMTASA_TRAMOS_ID == fr.tramo
-                                where R.ANO == fr.fechaIicio.Value.Year
-                                && R.MES >= fr.fechaIicio.Value.Month
-                                && C.TSIMTASA_TRAMOS_ID == fr.tramo
-                                select R).ToList();
+                                 join C in dbSIM.TSIMTASA_CUENCAS on R.TSIMTASA_CUENCAS_TERCERO_ID equals C.ID
+                                 where C.TSIMTASA_TRAMOS_ID == fr.tramo
+                                 where R.ANO == fr.fechaIicio.Value.Year
+                                 && R.MES >= fr.fechaIicio.Value.Month
+                                 && C.TSIMTASA_TRAMOS_ID == fr.tramo
+                                 select R).ToList();
 
                 var reportes2 = (from R in dbSIM.TSIMTASA_REPORTES
-                                join C in dbSIM.TSIMTASA_CUENCAS on R.TSIMTASA_CUENCAS_TERCERO_ID equals C.ID
-                                where C.TSIMTASA_TRAMOS_ID == fr.tramo
-                                where R.ANO == fr.FechaFin.Value.Year
-                                && R.MES <= fr.FechaFin.Value.Month
-                                && C.TSIMTASA_TRAMOS_ID == fr.tramo
-                                select R).ToList();
+                                 join C in dbSIM.TSIMTASA_CUENCAS on R.TSIMTASA_CUENCAS_TERCERO_ID equals C.ID
+                                 where C.TSIMTASA_TRAMOS_ID == fr.tramo
+                                 where R.ANO == fr.FechaFin.Value.Year
+                                 && R.MES <= fr.FechaFin.Value.Month
+                                 && C.TSIMTASA_TRAMOS_ID == fr.tramo
+                                 select R).ToList();
 
 
 
@@ -571,7 +569,7 @@ namespace SIM.Areas.Retributivas.Controllers
                 if (fr.parametro == 1)
                 {
                     var cargaAcumuladaSST = reportes1.Sum(x => x.REPORTE_SST);
-                     cargaAcumuladaSST = cargaAcumuladaSST + reportes2.Sum(x => x.REPORTE_SST);
+                    cargaAcumuladaSST = cargaAcumuladaSST + reportes2.Sum(x => x.REPORTE_SST);
 
                     //fr.CARGA_OBTENIDA = decimal.ToDouble(cargaAcumuladaSST) / 1000000;
                     metaUpdate.CARGA_OBTENIDA = decimal.ToDouble(cargaAcumuladaSST);
@@ -580,13 +578,13 @@ namespace SIM.Areas.Retributivas.Controllers
                 else
                 {
                     var cargaAcumuladaDBO = reportes1.Sum(x => x.REPORTE_DBO);
-                     cargaAcumuladaDBO = cargaAcumuladaDBO + reportes1.Sum(x => x.REPORTE_DBO);
+                    cargaAcumuladaDBO = cargaAcumuladaDBO + reportes1.Sum(x => x.REPORTE_DBO);
                     //fr.CARGA_OBTENIDA = decimal.ToDouble(cargaAcumuladaDBO) / 1000000;
                     metaUpdate.CARGA_OBTENIDA = decimal.ToDouble(cargaAcumuladaDBO);
 
                 }
 
-                    dbSIM.SaveChanges();
+                dbSIM.SaveChanges();
 
 
                 return JObject.FromObject(fr, Js);
@@ -630,51 +628,51 @@ namespace SIM.Areas.Retributivas.Controllers
 
 
 
-                    var reportes1 = (from Report in dbSIM.TSIMTASA_REPORTES
-                                    join c in dbSIM.TSIMTASA_CUENCAS_TERCERO on Report.TSIMTASA_CUENCAS_TERCERO_ID equals c.ID
-                                    where
-                                    Report.ANO == metas.fechaIicio.Value.Year
-                                    && Report.MES >= metas.fechaIicio.Value.Month
-                                    && c.ID_TERCERO == metas.tercero
-                                    select Report).ToList();
+                var reportes1 = (from Report in dbSIM.TSIMTASA_REPORTES
+                                 join c in dbSIM.TSIMTASA_CUENCAS_TERCERO on Report.TSIMTASA_CUENCAS_TERCERO_ID equals c.ID
+                                 where
+                                 Report.ANO == metas.fechaIicio.Value.Year
+                                 && Report.MES >= metas.fechaIicio.Value.Month
+                                 && c.ID_TERCERO == metas.tercero
+                                 select Report).ToList();
 
                 var reportes2 = (from Report in dbSIM.TSIMTASA_REPORTES
-                                join c in dbSIM.TSIMTASA_CUENCAS_TERCERO on Report.TSIMTASA_CUENCAS_TERCERO_ID equals c.ID
-                                where
-                                Report.ANO == metas.FechaFin.Value.Year
-                                && Report.MES <= metas.FechaFin.Value.Month
-                                && c.ID_TERCERO == metas.tercero
-                                select Report).ToList();
+                                 join c in dbSIM.TSIMTASA_CUENCAS_TERCERO on Report.TSIMTASA_CUENCAS_TERCERO_ID equals c.ID
+                                 where
+                                 Report.ANO == metas.FechaFin.Value.Year
+                                 && Report.MES <= metas.FechaFin.Value.Month
+                                 && c.ID_TERCERO == metas.tercero
+                                 select Report).ToList();
 
                 var metaUpdate = (from MIUpdate in dbSIM.TSIMTASA_METAS_INDIVIDUALES
-                                      where MIUpdate.ID == Id
-                                      select MIUpdate).First();
-                 
-
-                    if (metas.parametro == 1)
-                    {
-                        var cargaAcumuladaSST = reportes1.Sum(x => x.REPORTE_SST);
-                         cargaAcumuladaSST = cargaAcumuladaSST + reportes2.Sum(x => x.REPORTE_SST);
-                        //la carga viene en mg,
-
-                        metaUpdate.CARGA_OBTENIDA = cargaAcumuladaSST;
-
-                    }
-                    else
-                    {
-                        var cargaAcumuladaDBO = reportes1.Sum(x => x.REPORTE_DBO);
-                         cargaAcumuladaDBO = cargaAcumuladaDBO + reportes2.Sum(x => x.REPORTE_DBO);
-                        metaUpdate.CARGA_OBTENIDA = cargaAcumuladaDBO;
-
-                    }
-             
-
-                    dbSIM.SaveChanges();
-                    return JObject.FromObject(metaUpdate, Js);
-                
+                                  where MIUpdate.ID == Id
+                                  select MIUpdate).First();
 
 
-                
+                if (metas.parametro == 1)
+                {
+                    var cargaAcumuladaSST = reportes1.Sum(x => x.REPORTE_SST);
+                    cargaAcumuladaSST = cargaAcumuladaSST + reportes2.Sum(x => x.REPORTE_SST);
+                    //la carga viene en mg,
+
+                    metaUpdate.CARGA_OBTENIDA = cargaAcumuladaSST;
+
+                }
+                else
+                {
+                    var cargaAcumuladaDBO = reportes1.Sum(x => x.REPORTE_DBO);
+                    cargaAcumuladaDBO = cargaAcumuladaDBO + reportes2.Sum(x => x.REPORTE_DBO);
+                    metaUpdate.CARGA_OBTENIDA = cargaAcumuladaDBO;
+
+                }
+
+
+                dbSIM.SaveChanges();
+                return JObject.FromObject(metaUpdate, Js);
+
+
+
+
             }
             catch (Exception exp)
             {
@@ -702,16 +700,16 @@ namespace SIM.Areas.Retributivas.Controllers
 
 
                 var fr = (from R in dbSIM.TSIMTASA_FACTOR_REGIONAL
-                             join mi in dbSIM.TSIMTASA_METAS_GRUPALES on R.TSIMTASA_PERIODOS_ID equals mi.PERIODO
-                             where R.ID == Id
-                             where R.PARAMETROS_AMBIENTAL_ID == mi.PARAMETRO
-                             select R).FirstOrDefault();
+                          join mi in dbSIM.TSIMTASA_METAS_GRUPALES on R.TSIMTASA_PERIODOS_ID equals mi.PERIODO
+                          where R.ID == Id
+                          where R.PARAMETROS_AMBIENTAL_ID == mi.PARAMETRO
+                          select R).FirstOrDefault();
 
 
                 var pe = (from R in dbSIM.TSIMTASA_METAS_GRUPALES
-                             join mi in dbSIM.TSIMTASA_FACTOR_REGIONAL on R.PERIODO equals mi.TSIMTASA_PERIODOS_ID
-                             where mi.ID == Id
-                             where R.PARAMETRO == mi.PARAMETROS_AMBIENTAL_ID
+                          join mi in dbSIM.TSIMTASA_FACTOR_REGIONAL on R.PERIODO equals mi.TSIMTASA_PERIODOS_ID
+                          where mi.ID == Id
+                          where R.PARAMETRO == mi.PARAMETROS_AMBIENTAL_ID
                           select R).FirstOrDefault();
 
                 if (fr.CARGA_OBTENIDA > decimal.ToDouble(pe.META))
@@ -728,7 +726,7 @@ namespace SIM.Areas.Retributivas.Controllers
                         fr.FACTOR = (Decimal)nuevo;
                     }
 
-                
+
                 }
                 else
                 {
@@ -762,14 +760,14 @@ namespace SIM.Areas.Retributivas.Controllers
 
 
                 var mi = (from R in dbSIM.TSIMTASA_METAS_INDIVIDUALES
-                             where R.ID == Id
-                             select R).FirstOrDefault();
-                
-                
+                          where R.ID == Id
+                          select R).FirstOrDefault();
+
+
                 var fr = (from R in dbSIM.TSIMTASA_FACTOR_REGIONAL
-                             join mg in dbSIM.TSIMTASA_METAS_GRUPALES on R.TSIMTASA_PERIODOS_ID equals mg.PERIODO
-                             where R.PARAMETROS_AMBIENTAL_ID == mi.TSIMTASA_PARAMETROS_AMBIENTAL_ID
-                             select R).FirstOrDefault();
+                          join mg in dbSIM.TSIMTASA_METAS_GRUPALES on R.TSIMTASA_PERIODOS_ID equals mg.PERIODO
+                          where R.PARAMETROS_AMBIENTAL_ID == mi.TSIMTASA_PARAMETROS_AMBIENTAL_ID
+                          select R).FirstOrDefault();
 
 
                 //var pe = (from R in dbSIM.TSIMTASA_METAS_GRUPALES
@@ -792,7 +790,7 @@ namespace SIM.Areas.Retributivas.Controllers
                         mi.FACTOR_REGIONAL = (Decimal)nuevo;
                     }
 
-                
+
                 }
                 else
                 {
@@ -939,7 +937,7 @@ namespace SIM.Areas.Retributivas.Controllers
                             _turnUpdate.TSIMTASA_PERIODO_ID = objData.PERIODO_ID;
                             _turnUpdate.TSIMTASA_PARAMETROS_AMBIENTAL_ID = objData.PARAMETRO_AMBIENTAL_ID;
                             _turnUpdate.FACTOR_REGIONAL = objData.FACTOR_REGIONAL_ID;
-                            
+
 
                             dbSIM.SaveChanges();
                         }
@@ -1011,7 +1009,7 @@ namespace SIM.Areas.Retributivas.Controllers
                                  FACTOR_REGIONAL = R.FACTOR_REGIONAL,
                              }).FirstOrDefault();
 
-                                return JObject.FromObject(modelData, Js);
+                return JObject.FromObject(modelData, Js);
             }
             catch (Exception exp)
             {
@@ -1187,14 +1185,14 @@ namespace SIM.Areas.Retributivas.Controllers
             else
             {
                 modelData = (from R in dbSIM.TSIMTASA_PERIODO
-                             join Q in dbSIM.TSIMTASA_QUINQUENO on R.TSIMTASA_QUINQUENO_ID equals Q.ID 
+                             join Q in dbSIM.TSIMTASA_QUINQUENO on R.TSIMTASA_QUINQUENO_ID equals Q.ID
                              select new
                              {
                                  ID_PERIODO = R.ID,
                                  R.NO_PERIODO,
                                  R.INICIA,
                                  R.TERMINA,
-                                 QUINQUENO= Q.DESCRIPCION
+                                 QUINQUENO = Q.DESCRIPCION
                              });
 
                 Console.WriteLine(modelData);
@@ -1223,9 +1221,9 @@ namespace SIM.Areas.Retributivas.Controllers
                 return resultado;
 
             }
-                
-                
-            
+
+
+
         }
 
 
@@ -1270,8 +1268,8 @@ namespace SIM.Areas.Retributivas.Controllers
             else
             {
                 modelData = (from R in dbSIM.TSIMTASA_QUINQUENO
-                            orderby R.ID ascending
-                             select new 
+                             orderby R.ID ascending
+                             select new
                              {
                                  ID_QUINQUENO = R.ID,
                                  DESCRIPCION = R.DESCRIPCION,
@@ -1419,7 +1417,7 @@ namespace SIM.Areas.Retributivas.Controllers
                           join Ct in dbSIM.TSIMTASA_CUENCAS_TERCERO on R.TSIMTASA_CUENCAS_TERCERO_ID equals Ct.ID
                           join C in dbSIM.TSIMTASA_CUENCAS on Ct.TSIMTASA_CUENCAS_ID1 equals C.ID
                           join M in dbSIM.TSIMTASA_METAS_INDIVIDUALES on Ct.ID_TERCERO equals M.ID_TERCERO
-                          where R.ID == Id 
+                          where R.ID == Id
                           where Psst.ID == 1
                           where Pdbo.ID == 2
                           where F.TSIMTASA_TRAMOS_ID == C.TSIMTASA_TRAMOS_ID
@@ -1427,22 +1425,22 @@ namespace SIM.Areas.Retributivas.Controllers
                           where F.PARAMETROS_AMBIENTAL_ID == Psst.ID
                           where FF.PARAMETROS_AMBIENTAL_ID == Pdbo.ID
 
-                                  select new
-                                  {
-                                      ID_REPORTE = R.ID,
-                                      AGNO = R.ANO,
-                                      MES_ID = R.MES,
-                                      FR_TRAMO_SST = F.FACTOR,
-                                      FR_TRAMO_DBO = FF.FACTOR,
-                                      TARIFA_MINIMA_SST = Tsst.TARIFA,
-                                      TARIFA_MINIMA_DBO = Tdbo.TARIFA,
-                                      REPORT_DBO = R.REPORTE_DBO,
-                                      REPORT_SST = R.REPORTE_SST,
-                                      Cc_DBO = (double)(R.CAUDAL_PROMEDIO) * (double)(R.REPORTE_DBO) * (double)(R.HORAS_VERTIMIENTO) * factorConversion * (double)R.DIAS_VERTIMIENTOS,
-                                      Cc_SST = (double)R.CAUDAL_PROMEDIO * (double)R.REPORTE_SST * (double)R.HORAS_VERTIMIENTO * factorConversion * (double)R.DIAS_VERTIMIENTOS,
-                                      BILLING_DBO = (double)Tdbo.TARIFA * (double)FF.FACTOR,
-                                      BILLING_SST = (double)Tsst.TARIFA * (double)F.FACTOR,
-                                  });
+                          select new
+                          {
+                              ID_REPORTE = R.ID,
+                              AGNO = R.ANO,
+                              MES_ID = R.MES,
+                              FR_TRAMO_SST = F.FACTOR,
+                              FR_TRAMO_DBO = FF.FACTOR,
+                              TARIFA_MINIMA_SST = Tsst.TARIFA,
+                              TARIFA_MINIMA_DBO = Tdbo.TARIFA,
+                              REPORT_DBO = R.REPORTE_DBO,
+                              REPORT_SST = R.REPORTE_SST,
+                              Cc_DBO = (double)(R.CAUDAL_PROMEDIO) * (double)(R.REPORTE_DBO) * (double)(R.HORAS_VERTIMIENTO) * factorConversion * (double)R.DIAS_VERTIMIENTOS,
+                              Cc_SST = (double)R.CAUDAL_PROMEDIO * (double)R.REPORTE_SST * (double)R.HORAS_VERTIMIENTO * factorConversion * (double)R.DIAS_VERTIMIENTOS,
+                              BILLING_DBO = (double)Tdbo.TARIFA * (double)FF.FACTOR,
+                              BILLING_SST = (double)Tsst.TARIFA * (double)F.FACTOR,
+                          });
 
                 decimal SSTkgMES = new decimal();
                 decimal DBOkgMES = new decimal();
@@ -1450,9 +1448,9 @@ namespace SIM.Areas.Retributivas.Controllers
                 decimal billingDBO = new decimal();
                 var billing = new decimal();
                 decimal idReport = new decimal();
-                
+
                 foreach (var item in _b)
-                { 
+                {
                     DBOkgMES = (decimal)item.Cc_DBO;
                     SSTkgMES = (decimal)item.Cc_SST;
                     idReport = item.ID_REPORTE;
@@ -1549,13 +1547,13 @@ namespace SIM.Areas.Retributivas.Controllers
                     var cuenca_tercero = (from C in dbSIM.TSIMTASA_CUENCAS_TERCERO
                                           where C.ID_TERCERO == objData.ID_TERCERO & C.TSIMTASA_CUENCAS_ID1 == objData.VERTIMIENTO_ID
                                           select new { C.ID }
-                        ).FirstOrDefault(); 
+                        ).FirstOrDefault();
 
 
                     if (Id > 0)
                     {
                         var _turnUpdate = dbSIM.TSIMTASA_REPORTES.Where(f => f.ID == Id).FirstOrDefault();
-                        if (_turnUpdate != null) 
+                        if (_turnUpdate != null)
                         {
                             _turnUpdate.CANTIDAD_VERTIMIENTOS = objData.NO_DESCARGAS_DIA;
                             _turnUpdate.CAUDAL_PROMEDIO = objData.CAUDAL;
@@ -1585,7 +1583,7 @@ namespace SIM.Areas.Retributivas.Controllers
                             ANO = objData.AGNO,
                             REPORTE_SST = objData.SST,
                             REPORTE_DBO = objData.DBO,
-                            TSIMTASA_CUENCAS_TERCERO_ID = cuenca_tercero.ID, 
+                            TSIMTASA_CUENCAS_TERCERO_ID = cuenca_tercero.ID,
                             TSIMTASA_ESTADO_REPORTE_ID = objData.ESTADO_REPORTE_ID,
                             TSIMTASA_TIPO_REPORTE_ID = objData.TIPO_REPORTE_ID,
                         };
@@ -2366,7 +2364,7 @@ namespace SIM.Areas.Retributivas.Controllers
                                  M.CODIGO,
                                  M.NOMBRE,
                                  M.AMVA
-                             }); 
+                             });
                 return JArray.FromObject(model, Js);
             }
             catch (Exception exp)
@@ -2389,7 +2387,7 @@ namespace SIM.Areas.Retributivas.Controllers
                              {
                                  M.ID,
                                  M.NOMBRE,
-                             }); 
+                             });
                 return JArray.FromObject(model, Js);
             }
             catch (Exception exp)
@@ -2413,7 +2411,7 @@ namespace SIM.Areas.Retributivas.Controllers
                                  M.ID,
                                  M.NOMBRE,
                                  M.DESCRIPCION,
-                             }); 
+                             });
                 return JArray.FromObject(model, Js);
             }
             catch (Exception exp)

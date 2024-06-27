@@ -19,5 +19,11 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
 
         [JsonProperty("isNew")]
         public string IsNew { get; set; }
+
+        [JsonProperty("esConvocante")]
+        public string EsConvocante { get; set; } = "1";
+
+        [JsonProperty("esDemandante")]
+        public string EsDemandante { get; set; } = "1";
     }
 }
