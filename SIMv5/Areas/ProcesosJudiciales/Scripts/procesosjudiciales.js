@@ -499,6 +499,18 @@ jQuery(function () {
         showSpinButtons: true,
     }).dxNumberBox("instance");
 
+
+    
+    var cuantiaPretenciones = $("#cuantiaPretenciones").dxNumberBox({
+        placeholder: '[Valor Cuantía]',
+        min: 0,
+        format: '$ #,##0',
+        showClearButton: true,
+        value: null,
+        showSpinButtons: false,
+    }).dxNumberBox("instance");
+
+
     var consecutivoRad = $("#consecutivoRad").dxTextBox({
         value: '00000',
     }).dxTextBox("instance");
@@ -854,7 +866,7 @@ jQuery(function () {
     var asunto = $("#asunto").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -887,7 +899,7 @@ jQuery(function () {
     var hechos = $("#hechos").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -896,10 +908,34 @@ jQuery(function () {
         } 
     }).dxTextArea("instance");
 
+    var riesgo = $("#riesgo").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 90,
+        onValueChanged(e) {
+            var value = e.component.option("value");
+            if (value) {
+                e.component.option("value", value.toUpperCase());
+            }
+        }
+    }).dxTextArea("instance");
+
+    var politicasAplicables = $("#politicasAplicables").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 90,
+        onValueChanged(e) {
+            var value = e.component.option("value");
+            if (value) {
+                e.component.option("value", value.toUpperCase());
+            }
+        }
+    }).dxTextArea("instance");
+
     var pretensionesDeclarativasHechos = $("#pretensionesDeclarativasHechos").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 90,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -923,7 +959,7 @@ jQuery(function () {
     var pretensiones = $("#pretensiones").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 90,
         onValueChanged(e) {
         var value = e.component.option("value");
 
@@ -936,7 +972,7 @@ jQuery(function () {
     var fundamentoJuridicoConvocante = $("#fundamentoJuridicoConvocante").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -948,7 +984,7 @@ jQuery(function () {
     var fundamentoDefensa = $("#fundamentoDefensa").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {

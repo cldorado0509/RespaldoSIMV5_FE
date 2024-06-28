@@ -14,8 +14,9 @@
 
     .divEncabezado {
         border: 1px outset blue;
-        background-color: lightblue;
         text-align: left;
+        height: 500px;
+        overflow-y: scroll;
     }
 
     .divTerceros {
@@ -139,90 +140,81 @@
                     <h3>Información básica</h3>
                     <div class="divEncabezado">
                         <div class="row">
-                            <div class="col-md-2" style="font-size:9pt">
+                            <div class="col-md-4" style="font-size:9pt">
                                 <p><b>Radicado de solicitud</b></p>
                             </div>
-                            <div class="col-md-5" style="font-size:9pt">
-                                <p style="align-content:end"><b>Procuraduría</b></p>
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Procuraduría</b></p>
                             </div>
-                            <div class="col-md-5"></div>
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Medio de Control/Acción constitucional</b></p>
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <div id="radicado"></div>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <div id="procuraduria"></div>
                             </div>
-                            <div class="col-md-5"></div>
-                        </div>
-                        <hr />
-                        <div class="row">
-                            <div class="col-md-7" style="font-size:9pt">
-                                <p style="align-content:end"><b>Medio de Control/Acción constitucional</b></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-7">
+                            <div class="col-md-4">
                                 <div id="medioControl"></div>
-                            </div>
-                        </div>
-
-                        <hr />
-
-                        <div class="row">
-                            <div class="col-md-3" style="font-size:9pt">
-                                <p><b>Fecha Radicado Solicitud</b></p>
-                            </div>
-                            <div class="col-md-9" style="font-size:9pt">
-                                <p><b>Solicitud</b></p>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-2" id="fechaRadicado"></div>
-                                <div class="col-md-1" id="verSolicitud"></div>
-                                <div class="col-md-4">
-                                    <div id="fileUploaderSolicitud"></div>
-                                </div>
                             </div>
                         </div>
                         <br />
                         <div class="row">
                             <div class="col-md-3" style="font-size:9pt">
+                                <p><b>Fecha Radicado Solicitud</b></p>
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-8" style="font-size:9pt">
+                                <p style="color:brown"><b>Subir la Solicitud</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div id="fechaRadicado"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="verSolicitud"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="fileUploaderSolicitud"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" style="font-size:9pt">
                                 <p><b>Fecha Notificación</b></p>
                             </div>
-                            <div class="col-md-9" style="font-size:9pt">
-                                <p><b>Citación Audiencia</b></p>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-8" style="font-size:9pt">
+                                <p style="color:brown"><b>Subir la Citación de la Audiencia</b></p>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-2" id="fechaNotificacion"></div>
-                                <div class="col-md-1" id="verNotificacion"></div>
-                                <div class="col-md-4">
-                                    <div id="fileUploaderNotificacion"></div>
-                                </div>
+                            <div class="col-md-3">
+                                <div id="fechaNotificacion"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="verNotificacion"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="fileUploaderNotificacion"></div>
                             </div>
                         </div>
-                        <hr />
                         <div class="row">
-                            <div class="col-md-4" style="font-size:9pt">
+                            <div class="col-md-12" style="font-size:9pt">
                                 <p><b>Asunto</b></p>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-7">
-                                <div class="dx-field">
-                                    <div id="asunto"></div>
-                                </div>
+                            <div class="col-md-12">
+                               <div id="asunto"></div>
                             </div>
                         </div>
-                        <hr />
                         <div class="row">
-                            <div class="col-md-7" style="font-size:9pt">
+                            <div class="col-md-12" style="font-size:9pt">
                                 <p><b>Apoderado</b></p>
                             </div>
                         </div>
@@ -264,53 +256,107 @@
                     <h3>Hechos y Fundamentos</h3>
                     <div class="divHechos">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-12">
                                 <p style="font-size:9pt"><b>Hechos (breve resumen)</b></p>
                             </div>
-                            <div class="col-md-1"></div>
-                            <div class="col-md-5">
-                                <p style="font-size:9pt"><b>Pretensiones (breve resumen)</b></p>
-                            </div>
+
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="dx-field">
                                     <div id="hechos"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Fundamento jurídico del convocante</b></p>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
                                 <div class="dx-field">
-                                    <div id="pretensiones"></div>
+                                    <div id="fundamentoJuridicoConvocante"></div>
                                 </div>
                             </div>
                         </div>
-
                         <br />
-                        <hr />
-
                         <div class="row">
-                            <div class="col-md-5">
-                                <p style="font-size:9pt"><b>Fundamento jurídico del convocante</b></p>
-                            </div>
-                            <div class="col-md-1"></div>
-                            <div class="col-md-5">
+                            <div class="col-md-12">
                                 <p style="font-size:9pt"><b>Fundamentos de la defensa propuestos y excepciones</b></p>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="dx-field">
-                                    <div id="fundamentoJuridicoConvocante"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="dx-field">
                                     <div id="fundamentoDefensa"></div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <h3>Pretensiones, Riesgo procesal y Política Institucional</h3>
+                    <div class="divHechos">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p style="font-size:9pt"><b>Pretensiones (breve resumen)</b></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div id="pretensiones"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <p style="font-size:9pt"><b>Cuantía de las pretensiones</b></p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="dx-field">
+                                        <div id="cuantiaPretenciones"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p style="font-size:9pt"><b>Riesgo procesal</b></p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div id="riesgo"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p style="font-size:9pt"><b>Política institucional</b></p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dx-field">
+                                        <div id="politicasAplicables"></div>
+                                    </div>
+                                </div>
+                            </div>
 
                     </div>
 
@@ -360,28 +406,36 @@
 
                         </div>
                         <div class="row">
-                            <div class="col-md-2" id="fechaComiteConciliacion"></div>
+                            <div class="col-md-2">
+                                <div id="fechaComiteConciliacion"></div>
+                            </div>
                             <div class="col-md-1"></div>
-                            <div class="col-md-4" id="decisionComite"></div>
+                            <div class="col-md-4">
+                                <div  id="decisionComite"></div>
+                            </div>
                         </div>
 
                         <hr />
-
-                        <div class="row">
-                            <div class="col-md-2" style="font-size:9pt">
-                                <p><b>Acta del Comité</b></p>
-                            </div>
-                        </div>
-
+                       
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="col-md-1" id="verComiteConciliacion"></div>
-                                <div class="col-md-5">
-                                    <div id="fileUploaderComiteConciliacion"></div>
+                                <div class="card border-success mb-3" style="max-width: 100%;">
+                                    <div class="card-body text-success">
+                                        <h5 class="card-title">Acta del comité</h5>
+                                        <p class="card-text">Subir el acta del comité.</p>
+                                        <div id="fileUploaderComiteConciliacion"></div>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-success">
+                                        Ver acta del comité :
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <div id="verComiteConciliacion"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                         <hr />
 
                         <div class="row">
