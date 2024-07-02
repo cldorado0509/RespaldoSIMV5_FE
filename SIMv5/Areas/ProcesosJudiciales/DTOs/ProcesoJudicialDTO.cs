@@ -254,10 +254,12 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         public string LlamaEnGarantia { get; set; }
 
         /// <summary>
-        /// Fecah de caducidad
+        /// Caducidad
         /// </summary>
-        [JsonProperty("fechaCaducidad")]
-        public DateTime? FechaCaducidad { get; set; } = DateTime.Now;
+        [JsonProperty("caducidad")]
+        [StringLength(1)]
+        public string Caducidad { get; set; } = "0";
+
 
         /// <summary>
         /// Pretenciones

@@ -82,7 +82,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
 
             try
             {
@@ -1058,7 +1058,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ApiService apiService = new ApiService();
             try
             {
-                //urlApiJudicial = "https://localhost:7171/";
+                urlApiJudicial = "https://localhost:7171/";
 
 
                 System.Web.HttpContext context = System.Web.HttpContext.Current;
@@ -1129,7 +1129,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                     foreach (var file in files)
                     {
                         var tipo = 0;
-                        int.TryParse(file.Name.Substring(16, 1), out tipo);
+                        int.TryParse(file.Name.Substring(20, 1), out tipo);
                         byte[] byteArray = File.ReadAllBytes(file.FullName);
 
                         DocumentoAnexoDTO documentoAnexoDTO = new DocumentoAnexoDTO
@@ -1168,7 +1168,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ObtenerDocumentoAnexo")]
         public async Task<byte[]> ObtenerDocumentoAnexoAsync(int id, int tipo)
         {
-            //urlApiJudicial = "https://localhost:7171/";
+            urlApiJudicial = "https://localhost:7171/";
 
 
             ApiService apiService = new ApiService();

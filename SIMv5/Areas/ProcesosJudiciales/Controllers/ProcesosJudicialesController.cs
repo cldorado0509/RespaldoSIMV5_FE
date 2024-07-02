@@ -47,7 +47,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             if (httpRequest.Files.Count > 0)
             {
                 var postedFile = httpRequest.Files[0];
-                string filePath = _Ruta + @"\ProcesoJudicial-" + Tra.ToString() + "-" + idUsuario.ToString() + "-" + postedFile.FileName;
+                string filePath = _Ruta + @"\ProcesoJudicial-"  + idUsuario.ToString() + "-" +  Tra.ToString()  + "-" + postedFile.FileName;
                 postedFile.SaveAs(filePath);
             }
             return new EmptyResult();
