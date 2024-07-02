@@ -2089,26 +2089,25 @@ jQuery(function () {
 
 
     $('#verComiteConciliacion').dxButton(
-        {
-            icon: 'exportpdf',
-            text: '',
-            width: '40px',
-            hint: 'Ver la solicitud',
-            type: 'normal',
-            onClick: function (params) {
-                var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=3';
-                $.getJSON(_Ruta).done(function (data) {
-                    if (data) {
-
-                        var docWindow = window.open("");
-                        docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
-                    }
-                }).fail(function (jqxhr, textStatus, error) {
-                    loadIndicator.option("visible", false);
-                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
-                });
-            }
-        });
+    {
+        icon: 'exportpdf',
+        text: '',
+        width: '40px',
+        hint: 'Ver la solicitud',
+        type: 'normal',
+        onClick: function (params) {
+            var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=3';
+            $.getJSON(_Ruta).done(function (data) {
+                if (data) {
+                    var docWindow = window.open("");
+                    docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
+                }
+            }).fail(function (jqxhr, textStatus, error) {
+                loadIndicator.option("visible", false);
+                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
+            });
+        }
+    });
 
     $('#verSolicitudConsiliacion').dxButton(
         {
