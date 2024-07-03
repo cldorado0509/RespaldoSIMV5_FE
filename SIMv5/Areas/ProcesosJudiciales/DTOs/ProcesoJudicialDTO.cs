@@ -127,7 +127,7 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         /// Radicado único
         /// </summary>
         [JsonProperty("radicado21")]
-        [StringLength(21)]
+        [StringLength(23)]
         public string Radicado21 { get; set; }
 
         /// <summary>
@@ -267,6 +267,30 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("pretenciones")]
         [StringLength(4000)]
         public string Pretenciones { get; set; }
+
+        /// <summary>
+        /// Establece si el usuario ya subió el documento de solicitud
+        /// </summary>
+        [JsonProperty("existeDocumentoSolicitud")]
+        public bool ExisteDocumentoSolicitud { get; set; }
+
+        /// <summary>
+        /// Establece si el usuario ya subió el documento de notificación
+        /// </summary>
+        [JsonProperty("existeDocumentoNotificacion")]
+        public bool ExisteDocumentoNotificacion { get; set; }
+
+        /// <summary>
+        /// Establece si el usuario ya subió el acta del comité
+        /// </summary>
+        [JsonProperty("existeActaComite")]
+        public bool ExisteActaComite { get; set; }
+
+        /// <summary>
+        /// Establece si el usuario ya subió el acta de la audiencia
+        /// </summary>
+        [JsonProperty("existeActaAudiencia")]
+        public bool ExisteActaAudiencia { get; set; }
 
     }
 }

@@ -37,7 +37,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaProcesosJudiciales")]
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
@@ -107,7 +107,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         }
 
 
-        ///
+
         /// <summary>
         /// 
         /// </summary>
@@ -170,7 +170,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         {
             ApiService apiService = new ApiService();
 
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -206,7 +206,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetProcuradurias()
         {
             ApiService apiService = new ApiService();
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -243,7 +243,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetMediosControl()
         {
             ApiService apiService = new ApiService();
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -474,7 +474,6 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 list.Add(new ListadoDTO { Id = "9120", Valor = "Demandante" });
                 list.Add(new ListadoDTO { Id = "C", Valor = "Vinculado" });
                 list.Add(new ListadoDTO { Id = "G", Valor = "Litis Consorte" });
-                list.Add(new ListadoDTO { Id = "TV", Valor = "Vinculado" });
                 list.Add(new ListadoDTO { Id = "O", Valor = "Tercero en Garantías" });
                 list.Add(new ListadoDTO { Id = "V", Valor = "Víctimas" });
                 var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
@@ -715,13 +714,14 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
 
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ActionName("GetEspecialidadJuzgados")]
-        public JArray GetEspecialidadJuzgados()
+        [ActionName("GetCorporacionesJuzgados")]
+        public JArray GetCorporacionesJuzgados()
         {
             ApiService apiService = new ApiService();
 
@@ -732,26 +732,155 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             try
             {
                 var list = new List<ListadoDTO>();
-                list.Add(new ListadoDTO { Id = "1", Valor = "ADMINISTRATIVOS " });
-                list.Add(new ListadoDTO { Id = "2", Valor = "CIVILES CIRCUITO" });
-                list.Add(new ListadoDTO { Id = "3", Valor = "JUZGADO CIVIL CIRCUITO EJECUCIÓN SENTENCIAS " });
-                list.Add(new ListadoDTO { Id = "4", Valor = "CIVIL CIRCUITO DE RESTITUCION DE TIERRAS" });
-                list.Add(new ListadoDTO { Id = "5", Valor = "EJECUCION DE PENAS Y MEDIDAS DE SEGURIDAD DEL CIRCUITO" });
-                list.Add(new ListadoDTO { Id = "6", Valor = "LABORAL" });
-                list.Add(new ListadoDTO { Id = "7", Valor = "FAMILIA" });
-                list.Add(new ListadoDTO { Id = "8", Valor = "PENAL CIRCUITO" });
-                list.Add(new ListadoDTO { Id = "9", Valor = "PENAL CIRCUITO ESPECIALIZADO" });
-                list.Add(new ListadoDTO { Id = "10", Valor = "PENAL ESPECIALIZADO EN EXTINCION DE DOMINIO" });
-                list.Add(new ListadoDTO { Id = "11", Valor = "PENAL CIRCUITO PARA ADOLECENTES" });
-                list.Add(new ListadoDTO { Id = "12", Valor = "PEQUEÑAS CAUSAS DE COMPETENCIA MÚLTIPLE" });
-                list.Add(new ListadoDTO { Id = "13", Valor = "PEQUEÑAS CAUSAS LABORAL" });
-                list.Add(new ListadoDTO { Id = "14", Valor = "CIVIL MUNICIPAL " });
-                list.Add(new ListadoDTO { Id = "15", Valor = "PENAL MUNICIPAL CON FUNCION DE CONOCIMIENTO" });
-                list.Add(new ListadoDTO { Id = "16", Valor = "PENAL MUNICIPAL CON FUNCION DE CONTROL DE GARANTÍAS" });
-                list.Add(new ListadoDTO { Id = "17", Valor = "PENAL MUNICIPAL CON FUNCION DE CONTROL DE GARANTIAS PARA ADOLESCENTES" });
-                list.Add(new ListadoDTO { Id = "18", Valor = "TRIBUNAL ADMINISTRATIVO" });
-                list.Add(new ListadoDTO { Id = "19", Valor = "TRIBUNAL SUPERIOR" });
-                list.Add(new ListadoDTO { Id = "20", Valor = "INSPECCION MUNICIPAL" });
+                list.Add(new ListadoDTO { Id = "01", Valor = "CONSEJO SUPERIOR DE LA JUDICATURA" });
+                list.Add(new ListadoDTO { Id = "02", Valor = "CORTE SUPREMA DE JUSTICIA" });
+                list.Add(new ListadoDTO { Id = "03", Valor = "CONSEJO DE ESTADO" });
+                list.Add(new ListadoDTO { Id = "04", Valor = "CORTE CONSTITUCIONAL" });
+                list.Add(new ListadoDTO { Id = "05", Valor = "JURISDICCIÓN DE PAZ" });
+                list.Add(new ListadoDTO { Id = "06", Valor = "JURISDICCIÓN INDÍJENA" });
+                list.Add(new ListadoDTO { Id = "07", Valor = "DIRECCIÓN EJECUTIVA" });
+                list.Add(new ListadoDTO { Id = "11", Valor = "CONSEJO SECCIONAL DE LA JUDICATURA" });
+                list.Add(new ListadoDTO { Id = "12", Valor = "DIRECCIÓN SECCIONAL DE LA RAMA JUDICIAL" });
+                list.Add(new ListadoDTO { Id = "21", Valor = "TRIBUNAL NACIONAL" });
+                list.Add(new ListadoDTO { Id = "22", Valor = "TRIBUNAL SUPERIOR" });
+                list.Add(new ListadoDTO { Id = "23", Valor = "TRIBUNAL ADMINISTRATIVO" });
+                list.Add(new ListadoDTO { Id = "31", Valor = "JUZGADO DE CIRCUITO" });
+                list.Add(new ListadoDTO { Id = "32", Valor = "JUZGADO REGIONAL" });
+                list.Add(new ListadoDTO { Id = "33", Valor = "JUZGADO ADMINISTRATIVO" });
+                list.Add(new ListadoDTO { Id = "40", Valor = "JUZGADO MUNICIPAL" });
+                list.Add(new ListadoDTO { Id = "60", Valor = "FISCALIA GENERAL DE LA NACIÓN" });
+
+                var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
+
+                return listDto;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEspecialidadJuzgados")]
+        public JArray GetEspecialidadJuzgados(string codigoCorporacion)
+        {
+            ApiService apiService = new ApiService();
+
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+
+            ServicePointManager.ServerCertificateValidationCallback= delegate { return true; };
+            try
+            {
+                var list = new List<ListadoDTO>();
+
+                switch (codigoCorporacion)
+                {
+                    case "01":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "CONSEJO SUPERIOR DE LA JUDICATURA" });
+                        list.Add(new ListadoDTO { Id = "01", Valor = "CONSEJO SUPERIOR DE LA JUDICATURA SALA ADMINISTRATIVA" });
+                        list.Add(new ListadoDTO { Id = "02", Valor = "CONSEJO SUPERIOR DE LA JUDICATURA SALA DISCIPLINARIA" });
+                        list.Add(new ListadoDTO { Id = "30", Valor = "CONSEJO SUPERIOR DE LA JUDICATURA SALA PLENA" });
+                        break;
+                    case "02":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "CORTE SUPREMA DE JUSTICIA" });
+                        list.Add(new ListadoDTO { Id = "03", Valor = "CORTE SUPREMA DE JUSTICIA SALA DE CASACION CIVIL" });
+                        list.Add(new ListadoDTO { Id = "04", Valor = "CORTE SUPREMA DE JUSTICIA SALA DE CASACION PENAL" });
+                        list.Add(new ListadoDTO { Id = "05", Valor = "CORTE SUPREMA DE JUSTICIA SALA DE CASACION LABORAL" });
+                        list.Add(new ListadoDTO { Id = "30", Valor = "CORTE SUPREMA DE JUSTICIA SALA PLENA" });
+                        list.Add(new ListadoDTO { Id = "15", Valor = "CORTE SUPREMA DE JUSTICIA SECRETARIA GENERAL" });
+                        break;
+                    case "03":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "CONSEJO DE ESTADO" });
+                        list.Add(new ListadoDTO { Id = "06", Valor = "CONSEJO DE ESTADO SALA DE CONSULTA Y SERVICIO CIVIL" });
+                        list.Add(new ListadoDTO { Id = "24", Valor = "CONSEJO DE ESTADO SALA CONTENCIOSO ADMINISTRATIVA SECCION PRIMERA" });
+                        list.Add(new ListadoDTO { Id = "25", Valor = "CONSEJO DE ESTADO SALA CONTENCIOSO ADMINISTRATIVA SECCION SEGUNDA" });
+                        list.Add(new ListadoDTO { Id = "26", Valor = "CONSEJO DE ESTADO SALA CONTENCIOSO ADMINISTRATIVA SECCION TERCERA" });
+                        list.Add(new ListadoDTO { Id = "27", Valor = "CONSEJO DE ESTADO SALA CONTENCIOSO ADMINISTRATIVA SECCION CUARTA" });
+                        list.Add(new ListadoDTO { Id = "28", Valor = "CONSEJO DE ESTADO SALA CONTENCIOSO ADMINISTRATIVA SECCION QUINTA" });
+                        list.Add(new ListadoDTO { Id = "29", Valor = "CONSEJO DE ESTADO SALA PLENA DE LO CONTENCIOSO ADMINISTRATIVO" });
+                        list.Add(new ListadoDTO { Id = "30", Valor = "CONSEJO DE ESTADO SALA PLENA" });
+                        list.Add(new ListadoDTO { Id = "15", Valor = "CONSEJO DE ESTADO SECRETARIA GENERAL" });
+                        list.Add(new ListadoDTO { Id = "30", Valor = "CORTE SUPREMA DE JUSTICIA SALA PLENA" });
+                        list.Add(new ListadoDTO { Id = "15", Valor = "CORTE SUPREMA DE JUSTICIA SECRETARIA GENERAL" });
+                        break;
+                    case "04":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "CORTE CONSTITUCIONAL" });
+                        list.Add(new ListadoDTO { Id = "15", Valor = "CORTE CONSTITUCIONAL SECRETARIA GENERAL" });
+                        break;
+                    case "05":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "JURISDICCIÓN DE PAZ" });
+                        break;
+                    case "06":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "JURISDICCIÓN INDÍJENA" });
+                        break;
+                    case "07":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "DIRECCION EJECUTIVA" });
+                        break;
+                    case "11":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "CONSEJO SECCIONAL DE LA JUDICATURA" });
+                        list.Add(new ListadoDTO { Id = "01", Valor = "CONSEJO SECCIONAL DE LA JUDICATURA SALA ADMINISTRATIVA" });
+                        list.Add(new ListadoDTO { Id = "02", Valor = "CONSEJO SECCIONAL DE LA JUDICATURA SALA DISCIPLINARIA" });
+                        break;
+                    case "12":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "DIRECCION SECCIONAL DE LA RAMA JUDICIAL" });
+                        list.Add(new ListadoDTO { Id = "32", Valor = "DIRECCION SECCIONAL DE LA RAMA JUDICIAL OFICINA JUDICIAL" });
+                        break;
+                    case "21":
+                        list.Add(new ListadoDTO { Id = "07", Valor = "TRIBUNAL NACIONAL ORDEN PUBLICO" });
+                        break;
+                    case "22":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "TRIBUNAL SUPERIOR" });
+                        list.Add(new ListadoDTO { Id = "03", Valor = "TRIBUNAL SUPERIOR SALA CIVIL" });
+                        list.Add(new ListadoDTO { Id = "04", Valor = "TRIBUNAL SUPERIOR SALA PENAL" });
+                        list.Add(new ListadoDTO { Id = "05", Valor = "TRIBUNAL SUPERIOR SALA LABORAL" });
+                        list.Add(new ListadoDTO { Id = "08", Valor = "TRIBUNAL SUPERIOR SALA UNICA" });
+                        list.Add(new ListadoDTO { Id = "10", Valor = "TRIBUNAL SUPERIOR SALA DE FAMILIA" });
+                        list.Add(new ListadoDTO { Id = "11", Valor = "TRIBUNAL SUPERIOR SALA AGRARIA" });
+                        list.Add(new ListadoDTO { Id = "12", Valor = "TRIBUNAL SUPERIOR SALA CIVIL LABORAL" });
+                        list.Add(new ListadoDTO { Id = "13", Valor = "TRIBUNAL SUPERIOR SALA CIVIL-FAMILIA" });
+                        list.Add(new ListadoDTO { Id = "14", Valor = "TRIBUNAL SUPERIOR SALA CIVIL-FAMILIA-LABORAL" });
+                        break;
+                    case "23":
+                        list.Add(new ListadoDTO { Id = "00", Valor = "TRIBUNAL ADMINISTRATIVO" });
+                        list.Add(new ListadoDTO { Id = "15", Valor = "TRIBUNAL ADMINISTRATIVO SECRETARIA GENERAL" });
+                        list.Add(new ListadoDTO { Id = "24", Valor = "TRIBUNAL ADMINISTRATIVO SECCION PRIMERA" });
+                        list.Add(new ListadoDTO { Id = "25", Valor = "TRIBUNAL ADMINISTRATIVO SECCION SEGUNDA" });
+                        list.Add(new ListadoDTO { Id = "26", Valor = "TRIBUNAL ADMINISTRATIVO SECCION TERCERA" });
+                        list.Add(new ListadoDTO { Id = "27", Valor = "TRIBUNAL ADMINISTRATIVO SECCION CUARTA" });
+                        list.Add(new ListadoDTO { Id = "31", Valor = "TRIBUNAL ADMINISTRATIVO SIN SECCIONES" });
+                        break;
+                    case "31":
+                        list.Add(new ListadoDTO { Id = "03", Valor = "JUZGADO DE CIRCUITO CIVIL" });
+                        list.Add(new ListadoDTO { Id = "04", Valor = "JUZGADO DE CIRCUITO PENAL" });
+                        list.Add(new ListadoDTO { Id = "05", Valor = "JUZGADO DE CIRCUITO LABORAL" });
+                        list.Add(new ListadoDTO { Id = "10", Valor = "JUZGADO DE CIRCUITO FAMILIA" });
+                        list.Add(new ListadoDTO { Id = "11", Valor = "JUZGADO DE CIRCUITO AGRARIO" });
+                        list.Add(new ListadoDTO { Id = "84", Valor = "JUZGADO DE CIRCUITO PROMISCUO DE FAMILIA" });
+                        list.Add(new ListadoDTO { Id = "85", Valor = "JUZGADO DE CIRCUITO MENORES" });
+                        list.Add(new ListadoDTO { Id = "86", Valor = "JUZGADO DE CIRCUITO ESPECIALIZADO EN COMERCIO" });
+                        list.Add(new ListadoDTO { Id = "87", Valor = "JUZGADO DE CIRCUITO EJECUCION DE PENAS Y MEDIDAS DE SEGURIDAD" });
+                        list.Add(new ListadoDTO { Id = "89", Valor = "JUZGADO DE CIRCUITO PROMISCUO" });
+                        break;
+                    case "32":
+                        list.Add(new ListadoDTO { Id = "07", Valor = "JUZGADO REGIONAL ORDEN PUBLICO" });
+                        break;
+                    case "33":
+                        list.Add(new ListadoDTO { Id = "31", Valor = "JUZGADO ADMINISTRATIVO ADMINISTRATIVA" });
+                        break;
+                    case "40":
+                        list.Add(new ListadoDTO { Id = "03", Valor = "JUZGADO MUNICIPAL CIVIL" });
+                        list.Add(new ListadoDTO { Id = "04", Valor = "JUZGADO MUNICIPAL PENAL" });
+                        list.Add(new ListadoDTO { Id = "89", Valor = "JUZGADO MUNICIPAL PROMISCUO" });
+                        break;
+                    case "60":
+                        list.Add(new ListadoDTO { Id = "31", Valor = "FISCALIA GENERAL DE LA NACION" });
+                        break;
+                }
 
                 var listDto = JArray.FromObject(list.OrderBy(o => o.Valor), Js);
 
@@ -1005,9 +1134,9 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetMunicipios")]
-        public async Task<JArray> GetMunicipios(int departamentoId)
+        public async Task<JArray> GetMunicipios(string departamentoId)
         {
-            //urlApiJudicial= "https://localhost:7171/";
+            urlApiJudicial= "https://localhost:7171/";
 
             ApiService apiService = new ApiService();
 
@@ -1019,7 +1148,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
                 string token = _token.Value;
-                string _controller = $"Listados/ObtenerCiudad?IdDepto=" + departamentoId;
+                string _controller = $"Listados/ObtenerMunicipios?codigoDane=" + departamentoId;
 
                 Response response = await apiService.GetMicroServicioListAsync<MunicipioDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
