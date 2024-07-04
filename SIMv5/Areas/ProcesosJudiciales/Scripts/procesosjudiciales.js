@@ -1,9 +1,10 @@
 ﻿let posTab = 0;
 let idProcesoActual = -1;
-let _departamentoId = 0;
+let _departamentoId = '0';
 let idTerSel = 0;
 let nombreTerSel = "";
 let nitTerSel = "";
+let _idCorporacionJuzgado = "00"
 
 var grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
 var grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
@@ -145,7 +146,6 @@ jQuery(function () {
                                         Id: idProcesoActual
                                     }).done(function (data) {
                                         if (data !== null) {
-
                                             grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                                             grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
                                             grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
@@ -156,26 +156,20 @@ jQuery(function () {
 
                                             $("#grdDemandantes").dxDataGrid({ dataSource: grdDemandantesDataSource });
                                             $("#grdDemandados").dxDataGrid({ dataSource: grdDemandadosDataSource });
-
-                                            //var juzgadoId = data.procesoJuzgadoId;
-                                            //juzgado.option("value", juzgadoId);
-
+                                            
                                             var procuraduriaId = data.procuraduriasId;
                                             procuraduria.option("value", procuraduriaId);
 
                                             var idApoderado = data.terceroId;
                                             apoderado.option("value", idApoderado);
 
-                                            var apoderadoName = apoderado.option("text");
 
-                                            apoderadol.option("value", apoderadoName);
-                                            
-
+                                            apoderadol.option("value", apoderado.option("text"));
+                                           
                                             var medioControlId = data.procesoCodigoId;
                                             medioControl.option("value", medioControlId);
 
                                             radicado.option("value", data.radicado);
-                                            radicado21.option("value", data.radicado21);
                                             fechaRadicado.option("value", data.fechaRadicado);
                                             hechos.option("value", data.hechos);
                                             fechaNotificacion.option("value", data.fechaNotificacion);
@@ -183,12 +177,90 @@ jQuery(function () {
                                             fundamentoJuridicoConvocante.option("value", data.fundamentoJuridicoConvocante);
                                             fundamentoDefensa.option("value", data.fundamentoDefensa);
                                             fechaComiteConciliacion.option("value", data.fechaComiteConciliacion);
+                                            fechaAudiencia.option("value", data.fechaAudienciaPrejudicial);
                                             decisionComite.option("value", data.decisionComite);
-                                            pretensiones.option("value", data.resumen);
+                                            pretensiones.option("value", data.pretenciones);
                                             asunto.option("value", data.asunto);
+                                            calidadEntidad.option("value", data.tipoDemanda);
+                                            jurisdiccion.option("value", data.jurisdiccionId);
+                                            cboDerechosTutela.option("value", data.derechoAccionTutelaId.toString());
+                                            cboDerechosAccionPupular.option("value", data.derechoAccionPopularId.toString());
+
+                                            fechaAdmision.option("value", data.fechaAdmisionProceso);
+                                            fechaNotificacionJ.option("value", data.fechaNotificacionProceso);
+
+                                            descripcionHechos.option("value", data.hechosProceso);
+                                            
+                                            var llamaEnGarantia = data.llamaEnGarantia;
+                                            var _llamaEnGarantia = 2;
+                                            if (llamaEnGarantia === "1") _llamaEnGarantia = 1;
+                                            optLlamaGerantia.option("value", _llamaEnGarantia);
+
+
+                                            var cadicidad = data.caducidad;
+                                            var _caducidad = 2;
+                                            if (cadicidad === "1") _caducidad = 1;
+                                            caducidad.option("value", _caducidad);
+                                           
                                             var hayAcuerdo = data.hayAcuerdo;
-                                            huboAcuerdoConciliatorio.option("value", hayAcuerdo);
-                                            decisionAudiencia.option("value", data.decisionAudiencia);
+                                            var _hayAcuerdo = 2;
+                                            if (hayAcuerdo === "1") _hayAcuerdo = 1;
+                                            huboAcuerdoConciliatorio.option("value", _hayAcuerdo);
+                                            
+                                            var decisionAudienciav = data.decisionAudiencia;
+                                            var _decisionAudiencia = 2;
+                                            if (decisionAudienciav === "1") _decisionAudiencia = 1;
+                                            decisionAudiencia.option("value", _decisionAudiencia);
+
+
+                                            var decisionComitev = data.decisionComite;
+                                            var _decisionComite = 2;
+                                            if (decisionComitev === "1") _decisionComite = 1;
+                                            decisionComite.option("value", _decisionComite);
+
+                                            cuantiaPretenciones.option("value", data.valorCuantia);
+                                            riesgo.option("value", data.riesgoProcesal);
+                                            politicasAplicables.option("value", data.politicaInstitucional);
+
+                                            var rad23 = data.radicado21;
+                                            var departamento = "0";
+                                            var municipio = "0";
+                                            var codigoJuzgado = "0";
+                                            var codigoEspecialidad = "0";
+                                            var consecutivoDespacho = 0;
+                                            var consecutivoRadv = "00000"
+                                            var anio = 2000;
+                                            var consecutivoRecRadv = "00";
+
+                                            if (rad23 !== null) {
+                                                departamento = rad23.substring(0, 2);
+                                                cboDepartamento.option("value", departamento);
+                                                municipio = rad23.substring(0, 5);
+
+                                                var cboCiudadDs = cboMunicipios.getDataSource();
+                                                _departamentoId = departamento;
+                                                cboCiudadDs.reload();
+                                                cboMunicipios.option("value", municipio);
+
+                                                codigoJuzgado = rad23.substring(5, 7);
+                                                cboCategoriaJuzgado.option("value", codigoJuzgado);
+
+                                                codigoEspecialidad = rad23.substring(7, 9);
+                                                cboEspecialidadJuzgado.option("value", codigoEspecialidad);
+
+                                                consecutivoDespacho = rad23.substring(9, 12);
+                                                numeroJuzgado.option("value", consecutivoDespacho);
+
+                                                anio = rad23.substring(12, 16);
+                                                anioRad.option("value", anio);
+
+                                                consecutivoRadv = rad23.substring(16, 21);
+                                                consecutivoRad.option("value", consecutivoRadv);
+
+                                                consecutivoRecRadv = rad23.substring(21, 23);
+                                                consecutivoRecRad.option("value", consecutivoRecRadv);
+                                            }
+
 
                                             var _demandantes = data.demandantes;
                                             for (i = 0; i < _demandantes.length; i++) {
@@ -253,6 +325,45 @@ jQuery(function () {
                                             }
                                             $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
                                             $("#grdDemandados").dxDataGrid({ dataSource: grdDemandadosDataSource });
+
+                                            if (data.existeDocumentoSolicitud) {
+                                                $('#verSolicitud').dxButton("instance").option('icon', 'exportpdf');
+                                                $('#verSolicitud').dxButton("instance").option('hint', 'Ver la solicitud');
+                                            }
+                                            else {
+                                                $('#verSolicitud').dxButton("instance").option('icon', 'export'); 
+                                                $('#verSolicitud').dxButton("instance").option('hint', 'Subir la solicitud');
+                                            }
+
+                                            if (data.existeDocumentoNotificacion) {
+                                                $('#verNotificacion').dxButton("instance").option('icon', 'exportpdf');
+                                                $('#verNotificacion').dxButton("instance").option('hint', 'Ver la notificación o citación a la audiencia');
+                                            }
+                                            else {
+                                                $('#verNotificacion').dxButton("instance").option('icon', 'export');
+                                                $('#verNotificacion').dxButton("instance").option('hint', 'Subir la notificación o citación a la audiencia');
+                                            }
+
+                                            if (data.existeActaComite) {
+                                                $('#verComiteConciliacion').dxButton("instance").option('icon', 'exportpdf');
+                                                $('#verComiteConciliacion').dxButton("instance").option('hint', 'Ver el acta del comité');
+                                            }
+                                            else {
+                                                $('#verComiteConciliacion').dxButton("instance").option('icon', 'export');
+                                                $('#verComiteConciliacion').dxButton("instance").option('hint', 'Subir el acta del comité');
+                                            }
+
+                                            if (data.existeActaAudiencia) {
+                                                $('#verActaAudiencia').dxButton("instance").option('icon', 'exportpdf');
+                                                $('#verActaAudiencia').dxButton("instance").option('hint', 'Ver el acta de la audiencia');
+                                            }
+                                            else {
+                                                $('#verActaAudiencia').dxButton("instance").option('icon', 'export');
+                                                $('#verActaAudiencia').dxButton("instance").option('hint', 'Subir el acta de la audiencia');
+                                            }
+
+
+                                          
 
                                         }
                                     }).fail(function (jqxhr, textStatus, error) {
@@ -350,7 +461,7 @@ jQuery(function () {
         displayExpr: "nombre",
         valueExpr: "procesoCodigoId",
         searchEnabled: true
-    }).dxSelectBox("instance");
+    }).dxSelectBox("instance"); 
 
     var juzgado = $('#juzgado').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -465,12 +576,7 @@ jQuery(function () {
 
     });
 
-        
-    var radicado21 = $("#radicado21").dxTextBox({
-        value: '00000000000000000000',
-        visible: false
-    }).dxTextBox("instance");
-
+      
     var codDaneDepRad = $("#codDaneDepRad").dxTextBox({
         value: '00000',
         disabled : true
@@ -479,6 +585,7 @@ jQuery(function () {
 
     var codJuzgadoRad = $("#codJuzgadoRad").dxTextBox({
         value: '00',
+        disabled: true
     }).dxTextBox("instance");
 
     var codEspecialidadRad = $("#codEspecialidadRad").dxTextBox({
@@ -487,7 +594,8 @@ jQuery(function () {
     }).dxTextBox("instance");
     
     var codDespachoRad = $("#codDespachoRad").dxTextBox({
-        value: '0000',
+        value: '000',
+        disabled: true,
     }).dxTextBox("instance");
     
     var anioRad = $("#anioRad").dxNumberBox({
@@ -498,6 +606,16 @@ jQuery(function () {
         value: 2024,
         showSpinButtons: true,
     }).dxNumberBox("instance");
+    
+    var cuantiaPretenciones = $("#cuantiaPretenciones").dxNumberBox({
+        placeholder: '[Valor Cuantía]',
+        min: 0,
+        format: '$ #,##0',
+        showClearButton: true,
+        value: null,
+        showSpinButtons: false,
+    }).dxNumberBox("instance");
+
 
     var consecutivoRad = $("#consecutivoRad").dxTextBox({
         value: '00000',
@@ -507,18 +625,17 @@ jQuery(function () {
         value: '00',
     }).dxTextBox("instance");
 
-    
-
+  
     var fechaRadicado = $('#fechaRadicado').dxDateBox({
         placeholder: '[Fecha Radicado]',
         with: '180pt',
         value: null
     }).dxDateBox("instance");
 
-    $('#fechaAdmision').dxDateBox({
+    var fechaAdmision = $('#fechaAdmision').dxDateBox({
         placeholder: '[Fecha Admisión]',
         value: null
-    });
+    }).dxDateBox("instance");
 
     var fechaHechosP =  $('#fechaHechosP').dxDateBox({
         placeholder: '[Fecha Hechos]',
@@ -566,11 +683,7 @@ jQuery(function () {
         searchEnabled: true
     }).dxSelectBox("instance");
 
-    var apoderadol = $("#apoderadotxt").dxTextBox({
-        disabled:true,
-      
-    }).dxTextBox("instance");
-
+   
     $('#unidadMonetaria').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -605,7 +718,8 @@ jQuery(function () {
         valueExpr: "id",
         searchEnabled: true
     });
-    $('#riesgoProcesal').dxSelectBox({
+
+    var riesgoProcesal = $('#riesgoProcesal').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
                 key: "id",
@@ -621,12 +735,12 @@ jQuery(function () {
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
-    });
+    }).dxSelectBox("instance");
 
     var cboDepartamento = $('#cboDepartamento').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
-                key: "id",
+                key: "codigoDane",
                 loadMode: "raw",
                 load: function (loadOptions) {
                     return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetDepartamentos');
@@ -645,7 +759,7 @@ jQuery(function () {
         value: null,
         disabled: false,
         displayExpr: "nombre",
-        valueExpr: "id",
+        valueExpr: "codigoDane",
         searchEnabled: true
     }).dxSelectBox("instance");
 
@@ -671,7 +785,6 @@ jQuery(function () {
         valueExpr: "codigoDane",
         searchEnabled: true
     }).dxSelectBox("instance");
-
 
     var departamentoHechosP = $('#departamentoHechosP').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -721,30 +834,6 @@ jQuery(function () {
         valueExpr: "codigoDane",
         searchEnabled: true
     }).dxSelectBox("instance");
-        
-        
-    var cboEspecialidadJuzgado = $('#cboEspecialidadJuzgado').dxSelectBox({
-        dataSource: new DevExpress.data.DataSource({
-            store: new DevExpress.data.CustomStore({
-                key: "id",
-                loadMode: "raw",
-                load: function (loadOptions) {
-                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetEspecialidadJuzgados');
-                }
-            })
-        }),
-        onValueChanged: function (data) {
-            if (data.value != null) {
-                codEspecialidadRad.option("value", data.value);
-            }
-        },
-        placeholder: '[Especialidad]',
-        value: null,
-        disabled: false,
-        displayExpr: "valor",
-        valueExpr: "id",
-        searchEnabled: true
-    }).dxSelectBox("instance");
           
     var cboDerechosTutela = $('#cboDerechosTutela').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -788,11 +877,43 @@ jQuery(function () {
                 key: "id",
                 loadMode: "raw",
                 load: function (loadOptions) {
-                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetCategoriasJuzgados');
+                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetCorporacionesJuzgados');
                 }
             })
         }),
-        placeholder: '[Categoría]',
+        onValueChanged: function (data) {
+            if (data.value != null) {
+                var cboEspecialidadJuzgadoDs = cboEspecialidadJuzgado.getDataSource();
+                _idCorporacionJuzgado = data.value;
+                cboEspecialidadJuzgadoDs.reload();
+                cboEspecialidadJuzgado.option("value", null);
+                codJuzgadoRad.option("value", data.value);
+            }
+        },
+        placeholder: '[Corporación, juzgado o entidad]',
+        value: null,
+        disabled: false,
+        displayExpr: "valor",
+        valueExpr: "id",
+        searchEnabled: true
+    }).dxSelectBox("instance");
+    
+    var cboEspecialidadJuzgado = $('#cboEspecialidadJuzgado').dxSelectBox({
+        dataSource: new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                loadMode: "raw",
+                load: function (loadOptions) {
+                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetEspecialidadJuzgados?codigoCorporacion=' + _idCorporacionJuzgado);
+                }
+            })
+        }),
+        onValueChanged: function (data) {
+            if (data.value != null) {
+                codEspecialidadRad.option("value", data.value);
+            }
+        },
+        placeholder: '[Sala o Especialidad]',
         value: null,
         disabled: false,
         displayExpr: "valor",
@@ -845,16 +966,24 @@ jQuery(function () {
     var numeroJuzgado = $('#numeroJuzgado').dxNumberBox({
         placeholder: '[Número]',
         min: 1,
-        max: 50,
-        format: "####",
+        max: 999,
+        format: "##",
         value: 1,
         showSpinButtons: true,
+        onValueChanged: function (data) {
+            if (data.value != null) {
+                let numero = data.value;
+                let snumero = "000" + numero;
+                snumero = snumero.slice(-3);
+                codDespachoRad.option("value", snumero);
+            }
+        },
     }).dxNumberBox("instance");
 
     var asunto = $("#asunto").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -887,7 +1016,7 @@ jQuery(function () {
     var hechos = $("#hechos").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -896,10 +1025,34 @@ jQuery(function () {
         } 
     }).dxTextArea("instance");
 
+    var riesgo = $("#riesgo").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 90,
+        onValueChanged(e) {
+            var value = e.component.option("value");
+            if (value) {
+                e.component.option("value", value.toUpperCase());
+            }
+        }
+    }).dxTextArea("instance");
+
+    var politicasAplicables = $("#politicasAplicables").dxTextArea({
+        value: "",
+        readOnly: false,
+        height: 90,
+        onValueChanged(e) {
+            var value = e.component.option("value");
+            if (value) {
+                e.component.option("value", value.toUpperCase());
+            }
+        }
+    }).dxTextArea("instance");
+
     var pretensionesDeclarativasHechos = $("#pretensionesDeclarativasHechos").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 90,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -923,7 +1076,7 @@ jQuery(function () {
     var pretensiones = $("#pretensiones").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 90,
         onValueChanged(e) {
         var value = e.component.option("value");
 
@@ -936,7 +1089,7 @@ jQuery(function () {
     var fundamentoJuridicoConvocante = $("#fundamentoJuridicoConvocante").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -948,7 +1101,7 @@ jQuery(function () {
     var fundamentoDefensa = $("#fundamentoDefensa").dxTextArea({
         value: "",
         readOnly: false,
-        height: 160,
+        height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -968,7 +1121,7 @@ jQuery(function () {
     }).dxDateBox("instance");
 
     var decisionComite = $("#decisionComite").dxRadioGroup({
-        dataSource: [{ text: "Aprueba", valor: 1 }, { text: "Desaprueba", valor: 2 }],
+        dataSource: [{ text: "Conciliar", valor: 1 }, { text: "No conciliar", valor: 2 }],
         displayExpr: "text",
         valueExpr: "valor",
         value: 1
@@ -988,7 +1141,21 @@ jQuery(function () {
         value: 1
     }).dxRadioGroup("instance");
 
+    var optLlamaGerantia = $("#optLlamaGerantia").dxRadioGroup({
+        dataSource: [{ text: "SI", valor: 1 }, { text: "NO", valor: 2 }],
+        displayExpr: "text",
+        valueExpr: "valor",
+        value: 1
+    }).dxRadioGroup("instance");
+    
     var caducidadHechos = $("#caducidadHechos").dxRadioGroup({
+        dataSource: [{ text: "Si", valor: 1 }, { text: "No", valor: 2 }],
+        displayExpr: "text",
+        valueExpr: "valor",
+        value: 1
+    }).dxRadioGroup("instance");
+
+    var caducidad = $("#caducidad").dxRadioGroup({
         dataSource: [{ text: "Si", valor: 1 }, { text: "No", valor: 2 }],
         displayExpr: "text",
         valueExpr: "valor",
@@ -1087,13 +1254,16 @@ jQuery(function () {
                 const _asunto = asunto.option("value");
                 const _despacho = procuraduria.option("text");
                 const _radicado = radicado.option("value");
-                const _instancia = '';
+                const _instancia = 'EXTRAJUDICIAL';
                 const _fechaAudiencia = fechaAudiencia.option("value");
-                const _cuantia = '0';
-                const _politicaInstitucional = '';
-                const _llamaGarantia = '';
+                const _cuantia = cuantiaPretenciones.option("value");
+                const _politicaInstitucional = politicasAplicables.option("value");
+                var _llamaGarantia = optLlamaGerantia.option("value");
                 const _apoderado = apoderado.option("text");
                 const _medioControl = medioControl.option("text");
+                const _riesgoProcesal = riesgo.option("text");
+                const _pretensiones = pretensiones.option("text");
+                var _caducidad = caducidad.option("value");
 
                 var _fechaRadicado = fechaRadicado.option("value");
                 var _hechos = hechos.option("value");
@@ -1101,12 +1271,25 @@ jQuery(function () {
                 var _fundamentoJuridicoConvocante = fundamentoJuridicoConvocante.option("value");
                 var _fundamentoDefensa = fundamentoDefensa.option("value");
                 var _fechaComiteConciliacion = fechaComiteConciliacion.option("value");
+                var _fechaNotificacion = fechaNotificacion.option("value");
                 var _decisionComite = decisionComite.option("value");
                 var _hayAcuerdo = huboAcuerdoConciliatorio.option("value");
                 var _decisionAudiencia = decisionAudiencia.option("value");
                 
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = "";
+
+                if (_llamaGarantia === 1) {
+                    _llamaGarantia = "SI"
+                } else {
+                    _llamaGarantia = "NO"
+                }
+
+                if (_caducidad === 1) {
+                    _caducidad = "SI"
+                } else {
+                    _caducidad = "NO"
+                }
 
                 for (i = 0; i < arraydata.length; i++) {
                     demandantesArray = demandantesArray + arraydata[i].nombre + ","
@@ -1119,12 +1302,19 @@ jQuery(function () {
                     demandadosArray = demandadosArray + arraydatad[i].nombre + ","
                 }
 
+                if (demandantesArray.length > 0) {
+                    demandantesArray = demandantesArray.trim().substring(0, demandantesArray.length - 2);
+                }
 
+                if (demandadosArray.length > 0) {
+                    demandadosArray = demandadosArray.trim().substring(0, demandadosArray.length - 2);
+                }
+            
                 var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxODcyODc4NywiZXhwIjoxNzE4NzMxMTg3LCJpYXQiOjE3MTg3Mjg3ODd9.86GMK8-98BLLdTFe0JF4gCS0pxAsc8J-CH4jRdnenQs";
            
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
-                var etiquetas = '[{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicado + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia + '"}]}';
+                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicado.toLocaleDateString() + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleDateString() + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleDateString() + '"}]}';
                 var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
 
                 //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
@@ -1210,26 +1400,37 @@ jQuery(function () {
             },
             onClick: function (params) {
 
-
                 idProcesoActual = 0;
                 asunto.reset();
                 procuraduria.reset();
                 radicado.reset();
-                radicado21.reset();
                 fechaRadicado.reset();
                 hechos.reset();
                 fechaNotificacion.reset();
+                fechaAudiencia.reset();
                 pretensiones.reset();
                 recomencionAbogado.reset();
                 fundamentoJuridicoConvocante.reset();
                 fundamentoDefensa.reset();
                 fechaComiteConciliacion.reset();
                 decisionComite.reset();
-                huboAcuerdoConciliatorio.reset();
-                decisionAudiencia.reset();
+                optLlamaGerantia.option("value", 2);
+                caducidad.option("value", 2);
+                huboAcuerdoConciliatorio.option("value",2);
+                decisionAudiencia.option("value", 2);
+                decisionComite.option("value", 2);
                 apoderado.reset();
                 medioControl.reset();
-
+                cuantiaPretenciones.reset();
+                riesgo.reset();
+                politicasAplicables.reset();
+                calidadEntidad.reset();
+                jurisdiccion.reset();
+                cboDerechosTutela.reset();
+                cboDerechosAccionPupular.reset();
+                fechaAdmision.reset();
+                fechaNotificacionJ.reset();
+                descripcionHechos.reset();
 
                 var grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                 var grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
@@ -1261,6 +1462,17 @@ jQuery(function () {
                             $('#loadPanel').dxLoadPanel('instance').hide();
                         }
                     });
+
+                
+                $('#verSolicitud').dxButton("instance").option('icon', 'export');
+                $('#verNotificacion').dxButton("instance").option('icon', 'export');
+                $('#verComiteConciliacion').dxButton("instance").option('icon', 'export');
+                $('#verActaAudiencia').dxButton("instance").option('icon', 'export');
+                $('#verSolicitud').dxButton("instance").option('hint', 'Subir la solicitud');
+                $('#verNotificacion').dxButton("instance").option('hint', 'Subir la notificación o citación a la audiencia');
+                $('#verComiteConciliacion').dxButton("instance").option('hint', 'Subir el acta del comité');
+                $('#verActaAudiencia').dxButton("instance").option('hint', 'Subir el acta de la audiencia');
+         
             }
         });
 
@@ -1943,11 +2155,21 @@ jQuery(function () {
         {
             icon: 'exportpdf',
             text: '',
-            hint: 'Ver citación audiencia',
             width: '40px',
+            hint: 'Ver la solicitud',
             type: 'normal',
             onClick: function (params) {
-                window.open('../content/imagenes/certificado.pdf');
+                var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=2';
+                $.getJSON(_Ruta).done(function (data) {
+                    if (data) {
+
+                        var docWindow = window.open("");
+                        docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
+                    }
+                }).fail(function (jqxhr, textStatus, error) {
+                    loadIndicator.option("visible", false);
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
+                });
             }
         });
 
@@ -1974,8 +2196,7 @@ jQuery(function () {
                 popupFichaPre.hide();
             }
         });
-
-
+        
        
     var popupFichaPre = $("#PopupFichaPrejudicial").dxPopup({
         width: 900,
@@ -2002,18 +2223,26 @@ jQuery(function () {
     }).dxPopup("instance");
 
 
- 
     $('#verComiteConciliacion').dxButton(
-        {
-            icon: 'exportpdf',
-            text: '',
-            hint: 'Ver acta del comité de conciliación ...',
-            width: '40px',
-            type: 'normal',
-            onClick: function (params) {
-                window.open('../content/imagenes/certificado.pdf');
-            }
-        });
+    {
+        icon: 'exportpdf',
+        text: '',
+        width: '40px',
+        hint: 'Ver la solicitud',
+        type: 'normal',
+        onClick: function (params) {
+            var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=3';
+            $.getJSON(_Ruta).done(function (data) {
+                if (data) {
+                    var docWindow = window.open("");
+                    docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
+                }
+            }).fail(function (jqxhr, textStatus, error) {
+                loadIndicator.option("visible", false);
+                DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
+            });
+        }
+    });
 
     $('#verSolicitudConsiliacion').dxButton(
         {
@@ -2031,11 +2260,21 @@ jQuery(function () {
         {
             icon: 'exportpdf',
             text: '',
-            hint: 'Ver el acta de la audiciencia',
             width: '40px',
+            hint: 'Ver la solicitud',
             type: 'normal',
             onClick: function (params) {
-                window.open('../content/imagenes/certificado.pdf');
+                var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=4';
+                $.getJSON(_Ruta).done(function (data) {
+                    if (data) {
+
+                        var docWindow = window.open("");
+                        docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
+                    }
+                }).fail(function (jqxhr, textStatus, error) {
+                    loadIndicator.option("visible", false);
+                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
+                });
             }
         });
 
@@ -2083,7 +2322,7 @@ jQuery(function () {
                 var _procuraduriasId = procuraduria.option("value");
                 var _contrato = "";
                 var _radicado = radicado.option("value");
-                var _radicado21 =  radicado21.option("value");
+                var _radicado21 = codDaneDepRad.option("value") + codJuzgadoRad.option("value") + codEspecialidadRad.option("value") + codDespachoRad.option("value") + anioRad.option("value") + consecutivoRad.option("value") + consecutivoRecRad.option("value");;
                 var _fechaRadicado = fechaRadicado.option("value");
                 var _cuantia = "";
                 var _hechos = hechos.option("value");
@@ -2092,9 +2331,10 @@ jQuery(function () {
                 var _instanciaId = 0;
                 var _eliminado = "0";
                 var _recomendacionesAbogado = recomencionAbogado.option("value");
-                var _tipoDemanda = 0;
+                var _tipoDemanda = calidadEntidad.option("value");
                 var _sincronizado = "0";
                 var _terminado = "0";
+                var _resumen = "";
                 var _mensajeSincronizacion = "";
                 var _fundamentoJuridicoConvocante = fundamentoJuridicoConvocante.option("value");
                 var _fundamentoDefensa = fundamentoDefensa.option("value");
@@ -2105,14 +2345,28 @@ jQuery(function () {
                 var _apoderado = apoderado.option("value");
                 var _medioControlId = medioControl.option("value");
                 var _pretenciones = pretensiones.option("value");
-       
+                var _caducidad = caducidad.option("value");
+                var _llamaEnGarantia = optLlamaGerantia.option("value");
+                var _riesgoProcesal = riesgo.option("value");
+                var _valorCuantia = cuantiaPretenciones.option("value");
+                var _politicaInstitucional = politicasAplicables.option("value");
+                var _fechaAudienciaPrejudicial = fechaAudiencia.option("value");
+                var _jurisdiccion = jurisdiccion.option("value");
+                var _derechoAccionTutelaId = cboDerechosTutela.option("value");
+                var _derechoAccionPopularId = cboDerechosAccionPupular.option("value");
+                var _hechosProceso = descripcionHechos.option("value");
+                var _fechaAdmisionProceso = fechaAdmision.option("value");
+                var _fechaNotificacionProceso = fechaNotificacionJ.option("value");
+            
                 var params = {
                     procesoId: id, procesoJuzgadoId: _procesoJuzgadoId, procuraduriasId: _procuraduriasId, contrato: _contrato, terceroId: _apoderado, radicado: _radicado, radicado21: _radicado21,
-                    fechaRadicado: _fechaRadicado, cuantia: _cuantia, hechos: _hechos, fechaNotificacion: _fechaNotificacion, instanciaId: _instanciaId,
-                    eliminado: _eliminado, recomendacionesAbogado: _recomendacionesAbogado, tipoDemanda: _tipoDemanda, sincronizado: _sincronizado, terminado: _terminado,
-                    mensajeSincronizacion: _mensajeSincronizacion, fundamentoJuridicoConvocante: _fundamentoJuridicoConvocante, fundamentoDefensa: _fundamentoDefensa,
-                    fechaComiteConciliacion: _fechaComiteConciliacion, decisionComite: _decisionComite, hayAcuerdo: _hayAcuerdo, decisionAudiencia: _decisionAudiencia,
-                    procesoCodigoId: _medioControlId, resumen: _pretenciones, asunto: _asunto, demandantes: demandantesArray, demandados: demandadosArray
+                    fechaRadicado: _fechaRadicado, cuantia: _cuantia, hechos: _hechos, fechaNotificacion: _fechaNotificacion, instanciaId: _instanciaId, politicaInstitucional: _politicaInstitucional,
+                    eliminado: _eliminado, recomendacionesAbogado: _recomendacionesAbogado, tipoDemanda: _tipoDemanda, sincronizado: _sincronizado, terminado: _terminado, valorCuantia: _valorCuantia,
+                    mensajeSincronizacion: _mensajeSincronizacion, fundamentoJuridicoConvocante: _fundamentoJuridicoConvocante, fundamentoDefensa: _fundamentoDefensa, riesgoProcesal: _riesgoProcesal,
+                    fechaAudienciaPrejudicial: _fechaAudienciaPrejudicial, fechaComiteConciliacion: _fechaComiteConciliacion, decisionComite: _decisionComite, hayAcuerdo: _hayAcuerdo, jurisdiccionId: _jurisdiccion,
+                    decisionAudiencia: _decisionAudiencia, caducidad: _caducidad, pretenciones: _pretenciones, llamaEnGarantia: _llamaEnGarantia, procesoCodigoId: _medioControlId, resumen: _resumen,
+                    hechosProceso: _hechosProceso, fechaAdmisionProceso: _fechaAdmisionProceso, fechaNotificacionProceso: _fechaNotificacionProceso,
+                    derechoAccionTutelaId: _derechoAccionTutelaId, derechoAccionPopularId: _derechoAccionPopularId,asunto: _asunto, demandantes: demandantesArray, demandados: demandadosArray
                 };
 
                 var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/GuardarProcesoJudicialAsync";
@@ -2128,6 +2382,7 @@ jQuery(function () {
                         if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                         else {
                             DevExpress.ui.dialog.alert('Proceso Judicial Creado/Actualizado correctamente', 'Guardar Datos');
+                            $('#grdProcesosJudiciales').dxDataGrid({ dataSource: grdProcesosJudicialesDataSource });
                             $('#gridExamenes').dxDataGrid({ dataSource: gridExamenesDataSource });
                             $("#btnNuevoExamen").dxButton("instance").option("visible", true);
                         }
@@ -2143,7 +2398,6 @@ jQuery(function () {
                 $('#loadPanel').dxLoadPanel('instance').hide();
             }
         });
-
 
     var apoderado = $('#cboApoderado').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -2165,10 +2419,13 @@ jQuery(function () {
         displayExpr: "nombre",
         valueExpr: "apoderadoId",
     }).dxSelectBox("instance");
+
+    var apoderadol = $("#apoderadotxt").dxTextBox({
+        disabled: true,
+        value: null
+
+    }).dxTextBox("instance");
 });
-
-
-
 
 
 var grdHechosDataSource = new DevExpress.data.CustomStore({
