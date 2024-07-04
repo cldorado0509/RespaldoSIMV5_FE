@@ -183,8 +183,9 @@ jQuery(function () {
                                             asunto.option("value", data.asunto);
                                             calidadEntidad.option("value", data.tipoDemanda);
                                             jurisdiccion.option("value", data.jurisdiccionId);
-                                            cboDerechosTutela.option("value", data.derechoAccionTutelaId.toString());
-                                            cboDerechosAccionPupular.option("value", data.derechoAccionPopularId.toString());
+
+                                            if (data.derechoAccionTutelaId) cboDerechosTutela.option("value", data.derechoAccionTutelaId.toString());
+                                            if (data.derechoAccionPopularId) cboDerechosAccionPupular.option("value", data.derechoAccionPopularId.toString());
 
                                             fechaAdmision.option("value", data.fechaAdmisionProceso);
                                             fechaNotificacionJ.option("value", data.fechaNotificacionProceso);
@@ -1322,7 +1323,7 @@ jQuery(function () {
            
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
-                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov.toLocaleString('es-CO', { timeZone: 'America/Bogota', day: "2-digit" }) + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleString('es-CO', { timeZone: 'America/Bogota', day: "2-digit" }) + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleString('es-CO', { timeZone: 'America/Bogota', day: "2-digit" }) + '"}]}';
+                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov.toLocaleString() + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleString() + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleString() + '"}]}';
                 var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
 
                 //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
@@ -1440,10 +1441,10 @@ jQuery(function () {
                 fechaNotificacionJ.reset();
                 descripcionHechos.reset();
 
-                var grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
-                var grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
-                var grdDemandantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
-                var grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                grdDemandantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
 
                 $("#grdConvocantes").dxDataGrid({ dataSource: grdConvocantesDataSource });
                 $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
@@ -2389,6 +2390,12 @@ jQuery(function () {
                     success: function (data) {
                         if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                         else {
+
+                            grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                            grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                            grdDemandantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
+                            grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
+
                             DevExpress.ui.dialog.alert('Proceso Judicial Creado/Actualizado correctamente', 'Guardar Datos');
                             $('#grdProcesosJudiciales').dxDataGrid({ dataSource: grdProcesosJudicialesDataSource });
                             $('#gridExamenes').dxDataGrid({ dataSource: gridExamenesDataSource });
