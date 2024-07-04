@@ -292,5 +292,44 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("existeActaAudiencia")]
         public bool ExisteActaAudiencia { get; set; }
 
+        /// <summary>
+        /// Identifica la Jurisdicción
+        /// </summary>
+        [JsonProperty("jurisdiccionId")]
+        public int? JurisdiccionId { get; set; }
+
+
+        /// <summary>
+        /// Identifica el derecho de acción de tutela
+        /// </summary>
+        [JsonProperty("derechoAccionTutelaId")]
+        public int? DerechoAccionTutelaId { get; set; }
+
+
+        /// <summary>
+        /// Identifica el derecho de acción popular
+        /// </summary>
+        [JsonProperty("derechoAccionPopularId")]
+        public int? DerechoAccionPopularId { get; set; }
+
+        /// <summary>
+        /// Hechos en la etapa procesal
+        /// </summary>
+        [JsonProperty("hechosProceso")]
+        [StringLength(4000)]
+        public string HechosProceso { get; set; }
+
+        /// <summary>
+        /// Fecha de admisón en la etapa procesal
+        /// </summary>
+        [JsonProperty("fechaAdmisionProceso")]
+        public DateTime? FechaAdmisionProceso { get; set; }
+
+        /// <summary>
+        /// Fecha de Notificación en la etapa procesal
+        /// </summary>
+        [JsonProperty("fechaNotificacionProceso")]
+        public DateTime? FechaNotificacionProceso { get; set; }
+
     }
 }

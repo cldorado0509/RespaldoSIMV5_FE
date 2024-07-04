@@ -37,7 +37,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ConsultaProcesosJudiciales")]
         public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
         {
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
             ApiService apiService = new ApiService();
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
@@ -82,7 +82,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
 
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             try
             {
@@ -170,7 +170,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         {
             ApiService apiService = new ApiService();
 
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -206,7 +206,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetProcuradurias()
         {
             ApiService apiService = new ApiService();
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -243,7 +243,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public async Task<JArray> GetMediosControl()
         {
             ApiService apiService = new ApiService();
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             JsonSerializer Js = new JsonSerializer();
             Js = JsonSerializer.CreateDefault();
@@ -1136,7 +1136,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("GetMunicipios")]
         public async Task<JArray> GetMunicipios(string departamentoId)
         {
-            urlApiJudicial= "https://localhost:7171/";
+            //urlApiJudicial= "https://localhost:7171/";
 
             ApiService apiService = new ApiService();
 
@@ -1187,7 +1187,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ApiService apiService = new ApiService();
             try
             {
-                urlApiJudicial = "https://localhost:7171/";
+                //urlApiJudicial = "https://localhost:7171/";
 
 
                 System.Web.HttpContext context = System.Web.HttpContext.Current;
@@ -1297,7 +1297,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [ActionName("ObtenerDocumentoAnexo")]
         public async Task<byte[]> ObtenerDocumentoAnexoAsync(int id, int tipo)
         {
-            urlApiJudicial = "https://localhost:7171/";
+            //urlApiJudicial = "https://localhost:7171/";
 
 
             ApiService apiService = new ApiService();
