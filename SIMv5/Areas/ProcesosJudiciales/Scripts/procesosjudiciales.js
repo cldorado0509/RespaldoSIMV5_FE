@@ -162,9 +162,9 @@ jQuery(function () {
 
                                             var idApoderado = data.terceroId;
                                             apoderado.option("value", idApoderado);
+                                            const apo = apoderado.option("text");
 
-
-                                            apoderadol.option("value", apoderado.option("text"));
+                                            apoderadotxt.option("value", apo);
                                            
                                             var medioControlId = data.procesoCodigoId;
                                             medioControl.option("value", medioControlId);
@@ -409,7 +409,15 @@ jQuery(function () {
         shading: true,
         shadingColor: "rgba(0,0,0,0.4)",
     });
-          
+
+
+    var apoderadotxt = $("#apoderadotxt").dxTextBox({
+        disabled: true,
+        value: ''
+
+    }).dxTextBox("instance");
+
+
     var calidadEntidad = $('#calidadEntidad').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -1265,7 +1273,7 @@ jQuery(function () {
                 const _pretensiones = pretensiones.option("text");
                 var _caducidad = caducidad.option("value");
 
-                var _fechaRadicado = fechaRadicado.option("value");
+                var _fechaRadicadov = fechaRadicado.option("value");
                 var _hechos = hechos.option("value");
                 var _recomendacionesAbogado = recomencionAbogado.option("value");
                 var _fundamentoJuridicoConvocante = fundamentoJuridicoConvocante.option("value");
@@ -1314,7 +1322,7 @@ jQuery(function () {
            
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
-                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicado.toLocaleDateString() + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleDateString() + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleDateString() + '"}]}';
+                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov.toLocaleString('es-CO', { timeZone: 'America/Bogota', day: "2-digit" }) + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleString('es-CO', { timeZone: 'America/Bogota', day: "2-digit" }) + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleString('es-CO', { timeZone: 'America/Bogota', day: "2-digit" }) + '"}]}';
                 var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
 
                 //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
@@ -2411,7 +2419,7 @@ jQuery(function () {
         }),
         onValueChanged: function (data) {
             if (data.value != null) {
-                apoderadol.option("value", apoderado.option("text"));
+                apoderadotxt.option("value", apoderado.option("text"));
             }
         },
         placeholder: '[Apoderado]',
@@ -2420,12 +2428,7 @@ jQuery(function () {
         valueExpr: "apoderadoId",
     }).dxSelectBox("instance");
 
-    var apoderadol = $("#apoderadotxt").dxTextBox({
-        disabled: true,
-        value: null
-
-    }).dxTextBox("instance");
-});
+   });
 
 
 var grdHechosDataSource = new DevExpress.data.CustomStore({
