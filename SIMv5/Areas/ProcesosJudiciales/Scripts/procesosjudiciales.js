@@ -5,6 +5,7 @@ let idTerSel = 0;
 let nombreTerSel = "";
 let nitTerSel = "";
 let _idCorporacionJuzgado = "00"
+let etapaProcesal = false;
 
 var grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
 var grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
@@ -234,6 +235,7 @@ jQuery(function () {
                                             var consecutivoRecRadv = "00";
 
                                             if (rad23 !== null) {
+                                                etapaProcesal = true;
                                                 departamento = rad23.substring(0, 2);
                                                 cboDepartamento.option("value", departamento);
                                                 municipio = rad23.substring(0, 5);
@@ -1284,7 +1286,25 @@ jQuery(function () {
                 var _decisionComite = decisionComite.option("value");
                 var _hayAcuerdo = huboAcuerdoConciliatorio.option("value");
                 var _decisionAudiencia = decisionAudiencia.option("value");
-                
+
+
+                if (_fechaRadicadov === null) {
+                    DevExpress.ui.notify("Debe indicar la fecha del radicado de la solicitud!", "warning", 2500);
+                    return;
+                }
+
+                if (_fechaNotificacion === null) {
+                    DevExpress.ui.notify("Debe indicar la fecha de notificación a la citación de la audiencia!", "warning", 2500);
+                    return;
+                }
+
+                if (_fechaAudiencia === null) {
+                    DevExpress.ui.notify("Debe indicar la fecha de la audicencia!", "warning", 2500);
+                    return;
+                }
+
+
+
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = "";
 
@@ -2309,11 +2329,9 @@ jQuery(function () {
                 style: "float: right;"
             },
             onClick: function (params) {
-
+                             
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = [];
-
-
 
                 for (i = 0; i < arraydata.length; i++) {
                     demandantesArray.push({ demantanteId: arraydata[i].demantanteId, identificacion: arraydata[i].identificacion, nombre: arraydata[i].nombre, isNew: arraydata[i].isNew });
@@ -2366,6 +2384,118 @@ jQuery(function () {
                 var _hechosProceso = descripcionHechos.option("value");
                 var _fechaAdmisionProceso = fechaAdmision.option("value");
                 var _fechaNotificacionProceso = fechaNotificacionJ.option("value");
+                
+                var tabs = $('#tabOpciones').dxTabs("instance");
+                let tabId = tabs.option("selectedIndex");
+                
+
+                if (tabId === 0) {
+                    if (_radicado === null || _radicado.length === 0) {
+                        DevExpress.ui.notify("Debe ingresar el número del radicado de la solicitud!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_procuraduriasId === null) {
+                        DevExpress.ui.notify("Debe seleccionar la procuraduría!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_medioControlId === null) {
+                        DevExpress.ui.notify("Debe seleccionar el medio de control o acción constitucional!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_fechaRadicado === null) {
+                        DevExpress.ui.notify("Debe indicar la fecha del radicado de la solicitud!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_fechaNotificacion === null) {
+                        DevExpress.ui.notify("Debe indicar la fecha de notificación a la citación de la audiencia!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_asunto === null || _asunto.length === 0) {
+                        DevExpress.ui.notify("Ingrese la información relacionada con el asunto!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_apoderado === null) {
+                        DevExpress.ui.notify("Seleccione el apoderado!", "warning", 2500);
+                        return;
+                    }
+
+                    if (arraydata.length === 0) {
+                        DevExpress.ui.notify("Debe seleccionar los convocantes!", "warning", 2500);
+                        return;
+                    }
+
+                    if (arraydatad.length === 0) {
+                        DevExpress.ui.notify("Debe seleccionar los convocados!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_hechos === null || _hechos.length === 0) {
+                        DevExpress.ui.notify("Ingrese el resumen de los hechos!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) {
+                        DevExpress.ui.notify("Ingrese el fundamento jurídico del convocante!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_fundamentoDefensa === null || _fundamentoDefensa.length === 0) {
+                        DevExpress.ui.notify("Ingrese los fundamentos de la defensa y excepciones!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_pretenciones === null || _pretenciones.length === 0) {
+                        DevExpress.ui.notify("Ingrese el resumen de las pretensiones!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_valorCuantia === null || _valorCuantia.length === 0) {
+                        DevExpress.ui.notify("Ingrese el valor de la cuantía de las pretensiones!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_riesgoProcesal === null || _riesgoProcesal.length === 0) {
+                        DevExpress.ui.notify("Describa el riesgo procesal!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_politicaInstitucional === null || _politicaInstitucional.length === 0) {
+                        DevExpress.ui.notify("Describa la política institucional!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_recomendacionesAbogado === null || _recomendacionesAbogado.length === 0) {
+                        DevExpress.ui.notify("Ingrese las recomendaciones del abogado!", "warning", 2500);
+                        return;
+                    }
+
+                    if (_fechaAudienciaPrejudicial === null) {
+                        DevExpress.ui.notify("Debe indicar la fecha de la audicencia!", "warning", 2500);
+                        return;
+                    }
+                }
+                if (tabId === 1) {
+                    if (id <= 0) {
+                        DevExpress.ui.notify("Se debe registrar primero la información de la etapa Extrajudicial!", "error", 2500);
+                        return;
+                    }
+                }
+                if (tabId === 2) {
+                    if (id <= 0) {
+                        DevExpress.ui.notify("Se debe registrar primero la información de la etapa Extrajudicial!", "error", 2500);
+                        return;
+                    }
+                    if (etapaProcesal === false) {
+                        DevExpress.ui.notify("Se debe registrar primero la información de la etapa procesal!", "error", 2500);
+                        return;
+                    }
+                }
             
                 var params = {
                     procesoId: id, procesoJuzgadoId: _procesoJuzgadoId, procuraduriasId: _procuraduriasId, contrato: _contrato, terceroId: _apoderado, radicado: _radicado, radicado21: _radicado21,
