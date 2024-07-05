@@ -2225,7 +2225,8 @@ jQuery(function () {
                 popupFichaPre.hide();
             }
         });
-        
+
+
        
     var popupFichaPre = $("#PopupFichaPrejudicial").dxPopup({
         width: 900,
