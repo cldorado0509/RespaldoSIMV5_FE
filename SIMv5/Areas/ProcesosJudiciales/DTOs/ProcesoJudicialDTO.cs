@@ -331,5 +331,43 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("fechaNotificacionProceso")]
         public DateTime? FechaNotificacionProceso { get; set; }
 
+        /// <summary>
+        /// Fecha de caducidad
+        /// </summary>
+        [JsonProperty("fechaCaducidad")]
+        public DateTime? FechaCaducidad { get; set; }
+
+        /// <summary>
+        /// identifica el municipio de los hechos
+        /// </summary>
+        [JsonProperty("municipioHechosId")]
+        public string MunicipioHechosId { get; set; }
+
+        /// <summary>
+        /// Identifica las pretensiones en la etapa procesal
+        /// </summary>
+        [JsonProperty("pretensionesEtapaProcesal")]
+        [StringLength(4000)]
+        public string PretensionesEtapaProcesal { get; set; }
+
+        /// <summary>
+        /// Identifica la Cuantía
+        /// </summary>
+        [JsonProperty("cuantiaId")]
+        public int? CuantiaId { get; set; }
+
+        /// <summary>
+        /// Identifica el juramento estimatorio
+        /// </summary>
+        [JsonProperty("juramentoEstimatorioId")]
+        public int? JuramentoEstimatorioId { get; set; }
+
+        /// <summary>
+        /// Fecha de ocurrencia de los hechos
+        /// </summary>
+        [JsonProperty("fechaHechos")]
+        public DateTime? FechaHechos { get; set; }
+
+
     }
 }

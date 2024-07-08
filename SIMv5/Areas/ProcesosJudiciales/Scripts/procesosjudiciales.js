@@ -49,10 +49,6 @@ jQuery(function () {
         {
             id: 3,
             text: 'ACTUACIONES',
-        },
-        {
-            id: 4,
-            text: 'PRETENSIONES',
         }
     ];
 
@@ -184,6 +180,7 @@ jQuery(function () {
                                             asunto.option("value", data.asunto);
                                             calidadEntidad.option("value", data.tipoDemanda);
                                             jurisdiccion.option("value", data.jurisdiccionId);
+                                            fechaHechosP.option("value", data.fechaHechos);
 
                                             if (data.derechoAccionTutelaId) cboDerechosTutela.option("value", data.derechoAccionTutelaId.toString());
                                             if (data.derechoAccionPopularId) cboDerechosAccionPupular.option("value", data.derechoAccionPopularId.toString());
@@ -191,8 +188,20 @@ jQuery(function () {
                                             fechaAdmision.option("value", data.fechaAdmisionProceso);
                                             fechaNotificacionJ.option("value", data.fechaNotificacionProceso);
 
-                                            descripcionHechos.option("value", data.hechosProceso);
-                                            
+                                            if (data.hechosProceso && data.hechosProceso.length > 0) {
+                                                descripcionHechos.option("value", data.hechosProceso);
+                                            }
+                                            else {
+                                                descripcionHechos.option("value", data.hechos);
+                                            }
+
+                                            if (data.pretensionesEtapaProcesal !== null && data.pretensionesEtapaProcesal.length > 0) {
+                                                pretensionesDeclarativasHechos.option("value", data.pretensionesEtapaProcesal);
+                                            }
+                                            else {
+                                                pretensionesDeclarativasHechos.option("value", data.pretenciones);
+                                            }
+
                                             var llamaEnGarantia = data.llamaEnGarantia;
                                             var _llamaEnGarantia = 2;
                                             if (llamaEnGarantia === "1") _llamaEnGarantia = 1;
@@ -203,6 +212,26 @@ jQuery(function () {
                                             var _caducidad = 2;
                                             if (cadicidad === "1") _caducidad = 1;
                                             caducidad.option("value", _caducidad);
+
+                                            fechaCaducidadHechos.option("value", data.fechaCaducidad);
+
+                                            var departamentoh = "0";
+                                            var municipioh = "0";
+
+                                            if (data.municipioHechosId && data.municipioHechosId.length > 4) {
+                                                departamentoh = data.municipioHechosId.substring(0, 2);
+                                                departamentoHechosP.option("value", departamentoh);
+                                                municipioh = data.municipioHechosId.substring(0, 5);
+
+                                                var cboMunicipioHDs = municipioHechosP.getDataSource();
+                                                _departamentoIdHP = departamentoh;
+                                                cboMunicipioHDs.reload();
+                                                municipioHechosP.option("value", municipioh);
+                                            }
+
+                                        
+                                            cboCuantia.option("value", data.cuantiaId.toString());
+                                            cboJuramenteoEstimatorio.option("value", data.juramentoEstimatorioId.toString());
                                            
                                             var hayAcuerdo = data.hayAcuerdo;
                                             var _hayAcuerdo = 2;
@@ -223,6 +252,8 @@ jQuery(function () {
                                             cuantiaPretenciones.option("value", data.valorCuantia);
                                             riesgo.option("value", data.riesgoProcesal);
                                             politicasAplicables.option("value", data.politicaInstitucional);
+
+
 
                                             var rad23 = data.radicado21;
                                             var departamento = "0";
@@ -294,6 +325,7 @@ jQuery(function () {
                                                 }
 
                                             }
+
                                             $("#grdConvocantes").dxDataGrid({ dataSource: grdConvocantesDataSource });
                                             $("#grdDemandantes").dxDataGrid({ dataSource: grdDemandantesDataSource });
 
@@ -800,7 +832,7 @@ jQuery(function () {
     var departamentoHechosP = $('#departamentoHechosP').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
-                key: "id",
+                key: "codigoDane",
                 loadMode: "raw",
                 load: function (loadOptions) {
                     return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetDepartamentos');
@@ -819,7 +851,7 @@ jQuery(function () {
         value: null,
         disabled: false,
         displayExpr: "nombre",
-        valueExpr: "id",
+        valueExpr: "codigoDane",
         searchEnabled: true
     }).dxSelectBox("instance");
 
@@ -942,7 +974,7 @@ jQuery(function () {
                 }
             })
         }),
-        placeholder: '[Categoría]',
+        placeholder: '[Cuantía]',
         value: null,
         disabled: false,
         displayExpr: "valor",
@@ -960,7 +992,7 @@ jQuery(function () {
                 }
             })
         }),
-        placeholder: '[Categoría]',
+        placeholder: '[Juramento estimatorio]',
         value: null,
         disabled: false,
         displayExpr: "valor",
@@ -2225,8 +2257,6 @@ jQuery(function () {
                 popupFichaPre.hide();
             }
         });
-
-
        
     var popupFichaPre = $("#PopupFichaPrejudicial").dxPopup({
         width: 900,
@@ -2235,7 +2265,6 @@ jQuery(function () {
         hoverStateEnabled: true,
         title: "Ficha"
     }).dxPopup("instance");
-
    
     var popupConvocante = $("#popupConvocante").dxPopup({
         width: 700,
@@ -2243,7 +2272,6 @@ jQuery(function () {
         hoverStateEnabled: true,
         title: "Convocante"
     }).dxPopup("instance");
-
 
     var popupDemandante = $("#popupDemandante").dxPopup({
         width: 700,
@@ -2385,7 +2413,13 @@ jQuery(function () {
                 var _hechosProceso = descripcionHechos.option("value");
                 var _fechaAdmisionProceso = fechaAdmision.option("value");
                 var _fechaNotificacionProceso = fechaNotificacionJ.option("value");
-                
+                var _fechaCaducidad = fechaCaducidadHechos.option("value");
+                var _municipioHechosId = municipioHechosP.option("value");
+                var _pretensionesEtapaProcesal = pretensionesDeclarativasHechos.option("value");
+                var _cuantiaId = cboCuantia.option("value");
+                var _juramentoEstimatorioId = cboJuramenteoEstimatorio.option("value");
+                var _fechaHechos = fechaHechosP.option("value");
+
                 var tabs = $('#tabOpciones').dxTabs("instance");
                 let tabId = tabs.option("selectedIndex");
                 
@@ -2502,11 +2536,11 @@ jQuery(function () {
                     procesoId: id, procesoJuzgadoId: _procesoJuzgadoId, procuraduriasId: _procuraduriasId, contrato: _contrato, terceroId: _apoderado, radicado: _radicado, radicado21: _radicado21,
                     fechaRadicado: _fechaRadicado, cuantia: _cuantia, hechos: _hechos, fechaNotificacion: _fechaNotificacion, instanciaId: _instanciaId, politicaInstitucional: _politicaInstitucional,
                     eliminado: _eliminado, recomendacionesAbogado: _recomendacionesAbogado, tipoDemanda: _tipoDemanda, sincronizado: _sincronizado, terminado: _terminado, valorCuantia: _valorCuantia,
-                    mensajeSincronizacion: _mensajeSincronizacion, fundamentoJuridicoConvocante: _fundamentoJuridicoConvocante, fundamentoDefensa: _fundamentoDefensa, riesgoProcesal: _riesgoProcesal,
-                    fechaAudienciaPrejudicial: _fechaAudienciaPrejudicial, fechaComiteConciliacion: _fechaComiteConciliacion, decisionComite: _decisionComite, hayAcuerdo: _hayAcuerdo, jurisdiccionId: _jurisdiccion,
-                    decisionAudiencia: _decisionAudiencia, caducidad: _caducidad, pretenciones: _pretenciones, llamaEnGarantia: _llamaEnGarantia, procesoCodigoId: _medioControlId, resumen: _resumen,
-                    hechosProceso: _hechosProceso, fechaAdmisionProceso: _fechaAdmisionProceso, fechaNotificacionProceso: _fechaNotificacionProceso,
-                    derechoAccionTutelaId: _derechoAccionTutelaId, derechoAccionPopularId: _derechoAccionPopularId,asunto: _asunto, demandantes: demandantesArray, demandados: demandadosArray
+                    mensajeSincronizacion: _mensajeSincronizacion, fundamentoJuridicoConvocante: _fundamentoJuridicoConvocante, fundamentoDefensa: _fundamentoDefensa, riesgoProcesal: _riesgoProcesal, juramentoEstimatorioId: _juramentoEstimatorioId,
+                    fechaAudienciaPrejudicial: _fechaAudienciaPrejudicial, fechaComiteConciliacion: _fechaComiteConciliacion, decisionComite: _decisionComite, hayAcuerdo: _hayAcuerdo, jurisdiccionId: _jurisdiccion, fechaHechos: _fechaHechos,
+                    decisionAudiencia: _decisionAudiencia, caducidad: _caducidad, pretenciones: _pretenciones, llamaEnGarantia: _llamaEnGarantia, procesoCodigoId: _medioControlId, resumen: _resumen, cuantiaId: _cuantiaId,
+                    hechosProceso: _hechosProceso, fechaAdmisionProceso: _fechaAdmisionProceso, fechaNotificacionProceso: _fechaNotificacionProceso, fechaCaducidad: _fechaCaducidad, municipioHechosId: _municipioHechosId,
+                    pretensionesEtapaProcesal: _pretensionesEtapaProcesal,derechoAccionTutelaId: _derechoAccionTutelaId, derechoAccionPopularId: _derechoAccionPopularId,asunto: _asunto, demandantes: demandantesArray, demandados: demandadosArray
                 };
 
                 var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/GuardarProcesoJudicialAsync";
