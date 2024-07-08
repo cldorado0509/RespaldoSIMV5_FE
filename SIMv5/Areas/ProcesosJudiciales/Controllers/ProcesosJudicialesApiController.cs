@@ -24,7 +24,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
     public class ProcesosJudicialesApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
-        string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicialLocal").ToString();
+        string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicial").ToString();
         string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencial").ToString();
 
 
