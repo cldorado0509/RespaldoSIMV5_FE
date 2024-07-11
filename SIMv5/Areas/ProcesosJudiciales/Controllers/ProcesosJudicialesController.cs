@@ -1,6 +1,7 @@
 ﻿using SIM.Data;
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
@@ -14,6 +15,9 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         //[Authorize(Roles = "VPROCESOSJUDICIALES")]
         public ActionResult Index()
         {
+            var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+            string token = _token.Value;
+            ViewBag.Token = token;
             return View();
         }
 
