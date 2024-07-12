@@ -313,6 +313,9 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 _doc.SerialNumber = "PDF4NET-ACT46-D7HHE-OYPAB-ILSOD-TMYDA";
                                 PDFImportedPage ip = null;
                                 PDFTextRun pDFTextRun = null;
+                                PDFTextFormatOptions tfo = new PDFTextFormatOptions();
+                                tfo.Align = PDFTextAlign.TopJustified;
+                                tfo.ClipText = PDFClipText.ClipWords;
                                 _paginas = _docPdf.PagesCount;
                                 for (var i = 0; i < _paginas; i++)
                                 {
@@ -328,7 +331,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var Campo = fila[reemp.CampoReemplazo].ToString();
                                         foreach (var dato in reemp.ListReemplazo)
                                         {
-                                            pDFTextRun = dato.TextRuns[0];
+                                            pDFTextRun = dato.TextRuns[1];
                                             if (pDFTextRun != null)
                                             {
                                                 Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
@@ -336,13 +339,17 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                                 PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
                                                 PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
                                                 PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
-                                                PDFTextFormatOptions tfo = new PDFTextFormatOptions();
                                                 PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
-                                                tfo.Align = PDFTextAlign.TopLeft;
-                                                tfo.ClipText = PDFClipText.ClipNone;
-
-                                                _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top - 1, 120, pDFTextRun.DisplayBounds.Height + 4, 0);
-                                                _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
+                                                double _anchoEtiqueta = _Arial.MeasureString(dato.TextRuns.Count > 3 ? pDFTextRun.Text + dato.TextRuns[2].Text : pDFTextRun.Text) + 10;
+                                                _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left - 5, pDFTextRun.DisplayBounds.Top - 1, _anchoEtiqueta, pDFTextRun.DisplayBounds.Height + 4, 0);
+                                                if (Campo.Length >= 70)
+                                                {
+                                                    double _anchoBox = _pag.Width - 170;
+                                                    double _anchotexto = _Arial.MeasureString(Campo);
+                                                    double _altoCaja = (_anchotexto / (_pag.Width - 170)) * (_Arial.Size + 3);
+                                                    _pag.Canvas.DrawTextBox(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top) - 1, _anchoBox, _altoCaja, tfo);
+                                                }
+                                                else _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
                                             }
                                         }
                                     }
@@ -545,6 +552,9 @@ namespace SIM.Areas.GestionDocumental.Controllers
                             PDFPage _pag = null;
                             PDFImportedPage ip = null;
                             PDFTextRun pDFTextRun = null;
+                            PDFTextFormatOptions tfo = new PDFTextFormatOptions();
+                            tfo.Align = PDFTextAlign.TopJustified;
+                            tfo.ClipText = PDFClipText.ClipWords;
                             int _paginas = _docPdf.PagesCount;
                             for (var i = 0; i < _paginas; i++)
                             {
@@ -557,7 +567,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 var Campo = dr[reemp.CampoReemplazo].ToString();
                                 foreach (var dato in reemp.ListReemplazo)
                                 {
-                                    pDFTextRun = dato.TextRuns[0];
+                                    pDFTextRun = dato.TextRuns[1];
                                     if (pDFTextRun != null)
                                     {
                                         Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
@@ -565,13 +575,17 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         PDFBrush BrushW = new PDFBrush(new PDFRgbColor(255, 255, 255));
                                         PDFBrush brushNegro = new PDFBrush(new PDFRgbColor(Color.Black));
                                         PDFBrush BrushTrans = new PDFBrush(new PDFRgbColor(Color.Transparent));
-                                        PDFTextFormatOptions tfo = new PDFTextFormatOptions();
                                         PDFPen Pen = new PDFPen(new PDFRgbColor(Color.Black));
-                                        tfo.Align = PDFTextAlign.TopLeft;
-                                        tfo.ClipText = PDFClipText.ClipNone;
-
-                                        _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left, pDFTextRun.DisplayBounds.Top - 1, 120, pDFTextRun.DisplayBounds.Height + 4, 0);
-                                        _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
+                                        double _anchoEtiqueta = _Arial.MeasureString(dato.TextRuns.Count > 3 ? pDFTextRun.Text + dato.TextRuns[2].Text : pDFTextRun.Text) + 10;
+                                        _pag.Canvas.DrawRectangle(null, BrushW, pDFTextRun.DisplayBounds.Left - 5, pDFTextRun.DisplayBounds.Top - 1, _anchoEtiqueta, pDFTextRun.DisplayBounds.Height + 4, 0);
+                                        if (Campo.Length >= 70)
+                                        {
+                                            double _anchoBox = _pag.Width - 170;
+                                            double _anchotexto = _Arial.MeasureString(Campo);
+                                            double _altoCaja = (_anchotexto / (_pag.Width - 170)) * (_Arial.Size + 3);
+                                            _pag.Canvas.DrawTextBox(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top) - 1, _anchoBox, _altoCaja, tfo);
+                                        }
+                                        else _pag.Canvas.DrawText(Campo, _Arial, brushNegro, Math.Round(pDFTextRun.DisplayBounds.Left), Math.Round(pDFTextRun.DisplayBounds.Top));
                                     }
                                 }
                                 if (reemp.Pagina == 0)
