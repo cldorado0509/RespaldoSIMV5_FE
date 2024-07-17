@@ -439,7 +439,8 @@ jQuery(function () {
                                                 $('#divLabelRowTabTerceros').hide();
                                                 $('#labelSujetos').hide();
                                                 $('#divtabTerceros').hide();
-                                            } else {
+                                            } else
+                                            {
                                                 $('#tabOpciones').dxTabs('instance').option('dataSource', tabsData);
                                                 $('#tabOpciones').dxTabs('instance').repaint();
                                                 $('#tabOpciones').dxTabs('instance').re
