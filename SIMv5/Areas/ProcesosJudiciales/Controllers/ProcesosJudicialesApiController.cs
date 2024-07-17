@@ -24,7 +24,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
     public class ProcesosJudicialesApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
-        string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicial").ToString();
+        string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicialLocal").ToString();
         string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencial").ToString();
 
 
@@ -68,6 +68,79 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loadOptions"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ConsultaProcesosExtraJudiciales")]
+        public async Task<LoadResult> GetConsultaProcesosExtraJudiciales(DataSourceLoadOptions loadOptions)
+        {
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+                string serloadOptions = JsonConvert.SerializeObject(loadOptions);
+                string _controller = $"ProcesosJudiciales/GetConsultaProcesosExtraJudiciales?Opciones={serloadOptions}";
+                SIM.Models.Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
+                if (!response.IsSuccess) return null;
+                if (response.IsSuccess)
+                {
+                    dynamic dynamicResponse = JsonConvert.DeserializeObject<dynamic>(response.Result.ToString());
+                    LoadResult loadResult = new LoadResult()
+                    {
+                        totalCount = dynamicResponse.totalCount,
+                        groupCount = dynamicResponse.groupCount,
+                        summary = dynamicResponse.summary
+                    };
+
+                    loadResult.data = dynamicResponse.data.ToObject<List<ProcesosJudicialesDTO>>();
+                    return loadResult;
+                }
+                else return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Obtiene un proceso judicial
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ObtenerProcesoExtraJudicial")]
+        public async Task<JObject> ObtenerProcesoExtraJudicialAsync(int Id)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+
+                ApiService apiService = new ApiService();
+
+                ProcesoJudicialDTO proceso = new ProcesoJudicialDTO();
+
+
+                Response response = await apiService.GetMicroServicioAsync<ProcesoJudicialDTO>(this.urlApiJudicial, "api/ProcesosJudiciales/", $"ObtenerProcesoJudicial?idProceso={Id}", token);
+                if (!response.IsSuccess) return JObject.FromObject(proceso, Js);
+                proceso = (ProcesoJudicialDTO)response.Result;
+                return JObject.FromObject(proceso, Js);
+
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
 
         /// <summary>
         /// Obtiene un proceso judicial

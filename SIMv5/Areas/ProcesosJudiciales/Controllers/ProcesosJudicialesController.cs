@@ -8,6 +8,9 @@ using System.Web.Mvc;
 
 namespace SIM.Areas.ProcesosJudiciales.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ProcesosJudicialesController : Controller
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
@@ -20,6 +23,19 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             ViewBag.Token = token;
             return View();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ExtraJudiciales()
+        {
+            var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+            string token = _token.Value;
+            ViewBag.Token = token;
+            return View();
+        }
+
 
 
         /// <summary>

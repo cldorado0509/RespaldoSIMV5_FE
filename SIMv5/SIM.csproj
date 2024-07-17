@@ -2634,6 +2634,7 @@
     <Content Include="Areas\Poeca\Scripts\Vendor\xlsx.full.min.js" />
     <Content Include="Areas\Poeca\Scripts\Vendor\xlsx.mini.min.js" />
     <Content Include="Areas\Pqrsd\Scripts\IngresoPqrsd.js" />
+    <Content Include="Areas\ProcesosJudiciales\Scripts\procesosextrajudiciales.js" />
     <Content Include="Areas\ProcesosJudiciales\Scripts\procesosjudiciales.js" />
     <Content Include="Areas\QuejasAmbientales\Recursos\Plantillas\PlantillaReporteQueja.html" />
     <Content Include="Areas\QuejasAmbientales\Scripts\Quejas.js" />
@@ -3329,6 +3330,7 @@
     <Content Include="Areas\CAV\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\CAV\Views\web.config" />
     <Content Include="Areas\CAV\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\ProcesosJudiciales\Views\ProcesosJudiciales\Extrajudiciales.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
