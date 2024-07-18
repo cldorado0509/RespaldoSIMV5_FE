@@ -2633,32 +2633,8 @@ jQuery(function () {
                 let tabId = tabs.option("selectedIndex");
                 
 
-                if (tabId === 0) {
-                    if (_radicado === null || _radicado.length === 0) {
-                        DevExpress.ui.notify("Debe ingresar el número del radicado de la solicitud!", "warning", 2500);
-                        return;
-                    }
-
-                    if (_procuraduriasId === null) {
-                        DevExpress.ui.notify("Debe seleccionar la procuraduría!", "warning", 2500);
-                        return;
-                    }
-
-                    if (_medioControlId === null) {
-                        DevExpress.ui.notify("Debe seleccionar el medio de control o acción constitucional!", "warning", 2500);
-                        return;
-                    }
-
-                    if (_fechaRadicado === null) {
-                        DevExpress.ui.notify("Debe indicar la fecha del radicado de la solicitud!", "warning", 2500);
-                        return;
-                    }
-
-                    if (_fechaNotificacion === null) {
-                        DevExpress.ui.notify("Debe indicar la fecha de notificación a la citación de la audiencia!", "warning", 2500);
-                        return;
-                    }
-
+                if (tabId <= 0) {
+                
                     if (_asunto === null || _asunto.length === 0) {
                         DevExpress.ui.notify("Ingrese la información relacionada con el asunto!", "warning", 2500);
                         return;
@@ -2668,22 +2644,7 @@ jQuery(function () {
                         DevExpress.ui.notify("Seleccione el apoderado!", "warning", 2500);
                         return;
                     }
-
-                    if (arraydata.length === 0) {
-                        DevExpress.ui.notify("Debe seleccionar los convocantes!", "warning", 2500);
-                        return;
-                    }
-
-                    if (arraydatad.length === 0) {
-                        DevExpress.ui.notify("Debe seleccionar los convocados!", "warning", 2500);
-                        return;
-                    }
-
-                    if (_hechos === null || _hechos.length === 0) {
-                        DevExpress.ui.notify("Ingrese el resumen de los hechos!", "warning", 2500);
-                        return;
-                    }
-
+    
                     if (_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) {
                         DevExpress.ui.notify("Ingrese el fundamento jurídico del convocante!", "warning", 2500);
                         return;
@@ -2719,10 +2680,7 @@ jQuery(function () {
                         return;
                     }
 
-                    if (_fechaAudienciaPrejudicial === null) {
-                        DevExpress.ui.notify("Debe indicar la fecha de la audicencia!", "warning", 2500);
-                        return;
-                    }
+                 
                 }
                 if (tabId === 1) {
                     if (id <= 0) {
