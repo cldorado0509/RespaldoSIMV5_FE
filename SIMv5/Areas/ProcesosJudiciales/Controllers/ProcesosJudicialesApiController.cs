@@ -25,7 +25,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
         string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicialLocal").ToString();
-        string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencial").ToString();
+        string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencialLocal").ToString();
 
 
         /// <summary>
@@ -1297,7 +1297,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                     };
 
                     response = await apiService.PostMicroServicioAsync<DocumentoProcesoDTO>(urlApiGerencial, "api", "/DocumentoProceso/PostActualizarDocumentoProceso", documentoProcesoDTO, token);
-                    if (!response.IsSuccess) return response;
+                    if (!response.IsSuccess)
+                    {
+                        response.Message = response.Message + " - No es posible realizar el proceso asignación de los documentos temporalmente generados al proceso judicial /extrajudicial";
+                    }
                 }
 
 

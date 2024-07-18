@@ -12,6 +12,15 @@ var grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
 
 jQuery(function () {
 
+
+    var loadPanel = $("#loadPanel").dxLoadPanel({
+        message: 'Procesando...',
+        showIndicator: true,
+        hideOnOutsideClick: true,
+        shading: true,
+        shadingColor: "rgba(0,0,0,0.4)",
+    }).dxLoadPanel('instance');
+
     $('#asistente').accordion({
         collapsible: true,
         animationDuration: 500,
@@ -309,13 +318,7 @@ jQuery(function () {
         }
     });
    
-    $("#loadPanel").dxLoadPanel({
-        message: 'Procesando...',
-        showIndicator: true,
-        shading: true,
-        shadingColor: "rgba(0,0,0,0.4)",
-    });
-
+  
     
     var medioControl = $('#medioControl').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -778,15 +781,15 @@ jQuery(function () {
                 }
 
 
-                var token  = $('#app').data('token');
+                var token = $('#app').data('token');
+                var rutaTemplates = $('#app').data('rutaplantilla');
+
            
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
                 var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov.toLocaleString() + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleString() + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleString() + '"}]}';
-                var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
-
-                //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
-
+                var url = rutaTemplates + token + "&documentoJS=" + json + etiquetas;
+          
                 window.open(url);
                 
             }
@@ -1011,15 +1014,18 @@ jQuery(function () {
                 const _anioSesion = "";
                 const _recomendacion = recomencionAbogado.option("value");
 
-                var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxODcyODc4NywiZXhwIjoxNzE4NzMxMTg3LCJpYXQiOjE3MTg3Mjg3ODd9.86GMK8-98BLLdTFe0JF4gCS0pxAsc8J-CH4jRdnenQs";
-
                 var json = '{ "bytes":null, "name":"Certificado", "idPlantilla":22,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
                 var etiquetas = '[{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[Etapa]","value":"' + _etapa + '"},{"label":"[Radicado]","value":"' + _radicado + '"},{"label":"[Convocante]","value":"' + _convocante + '"},{"label":"[Convocado]","value":"' + _convocado + '"},{"label":"[DiaDada]","value":"' + _diaDada + '"},{"label":"[MesDada]","value":"' + _mesDada + '"},{"label":"[AñoDada]","value":"' + _anioDada + '"},{"label":"[Funcionario]","value":"' + _funcionario + '"},{"label":"[Cargo]","value":"' + _cargo + '"},{"label":"[NroSesion]","value":"' + _nroSesion + '"},{"label":"[DiaSesion]","value":"' + _diaSesion + '"},{"label":"[MesSesion]","value":"' + _mesSesion + '"},{"label":"[AñoSesion]","value":"' + _anioSesion + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacion + '"}]}';
-                var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
 
-                //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
 
+                var token = $('#app').data('token');
+                var rutaTemplates = $('#app').data('rutaplantilla');
+
+
+                var url = rutaTemplates + token + "&documentoJS=" + json + etiquetas;
+
+           
                 window.open(url);
             }
         });
@@ -1454,7 +1460,9 @@ jQuery(function () {
                 style: "float: right;"
             },
             onClick: function (params) {
-                             
+
+                loadPanel.show();
+
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = [];
 
@@ -1509,16 +1517,19 @@ jQuery(function () {
                 if (tabId === 0) {
                     if (_radicado === null || _radicado.length === 0) {
                         DevExpress.ui.notify("Debe ingresar el número del radicado de la solicitud!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_procuraduriasId === null) {
                         DevExpress.ui.notify("Debe seleccionar la procuraduría!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_medioControlId === null) {
                         DevExpress.ui.notify("Debe seleccionar el medio de control o acción constitucional!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
@@ -1529,71 +1540,85 @@ jQuery(function () {
 
                     if (_fechaNotificacion === null) {
                         DevExpress.ui.notify("Debe indicar la fecha de notificación a la citación de la audiencia!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_asunto === null || _asunto.length === 0) {
                         DevExpress.ui.notify("Ingrese la información relacionada con el asunto!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_apoderado === null) {
                         DevExpress.ui.notify("Seleccione el apoderado!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (arraydata.length === 0) {
                         DevExpress.ui.notify("Debe seleccionar los convocantes!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (arraydatad.length === 0) {
                         DevExpress.ui.notify("Debe seleccionar los convocados!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_hechos === null || _hechos.length === 0) {
                         DevExpress.ui.notify("Ingrese el resumen de los hechos!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) {
                         DevExpress.ui.notify("Ingrese el fundamento jurídico del convocante!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_fundamentoDefensa === null || _fundamentoDefensa.length === 0) {
                         DevExpress.ui.notify("Ingrese los fundamentos de la defensa y excepciones!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_pretenciones === null || _pretenciones.length === 0) {
                         DevExpress.ui.notify("Ingrese el resumen de las pretensiones!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_valorCuantia === null || _valorCuantia.length === 0) {
                         DevExpress.ui.notify("Ingrese el valor de la cuantía de las pretensiones!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_riesgoProcesal === null || _riesgoProcesal.length === 0) {
                         DevExpress.ui.notify("Describa el riesgo procesal!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_politicaInstitucional === null || _politicaInstitucional.length === 0) {
                         DevExpress.ui.notify("Describa la política institucional!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_recomendacionesAbogado === null || _recomendacionesAbogado.length === 0) {
                         DevExpress.ui.notify("Ingrese las recomendaciones del abogado!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
 
                     if (_fechaAudienciaPrejudicial === null) {
                         DevExpress.ui.notify("Debe indicar la fecha de la audicencia!", "warning", 2500);
+                        loadPanel.hide();
                         return;
                     }
                 }
@@ -1618,6 +1643,7 @@ jQuery(function () {
                     crossDomain: true,
                     headers: { 'Access-Control-Allow-Origin': '*' },
                     success: function (data) {
+                        loadPanel.hide();
                         if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                         else {
 

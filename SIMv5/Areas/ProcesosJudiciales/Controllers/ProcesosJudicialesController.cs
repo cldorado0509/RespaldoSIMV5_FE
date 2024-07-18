@@ -14,13 +14,27 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
     public class ProcesosJudicialesController : Controller
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
+        private string _rutaPlantillas;
+        private string _rutaBase;
 
-        //[Authorize(Roles = "VPROCESOSJUDICIALES")]
+        /// <summary>
+        /// Constructor de la Clase
+        /// </summary>
+        public ProcesosJudicialesController()
+        {
+            _rutaPlantillas =  SIM.Utilidades.Data.ObtenerValorParametro("UrlObtenerPlantillaLocal").ToString();
+            _rutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
-            string token = _token.Value;
-            ViewBag.Token = token;
+            ViewBag.Token = _token;
+            ViewBag.RutaPlantillas = _rutaPlantillas;
             return View();
         }
 
@@ -31,12 +45,10 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public ActionResult ExtraJudiciales()
         {
             var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
-            string token = _token.Value;
-            ViewBag.Token = token;
+            ViewBag.Token = _token;
+            ViewBag.RutaPlantillas = _rutaPlantillas;
             return View();
         }
-
-
 
         /// <summary>
         /// 
@@ -48,7 +60,6 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         public ActionResult CargarArchivoTemp(int Tra)
         {
             int idUsuario = 0;
-            string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
             System.Web.HttpContext context = System.Web.HttpContext.Current;
             ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
 
@@ -61,7 +72,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             {
                 throw new HttpException("El Usuario no está Autenticado");
             }
-            string _Ruta = _RutaBase + @"\" + DateTime.Now.ToString("yyyyMM");
+            string _Ruta = _rutaBase + @"\" + DateTime.Now.ToString("yyyyMM");
             if (!Directory.Exists(_Ruta)) Directory.CreateDirectory(_Ruta);
             var httpRequest = context.Request;
             if (httpRequest.Files.Count > 0)
@@ -74,3 +85,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         }
     }
 }
+
+
+
+

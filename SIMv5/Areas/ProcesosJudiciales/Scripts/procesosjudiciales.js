@@ -436,9 +436,15 @@ jQuery(function () {
                                                 $('#divLabelsRowInfoBasica3').hide();
                                                 $('#divRowInfoBasica3').hide();
                                                 $('#divbandInfoBasica').height(300);
+                                                $('#divbandHechos').height(300);
                                                 $('#divLabelRowTabTerceros').hide();
                                                 $('#labelSujetos').hide();
                                                 $('#divtabTerceros').hide();
+                                                labelHechos.innerText = "Fundamentos";
+                                                $('#divLabelHechos').hide();
+                                                $('#divTextHechos').hide();
+                                                $('#divtabAudienciaExtra').hide();
+                                                $('#labelAudicencia').hide();
                                             } else
                                             {
                                                 $('#tabOpciones').dxTabs('instance').option('dataSource', tabsData);
@@ -455,14 +461,17 @@ jQuery(function () {
                                                 $('#divLabelsRowInfoBasica3').show();
                                                 $('#divRowInfoBasica3').show();
                                                 $('#divbandInfoBasica').height(600);
+                                                $('#divbandHechos').height(500);
                                                 $('#divLabelRowTabTerceros').show();
                                                 $('#labelSujetos').show();
                                                 $('#divtabTerceros').show();
-
+                                                labelHechos.innerText = "Hechos y Fundamentos";
+                                                $('#divLabelHechos').show();
+                                                $('#divTextHechos').show();
+                                                $('#divtabAudienciaExtra').show();
+                                                $('#labelAudicencia').show();
                                             }
-                                          
-
-                                        }
+                                      }
                                     }).fail(function (jqxhr, textStatus, error) {
                                         DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
                                     });
@@ -1548,14 +1557,14 @@ jQuery(function () {
                 }
 
 
-                var token  = $('#app').data('token');
+                var token = $('#app').data('token');
+                var rutaTemplates = $('#app').data('rutaplantilla');
+
            
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
                 var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov.toLocaleString() + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleString() + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleString() + '"}]}';
-                var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
-
-                //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
+                var url = rutaTemplates + token + "&documentoJS=" + json + etiquetas;
 
                 window.open(url);
                 
@@ -1710,7 +1719,29 @@ jQuery(function () {
                 $('#verNotificacion').dxButton("instance").option('hint', 'Subir la notificación o citación a la audiencia');
                 $('#verComiteConciliacion').dxButton("instance").option('hint', 'Subir el acta del comité');
                 $('#verActaAudiencia').dxButton("instance").option('hint', 'Subir el acta de la audiencia');
-         
+
+                $('#tabOpciones').dxTabs('instance').option('dataSource', tabsData2);
+                $('#tabOpciones').dxTabs('instance').repaint();
+                $("#grdConvocantes").dxDataGrid('instance').option("visible", false);
+                $("#grdConvocados").dxDataGrid('instance').option("visible", false);
+                radicado.option("visible", false);
+                procuraduria.option("visible", false);
+                medioControl.option("visible", false);
+                $('#divLabelsRowInfoBasica1').hide();
+                $('#divLabelsRowInfoBasica2').hide();
+                $('#divRowInfoBasica2').hide();
+                $('#divLabelsRowInfoBasica3').hide();
+                $('#divRowInfoBasica3').hide();
+                $('#divbandInfoBasica').height(300);
+                $('#divbandHechos').height(300);
+                $('#divLabelRowTabTerceros').hide();
+                $('#labelSujetos').hide();
+                $('#divtabTerceros').hide();
+                labelHechos.innerText = "Fundamentos";
+                $('#divLabelHechos').hide();
+                $('#divTextHechos').hide();
+                $('#divtabAudienciaExtra').hide();
+                $('#labelAudicencia').hide();
             }
         });
 
@@ -1826,16 +1857,18 @@ jQuery(function () {
                 const _anioSesion = "";
                 const _recomendacion = recomencionAbogado.option("value");
 
-                var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9yZ2UuZXN0cmFkYSIsIm5iZiI6MTcxODcyODc4NywiZXhwIjoxNzE4NzMxMTg3LCJpYXQiOjE3MTg3Mjg3ODd9.86GMK8-98BLLdTFe0JF4gCS0pxAsc8J-CH4jRdnenQs";
 
                 var json = '{ "bytes":null, "name":"Certificado", "idPlantilla":22,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
                 var etiquetas = '[{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[Etapa]","value":"' + _etapa + '"},{"label":"[Radicado]","value":"' + _radicado + '"},{"label":"[Convocante]","value":"' + _convocante + '"},{"label":"[Convocado]","value":"' + _convocado + '"},{"label":"[DiaDada]","value":"' + _diaDada + '"},{"label":"[MesDada]","value":"' + _mesDada + '"},{"label":"[AñoDada]","value":"' + _anioDada + '"},{"label":"[Funcionario]","value":"' + _funcionario + '"},{"label":"[Cargo]","value":"' + _cargo + '"},{"label":"[NroSesion]","value":"' + _nroSesion + '"},{"label":"[DiaSesion]","value":"' + _diaSesion + '"},{"label":"[MesSesion]","value":"' + _mesSesion + '"},{"label":"[AñoSesion]","value":"' + _anioSesion + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacion + '"}]}';
-                var url = "https://sim.metropol.gov.co/editor/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
 
-                //var url = "https://localhost:7292/ProcesosJudiciales/ObtenerPlantilla?token=" + token + "&documentoJS=" + json + etiquetas;
+                var token = $('#app').data('token');
+                var rutaTemplates = $('#app').data('rutaplantilla');
+
+                var url = rutaTemplates + token + "&documentoJS=" + json + etiquetas;
 
                 window.open(url);
+
             }
         });
          
