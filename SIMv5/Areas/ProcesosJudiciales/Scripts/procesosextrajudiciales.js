@@ -1623,9 +1623,6 @@ jQuery(function () {
 
                             grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                             grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
-                            grdDemandantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
-                            grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
-
                             DevExpress.ui.dialog.alert('Proceso Judicial Creado/Actualizado correctamente', 'Guardar Datos');
                             $('#grdProcesosJudiciales').dxDataGrid({ dataSource: grdProcesosJudicialesDataSource });
                         }
