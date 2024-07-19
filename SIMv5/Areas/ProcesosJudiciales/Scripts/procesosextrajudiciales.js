@@ -1376,13 +1376,6 @@ jQuery(function () {
         title: "Convocante"
     }).dxPopup("instance");
 
-    var popupDemandante = $("#popupDemandante").dxPopup({
-        width: 700,
-        height: "auto",
-        hoverStateEnabled: true,
-        title: "Demandante"
-    }).dxPopup("instance");
-
     $('#verComiteConciliacion').dxButton(
     {
         icon: 'exportpdf',

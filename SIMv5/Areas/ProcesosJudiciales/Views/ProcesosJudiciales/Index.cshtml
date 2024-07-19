@@ -114,7 +114,7 @@
 
 <script type="text/javascript" src="@Url.Content("~/Areas/ProcesosJudiciales/Scripts/procesosjudiciales.js?v=" + DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
 
-<div data-url="@Url.Content("~")" id="app" data-token="@ViewBag.Token" data-rutaplantilla="@ViewBag.RutaPlantillas"  class="panelSIM panelSIM-default">
+<div data-url="@Url.Content("~")" id="app" data-token="@ViewBag.Token" data-rutaplantilla="@ViewBag.RutaPlantillas" class="panelSIM panelSIM-default">
     <div id="loadPanel"></div>
     <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
         <div class="panelSIM-title">
@@ -182,7 +182,7 @@
                                 <div id="fileUploaderSolicitud"></div>
                             </div>
                         </div>
-                        <div class="row"  id="divLabelsRowInfoBasica3">
+                        <div class="row" id="divLabelsRowInfoBasica3">
                             <div class="col-md-3" style="font-size:9pt">
                                 <p><b>Fecha Notificación</b></p>
                             </div>
@@ -239,18 +239,12 @@
 
                     <h3 id="labelSujetos">Sujetos procesales</h3>
                     <div class="divTerceros" id="divtabTerceros">
-                        <div class="row"  id="divLabelRowTabTerceros">
+                        <div class="row" id="divLabelRowTabTerceros">
                             <div class="col-md-5" style="font-size:12pt">
                                 <p><b>Convocantes</b></p>
                             </div>
-                            <div class="col-md-1">
-                                <div id="agregarConvocante"></div>
-                            </div>
                             <div class="col-md-5" style="font-size:12pt">
                                 <p><b>Convocados</b></p>
-                            </div>
-                            <div class="col-md-1">
-                                <div id="agregarConvocado"></div>
                             </div>
                         </div>
 
@@ -459,7 +453,7 @@
                         </div>
                     </div>
 
-                    <h3 id="labelAudicencia" >Audiencia extrajudicial</h3>
+                    <h3 id="labelAudicencia">Audiencia extrajudicial</h3>
                     <div class="divPrejudicial" id="divtabAudienciaExtra">
                         <div class="row">
                             <div class="col-md-3" style="font-size:9pt">
@@ -909,7 +903,6 @@
     </div>
 
     <div id="popActuacion">
-
         <div class="row">
             <div class="col-md-6" style="font-size:9pt">
                 <p><b>Tipo de actuación</b></p>
@@ -987,25 +980,25 @@
         <iframe src="" id="buscarTercero" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
     </div>
 
-    <div id="popupConvocante">
+    <div id="popupDemandantes">
         <div class=" row">
             <div class="col-md-12">
-                <div id="grdTerceros" />
+                <div id="grdTercerosP" />
             </div>
         </div>
         <div class="row">
             <div class="col-md-2">
-                <div id="cmdEditarNitConvocante"></div>
+                <div id="cmdEditarNitDemandante"></div>
             </div>
             <div class="col-md-8">
             </div>
             <div class="col-md-2">
-                <div id="BotonSaveConvocante">
-                    <div id="btnGuardarConvocante"></div>
+                <div id="BotonSaveDemandante">
+                    <div id="btnGuardarDemandante"></div>
                 </div>
             </div>
         </div>
     </div>
-
+      
 
 </div>

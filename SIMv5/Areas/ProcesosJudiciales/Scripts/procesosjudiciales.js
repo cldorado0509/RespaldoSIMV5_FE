@@ -14,6 +14,15 @@ var grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
 
 jQuery(function () {
 
+    var loadPanel = $("#loadPanel").dxLoadPanel({
+        message: 'Procesando...',
+        showIndicator: true,
+        hideOnOutsideClick: true,
+        shading: true,
+        shadingColor: "rgba(0,0,0,0.4)",
+    }).dxLoadPanel('instance');
+
+
     $('#asistente').accordion({
         collapsible: true,
         animationDuration: 500,
@@ -1426,7 +1435,7 @@ jQuery(function () {
         title: "Actuación"
     }).dxPopup("instance");
 
-    $("#cmdEditarNitConvocante").dxButton({
+    $("#cmdEditarNitDemandante").dxButton({
         hint : "Administrar Terceros",
         text: "",
         icon: 'startswith',
@@ -1483,7 +1492,7 @@ jQuery(function () {
                 const _despacho = procuraduria.option("text");
                 const _radicado = radicado.option("value");
                 const _instancia = 'EXTRAJUDICIAL';
-                const _fechaAudiencia = fechaAudiencia.option("value");
+                var _fechaAudiencia = fechaAudiencia.option("value");
                 const _cuantia = cuantiaPretenciones.option("value");
                 const _politicaInstitucional = politicasAplicables.option("value");
                 var _llamaGarantia = optLlamaGerantia.option("value");
@@ -1506,22 +1515,23 @@ jQuery(function () {
 
 
                 if (_fechaRadicadov === null) {
-                    DevExpress.ui.notify("Debe indicar la fecha del radicado de la solicitud!", "warning", 2500);
-                    return;
+                    _fechaRadicadov = "";
+                    
+                }
+                else {
+                    _fechaRadicadov = _fechaRadicadov.toLocaleString();
                 }
 
                 if (_fechaNotificacion === null) {
-                    DevExpress.ui.notify("Debe indicar la fecha de notificación a la citación de la audiencia!", "warning", 2500);
-                    return;
+                    _fechaNotificacion = "";
+                }
+                else {
+                    _fechaNotificacion = _fechaNotificacion.toLocaleString();
                 }
 
-                if (_fechaAudiencia === null) {
-                    DevExpress.ui.notify("Debe indicar la fecha de la audicencia!", "warning", 2500);
-                    return;
-                }
+                _fechaAudiencia = "";
 
-
-
+       
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = "";
 
@@ -1563,7 +1573,7 @@ jQuery(function () {
            
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
-                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov.toLocaleString() + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleString() + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleString() + '"}]}';
+                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion + '"}]}';
                 var url = rutaTemplates + token + "&documentoJS=" + json + etiquetas;
 
                 window.open(url);
@@ -1745,39 +1755,112 @@ jQuery(function () {
             }
         });
 
-    $('#agregarConvocante').dxButton(
-        {
-            icon: 'plus',
-            text: '',
-            width: '30x',
-            hint: 'Adicionar convocante',
-            type: 'success',
-            elementAttr: {
-                style: "float: right;"
-            },
-            onClick: function (params) {
-                let btntipo = document.getElementById('popupConvocante');
-                btntipo.setAttribute('data-tipo', '1');
-                popupConvocante.show();
+
+    var grdTercerosP = $("#grdTercerosP").dxDataGrid({
+        dataSource: grdTercerosDataSourceP,
+        allowColumnResizing: true,
+        height: '100%',
+        with: '150px',
+        loadPanel: { text: 'Cargando Datos...' },
+        paging: {
+            enabled: true,
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10]
+        },
+        filterRow: {
+            visible: true,
+            applyFilter: 'auto'
+        },
+        groupPanel: {
+            visible: false,
+            allowColumnDragging: false,
+        },
+        editing: {
+            allowUpdating: false,
+            allowDeleting: false,
+            allowAdding: false
+        },
+        selection: {
+            mode: 'single'
+        },
+        columns: [
+            {
+                dataField: "terceroId",
+                dataType: 'number',
+                visible: false
+            }, {
+                dataField: 'identificacion',
+                width: '20%',
+                caption: 'Identificación',
+                dataType: 'string',
+            }, {
+                dataField: 'nombre',
+                width: '40%',
+                caption: 'Nombre/Razón social',
+                dataType: 'string',
             }
-        });
-           
-    $('#agregarConvocado').dxButton(
-        {
-            icon: 'plus',
-            text: '',
-            width: '30x',
-            hint: 'Adicionar convocado',
-            type: 'success',
-            elementAttr: {
-                style: "float: right;"
-            },
-            onClick: function (params) {
-                let btntipo = document.getElementById('popupConvocante');
-                btntipo.setAttribute('data-tipo', '2');
-                popupConvocante.show();
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            if (data) {
+                idTerSel = data.terceroId;
+                nombreTerSel = data.nombre;
+                nitTerSel = data.identificacion;
             }
-        });
+        }
+    }).dxDataGrid('instance');
+
+
+   var btnGuardarDemandante = $('#btnGuardarDemandante').dxButton(
+        {
+            icon: 'save',
+            text: '',
+            hint: 'Asignar Demandante',
+            width: '340px',
+            type: 'success',
+            onClick: function (params) {
+
+                const tipo = document.getElementById('popupDemandantes').getAttribute('data-tipo');
+
+                if (tipo === "1") {
+                    const data = {
+                        demantanteId: idTerSel,
+                        identificacion: nitTerSel.toUpperCase(),
+                        nombre: nombreTerSel.toUpperCase(),
+                        isNew: 1
+                    };
+                    grdDemandantesDataSource.insert(data);
+
+                    $("#grdDemandantes").dxDataGrid({ dataSource: grdDemandantesDataSource });
+                }
+                else {
+                    const data = {
+                        demandadoId: idTerSel,
+                        identificacion: nitTerSel.toUpperCase(),
+                        nombre: nombreTerSel.toUpperCase(),
+                        isNew: 1
+                    };
+                    grdDemandadosDataSource.insert(data);
+
+                    $("#grdDemandados").dxDataGrid({ dataSource: grdDemandadosDataSource });
+                }
+
+
+                popupDemandantes.hide();
+            }
+       }).dxButton('instance');   
+
+    var popupDemandantes = $("#popupDemandantes").dxPopup({
+        width: 700,
+        height: 'auto',
+        hoverStateEnabled: true,
+        title: "Terceros"
+    }).dxPopup("instance");
+
+      
 
     $('#agregarDemandante').dxButton(
         {
@@ -1790,9 +1873,9 @@ jQuery(function () {
                 style: "float: right;"
             },
             onClick: function (params) {
-                let btntipo = document.getElementById('popupDemandante');
+                let btntipo = document.getElementById('popupDemandantes');
                 btntipo.setAttribute('data-tipo', '1');
-                popupDemandante.show();
+                popupDemandantes.show();
             }
         });
 
@@ -1807,9 +1890,9 @@ jQuery(function () {
                 style: "float: right;"
             },
             onClick: function (params) {
-                let btntipo = document.getElementById('popupDemandante');
+                let btntipo = document.getElementById('popupDemandantes');
                 btntipo.setAttribute('data-tipo', '2');
-                popupDemandante.show();
+                popupDemandantes.show();
             }
         });
     
@@ -1871,7 +1954,8 @@ jQuery(function () {
 
             }
         });
-         
+
+            
     $("#grdDemandantes").dxDataGrid({
         dataSource: grdConvocantesDataSource,
         allowColumnResizing: true,
@@ -2006,63 +2090,6 @@ jQuery(function () {
         ]
     }).dxDataGrid("instance");
     
-    $("#grdTerceros").dxDataGrid({
-        dataSource: grdTercerosDataSource,
-        allowColumnResizing: true,
-        height: '100%',
-        with: '150px',
-        loadPanel: { text: 'Cargando Datos...' },
-        paging: {
-            enabled: true,
-            pageSize: 10
-        },
-        pager: {
-            showPageSizeSelector: true,
-            allowedPageSizes: [5, 10]
-        },
-        filterRow: {
-            visible: true,
-            applyFilter: 'auto'
-        },
-        groupPanel: {
-            visible: false,
-            allowColumnDragging: false,
-        },
-        editing: {
-            allowUpdating: false,
-            allowDeleting: false,
-            allowAdding: false
-        },
-        selection: {
-            mode: 'single'
-        },
-        columns: [
-            {
-                dataField: "terceroId",
-                dataType: 'number',
-                visible: false
-            }, {
-                dataField: 'identificacion',
-                width: '20%',
-                caption: 'Identificación',
-                dataType: 'string',
-            }, {
-                dataField: 'nombre',
-                width: '40%',
-                caption: 'Nombre/Razón social',
-                dataType: 'string',
-            }
-        ],
-        onSelectionChanged: function (selectedItems) {
-            var data = selectedItems.selectedRowsData[0];
-            if (data) {
-                idTerSel = data.terceroId;
-                nombreTerSel = data.nombre;
-                nitTerSel = data.identificacion;
-            }
-        }
-    });
-       
     $("#grdConvocantes").dxDataGrid({
         dataSource: grdConvocantesDataSource,
         allowColumnResizing: true,
@@ -2113,24 +2140,6 @@ jQuery(function () {
                 dataField: 'isNew',
                 dataType: 'number',
                 visible : false
-            },
-            {
-                caption: '',
-                width: '70px',
-                alignment: 'center',
-                cellTemplate: function (cellElement, cellInfo) {
-                    $('<div />').dxButton(
-                        {
-                            icon: 'clear',
-                            type: 'danger',
-                            hint: 'Eliminar convocante',
-                            onClick: function (params) {
-                                grdConvocantesDataSource.remove(cellInfo.data);
-                                $("#grdConvocantes").dxDataGrid({ dataSource: grdConvocantesDataSource });
-                            }
-                        }
-                    ).appendTo(cellElement);
-                }
             }
         ]
     });
@@ -2185,129 +2194,10 @@ jQuery(function () {
                 dataField: 'isNew',
                 dataType: 'number',
                 visible: false
-            },
-             {
-                caption: '',
-                width: '70px',
-                alignment: 'center',
-                cellTemplate: function (cellElement, cellInfo) {
-                    $('<div />').dxButton(
-                        {
-                            icon: 'clear',
-                            type: 'danger',
-                            hint: 'Eliminar convocado',
-                            onClick: function (params) {
-                                grdConvocadosDataSource.remove(cellInfo.data);
-                                $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
-                            }
-                        }
-                    ).appendTo(cellElement);
-                }
             }
         ]
     });
-
-    $('#btnGuardarConvocante').dxButton(
-        {
-            icon: 'save',
-            text: '',
-            hint: 'Asignar Convocante',
-            width: '340px',
-            type: 'success',
-            onClick: function (params) {
-
-                const tipo = document.getElementById('popupConvocante').getAttribute('data-tipo');
-
-                if (tipo === "1") {
-                    const data = {
-                        demantanteId: idTerSel,
-                        identificacion: nitTerSel.toUpperCase(),
-                        nombre: nombreTerSel.toUpperCase(),
-                        isNew: 1
-                    };
-                    grdConvocantesDataSource.insert(data);
-
-                    $("#grdConvocantes").dxDataGrid({ dataSource: grdConvocantesDataSource });
-                }
-                else {
-                    const data = {
-                        demandadoId: idTerSel,
-                        identificacion: nitTerSel.toUpperCase(),
-                        nombre: nombreTerSel.toUpperCase(),
-                        isNew: 1
-                    };
-                    grdConvocadosDataSource.insert(data);
-
-                    $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
-                }
-
-
-                popupConvocante.hide();
-            }
-        });
-
-    $('#btnGuardarConvocado').dxButton(
-        {
-            icon: 'save',
-            text: '',
-            hint: 'Asignar Convocante',
-            width: '340px',
-            type: 'danger',
-            onClick: function (params) {
-                const data = {
-                    demandadoId: idTerSel,
-                    identificacion: nitTerSel.toUpperCase(),
-                    nombre: nombreTerSel.toUpperCase(),
-                    isNew: 1
-                };
-                grdConvocadosDataSource.insert(data);
-
-                $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
-
-                popupConvocado.hide();
-            }
-        });
-
-    $('#btnGuardarDemandante').dxButton(
-        {
-            icon: 'save',
-            text: '',
-            hint: 'Asignar Demandante',
-            width: '340px',
-            type: 'success',
-            onClick: function (params) {
-
-                const tipo = document.getElementById('popupDemandante').getAttribute('data-tipo');
-
-                if (tipo === "1") {
-                    const data = {
-                        demantanteId: idTerSel,
-                        identificacion: nitTerSel.toUpperCase(),
-                        nombre: nombreTerSel.toUpperCase(),
-                        isNew: 1
-                    };
-                    grdDemandantesDataSource.insert(data);
-
-                    $("#grdDemandantes").dxDataGrid({ dataSource: grdDemandantesDataSource });
-                }
-                else {
-                    const data = {
-                        demandadoId: idTerSel,
-                        identificacion: nitTerSel.toUpperCase(),
-                        nombre: nombreTerSel.toUpperCase(),
-                        isNew: 1
-                    };
-                    grdDemandadosDataSource.insert(data);
-
-                    $("#grdDemandados").dxDataGrid({ dataSource: grdDemandadosDataSource });
-                }
-
-
-                popupDemandante.hide();
-            }
-        });
-
-   
+       
     $("#grdActuacion").dxDataGrid({
         dataSource: grdActuacionesDataSource,
         allowColumnResizing: true,
@@ -2462,20 +2352,6 @@ jQuery(function () {
         title: "Ficha"
     }).dxPopup("instance");
    
-    var popupConvocante = $("#popupConvocante").dxPopup({
-        width: 700,
-        height: "auto",
-        hoverStateEnabled: true,
-        title: "Convocante"
-    }).dxPopup("instance");
-
-    var popupDemandante = $("#popupDemandante").dxPopup({
-        width: 700,
-        height: "auto",
-        hoverStateEnabled: true,
-        title: "Demandante"
-    }).dxPopup("instance");
-
 
     $('#agregarActuacion').dxButton(
         {
@@ -2567,15 +2443,16 @@ jQuery(function () {
                 style: "float: right;"
             },
             onClick: function (params) {
-                             
-                var arraydata = grdConvocantesDataSource._array;
+
+                loadPanel.show();
+                var arraydata = grdDemandantesDataSource._array;
                 var demandantesArray = [];
 
                 for (i = 0; i < arraydata.length; i++) {
                     demandantesArray.push({ demantanteId: arraydata[i].demantanteId, identificacion: arraydata[i].identificacion, nombre: arraydata[i].nombre, isNew: arraydata[i].isNew });
                 } 
 
-                var arraydatad = grdConvocadosDataSource._array;
+                var arraydatad = grdDemandadosDataSource._array;
                 var demandadosArray = [];
 
                 for (i = 0; i < arraydatad.length; i++) {
@@ -2636,46 +2513,55 @@ jQuery(function () {
                 if (tabId <= 0) {
                 
                     if (_asunto === null || _asunto.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Ingrese la información relacionada con el asunto!", "warning", 2500);
                         return;
                     }
 
                     if (_apoderado === null) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Seleccione el apoderado!", "warning", 2500);
                         return;
                     }
     
                     if (_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Ingrese el fundamento jurídico del convocante!", "warning", 2500);
                         return;
                     }
 
                     if (_fundamentoDefensa === null || _fundamentoDefensa.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Ingrese los fundamentos de la defensa y excepciones!", "warning", 2500);
                         return;
                     }
 
                     if (_pretenciones === null || _pretenciones.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Ingrese el resumen de las pretensiones!", "warning", 2500);
                         return;
                     }
 
                     if (_valorCuantia === null || _valorCuantia.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Ingrese el valor de la cuantía de las pretensiones!", "warning", 2500);
                         return;
                     }
 
                     if (_riesgoProcesal === null || _riesgoProcesal.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Describa el riesgo procesal!", "warning", 2500);
                         return;
                     }
 
                     if (_politicaInstitucional === null || _politicaInstitucional.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Describa la política institucional!", "warning", 2500);
                         return;
                     }
 
                     if (_recomendacionesAbogado === null || _recomendacionesAbogado.length === 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Ingrese las recomendaciones del abogado!", "warning", 2500);
                         return;
                     }
@@ -2684,16 +2570,19 @@ jQuery(function () {
                 }
                 if (tabId === 1) {
                     if (id <= 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Se debe registrar primero la información de la etapa Extrajudicial!", "error", 2500);
                         return;
                     }
                 }
                 if (tabId === 2) {
                     if (id <= 0) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Se debe registrar primero la información de la etapa Extrajudicial!", "error", 2500);
                         return;
                     }
                     if (etapaProcesal === false) {
+                        loadPanel.hide();
                         DevExpress.ui.notify("Se debe registrar primero la información de la etapa procesal!", "error", 2500);
                         return;
                     }
@@ -2727,14 +2616,13 @@ jQuery(function () {
                             grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
                             grdDemandantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                             grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
-
+                            loadPanel.hide();
                             DevExpress.ui.dialog.alert('Proceso Judicial Creado/Actualizado correctamente', 'Guardar Datos');
                             $('#grdProcesosJudiciales').dxDataGrid({ dataSource: grdProcesosJudicialesDataSource });
-                            $('#gridExamenes').dxDataGrid({ dataSource: gridExamenesDataSource });
-                            $("#btnNuevoExamen").dxButton("instance").option("visible", true);
                         }
                     },
                     error: function (xhr, textStatus, errorThrown) {
+                        loadPanel.hide();
                         DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Guardar Datos');
                     }
                 });
@@ -2743,6 +2631,7 @@ jQuery(function () {
                 $('#listaProcesos').show();
                 $('#detalleProcesos').hide();
                 $('#loadPanel').dxLoadPanel('instance').hide();
+                loadPanel.hide();
             }
         });
 
@@ -2840,7 +2729,6 @@ var grdProcesosJudicialesDataSource = new DevExpress.data.CustomStore({
     }
 });
 
-
 var grdActuacionesDataSource = new DevExpress.data.CustomStore({
     key: "actuacionId",
     load: function (loadOptions) {
@@ -2879,7 +2767,7 @@ var grdActuacionesDataSource = new DevExpress.data.CustomStore({
     }
 });
 
-var grdTercerosDataSource = new DevExpress.data.CustomStore({
+var grdTercerosDataSourceP = new DevExpress.data.CustomStore({
     key: "terceroId",
     load: function (loadOptions) {
         var d = $.Deferred();
