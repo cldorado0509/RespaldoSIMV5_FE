@@ -9,5 +9,8 @@ namespace SIM.Areas.Seguridad.Models
         public bool CanUpdate { get; set; }
         public bool CanDelete { get; set; }
         public bool CanPrint { get; set; }
+
+        public bool IsAdministrator { get; set; }
+        public bool CanGenerateDocument { get; set; }
     }
 }

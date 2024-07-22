@@ -1,7 +1,22 @@
-﻿@using SIM.Properties
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+@using SIM.Properties
 @{
     Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
+
+<script>
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+ 
+</script>
 <style>
     html, body {
         height: 100%;
@@ -114,17 +129,23 @@
 
 <script type="text/javascript" src="@Url.Content("~/Areas/ProcesosJudiciales/Scripts/procesosextrajudiciales.js?v=" + DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
 
-<div data-url="@Url.Content("~")" id="app" data-token="@ViewBag.Token" data-rutaplantilla="@ViewBag.RutaPlantillas" class="panelSIM panelSIM-default">
+<div data-url="@Url.Content("~")" id="app" data-token="@ViewBag.Token" data-rutaplantilla="@ViewBag.RutaPlantillas" data-funcionario="@ViewBag.Funcionario" class="panelSIM panelSIM-default">
     <div id="loadPanel"></div>
     <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
         <div class="panelSIM-title">
             <label class="header" style="padding: 5px">EXTRAJUDICIALES</label>
-            <div id="agregarProcesoJudicial"></div>
+            @if (Model.CanInsert)
+            {
+                <div id="agregarProcesoJudicial"></div>
+            }
         </div>
         <div id="pnlListaProcesosJudiciales">
             <div class="row" style="width: 100%; height:5%">
                 <div class="col-md-7"></div>
-                <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
+                @if (Model.CanInsert)
+                {
+                    <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
+                }
             </div>
             <div style="height: 95%">
                 <div id="grdProcesosJudiciales"></div>
@@ -389,20 +410,21 @@
                         </div>
 
                         <br />
-                        <hr />
-
-                        <div class="row">
-                            <div class="col-md-1">
-                                <p style="font-size:8pt"><b>Imprimir Ficha</b></p>
+                        @if (Model.CanGenerateDocument)
+                        {
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <p style="font-size:8pt"><b>Imprimir Ficha</b></p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-1">
-                                <div id="abrirFichaPejudicial"></div>
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <div id="abrirFichaPejudicial"></div>
+                                </div>
                             </div>
-                        </div>
-
+                        }
                     </div>
 
                     <h3>Comité de conciliación</h3>
@@ -439,24 +461,27 @@
                                 <div id="decisionComite"></div>
                             </div>
                         </div>
-                        <hr />
-                        <div class="row">
-                            <div class="col-md-3">
-                                <p style="font-size:8pt"><b>Número de Sesión</b></p>
+                        @if (Model.CanGenerateDocument) 
+                        { 
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <p style="font-size:8pt"><b>Número de Sesión</b></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p style="font-size:8pt"><b>Generar Certificado</b></p>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <p style="font-size:8pt"><b>Generar Certificado</b></p>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div id="sesionNro"></div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div id="sesionNro"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="abrirCertificado"></div>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <div id="abrirCertificado"></div>
-                            </div>
-                        </div>
+                        }
                     </div>
 
                     <h3>Audiencia extrajudicial</h3>
@@ -501,14 +526,17 @@
                 </div>
             </div>
         </div>
-       
+
     </div>
 
-    <div class="row">
-        <div class="col-md-11">
-            <div id="guardarProcesoJudicial" />
+    @if (Model.CanInsert || Model.CanUpdate)
+    {
+        <div class="row">
+            <div class="col-md-11">
+                <div id="guardarProcesoJudicial" />
+            </div>
         </div>
-    </div>
+    }
 
     <div id="popupTercero">
         <iframe src="" id="buscarTercero" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>

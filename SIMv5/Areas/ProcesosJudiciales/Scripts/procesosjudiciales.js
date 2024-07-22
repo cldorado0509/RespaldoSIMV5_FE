@@ -159,6 +159,7 @@ jQuery(function () {
                         {
                             icon: 'edit',
                             type: 'success',
+                            visible: canEdit || canRead,
                             hint: 'Editar Proceso Judicial',
                             onClick: function (params) {
                                 $('#loadPanel').dxLoadPanel('instance').show();
@@ -171,7 +172,6 @@ jQuery(function () {
                                         Id: idProcesoActual
                                     }).done(function (data) {
                                         if (data !== null) {
-                                           
 
                                             grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
                                             grdDemandantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
@@ -545,7 +545,7 @@ jQuery(function () {
         }),
         placeholder: '[Calidad de la Entidad]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
     }).dxSelectBox("instance");
@@ -562,7 +562,7 @@ jQuery(function () {
         }),
         placeholder: '[Jurisdicción]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "nombre",
         valueExpr: "procesoCodigoId",
         searchEnabled: true
@@ -580,7 +580,7 @@ jQuery(function () {
         }),
         placeholder: '[Medio de Control]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "nombre",
         valueExpr: "procesoCodigoId",
         searchEnabled: true
@@ -598,7 +598,7 @@ jQuery(function () {
         }),
         placeholder: '[Juzgado]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true,
@@ -608,12 +608,14 @@ jQuery(function () {
     }).dxSelectBox("instance");
 
     var radicado = $("#radicado").dxTextBox({
-        value: '00000000000000000000', fileUploaderSolicitud
+        value: '00000000000000000000', fileUploaderSolicitud,
+        disabled: !canEdit,
     }).dxTextBox("instance");
         
     $("#fileUploaderSolicitud").dxFileUploader({
         allowedFileExtensions: [".pdf"],
         multiple: false,
+        disabled: !canEdit,
         selectButtonText: 'Seleccionar Archivo ...',
         labelText: 'o arrastre un archivo aquí',
         uploadMode: "instantly",
@@ -636,6 +638,7 @@ jQuery(function () {
     $("#fileUploaderNotificacion").dxFileUploader({
         allowedFileExtensions: [".pdf"],
         multiple: false,
+        disabled: !canEdit,
         selectButtonText: 'Seleccionar Archivo ...',
         labelText: 'o arrastre un archivo aquí',
         uploadMode: "instantly",
@@ -658,6 +661,7 @@ jQuery(function () {
     $("#fileUploaderComiteConciliacion").dxFileUploader({
         allowedFileExtensions: [".pdf"],
         multiple: false,
+        disabled: !canEdit,
         selectButtonText: 'Seleccionar Archivo ...',
         labelText: 'o arrastre un archivo aquí',
         uploadMode: "instantly",
@@ -680,6 +684,7 @@ jQuery(function () {
     $("#fileUploaderActaAudiencia").dxFileUploader({
         allowedFileExtensions: [".pdf"],
         multiple: false,
+        disabled: !canEdit,
         selectButtonText: 'Seleccionar Archivo ...',
         labelText: 'o arrastre un archivo aquí',
         uploadMode: "instantly",
@@ -702,29 +707,30 @@ jQuery(function () {
       
     var codDaneDepRad = $("#codDaneDepRad").dxTextBox({
         value: '00000',
-        disabled : true
+        disabled: !canEdit,
 
     }).dxTextBox("instance");
 
     var codJuzgadoRad = $("#codJuzgadoRad").dxTextBox({
         value: '00',
-        disabled: true
+        disabled: !canEdit,
     }).dxTextBox("instance");
 
     var codEspecialidadRad = $("#codEspecialidadRad").dxTextBox({
         value: '00',
-        disabled: true,
+        disabled: !canEdit,
     }).dxTextBox("instance");
     
     var codDespachoRad = $("#codDespachoRad").dxTextBox({
         value: '000',
-        disabled: true,
+        disabled: !canEdit,
     }).dxTextBox("instance");
     
     var anioRad = $("#anioRad").dxNumberBox({
         placeholder: '[Año]',
         min: 2000,
         max: 2050,
+        disabled: !canEdit,
         format: "####",
         value: 2024,
         showSpinButtons: true,
@@ -734,6 +740,7 @@ jQuery(function () {
         placeholder: '[Valor Cuantía]',
         min: 0,
         format: '$ #,##0',
+        disabled: !canEdit,
         showClearButton: true,
         value: null,
         showSpinButtons: false,
@@ -742,26 +749,31 @@ jQuery(function () {
 
     var consecutivoRad = $("#consecutivoRad").dxTextBox({
         value: '00000',
+        disabled: !canEdit,
     }).dxTextBox("instance");
     
     var consecutivoRecRad = $("#consecutivoRecRad").dxTextBox({
         value: '00',
+        disabled: !canEdit,
     }).dxTextBox("instance");
 
   
     var fechaRadicado = $('#fechaRadicado').dxDateBox({
         placeholder: '[Fecha Radicado]',
+        disabled: !canEdit,
         with: '180pt',
         value: null
     }).dxDateBox("instance");
 
     var fechaAdmision = $('#fechaAdmision').dxDateBox({
         placeholder: '[Fecha Admisión]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
     var fechaHechosP =  $('#fechaHechosP').dxDateBox({
         placeholder: '[Fecha Hechos]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
@@ -769,22 +781,26 @@ jQuery(function () {
 
     var fechaNotificacion = $('#fechaNotificacion').dxDateBox({
         placeholder: '[F.Notificación]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
 
     var fechaCaducidadHechos = $('#fechaCaducidadHechos').dxDateBox({
         placeholder: '[F.Caducidad]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
     var fechaNotificacionJ = $('#fechaNotificacionJ').dxDateBox({
         placeholder: '[F.Notificación]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
     
     var fechaAudiencia = $('#fechaAudiencia').dxDateBox({
         placeholder: '[F.Audiencia]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
@@ -800,7 +816,7 @@ jQuery(function () {
         }),
         placeholder: '[Procuraduría]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "nombre",
         valueExpr: "procuraduriaId",
         searchEnabled: true
@@ -819,7 +835,7 @@ jQuery(function () {
         }),
         placeholder: '[Unidad Monetaria]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -836,7 +852,7 @@ jQuery(function () {
         }),
         placeholder: '[Unidad Monetaria]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -854,7 +870,7 @@ jQuery(function () {
         }),
         placeholder: '[Riesgo Procesal]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -880,7 +896,7 @@ jQuery(function () {
         },
         placeholder: '[Departamento]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "nombre",
         valueExpr: "codigoDane",
         searchEnabled: true
@@ -903,7 +919,7 @@ jQuery(function () {
         },
         placeholder: '[Municipio]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "nombre",
         valueExpr: "codigoDane",
         searchEnabled: true
@@ -929,7 +945,7 @@ jQuery(function () {
         },
         placeholder: '[Departamento]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "nombre",
         valueExpr: "codigoDane",
         searchEnabled: true
@@ -952,7 +968,7 @@ jQuery(function () {
         },
         placeholder: '[Municipio]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "nombre",
         valueExpr: "codigoDane",
         searchEnabled: true
@@ -970,7 +986,7 @@ jQuery(function () {
         }),
         placeholder: '[Derechos invocados]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -988,7 +1004,7 @@ jQuery(function () {
         }),
         placeholder: '[Derechos invocados]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -1015,7 +1031,7 @@ jQuery(function () {
         },
         placeholder: '[Corporación, juzgado o entidad]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -1036,7 +1052,7 @@ jQuery(function () {
         },
         placeholder: '[Tipo de actuación]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -1054,7 +1070,7 @@ jQuery(function () {
         }),
         placeholder: '[Juzgado]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true,
@@ -1065,6 +1081,7 @@ jQuery(function () {
 
     var fechaJuzgadoActuacion = $('#fechaJuzgadoActuacion').dxDateBox({
         placeholder: '[F.Juzgado]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
@@ -1076,12 +1093,14 @@ jQuery(function () {
 
     var fechaActuacion = $('#fechaActuacion').dxDateBox({
         placeholder: '[F.Actuación]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
     var resumenActuacion = $("#resumenActuacion").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 80,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1095,6 +1114,7 @@ jQuery(function () {
     var observacionActuacion = $("#observacionActuacion").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 80,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1112,6 +1132,7 @@ jQuery(function () {
             hint: 'Guardar actuación',
             width: '40px',
             type: 'success',
+            disabled: !canEdit,
             onClick: function (params) {
                 //const data = {
                 //    demandadoId: idTerSel,
@@ -1144,7 +1165,7 @@ jQuery(function () {
         },
         placeholder: '[Sala o Especialidad]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -1162,7 +1183,7 @@ jQuery(function () {
         }),
         placeholder: '[Cuantía]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -1180,7 +1201,7 @@ jQuery(function () {
         }),
         placeholder: '[Juramento estimatorio]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
         searchEnabled: true
@@ -1189,6 +1210,7 @@ jQuery(function () {
     var valorEconomico = $('#valorEconomico').dxNumberBox({
         placeholder: '[Valor Económico del Proceso]',
         format: "$ #,##0.##",
+        disabled: !canEdit,
         value: 0
     }).dxNumberBox("instance");
 
@@ -1198,6 +1220,7 @@ jQuery(function () {
         max: 999,
         format: "##",
         value: 1,
+        disabled: !canEdit,
         showSpinButtons: true,
         onValueChanged: function (data) {
             if (data.value != null) {
@@ -1212,6 +1235,7 @@ jQuery(function () {
     var asunto = $("#asunto").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1224,6 +1248,7 @@ jQuery(function () {
     var descripcionHechos = $("#descripcionHechos").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 160,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1237,6 +1262,7 @@ jQuery(function () {
         placeholder: '[Número de la Sesión]',
         format: "####",
         min: 1,
+        disabled: !canEdit,
         max: 9999,
         showSpinButtons: true,
         value: 1
@@ -1246,6 +1272,7 @@ jQuery(function () {
         value: "",
         readOnly: false,
         height: 100,
+        disabled: !canEdit,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -1257,6 +1284,7 @@ jQuery(function () {
     var riesgo = $("#riesgo").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 90,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1269,6 +1297,7 @@ jQuery(function () {
     var politicasAplicables = $("#politicasAplicables").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 90,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1281,6 +1310,7 @@ jQuery(function () {
     var pretensionesDeclarativasHechos = $("#pretensionesDeclarativasHechos").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 90,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1293,6 +1323,7 @@ jQuery(function () {
     var recomencionAbogado = $("#recomencionAbogado").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 280,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1305,6 +1336,7 @@ jQuery(function () {
     var pretensiones = $("#pretensiones").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 90,
         onValueChanged(e) {
         var value = e.component.option("value");
@@ -1318,6 +1350,7 @@ jQuery(function () {
     var fundamentoJuridicoConvocante = $("#fundamentoJuridicoConvocante").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1330,6 +1363,7 @@ jQuery(function () {
     var fundamentoDefensa = $("#fundamentoDefensa").dxTextArea({
         value: "",
         readOnly: false,
+        disabled: !canEdit,
         height: 100,
         onValueChanged(e) {
             var value = e.component.option("value");
@@ -1341,17 +1375,20 @@ jQuery(function () {
 
     var fechaComiteConciliacion = $('#fechaComiteConciliacion').dxDateBox({
         placeholder: '[F.Comité]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
     var fechaAudiencia = $('#fechaAudiencia').dxDateBox({
         placeholder: '[F.Audiencia]',
+        disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
     var decisionComite = $("#decisionComite").dxRadioGroup({
         dataSource: [{ text: "Conciliar", valor: 1 }, { text: "No conciliar", valor: 2 }],
         displayExpr: "text",
+        disabled: !canEdit,
         valueExpr: "valor",
         value: 1
     }).dxRadioGroup("instance");
@@ -1359,6 +1396,7 @@ jQuery(function () {
     var decisionAudiencia = $("#decisionAudiencia").dxRadioGroup({
         dataSource: [{ text: "Aprueba", valor: 1 }, { text: "Desaprueba", valor: 2 }],
         displayExpr: "text",
+        disabled: !canEdit,
         valueExpr: "valor",
         value: 1
     }).dxRadioGroup("instance");
@@ -1366,6 +1404,7 @@ jQuery(function () {
     var huboAcuerdoConciliatorio = $("#huboAcuerdoConciliatorio").dxRadioGroup({
         dataSource: [{ text: "Si", valor: 1 }, { text: "No", valor: 2 }],
         displayExpr: "text",
+        disabled: !canEdit,
         valueExpr: "valor",
         value: 1
     }).dxRadioGroup("instance");
@@ -1373,6 +1412,7 @@ jQuery(function () {
     var optLlamaGerantia = $("#optLlamaGerantia").dxRadioGroup({
         dataSource: [{ text: "SI", valor: 1 }, { text: "NO", valor: 2 }],
         displayExpr: "text",
+        disabled: !canEdit,
         valueExpr: "valor",
         value: 1
     }).dxRadioGroup("instance");
@@ -1381,12 +1421,14 @@ jQuery(function () {
         dataSource: [{ text: "Si", valor: 1 }, { text: "No", valor: 2 }],
         displayExpr: "text",
         valueExpr: "valor",
+        disabled: !canEdit,
         value: 1
     }).dxRadioGroup("instance");
 
     var caducidad = $("#caducidad").dxRadioGroup({
         dataSource: [{ text: "Si", valor: 1 }, { text: "No", valor: 2 }],
         displayExpr: "text",
+        disabled: !canEdit,
         valueExpr: "valor",
         value: 1
     }).dxRadioGroup("instance");
@@ -1413,7 +1455,7 @@ jQuery(function () {
         }),
         placeholder: '[Jurisdicción]',
         value: null,
-        disabled: false,
+        disabled: !canEdit,
         displayExpr: "valor",
         valueExpr: "id",
     }).dxSelectBox("instance");
@@ -1496,23 +1538,23 @@ jQuery(function () {
                 const _cuantia = cuantiaPretenciones.option("value");
                 const _politicaInstitucional = politicasAplicables.option("value");
                 var _llamaGarantia = optLlamaGerantia.option("value");
-                const _apoderado = apoderado.option("text");
+                const _apoderado = apoderado.option("text").replace('&', ' ');
                 const _medioControl = medioControl.option("text");
-                const _riesgoProcesal = riesgo.option("text");
-                const _pretensiones = pretensiones.option("text");
+                const _riesgoProcesal = riesgo.option("text").replace('&', ' ');;
+                const _pretensiones = pretensiones.option("text").replace('&', ' ');;
                 var _caducidad = caducidad.option("value");
 
                 var _fechaRadicadov = fechaRadicado.option("value");
                 var _hechos = hechos.option("value");
-                var _recomendacionesAbogado = recomencionAbogado.option("value");
-                var _fundamentoJuridicoConvocante = fundamentoJuridicoConvocante.option("value");
-                var _fundamentoDefensa = fundamentoDefensa.option("value");
+                var _recomendacionesAbogado = recomencionAbogado.option("value").replace('&', ' ');;
+                var _fundamentoJuridicoConvocante = fundamentoJuridicoConvocante.option("value").replace('&', ' ');;
+                var _fundamentoDefensa = fundamentoDefensa.option("value").replace('&', ' ');;
                 var _fechaComiteConciliacion = fechaComiteConciliacion.option("value");
                 var _fechaNotificacion = fechaNotificacion.option("value");
                 var _decisionComite = decisionComite.option("value");
                 var _hayAcuerdo = huboAcuerdoConciliatorio.option("value");
                 var _decisionAudiencia = decisionAudiencia.option("value");
-
+                var readOnly = "true";
 
                 if (_fechaRadicadov === null) {
                     _fechaRadicadov = "";
@@ -1574,7 +1616,7 @@ jQuery(function () {
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
                 var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion + '"}]}';
-                var url = rutaTemplates + token + "&documentoJS=" + json + etiquetas;
+                var url = rutaTemplates + token + "&readOnly=" + readOnly + "&documentoJS=" + json + etiquetas;
 
                 window.open(url);
                 
@@ -1813,8 +1855,7 @@ jQuery(function () {
         }
     }).dxDataGrid('instance');
 
-
-   var btnGuardarDemandante = $('#btnGuardarDemandante').dxButton(
+    var btnGuardarDemandante = $('#btnGuardarDemandante').dxButton(
         {
             icon: 'save',
             text: '',
@@ -1859,8 +1900,6 @@ jQuery(function () {
         hoverStateEnabled: true,
         title: "Terceros"
     }).dxPopup("instance");
-
-      
 
     $('#agregarDemandante').dxButton(
         {
@@ -1909,6 +1948,7 @@ jQuery(function () {
             onClick: function (params) {
                 var datos = '';
 
+                var readOnly = "true";
                 var arraydata = grdConvocantesDataSource._array;
                 var demandantesArray = "";
 
@@ -1924,37 +1964,49 @@ jQuery(function () {
                     demandadosArray = demandadosArray + arraydatad[i].nombre + ","
                 }
 
-                const _despacho = "";
-                const _etapa = "";
+
+
+                if (demandantesArray.length > 0) {
+                    demandantesArray = demandantesArray.trim().substring(0, demandantesArray.length - 2);
+                }
+
+                if (demandadosArray.length > 0) {
+                    demandadosArray = demandadosArray.trim().substring(0, demandadosArray.length - 2);
+                }
+               
+                const _fechaAudiencia = new Date(fechaAudiencia.option("value"));
+                const _fechaDada = new Date(Date.now());
+                const _despacho = procuraduria.option("text");
+                const _etapa = "ExtraJudicial";
                 const _radicado = radicado.option("value");
                 const _convocante = demandantesArray;
                 const _convocado = demandadosArray;
-                const _diaDada = "";
-                const _mesDada = "";
-                const _anioDada = "";
-                const _funcionario = "ORLANDO CARRILLO OCHOA";
+                const _diaDada = _fechaDada.getDate();
+                const _mesDada = _fechaDada.getMonth();
+                const _anioDada = _fechaDada.getFullYear();
+                const _funcionario = $('#app').data('funcionario');
                 const _cargo = "SECRETARIO TÉCNICO COMITÉ DE CONCILIACIÓN";
-                const _nroSesion = "";
-                const _diaSesion = "";
-                const _mesSesion = "";
-                const _anioSesion = "";
+                const _nroSesion = sesionNro.option("value");
+                const _diaSesion = _fechaAudiencia.getDate();
+                const _mesSesion = _fechaAudiencia.getMonth();
+                const _anioSesion = _fechaAudiencia.getFullYear();
                 const _recomendacion = recomencionAbogado.option("value");
-
 
                 var json = '{ "bytes":null, "name":"Certificado", "idPlantilla":22,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
                 var etiquetas = '[{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[Etapa]","value":"' + _etapa + '"},{"label":"[Radicado]","value":"' + _radicado + '"},{"label":"[Convocante]","value":"' + _convocante + '"},{"label":"[Convocado]","value":"' + _convocado + '"},{"label":"[DiaDada]","value":"' + _diaDada + '"},{"label":"[MesDada]","value":"' + _mesDada + '"},{"label":"[AñoDada]","value":"' + _anioDada + '"},{"label":"[Funcionario]","value":"' + _funcionario + '"},{"label":"[Cargo]","value":"' + _cargo + '"},{"label":"[NroSesion]","value":"' + _nroSesion + '"},{"label":"[DiaSesion]","value":"' + _diaSesion + '"},{"label":"[MesSesion]","value":"' + _mesSesion + '"},{"label":"[AñoSesion]","value":"' + _anioSesion + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacion + '"}]}';
 
+
                 var token = $('#app').data('token');
                 var rutaTemplates = $('#app').data('rutaplantilla');
 
-                var url = rutaTemplates + token + "&documentoJS=" + json + etiquetas;
+
+                var url = rutaTemplates + token + "&readOnly=" + readOnly + "&documentoJS=" + json + etiquetas;
+
 
                 window.open(url);
-
             }
         });
-
             
     $("#grdDemandantes").dxDataGrid({
         dataSource: grdConvocantesDataSource,
