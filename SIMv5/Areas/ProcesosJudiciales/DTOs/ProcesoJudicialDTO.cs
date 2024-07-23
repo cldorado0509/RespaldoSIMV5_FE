@@ -51,6 +51,8 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("radicado")]
         public string Radicado { get; set; }
 
+
+
         /// <summary>
         /// Fecha del radicado
         /// </summary>

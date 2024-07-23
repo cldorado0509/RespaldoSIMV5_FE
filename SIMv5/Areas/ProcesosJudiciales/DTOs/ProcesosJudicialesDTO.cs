@@ -23,6 +23,10 @@ namespace SIM.Areas.ProcesosJudiciales.DTOs
         [JsonProperty("radicado")]
         public string Radicado { get; set; }
 
+        [JsonProperty("radicado21")]
+        public string Radicado21 { get; set; }
+
+
         [JsonProperty("demanda")]
         public string Demanda { get; set; }
 

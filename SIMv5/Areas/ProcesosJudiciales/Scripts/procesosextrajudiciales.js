@@ -85,7 +85,7 @@ jQuery(function () {
                 visible: false
             }, {
                 dataField: 'radicado',
-                width: '15%',
+                width: '10%',
                 caption: 'RADICADO',
                 dataType: 'string',
             }, {
@@ -95,17 +95,18 @@ jQuery(function () {
                 dataType: 'string',
             }, {
                 dataField: 'juzgado',
-                width: '20%',
+                width: '25%',
                 caption: 'JUZGADO Y/O TRIBUNAL',
                 dataType: 'string',
             }, {
                 dataField: 'juridiccion',
-                width: '20%',
+                width: '15%',
                 caption: 'JURISDICCION',
                 dataType: 'string',
             }, {
-                dataField: 'demandadoDemandante',
-                caption: 'PARTE',
+                dataField: 'apoderado',
+                caption: 'APODERADO',
+                width: '15%',
                 dataType: 'string',
             }, {
                 dataField: 'fechaRegistro',
@@ -203,7 +204,7 @@ jQuery(function () {
                                             for (i = 0; i < _demandantes.length; i++) {
                                                 const demandante = _demandantes[i];
                                                 if (demandante.esConvocante === '1') {
-                                                    const idt = demandante.demandanteId;
+                                                    const idt = demandante.demantanteId;
                                                     const identificacion = demandante.identificacion;
                                                     const nombre = demandante.nombre;
                                                     const data = {

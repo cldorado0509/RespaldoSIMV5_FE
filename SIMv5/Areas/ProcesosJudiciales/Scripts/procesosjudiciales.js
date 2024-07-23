@@ -6,6 +6,9 @@ let nombreTerSel = "";
 let nitTerSel = "";
 let _idCorporacionJuzgado = "00"
 let etapaProcesal = false;
+let _radicado23data = "";
+let _radicadodata = "";
+let _actuacionId = 0;
 
 var grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
 var grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
@@ -124,7 +127,7 @@ jQuery(function () {
                 dataType: 'string',
             }, {
                 dataField: 'medioControl',
-                width: '20%',
+                width: '15%',
                 caption: 'MEDIO DE CONTROL',
                 dataType: 'string',
             }, {
@@ -134,16 +137,18 @@ jQuery(function () {
                 dataType: 'string',
             }, {
                 dataField: 'juridiccion',
-                width: '20%',
+                width: '10%',
                 caption: 'JURISDICCION',
                 dataType: 'string',
             }, {
                 dataField: 'radicado21',
                 caption: 'RADICADO PROCESO',
+                width: '10%',
                 dataType: 'string',
             }, {
-                dataField: 'demandadoDemandante',
-                caption: 'PARTE',
+                dataField: 'apoderado',
+                caption: 'APODERADO',
+                width: '15%',
                 dataType: 'string',
             }, {
                 dataField: 'fechaRegistro',
@@ -196,6 +201,13 @@ jQuery(function () {
                                             medioControl.option("value", medioControlId);
 
                                             radicado.option("value", data.radicado);
+
+                                            if (data.radicado === null || data.radicado === '') {
+                                                _radicadodata = "";
+                                            } else {
+                                                _radicadodata = data.radicado;
+                                            }
+
                                             fechaRadicado.option("value", data.fechaRadicado);
                                             hechos.option("value", data.hechos);
                                             fechaNotificacion.option("value", data.fechaNotificacion);
@@ -298,8 +310,9 @@ jQuery(function () {
                                             var consecutivoRadv = "00000"
                                             var anio = 2000;
                                             var consecutivoRecRadv = "00";
-
+                                            _radicado23data = "";
                                             if (rad23 !== null) {
+                                                _radicado23data = rad23;
                                                 etapaProcesal = true;
                                                 departamento = rad23.substring(0, 2);
                                                 cboDepartamento.option("value", departamento);
@@ -334,7 +347,7 @@ jQuery(function () {
                                             for (i = 0; i < _demandantes.length; i++) {
                                                 const demandante = _demandantes[i];
                                                 if (demandante.esConvocante === '1') {
-                                                    const idt = demandante.demandanteId;
+                                                    const idt = demandante.demantanteId;
                                                     const identificacion = demandante.identificacion;
                                                     const nombre = demandante.nombre;
                                                     const data = {
@@ -346,7 +359,7 @@ jQuery(function () {
                                                     grdConvocantesDataSource.insert(data);
                                                 }
                                                 if (demandante.esDemandante === '1') {
-                                                    const idt = demandante.demandanteId;
+                                                    const idt = demandante.demantanteId;
                                                     const identificacion = demandante.identificacion;
                                                     const nombre = demandante.nombre;
                                                     const data = {
@@ -745,8 +758,7 @@ jQuery(function () {
         value: null,
         showSpinButtons: false,
     }).dxNumberBox("instance");
-
-
+    
     var consecutivoRad = $("#consecutivoRad").dxTextBox({
         value: '00000',
         disabled: !canEdit,
@@ -756,7 +768,6 @@ jQuery(function () {
         value: '00',
         disabled: !canEdit,
     }).dxTextBox("instance");
-
   
     var fechaRadicado = $('#fechaRadicado').dxDateBox({
         placeholder: '[Fecha Radicado]',
@@ -776,16 +787,13 @@ jQuery(function () {
         disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
-
     
-
     var fechaNotificacion = $('#fechaNotificacion').dxDateBox({
         placeholder: '[F.Notificación]',
         disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
-
-
+    
     var fechaCaducidadHechos = $('#fechaCaducidadHechos').dxDateBox({
         placeholder: '[F.Caducidad]',
         disabled: !canEdit,
@@ -957,7 +965,7 @@ jQuery(function () {
                 key: "codigoDane",
                 loadMode: "raw",
                 load: function (loadOptions) {
-                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetMunicipios', { departamentoId: _departamentoId });
+                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetMunicipios', { departamentoId: _departamentoIdHP });
                 }
             })
         }),
@@ -1134,15 +1142,50 @@ jQuery(function () {
             type: 'success',
             disabled: !canEdit,
             onClick: function (params) {
-                //const data = {
-                //    demandadoId: idTerSel,
-                //    identificacion: nitTerSel.toUpperCase(),
-                //    nombre: nombreTerSel.toUpperCase(),
-                //    isNew: 1
-                //};
-                //grdConvocadosDataSource.insert(data);
 
-                //$("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
+                var _tipoActuacionId = cboTipoActuacion.option("value");
+                var _juzgadoActuacionId = cboJuzgadoActuacion.option("value");
+                var _fechaJuzgadoActuacion = fechaJuzgadoActuacion.option("value");
+                var _codigoLitigio = codigoLitigio.option("value");
+                var _fechaActuacion = fechaActuacion.option("value");
+                var _resumenActuacion = resumenActuacion.option("value");
+                var _observacionActuacion = observacionActuacion.option("value");
+
+                var params = {
+                    actuacionId : _actuacionId,
+                    procesoJuridicoId: idProcesoActual,
+                    tipoActuacionId: _tipoActuacionId,
+                    fechaFactJuzgado: _fechaJuzgadoActuacion,
+                    otros: '',
+                    actuacion: _resumenActuacion,
+                    fechaActuacion: _fechaActuacion,
+                    observaciones: _observacionActuacion,
+                    codigoJuzgado: _juzgadoActuacionId,
+                }
+
+                var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/GuardarActuacionJudicialAsync";
+                $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    url: _Ruta,
+                    data: JSON.stringify(params),
+                    contentType: "application/json",
+                    crossDomain: true,
+                    headers: { 'Access-Control-Allow-Origin': '*' },
+                    success: function (data) {
+                        loadPanel.hide();
+                        if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
+                        else {
+
+                            DevExpress.ui.dialog.alert('Actuación Creada/Actualizada correctamente', 'Guardar Datos');
+                            $('#grdActuacion').dxDataGrid({ dataSource: grdActuacionesDataSource });
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        loadPanel.hide();
+                        DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Guardar Datos');
+                    }
+                });
 
                 popActuacion.hide();
             }
@@ -1532,7 +1575,12 @@ jQuery(function () {
                 var datos = '';
                 const _asunto = asunto.option("value");
                 const _despacho = procuraduria.option("text");
-                const _radicado = radicado.option("value");
+                var _radicado = radicado.option("value");
+
+                if (_radicado === null || _radicado === '') {
+                    _radicado = _radicado23data;
+                }
+
                 const _instancia = 'EXTRAJUDICIAL';
                 var _fechaAudiencia = fechaAudiencia.option("value");
                 const _cuantia = cuantiaPretenciones.option("value");
@@ -1796,7 +1844,6 @@ jQuery(function () {
                 $('#labelAudicencia').hide();
             }
         });
-
 
     var grdTercerosP = $("#grdTercerosP").dxDataGrid({
         dataSource: grdTercerosDataSourceP,
@@ -2661,6 +2708,7 @@ jQuery(function () {
                     crossDomain: true,
                     headers: { 'Access-Control-Allow-Origin': '*' },
                     success: function (data) {
+                        loadPanel.hide();
                         if (data.IsSuccess === false) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Guardar Datos');
                         else {
 
@@ -2668,7 +2716,6 @@ jQuery(function () {
                             grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
                             grdDemandantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                             grdDemandadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
-                            loadPanel.hide();
                             DevExpress.ui.dialog.alert('Proceso Judicial Creado/Actualizado correctamente', 'Guardar Datos');
                             $('#grdProcesosJudiciales').dxDataGrid({ dataSource: grdProcesosJudicialesDataSource });
                         }
@@ -2679,11 +2726,9 @@ jQuery(function () {
                     }
                 });
 
-                $('#loadPanel').dxLoadPanel('instance').show();
                 $('#listaProcesos').show();
                 $('#detalleProcesos').hide();
-                $('#loadPanel').dxLoadPanel('instance').hide();
-                loadPanel.hide();
+            
             }
         });
 

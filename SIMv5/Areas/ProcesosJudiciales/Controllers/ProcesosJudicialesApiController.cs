@@ -1349,6 +1349,58 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actuacionDTO"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("GuardarActuacionJudicialAsync")]
+        public async Task<Response> GuardarActuacionJudicialAsync(ActuacionDTO actuacionDTO)
+        {
+            if (!ModelState.IsValid) return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + "Datos incompletos!" };
+
+            Response response = new Response
+            {
+                IsSuccess = true,
+                Message = ""
+            };
+            ApiService apiService = new ApiService();
+
+            try
+            {
+                decimal Id = 0;
+                if (actuacionDTO.ActuacionId == -1) actuacionDTO.ActuacionId = 0;
+                Id = actuacionDTO.ActuacionId;
+
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+
+                if (Id > 0)
+                {
+                    response = await apiService.PutMicroServicioAsync<ActuacionDTO>(urlApiJudicial, "api", "/ActuacionProcesoJudicial/ActualizarActuacionProceso", actuacionDTO, token);
+                    if (!response.IsSuccess) return response;
+                }
+                else if (Id <= 0)
+                {
+                    actuacionDTO.ActuacionId = 0;
+                    response = await apiService.PostMicroServicioAsync<ActuacionDTO>(urlApiJudicial, "api", "/ActuacionProcesoJudicial/AdicionarActuacionProceso", actuacionDTO, token);
+                    if (!response.IsSuccess) return response;
+
+                    var result = (Response)response.Result;
+                    int actuacionId = 0;
+                    int.TryParse(result.Result.ToString(), out actuacionId);
+                    actuacionDTO.ActuacionId = actuacionId;
+                }
+            }
+            catch (Exception e)
+            {
+                return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + e.Message };
+            }
+
+            return response;
+        }
+
+
 
         /// <summary>
         /// 
