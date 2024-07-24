@@ -1,10 +1,7 @@
 namespace SIM.Data.Seguridad
 {
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("SEGURIDAD.ROL_FORMA")]
     public partial class ROL_FORMA
@@ -31,6 +28,9 @@ namespace SIM.Data.Seguridad
 
         [StringLength(1)]
         public string S_ADMINISTRADOR { get; set; }
+
+        [StringLength(1)]
+        public string S_GENERAR_DOCUMENTO { get; set; }
 
         [ForeignKey("ID_ROL")]
         public virtual ROL ROL { get; set; }

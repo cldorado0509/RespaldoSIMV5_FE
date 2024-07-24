@@ -902,11 +902,15 @@
 
                 var model = JsonConvert.DeserializeObject<Response>(result);
 
-                T obj = JsonConvert.DeserializeObject<T>(model.Result.ToString());
-
-
-                model.Result = obj;
-
+                if (model.Result == null)
+                {
+                    model.Result = result;
+                }
+                else
+                {
+                    T obj = JsonConvert.DeserializeObject<T>(model.Result.ToString());
+                    model.Result = obj;
+                }
                 return model;
             }
             catch (Exception ex)

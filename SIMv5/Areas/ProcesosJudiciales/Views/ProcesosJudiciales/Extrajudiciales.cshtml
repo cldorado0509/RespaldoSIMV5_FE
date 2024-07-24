@@ -1,0 +1,566 @@
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+@using SIM.Properties
+@{
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script>
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+ 
+</script>
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .dx-datagrid-rowsview .dx-datagrid-table .dx-row > td {
+        vertical-align: middle;
+        /*padding: 7px;*/
+    }
+
+    .divEncabezado {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divTerceros {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divHechos {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divCausasP {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divPretencionesP {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divRecomendaciones {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divComite {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divPrejudicial {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divInfoBasica2 {
+        border: 1px outset blue;
+        text-align: left;
+        height: 200px;
+        overflow-y: scroll;
+    }
+
+    .divInfoBasica3 {
+        border: 1px outset blue;
+        text-align: left;
+        height: 200px;
+        overflow-y: scroll;
+    }
+
+    .divJuzgadoTribunal {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divDerechos {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .divOtros {
+        border: 1px outset blue;
+        text-align: left;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .dx-widget {
+        font-size: 11px;
+    }
+
+    .dx-popup-content {
+        padding: 0px;
+    }
+</style>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/ProcesosJudiciales/Scripts/procesosextrajudiciales.js?v=" + DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
+
+<div data-url="@Url.Content("~")" id="app" data-token="@ViewBag.Token" data-rutaplantilla="@ViewBag.RutaPlantillas" data-funcionario="@ViewBag.Funcionario" class="panelSIM panelSIM-default">
+    <div id="loadPanel"></div>
+    <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
+        <div class="panelSIM-title">
+            <label class="header" style="padding: 5px">EXTRAJUDICIALES</label>
+            @if (Model.CanInsert)
+            {
+                <div id="agregarProcesoJudicial"></div>
+            }
+        </div>
+        <div id="pnlListaProcesosJudiciales">
+            <div class="row" style="width: 100%; height:5%">
+                <div class="col-md-7"></div>
+                @if (Model.CanInsert)
+                {
+                    <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
+                }
+            </div>
+            <div style="height: 95%">
+                <div id="grdProcesosJudiciales"></div>
+            </div>
+        </div>
+    </div>
+    <div class="panelSIM-heading" style="padding: 10px; display: none" id="detalleProcesos">
+        <div id="regresar"></div>
+        <div id="tabOpciones" class="panelSIM-heading" style="padding-bottom: 0px"></div>
+        <div id="tab01" style="display: block; margin:10px">
+            <div id="container">
+                <div id="asistente">
+                    <h3>Información básica</h3>
+                    <div class="divEncabezado">
+                        <div class="row">
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Radicado de solicitud</b></p>
+                            </div>
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Procuraduría</b></p>
+                            </div>
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Medio de Control/Acción constitucional</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div id="radicado"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div id="procuraduria"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div id="medioControl"></div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-3" style="font-size:9pt">
+                                <p><b>Fecha Radicado Solicitud</b></p>
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-8" style="font-size:9pt">
+                                <p style="color:brown"><b>Subir la Solicitud</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div id="fechaRadicado"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="verSolicitud"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="fileUploaderSolicitud"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" style="font-size:9pt">
+                                <p><b>Fecha Notificación</b></p>
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-8" style="font-size:9pt">
+                                <p style="color:brown"><b>Subir la Citación de la Audiencia</b></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div id="fechaNotificacion"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="verNotificacion"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="fileUploaderNotificacion"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="font-size:9pt">
+                                <p><b>Asunto</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="asunto"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Apoderado</b></p>
+                            </div>
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Llama en Garantía</b></p>
+                            </div>
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Caducidad</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div id="cboApoderado"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div id="optLlamaGerantia"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div id="caducidad"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Sujetos procesales</h3>
+                    <div class="divTerceros">
+                        <div class="row">
+                            <div class="col-md-5" style="font-size:12pt">
+                                <p><b>Convocantes</b></p>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="agregarConvocante"></div>
+                            </div>
+                            <div class="col-md-5" style="font-size:12pt">
+                                <p><b>Convocados</b></p>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="agregarConvocado"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="grdConvocantes"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div id="grdConvocados"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Hechos y fundamentos</h3>
+                    <div class="divHechos">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Hechos (breve resumen)</b></p>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div id="hechos"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Fundamento jurídico del convocante</b></p>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div id="fundamentoJuridicoConvocante"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Fundamentos de la defensa propuestos y excepciones</b></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div id="fundamentoDefensa"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Pretensiones, riesgo procesal y política institucional</h3>
+                    <div class="divHechos">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Pretensiones (breve resumen)</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div id="pretensiones"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5">
+                                <p style="font-size:9pt"><b>Cuantía de las pretensiones</b></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="dx-field">
+                                    <div id="cuantiaPretenciones"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Riesgo procesal</b></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div id="riesgo"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Política institucional</b></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div id="politicasAplicables"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <h3>Recomendaciones y ficha</h3>
+                    <div class="divRecomendaciones">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size:9pt"><b>Recomendación del abogado</b></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="dx-field">
+                                    <div id="recomencionAbogado"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        @if (Model.CanGenerateDocument)
+                        {
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <p style="font-size:8pt"><b>Imprimir Ficha</b></p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <div id="abrirFichaPejudicial"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <h3>Comité de conciliación</h3>
+                    <div class="divComite">
+                        <div class="row">
+                            <div class="col-md-3" style="font-size:9pt">
+                                <p><b>Fecha Comité</b></p>
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-8" style="font-size:9pt">
+                                <p style="color:brown"><b>Subir el acta del comité</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div id="fechaComiteConciliacion"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="verComiteConciliacion"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="fileUploaderComiteConciliacion"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Decisión del comité</b></p>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div id="decisionComite"></div>
+                            </div>
+                        </div>
+                        @if (Model.CanGenerateDocument) 
+                        { 
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <p style="font-size:8pt"><b>Número de Sesión</b></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p style="font-size:8pt"><b>Generar Certificado</b></p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div id="sesionNro"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="abrirCertificado"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <h3>Audiencia extrajudicial</h3>
+                    <div class="divPrejudicial">
+                        <div class="row">
+                            <div class="col-md-3" style="font-size:9pt">
+                                <p><b>Fecha Audicencia</b></p>
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-8" style="font-size:9pt">
+                                <p style="color:brown"><b>Subir el acta de la audiencia</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div id="fechaAudiencia"></div>
+                            </div>
+                            <div class="col-md-1">
+                                <div id="verActaAudiencia"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="fileUploaderActaAudiencia"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Acuerdo</b></p>
+                            </div>
+                            <div class="col-md-4" style="font-size:9pt">
+                                <p><b>Decisión de la audiencia</b></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div id="huboAcuerdoConciliatorio"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4" id="decisionAudiencia"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @if (Model.CanInsert || Model.CanUpdate)
+    {
+        <div class="row">
+            <div class="col-md-11">
+                <div id="guardarProcesoJudicial" />
+            </div>
+        </div>
+    }
+
+    <div id="popupTercero">
+        <iframe src="" id="buscarTercero" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
+    </div>
+
+    <div id="popupConvocante">
+        <div class=" row">
+            <div class="col-md-12">
+                <div id="grdTerceros" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div id="cmdEditarNitConvocante"></div>
+            </div>
+            <div class="col-md-8">
+            </div>
+            <div class="col-md-2">
+                <div id="BotonSaveConvocante">
+                    <div id="btnGuardarConvocante"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

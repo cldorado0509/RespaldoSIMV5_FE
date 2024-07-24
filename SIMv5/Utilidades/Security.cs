@@ -585,7 +585,10 @@ namespace SIM.Utilidades
                 CanUpdate = false,
                 CanDelete = false,
                 CanPrint = false,
+                IsAdministrator = false,
+                CanGenerateDocument = false,
             };
+
             string _buscar = @"~/" + Area.ToUpper();
             var Formas = dbSIM.MENU.Where(w => w.S_RUTA.ToUpper().StartsWith(_buscar) && !string.IsNullOrEmpty(w.S_RUTA)).Select(s => new { s.ID_FORMA, s.S_RUTA, s.S_VERSION }).ToList();
             int IdForma = 0;
@@ -616,10 +619,12 @@ namespace SIM.Utilidades
                             if (permisosRolForma != null)
                             {
                                 if (permisosRolForma.S_BUSCAR == "1") permisosRolModel.CanRead = true;
+                                if (permisosRolForma.S_BUSCAR == "1") permisosRolModel.CanPrint = true;
                                 if (permisosRolForma.S_NUEVO == "1") permisosRolModel.CanInsert = true;
                                 if (permisosRolForma.S_EDITAR == "1") permisosRolModel.CanUpdate = true;
                                 if (permisosRolForma.S_ELIMINAR == "1") permisosRolModel.CanDelete = true;
-                                if (permisosRolForma.S_BUSCAR == "1") permisosRolModel.CanPrint = true;
+                                if (permisosRolForma.S_GENERAR_DOCUMENTO == "1") permisosRolModel.CanGenerateDocument = true;
+                                if (permisosRolForma.S_ADMINISTRADOR == "1") permisosRolModel.IsAdministrator = true;
                             }
                         }
                     }

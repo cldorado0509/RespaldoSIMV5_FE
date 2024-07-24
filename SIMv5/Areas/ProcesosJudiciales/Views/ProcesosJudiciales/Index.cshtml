@@ -1,7 +1,23 @@
-﻿@using SIM.Properties
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+@using SIM.Properties
 @{
     Layout = "~/Views/Shared/_LayoutV5.cshtml";
 }
+
+<script>
+    var canInsert = false;
+    var canRead = false;
+    var canEdit = false;
+    var canDelete = false;
+    @{
+         if (Model.CanRead){<text>canRead = true;</text>}
+         if (Model.CanInsert){<text>canInsert = true;</text>}
+         if (Model.CanUpdate){<text>canEdit = true;</text>}
+         if (Model.CanDelete){<text>canDelete = true;</text>}
+    }
+
+</script>
+
 <style>
     html, body {
         height: 100%;
@@ -114,17 +130,23 @@
 
 <script type="text/javascript" src="@Url.Content("~/Areas/ProcesosJudiciales/Scripts/procesosjudiciales.js?v=" + DateTime.Now.ToString("yyyyMMddHHmmss"))"></script>
 
-<div data-url="@Url.Content("~")" id="app" data-token="@ViewBag.Token" class="panelSIM panelSIM-default">
+<div data-url="@Url.Content("~")" id="app" data-token="@ViewBag.Token" data-rutaplantilla="@ViewBag.RutaPlantillas" data-funcionario="@ViewBag.Funcionario" class="panelSIM panelSIM-default">
     <div id="loadPanel"></div>
     <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
         <div class="panelSIM-title">
             <label class="header" style="padding: 5px">PROCESOS JUDICIALES</label>
-            <div id="agregarProcesoJudicial"></div>
+            @if (Model.CanInsert)
+            {
+                <div id="agregarProcesoJudicial"></div>
+            }
         </div>
         <div id="pnlListaProcesosJudiciales">
             <div class="row" style="width: 100%; height:5%">
                 <div class="col-md-7"></div>
-                <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
+                @if (Model.CanInsert)
+                {
+                    <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
+                }
             </div>
             <div style="height: 95%">
                 <div id="grdProcesosJudiciales"></div>
@@ -138,19 +160,19 @@
             <div id="container">
                 <div id="asistente">
                     <h3>Información básica</h3>
-                    <div class="divEncabezado">
-                        <div class="row">
-                            <div class="col-md-4" style="font-size:9pt">
+                    <div class="divEncabezado" id="divbandInfoBasica">
+                        <div class="row" id="divLabelsRowInfoBasica1">
+                            <div class="col-md-4" id="divRadicadoProcu" style="font-size:9pt">
                                 <p><b>Radicado de solicitud</b></p>
                             </div>
-                            <div class="col-md-4" style="font-size:9pt">
+                            <div class="col-md-4" id="divProcuraduria" style="font-size:9pt">
                                 <p><b>Procuraduría</b></p>
                             </div>
-                            <div class="col-md-4" style="font-size:9pt">
+                            <div class="col-md-4" id="divMedioControl" style="font-size:9pt">
                                 <p><b>Medio de Control/Acción constitucional</b></p>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="divRowInfoBasica1">
                             <div class="col-md-4">
                                 <div id="radicado"></div>
                             </div>
@@ -162,7 +184,7 @@
                             </div>
                         </div>
                         <br />
-                        <div class="row">
+                        <div class="row" id="divLabelsRowInfoBasica2">
                             <div class="col-md-3" style="font-size:9pt">
                                 <p><b>Fecha Radicado Solicitud</b></p>
                             </div>
@@ -171,7 +193,7 @@
                                 <p style="color:brown"><b>Subir la Solicitud</b></p>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="divRowInfoBasica2">
                             <div class="col-md-3">
                                 <div id="fechaRadicado"></div>
                             </div>
@@ -182,7 +204,7 @@
                                 <div id="fileUploaderSolicitud"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="divLabelsRowInfoBasica3">
                             <div class="col-md-3" style="font-size:9pt">
                                 <p><b>Fecha Notificación</b></p>
                             </div>
@@ -192,7 +214,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="divRowInfoBasica3">
                             <div class="col-md-3">
                                 <div id="fechaNotificacion"></div>
                             </div>
@@ -237,20 +259,14 @@
                         </div>
                     </div>
 
-                    <h3>Sujetos procesales</h3>
-                    <div class="divTerceros">
-                        <div class="row">
+                    <h3 id="labelSujetos">Sujetos procesales</h3>
+                    <div class="divTerceros" id="divtabTerceros">
+                        <div class="row" id="divLabelRowTabTerceros">
                             <div class="col-md-5" style="font-size:12pt">
                                 <p><b>Convocantes</b></p>
                             </div>
-                            <div class="col-md-1">
-                                <div id="agregarConvocante"></div>
-                            </div>
                             <div class="col-md-5" style="font-size:12pt">
                                 <p><b>Convocados</b></p>
-                            </div>
-                            <div class="col-md-1">
-                                <div id="agregarConvocado"></div>
                             </div>
                         </div>
 
@@ -265,16 +281,16 @@
                         </div>
                     </div>
 
-                    <h3>Hechos y fundamentos</h3>
-                    <div class="divHechos">
-                        <div class="row">
+                    <h3><span id="labelHechos"> Hechos y fundamentos</span></h3>
+                    <div id="divbandHechos" class="divHechos">
+                        <div class="row" id="divLabelHechos">
                             <div class="col-md-12">
                                 <p style="font-size:9pt"><b>Hechos (breve resumen)</b></p>
                             </div>
 
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="divTextHechos">
                             <div class="col-md-12">
                                 <div class="dx-field">
                                     <div id="hechos"></div>
@@ -387,21 +403,23 @@
                                 </div>
                             </div>
                         </div>
-
                         <br />
-                        <hr />
+                        @if (Model.CanGenerateDocument)
+                        {
+                            <hr />
 
-                        <div class="row">
-                            <div class="col-md-1">
-                                <p style="font-size:8pt"><b>Imprimir Ficha</b></p>
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <p style="font-size:8pt"><b>Imprimir Ficha</b></p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-1">
-                                <div id="abrirFichaPejudicial"></div>
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <div id="abrirFichaPejudicial"></div>
+                                </div>
                             </div>
-                        </div>
+                        }
 
                     </div>
 
@@ -439,28 +457,31 @@
                                 <div id="decisionComite"></div>
                             </div>
                         </div>
-                        <hr />
-                        <div class="row">
-                            <div class="col-md-3">
-                                <p style="font-size:8pt"><b>Número de Sesión</b></p>
+                        @if (Model.CanGenerateDocument)
+                        {
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <p style="font-size:8pt"><b>Número de Sesión</b></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p style="font-size:8pt"><b>Generar Certificado</b></p>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <p style="font-size:8pt"><b>Generar Certificado</b></p>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div id="sesionNro"></div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div id="sesionNro"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="abrirCertificado"></div>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <div id="abrirCertificado"></div>
-                            </div>
-                        </div>
+                        }
                     </div>
 
-                    <h3>Audiencia extrajudicial</h3>
-                    <div class="divPrejudicial">
+                    <h3 id="labelAudicencia">Audiencia extrajudicial</h3>
+                    <div class="divPrejudicial" id="divtabAudienciaExtra">
                         <div class="row">
                             <div class="col-md-3" style="font-size:9pt">
                                 <p><b>Fecha Audicencia</b></p>
@@ -902,14 +923,17 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-11">
-            <div id="guardarProcesoJudicial" />
+
+    @if (Model.CanInsert || Model.CanUpdate)
+    {
+        <div class="row">
+            <div class="col-md-11">
+                <div id="guardarProcesoJudicial" />
+            </div>
         </div>
-    </div>
+    }
 
     <div id="popActuacion">
-
         <div class="row">
             <div class="col-md-6" style="font-size:9pt">
                 <p><b>Tipo de actuación</b></p>
@@ -979,6 +1003,14 @@
             </div>
 
         </div>
+        <div class="row">
+            <div class="col-md-8" style="font-size:9pt">
+                <p style="color:brown"><b>Subir la actuación</b></p>
+            </div>
+            <div class="col-md-8">
+                <div id="fileUploaderActuacion"></div>
+            </div>
+        </div>
         <hr />
         <div id="btnSaveActuacion"></div>
     </div>
@@ -987,25 +1019,23 @@
         <iframe src="" id="buscarTercero" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>
     </div>
 
-    <div id="popupConvocante">
+    <div id="popupDemandantes">
         <div class=" row">
             <div class="col-md-12">
-                <div id="grdTerceros" />
+                <div id="grdTercerosP" />
             </div>
         </div>
         <div class="row">
             <div class="col-md-2">
-                <div id="cmdEditarNitConvocante"></div>
+                <div id="cmdEditarNitDemandante"></div>
             </div>
             <div class="col-md-8">
             </div>
             <div class="col-md-2">
-                <div id="BotonSaveConvocante">
-                    <div id="btnGuardarConvocante"></div>
+                <div id="BotonSaveDemandante">
+                    <div id="btnGuardarDemandante"></div>
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>
