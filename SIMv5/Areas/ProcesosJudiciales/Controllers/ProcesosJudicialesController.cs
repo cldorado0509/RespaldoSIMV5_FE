@@ -120,6 +120,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             }
             return new EmptyResult();
         }
+
     }
 }
 

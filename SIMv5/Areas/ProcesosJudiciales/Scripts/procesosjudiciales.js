@@ -407,6 +407,8 @@ jQuery(function () {
                                             }
                                             $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
                                             $("#grdDemandados").dxDataGrid({ dataSource: grdDemandadosDataSource });
+                                            $('#grdActuacion').dxDataGrid({ dataSource: grdActuacionesDataSource });
+                                            
 
                                             if (data.existeDocumentoSolicitud) {
                                                 $('#verSolicitud').dxButton("instance").option('icon', 'exportpdf');
@@ -717,6 +719,31 @@ jQuery(function () {
 
     });
 
+    $("#fileUploaderActuacion").dxFileUploader({
+        allowedFileExtensions: [".pdf"],
+        multiple: false,
+        disabled: !canEdit,
+        selectButtonText: 'Seleccionar Archivo ...',
+        labelText: 'o arrastre un archivo aquí',
+        uploadMode: "instantly",
+        uploadUrl: $('#app').data('url') + 'ProcesosJudiciales/ProcesosJudiciales/CargarArchivoTemp?Tra=5',
+        inputAttr: { 'aria-label': 'Select a file' },
+        onUploadAborted: (e) => removeFile(e.file.name),
+        onUploaded: function (e) {
+        },
+        onUploadStarted: function (e) {
+        },
+        onUploadError: function (e) {
+            DevExpress.ui.dialog.alert('Error Subiendo Archivo: ' + e.request.responseText, 'Documentos temporales');
+        },
+        onValueChanged: function (e) {
+
+        }
+
+    });
+
+    fileUploaderActuacion
+
       
     var codDaneDepRad = $("#codDaneDepRad").dxTextBox({
         value: '00000',
@@ -848,6 +875,7 @@ jQuery(function () {
         valueExpr: "id",
         searchEnabled: true
     });
+
     $('#tipoPretension').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -1048,7 +1076,7 @@ jQuery(function () {
     var cboTipoActuacion = $('#cboTipoActuacion').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
-                key: "id",
+                key: "tipoActuacionId",
                 loadMode: "raw",
                 load: function (loadOptions) {
                     return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetTiposActuacion');
@@ -1061,8 +1089,8 @@ jQuery(function () {
         placeholder: '[Tipo de actuación]',
         value: null,
         disabled: !canEdit,
-        displayExpr: "valor",
-        valueExpr: "id",
+        displayExpr: "nombre",
+        valueExpr: "tipoActuacionId",
         searchEnabled: true
     }).dxSelectBox("instance");
 
@@ -1109,7 +1137,7 @@ jQuery(function () {
         value: "",
         readOnly: false,
         disabled: !canEdit,
-        height: 80,
+        height: 50,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -1117,13 +1145,12 @@ jQuery(function () {
             }
         }
     }).dxTextArea("instance");
-
-
+    
     var observacionActuacion = $("#observacionActuacion").dxTextArea({
         value: "",
         readOnly: false,
         disabled: !canEdit,
-        height: 80,
+        height: 50,
         onValueChanged(e) {
             var value = e.component.option("value");
             if (value) {
@@ -1131,7 +1158,6 @@ jQuery(function () {
             }
         }
     }).dxTextArea("instance");
-
      
     $('#btnSaveActuacion').dxButton(
         {
@@ -1514,7 +1540,7 @@ jQuery(function () {
 
     var popActuacion = $("#popActuacion").dxPopup({
         width: 850,
-        height: "600",
+        height: "650",
         resizeEnabled: true,
         hoverStateEnabled: true,
         title: "Actuación"
@@ -2339,7 +2365,7 @@ jQuery(function () {
                 dataType: 'string',
             }, {
                 dataField: 'actuacion',
-                width: '40%',
+                width: '45%',
                 caption: 'Resumen de la actuación',
                 dataType: 'string',
             }
@@ -2355,15 +2381,85 @@ jQuery(function () {
                 dataType: 'boolean',
             }
             , {
-                caption: '',
-                width: '10%',
+                caption: 'Editar',
+                width: '20',
                 alignment: 'center',
                 cellTemplate: function (cellElement, cellInfo) {
                     $('<div />').dxButton(
                         {
                             icon: 'edit',
-                            type: 'success',
+                            visible: canEdit,
+                            type: 'default',
                             hint: 'Editar Actuación',
+                            onClick: function (params) {
+
+                                _actuacionId = cellInfo.data.actuacionId;
+                                var _Ruta = $('#app').data('url') + "ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerActuacion"
+                                $.getJSON(_Ruta,
+                                    {
+                                        Id: _actuacionId
+                                    }).done(function (data) {
+                                        if (data !== null) {
+
+                                            cboTipoActuacion.option("value", data.tipoActuacionId);
+                                            cboJuzgadoActuacion.option("value", data.codigoJuzgado);
+                                            fechaJuzgadoActuacion.option("value", data.fechaFactJuzgado);
+                                            codigoLitigio.option("value" ,'');
+                                            fechaActuacion.option("value", data.fechaActuacion);
+                                            resumenActuacion.option("value", data.actuacion);
+                                            observacionActuacion.option("value", data.observaciones);
+                                            popActuacion.show();
+                                        }
+                                    }).fail(function (jqxhr, textStatus, error) {
+                                        DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Evento no esperado!');
+                                    });
+                            }
+                        }
+                    ).appendTo(cellElement); 
+                 }
+            },
+            {
+                caption: 'Ver',
+                width: '20',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            visible: canRead,
+                            icon: 'exportpdf',
+                            type: 'success',
+                            hint: 'ver Actuación',
+                            onClick: function (params) {
+                                var _Ruta = $('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ObtenerDocumentoAnexo?id=' + idProcesoActual + '&tipo=5';
+                                $.getJSON(_Ruta).done(function (data) {
+                                    if (data) {
+
+                                        var docWindow = window.open("");
+                                        docWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + data + "'></iframe>")
+                                    } else {
+                                        DevExpress.ui.notify("Ducumento no encontrado!", "warning", 2500);
+                                    }
+
+                                }).fail(function (jqxhr, textStatus, error) {
+                                    loadIndicator.option("visible", false);
+                                    DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Evento no esperado!');
+                                });
+                            }
+                        }
+                    ).appendTo(cellElement);
+                }
+            },
+            {
+                caption: 'Eliminar',
+                width: '20',
+                alignment: 'center',
+                cellTemplate: function (cellElement, cellInfo) {
+                    $('<div />').dxButton(
+                        {
+                            visible: canDelete,
+                            icon: 'clear',
+                            type: 'danger',
+                            hint: 'Eliminar Actuación',
                             onClick: function (params) {
 
                             }
@@ -2451,7 +2547,6 @@ jQuery(function () {
         title: "Ficha"
     }).dxPopup("instance");
    
-
     $('#agregarActuacion').dxButton(
         {
             icon: 'plus',
@@ -2461,6 +2556,13 @@ jQuery(function () {
             type: 'success',
 
             onClick: function (params) {
+                cboTipoActuacion.reset();
+                cboJuzgadoActuacion.reset();
+                fechaJuzgadoActuacion.reset(); 
+                codigoLitigio.reset();
+                fechaActuacion.reset();
+                resumenActuacion.reset();
+                observacionActuacion.reset();
                 popActuacion.show();
             }
         });
@@ -2520,8 +2622,7 @@ jQuery(function () {
             }
         });
 
-    $('#verAdmision').dxButton(
-        {
+    $('#verAdmision').dxButton({
             icon: 'exportpdf',
             text: '',
             hint: 'Ver admisión',
@@ -2901,7 +3002,6 @@ var grdTercerosDataSourceP = new DevExpress.data.CustomStore({
         return d.promise();
     }
 });
-
 
 function isNotEmpty(value) {
     return value !== undefined && value !== null && value !== "";

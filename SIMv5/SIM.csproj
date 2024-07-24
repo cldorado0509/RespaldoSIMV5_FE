@@ -1370,6 +1370,7 @@
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcesosJudicialesDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\ProcuraduriaDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\DTOs\TerceroDTO.cs" />
+    <Compile Include="Areas\ProcesosJudiciales\DTOs\TipoActuacionDTO.cs" />
     <Compile Include="Areas\ProcesosJudiciales\ProcesosJudicialesAreaRegistration.cs" />
     <Compile Include="Areas\QuejasAmbientales\Controllers\QuejasApiController.cs" />
     <Compile Include="Areas\QuejasAmbientales\Controllers\QuejasController.cs" />

@@ -24,8 +24,8 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
     public class ProcesosJudicialesApiController : ApiController
     {
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
-        string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicialLocal").ToString();
-        string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencialLocal").ToString();
+        string urlApiJudicial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioJudicial").ToString();
+        string urlApiGerencial = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioGerencial").ToString();
 
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
                 string token = _token.Value;
                 string serloadOptions = JsonConvert.SerializeObject(loadOptions);
-                string _controller = $"ActuacionProcesoJudicial/GetActuacionesProceso?procesoId = {procesoJudicialId}&Opciones={serloadOptions}";
+                string _controller = $"ActuacionProcesoJudicial/GetActuacionesProceso?procesoId={procesoJudicialId}&Opciones={serloadOptions}";
                 SIM.Models.Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
                 if (response.IsSuccess)
@@ -217,6 +217,42 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 return null;
             }
         }
+
+
+
+        /// <summary>
+        /// Obtiene una actuación
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("ObtenerActuacion")]
+        public async Task<JObject> ObtenerActuacion(int Id)
+        {
+            JsonSerializer Js = new JsonSerializer();
+            Js = JsonSerializer.CreateDefault();
+            try
+            {
+                var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                string token = _token.Value;
+
+                ApiService apiService = new ApiService();
+
+                ActuacionDTO actuacion = new ActuacionDTO();
+
+
+                Response response = await apiService.GetMicroServicioAsync<ActuacionDTO>(this.urlApiJudicial, "api/ActuacionProcesoJudicial/", $"ObtenerActuacionProceso?idActuacion={Id}", token);
+                if (!response.IsSuccess) return JObject.FromObject(actuacion, Js);
+                actuacion = (ActuacionDTO)response.Result;
+                return JObject.FromObject(actuacion, Js);
+
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
 
 
         /// <summary>
@@ -340,12 +376,12 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
                 string token = _token.Value;
-                string _controller = $"Listados/TiposActuacion";
+                string _controller = $"ActuacionProcesoJudicial/TiposActuacion";
 
-                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<ListadoDTO>(urlApiJudicial, "api/", _controller, token);
+                SIM.Models.Response response = await apiService.GetMicroServicioListAsync<TipoActuacionDTO>(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
 
-                var list = (List<ListadoDTO>)response.Result;
+                var list = (List<TipoActuacionDTO>)response.Result;
                 var listDto = JArray.FromObject(list, Js);
 
                 return listDto;
@@ -1302,12 +1338,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                         response.Message = response.Message + " - No es posible realizar el proceso asignación de los documentos temporalmente generados al proceso judicial /extrajudicial";
                     }
                 }
-
-
                 #region Sube documentos
-
-
-
                 string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
                 string _Ruta = _RutaBase + DateTime.Now.ToString("yyyyMM");
 
@@ -1323,19 +1354,21 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                         int.TryParse(file.Name.Substring(20, 1), out tipo);
                         byte[] byteArray = File.ReadAllBytes(file.FullName);
 
-                        DocumentoAnexoDTO documentoAnexoDTO = new DocumentoAnexoDTO
+                        if (tipo != 5)
                         {
-                            Documento = Convert.ToBase64String(byteArray),
-                            ProcesoJudicialId = objData.ProcesoId,
-                            Tipo = tipo
-                        };
-                        response = await apiService.PostMicroServicioAsync<DocumentoAnexoDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/AdicionarDocumentoAnexo", documentoAnexoDTO, token);
-                        if (!response.IsSuccess)
-                        {
+                            DocumentoAnexoDTO documentoAnexoDTO = new DocumentoAnexoDTO
+                            {
+                                Documento = Convert.ToBase64String(byteArray),
+                                ProcesoJudicialId = objData.ProcesoId,
+                                Tipo = tipo
+                            };
+                            response = await apiService.PostMicroServicioAsync<DocumentoAnexoDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/AdicionarDocumentoAnexo", documentoAnexoDTO, token);
+                            if (!response.IsSuccess)
+                            {
 
-                            response.Message = $"{response.Message} No se pudo almacenar el documento {file.Name}!";
+                                response.Message = $"{response.Message} No se pudo almacenar el documento {file.Name}!";
+                            }
                         }
-
                     }
                 }
                 #endregion
@@ -1357,7 +1390,24 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         [HttpPost, ActionName("GuardarActuacionJudicialAsync")]
         public async Task<Response> GuardarActuacionJudicialAsync(ActuacionDTO actuacionDTO)
         {
+            int idUsuario = 0;
+            decimal funcionario = 0;
+
+
             if (!ModelState.IsValid) return new Response { IsSuccess = false, Result  = "", Message = "Error Almacenando el registro : " + "Datos incompletos!" };
+
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            ClaimsPrincipal claimPpal = (ClaimsPrincipal)context.User;
+
+            if (((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                idUsuario = Convert.ToInt32(((System.Security.Claims.ClaimsPrincipal)context.User).FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                funcionario = Convert.ToInt32((from uf in dbSIM.USUARIO_FUNCIONARIO
+                                               join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                                               where uf.ID_USUARIO == idUsuario
+                                               select f.CODFUNCIONARIO).FirstOrDefault());
+            }
 
             Response response = new Response
             {
@@ -1391,6 +1441,42 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                     int.TryParse(result.Result.ToString(), out actuacionId);
                     actuacionDTO.ActuacionId = actuacionId;
                 }
+
+
+                #region Sube documento
+
+                string _RutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() != "" ? SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString() : "";
+                string _Ruta = _RutaBase + DateTime.Now.ToString("yyyyMM");
+
+                DirectoryInfo dir = new DirectoryInfo(_Ruta);
+                string _NomParc = @"ProcesoJudicial-" + idUsuario.ToString();
+
+                FileInfo[] files = dir.GetFiles(_NomParc + "*", SearchOption.TopDirectoryOnly);
+                if (files.Length > 0)
+                {
+                    foreach (var file in files)
+                    {
+                        var tipo = 0;
+                        int.TryParse(file.Name.Substring(20, 1), out tipo);
+                        byte[] byteArray = File.ReadAllBytes(file.FullName);
+
+                        if (tipo == 5)
+                        {
+                            DocumentoAnexoDTO documentoAnexoDTO = new DocumentoAnexoDTO
+                            {
+                                Documento = Convert.ToBase64String(byteArray),
+                                ProcesoJudicialId = actuacionDTO.ProcesoJuridicoId,
+                                Tipo = tipo
+                            };
+                            response = await apiService.PostMicroServicioAsync<DocumentoAnexoDTO>(urlApiJudicial, "api", "/ProcesosJudiciales/AdicionarDocumentoAnexo", documentoAnexoDTO, token);
+                            if (!response.IsSuccess)
+                            {
+                                response.Message = $"{response.Message} No se pudo almacenar el documento {file.Name}!";
+                            }
+                        }
+                    }
+                }
+                #endregion
             }
             catch (Exception e)
             {
@@ -1399,8 +1485,6 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
 
             return response;
         }
-
-
 
         /// <summary>
         /// 
