@@ -761,8 +761,6 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
             }
         }
 
-
-
         /// <summary>
         /// 
         /// </summary>
