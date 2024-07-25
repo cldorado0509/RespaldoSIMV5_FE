@@ -316,7 +316,6 @@ jQuery(function () {
         }
     });
    
-  
     
     var medioControl = $('#medioControl').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -457,21 +456,17 @@ jQuery(function () {
         value: null
     }).dxDateBox("instance");
 
-      
-
     var fechaNotificacion = $('#fechaNotificacion').dxDateBox({
         placeholder: '[F.Notificación]',
         disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
 
-
     var fechaCaducidadHechos = $('#fechaCaducidadHechos').dxDateBox({
         placeholder: '[F.Caducidad]',
         disabled: !canEdit,
         value: null
     }).dxDateBox("instance");
-
        
     var fechaAudiencia = $('#fechaAudiencia').dxDateBox({
         placeholder: '[F.Audiencia]',
@@ -678,7 +673,6 @@ jQuery(function () {
         value: 1
     }).dxRadioGroup("instance");
     
-  
 
     var caducidad = $("#caducidad").dxRadioGroup({
         dataSource: [{ text: "Si", valor: 1 }, { text: "No", valor: 2 }],
