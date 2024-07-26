@@ -45,7 +45,9 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                 string token = _token.Value;
                 string serloadOptions = JsonConvert.SerializeObject(loadOptions);
                 string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
+
                 SIM.Models.Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
+
                 if (!response.IsSuccess) return null;
                 if (response.IsSuccess)
                 {
