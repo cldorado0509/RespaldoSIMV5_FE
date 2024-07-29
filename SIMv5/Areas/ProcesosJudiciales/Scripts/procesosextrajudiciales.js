@@ -37,15 +37,13 @@ jQuery(function () {
         animationDuration: 500,
         multiple: true
     });
-
-
+    
     const tabsData = [
         {
             id: 0,
             text: 'EXTRAJUDICIAL',
         }
     ];
-
 
     $("#grdProcesosJudiciales").dxDataGrid({
         dataSource: grdProcesosJudicialesDataSource,
@@ -315,8 +313,7 @@ jQuery(function () {
             }
         }
     });
-   
-    
+      
     var medioControl = $('#medioControl').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
@@ -441,8 +438,7 @@ jQuery(function () {
         value: null,
         showSpinButtons: false,
     }).dxNumberBox("instance");
-    
-   
+     
     var fechaRadicado = $('#fechaRadicado').dxDateBox({
         placeholder: '[Fecha Radicado]',
         disabled: !canEdit,
@@ -1584,13 +1580,13 @@ jQuery(function () {
                         return;
                     }
 
-                    if (_fechaNotificacion === null) {
+                    if (_fechaNotificacion === null && idProcesoActual > 0) {
                         DevExpress.ui.notify("Debe indicar la fecha de notificación a la citación de la audiencia!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_asunto === null || _asunto.length === 0) {
+                    if ((_asunto === null || _asunto.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Ingrese la información relacionada con el asunto!", "warning", 2500);
                         loadPanel.hide();
                         return;
@@ -1614,55 +1610,55 @@ jQuery(function () {
                         return;
                     }
 
-                    if (_hechos === null || _hechos.length === 0) {
+                    if ((_hechos === null || _hechos.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Ingrese el resumen de los hechos!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) {
+                    if ((_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Ingrese el fundamento jurídico del convocante!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_fundamentoDefensa === null || _fundamentoDefensa.length === 0) {
+                    if ((_fundamentoDefensa === null || _fundamentoDefensa.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Ingrese los fundamentos de la defensa y excepciones!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_pretenciones === null || _pretenciones.length === 0) {
+                    if ((_pretenciones === null || _pretenciones.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Ingrese el resumen de las pretensiones!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_valorCuantia === null || _valorCuantia.length === 0) {
+                    if ((_valorCuantia === null || _valorCuantia.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Ingrese el valor de la cuantía de las pretensiones!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_riesgoProcesal === null || _riesgoProcesal.length === 0) {
+                    if ((_riesgoProcesal === null || _riesgoProcesal.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Describa el riesgo procesal!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_politicaInstitucional === null || _politicaInstitucional.length === 0) {
+                    if ((_politicaInstitucional === null || _politicaInstitucional.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Describa la política institucional!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_recomendacionesAbogado === null || _recomendacionesAbogado.length === 0) {
+                    if ((_recomendacionesAbogado === null || _recomendacionesAbogado.length === 0) && idProcesoActual > 0) {
                         DevExpress.ui.notify("Ingrese las recomendaciones del abogado!", "warning", 2500);
                         loadPanel.hide();
                         return;
                     }
 
-                    if (_fechaAudienciaPrejudicial === null) {
+                    if (_fechaAudienciaPrejudicial === null && idProcesoActual > 0) {
                         DevExpress.ui.notify("Debe indicar la fecha de la audicencia!", "warning", 2500);
                         loadPanel.hide();
                         return;
@@ -1721,7 +1717,7 @@ jQuery(function () {
             })
         }),
         placeholder: '[Apoderado]',
-        disabled: !canEdit,
+        disabled: !isAdministrator,
         displayExpr: "nombre",
         valueExpr: "apoderadoId",
     }).dxSelectBox("instance");
@@ -1754,7 +1750,7 @@ jQuery(function () {
                 params[i] = JSON.stringify(loadOptions[i]);
             }
         });
-        $.getJSON($('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ConsultaProcesosExtraJudiciales', params)
+        $.getJSON($('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ConsultaProcesosExtraJudiciales?isAdmin=' + isAdministrator, params)
             .done(function (response) {
                 d.resolve(response.data, {
                     totalCount: response.totalCount

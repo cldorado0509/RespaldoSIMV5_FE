@@ -9,11 +9,13 @@
     var canRead = false;
     var canEdit = false;
     var canDelete = false;
+    var isAdministrator = false;
     @{
          if (Model.CanRead){<text>canRead = true;</text>}
          if (Model.CanInsert){<text>canInsert = true;</text>}
          if (Model.CanUpdate){<text>canEdit = true;</text>}
          if (Model.CanDelete){<text>canDelete = true;</text>}
+        if (Model.IsAdministrator){<text>isAdministrator = true;</text>}
     }
 
 </script>
@@ -135,7 +137,7 @@
     <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
         <div class="panelSIM-title">
             <label class="header" style="padding: 5px">PROCESOS JUDICIALES</label>
-            @if (Model.CanInsert)
+            @if (Model.IsAdministrator)
             {
                 <div id="agregarProcesoJudicial"></div>
             }
@@ -143,7 +145,7 @@
         <div id="pnlListaProcesosJudiciales">
             <div class="row" style="width: 100%; height:5%">
                 <div class="col-md-7"></div>
-                @if (Model.CanInsert)
+                @if (Model.IsAdministrator)
                 {
                     <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
                 }
@@ -404,7 +406,7 @@
                             </div>
                         </div>
                         <br />
-                        @if (Model.CanGenerateDocument)
+                        @if (Model.CanRead)
                         {
                             <hr />
 
@@ -922,36 +924,29 @@
                 </div>
             </div>
         </div>
+
+        @if (Model.CanInsert || Model.CanUpdate)
+        {
+            <div class="row">
+                <div class="col-md-11">
+                    <div id="guardarProcesoJudicial" />
+                </div>
+            </div>
+        }
     </div>
 
-    @if (Model.CanInsert || Model.CanUpdate)
-    {
-        <div class="row">
-            <div class="col-md-11">
-                <div id="guardarProcesoJudicial" />
-            </div>
-        </div>
-    }
-
+  
     <div id="popActuacion">
         <div class="row">
-            <div class="col-md-6" style="font-size:9pt">
+            <div class="col-md-12" style="font-size:9pt">
                 <p><b>Tipo de actuación</b></p>
             </div>
-            <div class="col-md-6" style="font-size:9pt">
-                <p><b>Juzgado</b></p>
-            </div>
-
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div id="cboTipoActuacion"></div>
             </div>
-            <div class="col-md-6">
-                <div id="cboJuzgadoActuacion"></div>
-            </div>
-
-        </div>
+          </div>
         <div class="row">
             <div class="col-md-6" style="font-size:9pt">
                 <p><b>Fecha Juzgado</b></p>
