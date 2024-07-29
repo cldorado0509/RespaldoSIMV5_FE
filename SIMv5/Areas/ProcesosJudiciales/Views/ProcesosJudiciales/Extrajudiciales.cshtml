@@ -9,13 +9,15 @@
     var canRead = false;
     var canEdit = false;
     var canDelete = false;
+    var isAdministrator = false;
     @{
          if (Model.CanRead){<text>canRead = true;</text>}
          if (Model.CanInsert){<text>canInsert = true;</text>}
          if (Model.CanUpdate){<text>canEdit = true;</text>}
          if (Model.CanDelete){<text>canDelete = true;</text>}
+         if (Model.IsAdministrator){<text>isAdministrator = true;</text>}
     }
- 
+
 </script>
 <style>
     html, body {
@@ -134,7 +136,7 @@
     <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
         <div class="panelSIM-title">
             <label class="header" style="padding: 5px">EXTRAJUDICIALES</label>
-            @if (Model.CanInsert)
+            @if (Model.IsAdministrator)
             {
                 <div id="agregarProcesoJudicial"></div>
             }
@@ -142,7 +144,7 @@
         <div id="pnlListaProcesosJudiciales">
             <div class="row" style="width: 100%; height:5%">
                 <div class="col-md-7"></div>
-                @if (Model.CanInsert)
+                @if (Model.IsAdministrator)
                 {
                     <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
                 }
@@ -410,7 +412,7 @@
                         </div>
 
                         <br />
-                        @if (Model.CanGenerateDocument)
+                        @if (Model.CanRead)
                         {
                             <hr />
                             <div class="row">
@@ -461,8 +463,8 @@
                                 <div id="decisionComite"></div>
                             </div>
                         </div>
-                        @if (Model.CanGenerateDocument) 
-                        { 
+                        @if (Model.CanGenerateDocument)
+                        {
                             <hr />
                             <div class="row">
                                 <div class="col-md-3">
@@ -526,17 +528,15 @@
                 </div>
             </div>
         </div>
-
-    </div>
-
-    @if (Model.CanInsert || Model.CanUpdate)
-    {
-        <div class="row">
-            <div class="col-md-11">
-                <div id="guardarProcesoJudicial" />
+        @if (Model.CanInsert || Model.CanUpdate)
+        {
+            <div class="row">
+                <div class="col-md-11">
+                    <div id="guardarProcesoJudicial" />
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 
     <div id="popupTercero">
         <iframe src="" id="buscarTercero" style="width:98%; height:100%;border:none;padding: 0px;" frameborder="0" scrolling="no"></iframe>

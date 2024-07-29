@@ -31,21 +31,35 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="isAdmin"></param>
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("ConsultaProcesosJudiciales")]
-        public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions)
+        public async Task<LoadResult> GetConsultaProcesosJudiciales(DataSourceLoadOptions loadOptions, bool isAdmin)
         {
             ApiService apiService = new ApiService();
+            string sIsAadmin = "false";
+            if (isAdmin) sIsAadmin = "true";
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
+                var _IdUsuario = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("nameidentifier")).FirstOrDefault();
+                decimal IdUsuario = 0;
+                decimal.TryParse(_IdUsuario.Value, out IdUsuario);
+
+                var fun = (from uf in dbSIM.USUARIO_FUNCIONARIO
+                           join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                           where uf.ID_USUARIO == IdUsuario
+                           select f.CODFUNCIONARIO).FirstOrDefault();
+
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
                 string token = _token.Value;
                 string serloadOptions = JsonConvert.SerializeObject(loadOptions);
-                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}";
+                string _controller = $"ProcesosJudiciales/GetConsultaProcesosJudiciales?Opciones={serloadOptions}&isAdmin={sIsAadmin}&apoderadoId={fun}";
+
                 SIM.Models.Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
+
                 if (!response.IsSuccess) return null;
                 if (response.IsSuccess)
                 {
@@ -71,20 +85,33 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="isAdmin"></param>
         /// <param name="loadOptions"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("ConsultaProcesosExtraJudiciales")]
-        public async Task<LoadResult> GetConsultaProcesosExtraJudiciales(DataSourceLoadOptions loadOptions)
+        public async Task<LoadResult> GetConsultaProcesosExtraJudiciales(DataSourceLoadOptions loadOptions, bool isAdmin)
         {
             ApiService apiService = new ApiService();
+            string sIsAadmin = "false";
+            if (isAdmin) sIsAadmin = "true";
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
+                var _IdUsuario = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("nameidentifier")).FirstOrDefault();
+                decimal IdUsuario = 0;
+                decimal.TryParse(_IdUsuario.Value, out IdUsuario);
+
+                var fun = (from uf in dbSIM.USUARIO_FUNCIONARIO
+                           join f in dbSIM.TBFUNCIONARIO on uf.CODFUNCIONARIO equals f.CODFUNCIONARIO
+                           where uf.ID_USUARIO == IdUsuario
+                           select f.CODFUNCIONARIO).FirstOrDefault();
+
+
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
                 string token = _token.Value;
                 string serloadOptions = JsonConvert.SerializeObject(loadOptions);
-                string _controller = $"ProcesosJudiciales/GetConsultaProcesosExtraJudiciales?Opciones={serloadOptions}";
+                string _controller = $"ProcesosJudiciales/GetConsultaProcesosExtraJudiciales?Opciones={serloadOptions}&isAdmin={sIsAadmin}&apoderadoId={fun}";
                 SIM.Models.Response response = await apiService.GetFilteredDataAsync(urlApiJudicial, "api/", _controller, token);
                 if (!response.IsSuccess) return null;
                 if (response.IsSuccess)

@@ -601,27 +601,6 @@ jQuery(function () {
         searchEnabled: true
     }).dxSelectBox("instance"); 
 
-    var juzgado = $('#juzgado').dxSelectBox({
-        dataSource: new DevExpress.data.DataSource({
-            store: new DevExpress.data.CustomStore({
-                key: "id",
-                loadMode: "raw",
-                load: function (loadOptions) {
-                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetJuzgados');
-                }
-            })
-        }),
-        placeholder: '[Juzgado]',
-        value: null,
-        disabled: !canEdit,
-        displayExpr: "valor",
-        valueExpr: "id",
-        searchEnabled: true,
-        onOpened: function (e) {
-            e.component._popup.option('width', 500);
-        }
-    }).dxSelectBox("instance");
-
     var radicado = $("#radicado").dxTextBox({
         value: '00000000000000000000', fileUploaderSolicitud,
         disabled: !canEdit,
@@ -742,9 +721,7 @@ jQuery(function () {
 
     });
 
-    fileUploaderActuacion
-
-      
+     
     var codDaneDepRad = $("#codDaneDepRad").dxTextBox({
         value: '00000',
         disabled: !canEdit,
@@ -1093,28 +1070,7 @@ jQuery(function () {
         valueExpr: "tipoActuacionId",
         searchEnabled: true
     }).dxSelectBox("instance");
-
-    var cboJuzgadoActuacion = $('#cboJuzgadoActuacion').dxSelectBox({
-        dataSource: new DevExpress.data.DataSource({
-            store: new DevExpress.data.CustomStore({
-                key: "id",
-                loadMode: "raw",
-                load: function (loadOptions) {
-                    return $.getJSON($("#app").data("url") + 'ProcesosJudiciales/api/ProcesosJudicialesApi/GetJuzgados');
-                }
-            })
-        }),
-        placeholder: '[Juzgado]',
-        value: null,
-        disabled: !canEdit,
-        displayExpr: "valor",
-        valueExpr: "id",
-        searchEnabled: true,
-        onOpened: function (e) {
-            e.component._popup.option('width', 500);
-        }
-    }).dxSelectBox("instance");
-
+    
     var fechaJuzgadoActuacion = $('#fechaJuzgadoActuacion').dxDateBox({
         placeholder: '[F.Juzgado]',
         disabled: !canEdit,
@@ -1170,7 +1126,7 @@ jQuery(function () {
             onClick: function (params) {
 
                 var _tipoActuacionId = cboTipoActuacion.option("value");
-                var _juzgadoActuacionId = cboJuzgadoActuacion.option("value");
+                var _juzgadoActuacionId = cboCategoriaJuzgado.option("value");
                 var _fechaJuzgadoActuacion = fechaJuzgadoActuacion.option("value");
                 var _codigoLitigio = codigoLitigio.option("value");
                 var _fechaActuacion = fechaActuacion.option("value");
@@ -2402,7 +2358,6 @@ jQuery(function () {
                                         if (data !== null) {
 
                                             cboTipoActuacion.option("value", data.tipoActuacionId);
-                                            cboJuzgadoActuacion.option("value", data.codigoJuzgado);
                                             fechaJuzgadoActuacion.option("value", data.fechaFactJuzgado);
                                             codigoLitigio.option("value" ,'');
                                             fechaActuacion.option("value", data.fechaActuacion);
@@ -2557,7 +2512,6 @@ jQuery(function () {
 
             onClick: function (params) {
                 cboTipoActuacion.reset();
-                cboJuzgadoActuacion.reset();
                 fechaJuzgadoActuacion.reset(); 
                 codigoLitigio.reset();
                 fechaActuacion.reset();
@@ -2712,7 +2666,7 @@ jQuery(function () {
 
                 if (tabId <= 0) {
                 
-                    if (_asunto === null || _asunto.length === 0) {
+                    if ((_asunto === null || _asunto.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Ingrese la información relacionada con el asunto!", "warning", 2500);
                         return;
@@ -2724,43 +2678,43 @@ jQuery(function () {
                         return;
                     }
     
-                    if (_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) {
+                    if ((_fundamentoJuridicoConvocante === null || _fundamentoJuridicoConvocante.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Ingrese el fundamento jurídico del convocante!", "warning", 2500);
                         return;
                     }
 
-                    if (_fundamentoDefensa === null || _fundamentoDefensa.length === 0) {
+                    if ((_fundamentoDefensa === null || _fundamentoDefensa.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Ingrese los fundamentos de la defensa y excepciones!", "warning", 2500);
                         return;
                     }
 
-                    if (_pretenciones === null || _pretenciones.length === 0) {
+                    if ((_pretenciones === null || _pretenciones.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Ingrese el resumen de las pretensiones!", "warning", 2500);
                         return;
                     }
 
-                    if (_valorCuantia === null || _valorCuantia.length === 0) {
+                    if ((_valorCuantia === null || _valorCuantia.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Ingrese el valor de la cuantía de las pretensiones!", "warning", 2500);
                         return;
                     }
 
-                    if (_riesgoProcesal === null || _riesgoProcesal.length === 0) {
+                    if ((_riesgoProcesal === null || _riesgoProcesal.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Describa el riesgo procesal!", "warning", 2500);
                         return;
                     }
 
-                    if (_politicaInstitucional === null || _politicaInstitucional.length === 0) {
+                    if ((_politicaInstitucional === null || _politicaInstitucional.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Describa la política institucional!", "warning", 2500);
                         return;
                     }
 
-                    if (_recomendacionesAbogado === null || _recomendacionesAbogado.length === 0) {
+                    if ((_recomendacionesAbogado === null || _recomendacionesAbogado.length === 0) && idProcesoActual > 0) {
                         loadPanel.hide();
                         DevExpress.ui.notify("Ingrese las recomendaciones del abogado!", "warning", 2500);
                         return;
@@ -2849,7 +2803,7 @@ jQuery(function () {
             }
         },
         placeholder: '[Apoderado]',
-        disabled: false,
+        disabled: !isAdministrator,
         displayExpr: "nombre",
         valueExpr: "apoderadoId",
     }).dxSelectBox("instance");
@@ -2915,7 +2869,7 @@ var grdProcesosJudicialesDataSource = new DevExpress.data.CustomStore({
                 params[i] = JSON.stringify(loadOptions[i]);
             }
         });
-        $.getJSON($('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ConsultaProcesosJudiciales', params)
+        $.getJSON($('#app').data('url') + 'ProcesosJudiciales/api/ProcesosJudicialesApi/ConsultaProcesosJudiciales?isAdmin=' + isAdministrator, params)
             .done(function (response) {
                 d.resolve(response.data, {
                     totalCount: response.totalCount
