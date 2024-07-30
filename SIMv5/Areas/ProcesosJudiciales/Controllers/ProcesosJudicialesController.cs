@@ -23,7 +23,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
         /// </summary>
         public ProcesosJudicialesController()
         {
-            _rutaPlantillas =  SIM.Utilidades.Data.ObtenerValorParametro("UrlObtenerPlantillaLocal").ToString();
+            _rutaPlantillas =  SIM.Utilidades.Data.ObtenerValorParametro("UrlObtenerPlantilla").ToString();
             _rutaBase = SIM.Utilidades.Data.ObtenerValorParametro("Temporales").ToString();
         }
 
