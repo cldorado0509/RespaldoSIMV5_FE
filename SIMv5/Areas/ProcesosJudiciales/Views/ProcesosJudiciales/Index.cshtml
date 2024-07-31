@@ -137,7 +137,7 @@
     <div class="panelSIM-heading" style="padding: 10px; display: block" id="listaProcesos">
         <div class="panelSIM-title">
             <label class="header" style="padding: 5px">PROCESOS JUDICIALES</label>
-            @if (Model.IsAdministrator)
+            @if (Model.IsAdministrator  && Model.CanInsert)
             {
                 <div id="agregarProcesoJudicial"></div>
             }
@@ -145,7 +145,7 @@
         <div id="pnlListaProcesosJudiciales">
             <div class="row" style="width: 100%; height:5%">
                 <div class="col-md-7"></div>
-                @if (Model.IsAdministrator)
+                @if (Model.IsAdministrator  && Model.CanInsert)
                 {
                     <div class="col-md-5"><div id="agregarProcesoJudicial"></div></div>
                 }
