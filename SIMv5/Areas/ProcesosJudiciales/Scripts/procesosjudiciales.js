@@ -187,6 +187,9 @@ jQuery(function () {
                                             $("#grdDemandados").dxDataGrid({ dataSource: grdDemandadosDataSource });
                                             $("#grdConvocantes").dxDataGrid({ dataSource: grdConvocantesDataSource });
                                             $("#grdConvocados").dxDataGrid({ dataSource: grdConvocadosDataSource });
+
+                                            $('#abrirFichaPejudicial').dxButton("instance").option("disabled", false);
+
                                         
                                             var procuraduriaId = data.procuraduriasId;
                                             procuraduria.option("value", procuraduriaId);
@@ -1760,6 +1763,8 @@ jQuery(function () {
                 fechaAdmision.reset();
                 fechaNotificacionJ.reset();
                 descripcionHechos.reset();
+
+                $('#abrirFichaPejudicial').dxButton("instance").option("disabled", true);
 
                 grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                 grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });

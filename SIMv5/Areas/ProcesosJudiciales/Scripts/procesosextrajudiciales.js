@@ -133,6 +133,9 @@ jQuery(function () {
                                         Id: idProcesoActual
                                     }).done(function (data) {
                                         if (data !== null) {
+
+                                            $('#abrirFichaPejudicial').dxButton("instance").option("disabled", false);
+
                                             grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                                             grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
                                      
@@ -487,7 +490,6 @@ jQuery(function () {
         valueExpr: "procuraduriaId",
         searchEnabled: true
     }).dxSelectBox("instance");
-
    
     $('#unidadMonetaria').dxSelectBox({
         dataSource: new DevExpress.data.DataSource({
@@ -507,7 +509,6 @@ jQuery(function () {
         searchEnabled: true
     });
     
-    
     var asunto = $("#asunto").dxTextArea({
         value: "",
         readOnly: false,
@@ -520,7 +521,6 @@ jQuery(function () {
             }
         }
     }).dxTextArea("instance");
-
       
     var sesionNro = $('#sesionNro').dxNumberBox({
         placeholder: '[Número de la Sesión]',
@@ -570,7 +570,6 @@ jQuery(function () {
             }
         }
     }).dxTextArea("instance");
-       
 
     var recomencionAbogado = $("#recomencionAbogado").dxTextArea({
         value: "",
@@ -718,85 +717,10 @@ jQuery(function () {
                 style: "float:left;"
             },
             onClick: function (params) {
-                var datos = '';
                 var readOnly = "true";
-                const _asunto = asunto.option("value");
-                const _despacho = procuraduria.option("text");
                 const _radicado = radicado.option("value");
-                const _instancia = 'EXTRAJUDICIAL';
-                const _fechaAudiencia = fechaAudiencia.option("value");
-                const _cuantia = cuantiaPretenciones.option("value");
-                const _politicaInstitucional = politicasAplicables.option("value");
-                var _llamaGarantia = optLlamaGerantia.option("value");
-                const _apoderado = apoderado.option("text").replace('&', ' ');
-                const _medioControl = medioControl.option("text");
-                const _riesgoProcesal = riesgo.option("text").replace('&', ' ');;
-                const _pretensiones = pretensiones.option("text").replace('&', ' ');;
-                var _caducidad = caducidad.option("value");
-
                 const _fechaComite = new Date(fechaComiteConciliacion.option("value"));
                 const _fechaDada = new Date(Date.now());
-
-                var _fechaRadicadov = fechaRadicado.option("value");
-                var _hechos = hechos.option("value");
-                var _recomendacionesAbogado = recomencionAbogado.option("value").replace('&', ' ');;
-                var _fundamentoJuridicoConvocante = fundamentoJuridicoConvocante.option("value").replace('&', ' ');;
-                var _fundamentoDefensa = fundamentoDefensa.option("value").replace('&', ' ');;
-                var _fechaNotificacion = fechaNotificacion.option("value");
-                var _decisionComite = decisionComite.option("value");
-                var _hayAcuerdo = huboAcuerdoConciliatorio.option("value");
-                var _decisionAudiencia = decisionAudiencia.option("value");
-
-
-                if (_fechaRadicadov === null) {
-                    DevExpress.ui.notify("Debe indicar la fecha del radicado de la solicitud!", "warning", 2500);
-                    return;
-                }
-
-                if (_fechaNotificacion === null) {
-                    DevExpress.ui.notify("Debe indicar la fecha de notificación a la citación de la audiencia!", "warning", 2500);
-                    return;
-                }
-
-                if (_fechaAudiencia === null) {
-                    DevExpress.ui.notify("Debe indicar la fecha de la audicencia!", "warning", 2500);
-                    return;
-                }
-
-                var arraydata = grdConvocantesDataSource._array;
-                var demandantesArray = "";
-
-                if (_llamaGarantia === 1) {
-                    _llamaGarantia = "SI"
-                } else {
-                    _llamaGarantia = "NO"
-                }
-
-                if (_caducidad === 1) {
-                    _caducidad = "SI"
-                } else {
-                    _caducidad = "NO"
-                }
-
-                for (i = 0; i < arraydata.length; i++) {
-                    demandantesArray = demandantesArray + arraydata[i].nombre + ","
-                }
-
-                var arraydatad = grdConvocadosDataSource._array;
-                var demandadosArray = "";
-
-                for (i = 0; i < arraydatad.length; i++) {
-                    demandadosArray = demandadosArray + arraydatad[i].nombre + ","
-                }
-
-                if (demandantesArray.length > 0) {
-                    demandantesArray = demandantesArray.trim().substring(0, demandantesArray.length - 2);
-                }
-
-                if (demandadosArray.length > 0) {
-                    demandadosArray = demandadosArray.trim().substring(0, demandadosArray.length - 2);
-                }
-
                 if (_fechaComite >= _fechaDada) {
                     readOnly = "false";
                 } else {
@@ -805,17 +729,15 @@ jQuery(function () {
 
                 var token = $('#app').data('token');
                 var rutaTemplates = $('#app').data('rutaplantilla');
-
-           
+          
                 var json = '{ "bytes":null, "name":"Ficha Técnica", "idPlantilla":21,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
-                var etiquetas = '[{"label":"[Cuantía]","value":"' + _cuantia + '"},{"label":"[Asunto]","value":"' + _asunto + '"},{"label":"[Caducidad]","value":"' + _caducidad + '"},{"label":"[Radicado]","value":"' + _radicado + ' - ' + _fechaRadicadov.toLocaleString() + '"},{"label":"[MedioControl]","value":"' + _medioControl + '"},{"label":"[Instancia]","value":"' + _instancia + '"},{"label":"[Convocante]","value":"' + demandantesArray + '"},{"label":"[Convocado]","value":"' + demandadosArray + '"},{"label":"[Apoderado]","value":"' + _apoderado + '"},{"label":"[Hechos]","value":"' + _hechos + '"},{"label":"[FundamentoJuricoConvocante]","value":"' + _fundamentoJuridicoConvocante + '"},{"label":"[FundamentoDefensa]","value":"' + _fundamentoDefensa + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacionesAbogado + '"},{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[FechaAudiencia]","value":"' + _fechaAudiencia.toLocaleString() + '"},{"label":"[LlamaEnGarantia]","value":"' + _llamaGarantia + '"},{"label":"[PoliticaInstitucional]","value":"' + _politicaInstitucional + '"},{"label":"[Pretensiones]","value":"' + _pretensiones + '"},{"label":"[RiesgoProcesal]","value":"' + _riesgoProcesal + '"},{"label":"[FechaNotificacion]","value":"' + _fechaNotificacion.toLocaleString() + '"}]}';
+                var etiquetas = '[{"label":"[Cuantía]"},{"label":"[Asunto]"},{"label":"[Caducidad]"},{"label":"[Radicado]"},{"label":"[MedioControl]"},{"label":"[Instancia]"},{"label":"[Convocante]"},{"label":"[Convocado]"},{"label":"[Apoderado]"},{"label":"[Hechos]"},{"label":"[FundamentoJuricoConvocante]"},{"label":"[FundamentoDefensa]"},{"label":"[RecomendacionAbogado]"},{"label":"[Despacho]"},{"label":"[FechaAudiencia]"},{"label":"[LlamaEnGarantia]"},{"label":"[PoliticaInstitucional]"},{"label":"[Pretensiones]"},{"label":"[RiesgoProcesal]"},{"label":"[FechaNotificacion]"}]}';
+                
                 var url = rutaTemplates + token + "&readOnly=" + readOnly + "&documentoJS=" + json + etiquetas;
-              
+                            
                 //Open window
                 window.open(url);
-           
-                
             }
         });
 
@@ -919,6 +841,8 @@ jQuery(function () {
                 cuantiaPretenciones.reset();
                 riesgo.reset();
                 politicasAplicables.reset();
+
+                $('#abrirFichaPejudicial').dxButton("instance").option("disabled", true);
       
                 grdConvocantesDataSource = new DevExpress.data.ArrayStore({ store: [] });
                 grdConvocadosDataSource = new DevExpress.data.ArrayStore({ store: [] });
@@ -1037,25 +961,19 @@ jQuery(function () {
                 const _fechaAudiencia = new Date(fechaAudiencia.option("value"));
                 const _fechaComite = new Date(fechaComiteConciliacion.option("value"));
                 const _fechaDada = new Date(Date.now());
-                const _despacho = procuraduria.option("text");
-                const _etapa = "ExtraJudicial";
                 const _radicado = radicado.option("value");
-                const _convocante = demandantesArray;
-                const _convocado = demandadosArray;
                 const _diaDada = _fechaDada.getDate();
                 const _mesDada = _fechaDada.getMonth();
                 const _anioDada = _fechaDada.getFullYear();
                 const _funcionario = $('#app').data('funcionario');
-                const _cargo = "SECRETARIO TÉCNICO COMITÉ DE CONCILIACIÓN";
                 const _nroSesion = sesionNro.option("value");
                 const _diaSesion = _fechaAudiencia.getDate();
                 const _mesSesion = _fechaAudiencia.getMonth();
                 const _anioSesion = _fechaAudiencia.getFullYear();
-                const _recomendacion = recomencionAbogado.option("value");
-
+          
                 var json = '{ "bytes":null, "name":"Certificado", "idPlantilla":22,"radicado":"' + _radicado + '","idProceso":' + idProcesoActual + ',"etiquetas":';
 
-                var etiquetas = '[{"label":"[Despacho]","value":"' + _despacho + '"},{"label":"[Etapa]","value":"' + _etapa + '"},{"label":"[Radicado]","value":"' + _radicado + '"},{"label":"[Convocante]","value":"' + _convocante + '"},{"label":"[Convocado]","value":"' + _convocado + '"},{"label":"[DiaDada]","value":"' + _diaDada + '"},{"label":"[MesDada]","value":"' + _mesDada + '"},{"label":"[AñoDada]","value":"' + _anioDada + '"},{"label":"[Funcionario]","value":"' + _funcionario + '"},{"label":"[Cargo]","value":"' + _cargo + '"},{"label":"[NroSesion]","value":"' + _nroSesion + '"},{"label":"[DiaSesion]","value":"' + _diaSesion + '"},{"label":"[MesSesion]","value":"' + _mesSesion + '"},{"label":"[AñoSesion]","value":"' + _anioSesion + '"},{"label":"[RecomendacionAbogado]","value":"' + _recomendacion + '"}]}';
+                var etiquetas = '[{"label":"[Despacho]"},{"label":"[Etapa]"},{"label":"[Radicado]"},{"label":"[Convocante]"},{"label":"[Convocado]"},{"label":"[DiaDada]","value":"' + _diaDada + '"},{"label":"[MesDada]","value":"' + _mesDada + '"},{"label":"[AñoDada]","value":"' + _anioDada + '"},{"label":"[Funcionario]","value":"' + _funcionario + '"},{"label":"[Cargo]"},{"label":"[NroSesion]","value":"' + _nroSesion + '"},{"label":"[DiaSesion]","value":"' + _diaSesion + '"},{"label":"[MesSesion]","value":"' + _mesSesion + '"},{"label":"[AñoSesion]","value":"' + _anioSesion + '"},{"label":"[RecomendacionAbogado]"}]}';
 
                 if (_fechaComite >= _fechaDada) {
                     readOnly = "false";
