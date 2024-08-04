@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Certificados Contractuales";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/Contractual/Scripts/Certificados.js?V=" + DateTime.Now.ToString("yyyyddMMHHmmsss"))"></script>
+<style>
+    #BotonCert {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+</style>
+<div data-url="@Url.Content("~")" ID="SIM" resizable>
+    <div class="panelSIM panelSIM-default">
+        <div class="panelSIM-heading">
+            <h3 class="panelSIM-title">
+                <label class="header">Generar certificados contractuales</label>
+            </h3>
+        </div>
+        <div id="loadPanel"></div>
+        <div id="divEncabezado" class="divEncabezado">
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="txtDocumento">Documento : </label>
+                    <div class="col-md-3" id="txtDocumento"></div>
+                    <div id="lblTercero" class="control-label col-md-7" style="vertical-align:middle;font-weight:bold"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="">Con actividades? : </label>
+                    <div id="chkActividades" class="col-md-1"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="">* Correo electrónico : </label>
+                    <div id="txtMailTercero" class="col-md-5"></div>
+                </div>
+            </div>
+            <div class="row">
+                <h5 class="text-center">El Certificado generado contiene los contratos a partir de la vigencia 2010. Si desea información adicional puede solicitarla al correo <a href="mailto:atencionausuario@metropol.gov.co">atencionausuario@metropol.gov.co</a></h5>
+            </div>
+        </div>
+        <div id="grdListaContratos"></div>
+        <br />
+        <div id="BotonCert">
+            <div id="btnGenerar"></div>
+        </div>
+        <br />
+    </div>
+</div>

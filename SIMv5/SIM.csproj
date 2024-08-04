@@ -562,6 +562,16 @@
     <Compile Include="Areas\CAV\Models\TipoEdadDTO.cs" />
     <Compile Include="Areas\CAV\Models\TipoEstadoIndividuoDTO.cs" />
     <Compile Include="Areas\Comercial\ComercialAreaRegistration.cs" />
+    <Compile Include="Areas\Contractual\ContractualAreaRegistration.cs" />
+    <Compile Include="Areas\Contractual\Controllers\CertificadosApiController.cs" />
+    <Compile Include="Areas\Contractual\Controllers\CertificadosController.cs" />
+    <Compile Include="Areas\Contractual\Controllers\FirmarCertificadoApiController.cs" />
+    <Compile Include="Areas\Contractual\Controllers\FirmarCertificadoController.cs" />
+    <Compile Include="Areas\Contractual\DTO\CertificadoDTO.cs" />
+    <Compile Include="Areas\Contractual\DTO\CertificadosDTO.cs" />
+    <Compile Include="Areas\Contractual\DTO\ContratosTerceroDTO.cs" />
+    <Compile Include="Areas\Contractual\DTO\RequestCertificadoDTO.cs" />
+    <Compile Include="Areas\Contractual\DTO\RespuestaFirmaDTO.cs" />
     <Compile Include="Areas\Contratos\ContratosAreaRegistration.cs" />
     <Compile Include="Areas\Contratos\Controllers\ProcesosController.cs" />
     <Compile Include="Areas\Contratos\Controllers\PropuestaApiController.cs" />
@@ -2528,6 +2538,8 @@
     <Content Include="Areas\Capacitacion\Scripts\Capacitaciones.js" />
     <Content Include="Areas\CAV\Scripts\registro.js" />
     <Content Include="Areas\CAV\Scripts\tipoAdquisicion.js" />
+    <Content Include="Areas\Contractual\Scripts\Certificados.js" />
+    <Content Include="Areas\Contractual\Scripts\FirmarCertificados.js" />
     <Content Include="Areas\Contratos\Scripts\Procesos.js" />
     <Content Include="Areas\Contratos\Scripts\Propuestas.js" />
     <Content Include="Areas\ControlVigilancia\Scripts\DerechosPeticion.js" />
@@ -3332,6 +3344,9 @@
     <Content Include="Areas\CAV\Views\web.config" />
     <Content Include="Areas\CAV\Views\_ViewStart.cshtml" />
     <Content Include="Areas\ProcesosJudiciales\Views\ProcesosJudiciales\Extrajudiciales.cshtml" />
+    <Content Include="Areas\Contractual\Views\Certificados\Index.cshtml" />
+    <Content Include="Areas\Contractual\Views\FirmarCertificado\Index.cshtml" />
+    <Content Include="Areas\Contractual\Views\web.config" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -4465,6 +4480,7 @@
     <Folder Include="Areas\CAV\Data\" />
     <Folder Include="Areas\Comercial\Controllers\" />
     <Folder Include="Areas\Comercial\Models\" />
+    <Folder Include="Areas\Contractual\Views\Shared\" />
     <Folder Include="Areas\Contratos\Models\" />
     <Folder Include="Areas\Contratos\Views\Shared\" />
     <Folder Include="Areas\Correspondencia\Models\" />
