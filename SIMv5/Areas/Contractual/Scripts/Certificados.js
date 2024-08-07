@@ -26,9 +26,6 @@ $(document).ready(function () {
                         Tercero = data.idTercero
                         $("#grdListaContratos").dxDataGrid("instance").option("visible", true);
                         $("#grdListaContratos").dxDataGrid("instance").refresh();
-                        if ($("#grdListaContratos").dxDataGrid("instance").getVisibleRows() > 0) $("#btnGenerar").dxButton("instance").option("visible", true);
-                        else $("#btnGenerar").dxButton("instance").option("visible", false);
-                        $("#btnGenerar").dxButton("instance").option("visible", true);
                         $("#loadPanel").dxLoadPanel('instance').hide();
                     }
                 }).fail(function (jqxhr, textStatus, error) {
@@ -106,9 +103,53 @@ $(document).ready(function () {
             { dataField: 'FECHA', width: '13%', caption: 'Fecha', dataType: 'date', format: 'dd MMM yyyy' },
             { dataField: 'ANIO', width: '5%', caption: 'Año', dataType: 'number' },
             { dataField: 'NUMERO', width: '5%', caption: 'Numero', dataType: 'number' },
-            { dataField: 'VALOR', width: '12%', caption: 'Valor', dataType: 'number', format: { type: 'currency', precision: 0 }},
+            { dataField: 'VALOR', width: '12%', caption: 'Valor', dataType: 'number', format: { type: 'currency', precision: 0 } },
             { dataField: 'PLAZO', width: '35%', caption: 'Plazo', dataType: 'string' }
-        ]
+        ],
+        onContentReady(e) {
+            const totalCount = e.component.totalCount();
+            if (totalCount > 0) {
+                $("#btnGenerar").dxButton("instance").option("visible", true);
+                $("#btnPrevisualiza").dxButton("instance").option("visible", true);
+            }
+            else {
+                $("#btnGenerar").dxButton("instance").option("visible", false);
+                $("#btnPrevisualiza").dxButton("instance").option("visible", false);
+            }
+
+        }
+    });
+
+    $("#btnPrevisualiza").dxButton({
+        icon: 'export',
+        type: 'success',
+        text: 'Previsualiza Cetificado',
+        visible: false,
+        onClick: function (e) {
+            $("#loadPanel").dxLoadPanel('instance').show();
+            var ConAct = $("#chkActividades").dxCheckBox("instance").option("value");
+            var _Ruta = $('#SIM').data('url') + "Contractual/api/CertificadosApi/PrevisualizaCetificado";
+            var params = { IdTer: Tercero, Mail: "", Actividades: ConAct };
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                beforeSend: function () { },
+                success: function (data) {
+                    if (!data.isSucceded) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Generar Certificado');
+                    else {
+                        var pdfWindow = window.open("");
+                        pdfWindow.document.write("'<html><head><title>Certificado Contractual</title></head><body height='100%' width='100%'><iframe width='100%' height='100%' src='data:application/pdf;base64," + data.Certificado + "'></iframe></body></html>");
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Generar Certificado');
+                }
+            });
+            $("#loadPanel").dxLoadPanel('instance').hide();
+        }
     });
 
     $("#btnGenerar").dxButton({
