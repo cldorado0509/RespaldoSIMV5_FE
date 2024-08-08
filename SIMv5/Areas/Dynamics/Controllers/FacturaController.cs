@@ -200,6 +200,9 @@ namespace SIM.Areas.Dynamics.Controllers
                         Pagina.Canvas.DrawText(header.Factura.Trim(), _Arial, null, brush, 490, 2370); //Variable
                         if (header.Banco != "") Pagina.Canvas.DrawText(header.Banco.Trim().ToUpper(), _Arial, null, brush, 1800, 2370); //Variable
                         Pagina.Canvas.DrawText(header.Cuenta.Trim(), _Arial, null, brush, 1800, 2430); //Variable
+                        Pagina.Canvas.DrawText(header.Cuenta.Trim(), _Arial, null, brush, 1800, 2430); //Variable
+                        double LongText = _Arial.MeasureString(header.Cuenta.Trim()) + 5;
+                        if (header.Cuenta == "299009738") Pagina.Canvas.DrawText("(Convenio 39676)", _Arial, null, brush, 1800 + LongText, 2430); //Variable
                         Pagina.Canvas.DrawText(DateTime.Now.AddMonths(1).ToString("yyyy/MM/dd"), _Arial, null, brush, 490, 2490); //Variable
                         if (header.ValorFactura > 0) Pagina.Canvas.DrawText(header.ValorFactura.Value.ToString("C0", CultureInfo.GetCultureInfo("es-CO")), _Arial, null, brush, 490, 2550); //Variable
                         else Pagina.Canvas.DrawText("(" + (header.ValorFactura * -1).Value.ToString("C0", CultureInfo.GetCultureInfo("es-CO")) + ")", _Arial, null, brush, 490, 2550); //Variable
