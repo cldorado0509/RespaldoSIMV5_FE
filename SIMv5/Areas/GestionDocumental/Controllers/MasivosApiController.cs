@@ -331,7 +331,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         var Campo = fila[reemp.CampoReemplazo].ToString();
                                         foreach (var dato in reemp.ListReemplazo)
                                         {
-                                            pDFTextRun = dato.TextRuns[1];
+                                            if (dato.TextRuns.Count > 1) pDFTextRun = dato.TextRuns[1];
+                                            else pDFTextRun = dato.TextRuns[0];
                                             if (pDFTextRun != null)
                                             {
                                                 Font _fnt = new Font(pDFTextRun.FontName, (float)pDFTextRun.FontSize);
@@ -1335,11 +1336,11 @@ namespace SIM.Areas.GestionDocumental.Controllers
             string _RutaPdf = ObtienePlatillaPdf(Identificador);
             PDFFile _docPdf = PDFFile.FromFile(_RutaPdf);
             PDFImportedPage ip = null;
-            for (var i = 0; i < _docPdf.PagesCount; i++)
+            foreach (DataColumn col in Columns)
             {
-                ip = _docPdf.ExtractPage(i);
-                foreach (DataColumn col in Columns)
+                for (var i = 0; i < _docPdf.PagesCount; i++)
                 {
+                    ip = _docPdf.ExtractPage(i);
                     PDFSearchTextResultCollection _result = ip.SearchText("[" + col.ColumnName + "]");
                     if (_result != null && _result.Count > 0)
                     {
@@ -1352,6 +1353,10 @@ namespace SIM.Areas.GestionDocumental.Controllers
                         _resp.Add(encontrado);
                     }
                 }
+            }
+            for (var i = 0; i < _docPdf.PagesCount; i++)
+            {
+                ip = _docPdf.ExtractPage(i);
                 for (int j = 1; j <= Firmas; j++)
                 {
                     PDFSearchTextResultCollection _result = ip.SearchText("[Firma" + j + "]");
