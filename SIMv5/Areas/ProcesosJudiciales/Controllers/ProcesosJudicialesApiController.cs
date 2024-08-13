@@ -1006,7 +1006,7 @@ namespace SIM.Areas.ProcesosJudiciales.Controllers
                         list.Add(new ListadoDTO { Id = "07", Valor = "JUZGADO REGIONAL ORDEN PUBLICO" });
                         break;
                     case "33":
-                        list.Add(new ListadoDTO { Id = "31", Valor = "JUZGADO ADMINISTRATIVO ADMINISTRATIVA" });
+                        list.Add(new ListadoDTO { Id = "33", Valor = "JUZGADO ADMINISTRATIVO ADMINISTRATIVA" });
                         break;
                     case "40":
                         list.Add(new ListadoDTO { Id = "03", Valor = "JUZGADO MUNICIPAL CIVIL" });
