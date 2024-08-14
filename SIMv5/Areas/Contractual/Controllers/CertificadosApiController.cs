@@ -19,7 +19,7 @@ namespace SIM.Areas.Contractual.Controllers
     [Route("api/[controller]", Name = "CertificadosApi")]
     public class CertificadosApiController : ApiController
     {
-        string urlApiContractual = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioContractual").ToString();
+        string urlApiContractual = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioContractualLocal").ToString();
 
 
         /// <summary>
@@ -133,7 +133,52 @@ namespace SIM.Areas.Contractual.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datos"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("CetificadoWord")]
+        public async Task<CertificadoDTO> PostCetificadoWord(RequestCertificadoDTO datos)
+        {
+            ApiService apiService = new ApiService();
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var _claim = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
+                    string token = _claim.Value;
+                    _claim = (User.Identity as ClaimsIdentity).Claims.Where(w => w.Type.EndsWith("nameidentifier")).FirstOrDefault();
+                    var usuario = _claim.Value;
+                    datos.UsuarioGenera = int.Parse(usuario);
+                    string _controller = $"Certificados/CertificadoWord";
+                    SIM.Models.Response response = await apiService.PostAsync<RequestCertificadoDTO>(urlApiContractual, "api/", _controller, datos, token);
+                    if (!response.IsSuccess) return null;
+                    var OpResp = (OperationResponse)response.Result;
+                    var certificado = JsonConvert.DeserializeObject<CertificadoDTO>(OpResp.Result.ToString());
+                    return certificado;
 
+                }
+                catch (Exception ex)
+                {
+                    return new CertificadoDTO()
+                    {
+                        isSucceded = false,
+                        Message = ex.Message
+                    };
+                }
+
+            }
+            else
+            {
+                return new CertificadoDTO()
+                {
+                    isSucceded = false,
+                    Message = "No se enviaron todos los datos para la generacion del certificado!!"
+                };
+            }
+        }
 
         /// <summary>
         /// 

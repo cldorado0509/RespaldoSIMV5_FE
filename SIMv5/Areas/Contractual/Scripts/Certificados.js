@@ -20,10 +20,15 @@ $(document).ready(function () {
                     if (!data.existe) {
                         $("#loadPanel").dxLoadPanel("instance").hide();
                         $("#lblTercero").text(_text + " no existe en la base de datos de terceros, favor ingrese uno diferente!");
-                        e.component.option("value", "");
+                        Tercero = -1;
+                        $("#grdListaContratos").dxDataGrid("instance").refresh();
+                        $("#grdListaContratos").dxDataGrid("instance").option("visible", false);
+                        $("#btnGenerar").dxButton("instance").option("visible", false);
+                        $("#btnPrevisualiza").dxButton("instance").option("visible", false);
+                        $("#btnGeneraDoc").dxButton("instance").option("visible", false);
                     } else {
                         $("#lblTercero").text(data.nombre);
-                        Tercero = data.idTercero
+                        Tercero = data.idTercero;
                         $("#grdListaContratos").dxDataGrid("instance").option("visible", true);
                         $("#grdListaContratos").dxDataGrid("instance").refresh();
                         $("#loadPanel").dxLoadPanel('instance').hide();
@@ -111,10 +116,12 @@ $(document).ready(function () {
             if (totalCount > 0) {
                 $("#btnGenerar").dxButton("instance").option("visible", true);
                 $("#btnPrevisualiza").dxButton("instance").option("visible", true);
+                $("#btnGeneraDoc").dxButton("instance").option("visible", true);
             }
             else {
                 $("#btnGenerar").dxButton("instance").option("visible", false);
                 $("#btnPrevisualiza").dxButton("instance").option("visible", false);
+                $("#btnGeneraDoc").dxButton("instance").option("visible", false);
             }
 
         }
@@ -142,6 +149,42 @@ $(document).ready(function () {
                     else {
                         var pdfWindow = window.open("");
                         pdfWindow.document.write("'<html><head><title>Certificado Contractual</title></head><body height='100%' width='100%'><iframe width='100%' height='100%' src='data:application/pdf;base64," + data.Certificado + "'></iframe></body></html>");
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    DevExpress.ui.dialog.alert('Ocurrió un problema : ' + textStatus + ' ' + errorThrown + ' ' + xhr.responseText, 'Generar Certificado');
+                }
+            });
+            $("#loadPanel").dxLoadPanel('instance').hide();
+        }
+    });
+
+    $("#btnGeneraDoc").dxButton({
+        icon: 'doc',
+        type: 'success',
+        text: 'Generar Documento',
+        visible: false,
+        onClick: function (e) {
+            $("#loadPanel").dxLoadPanel('instance').show();
+            var ConAct = $("#chkActividades").dxCheckBox("instance").option("value");
+            var _Ruta = $('#SIM').data('url') + "Contractual/api/CertificadosApi/CetificadoWord";
+            var params = { IdTer: Tercero, Mail: "", Actividades: ConAct };
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: _Ruta,
+                data: JSON.stringify(params),
+                contentType: "application/json",
+                beforeSend: function () { },
+                success: function (data) {
+                    if (!data.isSucceded) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Generar Certificado');
+                    else {
+                        let element = document.createElement('a');
+                        element.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,' + data.Certificado);
+                        element.setAttribute('download', 'Certificado.docx');
+                        document.body.appendChild(element);
+                        element.click();
+                        document.body.removeChild(element);
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
