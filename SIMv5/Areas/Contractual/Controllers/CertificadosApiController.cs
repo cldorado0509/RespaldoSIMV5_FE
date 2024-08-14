@@ -19,7 +19,7 @@ namespace SIM.Areas.Contractual.Controllers
     [Route("api/[controller]", Name = "CertificadosApi")]
     public class CertificadosApiController : ApiController
     {
-        string urlApiContractual = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioContractual").ToString();
+        string urlApiContractual = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioContractualLocal").ToString();
 
 
         /// <summary>
@@ -133,6 +133,11 @@ namespace SIM.Areas.Contractual.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datos"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("CetificadoWord")]
         public async Task<CertificadoDTO> PostCetificadoWord(RequestCertificadoDTO datos)
         {

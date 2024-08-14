@@ -179,8 +179,12 @@ $(document).ready(function () {
                 success: function (data) {
                     if (!data.isSucceded) DevExpress.ui.dialog.alert('Ocurrió un error ' + data.Message, 'Generar Certificado');
                     else {
-                        var pdfWindow = window.open("");
-                        pdfWindow.document.write("'<html><head><title>Certificado Contractual</title></head><body height='100%' width='100%'><iframe width='100%' height='100%' src='data:application/pdf;base64," + data.Certificado + "'></iframe></body></html>");
+                        let element = document.createElement('a');
+                        element.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,' + data.Certificado);
+                        element.setAttribute('download', 'Certificado.docx');
+                        document.body.appendChild(element);
+                        element.click();
+                        document.body.removeChild(element);
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
