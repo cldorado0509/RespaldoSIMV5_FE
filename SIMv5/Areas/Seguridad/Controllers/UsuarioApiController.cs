@@ -53,7 +53,7 @@ namespace SIM.Areas.Seguridad.Controllers
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
         System.Web.HttpContext context = System.Web.HttpContext.Current;
         private string urlApiSeguridad = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioSeguridad").ToString();
-        private string urlApiTerceros = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioTerceros").ToString();
+        private string urlApiTerceros = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioTercerosCA").ToString();
         private string urlApiSecurity = SIM.Utilidades.Data.ObtenerValorParametro("urlApiSecurity").ToString();
 
         // GET api/<controller>
