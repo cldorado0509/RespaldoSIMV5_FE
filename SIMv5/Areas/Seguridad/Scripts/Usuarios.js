@@ -124,6 +124,8 @@ $(document).ready(function () {
                         hint: 'Asociar tercero al usuario',
                         onClick: function (e) {
                             IdUsuario = options.data.ID_USUARIO;
+                            txtDocumento.reset();
+                            txtDocumento.reset();
                             popupTerceros.show();
                         }
                     }).appendTo(container);
