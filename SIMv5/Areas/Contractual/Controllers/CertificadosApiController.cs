@@ -19,7 +19,7 @@ namespace SIM.Areas.Contractual.Controllers
     [Route("api/[controller]", Name = "CertificadosApi")]
     public class CertificadosApiController : ApiController
     {
-        string urlApiContractual = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioContractualLocal").ToString();
+        string urlApiContractual = SIM.Utilidades.Data.ObtenerValorParametro("UrlMicroSitioContractual").ToString();
 
 
         /// <summary>
