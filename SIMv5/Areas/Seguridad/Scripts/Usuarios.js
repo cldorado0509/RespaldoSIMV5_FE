@@ -506,13 +506,12 @@ $(document).ready(function () {
         icon: "pin",
         type: "default",
         width: "190",
-        onClick: function () {
-            
+        onClick: function () {       
             var TerceroSel = $("#grdTerceros").dxDataGrid('instance').getSelectedRowsData();
             if (TerceroSel.length > 0) {
                 IdTercero = TerceroSel[0].idTercero;
                 if (IdUsuario > 0) {
-                    var result = DevExpress.ui.dialog.confirm('Esta seguro de asociar el tercero ' + TerceroSel[0].NomTercero + ' con el usuario seleccionado?', 'Usuarios');
+                    var result = DevExpress.ui.dialog.confirm('Esta seguro de asociar el tercero ' + TerceroSel[0].rSocial + ' con el usuario seleccionado?', 'Usuarios');
                     result.done(function (dialogResult) {
                         if (dialogResult) {
                             var _Ruta = $('#SIM').data('url') + "Seguridad/Api/UsuarioApi/AsociarTercero";
@@ -553,7 +552,7 @@ $(document).ready(function () {
     });
 
     var popupTerceros = $("#popupBuscarTercero").dxPopup({
-        width: 900,
+        width: 950,
         height: 550,
         showTitle: true,
         title: "Buscar Terceros del SIM"
