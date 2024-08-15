@@ -53,7 +53,7 @@ namespace SIM.Areas.Seguridad.Controllers
         EntitiesSIMOracle dbSIM = new EntitiesSIMOracle();
         System.Web.HttpContext context = System.Web.HttpContext.Current;
         private string urlApiSeguridad = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioSeguridad").ToString();
-        private string urlApiTerceros = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioTerceros").ToString();
+        private string urlApiTerceros = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioTercerosCA").ToString();
         private string urlApiSecurity = SIM.Utilidades.Data.ObtenerValorParametro("urlApiSecurity").ToString();
 
         // GET api/<controller>
@@ -296,7 +296,8 @@ namespace SIM.Areas.Seguridad.Controllers
                     response = await apiService.PostMicroServicioAsync<DatosUsuarioDTO>(urlApiSeguridad, "api/", _controller, objData, token);
                     if (!response.IsSuccess) return new { resp = "Error", mensaje = "Error Almacenando el usuario - " + response.Message };
                 }
-                var result = JsonConvert.DeserializeObject<Response>(response.Result.ToString());
+                //var result = JsonConvert.DeserializeObject<Response>(response.Result.ToString());
+                var result = (Response)response.Result;
                 if (result.IsSuccess) return new { resp = "Ok", mensaje = "Datos Almacenados correctamente" };
                 else return new { resp = "Error", mensaje = "Error Almacenando el usuario : " + result.Message };
             }
