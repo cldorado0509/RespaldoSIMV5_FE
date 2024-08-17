@@ -19,7 +19,7 @@ namespace SIM.Areas.Seguridad.Controllers
     /// </summary>
     public class FuncionarioApiController : ApiController
     {
-        private string urlApiSeguridad = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioSeguridadLocal").ToString();
+        private string urlApiSeguridad = SIM.Utilidades.Data.ObtenerValorParametro("URLMicroSitioSeguridad").ToString();
 
         /// <summary>
         /// 
