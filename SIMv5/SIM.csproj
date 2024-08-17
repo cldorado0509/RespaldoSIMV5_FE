@@ -1453,7 +1453,11 @@
     <Compile Include="Areas\Retributivas\Models\modelReports.cs" />
     <Compile Include="Areas\Retributivas\RetributivasAreaRegistration.cs" />
     <Compile Include="Areas\Seguridad\Class\Permisos.cs" />
+    <Compile Include="Areas\Seguridad\Controllers\FuncionarioApiController.cs" />
+    <Compile Include="Areas\Seguridad\Controllers\FuncionarioController.cs" />
+    <Compile Include="Areas\Seguridad\Models\DatosFuncionarioDTO.cs" />
     <Compile Include="Areas\Seguridad\Models\DatosUsuarioDTO.cs" />
+    <Compile Include="Areas\Seguridad\Models\FuncionariosDTO.cs" />
     <Compile Include="Areas\Seguridad\Models\ListadoDTO.cs" />
     <Compile Include="Areas\Seguridad\Models\PermisosRolModel.cs" />
     <Compile Include="Areas\Seguridad\Models\UsuariosDTO.cs" />
@@ -2658,6 +2662,7 @@
     <Content Include="Areas\Retributivas\Scripts\Reportes.js" />
     <Content Include="Areas\Retributivas\Views\Reportes\ComunicacionOficialRecibida.html" />
     <Content Include="Areas\Seguridad\Scripts\activarUsuarios.js" />
+    <Content Include="Areas\Seguridad\Scripts\Funcionarios.js" />
     <Content Include="Areas\Seguridad\Scripts\Usuarios.js" />
     <Content Include="Areas\Tramites\Css\programadoractuaciones.css" />
     <Content Include="Areas\Tramites\Scripts\anulacion.js" />
@@ -3347,6 +3352,7 @@
     <Content Include="Areas\Contractual\Views\Certificados\Index.cshtml" />
     <Content Include="Areas\Contractual\Views\FirmarCertificado\Index.cshtml" />
     <Content Include="Areas\Contractual\Views\web.config" />
+    <Content Include="Areas\Seguridad\Views\Funcionario\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />

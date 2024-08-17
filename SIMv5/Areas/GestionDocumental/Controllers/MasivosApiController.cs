@@ -577,6 +577,8 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                 ip = _docPdf.ExtractPage(i);
                                 _doc.Pages.Add(ip);
                             }
+                            _docPdf.Close();
+                            _docPdf.Dispose();
                             foreach (var reemp in DatosReemplazo)
                             {
                                 _pag = _doc.Pages[reemp.Pagina];
@@ -598,7 +600,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                                         double _PosArr = 0;
                                         if (dato.TextRuns.Count > 1)
                                         {
-                                            _texto = dato.TextRuns[0].Text + pDFTextRun.Text + dato.TextRuns[2].Text;
+                                            _texto = dato.TextRuns[0].Text + pDFTextRun.Text + (dato.TextRuns.Count > 2 ? dato.TextRuns[2].Text : "");
                                             _PosIzq = Math.Round(dato.TextRuns[0].DisplayBounds.Left);
                                             _PosArr = Math.Round(dato.TextRuns[0].DisplayBounds.Top);
                                         }
@@ -1080,6 +1082,22 @@ namespace SIM.Areas.GestionDocumental.Controllers
             if (!ModelState.IsValid) return new { resp = "Error", mensaje = "Faltan datos en la solicitud!" };
             try
             {
+                decimal _FuncionarioRuta = -1;
+                var _FuncionariosRadicanMasivos = SIM.Utilidades.Data.ObtenerValorParametro("FuncionariosRadicanMasivos");
+                if (_FuncionariosRadicanMasivos != "")
+                {
+                    string[] _Funcionarios = _FuncionariosRadicanMasivos.Split(',');
+                    if (_Funcionarios.Count() == 1) _FuncionarioRuta = decimal.Parse(_Funcionarios[0]);
+                    else
+                    {
+                        var guid = Guid.NewGuid();
+                        var justNumbers = new String(guid.ToString().Where(Char.IsDigit).ToArray());
+                        var seed = int.Parse(justNumbers.Substring(0, 4));
+                        var random = new Random(seed);
+                        var value = random.Next(0, _Funcionarios.Count());
+                        _FuncionarioRuta = decimal.Parse(_Funcionarios[value]);
+                    }
+                }
                 if (firma.Firmado)
                 {
                     var RadMasiva = dbSIM.RADMASIVA.Where(w => w.IDSOLICITUD == firma.IdSolicitud).FirstOrDefault();
@@ -1095,7 +1113,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     if (firmas.Count == 0)
                     {
                         RADMASIVARUTA ruta = new RADMASIVARUTA();
-                        ruta.CODFUNCIONARIO = RadMasiva.FUNC_ELABORA;
+                        ruta.CODFUNCIONARIO = _FuncionarioRuta;
                         ruta.ID_RADMASIVO = RadMasiva.ID;
                         ruta.FECHA_RUTA = DateTime.Now;
                         dbSIM.RADMASIVARUTA.Add(ruta);
@@ -1372,7 +1390,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                 for (var i = 0; i < _docPdf.PagesCount; i++)
                 {
                     ip = _docPdf.ExtractPage(i);
-                    PDFSearchTextResultCollection _result = ip.SearchText("[" + col.ColumnName + "]");
+                    PDFSearchTextResultCollection _result = ip.SearchText("[" + col.ColumnName.Trim() + "]");
                     if (_result != null && _result.Count > 0)
                     {
                         var encontrado = new ReemplazoDTO()
@@ -1403,6 +1421,7 @@ namespace SIM.Areas.GestionDocumental.Controllers
                     }
                 }
             }
+            _docPdf.Close();
             _docPdf.Dispose();
             return _resp;
         }

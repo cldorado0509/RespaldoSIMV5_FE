@@ -200,7 +200,7 @@ namespace SIM.Areas.Seguridad.Controllers
         public async Task<LoadResult> GetUsuarios(DataSourceLoadOptions loadOptions)
         {
             ApiService apiService = new ApiService();
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             try
             {
                 var _token = (User.Identity as ClaimsIdentity).Claims.Where(c => c.Type.EndsWith("Token")).FirstOrDefault();
