@@ -48,7 +48,7 @@
                 cellTemplate: function (container, options) {
                     $('<div/>').dxButton({
                         icon: 'user',
-                        hint: 'Ver detalles del usuario',
+                        hint: 'Ver detalles del funcionario',
                         onClick: function (e) {
                             var _Ruta = $('#SIM').data('url') + "Seguridad/api/FuncionarioApi/DetalleFuncionario";
                             $.getJSON(_Ruta, { CodFuncionario: options.data.CODFUNCIONARIO })
@@ -59,6 +59,20 @@
                                 }).fail(function (jqxhr, textStatus, error) {
                                     DevExpress.ui.dialog.alert('Ocurrió un error ' + textStatus + ' ' + error + ' ' + jqxhr.responseText, 'Eliminar proceso');
                                 });
+                        }
+                    }).appendTo(container);
+                }
+            },
+            {
+                alignment: 'center',
+                caption: 'Firma',
+                width: '60',
+                cellTemplate: function (container, options) {
+                    $('<div/>').dxButton({
+                        icon: 'todo',
+                        hint: 'Ver firma del funcionario',
+                        onClick: function (e) {
+                            popupFirmaFunc.show();
                         }
                     }).appendTo(container);
                 }
@@ -116,6 +130,14 @@
         onShown: function () {
             $("#txtRegistro").text(Ingreso);
         }
+    }).dxPopup("instance");
+
+    var popupFirmaFunc = $("#popupFirmaFunc").dxPopup({
+        width: 1100,
+        height: 650,
+        hoverStateEnabled: true,
+        title: "Firmsa del funcionario",
+        dragEnabled: true
     }).dxPopup("instance");
 
     $('#firmaFuncionario').dxFileUploader({
@@ -186,7 +208,7 @@
         dropZoneImage.hidden = !visible;
     }
 
-    document.getElementById('dropzone-image').onload = function () { toggleImageVisible(true); };
+    //document.getElementById('dropzone-image').onload = function () { toggleImageVisible(true); };
 });
 
 var FuncionariosDataSource = new DevExpress.data.CustomStore({
