@@ -1276,6 +1276,21 @@
     <Compile Include="Areas\Facturacion\Models\CalculoSeguimiento.cs" />
     <Compile Include="Areas\Facturacion\Models\DatosCalculo.cs" />
     <Compile Include="Areas\Facturacion\Models\FactCont.cs" />
+    <Compile Include="Areas\REDRIO\Models\Biologico.cs" />
+    <Compile Include="Areas\REDRIO\Models\Fisico.cs" />
+    <Compile Include="Areas\REDRIO\Models\Insitu.cs" />
+    <Compile Include="Areas\REDRIO\Models\MetalAgua.cs" />
+    <Compile Include="Areas\REDRIO\Models\MetalSedimento.cs" />
+    <Compile Include="Areas\REDRIO\Models\Municipio.cs" />
+    <Compile Include="Areas\REDRIO\Models\Campaña.cs" />
+    <Compile Include="Areas\REDRIO\Models\Fase.cs" />
+    <Compile Include="Areas\REDRIO\Models\Estacion.cs" />
+    <Compile Include="Areas\REDRIO\Models\HistorialExcel.cs" />
+    <Compile Include="Areas\REDRIO\Models\MuestraCompuesta.cs" />
+    <Compile Include="Areas\REDRIO\Models\Nutriente.cs" />
+    <Compile Include="Areas\REDRIO\Models\Quimico.cs" />
+    <Compile Include="Areas\REDRIO\Models\ReporteLaboratorio.cs" />
+    <Compile Include="Areas\REDRIO\Models\ResultadoCampo.cs" />
     <Compile Include="Areas\EncuestaExterna\Reporte\EvaluacionEncuestaRespuestas.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1427,6 +1442,16 @@
     <Compile Include="Areas\QuejasAmbientales\Models\UsuarioDTO.cs" />
     <Compile Include="Areas\QuejasAmbientales\Models\VisitaQuejaDTO.cs" />
     <Compile Include="Areas\QuejasAmbientales\QuejasAreaRegistration.cs" />
+    <Compile Include="Areas\REDRIO\Controllers\REDRIOApiController.cs" />
+    <Compile Include="Areas\REDRIO\Controllers\REDRIOController.cs" />
+    <Compile Include="Areas\REDRIO\Models\campaña.cs" />
+    <Compile Include="Areas\REDRIO\Models\Departamento.cs" />
+    <Compile Include="Areas\REDRIO\Models\MuestraCompuesta.cs" />
+    <Compile Include="Areas\REDRIO\Models\Municipio.cs" />
+    <Compile Include="Areas\REDRIO\Models\ReporteLaboratorio.cs" />
+    <Compile Include="Areas\REDRIO\Models\ResultadoCampo.cs" />
+    <Compile Include="Areas\REDRIO\Models\TIpoFuente.cs" />
+    <Compile Include="Areas\REDRIO\REDRIOAreaRegistration.cs" />
     <Compile Include="Areas\Reporte\Controllers\DinamicoApiController.cs" />
     <Compile Include="Areas\Reporte\Controllers\DinamicoController.cs" />
     <Compile Include="Areas\Reporte\Controllers\EncuestaController.cs" />
@@ -1460,6 +1485,7 @@
     <Compile Include="Areas\Seguridad\Models\FuncionariosDTO.cs" />
     <Compile Include="Areas\Seguridad\Models\ListadoDTO.cs" />
     <Compile Include="Areas\Seguridad\Models\PermisosRolModel.cs" />
+    <Compile Include="Areas\Seguridad\Models\REDRIOModel.cs" />
     <Compile Include="Areas\Seguridad\Models\UsuariosDTO.cs" />
     <Compile Include="Areas\ServicioExterno\Controllers\EnCiclaApiController.cs" />
     <Compile Include="Areas\ServicioExterno\ServicioExternoAreaRegistration.cs" />
@@ -2655,6 +2681,14 @@
     <Content Include="Areas\ProcesosJudiciales\Scripts\procesosjudiciales.js" />
     <Content Include="Areas\QuejasAmbientales\Recursos\Plantillas\PlantillaReporteQueja.html" />
     <Content Include="Areas\QuejasAmbientales\Scripts\Quejas.js" />
+    <Content Include="Areas\REDRIO\CSS\Reporte.css" />
+    <Content Include="Areas\REDRIO\Scripts\Campaña.js" />
+    <Content Include="Areas\REDRIO\Scripts\Departamento.js" />
+    <Content Include="Areas\REDRIO\Scripts\Estacion.js" />
+    <Content Include="Areas\REDRIO\Scripts\Fase.js" />
+    <Content Include="Areas\REDRIO\Scripts\Municipio.js" />
+    <Content Include="Areas\REDRIO\Scripts\REDRIO.js" />
+    <Content Include="Areas\REDRIO\Scripts\ReporteSuperficial.js" />
     <Content Include="Areas\Reporte\Scripts\dinamico.js" />
     <Content Include="Areas\Retributivas\Scripts\Administrador.js" />
     <Content Include="Areas\Retributivas\Scripts\Empresas.js" />
@@ -3353,6 +3387,16 @@
     <Content Include="Areas\Contractual\Views\FirmarCertificado\Index.cshtml" />
     <Content Include="Areas\Contractual\Views\web.config" />
     <Content Include="Areas\Seguridad\Views\Funcionario\Index.cshtml" />
+    <Content Include="Areas\REDRIO\Views\web.config" />
+    <Content Include="Areas\REDRIO\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\REDRIO\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\REDRIO\Views\REDRIO\REDRIO.cshtml" />
+    <Content Include="Areas\REDRIO\Views\REDRIO\Departamento.cshtml" />
+    <Content Include="Areas\REDRIO\Views\REDRIO\Campañas.cshtml" />
+    <Content Include="Areas\REDRIO\Views\REDRIO\Fases.cshtml" />
+    <Content Include="Areas\REDRIO\Views\REDRIO\ReporteSuperficial.cshtml" />
+    <Content Include="Areas\REDRIO\Views\REDRIO\Municipios.cshtml" />
+    <Content Include="Areas\REDRIO\Views\REDRIO\Estacion.cshtml" />
     <None Include="Properties\PublishProfiles\Calidad.pubxml" />
     <None Include="Properties\PublishProfiles\CodeFirst Pruebas.pubxml" />
     <None Include="Properties\PublishProfiles\Local Pruebas.pubxml" />
@@ -4038,6 +4082,8 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="wwwroot\uploads\plantillas\PlantillaLABORATORIO.xlsx" />
+    <Content Include="wwwroot\uploads\plantillas\PlantillaReporteCampo.xlsx" />
     <None Include="x64\Oracle.ManagedDataAccessDTC.dll" />
     <Content Include="Scripts\jquery-1.12.3.js" />
     <Content Include="Scripts\jquery-1.12.3.min.js" />
@@ -4514,6 +4560,7 @@
     <Folder Include="Areas\Pqrsd\Views\Shared\" />
     <Folder Include="Areas\ProcesosJudiciales\Data\" />
     <Folder Include="Areas\ProcesosJudiciales\Views\Shared\" />
+    <Folder Include="Areas\REDRIO\Data\" />
     <Folder Include="Areas\Reporte\Models\" />
     <Folder Include="Areas\Reporte\Views\Encuesta\" />
     <Folder Include="Areas\Reporte\Views\Shared\" />
@@ -4535,6 +4582,7 @@
     <Folder Include="Scripts\Fotos\" />
     <Folder Include="Scripts\images\" />
     <Folder Include="Views\Home\" />
+    <Folder Include="Views\REDRIO\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -1,0 +1,450 @@
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@{
+    ViewBag.Title = "REDRIO";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+@{
+    ViewBag.Title = "Campañas";
+}
+
+
+
+   
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/REDRIO/Scripts/campañas.js?v=42")"></script>
+
+
+ <style>
+    
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); 
+    z-index: 9999; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loadingIcon {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+
+#loadingIcon i {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: #333;
+        }
+
+        .panelSIM {
+            margin: 30px;
+        }
+
+        h2 {
+            margin: 0;
+            padding: 0;
+            color: #16145A;
+            font-weight: 900 !important;
+            font-family: 'Work Sans', sans-serif; 
+                font-size: 40px;
+
+        }
+
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            margin: 40px;
+        }
+
+        .btn-primary {
+            background-color: #93C73F;
+            border-color: #21de21;
+        }
+
+        .btn-primary:hover {
+            background-color: #93C73F;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .horizontal-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            padding: 20px;
+            background-color: transparent;
+        }
+
+        .horizontal-table th {
+            background-color: transparent;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px;
+            color: #333;
+        }
+
+        .horizontal-table tbody tr {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .horizontal-table tbody tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .horizontal-table tbody tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .horizontal-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .horizontal-table tbody td {
+            padding: 12px 15px;
+            border-top: 2px solid #ddd;
+            border-bottom: 2px solid #ddd;
+            text-align: left;
+        }
+
+        .action-buttons i {
+            color: #8E8E8E;
+            cursor: pointer;
+            margin: 0 8px;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .action-buttons i:hover {
+            color: #000;
+        }
+
+        .btn-primary {
+            background-color: #189218;
+            border-color: #21de21;
+        }
+
+        .btn-primary:hover {
+            background-color: #2eb82e;
+        }
+        .form-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 60vh; 
+    margin-top: 50px;
+}
+
+.form-container form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    max-width: 700px;
+    width: 100%; 
+}
+
+.form-group {
+    margin-bottom: 15px; 
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-title {
+    grid-column: span 2;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-control {
+    width: 100%; 
+    box-sizing: border-box; 
+    height: 40px;
+}
+
+.form-container-wrapper {
+    position: relative; 
+    padding: 20px; 
+}
+
+.btn-icon {
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.form-title {
+    position: absolute;
+    top: 60px;
+    left: 20px; 
+    font-size: 40px;
+    margin: 0;
+    color: #16145A;
+    font-weight: 900 !important;
+    font-family: 'Work Sans', sans-serif; 
+}
+.btn1 {
+    align-items: center;
+    background-color: #189218; 
+    color: white;
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 300px;
+    margin-top: 70px;
+}
+.custom-modal-height {
+    height: 30vh;
+    max-height: 30vh;
+    padding: 0; 
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content {
+    height: 100%;
+    padding: 20px;
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+.contenido {
+    padding: 10px;
+    overflow-y: auto; 
+    flex-grow: 1;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown button */
+.dropdown-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Dropdown content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    border: 1px solid #ddd;
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+
+    </style>
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+
+    <div id="vistaPrincipal">
+    <div class="title-container">
+        <h2 >Campañas</h2>
+         <div class="dropdown" style="margin-left: 70%;">
+        <button class="dropdown-button">Selecciona una plantilla</button>
+        <ul class="dropdown-content" id="dropdownList">
+            <li><a href="#" data-value="plantilla1">Plantilla Laboratorio</a></li>
+            <li><a href="#" data-value="plantilla2">Plantilla Campo</a></li>
+        </ul>
+    </div>
+        
+        <button type="button" class="btn-primary" id="btnAgregar">
+            Nueva Campaña
+        </button>
+
+         
+    </div>
+    <div class="panelSIM">
+        <div id="gridContainer"></div>
+    </div>
+</div>
+
+<div id="modalExcel" style="display:none; z-index: 0;">
+    <div id="excelGridContainer"></div>
+    <button id="botonProcesar" class="btn btn-success" style="display: none;">Procesar Excel Laboratorio</button>
+        <button id="botonProcesar2" class="btn btn-success" style="display: none;">Procesar Excel Campo</button>
+
+</div>
+
+<div class="modal fade" id="cargarExcelModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg custom-modal-height" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h3 class="modal-title" id="modalLabel" style="margin-left: 35%;">Cargar Archivos Excel</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="contenido">
+                <button id="btnCargarExcel" class="btn btn-primary" onclick="cargarArchivoExcel('laboratorio')">Cargar Excel Laboratorio</button>
+                <button id="btnCargarExcel2" class="btn btn-primary" onclick="cargarArchivoExcel('campo')">Cargar Excel Campo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="form-container-wrapper">
+    <div id="vistaAgregar" style="display: none;" class="form-container">
+        <div class="btn-icon" id="btnVolverAgregar">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </div>
+        <br>
+        <div class="form-title">Agregar Nueva Campaña</div>
+        <form id="formNuevoDato">
+          
+            @* <div class="form-group">
+                <label for="nombreCampaña">Nombre del Campaña</label>
+                <input type="text" class="form-control" id="nombreCampaña" placeholder="Ingrese el nombre">
+            </div> *@
+            <div class="form-group">
+            <label for="Fase">Fase</label>
+            <select id="Fase" class="form-control">
+                <option value="">Seleccione una fase</option>
+            </select>
+        </div>
+
+            
+            <!-- Fecha Inicio y Fecha Final -->
+            <div class="form-group">
+                <label for="Fecha_inicio">Fecha Inicio</label>
+                <input type="date" class="form-control" id="Fecha_inicio">
+            </div>
+            <div class="form-group">
+                <label for="Fecha_fin">Fecha Final</label>
+                <input type="date" class="form-control" id="Fecha_fin">
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="Descripcion">Descripción</label>
+                <input type="text" class="form-control" id="Descripcion" placeholder="Ingrese la descripción">
+            </div>
+            
+            <button type="button" class="btn1" id="btnGuardarDato">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<div id="loadingOverlay" style="display: none;">
+    <div id="loadingIcon">
+        <i class="fas fa-sync-alt fa-spin fa-3x"></i>
+        <p>Procesando, por favor espere...</p>
+    </div>
+</div>
+
+
+<div class="form-container-wrapper">
+    <div id="vistaEditar" style="display: none;" class="form-container">
+        <div class="btn-icon" id="btnVolverEditar">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </div>
+        
+
+        <div class="form-title">Editar Campaña</div>
+        <form id="formEditarDato">
+             <input type="hidden" id="editid">
+             <div class="form-group full-width">
+                <label for="editnombreCampaña">Nombre del Campaña</label>
+                <input type="text" class="form-control" id="editnombreCampaña" placeholder="Ingrese el nombre">
+            </div>
+            <div class="form-group full-width">
+            <select id="editFase" class="form-control">
+                <option value="">Seleccione una fase</option>
+            </select>
+            </div>
+            
+            <!-- Fecha Inicio y Fecha Final -->
+            <div class="form-group">
+                <label for="editFecha_inicio">Fecha Inicio</label>
+                <input type="date" class="form-control" id="editFecha_inicio">
+            </div>
+            <div class="form-group">
+                <label for="editFecha_fin">Fecha Final</label>
+                <input type="date" class="form-control" id="editFecha_fin">
+            </div>
+            
+            <!-- Descripción -->
+            <div class="form-group full-width">
+    <label for="editDescrip">Descripción</label>
+<input type="text" class="form-control" id="editDescrip" placeholder="Ingrese la descripción">
+</div>
+            
+            <button type="button" class="btn1" id="btnActualizarDato">Actualizar</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+

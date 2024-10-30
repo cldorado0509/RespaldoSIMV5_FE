@@ -1,0 +1,58 @@
+@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@{
+    ViewBag.Title = "REDRIO";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/REDRIO/Scripts/REDRIO.js?v=42")"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+<style>
+    .panelSIM{
+      margin:30px
+    }
+    h2{
+    text-align: center;
+    }
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .horizontal-table {
+        width: 100%;
+        border-collapse: collapse;
+        padding: 20px;
+    }
+
+    .horizontal-table th, .horizontal-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .horizontal-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    .action-buttons i {
+        cursor: pointer;
+        margin: 0 5px;
+    }
+    .btn{
+    margin-right: 30px;
+    }
+    .error {
+        border-color: red;
+    }
+</style>
+
+<button type="button" class="btn btn-secondary" id="btnNavegarRuta1">Departamento</button>
+<button type="button" class="btn btn-secondary" id="btnNavegarRuta2">Municipio</button>
+<button type="button" class="btn btn-secondary" id="btnNavegarRuta3">Campa&ntilde;as</button>
+
+
+
+

@@ -26,7 +26,7 @@ namespace DashBoardDesigner.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("DATA SOURCE=amdb-cluster-scan.areametro.com:1521/amva.areametro.com;PASSWORD=gene" +
+        [global::System.Configuration.DefaultSettingValueAttribute("DATA SO-URCE=amdb-cluster-scan.areametro.com:1521/amva.areametro.com;PASSWORD=gene" +
             "ral;PERSIST SECURITY INFO=True;USER ID=GENERAL")]
         public string GeneralEntitiesOracle {
             get {

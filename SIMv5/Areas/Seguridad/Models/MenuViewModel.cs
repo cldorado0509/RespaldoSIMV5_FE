@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.UI.WebControls;
 
+
 namespace SIM.Areas.Seguridad.Models
 {
     /// <summary>
@@ -36,6 +37,14 @@ namespace SIM.Areas.Seguridad.Models
                             where m.S_VISIBLE_MENU == "1" && string.IsNullOrEmpty(m.S_RUTA) == false &&
                                   (rf.S_BUSCAR == "1" || rf.S_EDITAR == "1" || rf.S_ELIMINAR == "1" || rf.S_NUEVO == "1" || rf.S_ADMINISTRADOR == "1")
                             select m).Distinct().ToList();
+
+            foreach (var item in itemMenu)
+            {
+                string script = $"<script>console.log('ID_FORMA: {item.ID_FORMA}, S_NOMBRE: {item.S_NOMBRE}, S_RUTA: {item.S_RUTA}');</script>";
+                HttpContext.Current.Response.Write(script);
+            }
+            
+
 
             //variable agrMenu con todos los items del menu que son agrupadores
             var agrMenu = dbSIM.MENU.Where(td => string.IsNullOrEmpty(td.S_RUTA) && td.S_VISIBLE_MENU == "1").ToList();

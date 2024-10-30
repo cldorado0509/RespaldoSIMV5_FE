@@ -154,8 +154,17 @@
                                 ID_PADRE = m.ID_PADRE,
                                 NOMBRE = m.S_NOMBRE,
                                 URL = m.S_RUTA,
-                                ORDEN = m.ORDEN
+                                ORDEN = m.ORDEN,
+
+
                             }).Distinct().OrderBy(o => o.ORDEN).ToList();
+                            foreach (var item in itemMenu)
+    {
+        string script = $"<script>console.log('ID_FORMA: {item.ID}, NOMBRE: {item.NOMBRE}, URL: {item.URL}, orden: {item.ORDEN}');</script>";
+        HttpContext.Current.Response.Write(script);
+    }
+
+
 
             //variable agrMenu con todos los items del menu que son agrupadores
             var agrMenu = (from m in dbSIM.MENU

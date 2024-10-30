@@ -1,0 +1,464 @@
+@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@{
+    ViewBag.Title = "REDRIO";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Estacion";
+}
+
+
+
+<meta charset="UTF-8">
+   
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Areas/REDRIO/Scripts/Estacion.js?v=42")"></script>
+
+
+ <style>
+    
+
+   
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: #333;
+        }
+
+        .panelSIM {
+            margin: 30px;
+        }
+
+        h2 {
+            margin: 0;
+            padding: 0;
+            color: #16145A;
+            font-weight: 900 !important;
+            font-family: 'Work Sans', sans-serif; 
+                font-size: 40px;
+
+        }
+
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            margin: 40px;
+        }
+
+        .btn-primary {
+            background-color: #93C73F;
+            border-color: #21de21;
+        }
+
+        .btn-primary:hover {
+            background-color: #93C73F;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .horizontal-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            padding: 20px;
+            background-color: transparent;
+        }
+
+        .horizontal-table th {
+            background-color: transparent;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px;
+            color: #333;
+        }
+
+        .horizontal-table tbody tr {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .horizontal-table tbody tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .horizontal-table tbody tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .horizontal-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .horizontal-table tbody td {
+            padding: 12px 15px;
+            border-top: 2px solid #ddd;
+            border-bottom: 2px solid #ddd;
+            text-align: left;
+        }
+
+        .action-buttons i {
+            color: #8E8E8E;
+            cursor: pointer;
+            margin: 0 8px;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .action-buttons i:hover {
+            color: #000;
+        }
+
+        .btn-primary {
+            background-color: #189218;
+            border-color: #21de21;
+        }
+
+        .btn-primary:hover {
+            background-color: #2eb82e;
+        }
+        .form-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 60vh; 
+    margin-top: 50px;
+}
+
+.form-container form {
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    gap: 15px;
+    max-width: 700px;
+    width: 100%; 
+}
+
+.form-group {
+    margin-bottom: 15px; 
+}
+
+.form-group.full-width {
+    grid-column: span 1;
+}
+
+.form-title {
+    grid-column: span 1;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-control {
+    width: 100%; 
+    box-sizing: border-box; 
+    height: 40px;
+}
+
+.form-container-wrapper {
+    position: relative; 
+    padding: 20px; 
+}
+
+.btn-icon {
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.form-title {
+    position: absolute;
+    top: 60px;
+    left: 20px; 
+    font-size: 40px;
+    margin: 0;
+    color: #16145A;
+    font-weight: 900 !important;
+    font-family: 'Work Sans', sans-serif; 
+}
+.btn1 {
+    align-items: center;
+    background-color: #189218; 
+    color: white;
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 300px;
+    margin-top: 70px;
+}
+.custom-modal-height {
+    height: 30vh;
+    max-height: 30vh;
+    padding: 0; 
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content {
+    height: 100%;
+    padding: 20px;
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+.contenido {
+    padding: 10px;
+    overflow-y: auto; 
+    flex-grow: 1;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+ .swal2-container {
+        z-index: 1051; 
+    }
+    .modal {
+    z-index: 1050; 
+}
+.custom-modal-content {
+    padding: 20px;
+    font-size: 15px; 
+    line-height: 1.6; 
+}
+
+.modal-field {
+    display: block;
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 8px 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.modal-header {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px;
+}
+
+.modal-title {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.modal-body p {
+    margin-bottom: 20px; /
+}
+
+
+
+    </style>
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+
+    <div id="vistaPrincipal">
+    <div class="title-container">
+        <h2 >Estaciones</h2>
+        
+        <button type="button" class="btn-primary" id="btnAgregar">
+            Nueva Estacion
+        </button>
+    </div>
+    <div class="panelSIM">
+        <div id="gridContainer"></div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="detallesModal" tabindex="-1" aria-labelledby="detallesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> 
+        <div class="modal-content custom-modal-content"> 
+            <div class="modal-header">
+                <h5 class="modal-title" id="detallesModalLabel">Detalles de la Estaci&oacute;n</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Nombre Estaci&oacute;n:</strong> <span class="modal-field" id="modalNombreEstacion"></span></p>
+                <p><strong>Fecha de Creaci&oacute;n:</strong> <span class="modal-field" id="modalFechaCreacion"></span></p>
+                <p><strong>Grados de Latitud:</strong> <span class="modal-field" id="modalGradosLatitud"></span></p>
+                <p><strong>Grados de Longitud:</strong> <span class="modal-field" id="modalGradosLongitud"></span></p>
+                <p><strong>Minutos de Latitud:</strong> <span class="modal-field" id="modalMinutosLatitud"></span></p>
+                <p><strong>Minutos de Longitud:</strong> <span class="modal-field" id="modalMinutosLongitud"></span></p>
+                <p><strong>Segundos de Latitud:</strong> <span class="modal-field" id="modalSegundosLatitud"></span></p>
+                <p><strong>Segundos de Longitud:</strong> <span class="modal-field" id="modalSegundosLongitud"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="form-container-wrapper">
+    <div id="vistaAgregar" style="display: none;" class="form-container">
+        <div class="btn-icon" id="btnVolverAgregar">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </div>
+        <br>
+        <div class="form-title">Agregar Nueva Estaci&oacute;n</div>
+        <form id="formNuevoDato">
+            <!-- Nombre de la Estaci&oacute;n -->
+            <div class="form-group">
+                <label for="nombreEstacion">Nombre de la Estaci&oacute;n</label>
+                <input type="text" class="form-control" id="nombreEstacion" placeholder="Ingrese el nombre">
+            </div>
+            <div class="form-group full-width">
+                <label for="Codigo">Codigo</label>
+                <input type="text" class="form-control" id="Codigo" placeholder="Ingrese el Codigo">
+            </div>
+
+            <!-- Tipo Fuente -->
+            <div class="form-group">
+                <label for="TipoFuente">Tipo Fuente</label>
+                <select id="TipoFuente" class="form-control">
+                    <option value="">Seleccione un Tipo de Fuente</option>
+                </select>
+            </div>
+            
+            <!-- Municipio -->
+            <div class="form-group">
+                <label for="Municipio">Municipio</label>
+                <select id="Municipio" class="form-control">
+                    <option value="">Seleccione un Municipio</option>
+                </select>
+            </div>
+            
+            
+            
+            <!-- Coordenadas (Grados Latitud y Longitud) -->
+            <div class="form-group">
+                <label for="Elevacion"> Elevaci&oacute;n</label>
+                <input type="number" step="0.0001" class="form-control" id="Elevacion" placeholder="Ingrese los grados de latitud">
+            </div>
+            <div class="form-group">
+                <label for="GradosLatitud">Grados de Latitud</label>
+                <input type="number" step="0.0001" class="form-control" id="GradosLatitud" placeholder="Ingrese los grados de latitud">
+            </div>
+            <div class="form-group">
+                <label for="GradosLongitud">Grados de Longitud</label>
+                <input type="number" step="0.0001" class="form-control" id="GradosLongitud" placeholder="Ingrese los grados de longitud">
+            </div>
+            <div class="form-group">
+                <label for="MinutosLatitud">Minutos de Latitud</label>
+                <input type="number" step="0.0001" class="form-control" id="MinutosLatitud" placeholder="Ingrese los Minutos de latitud">
+            </div>
+            <div class="form-group">
+                <label for="MinutosLongitud">Minutos de Longitud</label>
+                <input type="number" step="0.0001" class="form-control" id="MinutosLongitud" placeholder="Ingrese los Minutos de longitud">
+            </div>
+            <div class="form-group">
+                <label for="SegundosLatitud">Segundos de Latitud</label>
+                <input type="number" step="0.0001" class="form-control" id="SegundosLatitud" placeholder="Ingrese los Segundos de latitud">
+            </div>
+            <div class="form-group">
+                <label for="SegundosLongitud">Segundos de Longitud</label>
+                <input type="number" step="0.0001" class="form-control" id="SegundosLongitud" placeholder="Ingrese los Segundos de longitud">
+            </div>
+            
+            
+            <!-- Bot&oacute;n para Guardar -->
+            <button type="button" class="btn1" id="btnGuardarDato">Guardar</button>
+        </form>
+    </div>
+</div>
+
+
+<div class="form-container-wrapper">
+    <div id="vistaEditar" style="display: none;" class="form-container">
+        <div class="btn-icon" id="btnVolverEditar">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </div>
+        
+
+        <div class="form-title">Editar Estaci&oacute;n</div>
+        <form id="formEditarDato">
+            <input type="hidden" id="editIdEstacion">
+             <div class="form-group">
+                <label for="nombreEstacion">Nombre de la Estaci&oacute;n</label>
+                <input type="text" class="form-control" id="editNombreEstacion" placeholder="Ingrese el nombre">
+            </div>
+            <div class="form-group full-width">
+                <label for="Codigo">Codigo</label>
+                <input type="text" class="form-control" id="editCodigo" placeholder="Ingrese el Codigo">
+            </div>
+
+            <!-- Tipo Fuente -->
+            <div class="form-group">
+                <label for="TipoFuente">Tipo Fuente</label>
+                <select id="editTipoFuente" class="form-control">
+                    <option value="">Seleccione un Tipo de Fuente</option>
+                </select>
+            </div>
+            
+            <!-- Municipio -->
+            <div class="form-group">
+                <label for="Municipio">Municipio</label>
+                <select id="editMunicipio" class="form-control">
+                    <option value="">Seleccione un Municipio</option>
+                </select>
+            </div>
+            
+            
+            
+            <!-- Coordenadas (Grados Latitud y Longitud) -->
+            <div class="form-group">
+                <label for="Elevacion"> Elevaci&oacute;n</label>
+                <input type="number" step="0.0001" class="form-control" id="editElevacion" placeholder="Ingrese los grados de latitud">
+            </div>
+            <div class="form-group">
+                <label for="GradosLatitud">Grados de Latitud</label>
+                <input type="number" step="0.0001" class="form-control" id="editGradosLatitud" placeholder="Ingrese los grados de latitud">
+            </div>
+            <div class="form-group">
+                <label for="GradosLongitud">Grados de Longitud</label>
+                <input type="number" step="0.0001" class="form-control" id="editGradosLongitud" placeholder="Ingrese los grados de longitud">
+            </div>
+            <div class="form-group">
+                <label for="MinutosLatitud">Minutos de Latitud</label>
+                <input type="number" step="0.0001" class="form-control" id="editMinutosLatitud" placeholder="Ingrese los Minutos de latitud">
+            </div>
+            <div class="form-group">
+                <label for="MinutosLongitud">Minutos de Longitud</label>
+                <input type="number" step="0.0001" class="form-control" id="editMinutosLongitud" placeholder="Ingrese los Minutos de longitud">
+            </div>
+            <div class="form-group">
+                <label for="SegundosLatitud">Segundos de Latitud</label>
+                <input type="number" step="0.0001" class="form-control" id="editSegundosLatitud" placeholder="Ingrese los Segundos de latitud">
+            </div>
+            <div class="form-group">
+                <label for="SegundosLongitud">Segundos de Longitud</label>
+                <input type="number" step="0.0001" class="form-control" id="editSegundosLongitud" placeholder="Ingrese los Segundos de longitud">
+            </div>
+            
+            
+            <button type="button" class="btn1" id="btnActualizarDato">Actualizar</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+

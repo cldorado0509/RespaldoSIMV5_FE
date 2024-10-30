@@ -1,0 +1,526 @@
+    body {
+        font-family: 'Work Sans', sans-serif;
+        color: #333;
+    }
+
+    .panelSIM {
+        margin: 30px;
+    }
+
+    h2 {
+        margin: 0;
+        padding: 0;
+        color: #16145A;
+        font-weight: 700 !important;
+        font-family: 'Work Sans', sans-serif; 
+        font-size: 30px !important;
+    }
+
+    .title-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        margin: 60px;
+        
+    }
+
+    .btn-primary {
+        background-color: #93C73F;
+        border-color: #21de21;
+    }
+
+    .btn-primary:hover {
+        background-color: #93C73F;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .horizontal-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        padding: 20px;
+        background-color: transparent;
+    }
+
+    .horizontal-table th {
+        background-color: transparent;
+        font-weight: bold;
+        text-align: left;
+        padding: 12px;
+        color: #333;
+    }
+
+    .horizontal-table tbody tr {
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .horizontal-table tbody tr td:first-child {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+    }
+
+    .horizontal-table tbody tr td:last-child {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .horizontal-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .horizontal-table tbody td {
+        padding: 12px 15px;
+        border-top: 2px solid #ddd;
+        border-bottom: 2px solid #ddd;
+        text-align: left;
+    }
+
+    .action-buttons i {
+        color: #8E8E8E;
+        cursor: pointer;
+        margin: 0 8px;
+        font-size: 18px;
+        transition: color 0.3s ease;
+    }
+
+    .action-buttons i:hover {
+        color: #000;
+    }
+
+    .btn-primary {
+        background-color: #189218;
+        border-color: #21de21;
+    }
+
+    .btn-primary:hover {
+        background-color: #2eb82e;
+    }
+
+    .form-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        height: 60vh; 
+        margin-top: 50px;
+    }
+
+    .form-container form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        max-width: 700px;
+        width: 100%; 
+    }
+
+    .form-group {
+        margin-bottom: 15px; 
+    }
+
+    .form-group.full-width {
+        grid-column: span 2;
+    }
+
+    .form-title {
+        grid-column: span 2;
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-control {
+        width: 100%; 
+        box-sizing: border-box; 
+        height: 40px;
+    }
+
+    .form-container-wrapper {
+        position: relative; 
+        padding: 20px; 
+    }
+
+    .btn-icon {
+        position: absolute;
+        top: 20px; 
+        left: 20px; 
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+    }
+
+    .form-title {
+        position: absolute;
+        top: 60px;
+        left: 20px; 
+        font-size: 40px;
+        margin: 0;
+        color: #16145A;
+        font-weight: 900 !important;
+        font-family: 'Work Sans', sans-serif; 
+    }
+
+    .btn1 {
+        align-items: center;
+        background-color: #189218; 
+        color: white;
+        border: none; 
+        padding: 10px 20px; 
+        font-size: 16px; 
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 300px;
+        margin-top: 70px;
+    }
+
+.modal-xl {
+    width: 100%;
+}
+
+.modal-content {
+    padding: 10px;
+}
+
+.modal-body {
+    display: flex;
+    padding: 20px; 
+}
+
+.modal-body .col-md-5,
+.modal-body .col-md-6 {
+    flex: 1;
+    padding: 10px; 
+}
+
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f0f0f0;
+}
+
+.card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.btn-group-vertical {
+    display: flex; /* Cambia a flex para alinear los botones */
+    flex-direction: row; /* Alinea los botones en una fila */
+    justify-content: flex-start; /* Alinea los botones al inicio */
+    flex-wrap: wrap; /* Permite que los botones se envuelvan si no hay suficiente espacio */
+}
+
+.btn-group-vertical .btn {
+    margin: 5px; /* Espaciado entre los botones */
+    padding: 10px; /* Padding interno para los botones */
+    flex: 1; /* Permite que los botones crezcan para ocupar el espacio disponible */
+    align-self: center; /* Asegura que todos los botones estén alineados verticalmente */
+}
+.btn-group-vertical .btn:not(:first-child) {
+    margin-bottom: -3px;
+}
+
+.first-button {
+    margin-bottom: 0;
+}
+.card-content {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 10px;
+    }
+
+    .btn-group-vertical {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .btn-group-vertical .btn {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 10px;
+    }
+
+    .card-content {
+        padding: 10px;
+    }
+}
+
+.SUb{
+    color: #8E8E8E;
+    font-size: 20px;
+    font-weight: 700;
+}
+.form-container-wrapper {
+    position: relative; 
+    padding: 20px; 
+}
+
+h1 {
+    text-align: center; 
+    margin-bottom: 20px; 
+}
+
+.progress {
+    display: flex; 
+    justify-content: center; 
+    height: 50px;
+    align-items: center; 
+    margin-bottom: 20px; background-color: transparent;
+    border: none;
+}
+
+
+.step {
+    display: none;
+}
+
+.active {
+    display: block; }
+
+.completed {
+    background-color: green; 
+}
+
+.current {
+    background-color: blue; 
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start;
+    align-items: center; 
+    height: auto; 
+    margin-top: 50px;
+}
+
+.form-container-wrapper {
+    position: relative; 
+    padding: 20px; 
+}
+
+h1 {
+    text-align: center; 
+    margin-bottom: 20px;
+}
+
+ 
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: gray; 
+    text-align: center;
+    line-height: 40px; 
+    color: white;
+    margin: 0 10px;
+    position: relative; 
+    z-index: 2;
+}
+
+.step {
+    display: none; 
+}
+
+.active {
+    display: block; 
+}
+
+.completed {
+    background-color: green; 
+}
+
+.current {
+    background-color: blue; 
+}
+
+.form-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.horizontal-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; 
+    margin-bottom: 20px;
+    width: 300px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block; 
+}
+
+button {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .horizontal-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+#vistaAgregar {
+    display: none; }
+
+
+    .nombreEstacion {
+        font-size: 30px;
+        font-weight: bold;
+        color: #00698f;
+      }
+
+      input.expandable {
+        width: 30px;
+        transition: width 0.3s ease;
+    }
+    .modal-body {
+        display: flex;
+        flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+        padding: 20px; /* Añadir padding para un mejor espaciado */
+    }
+    
+    .resultados-container {
+        display: flex;
+        flex-direction: column; /* Asegura que los resultados se apilen verticalmente */
+        gap: 20px; /* Espaciado entre secciones */
+    }
+    
+    .resultados-campo {
+        background-color: #f9f9f9; /* Fondo claro para diferenciar la sección */
+        padding: 15px; /* Padding interno */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    }
+    
+    .resultados-compuestos {
+        background-color: #f9f9f9; /* Fondo claro para diferenciar la sección */
+        padding: 15px; /* Padding interno */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    }
+    
+    /* Asegúrate de que la tabla ocupe el ancho completo */
+    .table {
+        width: 100%; /* Asegura que la tabla use todo el ancho disponible */
+        border-collapse: collapse; /* Colapsar bordes de la tabla */
+    }
+    
+    .table th, .table td {
+        border: 1px solid #ddd; /* Bordes para celdas */
+        padding: 10px; /* Espaciado interno en celdas */
+        text-align: left; /* Alinear texto a la izquierda */
+    }
+    
+    .table th {
+        background-color: #f0f0f0; /* Color de fondo para encabezados */
+    }
+/* Sombra de fondo para el resto de la página */
+/* Sombra de fondo para el resto de la página */
+.overlay {
+    position: fixed; /* Fijo para cubrir toda la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Sombra semi-transparente */
+    display: none; /* Oculto por defecto */
+    z-index: 900; /* Asegúrate de que esté debajo del input expandido */
+}
+
+/* Estilo para el textarea expandido */
+.input-expandido {
+    position: fixed;
+    z-index: 1000;
+    width: 100%; /* Permite que el ancho sea 100% del contenedor padre */
+    max-width: 600px !important; /* Máximo ancho permitido */
+    height: auto;
+    min-height: 100px;
+    transition: all 0.3s ease;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow-y: auto;
+    padding: 10px;
+    resize: none !important;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    padding: 10px;
+}
+
+
+/* Estilo para el textarea normal */
+.input-normal {
+    width: 70px; /* Ancho normal más grande */
+    height: 40px; /* Altura normal más grande */
+    position: relative; /* Mantiene la posición relativa para el efecto */
+    resize: none; /* Desactiva el cambio de tamaño manual */
+    line-height: 1.5;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important; 
+    
+}

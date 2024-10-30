@@ -617,7 +617,7 @@ $(document).ready(function () {
                 key: "departamentoId",
                 loadMode: "raw",
                 load: function () {
-                    return $.getJSON($("#SIM").data("url") + "CAV/api/CAVApi/ObtenerDepartamentosAsync");
+                    return $.getJSON($("#SIM").data("url") + "CAV/api/CAVApi/");
                 }
             })
         }),

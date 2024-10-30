@@ -1,0 +1,514 @@
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@{
+    ViewBag.Title = "REDRIO";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "ReporteSuperficial";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/REDRIO/Scripts/ReporteSuperficial.js?v=42")"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Areas/REDRIO/css/Reporte.css?v=1.01")" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-style@0.8.13/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.1/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
+
+    <div data-url="@Url.Content("~")" ID="SIM" resizable>
+
+<div id="vistaPrincipal">
+<div class="btn-icon" id="btnVolverAcampañas">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </div>
+        
+<div class="title-container">
+    <div class="title-text">
+        <h2  >Campaña: <span id="nombreCampaña"></span> </h2>
+
+        <p class="SUb">Reportes de Campo y Resultados de Laboratorio</p>
+    </div>
+    <div class="btn-container">
+        
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalNuevoDato" id="btnNuevoMuestra">
+            Nuevo Muestra
+        </button>
+        
+        <button type="button" class="btn btn-gray" data-toggle="modal" data-target="#modalNuevoDatoLabel" >
+             Excel Cargados
+        </button>
+        <button id="btnDescargarExcel" class="btn btn-primary">Descargar Excel</button>
+
+    </div>
+</div>
+
+<div class="panelSIM">
+    <div>
+        <div id="gridContainer"></div>
+    </div>
+</div>
+
+</div>
+
+<div id="modalContainer" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div> 
+
+<div class="modal fade" id="modalNuevoDatoLabel" tabindex="-1" role="dialog" aria-labelledby="modalNuevoDatoLabel" aria-hidden="true" >
+<div class="modal-dialog" role="document" style="max-width: 50%; width: 50%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevoDatoLabel">Historial de Excel cargados</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="gridHistorial"></div> 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-container-wrapper">
+    <div id="vistaAgregar" class="form-container">
+        <div class="btn-icon" id="btnVolverAgregar">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </div>
+        <h1>Registro de resultados  <span id="nombreCampaña"></span></h1>
+
+
+
+        <div class="progress">
+            <div class="step-circle current">1</div>
+            <div class="step-circle">2</div>
+            <div class="step-circle">3</div>
+            <div class="step-circle">4</div>
+            <div class="step-circle">5</div>
+            <div class="step-circle">6</div>
+            <div class="step-circle">7</div>
+            <div class="step-circle">8</div>
+            <div class="step-circle">9</div>
+            
+        </div>
+
+        <form id="registrationForm">
+    <div class="step active">
+        <h3>Información de la estación</h3>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="estacion">Estación:</label>
+                <select id="estacion" class="form-control">
+                    <option value="">Seleccione una Estacion </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fechaMuestra">Fecha toma de muestra:</label>
+                <input type="date" id="fechaMuestra" name="fechaMuestra" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary nextBtn">Siguiente</button>
+    </div>
+
+    <div class="step">
+        <h3>Resultados de campo <span class="nombreEstacion"></span></h3>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="Hora">Hora:</label>
+                <input type="text" id="Hora" name="Hora" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="TempAmbiente">Temperatura (c°):</label>
+                <input type="number" id="TempAmbiente" name="TempAmbiente" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="TempAgua">Temperatura Agua(c°):</label>
+                <input type="number" id="TempAgua" name="TempAgua" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Ph">Ph [U de ph]:</label>
+                <input type="number" id="Ph" name="Ph" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Od">OD [mg/L]:</label>
+                <input type="number" id="Od" name="Od" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Cond">Conductividad [ɥS/cm]:</label>
+                <input type="number" id="Cond" name="Cond" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Orp">ORP [mv]:</label>
+                <input type="number" id="Orp" name="Orp" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Turb">Turbidez [NTU]:</label>
+                <input type="number" id="Turb" name="Turb" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Tiempo">Tiempo:</label>
+                <input type="text" id="Tiempo" name="Tiempo" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Apariencia">Apariencia:</label>
+                <input type="text" id="Apariencia" name="Apariencia" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Olor">Olor:</label>
+                <input type="text" id="Olor" name="Olor" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Color">Color:</label>
+                <input type="text" id="Color" name="Color" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Altura">Altura:</label>
+                <input type="text" id="Altura" name="Altura" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="H1">H1:</label>
+                <input type="text" id="H1" name="H1" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="H2">H2:</label>
+                <input type="text" id="H2" name="H2" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Observacion">Observación:</label>
+                <input type="text" id="Observacion" name="Observacion" class="form-control">
+            </div>
+        </div>
+        <button type="button"  id="btnGuardarCampo" class="btn btn-primary nextBtn">Guardar y Continuar</button>
+        <button type="button" class="btn btn-primary nextBtn">Saltar</button>
+        <button type="button" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+
+    <div class="step">
+        <h3>Reaultados de Laboratorio <span class="nombreEstacion"></span></h3>
+        <h4>Insitu:</h4>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="OrpInsitu">Potencial Redox (mV):</label>
+                <input type="number" id="OrpInsitu" name="OrpInsitu" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Oxigeno_disuelto">Oxígeno disuelto (mg/L):</label>
+                <input type="number" id="Oxigeno_disuelto" name="Oxigeno_disuelto" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Turbiedad">Turbiedad (NTU):</label>
+                <input type="number" id="Turbiedad" name="Turbiedad" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Tem_ambiente">Temperatura Ambiente (°C):</label>
+                <input type="number" id="Tem_ambiente" name="Tem_ambiente" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Tem_agua">Temperatura Agua (°C):</label>
+                <input type="number" id="Tem_agua" name="Tem_agua" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Conductiviidad_electrica">Conductividad eléctrica (µS/cm):</label>
+                <input type="number" id="Conductiviidad_electrica" name="Conductiviidad_electrica" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="PhInsitu">pH (U de pH):</label>
+                <input type="number" id="PhInsitu" name="PhInsitu" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary nextBtn">Siguiente</button>
+        <button type="button" id="btnVolver" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+
+<div class="step">
+        <h3>Reaultados de Laboratorio <span class="nombreEstacion"></span></h3>
+        <h4>Fisicos:</h4>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="Caudal">Caudal (m3/s):</label>
+                <input type="number" id="Caudal" name="Caudal" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="ClasificacionCaudal">Clasificación caudal (Adim):</label>
+                <input type="number" id="ClasificacionCaudal" name="ClasificacionCaudal" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="NumeroDeVerticales">Número de verticales:</label>
+                <input type="number" id="NumeroDeVerticales" name="NumeroDeVerticales" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="ColorVerdaderoUPC">Color verdadero (UPC):</label>
+                <input type="number" id="ColorVerdaderoUPC" name="ColorVerdaderoUPC" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="ColorTriestimular436nm">Color triestimular 436 nm:</label>
+                <input type="number" id="ColorTriestimular436nm" name="ColorTriestimular436nm" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="ColorTriestimular525nm">Color triestimular 525 nm:</label>
+                <input type="number" id="ColorTriestimular525nm" name="ColorTriestimular525nm" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="ColorTriestimular620nm">Color triestimular 620 nm:</label>
+                <input type="number" id="ColorTriestimular620nm" name="ColorTriestimular620nm" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="SolidosSuspendidosTotales">Sólidos suspendidos totales (mg/L):</label>
+                <input type="number" id="SolidosSuspendidosTotales" name="SolidosSuspendidosTotales" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="SolidosTotales">Sólidos totales (mg/L):</label>
+                <input type="number" id="SolidosTotales" name="SolidosTotales" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="SolidosVolatilesTotales">Sólidos volátiles totales (mg/L):</label>
+                <input type="number" id="SolidosVolatilesTotales" name="SolidosVolatilesTotales" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="SolidosDisueltosTotales">Sólidos disueltos totales (mg/L):</label>
+                <input type="number" id="SolidosDisueltosTotales" name="SolidosDisueltosTotales" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="SolidosFijosTotales">Sólidos fijos totales (mg/L):</label>
+                <input type="number" id="SolidosFijosTotales" name="SolidosFijosTotales" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="SolidosSedimentables">Sólidos sedimentables (ml/L-h):</label>
+                <input type="number" id="SolidosSedimentables" name="SolidosSedimentables" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary nextBtn">Siguiente</button>
+        <button type="button" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+    
+    <div class="step">
+        <h3>Reaultados de Laboratorio <span class="nombreEstacion"></span></h3>
+        <h4>Quimicos:</h4>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="sustanciaActivaAzulMetileno">SAAM (mg/L):</label>
+                <input type="number" id="sustanciaActivaAzulMetileno" name="sustanciaActivaAzulMetileno" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Grasa_Aceite">Grasas y/o aceites (mg/L):</label>
+                <input type="number" id="Grasa_Aceite" name="Grasa_Aceite" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Db05">DBO5 (mg/L):</label>
+                <input type="number" id="Db05" name="Db05" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Dq0">DQO (mg/L):</label>
+                <input type="number" id="Dq0" name="Dq0" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="HierroTotal">Hierro total (mg Fe/L):</label>
+                <input type="number" id="HierroTotal" name="HierroTotal" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Sulfatos">Sulfatos (mg/L):</label>
+                <input type="number" id="Sulfatos" name="Sulfatos" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Sulfuros">Sulfuros (mg/L):</label>
+                <input type="number" id="Sulfuros" name="Sulfuros" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Cloruros">Clororus (mg/L):</label>
+                <input type="number" id="Cloruros" name="Cloruros" class="form-control">
+            </div>
+            
+        </div>
+        <button type="button" class="btn btn-primary nextBtn">Siguiente</button>
+        <button type="button" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+    <div class="step">
+        <h3>Reaultados de Laboratorio <span class="nombreEstacion"></span></h3>
+        <h4>Nutrientes:</h4>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="Nitrogeno_total_kjeldahl">Nitrógeno total Kjeldahl (mg N/L):</label>
+                <input type="number" id="Nitrogeno_total_kjeldahl" name="Nitrogeno_total_kjeldahl" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Fosforo_organico">Fósforo orgánico (mg P/L):</label>
+                <input type="number" id="Fosforo_organico" name="Fosforo_organico" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Nitratos">Nitratos (mg N/L):</label>
+                <input type="number" id="Nitratos" name="Nitratos" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Fosforo_total">Fósforo total (mg P/L):</label>
+                <input type="number" id="Fosforo_total" name="Fosforo_total" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Nitrogeno_organico">Nitrógeno orgánico (mg N/L):</label>
+                <input type="number" id="Nitrogeno_organico" name="Nitrogeno_organico" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Nitritos">Nitritos (mg N/L):</label>
+                <input type="number" id="Nitritos" name="Nitritos" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Fosfato">Fosfato (mg P/L):</label>
+                <input type="number" id="Fosfato" name="Fosfato" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary nextBtn">Siguiente</button>
+        <button type="button" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+    <div class="step">
+        <h3>Reaultados de Laboratorio <span class="nombreEstacion"></span></h3>
+        <h4>Metal Agua:</h4>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="Cadmio">Cadmio (mg Cd/L):</label>
+                <input type="number" id="Cadmio" name="Cadmio" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Niquel">CNiquel (mg Ni/L):</label>
+                <input type="number" id="Niquel" name="Niquel" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Cobre">Cobre (mg Cu/L):</label>
+                <input type="number" id="Cobre" name="Cobre" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Mercurio">Mercurio (mg Hg/L):</label>
+                <input type="number" id="Mercurio" name="Mercurio" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Cromo">Cromo (mg Cr/L):</label>
+                <input type="number" id="Cromo" name="Cromo" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Plomo">Plomo (mg Pb/L):</label>
+                <input type="number" id="Plomo" name="Plomo" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Cromo_hexavalente">Cromo hexavalente (mg Cr6+/L):</label>
+                <input type="number" id="Cromo_hexavalente" name="Cromo_hexavalente" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary nextBtn">Siguiente</button>
+        <button type="button" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+    <div class="step">
+        <h3>Reaultados de Laboratorio <span class="nombreEstacion"></span></h3>
+        <h4>Metal Sedimento:</h4>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="Cadmio_sedimentable">Cadmio sedimentable (mg Cd/L):</label>
+                <input type="number" id="Cadmio_sedimentable" name="Cadmio_sedimentable" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Cobre_sedimentable">Cobre sedimentable (mg Cu/L):</label>
+                <input type="number" id="Cobre_sedimentable" name="Cobre_sedimentable" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Cromo_sedimentable">Cromo sedimentable (mg Cr/L):</label>
+                <input type="number" id="Cromo_sedimentable" name="Cromo_sedimentable" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Mercurio_sedimentable">Mercurio sedimentable (mg Hg/L):</label>
+                <input type="number" id="Mercurio_sedimentable" name="Mercurio_sedimentable" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Plomo_sedimentable">Plomo sedimentable (mg Pb/L):</label>
+                <input type="number" id="Plomo_sedimentable" name="Plomo_sedimentable" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary nextBtn">Siguiente</button>
+        <button type="button" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+    <div class="step">
+        <h3>Reaultados de Laboratorio <span class="nombreEstacion"></span></h3>
+        <h4>Biologicos:</h4>
+        <div class="horizontal-section">
+            <div class="form-group">
+                <label for="Escherichia_coli_npm">Escherichia coli (NMP/100mL):</label>
+                <input type="number" id="Escherichia_coli_npm" name="Escherichia_coli_npm" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Escherichia_coli_ufc">Escherichia coli (UFC):</label>
+                <input type="number" id="Escherichia_coli_ufc" name="Escherichia_coli_ufc" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Indice_biologico">Indice biológico BMWP:</label>
+                <input type="number" id="Indice_biologico" name="Indice_biologico" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Coliformes_totales_ufc">Coliformes totales (UFC):</label>
+                <input type="number" id="Coliformes_totales_ufc" name="Coliformes_totales_ufc" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Coliformes_totales_npm">Coliformes totales (NMP/100mL):</label>
+                <input type="number" id="Coliformes_totales_npm" name="Coliformes_totales_npm" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Riquezas_algas">Riqueza algas:</label>
+                <input type="number" id="Riquezas_algas" name="Riquezas_algas" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="ClasificacionIBiologico">Clasificación Indice biológico BMWP:</label>
+                <input type="text" id="ClasificacionIBiologico" name="ClasificacionIBiologico" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="Observaciones">Observaciones (algas y macroinvertebrados):</label>
+                <input type="text" id="Observaciones" name="Observaciones" class="form-control">
+            </div>
+        </div>
+        <button type="button" id="nextBtn" class="btn btn-primary ">Finalizar</button>
+        <button type="button" class="btn btn-secondary prevBtn">Anterior</button>
+    </div>
+</form>
+
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalEditarDato" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Muestra</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarDato">
+                    <input type="hidden" id="editIndex" />
+                    <div class="form-group">
+                        <label for="editNombre">Nombre del Muestra</label>
+                        <input type="text" class="form-control" id="editNombre" placeholder="Ingrese el nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDepartamento">Nombre del Departamento</label>
+                        <input type="text" class="form-control" id="editDepartamento" placeholder="Ingrese el Departamento">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnActualizarDato">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>

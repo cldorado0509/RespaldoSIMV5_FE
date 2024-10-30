@@ -1,0 +1,281 @@
+﻿
+@{
+    ViewBag.Title = "Departamento";
+}
+
+
+
+@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@{
+    ViewBag.Title = "REDRIO";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+   
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/REDRIO/Scripts/Departamento.js?v=42")"></script>
+
+@{
+    ViewBag.Title = "REDRIO";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+ <style>
+    
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: #333;
+        }
+
+        .panelSIM {
+            margin: 30px;
+        }
+
+        h2 {
+            margin: 0;
+            padding: 0;
+            color: #16145A;
+            font-weight: 900 !important;
+            font-family: 'Work Sans', sans-serif; 
+                font-size: 40px;
+
+        }
+
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            margin: 40px;
+        }
+
+        .btn-primary {
+            background-color: #93C73F;
+            border-color: #21de21;
+        }
+
+        .btn-primary:hover {
+            background-color: #93C73F;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .horizontal-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            padding: 20px;
+            background-color: transparent;
+        }
+
+        .horizontal-table th {
+            background-color: transparent;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px;
+            color: #333;
+        }
+
+        .horizontal-table tbody tr {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .horizontal-table tbody tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .horizontal-table tbody tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .horizontal-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .horizontal-table tbody td {
+            padding: 12px 15px;
+            border-top: 2px solid #ddd;
+            border-bottom: 2px solid #ddd;
+            text-align: left;
+        }
+
+        .action-buttons i {
+            color: #8E8E8E;
+            cursor: pointer;
+            margin: 0 8px;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .action-buttons i:hover {
+            color: #000;
+        }
+
+        .btn-primary {
+            background-color: #189218;
+            border-color: #21de21;
+        }
+
+        .btn-primary:hover {
+            background-color: #2eb82e;
+        }
+        .form-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 60vh; 
+    margin-top: 50px;
+}
+
+.form-container form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    max-width: 700px;
+    width: 100%; 
+}
+
+.form-group {
+    margin-bottom: 15px; 
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-title {
+    grid-column: span 2;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-control {
+    width: 100%; 
+    box-sizing: border-box; 
+    height: 40px;
+}
+
+.form-container-wrapper {
+    position: relative; 
+    padding: 20px; 
+}
+
+.btn-icon {
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.form-title {
+    position: absolute;
+    top: 60px;
+    left: 20px; 
+    font-size: 40px;
+    margin: 0;
+    color: #16145A;
+    font-weight: 900 !important;
+    font-family: 'Work Sans', sans-serif; 
+}
+.btn1 {
+    align-items: center;
+    background-color: #189218; 
+    color: white;
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 300px;
+    margin-top: 70px;
+}
+
+    </style>   
+
+
+   <div id="vistaPrincipal">
+    <div class="title-container">
+        <h2 >Departamentos</h2>
+        
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalNuevoDato">
+            Nuevo Departamento
+        </button>
+    </div>
+    <div class="panelSIM">
+        <div id="gridContainer"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNuevoDato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Nuevo Departamento</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="formNuevoDato">
+            <div class="form-group">
+            <label for="cm">CM</label>
+            <input type="number" class="form-control" id="cm" placeholder="Ingrese el CM">
+          </div>
+          <div class="form-group">
+            <label for="nombre">Nombre del Departamento</label>
+            <input type="text" class="form-control" id="nombre" placeholder="Ingrese el nombre">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="btnGuardarDato">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditarDato" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Editar Departamento</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditarDato">
+          <input type="hidden" id="editIndex" />
+          <div class="form-group">
+           
+          <div class="form-group">
+            <label for="editNombre">Nombre del Departamento</label>
+            <input type="text" class="form-control" id="editNombre" placeholder="Ingrese el nombre">
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="btnActualizarDato">Actualizar</button>
+      </div>
+    </div>
+  </div>
+</div>

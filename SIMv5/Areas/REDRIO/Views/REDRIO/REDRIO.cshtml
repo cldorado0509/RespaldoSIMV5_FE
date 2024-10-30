@@ -1,0 +1,89 @@
+﻿@model SIM.Areas.Seguridad.Models.PermisosRolModel
+
+@using SIM.Properties
+@{
+    ViewBag.Title = "REDRIO";
+    Layout = "~/Views/Shared/_LayoutV5.cshtml";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Areas/REDRIO/Scripts/REDRIO.js?v=42")"></script>
+<style>
+    /* Estilos para el formulario */
+    .form-edit {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-edit .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-edit .form-control {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        transition: border-color 0.2s ease-in-out;
+    }
+
+    .form-edit .form-control.error {
+        border-color: #dc3545;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+     
+    .form-edit .form-control:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+    }
+
+    .form-edit label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-edit button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .form-edit button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<!-- En la nueva vista para edición -->
+<form id="formEditarDato" class="form-edit">
+    <div class="form-group">
+        <label for="cm">CM</label>
+        <input type="text" class="form-control" id="cm" placeholder="Ingrese el CM" readonly>
+    </div>
+    <div class="form-group">
+        <label for="nit">Cédula/Nit</label>
+        <input type="text" class="form-control" id="nit" placeholder="Ingrese la Cédula/Nit">
+    </div>
+    <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" class="form-control" id="nombre" placeholder="Ingrese el nombre">
+    </div>
+    <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input type="text" class="form-control" id="direccion" placeholder="Ingrese la dirección">
+    </div>
+    <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input type="text" class="form-control" id="telefono" placeholder="Ingrese el teléfono">
+    </div>
+    <button type="button" class="btn btn-primary" id="btnActualizarDatos">Actualizar</button>
+</form>
