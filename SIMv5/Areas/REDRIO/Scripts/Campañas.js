@@ -99,7 +99,22 @@
                                 .click(function () {
                                     eliminarFilacampaña(options.data);
                                 });
-                                
+                                var uploadFileButton = $("<i>")
+                                .addClass("fas fa-file-upload")
+                                .attr("title", "Cargar documento")
+                                .css({ "cursor": "pointer", "margin-right": "10px" })
+                                .click(function () {
+                                    const campaignId = options.data.idCampaña;
+                                    console.log("ID de campaña asignado:", campaignId);
+
+                                    $('#modalListaDocumentos').modal('show');
+                                    $('#modalListaDocumentos').data("campaignId", campaignId);
+
+                                    cargarDocumentosPorCampaña(campaignId);
+                                });
+
+                            
+
                                 var uploadButton = $("<i>")
                                 .addClass("fas fa-file-upload")
                                 .attr("title", "Cargar archivo Excel")
@@ -122,7 +137,7 @@
                                 });
                             
         
-                            container.append(editButton).append(deleteButton).append(uploadButton).append(labButton);
+                            container.append(editButton).append(deleteButton).append(uploadButton).append(labButton).append(uploadFileButton);
                             }
                     }
                 ],
@@ -179,24 +194,21 @@
         });
 
         $('#btnGuardarDato').click(function () {
-            // Obtener los valores de los campos de entrada
             // var NombreCampaña = $('#nombreCampaña').val();
             var IdFase = $('#Fase').val();
             var Descripcion = $('#Descripcion').val();  
             var Fecha_inicial = $('#Fecha_inicio').val();
             var Fecha_final = $('#Fecha_fin').val();
         
-            // Validar que la fecha inicial no sea mayor que la fecha final
             if (new Date(Fecha_inicial) > new Date(Fecha_final)) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: 'Error al crear campaña: la fecha inicial no puede ser mayor a la final.'
                 });
-                return; // Salir de la función si hay error
+                return; 
             }
         
-            // Validar que todos los campos requeridos estén llenos
             if (
                 // !NombreCampaña ||
                  !Descripcion || !IdFase) {
@@ -205,7 +217,7 @@
                     title: 'Error',
                     text: 'Error al crear campaña: todos los campos son requeridos.'
                 });
-                return; // Salir de la función si hay error
+                return; 
             }
         
             var nuevaCampaña = { 
@@ -1498,10 +1510,9 @@ async function obtenerDatos(campaignId) {
     return datosReporte;
 }
 $('#dropdownList a').click(function (e) {
-    e.preventDefault(); // Evitar redirección
+    e.preventDefault(); 
     var plantillaSeleccionada = $(this).data('value');
     
-    // Aquí puedes usar el mismo código de descarga
     var rutaArchivo;
     if (plantillaSeleccionada === "plantilla1") {
         rutaArchivo = "/SIM/wwwroot/uploads/plantillas/PlantillaLABORATORIO.xlsx";
@@ -1518,7 +1529,160 @@ $('#dropdownList a').click(function (e) {
 });
 
 
-        
+
+
+$(document).on("click", "#btnSubirDocumento", function () {
+    const file = document.getElementById("fileInputDocumento").files[0];
+    const campaignId = $("#modalListaDocumentos").data("campaignId");  
+
+    console.log("ID de campaña al subir documento:", campaignId);
+
+    if (!file) {
+        alert("Por favor seleccione un archivo.");  
+        return;
+    }
+
+    subirDocumento(file, campaignId);
+});
+
+
+function cargarDocumentosPorCampaña(campaignId) {
+    if (!campaignId) {
+        console.error("El ID de campaña es indefinido.");
+        return;
+    }
+    
+    console.log("Iniciando carga de documentos para campaignId:", campaignId);
+    
+    $.ajax({
+        url: `http://localhost:5078/api/DocsCampaña/ObtenerDocsCampañaPorCampaña/${campaignId}`,
+        type: 'GET',
+        success: function (response) {
+            console.log("Respuesta del servidor:", response);
+            if (response && response.result) {  
+                const documentos = response.result;
+                console.log("Documentos recibidos:", documentos);
+
+                $("#dataGridDocumentos").dxDataGrid({
+                    dataSource: documentos,
+                    columns: [
+                        { dataField: "documento.nombre", caption: "Nombre del Documento" },
+                        { dataField: "usuario", caption: "Usuario" },
+                        { dataField: "documento.fecha_cargue", caption: "Fecha de Cargue", dataType: "date", format: "dd/MM/yyyy" },
+                        {
+                            caption: "Acciones",
+                            width: 100,
+                            cellTemplate: function (container, options) {
+                                $("<i>")
+                                    .addClass("fas fa-download")
+                                    .css("cursor", "pointer")
+                                    .attr("title", "Descargar documento")
+                                    .click(function () {
+                                        var idDocumento = options.data.documento.id_Documento; 
+                                        var downloadUrl = 'http://localhost:5078/api/Documentos/DescargarDocumento/' + idDocumento;
+                                    
+                                    window.location.href = downloadUrl;
+                                    })
+                                    .appendTo(container);
+                            }
+                        }
+                    ],
+                    showBorders: true,
+                    columnAutoWidth: true,
+                    paging: { pageSize: 10 },
+                    pager: { showPageSizeSelector: true, allowedPageSizes: [5, 10, 20], showInfo: true },
+                    searchPanel: { visible: true, width: 240, placeholder: "Buscar..." },
+                    sorting: { mode: "multiple" }
+                });
+            } else {
+                console.log("No se encontraron documentos para la campaña.");
+            }
+        },
+        error: function (err) {
+            console.error("Error al cargar los documentos:", err);
+        }
+    });
+}
+
+
+
+function subirDocumento(file, campaignId) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    $.ajax({
+        url: 'http://localhost:5078/api/Documentos/AgregarDocumento',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            console.log("Documento subido:", response);
+            Swal.fire({
+                icon:'success',
+                text: 'Archivo se guardo exitosamente'
+            });
+            if (response.isSuccess) {
+                const documentoId = response.result.id_Documento; 
+                agregarDocsCampaña(documentoId, campaignId);
+            } else {
+                console.error("Error al subir el documento:", response.messageError);
+                swal.fire({
+                    icon:'error',
+                    text: 'Ocurrio un error inesperado, intente nuevamente'
+                })
+            }
+        },
+        error: function (err) {
+            console.error("Error al subir el archivo:", err);
+            swal.fire({
+                icon:'error',
+                text: 'Ocurrio un error inesperado, intente nuevamente'
+            })
+
+        }
+    });
+}
+
+function agregarDocsCampaña(documentoId, campaignId) {
+    if (!campaignId) {
+        console.error("El ID de campaña es indefinido en agregarDocsCampaña.");
+        return;
+    }
+
+    const docsCampañaData = {
+        id_Documento: documentoId,
+        idCampaña: campaignId, 
+        usuario: null,
+    };
+
+    // console.log("Datos para agregar a DocsCampaña:", docsCampañaData);
+
+    $.ajax({
+        url: 'http://localhost:5078/api/DocsCampaña/AgregarDocsCampaña',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(docsCampañaData),
+        success: function (response) {
+            console.log("Documento vinculado a la campaña:", response);
+            if (response.isSuccess) {
+                
+                cargarDocumentosPorCampaña(campaignId); 
+            } else {
+                console.error("Error al vincular el documento:", response.messageError);
+                
+            }
+        },
+        error: function (err) {
+            console.error("Error en la vinculación del documento:", err);
+
+        }
+    });
+}
+
+
+
+     
         cargarcampañas();
         cargarFases()
         inicializarGrid();

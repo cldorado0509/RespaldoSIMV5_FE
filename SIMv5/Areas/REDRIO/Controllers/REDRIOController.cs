@@ -10,12 +10,12 @@ namespace SIM.Areas.REDRIO.Controllers
     {
         public ActionResult Index()
         {
-            return View(); // Renderiza la vista Index
+            return View(); 
         }
 
         public ActionResult REDRIO()
         {
-            return View(); // Renderiza la vista REDRIO
+            return View(); 
         }
            public ActionResult Municipio()
         {
